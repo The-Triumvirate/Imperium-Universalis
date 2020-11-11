@@ -1,0 +1,129 @@
+# new institutions system
+
+# 3 global and powerful institutions remains :
+
+#	writing system
+#	coin usage
+#	elephant domestication
+
+# now 6 new tiered institutions are deployed progressively in the provinces like the CK2 technologies
+#	governement
+#	construction
+#	agriculture
+#	trade
+#	metalworking
+#	culture
+
+#
+# remember to add graphics for relevant ones when you add to this
+#
+# if a modifier is scaled, its multiplied with development in the province.
+
+
+
+#######################################
+# Writing System
+#######################################
+
+writing_system = {
+	penalty = 0.25
+	bonus = {
+		innovativeness_gain = 0.25
+		technology_cost = -0.1
+	}
+	trade_company_efficiency = 0.0
+
+	history = {
+		culture_group = italic
+	}
+	
+	# no need for events, as its there from the start.
+	#can_start = {	is_year = 1000	}
+	#start_chance = 100
+	#on_start = institution_events.1
+
+	can_embrace = {
+		always = yes
+	}
+
+	embracement_speed = {
+		
+		modifier = {
+			scale = yes
+			factor = 2.0
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					writing_system = 100
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 1.0
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						writing_system = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+					writing_system = 100
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.05
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_upper_class
+				base_tax = 1
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.25
+			potential = {
+				is_capital = yes
+				owner = { is_tribal = no }
+			}
+			custom_trigger_tooltip = {
+				tooltip = skilled_ruler_adm
+				owner = {
+					ADM = 6
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.2
+			potential = {
+				is_capital = yes
+				owner = { is_tribal = no }
+			}
+			custom_trigger_tooltip = {
+				tooltip = has_advisor_scholar_skill
+				owner = {
+					OR  = {
+						scholar_advisor = 1
+						scholar_advisor = 2
+						scholar_advisor = 3
+					}
+				}
+			}
+		}
+	}
+	
+	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+		factor = 24
+		
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
+		}
+	}
+}
