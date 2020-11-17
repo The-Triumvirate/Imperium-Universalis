@@ -17,5 +17,13 @@ tags={
 	"Map"
 	"Utilities"
 }
+
+replace_path="common/bookmarks"
+replace_path="common/country_tags"
+replace_path="common/ideas"
+replace_path="common/rebel_types"
+replace_path="history/countries"
+replace_path="history/provinces"
+replace_path="map/random"
 name="Imperium Universalis"
 supported_version="1.30.4"
