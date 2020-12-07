@@ -1,0 +1,43 @@
+
+increase_non_autonomous_vassal = {
+	category = influence
+	alert_index = 4
+	alert_tooltip = increase_half_autonomous_vassal_tt
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = half_autonomous_vassal
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+			dip_power = 100
+			reverse_has_opinion = {
+				who = FROM
+				value = 150
+			}
+			FROM = { is_at_war = no }
+	}
+	on_accept = {
+		add_dip_power = -100
+		hidden_effect = {	# Just to be sure that flags are removed, before event triggers
+			ROOT = {
+				create_subject = {
+					who = FROM
+					subject_type = non_autonomous_vassal
+				}
+			}
+			FROM = {
+					add_opinion = { who = ROOT modifier = decreased_autonomy_opinion }
+			}
+		}
+	}
+	
+	ai_will_do = {
+				FROM = { NOT = { liberty_desire = 25 } }
+				stability = 0
+				has_any_disaster = no
+				
+		}
+}

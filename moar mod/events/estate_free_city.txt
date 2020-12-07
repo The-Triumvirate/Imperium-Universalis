@@ -1,0 +1,61 @@
+namespace = estate_free_city
+
+########################################################################################
+# unrest in the army
+########################################################################################
+country_event = {
+	id = estate_free_city.1
+	title = "estate_free_city.1.t"
+	desc = "estate_free_city.1.d"
+	picture = generals
+	is_triggered_only = yes
+	
+	trigger = {
+		 any_owned_province = {
+			has_estate = estate_free_city
+					can_spawn_rebels = nationalist_rebels
+		 }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					has_estate = estate_free_city
+					can_spawn_rebels = nationalist_rebels
+				}
+				save_event_target_as = governor_driven_away
+			}
+		}
+	}
+	
+	# Do nothing
+	option = {
+		name = "estate_free_city.1.a"
+			event_target:governor_driven_away = {
+				add_province_modifier = {
+					name = governor_driven_away_modif
+					duration = 1825
+				}
+			}
+			add_prestige = -5
+	}
+	# reinstate him
+	option = {
+		name = "estate_allies.1.b"
+			random = { 
+				chance = 50 
+				event_target:governor_driven_away = {
+				spawn_rebels = {
+						type = nationalist_rebels
+						size = 3
+						win = yes
+					}
+				}
+			}
+	}
+}

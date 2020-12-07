@@ -1,0 +1,140 @@
+######################################################################
+# Gaul Rebels for Greece and Anatolia
+######################################################################
+cisalpine_gaul_rebels = {
+
+	color = { 64 135 47 }
+
+	area = none
+	government = any				# No special preference
+	defection = nation_rebel_tag			# If the country seeks independence, defection specifies what type of provinces it wants.
+	independence = nation_rebel_tag 		# Seeks independence for spawn province culture. Will not spawn at all if there is no suitable tag.
+	defect_delay = 48				# Can spontaneously declare independence after 24 months (earliest)
+	unit_transfer = yes				# Units switch allegiance after enforcing demands.
+	culture = cisalpine_gaul
+	gfx_type = celticgfx	
+	will_relocate = no	
+	
+	resilient = yes
+	reinforcing = no
+	general = yes				
+	smart = yes
+	
+	artillery = 0.4
+	infantry = 0.5
+	cavalry = 0.1
+	
+	morale = 1.1
+
+	# Possible handle actions
+	handle_action_negotiate = no
+	
+	# The rebel type with the highest modifier for this province gets picked
+	spawn_chance = {
+		factor = 1
+		modifier = {
+			factor = 50
+			has_province_modifier = gaul_invasion
+		}
+		modifier = {
+			factor = 0
+			NOT = { has_province_modifier = gaul_invasion }
+		}
+	}
+ 
+ 	# This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 3
+		modifier = {
+			factor = 1.25
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.5
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { controlled_by = REB }
+		}
+		
+	}
+ 
+ 	# Province Scope
+ 	siege_won_trigger = {
+ 		culture = REB
+ 	}
+	siege_won_effect = {
+		
+	}
+	
+	# Country scope
+	can_negotiate_trigger = {
+		always = no
+	}
+	
+	# Country scope
+	can_enforce_trigger = {
+		always = yes
+	}
+	
+	# Localisation for their demands
+	demands_description = "gaul_rebels_demand"
+	
+	# Country scope
+	demands_enforced_effect = {
+		add_prestige = -10	
+			every_owned_province = {
+				limit = {
+					has_rebel_faction = REB
+					OR = {
+						region = gallia_cisalpina
+						region = italian_region
+						region = magna_graecia
+						region = illyria_region
+					}
+				}
+				cede_province = REB
+				add_core = REB	
+				change_culture = cisalpine_gaul
+				change_religion = celtic_religion
+		}
+			every_owned_province = {
+				limit = {
+					has_rebel_faction = REB
+					OR = {
+						region = asia_minor
+						region = ionia_region
+						region = greek_region
+						region = macedonia_region
+						area = thracia_east
+						area = thracia_west
+					}
+				}
+				cede_province = REB
+				add_core = REB	
+				change_culture = galatian
+				change_religion = celtic_religion
+		}
+			every_owned_province = {
+				limit = {
+					has_rebel_faction = REB
+					OR = {
+						region = thracia_region
+					}
+					NOT = { area = thracia_west }
+					NOT = { area = thracia_east }
+				}
+				cede_province = REB
+				add_core = REB	
+				change_culture = tylian
+				change_religion = celtic_religion
+		}
+			every_owned_province = {
+				limit = {
+					has_province_modifier = gaul_invasion
+				}
+				remove_province_modifier = gaul_invasion
+		}				
+	}
+}

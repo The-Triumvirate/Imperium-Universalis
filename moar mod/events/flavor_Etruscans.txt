@@ -1,0 +1,193 @@
+namespace = etruscans
+
+########################################################################################
+# Etruscan leage
+########################################################################################
+country_event = {
+	id = etruscans.1
+	title = "etruscans.1.t"
+	desc = "etruscans.1.d"
+	picture = senat
+	major = yes
+	
+	trigger = {
+		primary_culture = etruscan
+		capital_scope = { 
+			OR = {
+				area = etruria_east
+				area = etruria_west
+			}
+		}
+		is_subject = no
+		
+		OR = {
+		ROM = {
+			exists = yes
+			total_development = 55
+			}
+		ISM = {
+			exists = yes
+			total_development = 65
+			}
+		CAR = {
+			exists = yes
+			total_development = 100
+			any_owned_province = { region = italian_region }
+			}
+		}
+		
+		NOT = { exists = ETR }
+		
+		OR = {
+			AND = {
+				ai = yes
+				NOT = {
+					any_country = {
+						ai = no
+						primary_culture = etruscan
+						capital_scope = { 
+							OR = {
+								area = etruria_east
+								area = etruria_west
+							}
+						}
+					}
+				}
+			}
+				ai = no
+		
+		}
+		
+		calc_true_if = {
+			all_country = {
+				primary_culture = etruscan
+						capital_scope = { 
+							OR = {
+								area = etruria_east
+								area = etruria_west
+							}
+						}
+				is_subject = no
+				has_opinion = {
+						who = ROOT
+						value = -25
+					}
+			}
+			amount = 4
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 48
+		modifier = {
+			factor = 4
+			is_at_war = yes
+		}
+	}
+	
+	option = {
+		name = "etruscans.1.a"
+			hidden_effect = {
+			every_country = {
+					limit = {
+						primary_culture = etruscan
+						capital_scope = { 
+							OR = {
+								area = etruria_east
+								area = etruria_west
+							}
+						}
+						is_subject = no
+						has_opinion = {
+								who = ROOT
+								value = -25
+							}
+					}
+					country_event = {
+						id = etruscans.2
+						days = 1
+					}
+				}
+			}
+			custom_tooltip = etruscans.1.tt
+			change_tag = ETR		
+			change_government = republic
+			add_government_reform = league_reform
+			if = {
+				limit = { NOT = { government_rank = 2 } }
+				set_government_rank = 2
+			}
+	}
+	option = {
+		name = "etruscans.1.b"
+			add_stability = 1
+	}
+}
+########################################################################################
+# join etruscan league
+########################################################################################
+country_event = {
+	id = etruscans.2
+	title = "etruscans.1.t"
+	desc = "etruscans.1.d"
+	picture = senat
+	is_triggered_only = yes
+	
+	trigger = {
+		always = yes
+	}
+	
+	option = {
+		name = "etruscans.2.a"
+		ai_chance = { 
+			factor = 90 
+			modifier = {
+				factor = 2.0
+				ETR = { ai = yes }
+			}
+			modifier = {
+				factor = 0.75
+				num_of_cities = 3 
+			}
+			modifier = {
+				factor = 0.5
+				num_of_cities = 6 
+			}
+			modifier = {
+				factor = 0.25
+				num_of_cities = 9 
+			}
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 2.0
+					has_opinion = {
+						who = FROM
+						value = 100
+					}
+			}
+		}
+		FROM = { inherit = ROOT }
+	}
+	option = {
+		name = "etruscans.1.b"
+		ai_chance = { factor = 10 }
+			add_stability = -1
+	}
+}

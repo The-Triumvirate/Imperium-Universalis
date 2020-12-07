@@ -1,0 +1,249 @@
+######################################################################
+# Throne Pretender rebels.
+######################################################################
+pretender_rebels = {
+	
+	color = { 179 51 51 }
+	
+	area = nation
+	government = monarchy
+	defection = none
+	independence = none
+	unit_transfer = yes
+	gfx_type = culture_province	
+	
+	resilient = yes					# Will not disband on defeat.
+	reinforcing = yes				# Will reinforce (double rate in rebel controlled provinces)
+	general = yes					# Does use generals. The 'define_ruler' effect with 'rebel' argument will pick the rebel leader as new King.
+	smart = yes
+	disband_on_leader_death = no	# Pretender rebels live forever!
+	will_relocate = yes				# Units will relocate if they have sieged all provinces nearby and has to move over sea.
+	dynasty = yes	#same dynasty for rebel uprising
+	
+	
+	artillery = 0.1
+	infantry = 0.5
+	cavalry = 0.4
+	
+	morale = 1.1
+	
+	# Possible handle actions
+	handle_action_negotiate = no
+	handle_action_stability = yes
+	handle_action_build_core = yes
+	handle_action_send_missionary = yes		
+	
+	spawn_chance = {
+		factor = 1
+		modifier = {
+			factor = 0
+			owner = {
+				NOT = { num_of_cities = 2 }
+			}
+		}
+		modifier = {
+			factor = 0
+			owner = {
+				has_reform = spartan_monarchy
+			}
+		}
+		modifier = {
+			factor = 0
+			is_overseas = yes
+		}
+		modifier = {
+			factor = 25
+			owner = {
+				has_disaster = succession_crisis_disaster
+			}
+		}
+		modifier = {
+			factor = 0.5
+			owner = {
+				government = republic
+				#aristocracy_ideas = 1
+			}
+		}
+		modifier = {
+			factor = 5.0
+			owner = {
+				government = republic
+				NOT = { republican_tradition = 40 }
+			}
+		}	
+		modifier = {
+			factor = 50
+			owner = { has_disaster = iucivilwar }
+		}
+		modifier = {
+			factor = 2
+			owner = {
+					culture_group = indian_group
+			}
+		}
+		modifier = {
+			factor = 30
+			owner = {
+				government = monarchy
+				has_regency = yes
+				has_heir = no
+			}
+		}
+		modifier = {
+			factor = 5
+			owner = {
+				government = monarchy
+				has_regency = yes
+				has_heir = yes
+				NOT = { heir_claim = 33 }
+			}
+		}
+		modifier = {
+			factor = 5
+			owner = {
+				government = monarchy
+				has_regency = yes
+				has_heir = yes
+				NOT = { heir_claim = 66 }
+			}
+		}
+		modifier = {
+			factor = 2
+			owner = {
+				government = monarchy
+				has_regency = yes
+				has_heir = yes
+				NOT = { heir_claim = 85 }
+			}
+		}
+		modifier = {
+			factor = 0.1
+			owner = {
+				NOT = { primary_culture = ROOT }
+			}
+		}
+		modifier = {
+			factor = 0.1
+			NOT = { is_core = ROOT }
+			any_core_country = {
+				primary_culture = ROOT
+	 		}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {
+				government = monarchy
+				legitimacy = 66
+			}
+		}
+		modifier = {
+			factor = 0.75
+			owner = {
+				government = monarchy
+				legitimacy = 75
+			}
+		}
+		modifier = {
+			factor = 2.5
+			owner = {
+				is_tribal = yes
+			}
+		}
+		modifier = {
+			factor = 5
+			owner = {
+				has_reform = greek_polis_reform
+				NOT = { has_country_modifier = polis_tyrannis_modifier }
+			}
+		}
+	}
+ 
+ 	# This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 4.0
+			is_capital = yes
+		}
+		modifier = {
+			factor = 1.5
+			unrest = 2
+		}
+		modifier = {
+			factor = 1.5
+			unrest = 4
+		}
+		modifier = {
+			factor = 1.5
+			unrest = 6
+		}
+	}
+ 
+ 	# Province Scope
+ 	siege_won_trigger = {
+ 	}
+	siege_won_effect = {
+	}
+	
+	# Country scope
+	can_negotiate_trigger = {
+		always = no
+	}
+	
+	# Country scope
+	can_enforce_trigger = {
+		always = yes
+	}
+	
+	# Localisation for their demands
+	demands_description = "pretender_rebels_demand"
+	
+	# Country Scope	
+	demands_enforced_effect = {
+		if = {
+			limit = {
+				NOT = {
+					OR = {
+						has_reform = greek_polis_reform
+						has_reform = spartan_monarchy_reform
+						is_tribal = no
+						is_nomad = no
+					}
+				}
+			}
+			change_government = monarchy
+			add_government_reform = despotism_reform
+			
+		}
+		if = {
+			limit = { has_heir = yes }
+			kill_heir = yes
+		}
+		if = { 
+			limit = { has_reform = greek_polis_reform }
+			add_faction_influence = { faction = fac_monarchists influence = 50 }
+			country_event = greek_polis.1
+		}
+		if = {
+			limit = { has_disaster = iucivilwar }
+			add_prestige = -50
+			add_legitimacy = 10
+		}	
+		if = {
+			limit = { has_disaster = succession_crisis_disaster }
+			add_prestige = -50
+			add_legitimacy = 65
+		}	
+		define_ruler = {
+			rebel = yes
+		}
+	}
+}

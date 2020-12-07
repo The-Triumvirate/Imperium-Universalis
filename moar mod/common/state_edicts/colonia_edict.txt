@@ -1,0 +1,69 @@
+colony_influence = {
+	potential = {
+		always = yes		#we support "potential" if modders want to have lots and just show some.
+	}
+	
+	allow = {
+		FROM  = { has_estate = estate_colony }
+	}
+	
+	modifier = {
+		local_unrest = -1 
+		local_autonomy = -0.1
+	}
+	
+	color = { 224 38 125 }
+	
+	
+	ai_will_do = {
+		# has to be around at least 10 to be picked (depends on maintainance cost and general economy)
+		factor = 5
+		modifier = {
+			factor = 0
+			OR = {
+				AND = {
+					NOT = {
+						has_state_edict = colony_influence
+					}
+					all_province_in_state = {
+						NOT = { unrest = 1 }
+					}
+				}
+				AND = {
+					has_state_edict = colony_influence
+					
+					all_province_in_state = {
+						NOT = { unrest = 1 }
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 3
+			
+			AND = {
+				NOT = {
+					has_state_edict = colony_influence
+				}
+				all_province_in_state = {
+					unrest = 1
+					NOT = { unrest = 5 }
+				}
+			}
+		}
+		modifier = {
+			factor = 0
+			all_province_in_state = {
+				NOT = {
+					local_autonomy_above_min = 10
+				}
+			}
+		}
+		modifier = {
+			factor = 3
+			all_province_in_state = {
+				local_autonomy_above_min = 15
+			}
+		}
+	}
+}

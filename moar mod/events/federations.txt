@@ -1,0 +1,196 @@
+namespace = federation
+
+
+########################################################################################
+# iberian federation
+########################################################################################
+country_event = {
+	id = federation.1
+	title = "federation.1.t"
+	desc = "federation.1.d"
+	picture = battle
+	major = yes
+	
+	trigger = {
+		culture_group = iberian_group
+		OR = {
+			capital_scope = { region = hispania_baetica	}
+			capital_scope = { region = lusitania	}
+			capital_scope = { region = cartaginensis_region	}
+			capital_scope = { region = hispania_citerior	}
+		}
+		is_subject = no
+		is_at_war = no
+		
+		NOT = { exists = IBB }
+		NOT = {  
+			any_country = { 
+				culture_group = iberian_group
+					OR = {
+						capital_scope = { region = hispania_baetica	}
+						capital_scope = { region = lusitania	}
+						capital_scope = { region = cartaginensis_region	}
+						capital_scope = { region = hispania_citerior	}
+					}
+				total_development = ROOT
+			}
+		}
+		
+		any_country = { 
+				NOT = { culture_group = iberian_group }
+				NOT = { culture_group = turdetani_group }
+				NOT = { culture_group = ibero_celtic_group }
+				any_owned_province = { 
+					OR = {
+						region = hispania_baetica	
+						region = lusitania	
+						region = cartaginensis_region	
+						region = hispania_citerior	
+					}
+				}
+				total_development = 350
+			}
+		
+		calc_true_if = {
+			all_country = {
+				culture_group = iberian_group
+					OR = {
+						capital_scope = { region = hispania_baetica	}
+						capital_scope = { region = lusitania	}
+						capital_scope = { region = cartaginensis_region	}
+						capital_scope = { region = hispania_citerior	}
+					}
+				is_subject = no
+				has_opinion = {
+						who = ROOT
+						value = -10
+					}
+			}
+			amount = 4
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+	}
+	
+	option = {
+		name = "federation.1.a"
+		ai_chance = { factor = 100 }
+			hidden_effect = {
+			every_country = {
+					limit = {
+						culture_group = iberian_group
+							OR = {
+								capital_scope = { region = hispania_baetica	}
+								capital_scope = { region = lusitania	}
+								capital_scope = { region = cartaginensis_region	}
+								capital_scope = { region = hispania_citerior	}
+							}
+						is_subject = no
+						has_opinion = {
+								who = ROOT
+								value = -10
+							}
+					}
+					country_event = {
+						id = federation.2
+						days = 3
+					}
+				}
+			}
+			change_tag = IBB
+			add_mil_power = 100
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+	}
+	option = {
+		name = "federation.1.b"
+		ai_chance = { factor = 0 }
+			add_prestige = -5
+	}
+}
+
+
+########################################################################################
+# join the iberian federation
+########################################################################################
+country_event = {
+	id = federation.2
+	title = "federation.2.t"
+	desc = "federation.2.d"
+	picture = military_parade
+	is_triggered_only = yes
+	
+	trigger = {
+							
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		
+	}
+	option = {
+		name = "federation.2.a"
+		ai_chance = { 
+			factor = 90 
+			modifier = {
+				factor = 0.9
+				num_of_cities = 4 
+			}
+			modifier = {
+				factor = 0.8
+				num_of_cities = 8 
+			}
+			modifier = {
+				factor = 0.8
+				num_of_cities = 12
+			}
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 2.0
+					has_opinion = {
+						who = FROM
+						value = 100
+					}
+			}
+			modifier = {
+				factor = 2.0
+					is_neighbor_of = FROM
+			}
+			modifier = {
+				factor = 0.75
+					NOT = { is_neighbor_of = FROM }
+			}
+		}
+		
+		FROM = { inherit = ROOT }
+	}
+	option = {
+		name = "federation.2.b"
+		ai_chance = { 
+			factor = 10  }
+		add_prestige = 5
+		add_stability = -1
+	}
+}
+

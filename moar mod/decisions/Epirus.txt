@@ -1,0 +1,148 @@
+country_decisions = {
+	 
+	 form_epirus = {
+		major = yes
+		potential = {
+			NOT = { exists = EPI }
+			NOT = { TAG HEL }
+				primary_culture = epirot
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 1039	
+				province_id = 1036	
+				province_id = 1038
+				owned_by = THP
+				owned_by = CHC
+				owned_by = MOL
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war =  no
+			owns_core_province = 1039
+			owns_core_province = 1036
+			owns_core_province = 1038
+			OR = {
+				NOT = { exists = THP }
+				TAG = THP
+			}
+			OR = {
+				NOT = { exists = CHC }
+				TAG = CHC
+			}
+			OR = {
+				NOT = { exists = MOL }
+				TAG = MOL
+			}
+		}
+		effect = {
+			remove_country_modifier = administration_reformed
+			remove_country_modifier = trade_reformed
+			remove_country_modifier = army_reformed
+			if = { limit = { TAG = MOL }  set_country_flag = molossian_ruler }
+			if = { limit = { TAG = CHC }  set_country_flag = chaonian_ruler }
+			if = { limit = { TAG = THP }  set_country_flag = thesprotian_ruler }
+			change_tag = EPI
+				if = {
+					limit = { government = tribal }			
+					change_government = monarchy
+				}
+				add_government_reform = epirote_monarchy_reform
+				chaonia_area = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = EPI
+				}
+				mollosia_area = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = EPI
+				}
+				thesprotia_area = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = EPI
+				}
+				set_government_rank = 3
+			}
+		ai_importance = 100	
+		ai_will_do = {
+			factor = 400
+		}
+	}
+	 new_coinage_dec = {
+		potential = {
+			OR = {
+				tag = EPI
+				tag = THP
+				tag = MOL
+				tag = CHC
+			}
+			NOT = { has_country_modifier = new_coinage }
+		}
+		allow = {
+			TAG = EPI
+			NOT = { average_autonomy = 20 }
+			adm_tech = 16
+		}
+		effect = {
+			add_country_modifier = {
+				name = new_coinage
+				duration = -1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	 move_capital_to_ambracia = {
+		potential = {
+			OR = {
+				tag = EPI
+				tag = THP
+				tag = MOL
+				tag = CHC
+			}
+			NOT = { has_country_flag = move_capital_to_ambracia_flag }
+			NOT = { capital = 1035 }
+			num_of_cities = 3
+		}
+		provinces_to_highlight = {
+				province_id = 1035	
+		}
+		allow = {
+			TAG = EPI
+			owns_core_province = 1035
+		}
+		effect = {
+			random_owned_province = {
+				limit = { 
+					base_production = 2 
+					NOT = { province_id = 1035 }
+				}
+				add_base_production = -1
+			}
+			random_owned_province = {
+				limit = { 
+					base_manpower = 2 
+					NOT = { province_id = 1035 }
+				}
+				add_base_manpower = -1
+			}
+			1035 = {
+				add_base_tax = 1
+				add_base_production = 1
+				change_culture = epirot
+			}
+			set_capital = 1035
+			set_country_flag = move_capital_to_ambracia_flag
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}

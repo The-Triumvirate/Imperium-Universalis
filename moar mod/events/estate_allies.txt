@@ -1,0 +1,307 @@
+namespace = estate_allies
+
+########################################################################################
+# unrest in the army
+########################################################################################
+country_event = {
+	id = estate_allies.1
+	title = "estate_allies.1.t"
+	desc = "estate_allies.1.d"
+	picture = generals
+	is_triggered_only = yes
+	
+	trigger = {
+		 num_of_streltsy = 2
+				has_global_modifier_value = {
+					which = development_cost
+					value = 0.1
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 2.0
+				has_global_modifier_value = {
+					which = development_cost
+					value = 0.5
+				}
+		}
+	}
+	
+	# Dismiss the officers
+	option = {
+		name = "estate_allies.1.a"
+			add_estate_influence_modifier = {
+				estate = estate_allies
+				desc = EST_VAL_OFFICERS_DISMISSED
+				influence = -5
+				duration = 1825
+			}
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = -5
+			}
+	}
+	# Dont do anything
+	option = {
+		name = "estate_allies.1.b"
+			add_country_modifier = {
+				name = unrest_in_the_army
+				duration = 1825
+			}
+	}
+}
+########################################################################################
+# allies support our policy
+########################################################################################
+country_event = {
+	id = estate_allies.2
+	title = "estate_allies.2.t"
+	desc = "estate_allies.2.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = {
+				estate_loyalty = {
+					estate = estate_allies
+					loyalty = 40
+				}
+		}
+				estate_territory = {
+					estate = estate_allies
+					territory = 5
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 2.0
+				estate_loyalty = {
+					estate = estate_allies
+					loyalty = 60
+				}
+		}
+	}
+	
+	# Great
+	option = {
+		name = "estate_allies.2.a"
+			add_stability = 1
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = 5
+			}
+	}
+}
+########################################################################################
+# allies against our policy
+########################################################################################
+country_event = {
+	id = estate_allies.3
+	title = "estate_allies.3.t"
+	desc = "estate_allies.3.d"
+	picture = conquest
+	is_triggered_only = yes
+	
+	trigger = {
+				estate_loyalty = {
+					estate = estate_allies
+					loyalty = 55
+				}
+				estate_territory = {
+					estate = estate_allies
+					territory = 5
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 2.0
+			NOT = {
+				estate_loyalty = {
+					estate = estate_allies
+					loyalty = 40
+				}
+			}
+		}
+	}
+	
+	# Great
+	option = {
+		name = "estate_allies.3.a"
+			add_stability = -1
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = -5
+			}
+	}
+}
+########################################################################################
+# allies demand help
+########################################################################################
+country_event = {
+	id = estate_allies.4
+	title = "estate_allies.4.t"
+	desc = "estate_allies.4.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+				any_owned_province = {
+					has_estate = estate_allies
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	# send help
+	option = {
+		name = "estate_allies.4.a"
+			add_years_of_income = -0.1
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = 5
+			}
+	}
+	# send nothing
+	option = {
+		name = "estate_allies.4.a"
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = -5
+			}
+	}
+}
+########################################################################################
+# military genius
+########################################################################################
+country_event = {
+	id = estate_allies.5
+	title = "estate_allies.5.t"
+	desc = "estate_allies.5.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+				any_owned_province = {
+					has_estate = estate_allies
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					has_estate = estate_allies
+				}
+				save_event_target_as = military_genius_origin
+			}
+				set_saved_name = {
+					key = military_genius_name
+					type = advisor
+					scope = event_target:military_genius_origin
+				}
+		}
+	}
+	
+	# use him as advisor
+	option = {
+		name = "estate_allies.5.a"
+			add_mil_power = 30
+			define_advisor = {
+						type = army_reformer_adv
+						skill = 3
+						name = military_genius_name
+						culture = event_target:military_genius_origin
+						religion = event_target:military_genius_origin
+						discount = yes
+				}
+			add_estate_influence_modifier = {
+				estate = estate_allies
+				desc = EST_VAL_SKILLFUL_OFFICER
+				influence = 5
+				duration = 3650
+			}
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = -5
+			}
+	}
+	# in the military
+	option = {
+		name = "estate_allies.5.b"
+			add_army_tradition = 10
+			add_estate_influence_modifier = {
+				estate = estate_allies
+				desc = EST_VAL_SKILLFUL_OFFICER
+				influence = 5
+				duration = 3650
+			}
+			add_estate_loyalty = {
+				estate = estate_allies
+				loyalty = -5
+			}
+	}
+	# do nothing
+	option = {
+	
+	}
+	
+	after = {
+		clear_saved_name = military_genius_name
+	}
+}
+
+########################################################################################
+# allies demand help
+########################################################################################
+country_event = {
+	id = estate_allies.6
+	title = "estate_allies.6.t"
+	desc = "estate_allies.6.d"
+	picture = civilwar
+	is_triggered_only = yes
+	
+	trigger = {
+				any_owned_province = {
+					has_estate = estate_allies
+					can_spawn_rebels = nationalist_rebels
+				}
+		NOT = {
+				estate_loyalty = {
+					estate = estate_allies
+					loyalty = 50
+				}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	# send help
+	option = {
+		name = "estate_allies.6.a"
+			random_owned_province = {
+				limit = {	
+					can_spawn_rebels = nationalist_rebels
+					has_estate = estate_allies
+				}
+				spawn_rebels = {
+						type = nationalist_rebels
+						size = 3
+						win = yes
+					}	
+			}
+	}
+}
