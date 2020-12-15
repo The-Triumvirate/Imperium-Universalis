@@ -114,7 +114,8 @@ city = {
 }
 
 port = {
-	naval_forcelimit = 2
+	naval_forcelimit = 3
+	local_sailors = 500
 	local_institution_spread = 0.10
 }
 
@@ -125,7 +126,8 @@ in_state = {
 in_capital_state = {
 	# local_institution_spread = 0.05
 	local_autonomy = -0.1
-	local_governing_cost = -0.5
+	local_state_maintenance_modifier = -0.5
+	state_governing_cost = -0.5
 	local_amount_of_banners = 0.25
 }
 
@@ -155,7 +157,7 @@ coastal_sea = {
 tropical = {
 	local_colonial_growth = -10
 	supply_limit_modifier = -0.15
-	local_hostile_attrition = 2
+	local_hostile_attrition = 1
 	local_friendly_movement_speed = 0.1
 	local_hostile_movement_speed = 0.1
 	local_core_creation = 0.25
@@ -167,9 +169,8 @@ tropical = {
 arctic = {
 	local_colonial_growth = -10
 	supply_limit_modifier = -0.3
-	local_hostile_attrition = 1
+	local_hostile_attrition = 2
 
-	allowed_num_of_buildings = -1
 	# cs_only_local_development_cost = 0.5
 
 	picture = "climate_arctic"
@@ -260,44 +261,42 @@ no_adjacent_controlled = {
 
 # Nobles and Priests / upper class
 provincial_tax_income = {
-	fort_level = 1
-	land_forcelimit = 0.1
 	local_institution_spread = 0.02
 	province_trade_power_value = 0.5
 	tax_income = 1.0
-	horde_unity = -0.02
 	local_culture_conversion_cost = -0.02
 }
 
 # Craftsmen and Merchents / commoners
 provincial_production_size = {
-	fort_level = 1
 	land_forcelimit = 0.1
 	tax_income = 0.25
 	trade_goods_size = 0.25
 	supply_limit = 0.25
-	local_manpower = 0.25
-	local_sailors = 250
-	naval_forcelimit = 0.25
+	local_manpower = 0.15
 	province_trade_power_value = 0.25
 	local_culture_conversion_cost = -0.01
-	horde_unity = -0.01
 }
 
 # Tribal
 manpower = {
 	province_trade_power_value = 0.1
 	land_forcelimit = 0.1
-	local_sailors = 250
 	tax_income = 0.1
 	trade_goods_size = 0.1
+	local_manpower = 0.1
 	supply_limit = 0.25
-	naval_forcelimit = 0.25
-	horde_unity = 0.01
 }
 
 knowledge_sharing = {
 	institution_growth = 12
+}
+
+cardinals_spread_institution = {
+	institution_growth = 20
+}
+
+manpower = {
 }
 
 sailors = {
@@ -336,7 +335,7 @@ capital_city = {
 
 
 patriarch_state = {
-	statewide_governing_cost = 0.1
+	local_state_maintenance_modifier = 0.1
 	local_monthly_devastation = -0.05
 }
 
@@ -358,7 +357,7 @@ patriarch_authority_global = {
 }
 
 pasha_state = {
-	statewide_governing_cost = 0.5
+	local_state_maintenance_modifier = 0.5
 	local_build_time = -0.15
 	local_unrest = -2
 }
@@ -527,12 +526,15 @@ local_autonomy_multiplicative = {
 local_autonomy = {
 }
 
+local_autonomy_trade_company_multiplicative = {
+}
 
+local_autonomy_trade_company = {
+}
 
 recent_uprising = {
 	local_unrest = -100
 }
-
 
 friendly_regiments = {
 	local_unrest = -1.0				#-1% for each friendly regiment in the province.
@@ -554,17 +556,9 @@ resource_depleted = {
 }
 
 in_trade_company = {
-	# province_trade_power_modifier = 1
-	# naval_forcelimit = 0.5
-	# local_manpower_modifier = -1
-	# local_sailors_modifier = -1
-	# local_tax_modifier = -1
-	# local_missionary_strength = -2
-	# local_institution_spread = 0.10
 }
 
 left_trade_company = {
-	# trade_goods_size_modifier = -2.0
 }
 
 
@@ -601,11 +595,8 @@ base_values = {
 	vassal_income = 0.25
 	horde_unity = -0.5
 	devotion = -0.5
-	# meritocracy = -2
-	governing_capacity = 100
-	# num_accepted_cultures = 2
-	# monthly_splendor = 1
-	# artillery_bonus_vs_fort = 5
+	meritocracy = -1
+	governing_capacity = 200
 	cav_to_inf_ratio = 0.4
 	legitimacy = -0.5
 	trade_range_modifier = 0.75
@@ -769,19 +760,12 @@ war = {
 peace = {
 	war_exhaustion = -0.1
 	devotion = 0.25
-	# monthly_fervor_increase = 1
-	# global_autonomy = -0.1
-	# global_institution_spread = 0.1
-	# rr_girondists_influence = -0.1
 	fac_priesthood_influence = 0.1
 	fac_janapadins_influence = -0.05
 	fac_samiti_influence = 0.05
 }
 
 unconditional_surrender = {
-	# war_exhaustion = -0.1
-	# global_autonomy = -0.1
-	# global_institution_spread = 0.1
 	monthly_militarized_society = -0.05
 	global_autonomy = -0.05
 	fac_janapadins_influence = -0.15
@@ -935,6 +919,9 @@ occupied_imperial = {
 	legitimacy = -0.5
 }
 
+emperor_revoked_reform =  {
+}
+
 num_of_marriages = {
 	legitimacy = 0.10
 	heir_chance = 0.1
@@ -993,8 +980,14 @@ meritocracy = {
 	# advisor_cost = -0.5
 	max_absolutism = 20
 	administrative_efficiency = 0.25
-	state_governing_cost = 0.4
+	state_maintenance_modifier = 0.4
 	yearly_corruption = -0.5
+	governing_capacity_modifier = 0.25
+}
+
+# Multiplied by 50 - meritocracy
+low_meritocracy = {
+	#yearly_corruption = 0.2 #i.e. 0.1 at 0 Meritocracy
 }
 
 corruption = {
@@ -1167,6 +1160,10 @@ curia_controller = {
 	technology_cost = -0.05
 }
 
+bought_indulgence = {
+	#papal_influence = 1
+}
+
 religious_unity = {
 	monthly_fervor_increase = 1
 }
@@ -1204,6 +1201,9 @@ bonus_from_merchant_republics = {
 
 bonus_from_merchant_republics_for_trade_league_member = {
 	trade_goods_size_modifier = 1
+}
+
+merchant_republic_mechanics_modifier = {
 }
 
 # For each province over limit
@@ -1264,7 +1264,8 @@ absolutism = {
 	land_forcelimit_modifier = 0.25
 	naval_forcelimit_modifier = 0.25
 	province_warscore_cost = -0.25
-	state_governing_cost = 1
+	state_maintenance_modifier = 1
+	governing_capacity_modifier = 0.5
 }
 
 low_army_professionalism = {
@@ -1327,6 +1328,8 @@ daimyo_subject = {
 }
 
 union_subject = {
+	land_forcelimit	= 2
+	naval_forcelimit = 3
 }
 
 all_nations = {
@@ -1687,10 +1690,6 @@ invite_minorities_modifier = {
 ########################################
 # Religious Schools
 ########################################
-
-########################################
-# Religious Schools
-########################################
 hanafi_scholar_modifier = {
 	religion_sub_modifier = yes # Will make icon placed next to religion modifier
 	religion = yes
@@ -1801,4 +1800,33 @@ streltsy_modifier = {
 	land_morale = -0.25
 	stability_cost_modifier = 1.0
 	development_cost = 1
+}
+
+########################################
+# Government/Reform modfiers
+########################################
+
+expand_administation_modifier = {
+	expand_administration_cost = 0.20
+	governing_capacity = 20
+}
+
+# At 100% over capacity, this modifier will be fully used
+over_governing_capacity_modifier = {
+	stability_cost_modifier = 1.0
+	ae_impact = 0.5
+	improve_relation_modifier = -0.5
+	core_creation = 0.2
+	advisor_cost = 1.0
+	monthly_militarized_society = -1.0
+	
+}
+
+
+lost_hegemony = {
+	all_power_cost	= 0.10
+}
+
+at_peace_revolutionary = { # Applied if at peace while reactionaries are bordering you
+	yearly_revolutionary_zeal = -4
 }
