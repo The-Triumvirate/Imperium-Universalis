@@ -1,0 +1,755 @@
+namespace = rome
+
+########################################################################################
+# successful galdiator games
+########################################################################################
+country_event = {
+	id = rome.1
+	title = "rome.1.t"
+	desc = "rome.1.d"
+	picture = gladiators2
+	is_triggered_only = yes
+	
+	trigger = {
+		has_country_modifier = gladiator_games_modifier
+		NOT = { has_country_modifier = gladiator_games_succesful }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		
+	}
+	option = {
+		name = "rome.1.a"
+		ai_chance = { factor = 60 }
+			add_prestige = 3
+			add_country_modifier = {
+				name = gladiator_games_succesful
+				duration = 365
+			}
+	}
+}
+
+########################################################################################
+# gladiat revolt
+########################################################################################
+country_event = {
+	id = rome.2
+	title = "rome.2.t"
+	desc = "rome.2.d"
+	picture = gladiators1
+	is_triggered_only = yes
+	
+	trigger = {
+		has_country_modifier = gladiator_games_modifier
+		NOT = { has_country_modifier = gladiator_revolt }
+		NOT = { has_country_modifier = slavery_abolished }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		
+	}
+	option = {
+		name = "rome.2.a"
+		ai_chance = { factor = 60 }
+			add_country_modifier = {
+				name = gladiator_revolt
+				duration = 365
+			}
+			random_owned_province = {
+					spawn_rebels = {
+						type = 	slave_rebels
+						size = 1
+					}
+				}
+	}
+}
+########################################################################################
+# bellona temple
+########################################################################################
+country_event = {
+	id = rome.4
+	title = "rome.4.t"
+	desc = "rome.4.d"
+	picture = temple
+	fire_only_once = yes
+
+	trigger = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+		is_year = 455
+		NOT = { is_year = 460 }
+		owns = 53
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+			
+	}
+	option = {
+		name = "rome.4.a"
+			add_country_modifier = {
+				name = bellona_temple
+				duration = 3650
+			}
+			
+	}
+}
+########################################################################################
+# optimates and populares
+########################################################################################
+country_event = {
+	id = rome.5
+	title = "rome.5.t"
+	desc = "rome.5.d"
+	picture = senat_conflict
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { has_country_flag = populares_optimates_appear }
+		total_development = 500
+		OR = {
+			is_year = 550
+			total_development = 1250
+		}
+		NOT = { started_in = 600.1.1 }
+		has_reform = res_publica_reform
+		has_any_disaster = no
+		
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 160
+		
+	}
+	option = {
+		name = "rome.5.a"
+			set_country_flag = populares_optimates_appear
+			add_faction = optimates
+			add_faction = populares
+			add_faction_influence = { faction = optimates influence = 25 }
+	}
+}
+
+
+########################################################################################
+# marian reform  I - capite censi
+########################################################################################
+country_event = {
+	id = rome.12
+	title = "rome.12.t"
+	desc = "rome.12.d"
+	picture = training
+	
+	trigger = {
+		tag = ROM
+		NOT = { has_country_flag = capite_censi_happened }
+		mil_tech = 29
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+		
+		modifier = {
+				factor = 0.75
+				advisor = army_reformer_adv
+			}
+		modifier = {
+				factor = 0.1
+				mil_tech = 30
+			}
+	}
+	option = {
+		name = "rome.12.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_army_professionalism = 0.05
+			
+			if = {
+				limit = {	has_factions = yes }
+							add_faction_influence = { faction = populares influence = 10 }
+			}
+			
+		set_country_flag = capite_censi_happened	
+	}
+	option = {
+		name = "rome.12.b"
+		ai_chance = { factor = 0 }
+		
+		if = {
+			limit = {	has_factions = yes }
+						add_faction_influence = { faction = populares influence = -10 }
+		}
+			
+		add_mil_power = 50
+		set_country_flag = capite_censi_happened
+		custom_tooltip = rome.12.tt
+	}
+}
+
+
+########################################################################################
+# marian reform  II - standing army
+########################################################################################
+country_event = {
+	id = rome.13
+	title = "rome.13.t"
+	desc = "rome.13.d"
+	picture = army_construction
+	
+	trigger = {
+		tag = ROM
+		NOT = { has_country_flag = standing_army_happened }
+		has_country_flag = capite_censi_happened
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+		
+		modifier = {
+				factor = 0.75
+				advisor = army_reformer_adv
+			}
+		modifier = {
+				factor = 0.5
+				mil_tech = 14
+			}
+	}
+	option = {
+		name = "rome.13.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_army_professionalism = 0.05
+		add_country_modifier = {
+				name = standing_army_modifier
+				duration = -1
+			}	
+			
+			if = {
+				limit = {	has_factions = yes }
+							add_faction_influence = { faction = populares influence = 10 }
+			}
+			
+		set_country_flag = standing_army_happened	
+			if = {
+					limit = { 	has_country_modifier = camillan_mil	 }
+								remove_country_modifier = camillan_mil	
+			}	
+			if = {
+					limit = { 	has_country_modifier = servius_tullius_mil }
+								remove_country_modifier = servius_tullius_mil
+			}
+			if = {
+					limit = { 	has_country_modifier = polybian_mil }
+								remove_country_modifier = polybian_mil
+			}
+	}
+	option = {
+		name = "rome.13.b"
+		ai_chance = { factor = 0 }
+		
+		if = {
+			limit = {	has_factions = yes }
+						add_faction_influence = { faction = populares influence = -10 }
+		}
+			
+		add_mil_power = 50
+		set_country_flag = standing_army_happened
+		custom_tooltip = rome.12.tt
+	}
+}
+
+########################################################################################
+# marian reform  III - land grants
+########################################################################################
+country_event = {
+	id = rome.14
+	title = "rome.14.t"
+	desc = "rome.14.d"
+	picture = rivercrossing
+	
+	trigger = {
+		tag = ROM
+		NOT = { has_country_flag = land_grants_happened }
+		has_country_flag = standing_army_happened
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+		
+		modifier = {
+				factor = 0.75
+				advisor = army_reformer_adv
+			}
+		modifier = {
+				factor = 0.5
+				mil_tech = 14
+			}
+	}
+	option = {
+		name = "rome.14.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_army_professionalism = 0.05
+			
+			if = {
+				limit = {	has_factions = yes }
+							add_faction_influence = { faction = populares influence = 10 }
+			}
+			
+		set_country_flag = land_grants_happened	
+	}
+	option = {
+		name = "rome.14.b"
+		ai_chance = { factor = 0 }
+		
+		if = {
+			limit = {	has_factions = yes }
+						add_faction_influence = { faction = populares influence = -10 }
+		}
+			
+		add_mil_power = 50
+		set_country_flag = land_grants_happened
+	}
+}
+
+########################################################################################
+# hegemony of italy 
+########################################################################################
+country_event = {
+	id = rome.15
+	title = "rome.15.t"
+	desc = "rome.15.d"
+	picture = senat_conflict
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		italian_region = { type = all owned_by = ROM }
+		NOT = { has_country_flag = hegemony_of_italy }
+		NOT = { started_in = 464.1.1 }
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+		
+	}
+	option = {
+		name = "rome.15.a"
+		ai_chance = { factor = 90 }
+		add_mil_power = 200
+		add_stability = 1
+	}
+	option = {
+		name = "rome.15.b"
+		ai_chance = { factor = 10 }
+		add_stability = 1
+		hidden_effect = {
+			every_owned_province = {
+				add_local_autonomy = -20
+				}
+			}
+			custom_tooltip = rome.15.tt.a
+	}
+}
+
+########################################################################################
+# the last king
+########################################################################################
+country_event = {
+	id = rome.16
+	title = "rome.16.t"
+	desc = "rome.16.d"
+	picture = senat_conflict
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { started_in = 245.1.1 }
+		NOT = { ADM = 4 }
+		is_year = 205
+		government = monarchy
+		NOT = { has_country_flag = last_king_of_rome }
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		
+	}
+	option = {
+		name = "rome.16.a"
+		ai_chance = { factor = 90 }
+		add_stability = -1
+		change_government = republic
+		add_government_reform = res_publica_reform
+		capital_scope = {
+		spawn_rebels = {
+				type = noble_rebels
+				size = 2
+			}
+		}
+		set_country_flag = last_king_of_rome
+	}
+	option = {
+		name = "rome.16.b"
+		ai_chance = { factor = 10 }
+		add_stability = -1
+		capital_scope = {
+		spawn_rebels = {
+				type = republican_rebels
+				size = 3
+			}
+		}
+		set_country_flag = last_king_of_rome
+	}
+}
+
+########################################################################################
+# Servius Tullius Military Reforms
+########################################################################################
+country_event = {
+	id = rome.17
+	title = "rome.17.t"
+	desc = "rome.17.d"
+	picture = battle
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { started_in = 220.1.1 }
+		MIL = 4
+		NOT = { has_country_flag = servius_tullius_mil_reform }
+	}
+	
+	mean_time_to_happen = {
+		months = 50
+		
+		modifier = {
+				factor = 0.75
+				advisor = army_reformer_adv
+			}
+		modifier = {
+				factor = 0.25
+				mil_tech = 2
+			}
+	}
+	option = {
+		name = "rome.17.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_country_modifier = {
+				name = servius_tullius_mil
+				duration = -1
+			}	
+			set_country_flag = servius_tullius_mil_reform
+	}
+	option = {
+		name = "rome.17.b"
+		ai_chance = { factor = 0 }	
+			set_country_flag = servius_tullius_mil_reform
+	}
+}
+########################################################################################
+# Servius Tullius Administrative Reforms
+########################################################################################
+country_event = {
+	id = rome.18
+	title = "rome.18.t"
+	desc = "rome.18.d"
+	picture = forum_picture
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { started_in = 220.1.1 }
+		ADM = 4
+		NOT = { has_country_flag = servius_tullius_adm_reform }
+		NOT = { has_country_modifier = servius_tullius_adm }
+	}
+	
+	mean_time_to_happen = {
+		months = 50
+		
+		modifier = {
+				factor = 0.1
+				adm_tech = 2
+			}
+	}
+		
+	immediate = {
+		set_country_flag = servius_tullius_adm_reform
+	}
+	
+	option = {
+		name = "rome.18.a"
+		ai_chance = { factor = 100 }
+		add_adm_power = -25
+		add_stability = -1
+		add_country_modifier = {
+				name = servius_tullius_adm
+				duration = -1
+			}	
+	}
+	option = {
+		name = "rome.18.b"
+		ai_chance = { factor = 0 }
+			add_adm_power = 50
+	}
+}
+
+########################################################################################
+# Camillan Military Reforms
+########################################################################################
+country_event = {
+	id = rome.19
+	title = "rome.19.t"
+	desc = "rome.19.d"
+	picture = training
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { has_country_flag = camillan_mil_reform }
+		NOT = { started_in = 420.1.1 }
+		mil_tech = 15
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		
+		modifier = {
+				factor = 0.5
+				MIL = 5
+			}
+		
+	}
+	option = {
+		name = "rome.19.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_stability = -1
+		add_army_tradition = -5
+		add_army_professionalism = 0.05
+		add_country_modifier = {
+				name = camillan_mil
+				duration = -1
+			}
+			if = {
+				limit = { has_country_modifier = servius_tullius_mil }
+			remove_country_modifier = servius_tullius_mil
+			}
+			set_country_flag = camillan_mil_reform
+	}
+	option = {
+		name = "rome.19.b"
+		ai_chance = { factor = 0 }
+			add_army_tradition = 5
+			set_country_flag = camillan_mil_reform
+	}
+}
+
+
+########################################################################################
+# Polybian Military Reforms
+########################################################################################
+country_event = {
+	id = rome.20
+	title = "rome.20.t"
+	desc = "rome.20.d"
+	picture = rivercrossing
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ROM
+		NOT = { started_in = 490.1.1 }
+		mil_tech = 20
+		NOT = { has_country_flag = polybian_mil_reform }
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		
+		modifier = {
+				factor = 0.5
+				MIL = 5
+			}
+	}
+	option = {
+		name = "rome.20.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_stability = -1
+		add_army_tradition = -5
+		add_army_professionalism = 0.05
+		add_country_modifier = {
+				name = polybian_mil
+				duration = -1
+			}
+			if = {
+					limit = { 	has_country_modifier = camillan_mil	 }
+								remove_country_modifier = camillan_mil	
+			}	
+			if = {
+					limit = { 	has_country_modifier = servius_tullius_mil }
+								remove_country_modifier = servius_tullius_mil
+			}
+			set_country_flag = polybian_mil_reform
+	}
+	option = {
+		name = "rome.20.b"
+		ai_chance = { factor = 0 }
+			add_mil_power = 50	
+			set_country_flag = polybian_mil_reform
+	}
+}
+
+########################################################################################
+# Servian Wall
+########################################################################################
+country_event = {
+	id = rome.21
+	title = "rome.21.t"
+	desc = "rome.21.d"
+	picture = defense
+	fire_only_once = yes
+		
+	trigger = {
+		tag = ROM
+		is_year = 190
+		NOT = { started_in = 200.1.1 }
+		owns = 53
+		treasury = 50
+		53 = {
+				is_capital = yes
+				num_free_building_slots = 1
+            	NOT = { has_building = small_city_walls }
+        	}
+		NOT = { has_country_flag = servianwall }
+	}
+
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "rome.21.a"
+		ai_chance = {	factor = 95	}
+		if = {
+			limit = { AI = NO }
+			add_treasury = -50
+		}
+		53 = {
+		      add_province_modifier = {
+				name = servian_wall
+				duration = -1
+			}
+		}
+			set_country_flag = servianwall
+	}
+	option = {
+		name = "rome.21.b"
+		ai_chance = {	factor = 5	}
+			add_prestige = -5
+			set_country_flag = servianwall
+	}
+}
+
+########################################################################################
+# change to republic from principate
+########################################################################################
+country_event = {
+	id = rome.25
+	title = "rome.25.t"
+	desc = "rome.25.d"
+	picture = senat
+	
+	trigger = {
+		government = republic
+		TAG = ROI
+	}
+	
+	mean_time_to_happen = {
+		days = 1	
+	}
+	
+	option = {
+		name = "rome.25.a"
+		ai_chance = { factor = 80 }
+			change_tag = ROM
+	}
+}
+
+
+########################################################################################
+# colloseum
+########################################################################################
+country_event = {
+	id = rome.27
+	title = "rome.27.t"
+	desc = "rome.27.d"
+	picture = city
+	fire_only_once = yes
+		
+	trigger = {
+		owns = 53
+		NOT = { has_global_flag = colloseum_happened }
+		53 = { has_building = huge_theater }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = { set_global_flag = colloseum_happened }
+
+	option = {
+		name = "rome.27.a"
+		show_ambient_object = roman_colloseum
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# gladiator games
+########################################################################################
+country_event = {
+	id = rome.28
+	title = "rome.28.t"
+	desc = "rome.28.d"
+	picture = gladiators1
+		
+	trigger = {
+			OR = {
+				culture_group = italic
+				accepted_culture = etruscan
+			}
+			calc_true_if = {
+				all_province = {
+					culture = etruscan
+					owned_by = ROOT
+					is_core = ROOT
+				}
+				amount = 4
+			}
+			NOT = { has_country_modifier = gladiator_games_modifier }
+	}
+
+	mean_time_to_happen = {
+		months = 120
+	}
+
+	option = {
+		name = "rome.28.a"
+			add_country_modifier = {
+					name = gladiator_games_modifier
+					duration = -1
+				}
+			add_prestige = 5
+	}
+}

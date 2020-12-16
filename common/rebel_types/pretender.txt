@@ -25,7 +25,7 @@ pretender_rebels = {
 	infantry = 0.5
 	cavalry = 0.4
 	
-	morale = 1.25
+	morale = 1.1
 	
 	# Possible handle actions
 	handle_action_negotiate = no
@@ -35,20 +35,52 @@ pretender_rebels = {
 	
 	spawn_chance = {
 		factor = 1
-
 		modifier = {
 			factor = 0
 			owner = {
-				NOT = { num_of_cities = 3 }
+				NOT = { num_of_cities = 2 }
+			}
+		}
+		modifier = {
+			factor = 0
+			owner = {
+				has_reform = spartan_monarchy
 			}
 		}
 		modifier = {
 			factor = 0
 			is_overseas = yes
 		}
-
-
-
+		modifier = {
+			factor = 25
+			owner = {
+				has_disaster = succession_crisis_disaster
+			}
+		}
+		modifier = {
+			factor = 0.5
+			owner = {
+				government = republic
+				#aristocracy_ideas = 1
+			}
+		}
+		modifier = {
+			factor = 5.0
+			owner = {
+				government = republic
+				NOT = { republican_tradition = 40 }
+			}
+		}	
+		modifier = {
+			factor = 50
+			owner = { has_disaster = iucivilwar }
+		}
+		modifier = {
+			factor = 2
+			owner = {
+					culture_group = indian_group
+			}
+		}
 		modifier = {
 			factor = 30
 			owner = {
@@ -85,34 +117,7 @@ pretender_rebels = {
 			}
 		}
 		modifier = {
-			factor = 4.5
-			owner = {
-				is_lesser_in_union = yes
-			}
-		}
-		modifier = {
-			factor = 3
-			owner = {
-				is_lesser_in_union = yes
-				NOT = { legitimacy = 75 }
-			}
-		}
-		modifier = {
-			factor = 3
-			owner = {
-				is_lesser_in_union = yes
-				NOT = { legitimacy = 50 }
-			}
-		}
-		modifier = {
-			factor = 3
-			owner = {
-				is_lesser_in_union = yes
-				NOT = { legitimacy = 25 }
-			}
-		}
-		modifier = {
-			factor = 0.25
+			factor = 0.1
 			owner = {
 				NOT = { primary_culture = ROOT }
 			}
@@ -125,27 +130,30 @@ pretender_rebels = {
 	 		}
 		}
 		modifier = {
-			factor = 0.75
+			factor = 0.85
 			owner = {
 				government = monarchy
 				legitimacy = 66
 			}
 		}
 		modifier = {
-			factor = 0.5
+			factor = 0.75
 			owner = {
 				government = monarchy
 				legitimacy = 75
 			}
 		}
 		modifier = {
-			factor = 10
-			owner = { has_country_modifier = "tribal_succession_crisis" }
-		}
-		modifier = {
 			factor = 2.5
 			owner = {
-				government = tribal
+				is_tribal = yes
+			}
+		}
+		modifier = {
+			factor = 5
+			owner = {
+				has_reform = greek_polis_reform
+				NOT = { has_country_modifier = polis_tyrannis_modifier }
 			}
 		}
 	}
@@ -200,25 +208,42 @@ pretender_rebels = {
 	
 	# Country Scope	
 	demands_enforced_effect = {
-		hidden_effect = {
-			add_country_modifier = {
-				name = just_lost_to_rebels
-				duration = 10
-				hidden = yes
+		if = {
+			limit = {
+				NOT = {
+					OR = {
+						has_reform = greek_polis_reform
+						has_reform = spartan_monarchy_reform
+						is_tribal = no
+						is_nomad = no
+					}
+				}
 			}
+			change_government = monarchy
+			add_government_reform = despotism_reform
+			
 		}
-
-
-
 		if = {
 			limit = { has_heir = yes }
 			kill_heir = yes
 		}
-
-
+		if = { 
+			limit = { has_reform = greek_polis_reform }
+			add_faction_influence = { faction = fac_monarchists influence = 50 }
+			country_event = greek_polis.1
+		}
 		if = {
-			limit = { is_revolution_target = yes }
-			set_revolution_target = ---
+			limit = { has_disaster = iucivilwar }
+			add_prestige = -50
+			add_legitimacy = 10
+		}	
+		if = {
+			limit = { has_disaster = succession_crisis_disaster }
+			add_prestige = -50
+			add_legitimacy = 65
+		}	
+		define_ruler = {
+			rebel = yes
 		}
 	}
 }

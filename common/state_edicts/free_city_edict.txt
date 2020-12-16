@@ -1,0 +1,55 @@
+free_city_influence = {
+	potential = {
+		always = yes		#we support "potential" if modders want to have lots and just show some.
+	}
+	
+	allow = {
+		FROM  = { has_estate = estate_free_city }
+	}
+	
+	modifier = {
+		local_unrest = -2
+		province_trade_power_modifier = 0.05
+	}
+	
+	color = { 234 218 75 }
+	
+	
+	ai_will_do = {
+		# has to be around at least 10 to be picked (depends on maintainance cost and general economy)
+		factor = 5
+		modifier = {
+			factor = 0
+			OR = {
+				AND = {
+					NOT = {
+						has_state_edict = free_city_influence
+					}
+					all_province_in_state = {
+						NOT = { unrest = 1 }
+					}
+				}
+				AND = {
+					has_state_edict = free_city_influence
+					
+					all_province_in_state = {
+						NOT = { unrest = 1 }
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 3
+			
+			AND = {
+				NOT = {
+					has_state_edict = free_city_influence
+				}
+				all_province_in_state = {
+					unrest = 1
+					NOT = { unrest = 5 }
+				}
+			}
+		}
+	}
+}

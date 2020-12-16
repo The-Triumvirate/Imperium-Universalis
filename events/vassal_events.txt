@@ -1,0 +1,347 @@
+namespace = subject_event
+
+########################################################################################
+# death of ruler / tributaries
+########################################################################################
+country_event = {
+	id = subject_event.1
+	title = "subject_event.1.t"
+	desc = "subject_event.1.d"
+	picture = deligation
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+			any_subject_country = {
+				is_subject_of_type = tributary_state
+			}
+			government = monarchy
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	
+	option = {
+		name = "subject_event.1.a"
+				every_subject_country = {
+					limit = { is_subject_of_type = tributary_state }
+					country_event = {
+						id = subject_event.2
+						days = 7
+					}
+				}
+	}
+}
+########################################################################################
+# death of ruler / tributaries
+########################################################################################
+country_event = {
+	id = subject_event.2
+	title = "subject_event.2.t"
+	desc = "subject_event.2.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+			
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			overlord = {
+				save_event_target_as = overlord_country
+			}
+		}
+	}
+	
+	
+	option = {
+		name = "subject_event.2.a"
+		ai_chance = {
+			factor = 100
+				modifier = {
+					factor = 0.5
+					event_target:overlord_country = {
+						stability = 1
+					}
+				}
+				modifier = {
+					factor = 0.5
+					has_opinion = {
+						who = event_target:overlord_country
+						value = 100
+					}
+				}
+				modifier = {
+					factor = 1.5
+					NOT = {
+					has_opinion = {
+						who = event_target:overlord_country
+						value = 0
+						}
+					}
+				}
+				modifier = {
+					factor = 2.0
+					liberty_desire = 51
+				}
+		}
+		hidden_effect = {
+				overlord = {
+					free_vassal = ROOT
+					country_event = {
+						id = subject_event.3
+						days = 7
+					}
+					add_opinion = {
+						who = ROOT
+						modifier = opinion_subject_broke_away
+					}
+					add_trust = {
+						who = ROOT
+						value = -10
+						mutual = yes
+					}
+				}
+			}
+	}
+	option = {
+		name = "subject_event.2.b"
+		ai_chance = {
+			factor = 50
+				modifier = {
+					factor = 1.5
+					event_target:overlord_country = {
+						stability = 2
+					}
+				}
+				modifier = {
+					factor = 0.5
+					liberty_desire = 25
+				}
+		}
+	}
+}
+########################################################################################
+# death of ruler / tributaries
+########################################################################################
+country_event = {
+	id = subject_event.3
+	title = "subject_event.3.t"
+	desc = "subject_event.3.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+			
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+	}
+	
+	
+	option = {
+		name = "subject_event.3.a"
+			tooltip = { free_vassal = FROM }
+			add_casus_belli = {
+				target = FROM
+				type = cb_disloyal_vassal
+			}
+	}
+}
+########################################################################################
+# traitor flees to the court
+########################################################################################
+country_event = {
+	id = subject_event.4
+	title = "subject_event.4.t"
+	desc = "subject_event.4.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+			any_subject_country = {
+				OR = {
+					is_subject_of_type = tributary_state
+					is_subject_of_type = vassal
+				}
+			}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+	random_subject_country = {
+			limit = {
+				OR = {
+					is_subject_of_type = tributary_state
+					is_subject_of_type = vassal
+				}
+			}
+			save_event_target_as = subject_of_traitor
+		}
+		set_saved_name = {
+			key = traitor_advisor_name
+			type = advisor
+			scope = event_target:subject_of_traitor
+		}
+	}
+	
+	
+	option = {
+		name = "subject_event.4.a"
+			define_advisor = {
+				type = foreign_advisor
+				skill = 2
+				name = traitor_advisor_name
+				culture = event_target:subject_of_traitor
+				religion = event_target:subject_of_traitor
+				discount = yes
+			}
+			add_dip_power = 20
+			reverse_add_opinion = { who = event_target:subject_of_traitor modifier = opinion_given_shelter_to_traitor }
+	}
+	option = {
+		name = "subject_event.4.b"
+			reverse_add_opinion = { who = event_target:subject_of_traitor modifier = opinion_send_traitor_back }
+	}
+	after = {
+		clear_saved_name = traitor_advisor_name
+	}
+}
+########################################################################################
+# tributy to vassal
+########################################################################################
+country_event = {
+	id = subject_event.5
+	title = "subject_event.5.t"
+	desc = "subject_event.5.d"
+	picture = deligation
+	
+	trigger = {
+			any_subject_country = {
+					is_subject_of_type = tributary_state
+					reverse_has_opinion = { who = ROOT value = 100 }
+			}
+			government = republic
+			is_tribal = no
+	}
+	
+	mean_time_to_happen = {
+		months = 3650
+			modifier = {
+				factor = 2.0
+				NOT = { stability = 1 }
+			}
+			
+	}
+	
+	immediate = {
+	random_subject_country = {
+			limit = {
+					is_subject_of_type = tributary_state
+					reverse_has_opinion = { who = ROOT value = 100 }
+			}
+			save_event_target_as = subject_to_integrate
+		}
+	}
+	
+	
+	option = {
+		name = "subject_event.5.a"
+		ai_chance = { factor = 99 }
+			tooltip = { vassalize = event_target:subject_to_integrate }
+			hidden_effect = {
+				event_target:subject_to_integrate = {
+					country_event = {
+						id = subject_event.6
+						days = 1
+					}
+				}
+			}
+	}
+	option = {
+		name = "subject_event.5.b"
+		ai_chance = { factor = 1 }
+			add_prestige = -5
+	}
+}
+########################################################################################
+# tributy to vassal 2
+########################################################################################
+country_event = {
+	id = subject_event.6
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+	
+	mean_time_to_happen = {
+		days = 1	
+	}
+	
+	option = {
+		name = "subject_event.6.a"
+		ai_chance = { factor = 50
+				modifier = {
+					factor = 0.5
+					has_opinion = {
+						who = FROM
+						value = 150
+					}
+				}
+				modifier = {
+					factor = 2.0
+					liberty_desire = 51
+				}
+			}
+			FROM = { vassalize = ROOT }
+			add_prestige = -25
+	}
+	option = {
+		name = "subject_event.6.b"
+		ai_chance = { factor = 20 }
+			add_prestige = 5
+			hidden_effect = {
+				event_target:subject_to_integrate = {
+					country_event = {
+						id = subject_event.7
+						days = 1
+					}
+				}
+			}
+	}
+}
+########################################################################################
+# tributy to vassal 3
+########################################################################################
+country_event = {
+	id = subject_event.7
+	title = "subject_event.7.t"
+	desc = "subject_event.7.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+	
+	mean_time_to_happen = {
+		days = 1	
+	}
+	
+	option = {
+		name = "subject_event.6.a"
+			add_prestige = -5
+	}
+}

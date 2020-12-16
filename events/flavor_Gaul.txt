@@ -1,0 +1,173 @@
+namespace = gaul
+
+
+########################################################################################
+# Gaul federation
+########################################################################################
+country_event = {
+	id = gaul.1
+	title = "gaul.1.t"
+	desc = "gaul.1.d"
+	picture = military_parade
+	major = yes
+	
+	trigger = {
+		culture_group = gaulish_group
+		NOT = { culture = belgae }
+		capital_scope = { region = celtica_area	}
+		is_subject = no
+		is_at_war = no
+		
+		NOT = { exists = GLI }
+		NOT = {  
+			any_country = { 
+				culture_group = gaulish_group
+				NOT = { culture = belgae }
+				capital_scope = { region = celtica_area	}
+				total_development = ROOT
+			}
+		}
+		
+		any_country = { 
+				NOT = { culture_group = gaulish_group }
+				NOT = { culture_group = aquitani_group }
+				any_owned_province = { 
+					region = celtica_area	
+				}
+				total_development = 500
+			}
+		
+		calc_true_if = {
+			all_country = {
+				culture_group = gaulish_group
+				NOT = { culture = belgae }
+				capital_scope = { region = celtica_area	}
+				is_subject = no
+				has_opinion = {
+						who = ROOT
+						value = -25
+					}
+			}
+			amount = 3
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+	}
+	
+	option = {
+		name = "gaul.1.a"
+		ai_chance = { factor = 100 }
+			hidden_effect = {
+			every_country = {
+					limit = {
+						culture_group = gaulish_group
+						NOT = { culture = belgae }
+						capital_scope = { region = celtica_area	}
+						is_subject = no
+						has_opinion = {
+								who = ROOT
+								value = -25
+							}
+					}
+					country_event = {
+						id = gaul.2
+						days = 3
+					}
+				}
+			}
+			change_tag = GLI
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+	}
+	option = {
+		name = "gaul.1.b"
+		ai_chance = { factor = 0 }
+			add_prestige = -5
+	}
+}
+
+
+########################################################################################
+# join the federation
+########################################################################################
+country_event = {
+	id = gaul.2
+	title = "gaul.2.t"
+	desc = "gaul.2.d"
+	picture = military_parade
+	is_triggered_only = yes
+	
+	trigger = {
+							
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+		
+	}
+	option = {
+		name = "gaul.2.a"
+		ai_chance = { 
+			factor = 90 
+			modifier = {
+				factor = 0.75
+				num_of_cities = 4 
+			}
+			modifier = {
+				factor = 0.5
+				num_of_cities = 8 
+			}
+			modifier = {
+				factor = 0.25
+				num_of_cities = 12
+			}
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 2.0
+					has_opinion = {
+						who = FROM
+						value = 100
+					}
+			}
+			modifier = {
+				factor = 3.0
+					is_neighbor_of = FROM
+			}
+			modifier = {
+				factor = 0.75
+					NOT = { is_neighbor_of = FROM }
+			}
+		}
+		
+		FROM = { inherit = ROOT }
+	}
+	option = {
+		name = "gaul.2.b"
+		ai_chance = { 
+			factor = 10  }
+		add_prestige = 5
+		add_stability = -1
+	}
+}
+

@@ -1,0 +1,421 @@
+namespace = diplomacy
+
+########################################################################################
+# gift to our neighbor
+########################################################################################
+country_event = {
+	id = diplomacy.3
+	title = "diplomacy.3.t"
+	desc = "diplomacy.3.d"
+	picture = lion
+	is_triggered_only = yes
+	
+	trigger = {
+		any_neighbor_country = { 
+				has_opinion = {
+				who = ROOT
+				value = 0
+			}
+		}
+		is_at_war = no
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	
+	immediate = {
+		hidden_effect = {
+			random_neighbor_country = {
+				limit = {
+					has_opinion = {
+						who = ROOT
+						value = 0
+					}
+				}
+				save_event_target_as = neighbor_gift_target
+			}
+		}
+	}
+	
+	option = {
+		name = "diplomacy.3.a"
+		ai_chance = { factor = 80 }
+			add_years_of_income = -0.03
+			
+			event_target:neighbor_gift_target = {
+			add_opinion = {
+				who = ROOT
+				modifier = opinion_gift_sent
+			}
+			hidden_effect = {
+				country_event = {
+					id = diplomacy.4
+					days = 5
+				}
+			}
+			tooltip = {
+				add_trust = {
+					who = ROOT
+					value = 5
+					mutual = yes
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "diplomacy.3.b"
+		ai_chance = { factor = 20 }
+			add_prestige = -5
+	}
+}
+########################################################################################
+# gift for us
+########################################################################################
+country_event = {
+	id = diplomacy.4
+	title = "diplomacy.4.t"
+	desc = "diplomacy.4.d"
+	picture = lion
+	is_triggered_only = yes
+	
+	trigger = {
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	
+	option = {
+		name = "diplomacy.4.a"
+			add_prestige = 5
+			add_trust = {
+				who = FROM
+				value = 5
+				mutual = yes
+			}
+
+	}
+}
+########################################################################################
+# border tension
+########################################################################################
+country_event = {
+	id = diplomacy.5
+	title = "diplomacy.5.t"
+	desc = "diplomacy.5.d"
+	picture = lostbattle
+	is_triggered_only = yes
+	
+	trigger = {
+		any_neighbor_country = {
+				NOT = {
+					has_opinion = {
+					who = ROOT
+					value = 0
+					}
+				}
+				any_owned_province = {
+					NOT = { is_claim = ROOT }
+					NOT = { is_core = ROOT }
+					OR = {
+						is_capital = no
+						owner = {
+							NOT = { num_of_cities = 2 }
+						}
+					}
+					any_neighbor_province = {
+						owned_by = ROOT
+					}
+				}
+			}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	
+	option = {
+		name = "diplomacy.5.a"
+			add_prestige = 5
+				random_neighbor_country = {
+				limit = {
+					NOT = {
+						has_opinion = {
+						who = ROOT
+						value = 0
+						}
+					}
+					any_owned_province = {
+					NOT = { is_claim = ROOT }
+					NOT = { is_core = ROOT }
+					OR = {
+						is_capital = no
+						owner = {
+							NOT = { num_of_cities = 2 }
+							}
+						}
+						any_neighbor_province = {
+							owned_by = ROOT
+						}
+					}
+				}
+				random_owned_province = {
+				limit = {
+					NOT = { is_claim = ROOT }
+					NOT = { is_core = ROOT }
+					OR = {
+						is_capital = no
+						owner = {
+							NOT = { num_of_cities = 2 }
+						}
+					}
+					any_neighbor_province = {
+						owned_by = ROOT
+					}
+				}
+				add_claim = ROOT
+			}
+		}
+	}
+	option = {
+		name = "diplomacy.5.b"
+			add_prestige = -5
+			
+	}
+}
+
+########################################################################################
+# 
+########################################################################################
+country_event = {
+	id = diplomacy.6
+	title = "diplomacy.6.t"
+	desc = "diplomacy.6.d"
+	picture = lostbattle
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+			is_lesser_in_union = yes 
+	}
+	
+	
+	
+	immediate = {
+		every_owned_province = {
+			limit = {
+				OR = {
+					has_owner_accepted_culture = yes
+					has_owner_culture = yes
+				}
+			}
+			add_nationalism = 10
+		}
+		overlord = { inherit = ROOT }
+	}
+	
+	option = {
+		name = "diplomacy.5.b"
+			
+			
+	}
+}
+########################################################################################
+# disloyal advisor
+########################################################################################
+country_event = {
+	id = diplomacy.7
+	title = "diplomacy.7.t"
+	desc = "diplomacy.7.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+	trigger = {
+			has_advisor = yes
+			any_rival_country = { NOT = { war_with = ROOT } }
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_rival_country = {
+				limit = {
+					NOT = { war_with = ROOT }
+				}
+				save_event_target_as = neighbor_advisor_target
+			}
+		}
+	}
+	
+	option = {
+		name = "diplomacy.7.a"
+		ai_chance = { factor = 80 }
+			kill_advisor = RANDOM
+			
+			event_target:neighbor_advisor_target = {
+			add_opinion = {
+				who = ROOT
+				modifier = opinion_advisor_in_exile
+			}
+			hidden_effect = {
+				country_event = {
+					id = diplomacy.8
+					days = 5
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# disloyal advisor 2
+########################################################################################
+country_event = {
+	id = diplomacy.8
+	title = "diplomacy.8.t"
+	desc = "diplomacy.8.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+	trigger = {
+			
+	}
+	
+	option = {
+		name = "diplomacy.8.a"
+		ai_chance = { factor = 80 }
+			add_spy_network_in = { who = FROM value = 25 }
+			tooltip = {
+				add_opinion = {
+					who = FROM
+					modifier = opinion_advisor_in_exile
+				}
+			}
+		}
+	}
+
+########################################################################################
+# allied traders insulted
+########################################################################################
+country_event = {
+	id = diplomacy.9
+	title = "diplomacy.9.t"
+	desc = "diplomacy.9.d"
+	picture = trade
+	is_triggered_only = yes
+	
+	trigger = {
+		any_ally = { 
+			NOT = {
+				has_opinion = {
+				who = ROOT
+				value = 100
+				}
+			}
+		}
+		is_at_war = no
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	
+	immediate = {
+		hidden_effect = {
+			random_ally = {
+				limit = {
+					NOT = {
+						has_opinion = {
+							who = ROOT
+							value = 100
+						}
+					}
+				}
+				save_event_target_as = insulted_ally
+			}
+		}
+	}
+	
+	option = {
+		name = "diplomacy.9.a"
+		ai_chance = { factor = 80 }	
+			add_mercantilism = 1
+			event_target:insulted_ally = {
+			add_opinion = {
+				who = ROOT
+				modifier = traders_insulted
+			}
+			add_trust = {
+				who = FROM
+				value = -10
+				mutual = yes
+			}
+		}
+	}
+	
+	option = {
+		name = "diplomacy.9.b"
+		ai_chance = { factor = 20 }
+			add_prestige = -5
+			add_years_of_income = -0.05
+	}
+}
+########################################################################################
+# leage invite I
+########################################################################################
+country_event = {
+	id = diplomacy.10
+	title = "diplomacy.10.t"
+	desc = "diplomacy.10.d"
+	picture = ruler
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+			
+	}
+	
+	immediate = {
+			every_country = {
+				limit = { has_country_flag = will_be_annexed_into_league }
+					country_event = {
+						id = diplomacy.11
+					}
+			}
+	}
+	
+	option = {
+		name = "diplomacy.10.a"
+
+		}
+	}
+########################################################################################
+# leage invite II
+########################################################################################
+country_event = {
+	id = diplomacy.11
+	title = "diplomacy.11.t"
+	desc = "diplomacy.11.d"
+	picture = ruler
+	is_triggered_only = yes
+	major = yes
+	
+	trigger = {
+			
+	}
+	
+	immediate = {
+			clr_country_flag = will_be_annexed_into_league
+			FROM = { inherit = ROOT }
+	}
+	
+	option = {
+		name = "diplomacy.11.a"
+
+		}
+	}

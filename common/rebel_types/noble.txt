@@ -5,12 +5,12 @@ noble_rebels = {
 
 	color = { 179 75 75 }
 
-	area = nation 					# Stays within the nation
-	government = monarchy			# Likes monarchy
-	defection = none				# Does not defect
-	independence = none				# Does not strive for independence
+	area = nation 							# Stays within the nation
+	government = oligarchic_monarchy		# Likes oligarchic monarchy
+	defection = none						# Does not defect
+	independence = none						# Does not strive for independence
 	unit_transfer = no
-	gfx_type = culture_owner	
+	gfx_type = culture_province	
 	will_relocate = yes	
 	
 	resilient = no
@@ -18,8 +18,8 @@ noble_rebels = {
 	general = yes
 	smart = yes
 	
-	artillery = 0.0
-	infantry = 0.6
+	artillery = 0.2
+	infantry = 0.4
 	cavalry = 0.4
 	
 	morale = 1.0
@@ -34,15 +34,77 @@ noble_rebels = {
 	spawn_chance = {
 		factor = 1
 		modifier = {
+			factor = 0.1
+			NOT = { base_tax = 1 }
+		}
+		modifier = {
+			factor = 1.15
+			base_tax = 2
+		}
+		modifier = {
+			factor = 1.15
+			base_tax = 4
+		}
+		modifier = {
+			factor = 1.15
+			base_tax = 6
+		}
+		modifier = {
+			factor = 2.0
+			owner = { is_tribal = yes }
+		}
+		modifier = {
+			factor = 0.5
+			owner = { has_reform = oligarchy_reform }
+		}
+		modifier = {
+			factor = 0.25
+			owner = { has_reform = greek_polis_reform }
+		}
+		modifier = {
 			factor = 0.01
 			is_overseas = yes
 		}
-
+		modifier = {
+			factor = 0.5
+			owner = {
+				government = republic
+				republican_tradition = 80
+			}
+		}
+		modifier = {
+			factor = 2.5
+			owner = {
+				government = republic
+				NOT = { republican_tradition = 35 }
+			}
+		}
+		modifier = {
+			factor = 2.5
+			owner = {
+				government = republic
+				NOT = { republican_tradition = 65 }
+			}
+		}
+		modifier = {
+			factor = 2.5
+			owner = {
+				government = monarchy
+				NOT = { legitimacy = 75 }
+			}
+		}
+		modifier = {
+			factor = 2.5
+			owner = {
+				government = monarchy
+				NOT = { legitimacy = 50 }
+			}
+		}
 	}
  
  	# This is checked for EACH province in the Area of Operations
 	movement_evaluation = {
-		factor = 1
+		factor = 5
 		modifier = {
 			factor = 0.1
 			units_in_province = 1
@@ -71,7 +133,6 @@ noble_rebels = {
 	}
 	siege_won_effect = {
 		add_local_autonomy = 10
-
 	}
 	
 	# Country scope
@@ -89,23 +150,58 @@ noble_rebels = {
 	
 	# Country Scope	
 	demands_enforced_effect = {
-		hidden_effect = {
-			add_country_modifier = {
-				name = just_lost_to_rebels
-				duration = 10
-				hidden = yes
+		if = {
+			limit = {
+				has_dlc = "The Cossacks"
+				has_estate = estate_clans
+				NOT = {
+					has_estate_influence_modifier = {
+						estate = estate_clans
+						modifier = EST_VAL_NOBLES_WON_REVOLT
+					}
+				}
+			}
+			add_estate_influence_modifier = {
+				estate = estate_clans
+				desc = EST_VAL_NOBLES_WON_REVOLT
+				influence = 15
+				duration = 3650
 			}
 		}
-
+		if = {
+			limit = {
+				NOT = {	has_reform = greek_polis_reform }
+				NOT = {	has_reform = spartan_monarchy_reform }
+				NOT = {	government = tribal }
+				NOT = {	government = native }
+				NOT = { legitimacy = 50 }
+				NOT = { horde_unity = 50 }
+				NOT = { republican_tradition = 50 }
+				NOT = { devotion = 50 }
+			}
+			change_government = monarchy
+			add_government_reform = aristocratic_monarchy_reform
+		}
+		if = {
+			limit = {
+				has_faction = fac_nobles
+			}
+			add_faction_influence = { faction = fac_monarch influence = 30 }
+		}
 		every_owned_province = {
 			limit = {
 				has_rebel_faction = REB
 			}
-			add_local_autonomy = 20
+			add_local_autonomy = 15
 		}	
-		add_prestige = -20
-		add_legitimacy = -20
-		add_horde_unity = -20
-
+		add_prestige = -25
+		add_legitimacy = -25
+		add_horde_unity = -25
+		add_republican_tradition = -25
+		add_devotion = -25
+		if = {
+			limit = { meritocracy = 25 }
+			set_meritocracy = 25
+		}
 	}
 }

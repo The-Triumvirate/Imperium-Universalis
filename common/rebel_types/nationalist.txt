@@ -1,5 +1,5 @@
 ######################################################################
-# Separatist rebels. Freedom!!!
+# Nationalist rebels. Freedom!!!
 ######################################################################
 nationalist_rebels = {
 
@@ -9,7 +9,7 @@ nationalist_rebels = {
 	government = any				# No special preference
 	defection = nation_rebel_tag			# If the country seeks independence, defection specifies what type of provinces it wants.
 	independence = nation_rebel_tag 		# Seeks independence for spawn province culture. Will not spawn at all if there is no suitable tag.
-	defect_delay = 60				# Can spontaneously declare independence after 60 months (earliest)
+	defect_delay = 36				# Can spontaneously declare independence after 18 months (earliest)
 	unit_transfer = yes				# Units switch allegiance after enforcing demands.
 	gfx_type = culture_province	
 	will_relocate = yes	
@@ -19,9 +19,9 @@ nationalist_rebels = {
 	general = yes				
 	smart = yes
 	
-	artillery = 0.1
+	artillery = 0.3
 	infantry = 0.6
-	cavalry = 0.3
+	cavalry = 0.1
 	
 	morale = 1.0
 
@@ -34,91 +34,146 @@ nationalist_rebels = {
 	
 	# The rebel type with the highest modifier for this province gets picked
 	spawn_chance = {
-		factor = 10
+		factor = 2
+		
 		modifier = {
-			factor = 0.01
-			NOT = { nationalism = 1 }
-			owner = {
-				OR = {
-					accepted_culture = ROOT
-					culture_group = ROOT
-					primary_culture = ROOT
-				}
-
+			factor = 0.5
+			has_estate = estate_allies
+			owner = { 
+					estate_loyalty = {
+						estate = estate_allies
+						loyalty = 60
+					}
 			}
-			tolerance_to_this = 0			
-	 	}
-
-
+		}
 		modifier = {
-			factor = 10
+			factor = 5
+			has_estate = estate_allies
+			owner = { 
+				NOT = {
+					estate_loyalty = {
+						estate = estate_allies
+						loyalty = 30
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 5
+			has_estate = estate_allies
+			owner = { 
+				NOT = {
+					estate_loyalty = {
+						estate = estate_allies
+						loyalty = 40
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 5
+			owner = { is_tribal = yes }
+		}
+		modifier = {
+			factor = 5
+			is_territory = yes
+		}
+		modifier = {
+			factor = 5
 			nationalism = 1
 		}
-
 	 	modifier = {
 			factor = 0.001
 			is_colony = yes
 		}
 		modifier = {
-			factor = 0.05
+			factor = 0.75
 			is_overseas = yes
-			has_owner_religion = yes
+			has_owner_culture = yes
 		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				stability = 1
+			}
+		}	
+		modifier = {
+			factor = 0.8
+			owner = {
+				stability = 2
+			}
+		}	
+		modifier = {
+			factor = 0.8
+			owner = {
+				stability = 3
+			}
+		}		
 		modifier = {
 			factor = 2
-			has_province_modifier = "suppress_minority"
-		}
-		modifier = {
-			factor = 1.2
 			NOT = { is_core = owner }
 		}		
 		modifier = {
-			factor = 1.5
+			factor = 3
 			owner = {
 				NOT = { stability = 0 }
 			}
 		}
 		modifier = {
-			factor = 1.5
+			factor = 3
 			owner = {
 				NOT = { stability = -2 }
 			}
 		}
 		modifier = {
-			factor = 3
-			owner = {
-				NOT = { primary_culture = ROOT }
-			}
+			factor = 2.5
+			has_owner_culture = no
+		}
+		modifier = {
+			factor = 5
+			NOT = { culture_group = OWNER }
 		}
 		modifier = {
 			factor = 1.5
-			owner = {
-				NOT = { culture_group = ROOT }
-			}
-		}
-
-		modifier = {
-			factor = 2
 			NOT = { tolerance_to_this = 1 }
 		}
 		modifier = {
-			factor = 2
+			factor = 1.5
 			NOT = { tolerance_to_this = -1 }
 		}
 		modifier = {
-			factor = 2
+			factor = 1.5
 			NOT = { tolerance_to_this = -2 }
 		}
 		modifier = {
-			factor = 1.3
+			factor = 2
 			owner = {
-				NOT = { legitimacy_or_horde_unity = 66 }
+				ai = yes
+				luck = no
 			}
 		}
 		modifier = {
-			factor = 1.3
+			factor = 5
+			is_in_capital_area = no
+			is_island = no
+		}
+		modifier = {
+			factor = 10
 			owner = {
-				NOT = { legitimacy_or_horde_unity = 75 }
+				NOT = { num_of_ports = 1 }
+			}
+			is_in_capital_area = no 
+		}
+		modifier = {
+			factor = 2.0
+			owner = {
+				war_exhaustion = 4
+			}
+		}
+		modifier = {
+			factor = 2.0
+			owner = {
+				war_exhaustion = 8
 			}
 		}
 	}
@@ -153,11 +208,11 @@ nationalist_rebels = {
  		culture = REB
  	}
 	siege_won_effect = {
-		if = {
-			limit = { NOT = { is_core = REB } }
-			add_core = REB
-		}
 		add_nationalism = 10 # Add ten extra years of nationalism
+		if = {
+			limit = { has_province_modifier = building_colony }
+			change_variable = { which = colony_progress value = -20 }
+		}
 	}
 	
 	# Country scope
@@ -175,13 +230,37 @@ nationalist_rebels = {
 	
 	# Country scope
 	demands_enforced_effect = {
-		hidden_effect = {
-			add_country_modifier = {
-				name = just_lost_to_rebels
-				duration = 10
-				hidden = yes
+		add_prestige = -10	
+		if = {
+			limit = {
+				exists = REB
 			}
+			every_owned_province = {
+				limit = {
+					has_rebel_faction = REB
+				}
+				if = {
+					limit = { NOT = { is_core = REB } }
+					add_core = REB
+				}			
+				cede_province = REB
+			}			
 		}
+		if = {
+			limit = {
+				NOT = { exists = REB }
+			}
+			every_owned_province = {
+				limit = {
+					has_rebel_faction = REB
+					is_core = REB
+				}
+				cede_province = REB
+			}
+			
+		}	
+	}
+	demands_enforced_effect = {
 		add_prestige = -10	
 		if = {
 			limit = {

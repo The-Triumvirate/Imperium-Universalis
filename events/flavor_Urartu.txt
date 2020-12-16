@@ -1,0 +1,412 @@
+namespace = urartu
+
+#######################################################################################
+# Median invasion to Urartu
+########################################################################################
+country_event = {
+	id = urartu.1
+	title = "urartu.1.t"
+	desc = "urartu.1.d"
+	picture = cavalry
+	fire_only_once = yes
+	
+	trigger = {
+		tag = MDI
+		NOT = { has_country_flag = attack_on_urartu_flag } 
+		total_development = 65
+		is_at_war = no
+		is_year = 150
+		NOT = {  started_in = 204.1.1  }
+		NOT = {  is_year = 225  }
+		is_neighbor_of = URT
+		URT = {
+					is_subject = no
+					num_of_cities = 8
+					ai = yes
+		}
+	}
+				
+	mean_time_to_happen = {
+		months = 12
+			modifier = {
+				factor = 0.5
+				URT = { 
+					stability = -1
+				}
+			}
+			modifier = {
+				factor = 0.5
+				is_year = 165
+			}
+			modifier = {
+				factor = 0.5
+				URT = { 
+					OR = {
+						DIP = 1
+						MIL = 1
+					}
+				}
+			}
+
+			modifier = {
+				factor = 1.5
+				NOT = { stability = 0 }
+			}
+			modifier = {
+				factor = 1.5
+				war_exhaustion = 2
+			}
+	}
+	
+	# Attack Urartu
+	option = {
+		name = "urartu.1.a"
+		ai_chance = { factor = 99 }
+			set_country_flag = attack_on_urartu_flag
+			add_prestige = 5
+			add_casus_belli = {
+					target = URT
+					type = cb_border_war
+					months = 120
+				}
+			if = {
+					limit = { ai = yes }
+					declare_war_with_cb = {
+						who = URT
+						casus_belli = cb_border_war
+					}
+					hidden_effect = {
+						URT = {
+							add_stability = -1
+							}
+					}
+				}
+			}
+	# dont attack Urartu
+	option = {
+		name = "urartu.1.b"
+			add_prestige = -10
+			set_country_flag = attack_on_urartu_flag
+	}
+}
+
+#Rise of Armenians
+country_event = {
+	id = urartu.2
+	title = "urartu.2.t"
+	desc = "urartu.2.d"
+	picture = guard
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		tag = URT
+		NOT = { has_country_flag = rise_of_armenians }
+	}
+	
+	option = {
+		name = "urartu.2.a"             #fight those serfs
+		add_prestige = 1
+		hidden_effect = {
+			every_owned_province = {
+				limit = {
+					OR = {
+						culture = armenian
+						area = lynitis_area
+						area = syspiritis_area
+						area = armenia_maior
+						area = gogarene_area
+					}
+				}
+				add_core = ARM
+			}
+		}
+		release = ARM
+		every_owned_province = {
+			limit = {
+				is_core = URT
+			}
+			add_core = ARM
+		}
+
+		
+		ARM = {
+			define_ruler = {
+				name = "Orontes I Sakavakyats"
+				dynasty = "Orontid"
+				claim = 75
+			}
+			define_heir = {
+				name = "Tigranes I"
+				dynasty = "Orontid"
+				age = 20
+				adm = 3
+				dip = 3
+				mil = 4
+				claim = 90
+			}
+		hidden_effect = {
+			cavalry = 2420
+			cavalry = 2420
+			cavalry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			infantry = 2420
+			add_manpower = 20
+			add_treasury = 130
+			add_mil_power = 150
+			}
+			add_casus_belli = {
+					target = URT
+					type = cb_core
+					months = 120
+			}
+			declare_war_with_cb = {
+				who = URT
+				casus_belli = cb_core
+				war_goal_province = 2391
+			}
+			add_truce_with = BAB
+		
+		}
+		set_country_flag = rise_of_armenians
+	}
+		
+	option = {
+		name = "urartu.2.b"                 #peacefull surrender to Orontids
+		add_stability = -1
+		change_tag = ARM
+		change_primary_culture = armenian
+		define_ruler = {
+			name = "Orontes I Sakavakyats"
+			dynasty = "Orontid"
+			age = 45
+			claim = 75
+		}
+		define_heir = {
+			name = "Tigranes I"
+			dynasty = "Orontid"
+			age = 20
+			adm = 3
+			dip = 3
+			mil = 4
+			claim = 90
+		}
+		2391 = {
+			change_culture = armenian
+		}
+		add_manpower = 5
+		set_country_flag = rise_of_armenians
+	}
+}
+# Armenians decide, will they bow to Media or no
+country_event = {
+	id = urartu.3
+	title = "urartu.3.t"
+	desc = "urartu.3.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ARM
+		is_year = 150
+		NOT = { has_country_flag = armenia_choise }		
+		OR = {
+			NOT = {
+					URT = {
+						exists = yes
+					}
+			}
+			URT = {
+				num_of_cities = 3
+			}
+		}
+		is_at_war = no
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	immediate = {
+		hidden_effect = { set_country_flag = armenia_choise }
+		hidden_effect = {
+			if = {
+				limit = { 
+					2396 = {
+						owned_by = MNN
+					}
+				}
+				2396 = {
+					cede_province = MDI
+				}
+			}
+		}
+	}
+	
+	option = {   #let it be historical , some size reduction to prevent distributarism and following destruction, trust to save Armenia from destruction 
+		name = "urartu.3.a"
+		ai_chance = { factor = 85 }
+		2391 = {
+			change_culture = armenian
+		}
+		set_capital = 2391
+		add_truce_with = MDI
+		MDI = {
+			create_subject = {
+				subject_type = tributary_state
+				subject = ARM
+			}
+			add_trust = { who = ARM value = 100 mutual = yes }
+			create_marriage = ARM
+		}
+		add_opinion = { who = MDI modifier = released_us_freely }
+		if = {
+				limit = { 
+					2415 = {
+						NOT = { owned_by = SAS }
+					}
+				}
+				2415 = {
+					cede_province = SAS
+				}
+		}
+		if = {
+				limit = { 
+					2394 = {
+						NOT = { owned_by = MDI }
+					}
+				}
+				2394 = {
+					remove_core = ARM
+					cede_province = MDI
+				}
+		}
+		every_province = {
+			limit = {
+				area = 	mygdonia_area
+				owned_by = ARM
+			}
+			remove_core = ARM
+			cede_province = BAB
+		}
+		every_province = {
+			limit = { 
+				area = mardastan_area
+				owned_by = ARM
+			}
+			remove_core = ARM
+			cede_province = MDI
+		}
+	}
+	
+	option = {	#rather become tributary of Babylon, some size reduction to prevent distributarism and following destruction
+		name = "urartu.3.b"
+		ai_chance = { factor = 5 }		
+		2391 = {
+			change_culture = armenian
+		}
+		set_capital = 2391
+		add_truce_with = BAB
+		BAB = {
+			create_subject = {
+				subject_type = tributary_state
+				subject = ARM
+			}
+			create_marriage = ARM
+		}
+		if = {
+				limit = { 
+					2415 = {
+						NOT = { owned_by = SAS }
+					}
+				}
+				2415 = {
+					remove_core = ARM
+					cede_province = SAS
+				}
+		}
+		if = {
+				limit = { 
+					2394 = {
+						NOT = { owned_by = MDI }
+					}
+				}
+				2394 = {
+					remove_core = ARM
+					cede_province = MDI
+				}
+		}
+		every_province = {
+			limit = { 
+				area = 	mygdonia_area				
+				owned_by = ARM
+			}
+			remove_core = ARM
+			cede_province = BAB
+		}
+	}
+	
+	option = {                       #freeeeedoooooooom!
+		name = "urartu.3.c"
+		ai_chance = { factor = 10 }
+		add_prestige = 15
+		add_army_tradition = 5
+		2391 = {
+			change_culture = armenian
+		}
+		set_capital = 2391
+		MDI = {
+			add_casus_belli = {
+				target = ARM
+				type = cb_disloyal_vassal
+				months = 120
+			}
+		}
+	}	
+}
+
+country_event = { #Clearing urartu cores
+	id = urartu.4
+	title = "urartu.4.t"
+	desc = "urartu.4.d"
+	picture = rich_woman
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		tag = ARM
+		NOT = { has_global_flag = urartu_gone }
+		NOT = {
+			URT = {
+				exists = yes
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		years = 10
+	}
+	
+	option = {
+		name = "urartu.4.a"
+		add_legitimacy = 10
+		every_province = {
+			limit = { 
+				is_core = URT
+			}
+			remove_core = URT
+		}
+		every_province = {
+			limit = { 
+				culture = urartian
+			}
+			change_culture = armenian
+		}
+		set_global_flag = urartu_gone
+	}
+}

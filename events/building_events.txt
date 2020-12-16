@@ -1,0 +1,482 @@
+namespace = building_events
+
+
+########################################################################################
+# old streets
+########################################################################################
+country_event = {
+	id = building_events.1
+	title = "building_events.1.t"
+	desc = "building_events.1.d"
+	picture = road_construction
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = gravel_road
+				has_building = paved_road
+				has_building = imperial_road
+			}
+			NOT = { has_province_modifier = road_system_expanded }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+					NOT = { has_province_modifier = road_system_expanded }
+				}
+				save_event_target_as = old_roads_province
+			}
+		}
+	}
+	
+	option = {
+		name = "building_events.1.a"
+		ai_chance = { 
+				factor = 70
+				modifier = {
+					factor = 2.0
+					treasury = 100
+				}
+				modifier = {
+					factor = 0.0
+					NOT = { treasury = 25 }
+				}
+			}
+			event_target:old_roads_province = {
+				if = {
+					limit = { has_building = gravel_road }
+					owner = { add_treasury = -25 }
+				}
+				if = {
+					limit = { has_building = paved_road }
+					owner = { add_treasury = -50 }
+				}
+				if = {
+					limit = { has_building = imperial_road }
+					owner = { add_treasury = -75 }
+				}
+			}
+	}
+	option = {
+		name = "building_events.1.b"
+		ai_chance = { factor = 30 }
+			event_target:old_roads_province = {
+				if = {
+					limit = { has_building = gravel_road }
+					remove_building = gravel_road
+				}
+				if = {
+					limit = { has_building = paved_road }
+					remove_building = paved_road
+				}
+				if = {
+					limit = { has_building = imperial_road }
+					remove_building = imperial_road
+				}
+			}
+	}
+	option = {
+		name = "building_events.1.c"
+		ai_chance = { 
+				factor = 30
+				modifier = {
+					factor = 4.0
+					treasury = 200
+				}
+				modifier = {
+					factor = 0.0
+					NOT = { treasury = 150 }
+				}
+			}
+			add_treasury = -100
+			event_target:old_roads_province = { 
+				add_province_modifier = {
+					name = "road_system_expanded"
+					duration = 7300
+				}
+			}
+			
+	}
+}
+########################################################################################
+# people destroy temple
+########################################################################################
+country_event = {
+	id = building_events.2
+	title = "building_events.2.t"
+	desc = "building_events.2.d"
+	picture = civilwar
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = shrine
+				has_building = small_temple
+				has_building = great_temple
+			}
+			NOT = { tolerance_to_this = 0 }
+			has_owner_religion = no
+			unrest = 1
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+						has_building = shrine
+						has_building = small_temple
+						has_building = great_temple
+					}
+					NOT = { tolerance_to_this = 0 }
+					has_owner_religion = no
+					unrest = 1
+				}
+				save_event_target_as = templedestroyed_province
+			}
+		}
+	}
+	
+	option = {
+		name = "building_events.2.a"
+		ai_chance = { 
+				factor = 50
+				modifier = {
+					factor = 0.0
+					ruler_has_personality = tolerant_personality
+				}
+			}
+			
+				add_country_modifier = {
+					name = "showed_mercy"
+					duration = 1826
+				}
+			event_target:templedestroyed_province = {
+				if = {
+					limit = { has_building = shrine }
+					remove_building = shrine
+				}
+				if = {
+					limit = { has_building = small_temple }
+					remove_building = small_temple
+				}
+				if = {
+					limit = { has_building = great_temple }
+					remove_building = great_temple
+				}
+			}
+	}
+	option = {
+		name = "building_events.2.b"
+		ai_chance = { 
+				factor = 50
+				modifier = {
+					factor = 0.0
+					ruler_has_personality = tolerant_personality
+				}
+			}
+			event_target:templedestroyed_province = {
+				change_religion = ROOT
+				if = {
+					limit = { has_building = shrine }
+					remove_building = shrine
+				}
+				if = {
+					limit = { has_building = small_temple }
+					remove_building = small_temple
+				}
+				if = {
+					limit = { has_building = great_temple }
+					remove_building = great_temple
+				}
+				if = {
+					limit = { base_tax = 1 }
+						add_base_tax = -1 
+						ELSE = {
+							if = {
+								limit = { base_production = 1 }
+									add_base_production = -1
+								}
+							}
+						}
+			}
+			if = {
+				limit = { NOT = { has_country_modifier = slavery_abolished } }
+					change_variable = { which = slaves value = 5000 }
+			}
+	}
+	option = {
+		name = "building_events.2.c"
+		trigger = { ruler_has_personality = tolerant_personality 	}
+		required_personality = tolerant_personality
+		highlight = yes
+		ai_chance = { 
+				factor = 100
+			}
+			event_target:templedestroyed_province = {
+				if = {
+					limit = { has_building = shrine }
+					remove_building = shrine
+				}
+				if = {
+					limit = { has_building = small_temple }
+					remove_building = small_temple
+				}
+				if = {
+					limit = { has_building = great_temple }
+					remove_building = great_temple
+				}
+			}
+			add_stability = 1
+	}
+}
+########################################################################################
+# market burned down
+########################################################################################
+country_event = {
+	id = building_events.3
+	title = "building_events.3.t"
+	desc = "building_events.3.d"
+	picture = fire
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = small_market
+				has_building = medium_market
+				has_building = great_market
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+							has_building = small_market
+							has_building = medium_market
+							has_building = great_market
+					}
+				}
+				save_event_target_as = marketburneddown_province
+			}
+		}
+	}
+	
+	option = {
+		name = "building_events.3.a"
+			
+			event_target:marketburneddown_province = {
+				if = {
+					limit = { has_building = small_market }
+					remove_building = small_market
+				}
+				if = {
+					limit = { has_building = medium_market }
+					remove_building = medium_market
+				}
+				if = {
+					limit = { has_building = great_market }
+					remove_building = great_market
+				}
+			}
+	}
+}
+########################################################################################
+# famous bathhouse
+########################################################################################
+country_event = {
+	id = building_events.4
+	title = "building_events.4.t"
+	desc = "building_events.4.d"
+	picture = bath
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = small_bath
+				has_building = big_bath
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+							has_building = small_bath
+							has_building = big_bath
+					}
+				}
+				save_event_target_as = famousbath_province
+			}
+		}
+	}
+	
+	option = {
+		name = "building_events.4.a"
+			
+			event_target:famousbath_province = {
+				add_province_modifier = {
+					name = "famous_bathhouse"
+					duration = 3650
+				}
+			}
+	}
+}
+########################################################################################
+# harbor burned down
+########################################################################################
+country_event = {
+	id = building_events.5
+	title = "building_events.5.t"
+	desc = "building_events.5.d"
+	picture = fire
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = small_harbor
+				has_building = big_harbor
+				has_building = harbor_district
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+							has_building = small_harbor
+							has_building = big_harbor
+							has_building = harbor_district
+					}
+				}
+				save_event_target_as = harborburneddown_province
+			}
+		}
+	}
+	
+	option = {
+		name = "building_events.5.a"
+			
+			event_target:harborburneddown_province = {
+				if = {
+					limit = { has_building = small_harbor }
+					remove_building = small_harbor
+				}
+				if = {
+					limit = { has_building = big_harbor }
+					remove_building = big_harbor
+				}
+				if = {
+					limit = { has_building = harbor_district }
+					remove_building = harbor_district
+				}
+			}
+	}
+}
+########################################################################################
+# shipbuilder becomes famous for his work
+########################################################################################
+country_event = {
+	id = building_events.6
+	title = "building_events.6.t"
+	desc = "building_events.6.d"
+	picture = shildyard
+	is_triggered_only = yes
+	
+	trigger = {
+		any_owned_province = {
+			OR = {
+				has_building = small_shipyard
+				has_building = big_shipyard
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+							has_building = small_shipyard
+							has_building = big_shipyard
+					}
+				}
+				save_event_target_as = shipyard_province
+			}
+				set_saved_name = {
+					key = shipbuilder_advisor_name
+					type = advisor
+					scope = event_target:shipyard_province
+				}
+		}
+	}
+	
+	option = {
+		name = "building_events.6.a"
+			
+			event_target:shipyard_province = {
+				add_province_modifier = {
+					name = "skilled_shipbuilder_located"
+					duration = 3650
+				}
+			}
+	}
+	option = {
+		name = "building_events.6.b"
+			define_advisor = {
+				type = ship_builder
+				skill = 1
+				name = shipbuilder_advisor_name
+				culture = event_target:shipyard_province
+				religion = event_target:shipyard_province
+				discount = yes
+			}
+	}
+	after = {
+		clear_saved_name = shipbuilder_advisor_name
+	}
+}
