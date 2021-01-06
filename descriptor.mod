@@ -1,5 +1,4 @@
 name="Imperium Universalis"
-archive="mod/Imperium-Universalis"
 replace_path="events"
 replace_path="decisions"
 replace_path="common/religions"
@@ -42,6 +41,7 @@ replace_path="history/provinces"
 replace_path="history/advisors"
 replace_path="map/random"
 replace_path="missions"
+replace_path="localisation"
 tags={
 	"Balance"
 	"Events"
