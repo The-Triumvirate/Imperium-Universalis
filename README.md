@@ -15,3 +15,12 @@ Noah (JihadiJackass)
 
 valeskoi
 @valeskoi#9457
+
+PenguBoy
+@PenguBoy#0078
+
+ZhuGeKongBo
+@诸葛孔博#1539
+
+-------------------------------------------------------------------
+Mod discord - https://discord.gg/R6zt7yXyXn
