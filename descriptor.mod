@@ -5,6 +5,7 @@ tags={
 replace_path="events"
 replace_path="decisions"
 replace_path="common/religions"
+replace_path="common/buildings"
 replace_path="common/bookmarks"
 replace_path="common/ideas"
 replace_path="common/disasters"
