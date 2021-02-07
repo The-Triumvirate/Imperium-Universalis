@@ -100,6 +100,6 @@ replace_path="common/triggered_modifiers"
 replace_path="common/units"
 replace_path="common/units_display"
 replace_path="wargoal_types"
-replace_path="music"
+
 name="Imperium Universalis"
 supported_version="1.30.4"
