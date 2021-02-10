@@ -394,7 +394,3 @@ NDefines.NGovernment.LEGACY_NATIVES_REFORM_REPUBLIC_SPONSOR = "classic_republic"
 NDefines.NGovernment.LEGACY_NATIVES_REFORM_MONARCHY_SPONSOR = "despotic_monarchy"
 NDefines.NGovernment.LEGACY_NATIVES_REFORM_THEOCRACY_SPONSOR = "oligarchic_monarchy"
 
-MERCENARY_BASE_COST = 7.0,	-- base cost added for a mercenary regiment
-MERCENARY_COMPANY_HIRING_COST_MONTHS = 24,		-- Initial hiring cost in months of maintenance
-MERCENARY_COMPANY_MIN_REGIMENTS = 1,			-- Minimum regiments
-MERCENARY_COMPANY_MAX_REGIMENTS = 40,			-- Maximum regiments
