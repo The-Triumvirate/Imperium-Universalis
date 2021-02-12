@@ -1,0 +1,160 @@
+
+estate_priesthood_build_shrine_in_y = {
+	max_days_active = 3650
+	can_select = {
+		adm_tech = 2
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = small_temple }
+			NOT = { has_building = great_temple }
+			NOT = { has_building = shrine }
+			num_free_building_slots = 1
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.75
+			NOT = {
+				any_owned_province = {
+					is_state_core = root
+					NOT = { base_tax = 1 }
+					num_free_building_slots = 1
+				}
+			}
+		}
+		modifier = {
+			factor = 2.0
+			any_owned_province = {
+				is_state_core = root
+				base_tax = 1
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				AND = {
+					NOT = { has_building = shrine }
+					num_free_building_slots = 1
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			NOT = {
+				crown_land_share = 15
+			}
+		}
+	}
+	pre_effect = {
+		set_variable = {
+			which = estate_priesthood_build_shrine_in_y_var
+			value = 0
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { base_tax = 1 }
+				NOT = { has_building = shrine }
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				base_tax = 1
+				NOT = { has_building = shrine }
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		event_target:agenda_province = {
+			if = {
+				limit = {
+					NOT = { has_building = shrine }
+				}
+				ROOT = {
+					set_variable = {
+						which = estate_priesthood_build_shrine_in_y_var
+						value = 1
+					}
+				}
+			}
+			else = {
+				ROOT = {
+					set_variable = {
+						which = estate_priesthood_build_shrine_in_y_var
+						value = 2
+					}
+				}
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+    task_requirements = {
+		if = {
+			limit = {
+				check_variable = {
+					which = estate_priesthood_build_shrine_in_y_var
+					value = 2
+				}
+			}
+			event_target:agenda_province = {
+				has_building = shrine
+			}
+		}
+		else = {
+			event_target:agenda_province = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+    }
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 10
+		}
+		if = {
+			limit = {
+				NOT = { crown_land_share = 15 }
+				estate_territory = {
+					estate = estate_priesthood
+					territory = 5
+				}
+			}
+			take_estate_land_share_small = { estate = estate_priesthood }
+		}
+		else = {
+			add_legitimacy = 10
+			add_republican_tradition = 5
+			add_devotion = 5
+		}
+    }
+    failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+    }
+}
