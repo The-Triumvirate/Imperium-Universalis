@@ -1,11 +1,93 @@
 
-	########################
-	# Base Generic Estates #
-	########################
+########################
+# Base Generic Estates #
+########################
 
-	# Nobility
+# Nobility
+estate_nobility = {
+	icon = 6
 
-	# Priesthood
+	# If true, country will get estate
+	trigger = {
+		OR = {
+			always = yes
+			has_government_attribute = enables_nobility
+		}
+	}
+
+	# These scale with loyalty & power
+	country_modifier_happy = {
+		global_tax_modifier = 0.2
+		cavalry_power = 0.10
+	}
+	country_modifier_neutral = {
+		global_tax_modifier = 0.2
+	}	
+	country_modifier_angry = {
+		global_tax_modifier = -0.2
+		global_unrest = 2
+	}
+
+	land_ownership_modifier = {
+		nobility_loyalty_modifier = 0.2
+	}
+
+	province_independence_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			NOT = { religion_group = owner }
+		}
+		modifier = {
+			factor = 0.5
+			NOT = { religion = owner }
+		}
+		modifier = {
+			factor = 0.67
+			NOT = { is_state_core = owner }
+		}
+		modifier = {
+			factor = 1.2
+			base_tax = 10
+		}
+	}
+
+	# Influence modifiers
+	base_influence = 10
+	
+	custom_name = {
+		desc = estate_aristocrats
+		trigger = {
+			OR = {
+				has_government_reform = oligarchy_reform
+			}
+		}
+	}
+
+	color = { 200 150 0 }
+
+	privileges = {
+		estate_nobility_captains
+		estate_nobility_generals
+		estate_nobility_estates
+		estate_nobility_governorship
+		estate_nobility_advisors
+		estate_nobility_slaves
+	}
+
+	agendas = {
+		estate_nobility_develop_x
+		estate_nobility_hire_advisor
+		estate_nobility_fire_advisor
+		estate_nobility_subjugate_neighbour
+		estate_nobility_increase_alliances
+	}
+
+	influence_from_dev_modifier = 0.5
+}
+
+
+# Priesthood
 
 estate_priesthood = {
 	icon = 1
@@ -140,5 +222,128 @@ estate_priesthood = {
 	agendas = {
 		estate_priesthood_build_shrine_in_y
 	}
+
 	influence_from_dev_modifier = 0.5
+}
+
+#Merchants
+
+estate_merchants = {
+	icon = 9
+	
+	trigger = {
+		NOT = {
+			government = tribal
+			government = native
+		}
+	}
+
+	country_modifier_happy = {
+		trade_efficiency = 0.2
+		trade_steering = 0.1
+		global_trade_power = 0.1
+		development_cost = -0.1
+	}
+
+	country_modifier_neutral = {
+		trade_efficiency = 0.1
+	}
+
+	country_modifier_angry = {
+		trade_efficiency = -0.1
+		trade_steering = -0.05
+		development_cost = 0.1
+		global_trade_power = -0.05
+		global_unrest = 2
+	}
+
+	land_ownership_modifier = {
+		merchants_loyalty_modifier = 0.2
+	}
+
+	province_independence_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			NOT = { development = 5 }
+		}
+
+		modifier = {
+			factor = 0.5
+			OR = {
+				NOT = { development = 10 }
+				NOT = { province_trade_power = 5 }
+			}
+		}
+
+		modifier = {
+			factor = 2
+			development = 20
+		}
+
+		modifier = {
+			factor = 0.5
+			is_territorial_core = owner
+		}
+
+		modifier = {
+			factor = 1.5
+			province_trade_power = 10
+		}
+
+		modifier = {
+			factor = 1.5
+			province_trade_power = 20
+		}
+
+		modifier = {
+			factor = 1.5
+			has_province_modifier = thankful_guilds
+		}
+	}
+
+	# Influence modifiers
+	base_influence = 10
+
+	influence_modifier = {	
+		desc = EST_HIGH_DEVELOPMENT_PROVINCE
+		trigger = {
+			any_owned_province = {
+				development = 30
+			}
+		}
+		influence = 5
+	}
+
+	influence_modifier = {
+		desc = EST_VAL_LOW_TRADE_INCOME
+		trigger = {
+			NOT = { trade_income_percentage = 0.25 }
+		}	
+		influence = -5
+	}
+
+	influence_modifier = {
+		desc = EST_VAL_HIGH_TRADE_INCOME
+		trigger = {
+			trade_income_percentage = 0.5
+			NOT = { trade_income_percentage = 0.75 }
+		}	
+		influence = 5
+	}
+
+	influence_modifier = {
+		desc = EST_VAL_VERY_HIGH_TRADE_INCOME
+		trigger = {
+			trade_income_percentage = 0.75
+		}	
+		influence = 10
+	}
+
+	#Custom Names
+
+	color = { 35 35 150 }
+
+	influence_from_dev_modifier = 0.5
+	
 }
