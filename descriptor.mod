@@ -64,7 +64,7 @@ replace_path="common/mercenary_companies"
 replace_path="common/native_advancement"
 replace_path="common/natives"
 replace_path="common/naval_doctrines"
-replace_path="common/new_diplomatic_actions"
+
 replace_path="common/on_actions"
 replace_path="common/opinion_modifiers"
 replace_path="common/parliament_issues"
