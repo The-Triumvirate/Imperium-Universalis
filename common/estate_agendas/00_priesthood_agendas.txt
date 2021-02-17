@@ -1,4 +1,4 @@
-
+#Build shrine
 estate_priesthood_build_shrine_in_y = {
 	max_days_active = 3650
 	can_select = {
@@ -156,5 +156,581 @@ estate_priesthood_build_shrine_in_y = {
 			loyalty = -5
 			duration = 7300
 		}
+    }
+}
+
+#Build temple
+estate_priesthood_build_temple_in_y = {
+	max_days_active = 3650
+	can_select = {
+		adm_tech = 6
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = small_temple }
+			NOT = { has_building = great_temple }
+			has_building = shrine
+			num_free_building_slots = 1
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.75
+			NOT = {
+				any_owned_province = {
+					is_state_core = root
+					NOT = { base_tax = 1 }
+					num_free_building_slots = 1
+				}
+			}
+		}
+		modifier = {
+			factor = 2.0
+			any_owned_province = {
+				is_state_core = root
+				base_tax = 1
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				has_building = shrine
+				num_free_building_slots = 1
+			}
+		}
+		modifier = {
+			factor = 2
+			NOT = {
+				crown_land_share = 15
+			}
+		}
+	}
+	pre_effect = {
+		set_variable = {
+			which = estate_priesthood_build_temple_in_y_var
+			value = 0
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { base_tax = 1 }
+				has_building = shrine
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				base_tax = 1
+				has_building = shrine
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		event_target:agenda_province = {
+			if = {
+				limit = {
+					has_building = shrine
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+				}
+				ROOT = {
+					set_variable = {
+						which = estate_priesthood_build_temple_in_y_var
+						value = 1
+					}
+				}
+			}
+			else = {
+				ROOT = {
+					set_variable = {
+						which = estate_priesthood_build_temple_in_y_var
+						value = 2
+					}
+				}
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+    task_requirements = {
+		if = {
+			limit = {
+				check_variable = {
+					which = estate_priesthood_build_temple_in_y_var
+					value = 2
+				}
+			}
+			event_target:agenda_province = {
+				OR = {
+					has_building = small_temple
+				}
+			}
+		}
+		else = {
+			event_target:agenda_province = {
+				OR = {
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+    }
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 10
+		}
+		if = {
+			limit = {
+				NOT = { crown_land_share = 15 }
+				estate_territory = {
+					estate = estate_priesthood
+					territory = 5
+				}
+			}
+			take_estate_land_share_small = { estate = estate_priesthood }
+		}
+		else = {
+			add_legitimacy = 15
+			add_republican_tradition = 10
+			add_devotion = 10
+			add_splendor = 20
+		}
+    }
+    failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+    }
+}
+
+#Convert province
+estate_priesthood_convert_province_x = {
+	can_select = {
+		num_of_missionaries = 1
+		any_owned_province = {
+			is_state_core = root
+			NOT = { religion = root }
+			NOT = { religion = secondary }
+			has_missionary = no
+			missionary_strength = 0.01
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 1.5
+			NOT = { religious_unity = 0.85 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { religious_unity = 0.75 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { religious_unity = 0.65 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { religious_unity = 0.5 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { religious_unity = 0.4 }
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { num_of_missionaries = 2 }
+		}
+		modifier = {
+			factor = 1.25
+			is_defender_of_faith = yes
+		}
+	}
+	pre_effect = {
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { religion = root }
+				NOT = { religion = secondary }
+				has_missionary = no
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { religion = root }
+				NOT = { religion = secondary }
+				has_missionary = no
+				development = 10
+			}
+			save_event_target_as = agenda_province
+		}
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			OR = {
+				NOT = { owned_by = root }
+				AND = {
+					NOT = { religion = root }
+					religion = secondary
+				}
+			}
+		}
+	}
+	immediate_effect = {
+		event_target:agenda_province = {
+			add_province_modifier = {
+				name = iu_agenda_conversion_zeal
+				duration = 1825
+			}
+		}
+	}
+	on_invalid = {
+		event_target:agenda_province = {
+			if = {
+				limit = { has_province_modifier = iu_agenda_conversion_zeal }
+				remove_province_modifier = iu_agenda_conversion_zeal
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	task_requirements = {
+		event_target:agenda_province = {
+			religion = root
+		}
+	}
+    task_completed_effect = {
+		hidden_effect = {
+			event_target:agenda_province = {
+				if = {
+					limit = { has_province_modifier = iu_agenda_conversion_zeal }
+					remove_province_modifier = iu_agenda_conversion_zeal
+				}
+			}
+		}
+		
+		add_dip_power = 50
+		add_adm_power = 50
+		add_legitimacy = 10
+		add_republican_tradition = 10
+		add_devotion = 10
+		
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 10
+		}
+    }
+    failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { has_province_modifier = iu_agenda_conversion_zeal }
+				remove_province_modifier = iu_agenda_conversion_zeal
+			}
+		}
+        add_estate_loyalty_modifier = {
+            estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Convert country
+estate_priesthood_convert_country_x = {
+	can_select = {
+		NOT = { has_idea_group = syncrenism_ideas }
+		any_neighbor_country = {
+			NOT = { religion = ROOT }
+			religion_group = ROOT
+			is_free_or_tributary_trigger = yes
+			NOT = { alliance_with = root }
+			NOT = { marriage_with = root }
+			NOT = { war_with = root }
+			NOT = { ROOT = { truce_with = prev } }
+			ROOT = {
+				NOT = {
+					has_opinion = {
+						who = prev
+						value = 100
+					}
+				}
+			}
+			NOT = { army_size = root }
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 1.5
+			ruler_has_personality = zealot_personality
+		}
+		modifier = {
+			factor = 1.5
+			ruler_has_personality = pious_personality
+		}
+		modifier = {
+			factor = 1.5
+			religious_unity = 0.9
+		}
+	}
+	pre_effect = {
+		random_neighbor_country = {
+			limit = {
+				NOT = { truce_with = THIS }
+				NOT = { religion = ROOT }
+				religion_group = ROOT
+				NOT = { total_development = 50 }
+				is_free_or_tributary_trigger = yes
+				NOT = { alliance_with = root }
+				NOT = { marriage_with = root }
+				NOT = { war_with = root }
+				NOT = { ROOT = { truce_with = prev } }
+				ROOT = {
+					NOT = {
+						has_opinion = {
+							who = prev
+							value = 100
+						}
+					}
+				}
+				NOT = { army_size = root }
+			}
+			save_event_target_as = agenda_country
+		}
+		capital_scope = {
+			save_event_target_as = agenda_country_capital
+		}
+	}
+	fail_if = {
+		OR = {
+			is_subject_other_than_tributary_trigger = yes
+			event_target:agenda_country = {
+				is_subject_other_than_tributary_trigger = yes
+				NOT = { is_subject_of = root }
+			}
+			NOT = {
+				event_target:agenda_country_capital = {
+					owned_by = root #you annexed them
+				}
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_country_capital
+	}
+	
+	task_requirements = {
+		if = {
+			limit = {
+				event_target:agenda_country = {
+					num_of_cities = 1
+				}
+			}
+			event_target:agenda_country = {
+				religion = root
+			}
+		}
+		else = {
+			event_target:agenda_country_capital = {
+				owned_by = root #you annexed them
+			}
+		}
+	}
+	
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 20
+		}
+		add_prestige = 10
+		add_years_of_income = 0.2
+		add_army_tradition = 10
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+		add_prestige = -10
+    }
+}
+
+#Relations with same religion tags
+estate_priesthood_relations_with_same_religion = {
+	can_select = {
+		any_country = {
+			religion = ROOT
+			NOT = { tag = ROOT }
+			NOT = {
+				has_opinion = {
+					who = ROOT
+					value = 50
+				}
+			}
+			has_opinion = {
+				who = ROOT
+				value = -50
+			}
+			NOT = { war_with = ROOT }
+			NOT = { alliance_with = ROOT }
+			NOT = { overlord_of = ROOT }
+			NOT = { is_rival = ROOT }
+			NOT = { ROOT = { is_rival = prev } }
+			any_owned_province = {
+				has_discovered = ROOT
+			}
+		}
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			ruler_has_personality = silver_tongue_personality
+		}
+		modifier = {
+			factor = 1.5
+			ruler_has_personality = pious_personality
+		}
+	}
+	
+	pre_effect = {
+		random_country = {
+			limit = {
+				religion = ROOT
+				NOT = { tag = ROOT }
+				NOT = {
+					has_opinion = {
+						who = ROOT
+						value = 50
+					}
+				}
+				has_opinion = {
+					who = ROOT
+					value = -50
+				}
+				NOT = { war_with = ROOT }
+				NOT = { alliance_with = ROOT }
+				NOT = { overlord_of = ROOT }
+				NOT = { is_rival = ROOT }
+				NOT = { ROOT = { is_rival = prev } }
+				any_owned_province = {
+					has_discovered = ROOT
+				}
+			}
+			save_event_target_as = agenda_country
+		}
+	}
+	task_requirements = {
+		event_target:agenda_country = {
+			religion = ROOT
+			has_opinion = {
+				who = ROOT
+				value = 100
+			}
+		}
+	}
+	fail_if = {
+		event_target:agenda_country = {
+			OR = {
+				NOT = { religion = ROOT }
+				war_with = ROOT
+				exists = no
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 10
+		}
+		add_dip_power = 75
+		add_prestige = 10
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Relations with same religion tags
+estate_priesthood_religious_unity = {
+	max_days_active = 10950
+	can_select = {
+		num_of_missionaries = 1
+		NOT = { religious_unity = 0.5 }
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			NOT = { religious_unity = 0.5 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { religious_unity = 0.4 }
+		}
+		modifier = {
+			factor = 4
+			NOT = { religious_unity = 0.3 }
+		}
+		modifier = {
+			factor = 5
+			NOT = { religious_unity = 0.2 }
+		}
+	}
+	
+	
+	task_requirements = {
+		religious_unity = 0.75
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 20
+		}
+		add_adm_power = 100
+		add_stability = 1
+		add_country_modifier = { 
+    		name = agendas_increased_unity
+    		duration = 7300
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_priesthood
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
     }
 }
