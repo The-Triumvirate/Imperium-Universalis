@@ -1,0 +1,436 @@
+#Build shrine
+estate_merchants_build_market_in_y = {
+	max_days_active = 3650
+	can_select = {
+		dip_tech = 4
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = small_market }
+			NOT = { has_building = medium_market }
+			NOT = { has_building = great_market }
+			num_free_building_slots = 1
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.75
+			NOT = {
+				any_owned_province = {
+					is_state_core = root
+					NOT = { base_tax = 1 }
+					num_free_building_slots = 1
+				}
+			}
+		}
+		modifier = {
+			factor = 2.0
+			any_owned_province = {
+				is_state_core = root
+				base_tax = 1
+				NOT = { has_building = medium_market }
+				NOT = { has_building = great_market }
+				AND = {
+					NOT = { has_building = small_market }
+					num_free_building_slots = 1
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			NOT = {
+				crown_land_share = 15
+			}
+		}
+	}
+	pre_effect = {
+		set_variable = {
+			which = estate_merchants_build_market_in_y_var
+			value = 0
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { base_tax = 1 }
+				NOT = { has_building = small_market }
+				NOT = { has_building = medium_market }
+				NOT = { has_building = great_market }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				base_production = 1
+				NOT = { has_building = small_market }
+				NOT = { has_building = medium_market }
+				NOT = { has_building = great_market }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		event_target:agenda_province = {
+			if = {
+				limit = {
+					NOT = {
+						OR = {
+							has_building = small_market
+							has_building = medium_market
+							has_building = great_market
+						}
+					}
+				}
+				ROOT = {
+					set_variable = {
+						which = estate_merchants_build_market_in_y_var
+						value = 1
+					}
+				}
+			}
+			else = {
+				ROOT = {
+					set_variable = {
+						which = estate_merchants_build_market_in_y_var
+						value = 2
+					}
+				}
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+    task_requirements = {
+		if = {
+			limit = {
+				check_variable = {
+					which = estate_merchants_build_market_in_y_var
+					value = 2
+				}
+			}
+			event_target:agenda_province = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+    }
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+		if = {
+			limit = {
+				NOT = { crown_land_share = 15 }
+				estate_territory = {
+					estate = estate_merchants
+					territory = 5
+				}
+			}
+			take_estate_land_share_small = { estate = estate_merchants }
+		}
+		else = {
+			add_mercantilism = 1
+			add_treasury = 25
+			add_dip_power = 50
+		}
+    }
+    failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+    }
+}
+
+#peace for ten years
+
+estate_merchants_peace_for_ten_years = {
+	max_days_active = 3650
+	can_select = {
+		is_at_war = no
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 0
+			ruler_has_personality = conqueror_personality
+		}
+		modifier = {
+			factor = 2
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 2
+			war_exhaustion = 4
+		}
+		modifier = {
+			factor = 2
+			has_wartaxes = yes
+		}
+	}
+	
+	fail_if = {
+		OR = {
+			is_at_war = yes
+			has_wartaxes = yes
+		}
+	}
+	
+	task_requirements = {
+		NOT = { had_recent_war = 10 }
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 15
+		}
+		add_dip_power = 200
+		add_years_of_income = 0.5
+		add_mercantilism = 2
+		add_stability = 1
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#gain lvl 2 CoT
+
+estate_merchants_lvl_2_cot = {
+	can_select = {
+		NOT = {
+			any_owned_province = {
+				OR = {
+					province_has_center_of_trade_of_level = 2
+					province_has_center_of_trade_of_level = 3
+				}
+			}
+		}
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			any_owned_province = {
+				province_has_center_of_trade_of_level = 1
+			}
+		}
+	}
+
+	
+	task_requirements = {
+		any_owned_province = {
+			province_has_center_of_trade_of_level = 2
+			ROOT = { owns_core_province = PREV }
+		}
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+		add_dip_power = 50
+		add_mercantilism = 1
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Pay off loans
+estate_merchants_pay_off_loans = {
+	can_select = {
+		num_of_loans = 3
+		is_bankrupt = no
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 1.5
+			num_of_loans = 5
+		}
+		modifier = {
+			factor = 1.5
+			num_of_loans = 7
+		}
+		modifier = {
+			factor = 1.5
+			num_of_loans = 9
+		}
+	}
+	fail_if = {
+		is_bankrupt = yes
+	}
+	task_requirements = {
+		NOT = { num_of_loans = 1 }
+		hidden_trigger = {
+			is_bankrupt = no
+		}
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+		add_country_modifier = {
+    		name = agendas_good_debtor
+    		duration = 5475
+		}
+		add_prestige = 5
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#build light ships
+estate_merchants_build_light_ships = {
+	can_select = {
+		NOT = { navy_size_percentage = 1 }
+		num_of_ports = 1
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 2
+			NOT = { navy_size_percentage = 0.5 }
+		}
+		modifier = {
+			factor = 2
+			num_of_ports = 4
+		}
+		modifier = {
+			factor = 0.5
+			light_ship_fraction = 0.75
+		}
+		modifier = {
+			factor = 0.5
+			light_ship_fraction = 0.5
+		}
+		modifier = {
+			factor = 0.5
+			light_ship_fraction = 0.4
+		}
+	}
+	fail_if = {
+		num_of_ports = 0
+	}
+	task_requirements = {
+		OR = {
+			light_ship_fraction = 0.4
+			num_of_light_ship = 16
+		}
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+		add_yearly_sailors = 1
+		add_dip_power = 50
+		add_navy_tradition = 5
+		add_mercantilism = 2
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#build light ships
+estate_merchants_monopolize_one_tradegood = {
+	can_select = {
+		NOT = { num_of_trading_bonuses = 1 }
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 0
+			num_of_cities = 1
+		}
+		modifier = {
+			factor = 0.2
+			num_of_cities = 4
+		}
+		modifier = {
+			factor = 0.4
+			num_of_cities = 8
+		}
+		modifier = {
+			factor = 0.6
+			num_of_cities = 10
+		}
+		modifier = {
+			factor = 0.8
+			num_of_cities = 16
+		}
+		modifier = {
+			factor = 1
+			num_of_cities = 24
+		}
+	}
+	task_requirements = {
+		num_of_trading_bonuses = 1
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 25
+		}
+		add_years_of_income = 0.4
+		add_dip_power = 120
+		add_mercantilism = 10
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_merchants
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
