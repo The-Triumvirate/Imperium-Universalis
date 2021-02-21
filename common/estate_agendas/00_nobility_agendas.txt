@@ -1,0 +1,601 @@
+estate_nobility_develop_x = {
+	selection_weight = {
+		factor = 1
+	}
+	can_select = {
+		capital_scope = {
+			is_state_core = root
+		}
+	}
+	pre_effect = {
+		random_list = {
+			1 = {
+				random_owned_province = {
+					limit = {
+						is_state_core = root
+						area_for_scope_province = {
+							is_capital_of = root
+						}
+					}
+					save_event_target_as = agenda_province
+				}
+			}
+			2 = {
+				trigger = {
+					any_owned_province = {
+						is_state_core = root
+						OR = {
+							AND = {
+								religion = root
+								OR = {
+									culture = root
+									has_owner_accepted_culture = yes
+								}
+							}
+						}
+						region_for_scope_province = {
+							is_capital_of = root
+						}
+					}
+				}
+				random_owned_province = {
+					limit = {
+						is_state_core = root
+						OR = {
+							AND = {
+								religion = root
+								OR = {
+									culture = root
+									has_owner_accepted_culture = yes
+								}
+							}
+						}
+						region_for_scope_province = {
+							is_capital_of = root
+						}
+					}
+					save_event_target_as = agenda_province
+				}
+			}
+			1 = {
+				random_owned_province = {
+					limit = {
+						is_state_core = root
+					}
+					save_event_target_as = agenda_province
+				}
+			}
+		}
+		event_target:agenda_province = {
+			if = {
+				limit = {
+					check_variable = {
+						which = province_dev_var
+						value = 1
+					}
+				}
+				set_variable = {
+					which = province_dev_var
+					value = 0
+				}
+			}
+			export_to_variable = {
+				which = province_dev_var
+				value = trigger_value:development
+			}
+			change_variable = {
+				which = province_dev_var
+				value = 2
+			}
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+    task_requirements = {
+		event_target:agenda_province = {
+			development = "province_dev_var"
+		}
+    }
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+		event_target:agenda_province = {
+			add_base_tax = 1
+		}
+    }
+    failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = {
+					value = 10
+				}
+			}
+		}
+        add_estate_loyalty_modifier = {
+            estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+estate_nobles_hire_advisor = {
+	can_select = {
+		NOT = {
+			employed_advisor = {
+				category = MIL
+			}
+		}
+	}
+	selection_weight = {
+		factor = 1
+	}
+	task_requirements = {
+		employed_advisor = {
+			category = MIL
+		}
+		is_in_deficit = no
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+estate_nobility_fire_advisor = {
+	can_select = {
+		employed_advisor = {
+			category = MIL
+		}
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 0.5
+			always = yes
+		}
+	}
+	immediate_effect = {
+		hidden_effect = {
+			set_country_flag = need_to_fire_mil_advisor
+		}
+	}
+	on_invalid = {
+		clr_country_flag = need_to_fire_mil_advisor
+	}
+	task_requirements = {
+		custom_trigger_tooltip = {
+			tooltip = fire_mil_advisor_tooltip
+			has_country_flag = just_fired_mil_advisor
+		}
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+		clr_country_flag = just_fired_mil_advisor
+		clr_country_flag = need_to_fire_mil_advisor
+	}
+	invalid_trigger = {
+		NOT = {
+			employed_advisor = {
+				category = MIL
+			}
+		}
+		NOT = { has_country_flag = just_fired_mil_advisor }
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+		clr_country_flag = need_to_fire_mil_advisor
+    }
+}
+
+estate_nobility_subjugate_neighbour = {
+	can_select = {
+		is_free_or_tributary_trigger = yes
+		is_at_war = no
+		num_of_cities = 12
+		any_neighbor_country = {
+			NOT = { has_reform = free_city }
+			is_free_or_tributary_trigger = yes
+			OR = {
+				NOT = { num_of_cities = 4 }
+				NOT = { total_development = 100 }
+			}
+			OR = {
+				NOT = { num_of_cities = 3 }
+				NOT = { total_development = 50 }
+				ROOT = { total_development = 500 }
+			}
+			NOT = { is_subject_of = root }
+			NOT = { overlord_of = root }
+			NOT = { alliance_with = root }
+			NOT = { ROOT = { truce_with = prev } }
+			NOT = {
+				has_opinion = {
+					who = root
+					value = 100
+				}
+			}
+			OR = {
+				is_part_of_hre = no
+				NOT = { hre_reform_passed = landfriede }
+				ROOT = { is_part_of_hre = no }
+			}
+			any_owned_province = {
+				NOT = { is_claim = root }
+				NOT = { is_core = root }
+			}
+		}
+		NOT = { has_country_modifier = foreign_contacts }
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 0.5
+			has_non_generic_missions = yes
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 20
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 25
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 30
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 40
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 50
+		}
+		modifier = {
+			factor = 0.25
+			any_country = {
+				coalition_target = root
+			}
+		}
+	}
+	pre_effect = {
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_reform = free_city }
+				is_free_or_tributary_trigger = yes
+				OR = {
+					NOT = { num_of_cities = 4 }
+					NOT = { total_development = 100 }
+				}
+				OR = {
+					NOT = { num_of_cities = 3 }
+					NOT = { total_development = 50 }
+					ROOT = { total_development = 500 }
+				}
+				NOT = { is_subject_of = root }
+				NOT = { overlord_of = root }
+				NOT = { alliance_with = root }
+				NOT = { ROOT = { truce_with = prev } }
+				NOT = {
+					has_opinion = {
+						who = root
+						value = 100
+					}
+				}
+				OR = {
+					is_part_of_hre = no
+					NOT = { hre_reform_passed = landfriede }
+					ROOT = { is_part_of_hre = no }
+				}
+				any_owned_province = {
+					NOT = { is_claim = root }
+					NOT = { is_core = root }
+				}
+			}
+			save_event_target_as = agenda_country
+			capital_scope = {
+				save_event_target_as = agenda_province
+			}
+		}
+	}
+	immediate_effect = {
+		add_casus_belli = {
+			type = cb_vassalize_mission
+			months = 240
+			target = event_target:agenda_country
+		}
+	}
+	on_invalid = {
+		if = {
+			limit = {
+				has_casus_belli = {
+					type = cb_vassalize_mission
+					target = event_target:agenda_country
+				}
+			}
+			remove_casus_belli = {
+				type = cb_vassalize_mission
+				target = event_target:agenda_country
+			}
+		}
+	}
+	provinces_to_highlight = {
+		is_capital_of = event_target:agenda_country
+	}
+	task_requirements = {
+		event_target:agenda_country = {
+			is_subject_of = root
+			NOT = { is_subject_of_type = tributary_state }
+		}
+	}
+	fail_if = {
+		OR = {
+			is_subject_other_than_tributary_trigger = yes
+			event_target:agenda_country = {
+				NOT = { num_of_cities = 1 }
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+		add_country_modifier = {
+			name = foreign_contacts
+			duration = 3650
+		}
+		hidden_effect = {
+			remove_casus_belli = {
+				type = cb_vassalize_mission
+				target = event_target:agenda_country
+			}
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+		if = {
+			limit = {
+				has_casus_belli = {
+					type = cb_vassalize_mission
+					target = event_target:agenda_country
+				}
+			}
+			remove_casus_belli = {
+				type = cb_vassalize_mission
+				target = event_target:agenda_country
+			}
+		}
+    }
+}
+
+estate_nobility_increase_alliances = {
+	can_select = {
+		NOT = { num_of_allies = 3 }
+		NOT = { num_of_subjects = 3 }
+		is_at_war = no
+		num_of_free_diplomatic_relations = 1
+		NOT = { has_country_modifier = foreign_contacts }
+	}
+	selection_weight = {
+		factor = 1
+		modifier = {
+			factor = 2
+			NOT = { num_of_allies = 1 }
+			NOT = { num_of_subjects = 1 }
+		}
+	}
+	pre_effect = {
+		set_variable = {
+			which = estate_nobility_get_allies_variable
+			value = 0
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { num_of_allies = 1 }
+					AND = {
+						num_of_subjects = 2
+						NOT = { num_of_allies = 2 }
+					}
+					AND = {
+						NOT = { num_of_allies = 2 }
+						NOT = { num_of_free_diplomatic_relations = 2 }
+					}
+				}
+			}
+			set_variable = {
+				which = estate_nobility_get_allies_variable
+				value = 1
+			}
+		}
+		else = {
+			set_variable = {
+				which = estate_nobility_get_allies_variable
+				value = 2
+			}
+		}
+	}
+	fail_if = {
+		is_free_or_tributary_trigger = no
+	}
+	task_requirements = {
+		if = {
+			limit = {
+				check_variable = {
+					which = estate_nobility_get_allies_variable
+					value = 2
+				}
+			}
+			num_of_allies = 3
+		}
+		else = {
+			num_of_allies = 2
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+		add_country_modifier = {
+			name = foreign_contacts
+			duration = 3650
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Increase manpower
+estate_nobility_increase_manpower = {
+	can_select = {
+		is_at_war = no
+		NOT = { manpower_percentage = 0.40 }
+	}
+	selection_weight = {
+		factor = 5
+		modifier = {
+			factor = 1.5
+			NOT = { manpower_percentage = 0.35 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { manpower_percentage = 0.3 }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { manpower_percentage = 0.25 }
+		}
+		modifier = {
+			factor = 2
+			NOT = { manpower_percentage = 0.2 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { manpower_percentage = 0.15 }
+		}
+	}
+	pre_effect = {
+		set_variable = {
+			which = estate_nobility_increase_manpower_variable
+			value = 0
+		}
+		if = {
+			limit = {
+				NOT = {
+					manpower_percentage = 0.1
+				}
+			}
+			set_variable = {
+				which = estate_nobility_increase_manpower_variable
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					manpower_percentage = 0.3
+				}
+			}
+			set_variable = {
+				which = estate_nobility_increase_manpower_variable
+				value = 2
+			}
+		}
+		else = {
+			set_variable = {
+				which = estate_nobility_increase_manpower_variable
+				value = 3
+			}
+		}
+		pick_type_of_military_advisor = yes
+	}
+	fail_if = {
+		is_at_war = yes
+	}
+	task_requirements = {
+		if = {
+			limit = {
+				check_variable = {
+					which = estate_nobility_increase_manpower_variable
+					value = 3
+				}
+			}
+			manpower_percentage = 0.9
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = estate_nobility_increase_manpower_variable
+					value = 2
+				}
+			}
+			manpower_percentage = 0.75
+		}
+		else = {
+			manpower_percentage = 0.5
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_nobles
+			loyalty = 10
+		}
+		generate_scaled_military_advisor_of_religion_effect = {
+			religion = root
+			discount = yes
+		}
+		clear_random_military_advisor_generation_flags = yes
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_nobles
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+		clear_random_military_advisor_generation_flags = yes
+    }
+}
