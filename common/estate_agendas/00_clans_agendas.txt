@@ -1,0 +1,526 @@
+#High prestige
+estate_clans_high_prestige = {
+	can_select = {
+		is_subject = no
+		NOT = { prestige = 50 }
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			NOT = { prestige = 40 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { prestige = 30 }
+		}
+		modifier = {
+			factor = 4
+			NOT = { prestige = 20 }
+		}
+		modifier = {
+			factor = 5
+			NOT = { prestige = 10 }
+		}
+	}
+	
+	
+	task_requirements = {
+		prestige = 50
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 10
+		}
+		add_adm_power = 50
+		add_stability = 1
+		add_legitimacy = 10
+		add_horde_unity = 10
+		add_splendor = 20
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Build to forcelimit
+estate_clans_build_forcelimit = {
+	can_select = {
+		NOT = { army_size_percentage = 1 }
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			NOT = { army_size_percentage = 0.8 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { army_size_percentage = 0.7 }
+		}
+		modifier = {
+			factor = 4
+			NOT = { army_size_percentage = 0.6 }
+		}
+		modifier = {
+			factor = 5
+			NOT = { army_size_percentage = 0.5 }
+		}
+	}
+	
+	
+	task_requirements = {
+		army_size_percentage = 1
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 15
+		}
+		add_mil_power = 75
+		add_yearly_manpower = 0.2
+		add_war_exhaustion = -4
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Conquer province
+
+estate_clans_conquer_province_x = {
+	can_select = {
+		is_free_or_tributary_trigger = yes
+		is_at_war = no
+		any_neighbor_country = {
+			num_of_cities = 2
+			is_free_or_tributary_trigger = yes
+			NOT = { is_subject_of = root }
+			NOT = { overlord_of = root }
+			NOT = { alliance_with = root }
+			NOT = { ROOT = { truce_with = prev } }
+			NOT = { 
+				has_opinion = {
+					who = root
+					value = 25
+				}
+			}
+			NOT = {
+				any_owned_province = { #No need for this agenda if covered by a mission
+					OR = {
+						is_permanent_claim = root
+						is_core = root
+					}
+				}
+			}
+			ROOT = {
+				knows_country = prev
+			}
+			any_owned_province = {
+				any_neighbor_province = {
+					owned_by = root
+				}
+				NOT = {
+					area_for_scope_province = {
+						OR = {
+							is_empty = yes
+							owned_by = root
+						}
+					}
+				}
+			}
+			OR = {
+				is_part_of_hre = no
+				NOT = { hre_reform_passed = landfriede }
+				ROOT = { is_part_of_hre = no }
+			}
+		}
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 1.5
+			num_of_cities = 2
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 4
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 6
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 8
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 10
+		}
+		modifier = {
+			factor = 2
+			ruler_has_personality = conqueror_personality
+		}
+		modifier = {
+			factor = 0.25
+			any_country = {
+				coalition_target = root
+			}
+		}
+	}
+	pre_effect = {
+		random_neighbor_country = {
+			limit = {
+				num_of_cities = 2
+				is_free_or_tributary_trigger = yes
+				NOT = { is_subject_of = root }
+				NOT = { overlord_of = root }
+				NOT = { alliance_with = root }
+				NOT = { ROOT = { truce_with = prev } }
+				NOT = { 
+					has_opinion = {
+						who = root
+						value = 25
+					}
+				}
+				NOT = {
+					any_owned_province = { #No need for this agenda if covered by a mission
+						OR = {
+							is_permanent_claim = root
+							is_core = root
+						}
+					}
+				}
+				ROOT = {
+					knows_country = prev
+				}
+				any_owned_province = {
+					any_neighbor_province = {
+						owned_by = root
+					}
+					NOT = {
+						area_for_scope_province = {
+							owned_by = root
+						}
+					}
+				}
+			}
+			random_owned_province = {
+				limit = {
+					any_neighbor_province = {
+						owned_by = root
+					}
+					area_for_scope_province = {
+						type = all
+						NOT = { owned_by = root }
+						is_empty = no
+					}
+				}
+				save_event_target_as = agenda_province
+			}
+		}
+	}
+	immediate_effect = {
+		if = {
+			limit = {
+				event_target:agenda_province = {
+					area_for_scope_province = {
+						NOT = { is_claim = root }
+						NOT = { is_core = root }
+					}
+				}
+			}
+			event_target:agenda_province = {
+				area = {
+					limit = {
+						NOT = { is_claim = root }
+						NOT = { is_core = root }
+					}
+					add_claim = root
+				}
+			}
+		}
+	}
+	on_invalid = {
+		if = {
+			limit = {
+				event_target:agenda_province = {
+					area_for_scope_province = {
+						is_claim = root
+						NOT = { is_permanent_claim = root }
+					}
+				}
+			}
+			event_target:agenda_province = {
+				area = {
+					limit = {
+						is_claim = root
+						NOT = { is_permanent_claim = root }
+					}
+					remove_claim = root
+				}
+			}
+		}
+	}
+	provinces_to_highlight = {
+		area_for_scope_province = {
+			province_id = event_target:agenda_province
+		}
+	}
+	task_requirements = {
+		event_target:agenda_province = {
+			area_for_scope_province = {
+				owned_by = root
+			}
+		}
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			area_for_scope_province = {
+				type = all
+				NOT = { is_claim = root }
+				NOT = { is_core = root }
+				NOT = { owned_by = root }
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 15
+		}
+		add_mil_power = 50
+		add_army_tradition = 5
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+		if = {
+			limit = {
+				event_target:agenda_province = {
+					area_for_scope_province = {
+						is_claim = root
+						NOT = { is_permanent_claim = root }
+					}
+				}
+			}
+			event_target:agenda_province = {
+				area = {
+					limit = {
+						is_claim = root
+						NOT = { is_permanent_claim = root }
+					}
+					remove_claim = root
+				}
+			}
+		}
+    }
+}
+
+#build cavalry force
+estate_clans_build_cavalry = {
+	can_select = {
+		NOT = { cavalry_fraction = 0.3 }
+		num_of_cavalry = 1
+		NOT = { has_country_modifier = agendas_expanded_cavalry }
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 1
+			NOT = { cavalry_fraction = 0.3 }
+		}
+		modifier = {
+			factor = 2
+			NOT = { cavalry_fraction = 0.2 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { cavalry_fraction = 0.1 }
+		}
+	}
+	
+	
+	task_requirements = {
+		cavalry_fraction = 0.3
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 10
+		}
+		add_mil_power = 50
+		add_army_tradition = 5
+		add_splendor = 10
+		add_country_modifier = {
+    		name = agendas_expanded_cavalry
+    		duration = 3650
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#tribal alliances
+estate_clans_make_alliances = {
+	can_select = {
+		NOT = { num_of_diplomatic_relations = 4 }
+		NOT = { num_of_allies = 4 }
+		num_of_free_diplomatic_relations = 1
+	}
+	selection_weight = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			NOT = { num_of_allies = 3 }
+		}
+		modifier = {
+			factor = 0
+			NOT = { num_of_free_diplomatic_relations = 1 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { num_of_allies = 2 }
+		}
+		modifier = {
+			factor = 4
+			NOT = { num_of_allies = 1 }
+		}
+	}
+	
+	
+	task_requirements = {
+		num_of_allies = 4
+	}
+	
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 10
+		}
+		add_dip_power = 75
+		add_country_modifier = {
+    		name = agendas_made_alliances
+    		duration = 7300
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Give us 2 privileges
+estate_clans_two_privileges = {
+	max_days_active = 3650
+	can_select = {
+		NOT = {
+			num_of_estate_privileges = {
+				estate = estate_clans
+				value = 2
+			}
+		}
+	}
+	selection_weight = {
+		factor = 1
+	}
+	
+	task_requirements = {
+		num_of_estate_privileges = {
+			estate = estate_clans
+			value = 2
+		}
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 15
+		}
+		add_legitimacy = 5
+		add_horde_unity = 5
+		add_country_modifier = {
+    		name = agendas_reliance_on_tribes
+    		duration = 7300
+		}
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}
+
+#Stabilise tribe
+estate_clans_recover_stability = {
+	can_select = {
+		NOT = { stability = 0 }
+	}
+	selection_weight = {
+		factor = 2
+		modifier = {
+			factor = 1.5
+			NOT = { stability = -1 }
+		}
+		modifier = {
+			factor = 1.5
+			war_exhaustion = 4
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { legitimacy_equivalent = 60 }
+		}
+	}
+	task_requirements = {
+		stability = 1
+		NOT = { war_exhaustion = 1 }
+		legitimacy_equivalent = 75
+	}
+    task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 10
+		}
+		add_prestige = 5
+		add_adm_power = 50
+    }
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_clans
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+        }
+    }
+}

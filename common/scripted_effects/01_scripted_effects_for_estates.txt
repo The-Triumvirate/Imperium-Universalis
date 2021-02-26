@@ -1,0 +1,537 @@
+#Scripted effects for estates
+
+# Will apply effect if estate is present
+# effect: Will apply effect to each estate present if defined
+# <estate>_effect: Will apply effect to specific estate present if defined
+each_estate_effect = {
+	if = {
+		limit = {
+			has_estate = estate_priesthood
+		}
+		[[effect]
+			$effect$
+		]
+		[[priesthood_effect]
+			$priesthood_effect$
+		]
+	}
+	if = {
+		limit = {
+			has_estate = estate_nobility
+		}
+		[[effect]
+			$effect$
+		]
+		[[nobility_effect]
+			$nobility_effect$
+		]
+	}
+	if = {
+		limit = {
+			has_estate = estate_merchants
+		}
+		[[effect]
+			$effect$
+		]
+		[[merchants_effect]
+			$merchants_effect$
+		]
+	}
+	if = {
+		limit = {
+			has_estate = estate_clans
+		}
+		[[effect]
+			$effect$
+		]
+		[[clans_effect]
+			$clans_effect$
+		]
+	}
+}
+
+#Dhimmi
+add_estate_priesthood_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_priesthood
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 10
+		}
+	}
+}
+reduce_estate_priesthood_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_priesthood
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -10
+		}
+	}
+}
+
+add_estate_nobility_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_nobility
+		}
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+	}
+}
+reduce_estate_nobility_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_nobility
+		}
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = -10
+		}
+	}
+}
+
+add_estate_merchants_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_merchants
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+	}
+}
+reduce_estate_merchants_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_merchants
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = -10
+		}
+	}
+}
+
+add_estate_clans_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_clans
+		}
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 10
+		}
+	}
+}
+reduce_estate_clans_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_clans
+		}
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = -10
+		}
+	}
+}
+
+#Estate Privilege on_action effects
+
+on_religion_change_estate_privileges_effect = {
+}
+
+on_annexed_estate_privileges_effect = {
+}
+
+on_province_religion_converted_estate_privileges_effect = {
+}
+
+on_province_owner_change_estate_privileges_effect = {
+}
+
+on_trade_good_changed_estate_privileges_effect = {
+}
+
+on_loan_repaid_estate_privileges_effect = {
+}
+
+
+on_bi_yearly_pulse_estate_privileges_effect = {
+}
+
+reapply_estate_privilege = {
+	# privilege: The privilege we want to reapply
+	if = {
+		limit = { 
+			can_revoke_estate_privilege = $privilege$
+		}
+		hidden_effect = {
+			remove_estate_privilege = $privilege$
+		}
+		set_estate_privilege = $privilege$
+	}
+}
+scaled_estate_priesthood_land_share_effect = {
+	scaled_estate_land_share_add_effect = { estate = estate_priesthood }
+}
+
+scaled_estate_nobility_land_share_effect = {
+	scaled_estate_land_share_add_effect = { estate = estate_nobility }
+}
+
+scaled_estate_merchants_land_share_effect = {
+	scaled_estate_land_share_add_effect = { estate = estate_merchants }
+}
+
+scaled_estate_clans_land_share_effect = {
+	scaled_estate_land_share_add_effect = { estate = estate_clans }
+}
+
+#Based on those above, but you can choose which estate you use
+
+scaled_estate_land_share_add_effect = {
+	if = {
+		limit = {
+			NOT = { total_development = 50 }
+		}
+		give_estate_land_share_large = { estate = $estate$ }
+	}
+	else_if = {
+		limit = {
+			total_development = 50
+			NOT = { total_development = 100 }
+		}
+		give_estate_land_share_medium = { estate = $estate$ }
+	}
+	else_if = {
+		limit = {
+			total_development = 100
+		}
+		give_estate_land_share_small = { estate = $estate$ }
+	}
+}
+
+#example of usage: scaled_estate_land_share_reduce_effect = { estate = estate_nobles }
+scaled_estate_land_share_reduce_effect = {
+	if = {
+		limit = {
+			NOT = { total_development = 50 }
+		}
+		take_estate_land_share_large = { estate = $estate$ }
+	}
+	else_if = {
+		limit = {
+			total_development = 50
+			NOT = { total_development = 100 }
+		}
+		give_estate_land_share_medium = { estate = $estate$ }
+	}
+	else_if = {
+		limit = {
+			total_development = 100
+		}
+		give_estate_land_share_small = { estate = $estate$ }
+	}
+}
+
+# Expects country scope
+seize_land_effect = {
+	hidden_effect = {
+		set_variable = {
+			which = seize_land_effect_variable
+			value = $scale$
+		}
+		while = {
+			limit = {
+				check_variable = {
+					which = seize_land_effect_variable
+					value = 1
+				}
+			}
+			change_variable = {
+				which = seize_land_effect_variable
+				value = -1
+			}
+		}
+		every_owned_province = {
+			limit = { has_province_flag = seize_land_spawn_unrest_and_rebels }
+			clr_province_flag = seize_land_spawn_unrest_and_rebels
+		}
+	}
+}
+
+spawn_rebels_from_unhappy_estate = {
+}
+
+pick_random_estate_if_present = {
+	random_list = {
+		1 = { 
+			trigger = {
+				has_estate = estate_priesthood
+				NOT = { has_country_flag = estate_priesthood_$flag$ }
+			}
+			set_country_flag = estate_priesthood_$flag$
+			[[estate_action]
+			$estate_action$ = estate_priesthood
+			]
+		}
+		1 = { 
+			trigger = {
+				has_estate = estate_nobility
+				NOT = { has_country_flag = estate_nobility_$flag$ }
+			}
+			set_country_flag = estate_nobility_$flag$
+			[[estate_action]
+			$estate_action$ = estate_nobility
+			]
+		}
+		1 = { 
+			trigger = {
+				has_estate = estate_merchants
+				NOT = { has_country_flag = estate_merchants_$flag$ }
+			}
+			set_country_flag = estate_merchants_$flag$
+			[[estate_action]
+			$estate_action$ = estate_merchants
+			]
+		}
+		1 = { 
+			trigger = {
+				has_estate = estate_clans
+				NOT = { has_country_flag = estate_clans_$flag$ }
+			}
+			set_country_flag = estate_clans_$flag$
+			[[estate_action]
+			$estate_action$ = estate_clans
+			]
+		}
+	}
+}
+
+# estate = what estate
+# Will give the estate 1% land
+give_estate_land_share_small = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 1
+	}
+}
+
+# estate = what estate
+# Will give the estate 2% land
+give_estate_land_share_medium = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 2
+	}
+}
+
+# estate = what estate
+# Will give the estate 3% land
+give_estate_land_share_large = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 3
+	}
+}
+
+# estate = what estate
+# Will give the estate 5% land
+give_estate_land_share_massive = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 5
+	}
+}
+
+# estate = what estate
+# Will give the estate 10% land
+give_estate_land_share_gigantic = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 10
+	}
+}
+
+give_estate_land_share_init = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = 20
+	}
+}
+
+# estate = what estate
+# Will take the 1% land from estate
+take_estate_land_share_small = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = -1
+	}
+}
+
+# estate = what estate
+# Will take away 2% land from estate
+take_estate_land_share_medium = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = -2
+	}
+}
+
+# estate = what estate
+# Will take the 3% land from estate
+take_estate_land_share_large = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = -3
+	}
+}
+
+# estate = what estate
+# Will take the 5% land from estate
+take_estate_land_share_massive = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = -5
+	}
+}
+
+# estate = what estate
+# Will take the 10% land from estate
+take_estate_land_share_gigantic = {
+	 change_estate_land_share = {
+		estate = $estate$
+		share = -10
+	}
+}
+
+# Used to apply estate monopoly modifier based on the estate privilege name
+# privilege = name of privilege
+apply_estate_monopoly_modifier = {
+	if = {
+		limit = { owner = { has_estate_privilege = $privilege$ } }
+		add_province_modifier = { 
+			name = $privilege$_mod 
+			duration = -1
+		}
+	}
+}
+
+remove_estate_monopoly_modifier = {
+	remove_province_modifier = $privilege$_mod
+}
+
+spawn_rebels_seize_land_switch = {
+	trigger_switch = {
+		on_trigger = num_of_owned_areas
+		1000 = { custom_tooltip = estate_seize_land_interaction_tooltip_1000 seize_land_effect = { scale = 101 } }
+		990 = { custom_tooltip = estate_seize_land_interaction_tooltip_990 seize_land_effect = { scale = 100 } }
+		980 = { custom_tooltip = estate_seize_land_interaction_tooltip_980 seize_land_effect = { scale = 99 } }
+		970 = { custom_tooltip = estate_seize_land_interaction_tooltip_970 seize_land_effect = { scale = 98 } }
+		960 = { custom_tooltip = estate_seize_land_interaction_tooltip_960 seize_land_effect = { scale = 97 } }
+		950 = { custom_tooltip = estate_seize_land_interaction_tooltip_950 seize_land_effect = { scale = 96 } }
+		940 = { custom_tooltip = estate_seize_land_interaction_tooltip_940 seize_land_effect = { scale = 95 } }
+		930 = { custom_tooltip = estate_seize_land_interaction_tooltip_930 seize_land_effect = { scale = 94 } }
+		920 = { custom_tooltip = estate_seize_land_interaction_tooltip_920 seize_land_effect = { scale = 93 } }
+		910 = { custom_tooltip = estate_seize_land_interaction_tooltip_910 seize_land_effect = { scale = 92 } }
+		900 = { custom_tooltip = estate_seize_land_interaction_tooltip_900 seize_land_effect = { scale = 91 } }
+		890 = { custom_tooltip = estate_seize_land_interaction_tooltip_890 seize_land_effect = { scale = 90 } }
+		880 = { custom_tooltip = estate_seize_land_interaction_tooltip_880 seize_land_effect = { scale = 89 } }
+		870 = { custom_tooltip = estate_seize_land_interaction_tooltip_870 seize_land_effect = { scale = 88 } }
+		860 = { custom_tooltip = estate_seize_land_interaction_tooltip_860 seize_land_effect = { scale = 87 } }
+		850 = { custom_tooltip = estate_seize_land_interaction_tooltip_850 seize_land_effect = { scale = 86 } }
+		840 = { custom_tooltip = estate_seize_land_interaction_tooltip_840 seize_land_effect = { scale = 85 } }
+		830 = { custom_tooltip = estate_seize_land_interaction_tooltip_830 seize_land_effect = { scale = 84 } }
+		820 = { custom_tooltip = estate_seize_land_interaction_tooltip_820 seize_land_effect = { scale = 83 } }
+		810 = { custom_tooltip = estate_seize_land_interaction_tooltip_810 seize_land_effect = { scale = 82 } }
+		800 = { custom_tooltip = estate_seize_land_interaction_tooltip_800 seize_land_effect = { scale = 81 } }
+		790 = { custom_tooltip = estate_seize_land_interaction_tooltip_790 seize_land_effect = { scale = 80 } }
+		780 = { custom_tooltip = estate_seize_land_interaction_tooltip_780 seize_land_effect = { scale = 79 } }
+		770 = { custom_tooltip = estate_seize_land_interaction_tooltip_770 seize_land_effect = { scale = 78 } }
+		760 = { custom_tooltip = estate_seize_land_interaction_tooltip_760 seize_land_effect = { scale = 77 } }
+		750 = { custom_tooltip = estate_seize_land_interaction_tooltip_750 seize_land_effect = { scale = 76 } }
+		740 = { custom_tooltip = estate_seize_land_interaction_tooltip_740 seize_land_effect = { scale = 75 } }
+		730 = { custom_tooltip = estate_seize_land_interaction_tooltip_730 seize_land_effect = { scale = 74 } }
+		720 = { custom_tooltip = estate_seize_land_interaction_tooltip_720 seize_land_effect = { scale = 73 } }
+		710 = { custom_tooltip = estate_seize_land_interaction_tooltip_710 seize_land_effect = { scale = 72 } }
+		700 = { custom_tooltip = estate_seize_land_interaction_tooltip_700 seize_land_effect = { scale = 71 } }
+		690 = { custom_tooltip = estate_seize_land_interaction_tooltip_690 seize_land_effect = { scale = 70 } }
+		680 = { custom_tooltip = estate_seize_land_interaction_tooltip_680 seize_land_effect = { scale = 69 } }
+		670 = { custom_tooltip = estate_seize_land_interaction_tooltip_670 seize_land_effect = { scale = 68 } }
+		660 = { custom_tooltip = estate_seize_land_interaction_tooltip_660 seize_land_effect = { scale = 67 } }
+		650 = { custom_tooltip = estate_seize_land_interaction_tooltip_650 seize_land_effect = { scale = 66 } }
+		640 = { custom_tooltip = estate_seize_land_interaction_tooltip_640 seize_land_effect = { scale = 65 } }
+		630 = { custom_tooltip = estate_seize_land_interaction_tooltip_630 seize_land_effect = { scale = 64 } }
+		620 = { custom_tooltip = estate_seize_land_interaction_tooltip_620 seize_land_effect = { scale = 63 } }
+		610 = { custom_tooltip = estate_seize_land_interaction_tooltip_610 seize_land_effect = { scale = 62 } }
+		600 = { custom_tooltip = estate_seize_land_interaction_tooltip_600 seize_land_effect = { scale = 61 } }
+		590 = { custom_tooltip = estate_seize_land_interaction_tooltip_590 seize_land_effect = { scale = 60 } }
+		580 = { custom_tooltip = estate_seize_land_interaction_tooltip_580 seize_land_effect = { scale = 59 } }
+		570 = { custom_tooltip = estate_seize_land_interaction_tooltip_570 seize_land_effect = { scale = 58 } }
+		560 = { custom_tooltip = estate_seize_land_interaction_tooltip_560 seize_land_effect = { scale = 57 } }
+		550 = { custom_tooltip = estate_seize_land_interaction_tooltip_550 seize_land_effect = { scale = 56 } }
+		540 = { custom_tooltip = estate_seize_land_interaction_tooltip_540 seize_land_effect = { scale = 55 } }
+		530 = { custom_tooltip = estate_seize_land_interaction_tooltip_530 seize_land_effect = { scale = 54 } }
+		520 = { custom_tooltip = estate_seize_land_interaction_tooltip_520 seize_land_effect = { scale = 53 } }
+		510 = { custom_tooltip = estate_seize_land_interaction_tooltip_510 seize_land_effect = { scale = 52 } }
+		500 = { custom_tooltip = estate_seize_land_interaction_tooltip_500 seize_land_effect = { scale = 51 } }
+		490 = { custom_tooltip = estate_seize_land_interaction_tooltip_490 seize_land_effect = { scale = 50 } }
+		480 = { custom_tooltip = estate_seize_land_interaction_tooltip_480 seize_land_effect = { scale = 49 } }
+		470 = { custom_tooltip = estate_seize_land_interaction_tooltip_470 seize_land_effect = { scale = 48 } }
+		460 = { custom_tooltip = estate_seize_land_interaction_tooltip_460 seize_land_effect = { scale = 47 } }
+		450 = { custom_tooltip = estate_seize_land_interaction_tooltip_450 seize_land_effect = { scale = 46 } }
+		440 = { custom_tooltip = estate_seize_land_interaction_tooltip_440 seize_land_effect = { scale = 45 } }
+		430 = { custom_tooltip = estate_seize_land_interaction_tooltip_430 seize_land_effect = { scale = 44 } }
+		420 = { custom_tooltip = estate_seize_land_interaction_tooltip_420 seize_land_effect = { scale = 43 } }
+		410 = { custom_tooltip = estate_seize_land_interaction_tooltip_410 seize_land_effect = { scale = 42 } }
+		400 = { custom_tooltip = estate_seize_land_interaction_tooltip_400 seize_land_effect = { scale = 41 } }
+		390 = { custom_tooltip = estate_seize_land_interaction_tooltip_390 seize_land_effect = { scale = 40 } }
+		380 = { custom_tooltip = estate_seize_land_interaction_tooltip_380 seize_land_effect = { scale = 39 } }
+		370 = { custom_tooltip = estate_seize_land_interaction_tooltip_370 seize_land_effect = { scale = 38 } }
+		360 = { custom_tooltip = estate_seize_land_interaction_tooltip_360 seize_land_effect = { scale = 37 } }
+		350 = { custom_tooltip = estate_seize_land_interaction_tooltip_350 seize_land_effect = { scale = 36 } }
+		340 = { custom_tooltip = estate_seize_land_interaction_tooltip_340 seize_land_effect = { scale = 35 } }
+		330 = { custom_tooltip = estate_seize_land_interaction_tooltip_330 seize_land_effect = { scale = 34 } }
+		320 = { custom_tooltip = estate_seize_land_interaction_tooltip_320 seize_land_effect = { scale = 33 } }
+		310 = { custom_tooltip = estate_seize_land_interaction_tooltip_310 seize_land_effect = { scale = 32 } }
+		300 = { custom_tooltip = estate_seize_land_interaction_tooltip_300 seize_land_effect = { scale = 31 } }
+		290 = { custom_tooltip = estate_seize_land_interaction_tooltip_290 seize_land_effect = { scale = 30 } }
+		280 = { custom_tooltip = estate_seize_land_interaction_tooltip_280 seize_land_effect = { scale = 29 } }
+		270 = { custom_tooltip = estate_seize_land_interaction_tooltip_270 seize_land_effect = { scale = 28 } }
+		260 = { custom_tooltip = estate_seize_land_interaction_tooltip_260 seize_land_effect = { scale = 27 } }
+		250 = { custom_tooltip = estate_seize_land_interaction_tooltip_250 seize_land_effect = { scale = 26 } }
+		240 = { custom_tooltip = estate_seize_land_interaction_tooltip_240 seize_land_effect = { scale = 25 } }
+		230 = { custom_tooltip = estate_seize_land_interaction_tooltip_230 seize_land_effect = { scale = 24 } }
+		220 = { custom_tooltip = estate_seize_land_interaction_tooltip_220 seize_land_effect = { scale = 23 } }
+		210 = { custom_tooltip = estate_seize_land_interaction_tooltip_210 seize_land_effect = { scale = 22 } }
+		200 = { custom_tooltip = estate_seize_land_interaction_tooltip_200 seize_land_effect = { scale = 21 } }
+		190 = { custom_tooltip = estate_seize_land_interaction_tooltip_190 seize_land_effect = { scale = 20 } }
+		180 = { custom_tooltip = estate_seize_land_interaction_tooltip_180 seize_land_effect = { scale = 19 } }
+		170 = { custom_tooltip = estate_seize_land_interaction_tooltip_170 seize_land_effect = { scale = 18 } }
+		160 = { custom_tooltip = estate_seize_land_interaction_tooltip_160 seize_land_effect = { scale = 17 } }
+		150 = { custom_tooltip = estate_seize_land_interaction_tooltip_150 seize_land_effect = { scale = 16 } }
+		140 = { custom_tooltip = estate_seize_land_interaction_tooltip_140 seize_land_effect = { scale = 15 } }
+		130 = { custom_tooltip = estate_seize_land_interaction_tooltip_130 seize_land_effect = { scale = 14 } }
+		120 = { custom_tooltip = estate_seize_land_interaction_tooltip_120 seize_land_effect = { scale = 13 } }
+		110 = { custom_tooltip = estate_seize_land_interaction_tooltip_110 seize_land_effect = { scale = 12 } }
+		100 = { custom_tooltip = estate_seize_land_interaction_tooltip_100 seize_land_effect = { scale = 11 } }
+		90 = { custom_tooltip = estate_seize_land_interaction_tooltip_90 seize_land_effect = { scale = 10 } }
+		80 = { custom_tooltip = estate_seize_land_interaction_tooltip_80 seize_land_effect = { scale = 9 } }
+		70 = { custom_tooltip = estate_seize_land_interaction_tooltip_70 seize_land_effect = { scale = 8 } }
+		60 = { custom_tooltip = estate_seize_land_interaction_tooltip_60 seize_land_effect = { scale = 7 } }
+		50 = { custom_tooltip = estate_seize_land_interaction_tooltip_50 seize_land_effect = { scale = 6 } }
+		40 = { custom_tooltip = estate_seize_land_interaction_tooltip_40 seize_land_effect = { scale = 5 } }
+		30 = { custom_tooltip = estate_seize_land_interaction_tooltip_30 seize_land_effect = { scale = 4 } }
+		20 = { custom_tooltip = estate_seize_land_interaction_tooltip_20 seize_land_effect = { scale = 3 } }
+		10 = { custom_tooltip = estate_seize_land_interaction_tooltip_10 seize_land_effect = { scale = 2 } }
+		1 = { custom_tooltip = estate_seize_land_interaction_tooltip_1 seize_land_effect = { scale = 1 } }
+	}
+}
