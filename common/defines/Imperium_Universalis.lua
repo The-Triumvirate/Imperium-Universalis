@@ -189,9 +189,9 @@ NDefines.NCountry.GALLEY_INLAND_SEA_COAST_RATIO = 0.0
 
 NDefines.NCountry.LIBERTY_DESIRE_ANNEXATION = 15.0
 	
-NDefines.NCountry.HRE_RANK = 5
-NDefines.NCountry.HRE_MAX_RANK = 5
-NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 5
+NDefines.NCountry.HRE_RANK = 4
+NDefines.NCountry.HRE_MAX_RANK = 2
+NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 3
 		
 	
 NDefines.NEconomy.INFLATION_FROM_PEACE_GOLD = 0.0025
