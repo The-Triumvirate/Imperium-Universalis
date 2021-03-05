@@ -192,6 +192,9 @@ NDefines.NCountry.LIBERTY_DESIRE_ANNEXATION = 15.0
 NDefines.NCountry.HRE_RANK = 4
 NDefines.NCountry.HRE_MAX_RANK = 2
 NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 3
+
+
+NDefines.NCountry.PS_BUY_IDEA = 300
 		
 	
 NDefines.NEconomy.INFLATION_FROM_PEACE_GOLD = 0.0025
