@@ -1,6 +1,6 @@
 country_decisions = {
 
-	 form_mit_assyria = {
+	form_mit_assyria = {
 		potential = {
 			TAG = MIT
 			primary_culture = assyrian
@@ -12,6 +12,7 @@ country_decisions = {
 				province_id = 2478
 				province_id = 2479	
 			}
+			NOT = { owned_by = ROOT }
 		}
 		allow = {
 			NOT = { exists = ASY }
@@ -37,7 +38,7 @@ country_decisions = {
 		}
 	}
 
-	 assyrian_mit_identity = {
+	assyrian_mit_identity = {
 		potential = {
 			TAG = MIT
 			has_country_modifier = hurrian_not_identity
@@ -67,7 +68,7 @@ country_decisions = {
 		}
 	}
 
-	 hanigalbat_mit_identity = {
+	hanigalbat_mit_identity = {
 		potential = {
 			TAG = MIT
 			has_country_modifier = hurrian_not_identity
@@ -107,7 +108,7 @@ country_decisions = {
 		}
 	}
 
-	 form_meshwesh = {
+	form_meshwesh = {
 		major = yes
 		potential = {
 			NOT = { exists = MSW }
@@ -118,6 +119,7 @@ country_decisions = {
 				province_id = 735	
 				province_id = 738	
 			}
+			NOT = { owned_by = ROOT }
 		}
 		allow = {
 			owns_core_province = 735
@@ -188,20 +190,139 @@ country_decisions = {
 		}
 	}
 
-	 form_indo_scythian_nation = {
+	form_indo_scythian_nation = {
 		major = yes
+		
 		potential = {
-			always = no
+			primary_culture = saka
+			any_owned_province = { continent = india }
+			NOT = { exists = IDS }
 		}
+		
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2922
+				province_id = 2912
+				province_id = 2795
+				province_id = 2794
+				province_id = 2930
+			}
+			NOT = { owned_by = ROOT }
+		}
+		
 		allow = {
 			is_at_war =  no
 			owns_core_province = 2922
 			owns_core_province = 2912
 			owns_core_province = 2795
 			owns_core_province = 2794
+			owns_core_province = 2930
+			NOT = {
+				government = native
+			}
 		}
+		
 		effect = {
+			change_tag = IDS
+			set_capital = 2930
 			add_prestige = 10
+			add_accepted_culture = gandharan
+			add_accepted_culture = nishadan
+			change_technology_group = indian
+			change_unit_type = indian
+			sindhu_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = IDS
+			}
+			gandhara = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = IDS
+			}
+			kuru_panchala = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = IDS
+			}
+			saurashtra_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = IDS
+			}
+			if = {
+				limit = { government = monarchy }
+				add_government_reform = indian_common_monarchy
+			}
+			else_if = {
+				limit = { government = republic }
+				add_government_reform = indian_republic_reform
+			}
+			if = {
+				limit = {
+					is_religion_enabled = buddhism
+					dominant_religion = buddhism
+				}
+				change_religion = buddhism
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					is_religion_enabled = jain
+					dominant_religion = jain
+				}
+				change_religion = jain
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					is_religion_enabled = hinduism
+					dominant_religion = hinduism
+				}
+				change_religion = hinduism
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					is_religion_enabled = hinduism
+					dominant_religion = hinduism
+				}
+				change_religion = hinduism
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					is_religion_enabled = ajivika
+					dominant_religion = ajivika
+				}
+				change_religion = ajivika
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					dominant_religion = brahmin
+				}
+				change_religion = brahmin
+				add_stability = 1
+			}
+			else_if = {
+				limit = {
+					dominant_religion = sramana
+				}
+				change_religion = sramana
+				add_stability = 1
+			}
+			else = {
+				add_stability = 1
+			}
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
 		}
 		ai_importance = 500	
 		ai_will_do = {
@@ -209,7 +330,7 @@ country_decisions = {
 		}
 	}
 		
-	 form_phoenician_nation = {
+	form_phoenician_nation = {
 		major = yes
 		potential = {
 			OR = {
@@ -239,15 +360,101 @@ country_decisions = {
 		}
 		effect = {
 			change_tag = PHO
-				if = {
-					limit = { NOT = { government_rank = 3 } }
-					set_government_rank = 3
-				}
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
 			}
-		ai_importance = 0	
+		}
+		ai_importance = 0
 		ai_will_do = {
 			factor = 400
 		}
 	}
+	
+	form_panchala_nation = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = TUR
+				TAG = KRI
+				TAG = SRI
+				TAG = SOM
+				TAG = KES
+			}
+			NOT = { exists = PNC }
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2979
+				province_id = 2976
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war =  no
+			owns_core_province = 2979
+			owns_core_province = 2976
+			if = {
+				limit = { TAG = TUR }
+				NOT = {
+					exists = KRI
+					exists = SRI
+					exists = SOM
+					exists = KES
+				}
+			}
+			if = {
+				limit = { TAG = KRI }
+				NOT = {
+					exists = TUR
+					exists = SRI
+					exists = SOM
+					exists = KES
+				}
+			}
+			if = {
+				limit = { TAG = SRI }
+				NOT = {
+					exists = TUR
+					exists = KRI
+					exists = SOM
+					exists = KES
+				}
+			}
+			if = {
+				limit = { TAG = SOM }
+				NOT = {
+					exists = TUR
+					exists = KRI
+					exists = SRI
+					exists = KES
+				}
+			}
+			if = {
+				limit = { TAG = KES }
+				NOT = {
+					exists = TUR
+					exists = KRI
+					exists = SRI
+					exists = SOM
+				}
+			}
+		}
+		effect = {
+			change_tag = PNC
+			set_capital = 2979
+			add_prestige = 10
+			add_stability = 1
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+		}
+		ai_importance = 1
+		ai_will_do = {
+			factor = 400
+		}
+	}
+	
 }
 	
