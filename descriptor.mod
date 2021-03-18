@@ -1,4 +1,4 @@
-version="2.3.2"
+version="2.4.0"
 tags={
 	"Map"
 	"Balance"
@@ -115,4 +115,4 @@ replace_path="common/units_display"
 replace_path="common/wargoal_types"
 replace_path="music"
 name="Imperium Universalis"
-supported_version="1.30.4"
+supported_version="1.30.6"
