@@ -143,40 +143,53 @@ country_event = {
 # Lybian Revolt
 ########################################################################################
 
-#province_event = {
-	#id = custom_religion.3
-	#title = "custom_religion.3.t"
-	#desc = "custom_religion.3.d"
-	#picture = battle
-	#is_triggered_only = yes
+country_event = {
+	id = custom_religion.3
+	title = "custom_religion.3.t"
+	desc = "custom_religion.3.d"
+	picture = battle
+	is_triggered_only = yes
 	
-	#trigger = {
-		#NOT = { has_province_modifier = lybians_revolt }
-		#has_province_modifier = lybia_present
-		#owner = {
-			#NOT = { stability = 1 }
-			#NOT = { primary_culture = lybian }
-		#}
-	#}
-	
-	#mean_time_to_happen = {
-		#days = 1
-	#}
+	trigger = {
+		NOT = {
+			stability = 2
+			legitimacy = 90
+			absolutism = 25
+			OR = {
+				primary_culture = lybian
+				primary_culture = lybio_egyptian
+			}
+		}
+		any_owned_province = {
+			NOT = { has_province_modifier = lybians_revolt }
+			has_province_modifier = lybia_present
+		}
+	}
 
-	#option = {
-		#name = "custom_religion.3.a"
-		#ai_chance = { factor = 50 }
-		#spawn_rebels = {
-    			#type = peasant_rebels
-    			#size = 3
-    			#friend = LYB
-		#}
-		#add_province_modifier = { 
-    			#name = lybians_revolt
-    			#duration = 3650
-		#}
-	#}
-#}
+	option = {
+		name = "custom_religion.3.a"
+		ai_chance = { factor = 50 }
+		random_owned_province = {
+			if = {
+				limit = {
+					has_province_modifier = lybia_present
+				}
+				spawn_rebels = {
+					type = leadered_peasant_rebels
+					size = 3
+					friend = LYB
+				}
+				add_province_modifier = { 
+					name = lybians_revolt
+					duration = 3650
+				}
+			}
+		}
+		add_yearly_manpower = -0.33
+		add_mil_power = -100
+		add_stability = -1
+	}
+}
 
 ########################################################################################
 # Sectarianism in Judaism
