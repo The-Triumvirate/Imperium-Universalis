@@ -9,6 +9,7 @@ province_event = {
 	title = "elephants.1.t"
 	desc = "elephants.1.d"
 	picture = elephants
+	goto = ROOT
 	
 	trigger = {
 		trade_goods = ivory
@@ -69,16 +70,12 @@ province_event = {
 						owner = { is_at_war = yes }
 					}
 				modifier = {
-					factor = 1.5
+					factor = 2.0
 						owner = { 
-							OR = {
-								religion = jain
-								religion = buddhism
-							}
+							religion_group	= brahmin_group
 						}
 					}
 				}
-		
 		
 				custom_tooltip = elephants.1.tta
 				hidden_effect = {
@@ -163,10 +160,7 @@ province_event = {
 				modifier = {
 					factor = 0.1
 						owner = { 
-							OR = {
-								religion = jain
-								religion = buddhism
-							}
+							religion_group = brahmin_group
 						}
 					}
 				modifier = {
@@ -178,7 +172,10 @@ province_event = {
 		
 				custom_tooltip = elephants.1.ttb
 				hidden_effect = {
+					random = {
+						chance = 50
 						reduce_elephant_pop = yes
+					}
 				}
 				ROOT = { cossack_cavalry = owner }
 	}
@@ -192,13 +189,6 @@ province_event = {
 				modifier = {
 					factor = 1.5
 						all_neighbor_province = { owned_by = ROOT }
-					}
-				modifier = {
-					factor = 1.5
-						OR = {
-							continent = india
-							continent = africa
-						}
 					}
 				modifier = {
 					factor = 0.25
@@ -248,12 +238,12 @@ province_event = {
 				owner = {
 					if = {
 						limit = { 	capital_scope = { continent = ROOT } }
-									capital_scope = { 
-										add_province_modifier = {
-											name = "elephant_work"
-											duration = 1825
-										}
-									}
+						capital_scope = {
+							add_province_modifier = {
+								name = "elephant_work"
+								duration = 1825
+							}
+						}
 					}	
 				}
 	}
@@ -397,6 +387,7 @@ province_event = {
 	title = "elephants.2.t"
 	desc = "elephants.2.d"
 	picture = elephants
+	goto = ROOT
 	
 	trigger = {
 		has_province_modifier = elp_1
@@ -418,38 +409,182 @@ province_event = {
 	}
 }
 
+
 ########################################################################################
-# elephant hunt
+# Elephant import request
 ########################################################################################
 country_event = {
-	id = elephants.4
-	title = "elephants.4.t"
-	desc = "elephants.4.d"
+	id = elephants.7
+	title = "elephants.7.t"
+	desc = "elephants.7.d"
 	picture = elephants
 	is_triggered_only = yes
 	
 	trigger = {
-					any_owned_province = {
-						trade_goods = ivory
-						NOT = { has_province_modifier = elp_1 }
+	}
+	
+	option = { #accept
+		name = "elephants.7.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 2.0
+				alliance_with = FROM
+			}
+			modifier = {
+				factor = 1.25
+				has_opinion = {
+					who = FROM
+					value = 50
+				}
+			} 
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 25
 					}
+				}
+			}
+			modifier = {
+				factor = 0.0
+				is_rival = FROM
+			}
+			modifier = {
+				factor = 0.0
+				is_at_war = yes
+			}
+			modifier = {
+				factor = 0.65
+				NOT = { treasury = 250 }
+			}
+			modifier = {
+				factor = 1.25
+				NOT = { treasury = 25 }
+			}
+		}
+		FROM = {
+			country_event = { 
+				id = elephants.701
+				days = 7
+			}
+		}
+	}
+	
+	option = { #reject
+		name = "elephants.7.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				has_opinion = {
+					who = FROM
+					value = 50
+				}
+			} 
+			modifier = {
+				factor = 1.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 25
+					}
+				}
+			}
+			modifier = {
+				factor = 3.0
+				is_rival = FROM
+			}
+			modifier = {
+				factor = 3.0
+				is_at_war = yes
+			}
+			modifier = {
+				factor = 1.5
+				treasury = 250
+			}
+			modifier = {
+				factor = 3.0
+				 treasury = 500
+			}
+		}
+		FROM = {
+			country_event = { 
+				id = elephants.702
+				days = 7
+			}
+		}
+	}
+}
+
+country_event = {
+	id = elephants.701
+	title = "elephants.701.t"
+	desc = "elephants.701.d"
+	picture = elephants
+	is_triggered_only = yes
+	
+	trigger = {
+	}
+	
+	option = {
+		name = "elephants.701.a"
+		FROM = {
+			add_treasury = 250
+		}
+		add_treasury = -250
+		capital_scope = {
+			cossack_cavalry = ROOT
+			add_institution_embracement = {
+				which = elephant_domestication
+				value = 100
+			}
+		}
+	}
+}
+
+country_event = {
+	id = elephants.702
+	title = "elephants.702.t"
+	desc = "elephants.702.d"
+	picture = elephants
+	is_triggered_only = yes
+	
+	trigger = {
+	}
+	
+	option = {
+		name = "elephants.702.a"
+		
+	}
+}
+
+country_event = {
+	id = elephants.703
+	title = "elephants.703.t"
+	desc = "elephants.703.d"
+	picture = elephants
+	hidden = yes
+	
+	trigger = {
+		has_country_flag = imported_elephants_flag
+		NOT = { num_of_cossacks = 1 }
 	}
 	
 	mean_time_to_happen = {
-		days = 1
+		months = 1
 	}
 	
-	immediate = {
-		}
-	
 	option = {
-		name = "elephants.4.a"
-			random_owned_province = {
-				limit = {  }
-			}
-	}
-	option = {
-		name = "elephants.4.b"
-			
+		name = "elephants.703.a"
+		clr_country_flag = imported_elephants_flag
 	}
 }

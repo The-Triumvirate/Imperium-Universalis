@@ -6,50 +6,181 @@
 #	coin usage
 #	elephant domestication
 
-# now 6 new tiered institutions are deployed progressively in the provinces like the CK2 technologies
-#	governement
-#	construction
-#	agriculture
-#	trade
-#	metalworking
-#	culture
-
 #
 # remember to add graphics for relevant ones when you add to this
 #
 # if a modifier is scaled, its multiplied with development in the province.
 
+#######################################
+# Elephant Domestication
+#######################################
 
+elephant_domestication = {
+	penalty = 0.0
+	bonus = {
+		cavalry_power = 0.025
+	}
+	trade_company_efficiency = 0.0
+
+
+	history = {
+		OR = {
+			region = gandhara
+			region = northern_india_region
+			region = western_india_region
+			region = southern_india_region
+			region = eastern_india_region
+			region = sindhu_region
+			region = kuru_panchala
+			region = kamarupa_region
+			region = saurashtra_region
+			region = vanga_region
+			region = chola_region
+			region = konkana_region
+			region = arachosia_region
+			region = baktria_region
+			region = gedrosia_region
+			region = ariana_region
+			region = parthia_region
+			region = persis_region
+			region = media_region
+			region = mesopotamia_region
+			region = syria_region
+			region = canaan_region
+			region = lower_egypt_region
+			region = upper_egypt_region
+			region = nubia_region
+			region = aethiops
+			region = lybia_region
+			region = africa_region
+			region = mauretania_region
+		}
+		OR = {
+				culture_group = indian_group
+				culture_group = dravidian_group
+			AND = {
+				culture_group = eastern_iranian_group
+				is_year = 245
+			}
+			AND = {
+				culture_group = western_iranian
+				is_year = 275
+			}
+			AND = {
+				culture_group = akkadian_group
+				is_year = 325
+			}
+			AND = {
+				culture_group = semitic
+				is_year = 350
+			}
+			AND = {
+				culture_group = egyptian_group
+				is_year = 350
+			}
+			AND = {
+				culture_group = cushitic_group
+				is_year = 400
+			}
+		}	
+	}
+	
+	# no need for events, as its there from the start.
+	#can_start = {	is_year = 1000	}
+	#start_chance = 100
+	#on_start = iu_institution_events.1
+
+	can_embrace = {
+		always = yes
+	}
+
+	embracement_speed = {
+		
+		modifier = {
+			scale = yes
+			factor = 2.5
+			potential = {
+				elephant_region = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					elephant_domestication = 100
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 1.0
+			potential = {
+				elephant_region = yes
+				NOT = {
+					any_friendly_coast_border_province = {
+						elephant_domestication = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+					elephant_domestication = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = { has_institution = elephant_domestication }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_elephant_domestication_embraced
+				owner = { has_institution = elephant_domestication }
+			}
+		}
+	}
+	
+	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+		factor = 24
+		
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
+		}
+	}
+}
 
 #######################################
 # Writing System
 #######################################
 
 writing_system = {
-	penalty = 0.25
+	penalty = 0.5
 	bonus = {
-		innovativeness_gain = 0.25
+		administrative_efficiency = 0.1
 		technology_cost = -0.1
 	}
 	trade_company_efficiency = 0.0
 
 	history = {
 		OR = {
-				owned_by = TTQ
-				owned_by = URT
-				culture_group = hellenic
-				culture_group = anatolian_group
-				culture_group = semitic
-				culture_group = akkadian_group
-				culture_group = elamite_group
-				culture_group = western_iranian
-				culture_group = egyptian_group
-				culture_group = chinese_group
-				culture_group = indian_group
-				culture_group = italic
-				culture = sabaean
-				region = italian_region
-				region = magna_graecia
+			owned_by = TTQ
+			owned_by = URT
+			culture_group = hellenic
+			culture_group = anatolian_group
+			culture_group = semitic
+			culture_group = akkadian_group
+			culture_group = elamite_group
+			culture_group = western_iranian
+			culture_group = egyptian_group
+			culture_group = chinese_group
+			culture_group = indian_group
+			culture_group = italic
+			culture = sabaean
+			region = italian_region
+			region = magna_graecia
 			AND = {
 				culture_group = turdetani_group
 				is_year = 210
@@ -91,15 +222,13 @@ writing_system = {
 			}
 				is_year = 600
 		}
-		
-		
 	}
 	
 	# no need for events, as its there from the start.
 	#can_start = {	is_year = 1000	}
 	#start_chance = 100
-	#on_start = institution_events.1
-
+	#on_start = iu_institution_events.1
+	
 	can_embrace = {
 		always = yes
 	}
@@ -108,7 +237,7 @@ writing_system = {
 		
 		modifier = {
 			scale = yes
-			factor = 2.0
+			factor = 1.0
 			custom_trigger_tooltip = {
 				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
 				any_friendly_coast_border_province = {
@@ -118,7 +247,7 @@ writing_system = {
 		}
 		modifier = {
 			scale = yes
-			factor = 1.0
+			factor = 0.5
 			potential = {
 				NOT = {
 					any_friendly_coast_border_province = {
@@ -144,7 +273,7 @@ writing_system = {
 		}
 		modifier = {
 			scale = yes
-			factor = 0.25
+			factor = 0.2
 			potential = {
 				is_capital = yes
 				owner = { is_tribal = no }
@@ -158,7 +287,7 @@ writing_system = {
 		}
 		modifier = {
 			scale = yes
-			factor = 0.2
+			factor = 0.15
 			potential = {
 				is_capital = yes
 				owner = { is_tribal = no }
@@ -172,6 +301,17 @@ writing_system = {
 							scholar_advisor = 3
 						}
 				}
+			}
+		}
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { absolutism = 15 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_absolutism_10
+				owner = { absolutism = 15 }
 			}
 		}
 	}
@@ -191,17 +331,26 @@ writing_system = {
 #######################################
 
 coin_usage = {
-	penalty = 0.25
+	penalty = 0.5
 	bonus = {
-		trade_efficiency = 0.15
-		production_efficiency = 0.15
+		global_prov_trade_power = 0.1
+		trade_efficiency = 0.1
 	}
 	trade_company_efficiency = 0.0
+	
+	historical_start_date = 150.1.1
+	historical_start_province = 2158 #Sardis
 
 	history = {
 		OR = {
-			culture = kurunite
-			owned_by = LYD
+			AND = {
+				culture_group = anatolian_group
+				is_year = 150
+			}
+			AND = {
+				culture_group = anatolian_group
+				is_year = 150
+			}
 			AND = {
 				culture_group = hellenic
 				OR = {
@@ -223,21 +372,19 @@ coin_usage = {
 				culture_group = indian_group
 				is_year = 225
 			}
-			AND = {
-				culture_group = semitic
-				is_year = 200
-			}
-			AND = {
-				culture_group = akkadian_group
-				is_year = 225
-			}
-			AND = {
-				culture_group = western_iranian
-				is_year = 245
-			}
-			AND = {
-				culture_group = eastern_iranian_group
-				is_year = 350
+			AND = { #Cyrus the Great introduces coins to the Persian Empire
+				OR = {
+					superregion = iran_superregion
+					superregion = asia_superregion
+					superregion = mesopotamia_superregion
+					superregion = syria_superregion
+					region = lower_egypt_region
+					region = upper_egypt_region
+					region = ariana_region
+					region = parthia_region
+					region = baktria_region
+				}
+				is_year = 211
 			}
 			AND = {
 				culture_group = illyrian_group
@@ -274,10 +421,26 @@ coin_usage = {
 		}
 	}
 	
-	# no need for events, as its there from the start.
-	#can_start = {	is_year = 1000	}
-	#start_chance = 100
-	#on_start = institution_events.1
+	can_start = {
+		is_year = 150
+		region = asia_minor
+		is_state = yes
+		province_has_center_of_trade_of_level = 1
+		OR = {
+			development = 10
+			is_capital = yes
+		}
+		owner = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5
+	
+	on_start = iu_institution_events.1
 
 	can_embrace = {
 		always = yes
@@ -287,7 +450,7 @@ coin_usage = {
 		
 		modifier = {
 			scale = yes
-			factor = 0.4
+			factor = 2.0
 			custom_trigger_tooltip = {
 				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
 				any_friendly_coast_border_province = {
@@ -297,7 +460,7 @@ coin_usage = {
 		}
 		modifier = {
 			scale = yes
-			factor = 2.0
+			factor = 1.5
 			potential = {
 				NOT = {
 					any_friendly_coast_border_province = {
@@ -349,147 +512,3434 @@ coin_usage = {
 			}
 			custom_trigger_tooltip = {
 				tooltip = tooltip_any_tradenode_member_has_coinage10
-				 province_trade_power = 10
+				province_trade_power = 10
 				any_trade_node_member_province = { 
 					coin_usage = 100
 				}
 			}
 		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { absolutism = 15 }
+				NOT = {
+					government = native
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_absolutism_10
+				owner = { absolutism = 15 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { trade_income_percentage = 0.33  }
+				NOT = {
+					government = native
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_trade_income_not_native
+				owner = { trade_income_percentage = 0.33 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			force_potential = yes
+			potential = {
+				province_has_center_of_trade_of_level = 2
+				NOT = { province_has_center_of_trade_of_level = 3 }
+				NOT = {
+					government = native
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_2_center_trade
+				province_has_center_of_trade_of_level = 2
+				NOT = { province_has_center_of_trade_of_level = 3 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			force_potential = yes
+			potential = {
+				province_has_center_of_trade_of_level = 3
+				NOT = {
+					government = native
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_3_center_trade
+				province_has_center_of_trade_of_level = 3
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { gold_income_percentage = 0.25 }
+				NOT = {
+					government = native
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_gold_income_25
+				owner = { gold_income_percentage = 0.25 }
+			}
+		}
+		
+		modifier = {
+			scale = yes
+			factor = 1.5
+			potential = {
+				owner = { has_institution = coin_usage }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_coinage_embrace
+				owner = { has_institution = coin_usage }
+			}
+		}
 	}
 	
-	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+	ai_will_do = {
 		factor = 24
 		
 		modifier = {
-			factor = 0.5
+			factor = 0.25
 			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
 		}
 	}
 }
 
 #######################################
-# Elephant Domestication
+# Siege Engineering
 #######################################
+siege_engineering_jnstitution = {
+	penalty = 0.5
 
-elephant_domestication = {
-	penalty = 0.0
 	bonus = {
-		cavalry_power = 0.025
+		siege_ability = 0.15
+		artillery_bonus_vs_fort = 1
 	}
 	trade_company_efficiency = 0.0
 
+	historical_start_date = 200.1.1
+	historical_start_province = 2500 #Babylonia
 
 	history = {
 		OR = {
-			region = gandhara
-			region = northern_india_region
-			region = western_india_region
-			region = southern_india_region
-			region = eastern_india_region
-			region = sindhu_region
-			region = kuru_panchala
-			region = kamarupa_region
-			region = saurashtra_region
-			region = vanga_region
-			region = chola_region
-			region = konkana_region
-			region = arachosia_region
-			region = baktria_region
-			region = parthia_region
-			region = persis_region
-			region = media_region
-			region = mesopotamia_region
-			region = syria_region
-			region = canaan_region
-			region = lower_egypt_region
-			region = upper_egypt_region
-			region = nubia_region
-			region = aethiops
-			region = lybia_region
-			region = africa_region
-			region = mauretania_region
+			AND = {
+				is_year = 200
+				region = mesopotamia_region
+				region = haltamti_region
+				region = assyria_region
+			}
+			AND = { #Cyrus the Great expansions
+				OR = {
+					superregion = iran_superregion
+					superregion = asia_superregion
+					superregion = mesopotamia_superregion
+					superregion = syria_superregion
+					region = lower_egypt_region
+					region = upper_egypt_region
+					region = ariana_region
+					region = parthia_region
+					region = baktria_region
+				}
+				is_year = 211
+			}
 		}
-		OR = {
-				culture_group = indian_group
-				culture_group = dravidian_group
-			AND = {
-				culture_group = eastern_iranian_group
-				is_year = 245
-			}
-			AND = {
-				culture_group = western_iranian
-				is_year = 275
-			}
-			AND = {
-				culture_group = akkadian_group
-				is_year = 325
-			}
-			AND = {
-				culture_group = semitic
-				is_year = 350
-			}
-			AND = {
-				culture_group = egyptian_group
-				is_year = 350
-			}
-			AND = {
-				culture_group = cushitic_group
-				is_year = 400
-			}
-		}	
 	}
 	
-	# no need for events, as its there from the start.
-	#can_start = {	is_year = 1000	}
-	#start_chance = 100
-	#on_start = institution_events.1
+	can_start = {
+		is_year = 200
+		OR = {
+			region = mesopotamia_region
+			region = haltamti_region
+			region = assyria_region
+		}
+		owner = {
+			OR = {
+				has_global_modifier_value = {
+					which = siege_ability
+					value = 0.2
+				}
+				army_tradition = 40
+			}
+		}
+		OR = {
+			has_building = small_city_walls
+			has_building = large_city_walls
+		}
+		is_in_capital_area = yes
+	}
+	start_chance = 5		#in 100 for when a province can_start
+
+	on_start = iu_institution_events.2
 
 	can_embrace = {
 		always = yes
 	}
-
+	
 	embracement_speed = {
 		
 		modifier = {
+			factor = 0.4
 			scale = yes
-			factor = 2.5
-			potential = {
-				elephant_region = yes
-				}
 			custom_trigger_tooltip = {
 				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
 				any_friendly_coast_border_province = {
-					elephant_domestication = 100
+					siege_engineering_jnstitution = 100
 				}
 			}
 		}
+		
 		modifier = {
 			scale = yes
-			factor = 1.0
+			factor = 0.25
 			potential = {
-				elephant_region = yes
 				NOT = {
 					any_friendly_coast_border_province = {
-						elephant_domestication = 100
+						siege_engineering_jnstitution = 100
 					}
 				}
 			}
 			custom_trigger_tooltip = {
-				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				tooltip = tooltip_any_border_province_has_embraced_this_institution
 				any_neighbor_province = {
 					NOT = { owned_by = ROOT }
-					elephant_domestication = 100
+					siege_engineering_jnstitution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				owner = {
+					has_global_modifier_value = {
+						which = siege_ability
+						value = 0.4
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_siege_ability
+				owner = {
+					has_global_modifier_value = {
+						which = siege_ability
+						value = 0.4
+					}
+				}
+			}
+		}
+
+
+		modifier = {
+			factor = 0.15
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = {
+					has_global_modifier_value = {
+						which = army_professionalism
+						value = 0.5
+					}
+				}
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_high_army_professionalism
+				owner = {
+					has_global_modifier_value = {
+						which = army_professionalism
+						value = 0.5
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					has_leader_with = {
+						general = yes
+						siege = 2
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_leader_with_high_siege_ability
+				owner = {
+					has_leader_with = {
+						siege = 2
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.75
+			scale = yes
+			
+			force_potential = yes
+			potential = {
+				owner = {
+					any_enemy_country = {
+						has_institution = siege_engineering_jnstitution
+						NOT = {
+							war_score_against = {
+								who = PREV
+								value = -50
+							}
+						}
+					}
+				}
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_captured_siege_engines
+				owner = {
+					any_enemy_country = {
+						has_institution = siege_engineering_jnstitution
+						NOT = {
+							war_score_against = {
+								who = PREV
+								value = -50
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { advisor = engineer }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_siege_advisor_employed
+				owner = { advisor = engineer }
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { full_idea_group = engineering_ideas }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_engineering_ideas
+				owner = { full_idea_group = engineering_ideas }
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Bureaucracy
+#######################################
+bureaucracy_institution = {
+	penalty = 0.5
+
+	bonus = {
+		state_governing_cost = -0.1
+		state_maintenance_modifier = -0.1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 250.1.1
+	historical_start_province = 2666 #Susa
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 250
+				OR = {
+					superregion = asia_superregion
+					superregion = iran_superregion
+					superregion = syria_superregion
+					superregion = mesopotamia_superregion
+					region = parthia_region
+					region = ariana_region
+					region = baktria_region
+					region = transoxiana_region
 				}
 			}
 		}
 	}
 	
-	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
-		factor = 24
+	can_start = {
+		is_year = 250
+		is_island = no
+		is_state = yes
+		OR = {
+			has_building = small_townhall
+			has_building = big_townhall
+			has_building = government_palace
+			has_building = government_district
+		}
+		owner = {
+			absolutism = 10
+			num_of_cities = 30
+			total_development = 80
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+		OR = {
+			region = haltamti_region
+			superregion = iran_superregion
+		}
+
+	}
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.3
+	
+	
+	can_embrace = {
+		owner = { has_institution = writing_system }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.5
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					bureaucracy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						bureaucracy_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					bureaucracy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = {
+					has_estate = estate_nobility
+					estate_loyalty = {
+						estate = estate_nobility
+						loyalty = 40
+					}
+					estate_territory = {
+						estate = estate_nobility
+						territory = 30
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_bureaucracy_nobility
+				any_neighbor_province = {
+					bureaucracy_institution = 100
+				}
+				owner = {
+					has_estate = estate_nobility
+					estate_loyalty = {
+						estate = estate_nobility
+						loyalty = 40
+					}
+					estate_territory = {
+						estate = estate_nobility
+						territory = 30
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.3
+			scale = yes
+			potential = {
+				NOT = { local_autonomy = 25 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_autonomy_less_25
+				NOT = { local_autonomy = 25 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_government_buildings
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.35
+			scale = yes
+			potential = {
+				owner = {
+					OR = {
+						has_reform = centralized_bureaucracy
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_centralized_bureaucracy_reform
+				owner = {
+					OR = {
+						has_reform = centralized_bureaucracy
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				owner = { absolutism = 20 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_absolutism
+				owner = { absolutism = 20 }
+			}
+		}
 		
 		modifier = {
 			factor = 0.5
+			potential = {
+				owner = {
+					has_global_modifier_value = {
+						which = administrative_efficiency
+						value = 0.2
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_admin_efficiency
+				owner = {
+					has_global_modifier_value = {
+						which = administrative_efficiency
+						value = 0.2
+					}
+				}
+			}
+		}
+
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				adm = 5
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_adm_ruler
+				adm = 5
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = writing_system
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_writing_system_embraced
+				owner = {
+					has_institution = writing_system
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.75
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = bureaucracy_institution
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_bureaucracy_embraced
+				owner = {
+					has_institution = bureaucracy_institution
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.33
+			scale = yes
+			potential = {
+				owner = { full_idea_group = administrative_ideas }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_administrative_ideas
+				owner = { full_idea_group = administrative_ideas }
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				owner = { num_of_provinces_in_states = 50 }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_more_50_provinces
+				owner = { num_of_provinces_in_states = 50 }
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
 			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Cast Iron
+#######################################
+cast_iron_institution = {
+	penalty = 0.5
+
+	bonus = {
+		production_efficiency = 0.15
+		global_unrest = -1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 300.1.1
+	historical_start_province = 4349 #Chengzhou
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 300
+				OR = {
+					superregion = china_superregion
+				}
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 300
+		is_state = yes
+		culture_group = chinese_group
+		superregion = china_superregion
+		trade_goods = iron
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.4
+	
+	
+	can_embrace = {
+		always = yes
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.8
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					cast_iron_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.66
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						cast_iron_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					cast_iron_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.20
+			scale = yes
+			potential = {
+				owner = { mil_tech = 12 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_12_mil_tech
+				owner = { mil_tech = 12 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { iron = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_producing_provinces
+				owner = { iron = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				trade_goods = iron
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_producing_province
+				trade_goods = iron
+			}
+		}
+		
+		modifier = {
+			factor = 2.0
+			scale = yes
+			potential = {
+				owner = {
+					production_leader = {
+						trade_goods = iron
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_world_leader
+				owner = {
+					production_leader = {
+						trade_goods = iron
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.65
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = cast_iron_institution
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_cast_iron
+				owner = {
+					has_institution = cast_iron_institution
+				}
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Classical Philosophy
+#######################################
+classical_philosophy_institution = {
+	penalty = 0.5
+
+	bonus = {
+		idea_cost = -0.1
+		advisor_pool = 1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 350.1.1
+	historical_start_province = 959 #Athens
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 350
+				OR = {
+					superregion = macedonia_superregion
+				}
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 350
+		is_state = yes
+		culture_group = hellenic
+		base_tax = 1
+		base_production	= 1
+		superregion = macedonia_superregion
+		owner = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.5
+	
+	
+	can_embrace = {
+		always = yes
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.5
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					classical_philosophy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.35
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						classical_philosophy_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					classical_philosophy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = writing_system
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_writing_system_embraced
+				owner = {
+					has_institution = writing_system
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					advisor = scholar_advisor
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_scholar_advisor
+				owner = {
+					advisor = scholar_advisor
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.33
+			scale = yes
+			potential = {
+				owner = {
+					advisor = philosopher_adv
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_philosopher_advisor
+				owner = {
+					advisor = philosopher_adv
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				base_production = 3
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_3_base_production
+				base_production = 3
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				base_tax = 1
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_1_base_tax
+				base_tax = 1
+			}
+		}
+		
+		modifier = {
+			factor = 0.45
+			scale = yes
+			potential = {
+				owner = {
+					full_idea_group = academy_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_full_academy_ideas
+				owner = {
+					has_institution = academy_ideas
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			force_potential = yes
+			potential = {
+				culture_group = hellenic
+				superregion = macedonia_superregion
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_greek_in_greece
+				culture_group = hellenic
+				superregion = macedonia_superregion
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { culture_group = hellenic }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_greek_owner
+				owner = { culture_group = hellenic }
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				owner = { philosophers_academy = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip__owner_philosophers_academy
+				owner = { philosophers_academy = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.8
+			scale = yes
+			force_potential = yes
+			potential = {
+				has_building = philosophers_academy
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip__province_philosophers_academy
+				has_building = philosophers_academy
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Civil Law
+#######################################
+civil_law_institution = {
+	penalty = 0.5
+
+	bonus = {
+		yearly_corruption = -0.1
+		years_of_nationalism = -5
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 400.1.1
+	historical_start_province = 53 #Rome
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 450
+				OR = {
+					superregion = italia_superregion
+				}
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 400
+		is_state = yes
+		base_tax = 1
+		base_production	= 1
+		superregion = italia_superregion
+		owner = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.6
+	
+	
+	can_embrace = {
+		owner = { has_institution = writing_system }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.6
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					civil_law_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						civil_law_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					civil_law_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = writing_system
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_writing_system_embraced
+				owner = {
+					has_institution = writing_system
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_government_buildings
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				NOT = { local_autonomy = 25 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_autonomy_less_25
+				NOT = { local_autonomy = 25 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				owner = {
+					adm_tech = 19
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_adm_tech_19
+				owner = {
+					adm_tech = 19
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.4
+			scale = yes
+			potential = {
+				owner = {
+					OR = {
+						has_reform = written_law_reform
+						has_reform = twelve_tables_reform
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_written_laws_refrom
+				owner = {
+					OR = {
+						has_reform = written_law_reform
+						has_reform = twelve_tables_reform
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					full_idea_group = domestic_government_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_full_domestic_government_ideas
+				owner = {
+					full_idea_group = domestic_government_ideas
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				has_owner_culture = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_has_owner_culture
+				has_owner_culture = yes
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { absolutism = 20 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_absolutism
+				owner = { absolutism = 20 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { has_institution = bureaucracy_institution }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_bureaucracy_embraced
+				owner = { has_institution = bureaucracy_institution }
+			}
+		}
+		
+		modifier = {
+			factor = 1.0
+			scale = yes
+			potential = {
+				owner = { TAG = ROM }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_is_rome
+				owner = { TAG = ROM }
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Axiomatic Maths
+#######################################
+axiomatic_maths_institution = {
+	penalty = 0.5
+
+	bonus = {
+		global_institution_spread = 0.1
+		prestige_decay = -0.01
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 450.1.1
+	historical_start_province = 728 #Alexandria
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 450
+				OR = {
+					region = lower_egypt_region
+					region = upper_egypt_region
+				}
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 450
+		is_state = yes
+		OR = {
+			is_capital = yes
+			is_in_capital_area = yes
+		}
+		development = 12
+		OR = {
+			has_building = mathematician_academy
+			has_building = library
+			has_building = great_library
+		}
+		OR = {
+			region = lower_egypt_region
+			region = upper_egypt_region
+		}
+		owner = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.7
+	
+	
+	can_embrace = {
+		owner = { has_institution = writing_system }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.4
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					axiomatic_maths_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						axiomatic_maths_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					axiomatic_maths_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = writing_system
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_writing_system_embraced
+				owner = {
+					has_institution = writing_system
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				OR = {
+					has_building = library
+				has_building = great_library
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_building_library
+				OR = {
+					has_building = library
+				has_building = great_library
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					adm_tech = 19
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_adm_tech_19
+				owner = {
+					adm_tech = 19
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					full_idea_group = academy_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_full_academy_ideas
+				owner = {
+					full_idea_group = academy_ideas
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.3
+			scale = yes
+			potential = {
+				has_owner_culture = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_has_owner_culture
+				has_owner_culture = yes
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { mathematician_academy = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_math_academy
+				owner = { mathematician_academy = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.75
+			scale = yes
+			force_potential = yes
+			potential = {
+				has_building = mathematician_academy
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_math_academy
+				has_building = mathematician_academy
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				is_prosperous = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_prospering
+				is_prosperous = yes
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+
+#######################################
+# Blast Furnace
+#######################################
+blast_furnace_institution = {
+	penalty = 0.5
+
+	bonus = {
+		production_efficiency = 0.1
+		global_trade_goods_size_modifier = 0.1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 500.1.1
+	historical_start_province = 4195 #Xiangyang
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 500
+				superregion = china_superregion
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 500
+		is_state = yes
+		development = 6
+		superregion = china_superregion
+		culture_group = chinese_group
+		owner = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+			iron = 1
+			has_global_modifier_value = {
+				which = production_efficiency
+				value = 0.4
+			}
+			OR = {
+				quarry = 4
+				small_mine = 2
+				big_mine = 1
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.8
+	
+	
+	can_embrace = {
+		owner = { has_institution = cast_iron_institution }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.33
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					blast_furnace_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						blast_furnace_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					blast_furnace_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				owner = { iron = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_producing_provinces
+				owner = { iron = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 1.5
+			scale = yes
+			potential = {
+				trade_goods = iron
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_producing_province
+				trade_goods = iron
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = {
+					production_leader = {
+						trade_goods = iron
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_world_leader
+				owner = {
+					production_leader = {
+						trade_goods = iron
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = cast_iron_institution
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_cast_iron
+				owner = {
+					has_institution = cast_iron_institution
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = blast_furnace_institution
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_blast_furnace
+				owner = {
+					has_institution = blast_furnace_institution
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.01
+			scale = yes
+			force_potential = yes
+			potential = {
+				NOT = { superregion = china_superregion }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_not_in_china
+				NOT = { superregion = china_superregion }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			force_potential = yes
+			potential = {
+				superregion = china_superregion
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_in_china
+				superregion = china_superregion
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Advanced Hydraulics
+#######################################
+advanced_hydraulics_institution = {
+	penalty = 0.5
+
+	bonus = {
+		global_manpower_modifier = 0.1
+		global_supply_limit_modifier = 0.1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 550.1.1
+	historical_start_province = 2322 #Antiocheia
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 550
+				superregion = syria_superregion
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 550
+		is_state = yes
+		development = 7
+		superregion = syria_superregion
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+			trade_goods = olive
+			trade_goods = wine
+		}
+		OR = {
+			has_building = small_water_irrigation
+			has_building = big_water_irrigation
+			has_building = big_estate
+		}
+		owner = {
+			has_global_modifier_value = {
+				which = production_efficiency
+				value = 0.5
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.9
+	
+	
+	can_embrace = {
+		always = yes
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.5
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					advanced_hydraulics_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						advanced_hydraulics_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					advanced_hydraulics_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				OR = {
+					trade_goods = grain
+					trade_goods = fruits
+					trade_goods = rice
+					trade_goods = olive
+					trade_goods = wine
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_agricultural_province
+				OR = {
+					trade_goods = grain
+					trade_goods = fruits
+					trade_goods = rice
+					trade_goods = olive
+					trade_goods = wine
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				OR = {
+					has_building = small_water_irrigation
+					has_building = big_water_irrigation
+					has_building = big_estate
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_agriculture_building
+				OR = {
+					has_building = small_water_irrigation
+					has_building = big_water_irrigation
+					has_building = big_estate
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					has_global_modifier_value = {
+						which = production_efficiency
+						value = 0.5
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_high_efficiency
+				owner = {
+					has_global_modifier_value = {
+						which = production_efficiency
+						value = 0.5
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.66
+			scale = yes
+			potential = {
+				owner = {
+					OR = {
+						production_leader = {
+							trade_goods = grain
+						}
+						production_leader = {
+							trade_goods = fruits
+						}
+						production_leader = {
+							trade_goods = rice
+						}
+						production_leader = {
+							trade_goods = olive
+						}
+						production_leader = {
+							trade_goods = wine
+						}
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_agriculture_production
+				owner = {
+					OR = {
+						production_leader = {
+							trade_goods = grain
+						}
+						production_leader = {
+							trade_goods = fruits
+						}
+						production_leader = {
+							trade_goods = rice
+						}
+						production_leader = {
+							trade_goods = olive
+						}
+						production_leader = {
+							trade_goods = wine
+						}
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.33
+			scale = yes
+			potential = {
+				owner = {
+					has_institution = advanced_hydraulics_institution
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_advanced_hydraulics_institution
+				owner = {
+					has_institution = advanced_hydraulics_institution
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				owner = {
+					full_idea_group = agraculture_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_full_agriculture_ideas
+				owner = {
+					full_idea_group = agraculture_ideas
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.001
+			scale = yes
+			force_potential = yes
+			potential = {
+				has_climate	= arid
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_climate_arid
+				has_climate	= arid
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			force_potential = yes
+			potential = {
+				is_farmland_terrain = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_farmland
+				is_farmland_terrain = yes
+			}
+		}
+		
+		modifier = {
+			factor = 0.001
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					has_terrain = desert
+					has_terrain = salt_desert
+					has_terrain = coastal_desert
+					has_terrain = desert_mountain
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_terrain_not_good
+				OR = {
+					has_terrain = desert
+					has_terrain = salt_desert
+					has_terrain = coastal_desert
+					has_terrain = desert_mountain
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.025
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					has_terrain = steppe
+					has_terrain = savannah
+					has_terrain = forest_steppe
+					has_terrain = oasis
+					has_terrain = siwa_t
+					has_terrain = desert_river
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_terrain_not_that_bad
+				OR = {
+					has_terrain = steppe
+					has_terrain = savannah
+					has_terrain = forest_steppe
+					has_terrain = oasis
+					has_terrain = siwa_t
+					has_terrain = desert_river
+				}
+			}
+		}
+		
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Astronomy
+#######################################
+astronomy_institution = {
+	penalty = 0.5
+
+	bonus = {
+		range = 0.33
+		envoy_travel_time = -0.2
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 600.1.1
+	historical_start_province = 945 #Corinth
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 600
+				superregion = macedonia_superregion
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 600
+		is_state = yes
+		development = 5
+		superregion = macedonia_superregion
+		culture_group = hellenic
+		owner = {
+			has_institution = axiomatic_maths_institution
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.10
+	
+	
+	can_embrace = {
+		owner = { has_institution = axiomatic_maths_institution }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.75
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					astronomy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						astronomy_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					astronomy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.001
+			scale = yes
+			potential = {
+				owner = {
+					OR = {
+						government = tribal
+						government = native
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_tribal_government
+				owner = {
+					OR = {
+						government = tribal
+						government = native
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				owner = { has_institution = writing_system }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_writing_system_embraced
+				owner = { has_institution = writing_system }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { has_institution = axiomatic_maths_institution }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_axiomatic_maths_embraced
+				owner = { has_institution = axiomatic_maths_institution }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				development = 10
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_10_development
+				development = 10
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				base_tax = 6
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_6_tax
+				base_tax = 6
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				base_tax = 8
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_8_tax
+				base_tax = 8
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				is_prosperous = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_prospering
+				is_prosperous = yes
+			}
+		}
+		
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					culture_group = hellenic
+					culture_group = akkadian_group
+					culture_group = italic
+					culture_group = semitic
+					culture_group = etruscan_culture_group
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_akkadian_greek
+				OR = {
+					culture_group = hellenic
+					culture_group = akkadian_group
+					culture_group = italic
+					culture_group = semitic
+					culture_group = etruscan_culture_group
+				}
+			}
+		}
+		
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { absolutism = 30 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_30_absolutism
+				owner = { absolutism = 30 }
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Engineering and Architecture
+#######################################
+engineering_architecture_institution = {
+	penalty = 0.5
+
+	bonus = {
+		build_cost = -0.15
+		build_time = -0.15
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 650.1.1
+	historical_start_province = 10 #Syracuse
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 650
+				superregion = italia_superregion
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 650
+		is_state = yes
+		province_has_center_of_trade_of_level = 1
+		superregion = italia_superregion
+		OR = {
+			culture_group = hellenic
+			culture_group = italic
+		}
+		OR = {
+			has_building = gravel_road
+			has_building = paved_road
+			has_building = imperial_road
+		}
+		owner = {
+			has_institution = axiomatic_maths_institution
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.11
+	
+	
+	can_embrace = {
+		owner = { has_institution = axiomatic_maths_institution }
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 0.7
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					engineering_architecture_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						engineering_architecture_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					engineering_architecture_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					NOT = {
+						has_global_modifier_value = {
+							which = build_cost
+							value = -0.2
+						}
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_cheap_construction
+				owner = {
+					NOT = {
+						has_global_modifier_value = {
+							which = build_cost
+							value = -0.2
+						}
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				owner = {
+					NOT = {
+						has_global_modifier_value = {
+							which = build_time
+							value = -0.15
+						}
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_quick_construction
+				owner = {
+					NOT = {
+						has_global_modifier_value = {
+							which = build_time
+							value = -0.15
+						}
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { has_institution = axiomatic_maths_institution }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_axiomatic_maths_embraced
+				owner = { has_institution = axiomatic_maths_institution }
+			}
+		}
+		
+		modifier = {
+			factor = 0.001
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					has_terrain = mountain
+					has_terrain = highlands
+					has_terrain = desert_mountain
+					has_terrain = fertile_highlands
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_accidented_terrain
+				OR = {
+					has_terrain = mountain
+					has_terrain = highlands
+					has_terrain = desert_mountain
+					has_terrain = fertile_highlands
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_has_roads
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { mathematician_academy = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_math_academy
+				owner = { mathematician_academy = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.33
+			scale = yes
+			force_potential = yes
+			potential = {
+				has_building = mathematician_academy
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_math_academy
+				has_building = mathematician_academy
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				owner = { has_institution = siege_engineering_jnstitution }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_siege_engineering_embraced
+				owner = { has_institution = siege_engineering_jnstitution }
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = { has_institution = engineering_architecture_institution }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_engineering_architecture_embraced
+				owner = { has_institution = engineering_architecture_institution }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { advisor = engineer }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_siege_advisor_employed
+				owner = { advisor = engineer }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { advisor = architect }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_architect_advisor_employed
+				owner = { advisor = architect }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { full_idea_group = engineering_ideas }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_engineering_ideas
+				owner = { full_idea_group = engineering_ideas }
+			}
+		}
+		
+		modifier = {
+			factor = 0.75
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { tag = ROM }
+			}
+			
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_is_rome
+				owner = { tag = ROM }
+			}
+		}
+		
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Military Tactics and Strategy
+#######################################
+tactics_strategy_institution = {
+	penalty = 0.5
+
+	bonus = {
+		land_morale = 0.05
+		leader_land_manuever = 1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 700.1.1
+	historical_start_province = 103 #Syracuse
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 700
+				superregion = italia_superregion
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 700
+		is_state = yes
+		province_has_center_of_trade_of_level = 1
+		superregion = italia_superregion
+		OR = {
+			culture_group = hellenic
+			culture_group = italic
+		}
+		OR = {
+			has_building = military_academy
+			has_building = small_conscription_center
+		}
+		OR = {
+			has_building = small_army_camp
+			has_building = small_military_settlement
+			has_building = big_military_settlement
+		}
+		owner = {
+			army_tradition = 60
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.12
+	
+	
+	can_embrace = {
+		always = yes
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 1.0
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					tactics_strategy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						tactics_strategy_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					tactics_strategy_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = {
+					has_leader_with = {
+						general = yes
+						shock = 6
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_good_general
+				owner = {
+					has_leader_with = {
+						general = yes
+						shock = 6
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { army_tradition = 50 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_50_army_tradition
+				owner = { army_tradition = 50 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = { army_professionalism = 60 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_60_army_professionalism
+				owner = { army_professionalism = 60 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { military_academy = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_military_academy
+				owner = { military_academy = 1 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { MIL = 5 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_ruler_high_mil
+				owner = { MIL = 5 }
+			}
+		}
+		
+		modifier = {
+			factor = 0.001
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { has_reform = levy_army_reform }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_levy_army_reform
+				owner = { has_reform = levy_army_reform }
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { has_reform = standing_army_reform }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_standing_army_reform
+				owner = { has_reform = standing_army_reform }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { advisor = army_reformer_adv }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_army_reformer_advisor
+				owner = { advisor = army_reformer_adv }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { advisor = army_veteran }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_army_veteran_advisor
+				owner = { advisor = army_veteran }
+			}
+		}
+		
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				owner = { full_idea_group = leadership_ideas }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_full_leadership_ideas
+				owner = { full_idea_group = leadership_ideas }
+			}
+		}
+		
+		modifier = {
+			factor = 0.33
+			scale = yes
+			potential = {
+				owner = {
+					has_global_modifier_value = {
+						which = land_morale
+						value = 0.5
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_moral_army
+				owner = {
+					has_global_modifier_value = {
+						which = land_morale
+						value = 0.5
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = { TAG = ROM }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_owner_is_rome
+				owner = { TAG = ROM }
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			force_potential = yes
+			potential = {
+				has_building = military_academy
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_military_academy
+				has_building = military_academy
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Monotheism
+#######################################
+monotheism_institution = {
+	penalty = 0.5
+
+	bonus = {
+		tolerance_own = 1
+		missionaries = 1
+	}
+
+	trade_company_efficiency = 0.0
+
+	historical_start_date = 750.1.1
+	historical_start_province = 2277 #Jerusalem
+
+	history = {
+		OR = {
+			AND = {
+				is_year = 750
+				region = canaan_region
+			}
+		}
+	}
+	
+	can_start = {
+		is_year = 750
+		is_state = yes
+		superregion = syria_superregion
+		culture_group = semitic
+		OR = {
+			has_building = shrine
+			has_building = small_temple
+			has_building = great_temple
+		}
+	}
+	
+	start_chance = 5	#in 100 for when a province can_start
+	
+	
+	on_start = iu_institution_events.13
+	
+	
+	can_embrace = {
+		always = yes
+	}
+
+	
+	embracement_speed = {
+	
+		modifier = {
+			factor = 1.20
+			scale = yes
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					monotheism_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 1.20
+			scale = yes
+			potential = {
+				NOT = {
+					any_friendly_coast_border_province = {
+						monotheism_institution = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					monotheism_institution = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			potential = {
+				owner = {
+					NOT = { religious_unity = 0.5 }
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_has_low_rel_unity
+				owner = {
+					NOT = { religious_unity = 0.5 }
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			force_potential = yes
+			potential = {
+				religion_group = pagan_group
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_pagan
+				religion_group = pagan_group
+			}
+		}
+		
+		modifier = {
+			factor = 0.25
+			scale = yes
+			force_potential = yes
+			potential = {
+				religion_group = jewish_group
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_jewish_group
+				religion_group = jewish_group
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = { religion_group = jewish_group }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_country_is_jewish_group
+				owner = { religion_group = jewish_group }
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = {
+					uses_patriarch_authority = yes
+					NOT = { patriarch_authority = 0.5 }
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_country_is_pagan_low_pa
+				owner = {
+					uses_patriarch_authority = yes
+					NOT = { patriarch_authority = 0.5 }
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.15
+			scale = yes
+			force_potential = yes
+			potential = {
+				superregion = syria_superregion
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_syria_superregion
+				superregion = syria_superregion
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					region = lower_egypt_region
+					region = upper_egypt_region
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_in_egypt
+				OR = {
+					region = lower_egypt_region
+					region = upper_egypt_region
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			force_potential = yes
+			potential = {
+				OR = {
+					superregion = parthia_superregion
+					superregion = iran_superregion
+					superregion = mesopotamia_superregion
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_in_iran
+				OR = {
+					superregion = parthia_superregion
+					superregion = iran_superregion
+					superregion = mesopotamia_superregion
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.1
+			scale = yes
+			force_potential = yes
+			potential = {
+				superregion = asia_superregion
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_is_in_asia_superregion
+				superregion = asia_superregion
+			}
+		}
+		
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_has_temples
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 1.2
+			scale = yes
+			potential = {
+				NOT = {
+					has_local_modifier_value = {
+						which = local_religious_conversion_resistance
+						value = 0.1
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_province_low_resistance_reformation
+				NOT = {
+					has_local_modifier_value = {
+						which = local_religious_conversion_resistance
+						value = 0.1
+					}
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.3
+			scale = yes
+			force_potential = yes
+			potential = {
+				any_neighbor_province = {
+					monotheism_institution = 100
+				}
+				owner = {
+					has_estate = estate_priesthood
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 40
+					}
+					estate_territory = {
+						estate = estate_priesthood
+						territory = 30
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_monotheism_priesthood
+				any_neighbor_province = {
+					monotheism_institution = 100
+				}
+				owner = {
+					has_estate = estate_priesthood
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 40
+					}
+					estate_territory = {
+						estate = estate_priesthood
+						territory = 30
+					}
+				}
+			}
+		}
+		
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = {
+					uses_patriarch_authority = yes
+					full_idea_group = cerimonial_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_monotheism_no_advancement
+				owner = {
+					uses_patriarch_authority = yes
+					full_idea_group = cerimonial_ideas
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 1.33
+			scale = yes
+			force_potential = yes
+			potential = {
+				owner = {
+					uses_patriarch_authority = no
+					full_idea_group = cerimonial_ideas
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_monotheism_yes_advancement
+				owner = {
+					uses_patriarch_authority = no
+					full_idea_group = cerimonial_ideas
+				}
+			}
+		}
+	}
+	
+	ai_will_do = {
+		factor = 24
+		
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.1
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.2
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.3
+		}
+		modifier = {
+			factor = 2
+			neighbors_tech_discount = 0.4
 		}
 	}
 }

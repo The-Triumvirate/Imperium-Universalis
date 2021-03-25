@@ -14,6 +14,9 @@ on_startup = {
 		}
 	events = {
 		medo_assyrian_war.1
+		lier_kings.1
+		lier_kings.16
+		cyrus_scenario.1
 	}
 }
 
@@ -68,6 +71,8 @@ on_war_won = {
  		elam.24
 		medo_assyrian_war.4
 		medo_assyrian_war.6
+		medo_assyrian_war.602
+		lier_kings.15
 	}
 }
 
@@ -78,6 +83,12 @@ on_war_lost = {
 		diplomacy.6
 		elam.23
 		indian.4
+		lier_kings.13
+		lier_kings.1301
+		lier_kings.1302
+		lier_kings.1303
+		lier_kings.1304
+		id = sukkal.1701
 	}
 }
 
@@ -160,46 +171,16 @@ on_battle_lost_province = {
 # country
 # root = winning country, from = location
 on_siege_won_country = {
-		events = {
-			marduk.2
-			marduk.3
-			new_governments.20
-		}
-		random_events = {		
-			25 = slaves.2
-			25 = slaves.4
-			15 = slaves.5
-			
-			50 = 0 
-			}
-
-		if = {
-			limit = {
-				NOT = { has_country_modifier = slavery_abolished }
-			}
-			random = {
-				chance = 50
-				change_variable = { which = slaves value = 500 }
-			}
-		}
+	events = {
+		marduk.2
+		marduk.3
+		new_governments.20
+	}
 }
 
 # country
 # root = losing country, from = location
 on_siege_lost_country = {
-		if = {
-			limit = {
-				NOT = { has_country_modifier = slavery_abolished }
-				check_variable = {
-						which = slaves
-						value = 1000
-					}
-			}
-			random = {
-				chance = 50
-				change_variable = { which = slaves value = -500 }
-			}
-		}
 }
 
 # province
@@ -236,6 +217,8 @@ on_monarch_death = {
 	events = {
 		epirus.2
 		subject_event.1
+		sukkal.21
+		indian.37
 	}
 }
 
@@ -536,7 +519,13 @@ on_hre_religion_white_peace = {
 
 # When a non-native changes government type
 on_government_change = {
-	
+	if = {
+		limit = { TAG = ROM }
+		country_event = {
+			id = new_ideas.1
+			days = 30
+		}
+	}
 }
 
 # When a native changes government after filling all their advancement groups.
@@ -811,8 +800,6 @@ on_thri_yearly_pulse_2 = {
 on_thri_yearly_pulse_3 = {
 	# Rebellions & Estates
 	random_events = {
-			50 = slaves.6
-			100 = slaves.7
 			
 			100 = elam.18
 			
@@ -885,8 +872,8 @@ on_four_year_pulse = {
 		olympia.1
 	}
 	random_events = {
-		50 = indian.5
-		50 = indian.28
+		25 = indian.5
+		25 = indian.28
 		30 = new_governments.2
 		40 = new_governments.3
 	}
@@ -918,22 +905,18 @@ on_five_year_pulse = {
 	}
 }
 
-# Slave income
 on_five_year_pulse_2 = {
-	events = {
-		slaves.1
-	}
 	random_events = {
-			#45 = custom_religion.13
-			#45 = custom_religion.14
-			#30 = custom_religion.17
-			#30 = custom_religion.18
-			#30 = custom_religion.19
-			#30 = custom_religion.20
-			#30 = custom_religion.21
-			#30 = custom_religion.22
-			#25 = custom_religion.23
-			#25 = custom_religion.24
+		#45 = custom_religion.13
+		#45 = custom_religion.14
+		#30 = custom_religion.17
+		#30 = custom_religion.18
+		#30 = custom_religion.19
+		#30 = custom_religion.20
+		#30 = custom_religion.21
+		#30 = custom_religion.22
+		#25 = custom_religion.23
+		#25 = custom_religion.24
 	}
 }
 
@@ -942,8 +925,9 @@ on_five_year_pulse_3 = {
 
 on_five_year_pulse_4 = {
 	random_events = {
-			#10 = custom_religion.16
-			#15 = custom_religion.25
+		#10 = custom_religion.16
+		#15 = custom_religion.25
+		10 = custom_religion.3
 	}
 }
 
@@ -1030,6 +1014,9 @@ on_province_religion_converted = {
 
 # province
 on_province_culture_converted = {
+	province_event = { 
+		id = syncretized_culture.2
+	}
 }
 
 # THIS = Province, FROM = Country who Propogated
@@ -1213,7 +1200,6 @@ on_create_vassal = {
 	ROOT = {
 		country_event = {
 			id = elam.31
-			days = 1
 		}
 	}
 }
@@ -1232,7 +1218,6 @@ on_minority_expelled = {
 
 # THIS = Raiding country, FROM = Sea province
 on_raid_coast = {
-	change_variable = { which = slaves value = 500 }
 }
 
 # ROOT = Tag that captured the flagship, FROM = Tag that lost the flagship
@@ -1247,6 +1232,11 @@ on_flagship_destroyed = {
 on_country_released = {
 	set_ruler_religion = THIS
 	set_ruler_culture = THIS
+	add_legitimacy = 100
+	add_republican_tradition = 100
+	add_devotion = 100
+	add_horde_unity = 100
+	add_meritocracy = 100
 }
 
 # ROOT = province, FROM = country
@@ -1273,6 +1263,13 @@ on_pre_dip_advisor_fired = {
 
 # this = country
 on_pre_mil_advisor_fired = {
+	if = {
+		limit = {
+			has_country_flag = need_to_fire_mil_advisor
+		}
+		set_country_flag = just_fired_mil_advisor
+		remove_advisor_by_category_no_action = MIL
+	}
 }
 
 # this = country

@@ -1,0 +1,125 @@
+namespace = cyrus_scenario
+
+########################################################################################
+# Madness of Astyages
+########################################################################################
+country_event = {
+	id = cyrus_scenario.1
+	title = "cyrus_scenario.1.t"
+	desc = "cyrus_scenario.1.d"
+	picture = mad_emperor
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = MDI
+		start_date = 198.1.1
+		NOT = { is_year = 205 }
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_global_flag = astyages_madness_flag
+			remove_historical_friend = BAB
+			BAB = {
+				remove_historical_friend = MDI
+			}
+			add_stability = -1
+			add_legitimacy = -25
+			add_prestige = -20
+			add_yearly_manpower = -1.0
+			add_years_of_income = 1.0
+			LYD = {
+				add_years_of_income = 5
+			}
+		}
+	}
+	
+	option = {
+		name = "cyrus_scenario.1.a"
+		ai_chance = { factor = 99 }
+		ANH = {
+			add_ruler_modifier = { 
+				name = cyrus_the_great_leadership_modifier 
+			}
+		}
+		add_ruler_modifier = { 
+			name = astyages_madness_modifier 
+		}
+	}
+}
+
+########################################################################################
+# Cyrus attacks Astyages
+########################################################################################
+country_event = {
+	id = cyrus_scenario.2
+	title = "cyrus_scenario.2.t"
+	desc = "cyrus_scenario.2.d"
+	picture = battle
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = ANH
+		has_ruler = "Koroush II the Great"
+		is_year = 200
+		start_date = 198.1.1
+		had_global_flag = {
+			flag = astyages_madness_flag
+			days = 1825
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 60
+	}
+	
+	immediate = {
+		hidden_effect = {
+			MDI = {
+				release_all_subjects = yes
+				every_owned_province = {
+					limit = {
+						OR = {
+							culture = persian
+							culture = sagartian
+							culture = karamanian
+						}
+					}
+					cede_province = ANH
+					add_core = ANH
+				}
+			}
+			if = {
+				limit = {
+					exists = PRS
+					PRS = { ai = yes }
+				}
+				inherit = PRS
+			}
+		}
+	}
+	
+	option = {
+		name = "cyrus_scenario.2.a"
+		ai_chance = { factor = 99 }
+		capital_scope = {
+			build_to_forcelimit = {
+				infantry = 0.25
+				cavalry = 0.5
+				artillery = 0.25
+			}
+		}
+		add_yearly_manpower = 0.5
+		add_army_tradition = 10
+		add_prestige = 10
+		declare_war_with_cb = {
+			who = MDI
+			casus_belli = cb_mission_invasion
+		}
+	}
+}
+
+

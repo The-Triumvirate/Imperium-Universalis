@@ -34,6 +34,10 @@ estate_nobility_generals = {
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
 		factor = 0
+		modifier = {
+			factor = 1
+			NOT = { army_tradition = 30 }
+		}
 	}
 }
 
@@ -69,7 +73,18 @@ estate_nobility_captains = {
 	# cooldown_years = int 						
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
-		factor = 0
+		factor = 0.5
+		modifier = {
+			factor = 0
+			OR = {
+				NOT = { crown_land_share = 30 }
+				estate_influence = {
+					estate = estate_nobility
+					influence = 75
+				}
+			}
+			NOT = { has_estate_privilege = estate_nobility_captains }
+		}
 	}
 }
 
@@ -105,7 +120,26 @@ estate_nobility_grant_autonomy = {
 	# cooldown_years = int 						
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
-		factor = 1
+		factor = 0.1
+		modifier = {
+			factor = 0
+			OR = {
+				NOT = { crown_land_share = 30 }
+				estate_influence = {
+					estate = estate_nobility
+					influence = 75
+				}
+			}
+			NOT = { has_estate_privilege = estate_nobility_captains }
+		}
+		modifier = {
+			factor = 0.5
+			current_income_balance = 2
+		}
+		modifier = {
+			factor = 1
+			current_income_balance = 1
+		}
 	}
 }
 
@@ -132,7 +166,7 @@ estate_nobility_governorship = {
 	# 	is_bad = yes/no							
 	# }
 	benefits = {
-		governing_capacity_modifier = 0.15
+		governing_capacity = 100
 	}
 	# modifier_by_land_ownership = { 
 	# }
@@ -140,7 +174,10 @@ estate_nobility_governorship = {
 	# cooldown_years = int 						
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
-		factor = 1
+		factor = 0
+		modifier = {
+			factor = 0
+		}
 	}
 }
 
@@ -176,7 +213,41 @@ estate_nobility_advisors = {
 	# cooldown_years = int 						
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
-		factor = 1
+		factor = 12
+		modifier = {
+			factor = 0
+			OR = {
+				NOT = { crown_land_share = 30 }
+				estate_influence = {
+					estate = estate_nobility
+					influence = 75
+				}
+			}
+			NOT = { has_estate_privilege = estate_nobility_advisors }
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				NOT = { crown_land_share = 35 }
+				AND = {
+					is_absolutism_active = yes
+					NOT = { crown_land_share = 55 }
+				}
+			}
+			NOT = { has_estate_privilege = estate_nobility_advisors }
+		}
+		modifier = {
+			factor = 0.8
+			is_absolutism_active = yes
+		}
+		modifier = {
+			factor = 1.25
+			NOT = { mil = 2 }
+		}
+		modifier = {
+			factor = 0.8
+			mil = 5
+		}
 	}
 }
 
@@ -213,6 +284,83 @@ estate_nobility_military_rights = {
 	# cooldown_years = int 						
 	# on_cooldown_expires = { effects }			
 	ai_will_do = {
-		factor = 1
+		factor = 5
+		modifier = {
+			factor = 1.5
+			any_rival_country = {
+				army_strength = {
+					who = root
+					value = 1.5
+				}
+			}
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { max_manpower = 40 }
+		}
+		modifier = {
+			factor = 0.5
+			max_manpower = 200
+		}
+		modifier = {
+			factor = 2
+			estate_territory = {
+				estate = estate_nobility
+				territory = 50
+			}
+		}
+		modifier = {
+			factor = 1.5
+			estate_territory = {
+				estate = estate_nobility
+				territory = 40
+			}
+		}
+		modifier = {
+			factor = 1.5
+			estate_territory = {
+				estate = estate_nobility
+				territory = 30
+			}
+		}
+		modifier = {
+			factor = 0.5
+			NOT = {
+				estate_territory = {
+					estate = estate_nobility
+					territory = 15
+				}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			NOT = {
+				estate_territory = {
+					estate = estate_nobility
+					territory = 10
+				}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			NOT = {
+				estate_territory = {
+					estate = estate_nobility
+					territory = 5
+				}
+			}
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { current_income_balance = 2 }
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { current_income_balance = 0 }
+		}
+		modifier = {
+			factor = 0.5
+			is_absolutism_active = yes
+		}
 	}
 }

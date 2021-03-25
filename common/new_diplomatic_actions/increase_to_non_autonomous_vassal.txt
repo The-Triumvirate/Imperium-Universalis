@@ -11,17 +11,73 @@ increase_non_autonomous_vassal = {
 			is_subject_of = ROOT
 		}
 	}
-	is_allowed = {
-			dip_power = 100
-			reverse_has_opinion = {
-				who = FROM
-				value = 150
+	is_allowed = {			
+		custom_trigger_tooltip = {
+			tooltip = vassal_autonomy_ct.1
+			FROM = { NOT = { has_country_flag = vassal_autonomy_reduced_to_half_flag } }
+		}
+		dip_power = 50
+		reverse_has_opinion = {
+			who = FROM
+			value = 150
+		}
+		FROM = {
+			is_at_war = no
+			hidden_trigger = {
+				NOT = { has_country_flag = vassal_autonomy_reduced_to_half_flag }
 			}
-			FROM = { is_at_war = no }
+		}
 	}
 	on_accept = {
-		add_dip_power = -100
-		hidden_effect = {	# Just to be sure that flags are removed, before event triggers
+		if = {
+			limit = { FROM = { total_development = 500 } }
+			add_dip_power = -325
+		}
+		else_if = {
+			limit = { FROM = { total_development = 450 } }
+			add_dip_power = -300
+		}
+		else_if = {
+			limit = { FROM = { total_development = 400 } }
+			add_dip_power = -275
+		}
+		else_if = {
+			limit = { FROM = { total_development = 350 } }
+			add_dip_power = -250
+		}
+		else_if = {
+			limit = { FROM = { total_development = 300 } }
+			add_dip_power = -225
+		}
+		else_if = {
+			limit = { FROM = { total_development = 250 } }
+			add_dip_power = -200
+		}
+		else_if = {
+			limit = { FROM = { total_development = 200 } }
+			add_dip_power = -175
+		}
+		else_if = {
+			limit = { FROM = { total_development = 150 } }
+			add_dip_power = -150
+		}
+		else_if = {
+			limit = { FROM = { total_development = 100 } }
+			add_dip_power = -125
+		}
+		else_if = {
+			limit = { FROM = { total_development = 50 } }
+			add_dip_power = -100
+		}
+		else_if = {
+			limit = { FROM = { total_development = 25 } }
+			add_dip_power = -75
+		}
+		else = {
+			add_dip_power = -50
+		}
+
+		hidden_effect = {
 			ROOT = {
 				create_subject = {
 					who = FROM
@@ -29,15 +85,14 @@ increase_non_autonomous_vassal = {
 				}
 			}
 			FROM = {
-					add_opinion = { who = ROOT modifier = decreased_autonomy_opinion }
+				add_opinion = { who = ROOT modifier = decreased_autonomy_opinion }
 			}
 		}
 	}
-	
+
 	ai_will_do = {
-				FROM = { NOT = { liberty_desire = 25 } }
-				stability = 0
-				has_any_disaster = no
-				
-		}
+		FROM = { NOT = { liberty_desire = 25 } }
+		stability = 0
+		has_any_disaster = no
+	}
 }

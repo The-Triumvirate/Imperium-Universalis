@@ -18,7 +18,7 @@ estate_merchants_build_market_in_y = {
 			NOT = {
 				any_owned_province = {
 					is_state_core = root
-					NOT = { base_tax = 1 }
+					NOT = { base_production = 1 }
 					num_free_building_slots = 1
 				}
 			}
@@ -27,7 +27,7 @@ estate_merchants_build_market_in_y = {
 			factor = 2.0
 			any_owned_province = {
 				is_state_core = root
-				base_tax = 1
+				base_production = 1
 				NOT = { has_building = medium_market }
 				NOT = { has_building = great_market }
 				AND = {
@@ -44,14 +44,10 @@ estate_merchants_build_market_in_y = {
 		}
 	}
 	pre_effect = {
-		set_variable = {
-			which = estate_merchants_build_market_in_y_var
-			value = 0
-		}
 		random_owned_province = {
 			limit = {
 				is_state_core = root
-				NOT = { base_tax = 1 }
+				NOT = { base_production = 1 }
 				NOT = { has_building = small_market }
 				NOT = { has_building = medium_market }
 				NOT = { has_building = great_market }
@@ -70,33 +66,6 @@ estate_merchants_build_market_in_y = {
 			}
 			save_event_target_as = agenda_province
 		}
-		event_target:agenda_province = {
-			if = {
-				limit = {
-					NOT = {
-						OR = {
-							has_building = small_market
-							has_building = medium_market
-							has_building = great_market
-						}
-					}
-				}
-				ROOT = {
-					set_variable = {
-						which = estate_merchants_build_market_in_y_var
-						value = 1
-					}
-				}
-			}
-			else = {
-				ROOT = {
-					set_variable = {
-						which = estate_merchants_build_market_in_y_var
-						value = 2
-					}
-				}
-			}
-		}
 	}
 	provinces_to_highlight = {
 		province_id = event_target:agenda_province
@@ -107,19 +76,11 @@ estate_merchants_build_market_in_y = {
 		}
 	}
     task_requirements = {
-		if = {
-			limit = {
-				check_variable = {
-					which = estate_merchants_build_market_in_y_var
-					value = 2
-				}
-			}
-			event_target:agenda_province = {
-				OR = {
-					has_building = shrine
-					has_building = small_temple
-					has_building = great_temple
-				}
+		event_target:agenda_province = {
+			OR = {
+				has_building = small_market
+				has_building = medium_market
+				has_building = great_market
 			}
 		}
     }
@@ -352,13 +313,10 @@ estate_merchants_build_light_ships = {
 		}
 	}
 	fail_if = {
-		num_of_ports = 0
+		NOT = { num_of_ports = 1 }
 	}
 	task_requirements = {
-		OR = {
-			light_ship_fraction = 0.4
-			num_of_light_ship = 16
-		}
+		light_ship_fraction = 0.25
 	}
     task_completed_effect = {
 		add_estate_loyalty = {

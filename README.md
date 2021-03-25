@@ -4,14 +4,11 @@ The new repository of the Imperium Univeralis Europa Universalis 4 mod rewritten
 
   Post-2.2.2 Development Team
 
-ACommonGuerrillo - (Lead Developer, Godmodder, Master Crash Fixer)
+ACommonGuerrillo - (Lead Developer)
 @ACommonGuerrillo#5588
 
-NightWarrior - (Lead Developer, Team Organizer)
+NightWarrior - (Lead Developer)
 @NightWarrior#5461
-
-Noah (JihadiJackass) - (Lead Developer, Public Relations)
-@Noah#7349
 
 valeskoi - (Developer)
 @valeskoi#9457
@@ -22,15 +19,15 @@ PenguBoy - (Developer)
 ZhuGeKongBo - (Developer for China)
 诸葛孔博ZhugeKongbo#1539
 
-  Pre-2.2.2 Development Team
+ Pre-2.2.2 Development Team
 
-KArantukki (Godmodder/Everthing)
+KArantukki (Godmodder/Everything)
 
 Hirdman (National Ideas, Events, History, Units)
 
 诸葛孔博 & his Team (China and all the chinese Mechanics)
 
-ACommonDude (general flavor for the middle east)
+ACommonGuerrillo (general flavor for the middle east)
 
 Ritter1 (3D Units)
 
