@@ -87,6 +87,7 @@ mino_missions_2 = {
 		
 		trigger = {
 			has_adopted_cult = cult_minos
+			is_independent = yes
 		}
 		
 		effect = {
@@ -207,7 +208,7 @@ mino_missions_2 = {
 
 
 mino_missions_3 = {
-	slot = 2
+	slot = 3
 	generic = no
 	ai = yes
 	potential = {
@@ -247,32 +248,356 @@ mino_missions_3 = {
 		}
 	}
 	
-	spartan_threat = {
+	powerful_leaders = {
 		position = 3
-		icon = mission_sparta
+		icon = mission_great_leader
 		required_missions = { reclaim_colonies_minos }
 		
+		trigger = {
+			has_commanding_three_star = yes
+		}
+		
+		effect = {
+			messenia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			achaea_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			arcadia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			argolis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
 	
+	crush_barbarian_minos = {
+		position = 4
+		icon = mission_sparta
+		required_missions = { powerful_leaders }
+		
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				OR = {
+					area = argolis_area
+					area = messenia_area
+					area = arcadia_area
+					area = achaea_area
+				}
+				value = 10
+			}
+		}
+		
+		effect = {
+			add_army_tradition = 50
+			add_prestige = 50
+		}
+	}
 	
+	lords_aegean_minos = {
+		position = 6
+		icon = mission_greece
+		required_missions = { seven_seven_minos crush_barbarian_minos repopulate_islands_minos }
+		
+		provinces_to_highlight = {
+			OR = {
+				region = greek_region
+				region = mare_aegaeum_islands_region
+				region = ionia_region
+			}
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			num_of_provinces_owned_with = {
+				AND = {
+					culture = minoan
+					has_port = yes
+					OR = {
+						region = greek_region
+						region = mare_aegaeum_islands_region
+						region = ionia_region
+					}
+				}
+				value = 50
+			}
+		}
+		
+		effect = {
+			
+			mare_aegaeum_islands_region = {
+				add_base_production = 2
+			}
+		}
+	}
+}
+
+mino_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
 	
+	potential = {
+		tag = MNO
+	}
+	
+	has_country_shield = yes
+	
+	prepare_war_minos = {
+		position = 1
+		icon = mission_greeks
+		required_missions = { }
+		
+		trigger = {
+			army_size_percentage = 1
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = "elan_minos"
+				duration = 3650
+			}
+			
+			karpathos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	reclaim_colonies_minos = {
+		position = 2
+		icon = mission_ship2
+		required_missions = { prepare_war_minos gate_of_aegean_minos }
+		
+		provinces_to_highlight = {
+			OR = {
+				area = karpathos_area
+				province_id = 5511
+			}
+		
+		trigger = {
+			karpathos_area = {
+				typ = all
+				owned_by = ROOT
+			}
+			5511 = {
+				owned_by = ROOT
+			}
+		}
+		
+		effect = {
+			###Cycladic Dominion and Rhodes to Victory
+			cyclades_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			archipelagos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			rhodiorum_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			melos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	cycladic_dominion_minos = {
+		position = 3
+		icon = mission_ship2
+		required_missions = { reclaim_colonies_minos }
+		
+		provinces_to_highlight = {
+			OR = {
+				area = melos_area
+				area = archipelagos_area
+				area = cyclades_area
+			}
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			melos_area = {
+				type = all
+				owned_by = ROOT
+			}
+			archipelagos_area = {
+				type = all
+				owned_by = ROOT
+			}
+			cyclades_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		
+		effect = {
+			mare_aegaeum_islands_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	archipelagos_minos = {
+		position = 4
+		icon = mission_greece
+		required_missions = { cycladic_dominion_minos }
+		
+		provinces_to_highlight = {
+			region = mare_aegaeum_islands_region
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			mare_aegaeum_islands_region = {
+				type = all
+				is_core = ROOT
+			}
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = "minos_island_port"
+				duration = -1
+			}
+		}
+	}
+	
+	repopulate_islands_minos = {
+		position = 5
+		icon = mission_harvest
+		required_missions = { archipelagos_minos island_copper_minos }
+		
+		trigger = {
+			num_of_transport = 25
+			OR = {
+				num_of_heavy_ship = 15
+				num_of_light_ship = 30
+				num_of_galley = 40
+			}
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = "minoan_repopulation"
+				duration = 73000
+			}
+		}
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+mino_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	
+	potential = {
+		tag = MNO
+	}
+	
+	has_country_shield = yes
+	
+	gate_of_aegean_minos = {
+		position = 1
+		icon = mission_big_fleet
+		required_missions = {}
+		
+		trigger = {
+			navy_size_percentage = 0.75
+		}
+		
+		effect = {
+			5511 = {
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	rhodes_to_victory = {
+		position = 3
+		icon = mission_ship1
+		required_missions = { reclaim_colonies_minos }
+		
+		provinces_to_highlight = {
+			area = rhodiorum_area
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			rhodiorum_area = {
+				type = all
+				is_core = ROOT
+			}
+		}
+		
+		effect = {
+			cyprus_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	island_copper_minos = {
+		position = 4
+		icon = mission_asia
+		
 
 
 
