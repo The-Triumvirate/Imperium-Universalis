@@ -1,0 +1,63 @@
+
+
+ask_government_advice_subject = {
+	category = influence
+	#alert_index = 42
+	alert_tooltip = ask_government_advice_subject_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		is_subject = no
+		OR = {
+			government = tribal
+			government = native
+		}
+		num_of_subjects = 1
+		FROM = {
+			is_subject_of = ROOT
+			NOT = {
+				government = tribal
+				government = native
+			}
+		}
+	}
+	is_allowed = {
+		NOT = {
+			OR = {
+				has_country_modifier = diplo_action_reform_progress_mod
+				has_country_modifier = diplo_action_native_advancement_mod
+			}
+		}
+		is_bankrupt = no
+	}
+	on_accept = {
+		if = {
+			limit = { government = tribal }
+			add_country_modifier = { 
+				name = diplo_action_reform_progress_mod
+				duration = 5475
+			}
+		}
+		else = {
+			add_country_modifier = { 
+				name = diplo_action_native_advancement_mod
+				duration = 5475
+			}
+		}
+		add_stability = -1
+		add_treasury = -100
+		FROM = {
+			add_treasury = 100
+		}
+	}
+	ai_will_do = {
+		has_any_disaster = no
+		NOT = { FROM = { liberty_desire = 50 } }
+		stability = 2
+		treasury = 300
+		absolutism = 5
+		FROM = { is_at_war = no }
+		is_at_war = no
+		NOT = { average_unrest = 1 }
+	}
+}

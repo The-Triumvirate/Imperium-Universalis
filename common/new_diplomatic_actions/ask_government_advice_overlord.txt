@@ -1,0 +1,127 @@
+
+
+ask_government_advice_overlord = {
+	category = economy
+	alert_index = 42
+	alert_tooltip = ask_government_advice_overlord_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = yes
+		OR = {
+			government = tribal
+			government = native
+		}
+		FROM = {
+			NOT = {
+				government = tribal
+				government = native
+			}
+			overlord_of = ROOT
+		}
+	}
+	is_allowed = {
+		NOT = {
+			OR = {
+				has_country_modifier = diplo_action_reform_progress_mod
+				has_country_modifier = diplo_action_native_advancement_mod
+			}
+		}
+		is_bankrupt = no
+	}
+	on_accept = {
+		if = {
+			limit = { government = tribal }
+			add_country_modifier = { 
+				name = diplo_action_reform_progress_mod
+				duration = 5475
+			}
+		}
+		else = {
+			add_country_modifier = { 
+				name = diplo_action_native_advancement_mod
+				duration = 5475
+			}
+		}
+		add_stability = -1
+		add_treasury = -200
+		FROM = {
+			add_treasury = 200
+		}
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 80 }
+		}
+		
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = ROOT
+			}
+			divide_variable = { which = ai_value value = 5 }
+		}
+		
+		add_entry = {
+			name = DIPLOMATIC_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		
+		add_entry = {
+			name = PRESTIGE_CUSTOM_CIVILIZATION_AI_VALUE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 50 }
+		}
+		
+		add_entry = {
+			name = DIFFERENT_RELIGION
+			limit = { NOT = { religion = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+		add_entry = {
+			name = DIFFERENT_CULTURE_GROUP
+			limit = { NOT = { culture_group = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+	}
+	
+	ai_will_do = {
+		has_any_disaster = no
+		reverse_has_opinion = {
+			who = FROM
+			value = 100
+		}
+		stability = 2
+		treasury = 400
+		absolutism = 5
+		FROM = { is_at_war = no }
+		is_at_war = no
+		NOT = { average_unrest = 1 }
+	}
+}
