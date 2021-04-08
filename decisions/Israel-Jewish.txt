@@ -1,0 +1,293 @@
+country_decisions = {
+	
+	 form_israel_nation = {
+		major = yes
+		potential = {
+			OR = {
+				primary_culture = hebrew
+				primary_culture = samaritan
+			}
+		}
+		allow = {
+			NOT = { exists = ISR }
+			is_at_war =  no
+			is_subject = no
+			owns_core_province = 2277
+			owns_core_province = 2286
+			 num_of_provinces_in_states = 8 
+		}
+		effect = {
+			change_tag = ISR
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+				judaea_area = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ISR
+				}
+				samaria_area = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ISR
+				}
+			}
+		ai_importance = 300	
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	# Ezra's Marriage Reform
+	 ezras_reform = {
+		potential = {
+			TAG = JUD 
+			NOT = { has_country_modifier = ezras_reform_modifier }
+		}
+		allow = {
+			religion = jewish
+			is_at_war =  no
+			adm_tech = 6
+		}
+		effect = {
+			add_country_modifier = { 
+				name = ezras_reform_modifier
+				duration = -1  
+				}
+			}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	# Block Egypts Army
+	 block_the_egyptians_decision = {
+		potential = {
+			TAG = JUD 
+			NOT = { has_country_flag = egyptian_army_passed_throught }
+			NOT = {
+				has_opinion = {
+					who = EGY
+					value = 5
+				}
+			}
+			NOT = {  started_in = 146.1.1 }
+			NOT = { is_year = 150 }
+		}
+		allow = {
+			NOT = {  alliance_with = EGY }
+			NOT = {
+				any_enemy_country = { 
+					war_with = EGY
+				} 
+			}
+			any_owned_province = {
+				 units_in_province = EGY 
+			}
+		}
+		effect = {
+				set_country_flag = egyptian_army_passed_throught
+				
+				add_prestige = 10
+				tooltip = {
+					EGY = { declare_war_with_cb = {
+						who = JUD
+						casus_belli = cb_vassalize_mission
+						}
+					}
+				}
+				hidden_effect = {
+					EGY = {
+							country_event = {
+								id = judah.2
+							}
+					}
+				}
+			}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	###Moved from new_religious_decisions###
+	
+	the_great_jewish_synod = {
+		potential = {
+			OR = {
+				tag = JUD
+				tag = ISR
+			}
+			religion = jewish
+			NOT = { has_country_modifier = called_great_synod }
+		}
+		allow = {
+			is_year = 215
+			priest_adv = 3
+			religious_unity = 0.9
+		}
+		effect = {
+			add_country_modifier = { 
+    				name = called_great_synod
+  		  		duration = -1
+			}
+		}
+		ai_importance = 400
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	celebrate_pesaj = {
+		potential = {
+			OR = {
+				religion = jewish
+				religion = samaritan
+			}
+			NOT = { has_country_modifier = celebrated_passover }
+		}
+		allow = {
+			years_of_income = 2
+			is_month = 3
+			NOT = { is_month = 4 }
+			capital_scope = { 
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+		effect = {
+			add_years_of_income = -3
+			add_yearly_manpower = 0.1
+			add_country_modifier = { 
+    				name = celebrated_passover
+  		  		duration = 60
+			}
+		}
+		ai_importance = 300
+		ai_will_do = {
+			factor = 1
+		}
+	 }
+
+	establish_synagogues = {
+		potential = {
+			OR = {
+				religion = jewish
+				religion = samaritan
+			}
+			NOT = { has_country_modifier = established_synagogues }
+		}
+		allow = {
+			years_of_income = 3
+			is_year = 500
+			OR = {
+				jewish = 3
+				samaritan = 3
+			}
+		}
+		effect = {
+			add_years_of_income = -3
+			add_country_modifier = { 
+    				name = established_synagogues
+  		  		duration = -1
+			}
+		}
+		ai_importance = 500
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	organize_the_zealots = {
+		potential = {
+			OR = {
+				tag = ISR
+				tag = JUD
+			}
+			religion = jewish
+			NOT = { has_country_modifier = organized_zealots }
+			has_global_flag = growing_sects_with_jews
+		}
+		allow = {
+			army_tradition = 60
+			manpower_percentage = 1
+			capital_scope = {
+				OR = {
+					has_building = small_city_walls
+					has_building = large_city_walls
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = { 
+    				name = organized_zealots
+  		  		duration = -1
+			}
+		}
+		ai_importance = 100
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	select_new_jewish_sect = {
+		potential = {
+			OR = {
+				tag = ISR
+				tag = JUD
+			}
+			religion = jewish
+			has_global_flag = growing_sects_with_jews
+		}
+		allow = {
+			NOT = { has_country_modifier = changed_jewish_sect }
+		}
+		effect = {
+			add_legitimacy = -10
+			country_event = { id = custom_religion.5 }
+		}
+		ai_importance = 0
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	establish_sanhedrin = {
+		potential = {
+			OR = {
+				religion = jewish
+				religion = samaritan
+			}
+			OR = {
+				tag = ISR
+				tag = JUD
+			}	
+			NOT = { has_country_modifier = the_sanhedrin }
+		}
+		allow = {
+			is_year = 453
+			stability	= 2
+			adm_tech = 34
+			capital_scope = { 
+				OR = {
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = { 
+    				name = the_sanhedrin
+  		  		duration = -1
+			}
+		}
+		ai_importance = 200
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}
+	
