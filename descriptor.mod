@@ -1,4 +1,4 @@
-version="2.4.1"
+version="3.0"
 tags={
 	"Map"
 	"Balance"
@@ -114,6 +114,6 @@ replace_path="common/units"
 replace_path="common/units_display"
 replace_path="common/wargoal_types"
 replace_path="music"
-name="Imperium Universalis 2.4.1"
+name="Imperium Universalis 3.0 Shores of the Aegean"
 supported_version="1.30.6"
 remote_file_id="679204773"
