@@ -1,0 +1,355 @@
+
+convert_to_satrapy = {
+	category = influence
+	#alert_index = 4
+	alert_tooltip = convert_to_satrapy_alert_tooltip.1
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = non_autonomous_vassal
+			is_subject_of = ROOT
+		}
+		OR = {
+			has_reform = medes_monarchy_reform
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = parthian_monarchy_reform
+		}
+	}
+	is_allowed = {			
+		adm_power = 500
+		is_at_war = no
+		reverse_has_opinion = {
+			who = FROM
+			value = 150
+		}
+		FROM = {
+			is_at_war = no
+			has_any_disaster = no
+			trust = { who = ROOT value = 50 }
+		}
+	}
+	on_accept = {
+		if = {
+			limit = { FROM = { total_development = 500 } }
+			add_adm_power = -500
+		}
+		else_if = {
+			limit = { FROM = { total_development = 450 } }
+			add_adm_power = -475
+		}
+		else_if = {
+			limit = { FROM = { total_development = 400 } }
+			add_adm_power = -450
+		}
+		else_if = {
+			limit = { FROM = { total_development = 350 } }
+			add_adm_power = -425
+		}
+		else_if = {
+			limit = { FROM = { total_development = 300 } }
+			add_adm_power = -400
+		}
+		else_if = {
+			limit = { FROM = { total_development = 250 } }
+			add_adm_power = -375
+		}
+		else_if = {
+			limit = { FROM = { total_development = 200 } }
+			add_adm_power = -350
+		}
+		else_if = {
+			limit = { FROM = { total_development = 150 } }
+			add_adm_power = -325
+		}
+		else_if = {
+			limit = { FROM = { total_development = 100 } }
+			add_adm_power = -300
+		}
+		else_if = {
+			limit = { FROM = { total_development = 50 } }
+			add_adm_power = -275
+		}
+		else_if = {
+			limit = { FROM = { total_development = 25 } }
+			add_adm_power = -250
+		}
+		else = {
+			add_adm_power = -225
+		}
+		hidden_effect = {
+			ROOT = {
+				create_subject = {
+					who = FROM
+					subject_type = satrapy_vassal
+				}
+			}
+			FROM = {
+				add_opinion = {
+					who = ROOT
+					modifier = annexed_us_as_satrapy_opinion
+				}
+				if = {
+					limit = { NOT = { government = monarchy } }
+					change_government = monarchy
+				}
+				add_government_reform = satrapy_reform
+			}
+		}
+	}
+
+	ai_will_do = {
+		always = no
+	}
+}
+
+remove_satrap_diplo_action = {
+	category = influence
+	#alert_index = 4
+	alert_tooltip = remove_satrap_diplo_action.1
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = satrapy_vassal
+			is_subject_of = ROOT
+		}
+		OR = {
+			has_reform = medes_monarchy_reform
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = parthian_monarchy_reform
+		}
+	}
+	is_allowed = {			
+		absolutism = 10
+		is_at_war = no
+		FROM = {
+			is_at_war = no
+			has_any_disaster = no
+			NOT = { num_of_revolts = 1 }
+		}
+	}
+	on_accept = {
+		add_absolutism = -10
+		FROM = {
+			kill_ruler = yes
+			add_liberty_desire = -15
+		}
+		hidden_effect = {
+			FROM = {
+				add_opinion = {
+					who = ROOT
+					modifier = new_loyal_satrap_opinion
+				}
+			}
+		}
+	}
+
+	ai_will_do = {
+		absolutism = 30
+		FROM = {
+			liberty_desire = 65
+			stability = 1
+			NOT = {
+				has_opinion = {
+					who = ROOT
+					value = 50
+				}
+			}
+		}
+	}
+}
+
+grant_dynast_diplo_action = {
+	category = influence
+	#alert_index = 4
+	alert_tooltip = grant_dynast_diplo_action.1
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = satrapy_vassal
+			is_subject_of = ROOT
+			has_reform = satrapy_reform
+			NOT = { has_reform = satrapal_dynast_reform }
+		}
+		OR = {
+			has_reform = medes_monarchy_reform
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = parthian_monarchy_reform
+		}
+	}
+	is_allowed = {			
+		is_at_war = no
+		FROM = {
+			is_at_war = no
+			has_any_disaster = no
+			NOT = { num_of_revolts = 1 }
+		}
+	}
+	on_accept = {
+		FROM = {
+			add_prestige = 20
+			add_liberty_desire = -10
+		}
+		hidden_effect = {
+			FROM = {
+				add_government_reform = satrapal_dynast_reform
+				add_opinion = {
+					who = ROOT
+					modifier = grant_us_dynast_rank_opinion
+				}
+			}
+		}
+	}
+
+	ai_will_do = {
+		always = no
+	}
+}
+
+revoke_dynast_diplo_action = {
+	category = influence
+	#alert_index = 4
+	alert_tooltip = revoke_dynast_diplo_action.1
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = satrapy_vassal
+			is_subject_of = ROOT
+			has_reform = satrapal_dynast_reform
+			NOT = { has_reform = satrapy_reform }
+		}
+		OR = {
+			has_reform = medes_monarchy_reform
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = parthian_monarchy_reform
+		}
+	}
+	is_allowed = {			
+		is_at_war = no
+		FROM = {
+			is_at_war = no
+			has_any_disaster = no
+			NOT = { num_of_revolts = 1 }
+		}
+	}
+	on_accept = {
+		FROM = {
+			add_prestige = -20
+			add_liberty_desire = 10
+		}
+		hidden_effect = {
+			FROM = {
+				add_government_reform = satrapy_reform
+				add_opinion = {
+					who = ROOT
+					modifier = revoked_our_dynast_rank_opinion
+				}
+			}
+		}
+	}
+
+	ai_will_do = {
+		always = no
+	}
+}
+
+annex_satrapy_diplo_action = {
+	category = influence
+	#alert_index = 4
+	alert_tooltip = annex_satrapy_diplo_action.1
+	require_acceptance = no # Whether the recipient gets an option to decline
+	is_visible = {
+		is_subject = no
+		FROM = {
+			is_subject_of_type = satrapy_vassal
+			is_subject_of = ROOT
+		}
+		OR = {
+			has_reform = medes_monarchy_reform
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = parthian_monarchy_reform
+		}
+	}
+	is_allowed = {			
+		is_at_war = no
+		FROM = {
+			is_at_war = no
+			has_any_disaster = no
+			NOT = {
+				num_of_revolts = 1
+				liberty_desire = 50
+			}
+		}
+		reverse_has_opinion = {
+			who = FROM
+			value = 100
+		}
+		adm_power = 400
+		absolutism = 10
+	}
+	on_accept = {
+		if = {
+			limit = { FROM = { total_development = 500 } }
+			add_adm_power = -400
+		}
+		else_if = {
+			limit = { FROM = { total_development = 450 } }
+			add_adm_power = -375
+		}
+		else_if = {
+			limit = { FROM = { total_development = 400 } }
+			add_adm_power = -350
+		}
+		else_if = {
+			limit = { FROM = { total_development = 350 } }
+			add_adm_power = -325
+		}
+		else_if = {
+			limit = { FROM = { total_development = 300 } }
+			add_adm_power = -300
+		}
+		else_if = {
+			limit = { FROM = { total_development = 250 } }
+			add_adm_power = -275
+		}
+		else_if = {
+			limit = { FROM = { total_development = 200 } }
+			add_adm_power = -250
+		}
+		else_if = {
+			limit = { FROM = { total_development = 150 } }
+			add_adm_power = -225
+		}
+		else_if = {
+			limit = { FROM = { total_development = 100 } }
+			add_adm_power = -200
+		}
+		else_if = {
+			limit = { FROM = { total_development = 50 } }
+			add_adm_power = -175
+		}
+		else_if = {
+			limit = { FROM = { total_development = 25 } }
+			add_adm_power = -150
+		}
+		else = {
+			add_adm_power = -125
+		}
+		add_absolutism = -10
+		add_prestige = 20
+		hidden_effect = {
+			inherit = FROM
+		}
+	}
+
+	ai_will_do = {
+		NOT = { num_of_territories = 2 }
+		adm_power = 500
+		FROM = {
+			NOT = { liberty_desire = 25 }
+		}
+	}
+}
