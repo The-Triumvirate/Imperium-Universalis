@@ -53,3 +53,8 @@ Byzantenos (National Ideas)
 Tartarin/Argonaute (Provinces and Map Research)
 
 Tinholt (Eventframe)
+
+#Modding Advice
+
+LimonenZitrone (lemonporn in steam) - Common's Senpai, banning Pengu
+@LimonenZitrone#5661
