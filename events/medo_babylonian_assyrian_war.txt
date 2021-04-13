@@ -505,6 +505,7 @@ country_event = {
 			name = bab_pact_breaker
 			duration = 7300
 		}
+		remove_historical_friend = MDI
 		MDI = {
 			country_event = {
 				id = medo_assyrian_war.501
@@ -545,6 +546,12 @@ country_event = {
 	
 	trigger = {
 		TAG = MDI
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = MDI_babylonia_respected_treaty_flag
+		}
 	}
 
 	option = {
@@ -710,6 +717,7 @@ country_event = {
 		add_yearly_manpower = 0.5
 		add_army_tradition = 10
 		add_prestige = 20
+		remove_historical_friend = BAB
 		arbela_district_group = {
 			add_core = MDI
 		}
@@ -1121,5 +1129,91 @@ country_event = {
 		add_adm_tech = 1
 		add_dip_tech = 1
 		add_mil_tech = 1
+	}
+}
+
+########################################################################################
+# Tensions over Harran
+########################################################################################
+
+country_event = {
+	id = medo_assyrian_war.10
+	title = "medo_assyrian_war.10.t"
+	desc = "medo_assyrian_war.10.d"
+	picture = raid_on_romans
+	fire_only_once = yes
+
+	trigger = {
+		TAG = BAB
+		NOT = { started_in = 198.1.1 }
+		owns_core_province = 2372
+		total_development = 800
+		ASY = { exists = no }
+		OR = {
+			historical_friend_with = MDI
+			alliance_with = MDI
+		}
+		MDI = {
+			total_development = 400
+			has_country_flag = MDI_babylonia_respected_treaty_flag
+		}
+		OR = {
+			MDI = {
+				mil = 3
+				is_claim = 2372
+			}
+			2372 = {
+				is_permanent_claim = MDI
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = MDI_babylonia_respected_treaty_flag
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.5
+			NOT = {
+				reverse_has_opinion = {
+					who = MDI
+					value = 150
+				}
+			}
+		}
+		modifier = {
+			factor = 0.75
+			MDI = { total_development = 500 }
+		}
+	}
+
+	option = {
+		name = "medo_assyrian_war.10.a"
+		ai_chance = { 
+			factor = 90
+		}
+		remove_historical_friend = MDI
+		MDI = { remove_historical_friend = BAB }
+		add_dip_power = -50
+		add_prestige = 10
+		if = {
+			limit = {
+				MDI = { NOT = { is_core	= 2372 } }
+			}
+			2372 = { add_core = MDI }
+		}
+	}
+	option = {
+		name = "medo_assyrian_war.10.b"
+		ai_chance = { 
+			factor = 10
+		}
+		2372 = { cede_province = MDI }
+		add_prestige = -10
+		add_dip_power = 50
 	}
 }
