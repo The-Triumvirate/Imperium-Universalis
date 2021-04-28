@@ -89,6 +89,11 @@ default = {
 	can_send_missionary_to_subject = yes				# Requires Cradle of Civilization
 	can_union_break = no								# Only works together with has_overlords_ruler
 	overlord_can_fabricate_for = no
+	does_overlord_size_count_for_warscore_cost = yes
+	is_colony_subtype = no
+	is_march = no
+	forms_trade_companies = no
+	can_concentrate_development = yes
 	
 	max_government_rank = 0								# 0 means no limit
 	cities_required_for_bonuses = 0						# How many cities the subject needs before giving bonuses to overlord
@@ -152,6 +157,10 @@ default = {
 	return_land = no
 	conscript_general = yes
 	knowledge_sharing = yes
+	block_settlement_growth = yes
+	allow_settlement_growth = yes
+	change_colonial_type = no
+	upgrade_subject_type = no
 	# (special)
 	sword_hunt = no
 	sankin_kotai = no
@@ -194,6 +203,7 @@ vassal = {
 	overlord_protects_external = yes
 	overlord_enforce_peace_attacking = yes
 	takes_diplo_slot = yes
+	can_concentrate_development = no
 
 	max_government_rank = 4
 
@@ -268,6 +278,7 @@ half_autonomous_vassal = {
 	can_fight_independence_war = yes
 	overlord_protects_external = yes
 	takes_diplo_slot = yes
+	can_concentrate_development = yes
 
 	max_government_rank = 4
 
@@ -322,6 +333,7 @@ non_autonomous_vassal = {
 	can_fight_independence_war = yes
 	overlord_protects_external = yes
 	takes_diplo_slot = yes
+	can_concentrate_development = yes
 
 	max_government_rank = 4
 
@@ -383,6 +395,7 @@ satrapy_vassal = {
 	joins_overlords_wars = yes
 	joins_colonial_wars = no
 	can_be_integrated = no
+	can_concentrate_development = no
 	
 	overlord_can_attack = yes
 	overlord_can_be_subject = no
@@ -531,6 +544,7 @@ daimyo_vassal = {
 	separatists_become_subjects = yes
 	allows_taking_land_without_independence = yes
 	can_use_claims = yes
+	can_concentrate_development = no
 
 	trust_on_start = 0
 
@@ -679,9 +693,6 @@ client_march = {
 
 colony = {
 	copy_from = default
-
-	#use_vassal_ui = yes
-	#construct_colonial = yes
 	
 	# Graphics:
 	sprite = GFX_subject_colony_icon
@@ -689,7 +700,6 @@ colony = {
 	diplomacy_subject_sprite = GFX_diplomacy_subjectcolony
 
 	# Properties:
-	transfer_trade_power = yes
 	can_release_and_play = yes
 	uses_tariffs = yes
 	eats_overlords_colonies = yes
@@ -702,15 +712,16 @@ colony = {
 	overlord_enforce_peace_attacking = yes
 	can_transfer_in_peace = no
 	press_sailors = yes
-	forcelimit_bonus = 1.0
-	forcelimit_to_overlord = 0.2
+	transfer_trade_power = yes
+	can_concentrate_development = no
 	
 	liberty_desire_development_ratio = 0.1
 
 	max_government_rank = 1
 	cities_required_for_bonuses = 10
 
-	relative_power_class = 1
+	relative_power_class = 0
+	should_quit_wars_on_activation = yes
 
 	can_fight = {
 		other_overlord = colony
@@ -743,6 +754,106 @@ colony = {
 
 	overlord_opinion_modifier = colonial_relation
 	subject_opinion_modifier = colonial_relation
+}
+
+crown_colony = {
+	copy_from = colony
+
+	change_colonial_type = yes
+	upgrade_subject_type = yes
+	is_colony_subtype = yes
+	can_send_missionary_to_subject = yes	
+
+	forcelimit_bonus = 1.0
+	forcelimit_to_overlord = 0.5
+	manpower_bonus = 1.0
+	manpower_to_overlord = 0.5
+	naval_forcelimit_bonus = 0.5
+	naval_forcelimit_to_overlord = 0.05
+	sailors_bonus = 0.5
+	sailors_to_overlord = 0.05
+
+	# Subject Interactions:
+	embargo_rivals = yes
+	support_loyalists = yes
+	subsidize_armies = yes
+	send_officers = yes
+	enforce_religion = yes
+	takeondebt = yes
+	block_settlement_growth = yes
+	allow_settlement_growth = yes
+	
+	# Modifiers:
+	modifier_overlord = {
+		modifier = crown_colony_overlord
+	}
+
+	modifier_subject = {
+		modifier = crown_colony_subject
+	}
+}
+
+private_enterprise = {
+	copy_from = colony
+
+	change_colonial_type = yes
+	upgrade_subject_type = yes
+	is_colony_subtype = yes
+
+	forcelimit_bonus = 0.0
+	forcelimit_to_overlord = 0.0
+	manpower_bonus = 0.0
+	manpower_to_overlord = 0.0
+	naval_forcelimit_bonus = 1.0
+	naval_forcelimit_to_overlord = 0.5
+	sailors_bonus = 1.0
+	sailors_to_overlord = 0.5
+
+	# Subject Interactions:
+	replace_governor = no
+	block_settlement_growth = no
+	allow_settlement_growth = no
+	
+	# Modifiers:	
+	modifier_overlord = {
+		modifier = private_enterprise_overlord
+	}
+	
+	modifier_subject = {
+		modifier = private_enterprise_subject
+	}
+}
+
+self_governing_colony = {
+	copy_from = colony
+
+	change_colonial_type = yes
+	upgrade_subject_type = yes
+	is_colony_subtype = yes
+
+	forcelimit_bonus = 0.1
+	forcelimit_to_overlord = 0.05
+	manpower_bonus = 0.1
+	manpower_to_overlord = 0.05
+	naval_forcelimit_bonus = 0.1
+	naval_forcelimit_to_overlord = 0.05
+	sailors_bonus = 0.1
+	sailors_to_overlord = 0.05
+
+	# Subject Interactions:
+	replace_governor = no
+	block_settlement_growth = no
+	allow_settlement_growth = no
+	press_sailors = no
+	
+	# Modifiers:	
+	modifier_overlord = {
+		modifier = self_governing_colony_overlord
+	}
+	
+	modifier_subject = {
+		modifier = self_governing_colony_subject
+	}
 }
 
 tributary_state = {
@@ -787,6 +898,7 @@ tributary_state = {
 	can_use_claims = no
 	share_rebel_popup = no
 	can_transfer_in_peace = no
+	can_concentrate_development = no
 	# can_set_mil_focus = no
 	# can_send_missionary_to_subject = no
 	
@@ -890,6 +1002,7 @@ triumvir = {
 	can_use_claims = no
 	share_rebel_popup = no
 	can_transfer_in_peace = no
+	can_concentrate_development = no
 	
 	liberty_desire_development_ratio = 0.0
 	trust_on_start = 0
