@@ -1,92 +1,91 @@
 namespace = culture_provinces
 
+###Moved from custom_culture###
+
 ########################################################################################
-# palmyrian
+# lemnians voluntarily hellenize
 ########################################################################################
-province_event = {
-	id = culture_provinces.1
-	title = "culture_provinces.1.t"
-	desc = "culture_provinces.1.d"
-	picture = city
+
+country_event = {
+	id = culture_provinces.11
+	title = "culture_provinces.11.t"
+	desc = "culture_provinces.11.d"
+	picture = young_student
 	
 	trigger = {
+		TAG = HPS
+		primary_culture = lemnian
+		NOT = { total_development = 80 }
+		owns_core_province = 989
 		OR = {
-			area = palmyrene_area
-			owned_by = PLM
+			any_owned_province = {
+				culture_group = hellenic
+			}
+			alliance_with = ATH
 		}
-		culture_group = semitic
-		is_year = 550
 		OR = {
-			owned_by = PLM
-			is_year = 650
+			is_year = 247
+			ai = yes
 		}
 	}
 	
 	mean_time_to_happen = {
-		months = 320
-		modifier = {
-				factor = 0.75
-				owner = {
-					TAG = PLM
-				}			}
-
-		modifier = {
-				factor = 1.5
-				owner = {
-					culture_group = semitic
-				}
-			}
-			
+		months = 2
 	}
 	option = {
-		name = "culture_provinces.1.a"
-		ai_chance = { factor = 30 }
-			change_culture = palmyrian
-			IF = {
-				limit = {
-					owned_by = PLM 
-					PLM = { NOT = { primary_culture = palmyrian } }
-				}
-				PLM = { change_primary_culture = palmyrian }
-			}
+		name = "culture_provinces.11.a"
+		ai_chance = { factor = 99 }
+		change_primary_culture = ionic
+		989 = { change_culture = ionic }
+	}
+	option = {
+		name = "culture_provinces.11.b"
+		ai_chance = { factor = 1 }
+		add_prestige = 5
+		add_adm_power = 25
 	}
 }
+
 ########################################################################################
-# pergamonite
+# lemnian culture is extirpated
 ########################################################################################
-province_event = {
-	id = culture_provinces.2
-	title = "culture_provinces.2.t"
-	desc = "culture_provinces.2.d"
-	picture = city
+
+country_event = {
+	id = culture_provinces.10
+	title = "culture_provinces.10.t"
+	desc = "culture_provinces.10.d"
+	picture = tradecity
 	
 	trigger = {
 		culture_group = hellenic
-		is_year = 475
-		owned_by = PER
-		area = aeolia_area
+		owns_core_province = 989
+		989 = { culture = lemnian }
 	}
 	
 	mean_time_to_happen = {
-		months = 240
-		
-			
+		months = 120
+		modifier = {
+			factor = 0.5
+			TAG = ATH
+		}
 	}
 	option = {
-		name = "culture_provinces.1.a"
-		ai_chance = { factor = 30 }
-			change_culture = pergamonite
-			IF = {
-				limit = {
-					owned_by = PER
-					PER = { NOT = { primary_culture = pergamonite } }
-				}
-				PER = { change_primary_culture = pergamonite }
-			}
+		name = "culture_provinces.10.a"
+		ai_chance = { factor = 99 }
+		989 = {
+			change_culture = ROOT
+			add_base_tax = 1
+			add_base_production = 1
+		}
+		HPS = { change_primary_culture = ROOT }
+		
+	}
+	option = {
+		name = "culture_provinces.10.b"
+		ai_chance = { factor = 1 }
+		add_dip_power = 40
 	}
 }
-
-###Moved from custom_culture###
 
 ########################################################################################
 # Egyptian and lybian culture merge
@@ -358,6 +357,62 @@ province_event = {
 			
 	}
 }
+
+########################################################################################
+# Syro-Hittite to Aramean
+########################################################################################
+
+province_event = {
+	id = culture_provinces.4
+	title = "culture_provinces.4.t"
+	desc = "culture_provinces.4.d"
+	picture = city
+	
+	trigger = {
+		OR = {
+			region = syria_region
+			region = asia_minor
+		}
+		culture = syro_hittite
+		NOT = {
+			owner = { primary_culture = syro_hittite }
+		}
+		any_neighbor_province = {
+			culture = syriac
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1200
+		modifier = {
+				factor = 0.6
+				owner = {
+					culture = syriac
+				}
+		}			
+	}
+	
+	option = {
+		name = "culture_provinces.4.a"
+		ai_chance = { factor = 30 }
+			change_culture = syriac
+			IF = {
+				limit = {
+					province_id = 2322
+					LUH = { NOT = { primary_culture = syriac } }
+				}
+				LUH = { change_primary_culture = syriac }
+			}
+			IF = {
+				limit = {
+					province_id = 2347
+					QAR = { NOT = { primary_culture = syriac } }
+				}
+				QAR = { change_primary_culture = syriac }
+			}
+	}
+}
+
 ########################################################################################
 # Hurrian to Aramean
 ########################################################################################
@@ -427,57 +482,90 @@ province_event = {
 			}
 	}
 }
-########################################################################################
-# Syro-Hittite to Aramean
-########################################################################################
 
+########################################################################################
+# pergamonite
+########################################################################################
 province_event = {
-	id = culture_provinces.4
-	title = "culture_provinces.4.t"
-	desc = "culture_provinces.4.d"
+	id = culture_provinces.2
+	title = "culture_provinces.2.t"
+	desc = "culture_provinces.2.d"
+	picture = city
+	
+	trigger = {
+		culture_group = hellenic
+		is_year = 475
+		owned_by = PER
+		area = aeolia_area
+	}
+	
+	mean_time_to_happen = {
+		months = 240
+		
+			
+	}
+	option = {
+		name = "culture_provinces.1.a"
+		ai_chance = { factor = 30 }
+			change_culture = pergamonite
+			IF = {
+				limit = {
+					owned_by = PER
+					PER = { NOT = { primary_culture = pergamonite } }
+				}
+				PER = { change_primary_culture = pergamonite }
+			}
+	}
+}
+
+########################################################################################
+# palmyrian
+########################################################################################
+province_event = {
+	id = culture_provinces.1
+	title = "culture_provinces.1.t"
+	desc = "culture_provinces.1.d"
 	picture = city
 	
 	trigger = {
 		OR = {
-			region = syria_region
-			region = asia_minor
+			area = palmyrene_area
+			owned_by = PLM
 		}
-		culture = syro_hittite
-		NOT = {
-			owner = { primary_culture = syro_hittite }
-		}
-		any_neighbor_province = {
-			culture = syriac
+		culture_group = semitic
+		is_year = 550
+		OR = {
+			owned_by = PLM
+			is_year = 650
 		}
 	}
 	
 	mean_time_to_happen = {
-		months = 1200
+		months = 320
 		modifier = {
-				factor = 0.6
+				factor = 0.75
 				owner = {
-					culture = syriac
+					TAG = PLM
+				}			}
+
+		modifier = {
+				factor = 1.5
+				owner = {
+					culture_group = semitic
 				}
-		}			
-	}
-	
-	option = {
-		name = "culture_provinces.4.a"
-		ai_chance = { factor = 30 }
-			change_culture = syriac
-			IF = {
-				limit = {
-					province_id = 2322
-					LUH = { NOT = { primary_culture = syriac } }
-				}
-				LUH = { change_primary_culture = syriac }
 			}
+			
+	}
+	option = {
+		name = "culture_provinces.1.a"
+		ai_chance = { factor = 30 }
+			change_culture = palmyrian
 			IF = {
 				limit = {
-					province_id = 2347
-					QAR = { NOT = { primary_culture = syriac } }
+					owned_by = PLM 
+					PLM = { NOT = { primary_culture = palmyrian } }
 				}
-				QAR = { change_primary_culture = syriac }
+				PLM = { change_primary_culture = palmyrian }
 			}
 	}
 }
