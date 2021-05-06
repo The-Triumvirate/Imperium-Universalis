@@ -13,6 +13,7 @@ province_event = {
 	trigger = {
 		base_manpower = 3
 		NOT = { devastation = 1 }
+		NOT = { has_global_flag = popgrowth_running }
 	}
 	
 	
@@ -162,9 +163,10 @@ province_event = {
 	trigger = {
 		devastation = 1
 		OR = { 
-			base_production = 1
-			base_tax = 1
+			base_production = 2
+			base_tax = 2
 			}
+		NOT = { has_global_flag = popgrowth_running }
 	}
 	
 	
@@ -173,56 +175,45 @@ province_event = {
 		
 		##### NEGATIVE
 		modifier = {
-				factor = 0.9
-				OR = {
-					has_climate = arid
-					has_climate = tropical
-				}
-			}
+			factor = 0.9
+			OR = {	has_climate = arid	has_climate = tropical	}
+		}
 		modifier = {
-				factor = 0.9
-						devastation = 5
-				NOT = { devastation = 10 }
-			}
+			factor = 0.9
+			devastation = 5		NOT = { devastation = 10 }
+		}
 		modifier = {
-				factor = 0.8
-						devastation = 10
-				NOT = { devastation = 15 }
-			}
+			factor = 0.8
+			devastation = 10	NOT = { devastation = 15 }
+		}
 		modifier = {
-				factor = 0.7
-						devastation = 15
-				NOT = { devastation = 20 }
-			}
+			factor = 0.7
+			devastation = 15	NOT = { devastation = 20 }
+		}
 		modifier = {
-				factor = 0.6
-						devastation = 20
-				NOT = { devastation = 25 }
-			}
+			factor = 0.6
+			devastation = 20	NOT = { devastation = 25 }
+		}
 		modifier = {
-				factor = 0.5
-						devastation = 25
-				NOT = { devastation = 30 }
-			}
+			factor = 0.5
+			devastation = 25	NOT = { devastation = 30 }
+		}
 		modifier = {
-				factor = 0.4
-						devastation = 30
-				NOT = { devastation = 35 }
-			}
+			factor = 0.4
+			devastation = 30	NOT = { devastation = 35 }
+		}
 		modifier = {
-				factor = 0.35
-						devastation = 35
-				NOT = { devastation = 40 }
-			}
+			factor = 0.35
+			devastation = 35	NOT = { devastation = 40 }
+		}
 		modifier = {
-				factor = 0.3
-						devastation = 40
-				NOT = { devastation = 50 }
-			}
+			factor = 0.3
+			devastation = 40	NOT = { devastation = 50 }
+		}
 		modifier = {
-				factor = 0.25
-						devastation = 50
-			}
+			factor = 0.25
+			devastation = 50
+		}
 	}
 	
 	
@@ -280,6 +271,7 @@ province_event = {
 	trigger = {
 		base_production = 2
 		NOT = { devastation = 1 }
+		NOT = { has_global_flag = popgrowth_running }
 	}
 	
 	
@@ -419,6 +411,257 @@ province_event = {
 				}
 			}
 			
+		}
+	}
+	#######################################################
+	option = {
+		name = "province_development.1.a"
+			
+	}
+}
+
+####
+# MRKCOSTA POPGROWTH SUBMOD - alternate version of population growth. See Population Capacity events
+####
+
+########################################################################################
+# rank up - tribal population
+########################################################################################
+province_event = {
+	id = population_upgrade.4
+	title = "population_upgrade.1.t"
+	desc = "population_upgrade.1.d"
+	picture = peasant_woman
+	hidden = yes
+	
+	trigger = {
+		base_manpower = 2
+		has_global_flag = popgrowth_running
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 300
+		# As long as there is more growth in city than the fields, they will try to go to the cities
+		# Values: about 2x the ones for growth seen in the other events
+		modifier = {
+			factor = 5
+			NOT = { check_variable = { which = urban_growth value = 1.0 } }
+			
+		}
+		modifier = {
+			factor = 0.50
+			check_variable = { which = urban_growth value = 1.0 } 
+			NOT = { check_variable = { which = urban_growth value = 1.5 } }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		modifier = {
+			factor = 0.33
+			check_variable = { which = urban_growth value = 1.5 }
+			NOT = { check_variable = { which = urban_growth value = 2.0 } }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		modifier = {
+			factor = 0.25
+			check_variable = { which = urban_growth value = 2.0 }
+			NOT = { check_variable = { which = urban_growth value = 3.0 } }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		modifier = {
+			factor = 0.20
+			check_variable = { which = urban_growth value = 3.0 }
+			NOT = { check_variable = { which = urban_growth value = 4.0 } }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		modifier = {
+			factor = 0.10
+			check_variable = { which = urban_growth value = 4.0 }
+			NOT = { check_variable = { which = urban_growth value = 5.0 } }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		modifier = {
+			factor = 0.05	
+			check_variable = { which = urban_growth value = 5.0 }
+			check_variable = { which = urban_growth which = rural_growth } 
+			
+		}
+		
+	}
+	
+	
+	#######################################################
+	immediate = { 
+			
+		change_variable = { which = pop_upgrade_rate value = 15 }
+		
+		if = {
+			limit = { check_variable = { which = pop_upgrade_rate value = 100 } }
+			set_variable = { which = pop_upgrade_rate value = 0 }
+			if = {
+				limit = { base_manpower = 2 }
+				add_base_manpower = -1 add_base_production = 1
+				owner = { if = { limit = { ai = no } change_variable = { which = tribal_to_commoner_var value = 1 } } }
+			}
+			
+		}
+	}
+	#######################################################
+	option = {
+		name = "province_development.1.a"
+			
+	}
+}
+########################################################################################
+# rank down - tribal population
+########################################################################################
+province_event = {
+	id = population_upgrade.5
+	title = "population_upgrade.1.t"
+	desc = "population_upgrade.1.d"
+	picture = peasant_woman
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			AND = { NOT = { check_variable = { urban_growth = 1 } } base_production = 2 }
+			AND = { NOT = { check_variable = { upper_growth = 1 } } base_tax = 2 }
+		}
+		has_global_flag = popgrowth_running
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 120
+		
+		# Urban growth, basically. Remember that while this is active other events may fire as well, such as migration, etc
+		
+		# Until growth <80% no modifiers will start
+		modifier = {
+			factor = 0.5	# 120 x 0.5 x 6 = 360 months, one 30 years, one generation	
+			NOT = { check_variable = { which = urban_growth value = 0.8 } }
+			check_variable = { which = urban_growth value = 0.66 }
+		}
+		modifier = {
+			factor = 0.25	# 15 years
+			NOT = { check_variable = { which = urban_growth value = 0.66 } }
+			check_variable = { which = urban_growth value = 0.5 }
+		}
+		modifier = {
+			factor = 0.1	# Will leave you 120 x 0.1 x 6 = 72 months, 6 years to lose one pop. Not that bad
+			NOT = { check_variable = { which = urban_growth value = 0.66 } }
+			check_variable = { which = urban_growth value = 0.5 }
+		}
+		modifier = {
+			factor = 0.05	# (3 years) Run for your lifes you fools! Probably other events will strike first
+			NOT = { check_variable = { which = urban_growth value = 0.5 } }
+			
+		}
+		
+	}
+	
+	
+	#######################################################
+	immediate = { 
+			
+		change_variable = { which = pop_upgrade_rate value = -15 }
+		
+		if = {
+			limit = { NOT = { check_variable = { which = pop_upgrade_rate value = -100 } } }
+			set_variable = { which = pop_upgrade_rate value = 0 }
+			
+			if = {
+				limit = { base_tax = 2 NOT = { check_variable = { upper_growth = 1 } } }
+				add_base_production = 1 add_base_tax = -1
+				owner = { if = { limit = { ai = no } change_variable = { which = uppers_to_commoner_var value = 1 } } }
+			}
+			else_if = {
+				limit = { base_production = 2 }
+				add_base_manpower = 1	add_base_production = -1
+				owner = { if = { limit = { ai = no } change_variable = { which = commoner_to_tribal_var value = 1 } } }
+			}
+			
+		}
+	}
+	#######################################################
+	option = {
+		name = "province_development.1.a"
+			
+	}
+}
+########################################################################################
+# rank up - commoner population
+########################################################################################
+province_event = {
+	id = population_upgrade.6
+	title = "population_upgrade.1.t"
+	desc = "population_upgrade.1.d"
+	picture = peasant_woman
+	hidden = yes
+	
+	trigger = {
+		base_production = 2
+		has_global_flag = popgrowth_running
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 360
+		modifier = {
+			factor = 0.75
+			check_variable = { which = upper_growth value = 1.0 }
+			NOT = { check_variable = { which = upper_growth value = 1.5 } }
+		}
+		modifier = {
+			factor = 0.50
+			check_variable = { which = upper_growth value = 1.5 }
+			NOT = { check_variable = { which = upper_growth value = 2.0 } }
+		}
+		modifier = {
+			factor = 0.33
+			check_variable = { which = upper_growth value = 2.0 }
+			NOT = { check_variable = { which = upper_growth value = 3.0 } }
+		}
+		modifier = {
+			factor = 0.25
+			check_variable = { which = upper_growth value = 3.0 }
+			NOT = { check_variable = { which = upper_growth value = 4.0 } }
+		}
+		modifier = {
+			factor = 0.15
+			check_variable = { which = upper_growth value = 4.0 }
+			NOT = { check_variable = { which = upper_growth value = 5.0 } }
+		}
+		modifier = {
+			factor = 0.05	# Will quickly appoint someone to the job
+			check_variable = { which = upper_growth value = 5.0 }
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { check_variable = { which = rural_growth value = 0.8 } }	# Saturation in other ranks will motivate movement
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { check_variable = { which = urban_growth value = 0.8 } } # Saturation in other ranks will motivate movement
+		}
+		
+	}
+	
+	#######################################################
+	immediate = {
+			
+		change_variable = { which = c_pop_upgrade_rate value = 15 }
+		
+		if = {
+			limit = { check_variable = { which = c_pop_upgrade_rate value = 100 } }
+			set_variable = { which = c_pop_upgrade_rate value = 0 }
+			
+			add_base_production = -1	add_base_tax = 1
+			owner = { if = { limit = { ai = no} change_variable = { which = commoner_to_upper_var value = 1 } } }
 		}
 	}
 	#######################################################
