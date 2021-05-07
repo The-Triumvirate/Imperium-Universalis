@@ -365,61 +365,193 @@ country_event = {
 	title = "rome.16.t"
 	desc = "rome.16.d"
 	picture = senat_conflict
-	fire_only_once = yes
+	is_triggered_only = yes
 	
 	trigger = {
 		tag = ROM
-		NOT = {
-			started_in = 245.1.1
-			stability = 1
-			war_exhaustion = 2
-			average_unrest = 1
-			capital_scope = { devastation = 8 }
-			mil_power = 400
-		}
-		is_year = 205
-		if = {
-			limit = { has_dlc = "Common Sense" }
-			NOT = { legitimacy_equivalent = 75 }
-		}
-		else = { NOT = { absolutism = 20 } }
-		has_reform = roman_kingdom_reform
-		NOT = { has_country_flag = last_king_of_rome }
-	}
-	
-	mean_time_to_happen = {
-		months = 180
-		modifier = {
-			factor = 0.5
-			ruler_has_personality = cruel_personality
-		}
 	}
 	
 	option = {
 		name = "rome.16.a"
 		ai_chance = { factor = 90 }
-		add_stability = -1
+		kill_ruler = yes
 		change_government = republic
 		add_government_reform = res_publica_reform
+		add_republican_tradition = 100
+		add_stability = 1
+		end_disaster = end_roman_monarchy
 		capital_scope = {
-		spawn_rebels = {
-				type = noble_rebels
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 2
+			}
+		}
+		if = {
+			limit = { exists = ZVL }
+			hidden_effect = { set_country_flag = roman_king_goes_to_etruria_flag }
+			ZVL = {
+				country_event = {
+					id = rome.1601
+				}
+			}
+		}
+		else = {
+			random_owned_province = {
+				limit = { is_capital = no }
+				spawn_rebels = {
+					type = noble_rebels
+					size = 2
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "rome.16.b"
+		ai_chance = { factor = 10 }
+		add_yearly_manpower = -0.5
+		capital_scope = {
+			spawn_rebels = {
+				type = republican_rebels
+				size = 3
+			}
+		}
+		random_owned_province = {
+			limit = { is_capital = no }
+			spawn_rebels = {
+				type = republican_rebels
 				size = 2
 			}
 		}
 		set_country_flag = last_king_of_rome
 	}
+}
+
+country_event = {
+	id = rome.1601
+	title = "rome.1601.t"
+	desc = "rome.1601.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = ZVL
+	}
+	
 	option = {
-		name = "rome.16.b"
-		ai_chance = { factor = 10 }
-		add_stability = -1
-		capital_scope = {
-		spawn_rebels = {
-				type = republican_rebels
-				size = 3
+		name = "rome.1601.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.5
+				total_development = ROM
+			}
+			modifier = {
+				factor = 1.5
+				army_size = ROM
 			}
 		}
-		set_country_flag = last_king_of_rome
+		hidden_effect = { set_country_flag = etruscans_help_the_roman_king_flag }
+		declare_war_with_cb = {
+			casus_belli = cb_insult
+			who = ROM
+		}
+		add_yearly_manpower = 5
+		add_years_of_income = 1
+		add_prestige = 10
+		add_army_tradition = 10
+	}
+	option = {
+		name = "rome.1601.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.5
+				NOT = { total_development = ROM }
+			}
+			modifier = {
+				factor = 1.5
+				NOT = { army_size = ROM }
+			}
+		}
+		add_prestige = -10
+	}
+
+	after = {
+		if = {
+			limit = {
+				exists = ZTA
+				has_country_flag = etruscans_help_the_roman_king_flag
+			}
+			ZTA = { join_all_offensive_wars_of = ROOT }
+		}
+		if = {
+			limit = {
+				exists = ZVE
+				has_country_flag = etruscans_help_the_roman_king_flag
+			}
+			ZVE = { join_all_offensive_wars_of = ROOT }
+		}
+	}
+}
+
+#Romans lose to etruscans
+country_event = {
+	id = rome.1602
+	title = "rome.1602.t"
+	desc = "rome.1602.d"
+	picture = conquest
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = ROM
+		has_country_flag = roman_king_goes_to_etruria_flag
+		FROM = { has_country_flag = etruscans_help_the_roman_king_flag }
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = roman_king_goes_to_etruria_flag
+			FROM = { clr_country_flag = etruscans_help_the_roman_king_flag }
+		}
+	}
+
+	option = {
+		name = "rome.1602.a"
+		ai_chance = {
+			factor = 50
+		}
+		change_government = theocracy
+		add_government_reform = roman_kingdom_reform
+		add_prestige = -100
+		create_alliance = ZVL
+		add_stability = 3
+		add_devotion = 100
+	}
+}
+
+country_event = {
+	id = rome.1603
+	title = "rome.1603.t"
+	desc = "rome.1603.d"
+	picture = alexander4
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = ROM
+	}
+
+	option = {
+		name = "rome.1603.a"
+		ai_chance = {
+			factor = 50
+		}
+		change_government = monarchy
+		add_government_reform = despotic_monarchy
+		add_prestige = 10
+		add_legitimacy = 100
+		add_stability = 2
+		add_mil_power = 200
 	}
 }
 
