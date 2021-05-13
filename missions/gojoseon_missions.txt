@@ -1,0 +1,2527 @@
+
+gojoseon_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes 
+	has_country_shield = yes
+	
+	potential = {
+		TAG = GOJ
+	} 
+
+	GOJ_conquer_maek = {
+		position = 1
+		icon = mission_legionary
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = maek_area
+				area = upper_yalu_area
+				province_id = 5881
+				province_id = 4616
+			}
+		}
+		trigger = {
+			maek_area = {
+				type = all
+				owned_by = ROOT
+			}
+			upper_yalu_area = {
+				type = all
+				owned_by = ROOT
+			}
+			owns_or_non_sovereign_subject_of = 5881
+			owns_or_non_sovereign_subject_of = 4616
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 25
+			add_stability = 1
+			ye_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_ye = {
+		position = 2
+		required_missions = { GOJ_conquer_maek }
+		icon = mission_soldiers
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = ye_area
+			}
+		}
+		trigger = {
+			ye_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = goj_union_yemaek
+				duration = 7300
+			}
+			add_mil_power = 25
+			add_army_tradition = 5
+		}
+	}
+
+	GOJ_integrate_yemaek = {
+		position = 3
+		required_missions = { GOJ_conquer_ye }
+		icon = mission_samnites
+		
+		provinces_to_highlight = {
+			OR = {
+				area = ye_area
+				area = maek_area
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					area = ye_area
+					area = maek_area
+				}
+				is_core = ROOT
+				OR = {
+					has_building = small_army_camp
+					has_building = small_military_settlement
+					has_building = big_military_settlement
+					has_building = small_conscription_center
+				}
+			}
+		}
+		effect = {
+			add_accepted_culture = yemaek
+			add_yearly_manpower = 1
+			add_country_modifier = {
+				name = goj_influx_yemaek_soldiers
+				duration = 9125
+			}
+			miylson_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			buyeo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_expand_cavalry_army = {
+		position = 4
+		icon = missions_chariot_attack
+		
+		trigger = {
+			num_of_cavalry = 5
+		}
+		effect = {
+			add_army_tradition = 5
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+			else = { add_army_tradition = 5 }
+			add_mil_power = 25
+		}
+	}
+
+	GOJ_cavalry_archers = {
+		position = 5
+		icon = mission_scythian
+		required_missions = { GOJ_expand_cavalry_army }
+		
+		trigger = {
+			OR = {
+				advisor = cavalry_leader
+				advisor = mercenary_leader
+				advisor = foreign_warrior
+			}
+			army_tradition = 30
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				army_professionalism = 0.1
+			}
+		}
+		effect = {
+			add_mil_power = 75
+			add_yearly_manpower = 0.5
+			add_country_modifier = {
+				name = goj_using_cavalry_archers
+				duration = 7300
+			}
+		}
+	}
+
+	GOJ_embrace_metallurgy = {
+		position = 7
+		icon = mission_mines
+		required_missions = {
+			GOJ_relations_in_china
+		}
+		
+		trigger = {
+			has_institution = cast_iron_institution
+			num_of_owned_provinces_with = {
+				value = 2
+				trade_goods = iron
+				is_core = ROOT
+			}
+		}
+		effect = {
+			add_dip_tech = 1
+			add_dip_power = 50
+			add_country_modifier = {
+				name = goj_transition_iron_age
+				duration = 18250
+			}
+		}
+	}
+
+	GOJ_gojoseon_militarisation = {
+		position = 8
+		icon = mission_siege2
+		required_missions = {
+			
+		}
+		
+		trigger = {
+			army_size = 16
+			manpower_percentage = 0.8
+		}
+		effect = {
+			add_mil_power = 50
+			add_country_modifier = {
+				name = goj_militarisation_efforts
+				duration = 3650
+			}
+			random_owned_province = {
+				limit = { NOT = { has_building = small_army_camp } }
+				add_building = small_army_camp
+			}
+		}
+	}
+
+	GOJ_trade_in_china = {
+		position = 9
+		icon = mission_trade
+		required_missions = {
+
+		}
+
+		trigger = {
+			4015 = {
+				trade_share = {
+					country = ROOT
+					share = 20
+				}
+			}
+			4263 = {
+				trade_share = {
+					country = ROOT
+					share = 20
+				}
+			}
+		}
+		effect = {
+			4015 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = 9125
+					power = 40
+					key = GOJOSEON_TRADING_EXPANSION
+				}
+			}
+			4263 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = 9125
+					power = 40
+					key = GOJOSEON_TRADING_EXPANSION
+				}
+			}
+			add_years_of_income = 2
+			add_dip_power = 80
+		}
+	}
+
+	GOJ_chinese_technology = {
+		position = 10
+		icon = mission_advisors
+		required_missions = {
+			GOJ_trade_in_china
+		}
+
+		trigger = {
+			mathematician_academy = 1
+			philosophers_academy = 1
+			military_academy = 1
+			OR = {
+				library = 3
+				great_library = 1
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			add_dip_power = 100
+			add_mil_power = 100
+			add_country_modifier = {
+				name = goj_adopting_chinese_technology
+				duration = 9125
+			}
+		}
+	}
+
+	GOJ_conquer_south_mahan = {
+		position = 13
+		icon = mission_media_rise
+		required_missions = {
+			GOJ_legacy_king_jun
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = hubaekje_area
+				area = temogak_paek_area
+				area = guso_area
+			}
+		}
+		trigger = {
+			hubaekje_area = {
+				type = all
+				owned_by = ROOT
+			}
+			temogak_paek_area = {
+				type = all
+				owned_by = ROOT
+			}
+			guso_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_navy_tradition = 5
+			add_mil_power = 25
+			add_adm_power = 25
+			add_dip_power = 25
+		}
+	}	
+}
+
+gojoseon_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	
+	potential = {
+		TAG = GOJ
+	} 
+
+	GOJ_conquer_okjeo_mountains = {
+		position = 2
+		required_missions = { GOJ_extend_okjeo_border }
+		icon = mission_mountains
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = kugwonson_area
+				area = puri_area
+			}
+		}
+		trigger = {
+			kugwonson_area = {
+				type = all
+				owned_by = ROOT
+			}
+			puri_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 15
+			add_adm_power = 10
+		}
+	}
+
+	GOJ_protect_bukojeo = {
+		position = 3
+		required_missions = { GOJ_conquer_okjeo_mountains }
+		icon = mission_babylon
+		
+		provinces_to_highlight = {
+			OR = {
+				area = kugwonson_area
+				area = bukokjeo_area
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 1
+				OR = {
+					area = kugwonson_area
+					area = bukokjeo_area
+				}
+				is_core = ROOT
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+				}
+				OR = {
+					has_building = small_city_walls
+					has_building = large_city_walls
+					has_building = border_garrison
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					NOT = { stability = 1 }
+				}
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+			add_absolutism = 5
+		}
+	}
+
+	GOJ_mount_baekdu = {
+		position = 4
+		icon = mission_temple
+		required_missions = { GOJ_protect_bukojeo }
+		
+		provinces_to_highlight = {
+			OR = {
+				province_id = 6064
+			}
+		}
+		trigger = {
+			owns_core_province = 6064
+			6064 = {
+				OR = {
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+		}
+		effect = {
+			6064 = {
+				add_base_tax = 1
+				add_base_production = 2
+				add_prosperity = 50
+			}
+			add_splendor = 10
+			add_dip_power = 25
+			add_adm_power = 25
+		}
+	}
+
+	GOJ_get_horse_supply = {
+		position = 5
+		icon = mission_conquest_elam
+		required_missions = {
+			GOJ_expand_cavalry_army
+			GOJ_integrate_yemaek
+		}
+		
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 4
+				OR = {
+					area = okjeo_area
+					area = bukokjeo_area
+				}
+				is_core = ROOT
+				trade_goods = horses
+				OR = {
+					has_terrain = forest_steppe
+					has_terrain = steppe
+				}
+			}
+		}
+		effect = {
+			capital_scope = {
+				cavalry	= ROOT
+				cavalry	= ROOT
+			}
+			add_yearly_manpower = 0.25
+			add_mil_power = 25
+			add_country_modifier = {
+				name = goj_increased_horse_supply
+				duration = -1
+			}
+		}
+	}
+
+	GOJ_relations_in_china = {
+		position = 6
+		icon = mission_scholar
+		required_missions = {
+			
+		}
+		
+		trigger = {
+			any_known_country = {
+				culture_group = chinese_group
+				neither_tribal_nor_native_trigger = yes
+				OR = {
+					alliance_with = ROOT
+					marriage_with = ROOT
+					has_opinion = {
+						who = ROOT
+						value = 125
+					}
+				}
+				NOT = { historical_rival_with = ROOT }
+				NOT = { is_rival = ROOT }
+			}
+		}
+		effect = {
+			add_dip_power = 50
+			change_dip = 1
+			add_country_modifier = {
+				name = goj_chinese_ties
+				duration = 7300
+			}
+		}
+	}
+
+	GOJ_evolution_government = {
+		position = 7
+		icon = mission_great_leader
+		required_missions = {
+			GOJ_relations_in_china
+		}
+		
+		trigger = {
+			has_institution = writing_system
+			OR = {
+				has_institution = coin_usage
+				has_institution = bureaucracy_institution
+			}
+			absolutism = 10
+			stability = 1
+			adm = 4
+		}
+		effect = {
+			add_adm_tech = 1
+			change_government_reform_progress = 100
+			add_country_modifier = {
+				name = goj_government_transition
+				duration = 7300
+			}
+		}
+	}
+
+	GOJ_equal_china = {
+		position = 8
+		icon = mission_peace
+		required_missions = {
+			GOJ_evolution_government
+			GOJ_embrace_metallurgy
+			GOJ_chinese_army
+		}
+		
+		trigger = {
+			neither_tribal_nor_native_trigger = yes
+			AND = {
+				adm_tech = 12
+				dip_tech = 12
+				mil_tech = 12
+			}
+		}
+		effect = {
+			add_prestige = 75
+			add_splendor = 100
+			add_adm_tech = 1
+			add_dip_tech = 1
+			add_mil_tech = 1
+			country_event = {
+				id = mission_events.4
+			}
+		}
+	}
+
+	GOJ_gojoseon_navy = {
+		position = 9
+		icon = mission_harbor
+		required_missions = {
+			GOJ_gojoseon_militarisation
+		}
+		
+		trigger = {
+			navy_size = 20
+			num_of_owned_provinces_with = {
+				value = 4
+				has_port = yes
+				OR = {
+					has_building = small_shipyard
+					has_building = big_shipyard
+				}
+			}
+		}
+		effect = {
+			add_dip_power = 75
+			add_yearly_sailors = 3
+			if = {
+				limit = { KO1 = { exists = yes } }
+				add_casus_belli = {
+					type = cb_vassalize_mission
+					target = KO1
+				}
+			}
+			else = {
+				jeju_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ROOT
+				}
+			}
+		}
+	}
+
+	GOJ_subjugate_tamna = {
+		position = 10
+		icon = mission_captain
+		required_missions = {
+			GOJ_gojoseon_navy
+		}
+		
+		trigger = {
+			OR = {
+				jeju_area = {
+					type = all
+					owned_by = ROOT
+				}
+				KO1 = { is_subject_of = ROOT }
+			}
+		}
+		effect = {
+			add_dip_power = 50
+			add_yearly_sailors = 2
+			add_navy_tradition = 5
+		}
+	}
+
+	GOJ_legacy_king_jun = {
+		position = 12
+		icon = mission_conquest_elam
+		required_missions = {
+			GOJ_prepare_the_invasion
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = mahan_area
+				area = baekje_area
+			}
+		}
+		trigger = {
+			mahan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			baekje_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 25
+			add_mil_power = 25
+			baekje_area = {
+				add_base_production = 1
+				add_core = ROOT
+			}
+			5934 = {
+				change_culture = ROOT
+				change_religion = ROOT
+			}
+			samhan_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_interior_mahan = {
+		position = 13
+		icon = eastern_expansion
+		required_missions = {
+			GOJ_legacy_king_jun
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = chonyi_area
+				area = ungjin_area
+				area = geonma_area
+				area = sinwolson_area
+			}
+		}
+		trigger = {
+			chonyi_area = {
+				type = all
+				owned_by = ROOT
+			}
+			ungjin_area = {
+				type = all
+				owned_by = ROOT
+			}
+			geonma_area = {
+				type = all
+				owned_by = ROOT
+			}
+			sinwolson_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 66
+			add_adm_power = 33
+			add_dip_power = 33
+			jinhan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			kamme_baeki_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			nannan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_jinhan = {
+		position = 14
+		icon = mission_siege2
+		required_missions = {
+			GOJ_conquer_interior_mahan
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = jinhan_area
+				area = kamme_baeki_area
+				area = nannan_area
+			}
+		}
+		trigger = {
+			jinhan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			kamme_baeki_area = {
+				type = all
+				owned_by = ROOT
+			}
+			nannan_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 100 }
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.1
+			}
+			else = { add_army_tradition = 10 }
+			add_mil_power = 45
+		}
+	}
+}
+
+gojoseon_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	
+	potential = {
+		TAG = GOJ
+	} 
+
+	GOJ_extend_okjeo_border = {
+		position = 1
+		icon = mission_persian_invasion
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				province_id = 5885
+				province_id = 1710
+				province_id = 5878
+			}
+		}
+		trigger = {
+			owns = 5885
+			owns = 1710
+			owns = 5878
+		}
+		effect = {
+			okjeo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			bukokjeo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			kugwonson_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			puri_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_mil_power = 20
+			add_war_exhaustion = -2
+		}
+	}
+
+	GOJ_conquer_okjeo_coastline = {
+		position = 2
+		required_missions = { GOJ_extend_okjeo_border }
+		icon = attack_west_pse
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = okjeo_area
+				area = bukokjeo_area
+			}
+		}
+		trigger = {
+			okjeo_area = {
+				type = all
+				owned_by = ROOT
+			}
+			bukokjeo_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_years_of_income = 0.25
+			add_adm_power = 20
+			add_mil_power = 20
+		}
+	}
+
+	GOJ_expand_okjeo_farmland = {
+		position = 3
+		required_missions = { GOJ_extend_okjeo_border }
+		icon = mission_harvest
+		
+		provinces_to_highlight = {
+			OR = {
+				area = okjeo_area
+				area = bukokjeo_area
+			}
+			OR = {
+				trade_goods = grain
+				trade_goods = fish
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				OR = {
+					area = okjeo_area
+					area = bukokjeo_area
+				}
+				is_core = ROOT
+				trade_goods = fish
+				OR = {
+					has_building = craftsman
+					has_building = small_workshop
+					has_building = artisan_district
+				}
+			}
+			num_of_owned_provinces_with = {
+				value = 2
+				OR = {
+					area = okjeo_area
+					area = bukokjeo_area
+				}
+				is_core = ROOT
+				trade_goods = grain
+				OR = {
+					has_building = small_water_irrigation
+					has_building = big_water_irrigation
+					has_building = big_estate
+				}
+			}
+			capital_scope = {
+				OR = {
+					has_building = small_grain_depot
+					has_building = big_grain_depot
+				}
+			}
+		}
+		effect = {
+			capital_scope = {
+				area = {
+					limit = { owned_by = ROOT }
+					add_base_manpower = 1
+				}
+			}
+			if = {
+				limit = {
+					NOT = { stability = 3 }
+				}
+				add_stability = 1
+			}
+			else = {
+				add_adm_power = 75
+			}
+			okjeo_area = {
+				add_province_modifier = {
+					name = goj_thriving_agriculture
+					duration = 5475
+				}
+			}
+			bukokjeo_area = {
+				add_province_modifier = {
+					name = goj_thriving_agriculture
+					duration = 5475
+				}
+			}
+		}
+	}
+
+	GOJ_clear_amnok_river_delta = {
+		position = 4
+		icon = mission_road
+		
+		provinces_to_highlight = {
+			OR = {
+				area = ului_area
+				area = cholbon_area
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 7
+				OR = {
+					area = ului_area
+					area = cholbon_area
+				}
+				OR = {
+					has_terrain = woods
+					has_terrain = forest
+				}
+				has_land_reclamation_modifier_trigger = yes
+			}
+		}
+		effect = {
+			ului_area = {
+				limit = { owned_by = ROOT }
+				add_base_manpower = 1
+			}
+			cholbon_area = {
+				limit = { owned_by = ROOT }
+				add_base_manpower = 1
+			}
+			add_years_of_income = 0.5
+		}
+	}
+
+	GOJ_plow_gojoseon = {
+		position = 5
+		icon = mission_tax
+		
+		provinces_to_highlight = {
+			OR = {
+				area = gojoseon_area
+			}
+		}
+		trigger = {
+			gojoseon_area = {
+				type = all
+				owned_by = ROOT
+				has_land_reclamation_modifier_trigger = yes
+			}
+		}
+		effect = {
+			gojoseon_area = {
+				limit = { owned_by = ROOT }
+				add_base_manpower = 1
+			}
+			add_yearly_manpower = 0.75
+		}
+	}
+
+	GOJ_chinese_army = {
+		position = 7
+		icon = mission_large_army
+		required_missions = {
+			GOJ_relations_in_china
+		}
+		
+		trigger = {
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				army_professionalism = 0.35
+			}
+			else = { army_tradition = 40 }
+			num_of_owned_provinces_with = {
+				value = 10
+				has_building = small_conscription_center
+			}
+			land_maintenance = 1
+			num_of_generals_with_traits = 1
+		}
+		effect = {
+			add_mil_power = 150
+			add_mil_tech = 1
+			change_mil = 1
+			add_casus_belli = {
+				type = cb_vassalize_mission
+				target = BUY
+			}
+			buyeo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			yangin_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_subjugate_buyeo = {
+		position = 8
+		icon = mission_macedons
+		required_missions = {
+			GOJ_conquer_jinbeon
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = buyeo_area
+				area = yangin_area
+			}
+		}
+		trigger = {
+			buyeo_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			yangin_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 50
+			add_prestige = 5
+			add_casus_belli = {
+				type = cb_vassalize_mission
+				target = SSH
+			}
+			sabokkhol_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			dongbuyeo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_subjugate_shushen = {
+		position = 9
+		icon = mission_lostbattle
+		required_missions = {
+			GOJ_subjugate_buyeo
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = sabokkhol_area
+				area = dongbuyeo_area
+			}
+		}
+		trigger = {
+			sabokkhol_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			dongbuyeo_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 30
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+			add_absolutism = 5
+			buyeo_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_tame_korean_steppe = {
+		position = 10
+		icon = mission_scythian
+		required_missions = {
+			GOJ_subjugate_shushen
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				region = buyeo_region
+			}
+		}
+		trigger = {
+			buyeo_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			change_mil = 1
+			add_mil_power = 75
+			if = {
+				limit = { NOT = { stability = 1 } }
+				add_stability = 1
+			}
+			else = { add_dip_power = 75 }
+		}
+	}
+
+	GOJ_prepare_the_invasion = {
+		position = 11
+		icon = mission_big_fleet
+		required_missions = {
+			GOJ_conquer_central_korea
+			GOJ_subjugate_tamna
+		}
+		trigger = {
+			manpower_percentage = 0.9
+			army_size_percentage = 0.85
+			navy_size_percentage = 0.75
+		}
+		effect = {
+			add_army_tradition = 5
+			add_navy_tradition = 5
+			country_event = {
+				id = mission_events.5
+			}
+			mahan_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			byeonhan_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_eastern_byeonhan = {
+		position = 12
+		icon = mde_median_spear
+		required_missions = {
+			GOJ_prepare_the_invasion
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = byeonhan_area
+				area = hyesong_area
+			}
+		}
+		trigger = {
+			byeonhan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			wonji_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 25
+			add_dip_power = 25
+			add_adm_power = 25
+			add_yearly_sailors = 1
+			tai_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sanju_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_nakdong_river_valley = {
+		position = 13
+		icon = mission_invasion
+		required_missions = {
+			GOJ_conquer_eastern_byeonhan
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = tai_area
+				area = sanju_area
+			}
+		}
+		trigger = {
+			tai_area = {
+				type = all
+				owned_by = ROOT
+			}
+			sanju_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 50
+			add_mil_power = 25
+			add_yearly_manpower = 1
+			add_years_of_income = 0.5
+			silla_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			soyabol_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			saro_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_saro_state = {
+		position = 14
+		icon = mission_eastern_soldiers
+		required_missions = {
+			GOJ_nakdong_river_valley
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = silla_area
+				area = soyabol_area
+				area = saro_area
+			}
+		}
+		trigger = {
+			silla_area = {
+				type = all
+				owned_by = ROOT
+			}
+			soyabol_area = {
+				type = all
+				owned_by = ROOT
+			}
+			saro_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 35
+			add_mil_power = 35
+			add_dip_power = 35
+			add_army_tradition = 5
+			add_navy_tradition = 5
+			capital_scope = {
+				area = {
+					add_base_production = 1
+				}
+			}
+		}
+	}
+
+	GOJ_unification_peninsula = {
+		position = 15
+		icon = mission_kyros
+		required_missions = {
+			GOJ_conquer_jinhan
+			GOJ_conquer_saro_state
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				region = gojoseon_region
+				region = dangun_gojoseon_region
+				region = lelang_zhenfan_region
+				region = dongye_region
+				region = mahan_region
+				region = jinhan_region
+				region = byeonhan_region
+				region = samhan_region
+			}
+		}
+		trigger = {
+			gojoseon_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			dangun_gojoseon_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			lelang_zhenfan_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			dongye_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			mahan_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			jinhan_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			byeonhan_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+			samhan_region = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 25
+			add_splendor = 100
+			add_adm_power = 100
+			add_absolutism = 15
+			set_government_rank = 5
+			capital_scope = {
+				add_base_tax = 2
+				add_base_production = 2
+				if = {
+					limit = { NOT = { province_has_center_of_trade_of_level = 3 } }
+					add_center_of_trade_level = 1
+				}
+				else = { 
+					owner = { add_dip_power = 100 }
+				}
+			}
+		}
+	}
+
+	GOJ_koreanize_south = {
+		position = 16
+		icon = mission_artist
+		required_missions = {
+			GOJ_unification_peninsula
+		}
+		provinces_to_highlight = {
+			OR = {
+				region = mahan_region
+				region = jinhan_region
+				region = byeonhan_region
+				region = samhan_region
+			}
+		}
+		trigger = {
+			mahan_region = {
+				type = all
+				culture_group = korean_group
+				religion = ROOT
+			}
+			jinhan_region = {
+				type = all
+				culture_group = korean_group
+				religion = ROOT
+			}
+			byeonhan_region = {
+				type = all
+				culture_group = korean_group
+				religion = ROOT
+			}
+			samhan_region = {
+				type = all
+				culture_group = korean_group
+				religion = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			add_dip_power = 100
+			add_country_modifier = {
+				name = goj_koreanized_south
+				duration = 18250
+			}
+			mahan_region = {
+				limit = { owned_by = ROOT }
+				add_base_tax = 1
+				add_base_production = 1
+			}
+			jinhan_region = {
+				limit = { owned_by = ROOT }
+				add_base_tax = 1
+				add_base_production = 1
+			}
+			byeonhan_region = {
+				limit = { owned_by = ROOT }
+				add_base_tax = 1
+				add_base_production = 1
+			}
+			samhan_region = {
+				limit = { owned_by = ROOT }
+				add_base_tax = 1
+				add_base_production = 1
+			}
+		}
+	}
+}
+
+gojoseon_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	
+	potential = {
+		TAG = GOJ
+	} 
+
+	GOJ_burn_jishi_capital = {
+		position = 2
+		icon = mission_siege
+		required_missions = { GOJ_chaoxian_rivalry }
+		
+		provinces_to_highlight = {
+			owned_by = JSG
+		}
+		trigger = {
+			offensive_war_with = JSG
+			controls = 4003
+			war_score_against = {
+				who = JSG
+				value = 50
+			}
+		}
+		effect = {
+			change_mil = 1
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 10
+			}
+			else = { add_adm_power = 40 }
+			country_event = {
+				id = mission_events.1
+			}
+			JSG = {
+				every_owned_province = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ROOT
+				}
+			}
+		}
+	}
+
+	GOJ_conquer_jishi = {
+		position = 3
+		icon = mission_alexander
+		required_missions = { GOJ_burn_jishi_capital }
+		
+		provinces_to_highlight = {
+			OR = {
+				owned_by = JSG
+				province_id = 4003
+			}
+		}
+		trigger = {
+			NOT = { exists = JSG }
+			owns = 4003
+		}
+		effect = {
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 20
+			}
+			else = { add_splendor = 10 }
+			hansan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			canghai_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			lelang_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			pyeongyangseong_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			country_event = {
+				id = mission_events.2
+			}
+		}
+	}
+
+	GOJ_rebuild_chaoxian = {
+		position = 4
+		icon = mission_tribal_construction
+		required_missions = { GOJ_conquer_jishi }
+		
+		provinces_to_highlight = {
+			owned_by = ROOT
+			OR = {
+				area = liaodong_area
+				area = liaodong_area_northern
+				area = syuantu_area
+				area = yiju_area
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 10
+				OR = {
+					area = liaodong_area
+					area = liaodong_area_northern
+					area = syuantu_area
+					area = yiju_area
+				}
+				is_core = ROOT
+				NOT = { devastation = 1 }
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 5
+			}
+			else = { add_adm_power = 33 }
+			if = {
+				limit = { NOT = { legitimacy_equivalent = 100 } }
+				add_legitimacy = 10
+			}
+			else = { add_adm_power = 33 }
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 75 }
+			liaodong_area = {
+				limit = { owned_by = ROOT }
+				add_prosperity = 10
+				add_base_production = 1
+				add_base_manpower = 1
+			}
+			liaodong_area_northern = {
+				limit = { owned_by = ROOT }
+				add_prosperity = 10
+				add_base_production = 1
+				add_base_manpower = 1
+			}
+			syuantu_area = {
+				limit = { owned_by = ROOT }
+				add_prosperity = 10
+				add_base_production = 1
+				add_base_manpower = 1
+			}
+			yiju_area = {
+				limit = { owned_by = ROOT }
+				add_prosperity = 10
+				add_base_production = 1
+				add_base_manpower = 1
+			}
+		}
+	}
+
+	GOJ_conquer_wanggeomseong = {
+		position = 5
+		icon = mission_macedons
+		required_missions = {
+			GOJ_expand_southern_border
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			province_id = 5889
+		}
+		trigger = {
+			owns = 5889
+		}
+		effect = {
+			add_adm_power = 10
+			add_dip_power = 10
+			country_event = {
+				id = mission_events.3
+			}
+		}
+	}
+	
+	GOJ_embellishment_capital = {
+		position = 6
+		icon = mission_city
+		required_missions = {
+			GOJ_conquer_wanggeomseong
+		}
+		
+		provinces_to_highlight = {
+			is_capital_of = ROOT
+		}
+		trigger = {
+			years_of_income = 1
+			capital_scope = {
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+					has_building = huge_theater
+				}
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 20
+			}
+			else = { add_adm_power = 150 }
+			add_absolutism = 10
+			change_adm = 1
+			capital_scope = {
+				add_prosperity = 50
+				add_base_tax = 2
+				add_base_manpower = 4
+				add_building = imperial_palace
+			}
+			add_country_modifier = {
+				name = goj_expanded_capital_palace
+				duration = 10950
+			}
+		}
+	}
+
+	GOJ_conquer_jinbeon = {
+		position = 7
+		icon = mission_hoplite_1
+		required_missions = {
+			GOJ_conquer_nangnang_imdun
+			GOJ_embellishment_capital
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = yangeun_area
+				area = zhenfan_area
+				area = unju_area
+			}
+		}
+		trigger = {
+			yangeun_area = {
+				type = all
+				owned_by = ROOT
+			}
+			zhenfan_area = {
+				type = all
+
+				owned_by = ROOT
+			}
+			unju_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 10
+			}
+			else = { add_adm_power = 50 }
+			add_splendor = 8
+			if = {
+				limit = { NOT = { government_rank = 4 } }
+				set_government_rank = 4
+			}
+			else = { add_dip_power = 200 }
+			poryumji_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			isan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sulchhon_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			ki_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			ingunne_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_central_korea = {
+		position = 10
+		icon = mission_raider
+		required_missions = {
+			GOJ_conquer_jinbeon
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = poryumji_area
+				area = isan_area
+				area = sulchhon_area
+				area = ki_area
+				area = ingunne_area
+			}
+		}
+		trigger = {
+			poryumji_area = {
+				type = all
+				owned_by = ROOT
+			}
+			isan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			sulchhon_area = {
+				type = all
+				owned_by = ROOT
+			}
+			ki_area = {
+				type = all
+				owned_by = ROOT
+			}
+			ingunne_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 75
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 10
+			}
+			else = { add_adm_power = 50 }
+			add_splendor = 8
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.1
+			}
+			else = { add_army_tradition = 10 }
+		}
+	}
+
+	GOJ_conquer_western_byeonhan = {
+		position = 12
+		icon = mission_boarding
+		required_missions = {
+			GOJ_prepare_the_invasion
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = buan_area
+				area = hyesong_area
+				area = bulmi_area
+			}
+		}
+		trigger = {
+			buan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			hyesong_area = {
+				type = all
+				owned_by = ROOT
+			}
+			bulmi_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 33
+			add_dip_power = 33
+			add_adm_power = 33
+			add_yearly_sailors = 2
+		}
+	}
+
+	GOJ_conquer_interior_byeonhan = {
+		position = 13
+		icon = mission_mountains
+		required_missions = {
+			GOJ_conquer_western_byeonhan
+			GOJ_conquer_eastern_byeonhan
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = sollim_paek_area
+				area = yecheon_area
+			}
+		}
+		trigger = {
+			sollim_paek_area = {
+				type = all
+				owned_by = ROOT
+			}
+			yecheon_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 20
+			add_dip_power = 20
+			add_adm_power = 20
+		}
+	}
+
+	GOJ_raid_yan = {
+		position = 14
+		icon = mission_siege
+		required_missions = {
+			GOJ_yan_rivalry
+		}
+		provinces_to_highlight = {
+			owned_by = YAN
+		}
+		trigger = {
+			war_with = YAN
+			YAN = {
+				num_of_owned_provinces_with = {
+					value = 3
+					controlled_by = ROOT
+				}
+			}
+		}
+		effect = {
+			country_event = {
+				id = mission_events.6
+			}
+			YAN = { add_prestige = -10 }
+			add_mil_power = 40
+			add_army_tradition = 5
+			liaoxi_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			liaoxi_area_western = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_conquer_outer_yan = {
+		position = 15
+		icon = mission_lostbattle
+		required_missions = {
+			GOJ_raid_yan
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = liaoxi_area
+				area = liaoxi_area_western
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				area = liaoxi_area
+			}
+			liaoxi_area_western = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_casus_belli = {
+				type = cb_mission_invasion
+				target = YAN
+				months = 120
+			}
+			add_prestige = 5
+			add_army_tradition = 5
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_mil_power = 40 }
+			guangyang_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			guangyang_area_western = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			yuyang_area_southern = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	GOJ_conquer_yan = {
+		position = 16
+		icon = mission_hoplite_2
+		required_missions = {
+			GOJ_conquer_outer_yan
+		}
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = guangyang_area
+				area = guangyang_area_western
+				area = yuyang_area_southern
+			}
+		}
+		trigger = {
+			NOT = { exists = YAN }
+			guangyang_area = {
+				type = all
+				owned_by = ROOT
+			}
+			yuyang_area_southern = {
+				type = all
+				owned_by = ROOT
+			}
+			num_of_owned_provinces_with = {
+				value = 2
+				area = guangyang_area_western
+			}
+		}
+		effect = {
+			add_mil_tech = 1
+			add_army_tradition = 5
+			add_prestige = 10
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.1
+			}
+			else = { add_army_tradition = 5 }
+			guangyang_area = {
+				limit = { owned_by = ROOT }
+				add_base_production = -1
+			}
+			guangyang_area_western = {
+				limit = { owned_by = ROOT }
+				add_base_production = -1
+			}
+			yuyang_area_southern = {
+				limit = { owned_by = ROOT }
+				add_base_production = -1
+			}
+			capital_scope = {
+				area = {
+					add_base_production = 3
+				}
+			}
+			youzhou_china = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+}
+
+gojoseon_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	
+	potential = {
+		TAG = GOJ
+	} 
+
+	GOJ_chaoxian_rivalry = {
+		position = 1
+		icon = mission_training
+		
+		provinces_to_highlight = {
+			owned_by = JSG
+		}
+		trigger = {
+			army_size = JSG
+			prestige = JSG
+			OR = {
+				is_rival = JSG
+				total_development = JSG
+			}
+			treasury = 100
+		}
+		effect = {
+			add_country_modifier = {
+				name = goj_increased_confidence
+				duration = 3650
+			}
+			add_adm_power = 25
+			add_mil_power = 25
+			add_dip_power = 25
+			liaodong_area_northern = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			syuantu_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	GOJ_expand_southern_border = {
+		position = 4
+		icon = mission_siege2
+		required_missions = {
+			GOJ_conquer_jishi
+			GOJ_chaoxian_rivalry
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = hansan_area
+				area = canghai_area
+				area = lelang_area
+				area = pyeongyangseong_area
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				area = lelang_area
+			}
+			num_of_owned_provinces_with = {
+				value = 2
+				area = pyeongyangseong_area
+			}
+			num_of_owned_provinces_with = {
+				value = 3
+				area = hansan_area
+			}
+			canghai_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			daifang_chan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			kugwonseong_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			lintun_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_mil_power = 25
+			add_army_tradition = 5
+		}
+	}
+	
+	GOJ_conquer_nangnang_imdun = {
+		position = 6
+		icon = mission_urartu_fall
+		required_missions = {
+			GOJ_expand_southern_border
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = hansan_area
+				area = canghai_area
+				area = lelang_area
+				area = pyeongyangseong_area
+				area = daifang_chan_area
+				area = kugwonseong_area
+				area = lintun_area
+			}
+		}
+		trigger = {
+			hansan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			canghai_area = {
+				type = all
+				owned_by = ROOT
+			}
+			lelang_area = {
+				type = all
+				owned_by = ROOT
+			}
+			pyeongyangseong_area = {
+				type = all
+				owned_by = ROOT
+			}
+			daifang_chan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			kugwonseong_area = {
+				type = all
+				owned_by = ROOT
+			}
+			lintun_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			yangeun_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			zhenfan_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			unju_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_adm_power = 50
+			add_dip_power = 50
+			if = {
+				limit = { NOT = { prestige = 100 } }
+				add_prestige = 10
+			}
+			else = { add_adm_power = 25 }
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.1
+			}
+			else = { add_army_tradition = 5 }
+		}
+	}
+
+	GOJ_control_north_korean_trade = {
+		position = 7
+		icon = mission_tradeport
+		required_missions = {
+
+		}
+
+		trigger = {
+			1720 = {
+				is_strongest_trade_power = ROOT
+			}
+			4003 = {
+				is_strongest_trade_power = ROOT
+			}
+			5889 = {
+				is_strongest_trade_power = ROOT
+			}
+		}
+		effect = {
+			capital_scope = {
+				add_center_of_trade_level = 1
+				add_base_production = 1
+			}
+			add_years_of_income = 1
+			add_dip_power = 75
+			add_mercantilism = 6
+		}
+	}
+
+	GOJ_deny_china_korea_trade = {
+		position = 8
+		icon = mission_advisors
+		required_missions = {
+			GOJ_control_north_korean_trade
+		}
+
+		trigger = {
+			5934 = {
+				is_strongest_trade_power = ROOT
+			}
+			1711 = {
+				is_strongest_trade_power = ROOT
+			}
+		}
+		effect = {
+			add_years_of_income = 1
+			add_dip_power = 75
+			add_mercantilism = 5
+			define_advisor = {
+				type = merchant_adv
+				skill = 3
+				discount = yes
+			}
+			add_country_modifier = {
+				name = goj_denying_china_korean_trade
+				duration = 10950
+			}
+		}
+	}
+
+	GOJ_expand_fisheries = {
+		position = 10
+		icon = mission_ship
+		required_missions = {
+
+		}
+
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 15
+				trade_goods = fish
+				OR = {
+					has_building = craftsman
+					has_building = small_workshop
+					has_building = artisan_district
+				}
+			}
+			production_leader = {
+				trade_goods = fish
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_dip_power = 125 }
+			every_owned_province = {
+				limit = { has_port = yes }
+				add_base_production = 1
+			}
+			add_country_modifier = {
+				name = goj_expanded_fishing
+				duration = 14600
+			}
+		}
+	}
+
+	GOJ_yan_rivalry = {
+		position = 13
+		icon = mission_legionary
+		required_missions = {
+
+		}
+
+		trigger = {
+			is_rival = YAN
+			NOT = { exists = JSG }
+		}
+		effect = {
+			if = {
+				limit = { NOT = { legitimacy_equivalent = 100 } }
+				add_legitimacy = 10
+			}
+			else = { add_adm_power = 65 }
+			add_prestige = 10
+			add_splendor = 6
+		}
+	}
+
+	GOJ_equal_to_yan = {
+		position = 14
+		icon = mission_training
+		required_missions = {
+			GOJ_yan_rivalry
+		}
+		trigger = {
+			army_size = YAN
+			army_tradition = YAN
+			prestige = YAN
+		}
+		effect = {
+			change_mil = 1
+			add_mil_tech = 1
+			add_mil_power = 70
+			add_yearly_manpower = 1
+		}
+	}
+	
+}
