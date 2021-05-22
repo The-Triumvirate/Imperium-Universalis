@@ -1,0 +1,161 @@
+namespace = army_professionalism
+
+########################################################################################
+# Following events are meant to debuff large armies when low army professionalism
+########################################################################################
+
+#Army too large, low professionalism
+country_event = {
+	id = army_professionalism.1
+	title = "army_professionalism.1.t"
+	desc = "army_professionalism.1.d"
+	picture = looting
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		NOT = { army_professionalism = 0.5 }
+		army_size = 150
+		neither_tribal_nor_native_trigger = yes
+	}
+	
+	option = {
+		name = "army_professionalism.1.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_country_modifier = {
+			name = large_unprofessional_army_modifier
+			duration = -1
+		}
+	}
+}
+
+#Army is now professional
+
+country_event = {
+	id = army_professionalism.101
+	title = "army_professionalism.101.t"
+	desc = "army_professionalism.101.d"
+	picture = training
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		has_country_modifier = large_unprofessional_army_modifier
+		neither_tribal_nor_native_trigger = yes
+		OR = {
+			NOT = { army_size = 100 }
+			army_professionalism = 0.5
+		}
+	}
+	
+	option = {
+		name = "army_professionalism.101.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		remove_country_modifier = large_unprofessional_army_modifier
+	}
+}
+
+#manpower pool too large, low professionalism
+country_event = {
+	id = army_professionalism.2
+	title = "army_professionalism.2.t"
+	desc = "army_professionalism.2.d"
+	picture = execution
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		NOT = { army_professionalism = 0.5 }
+		neither_tribal_nor_native_trigger = yes
+		max_manpower = 200
+	}
+	
+	option = {
+		name = "army_professionalism.2.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_country_modifier = {
+			name = poor_recruitment_standards_modifier
+			duration = -1
+		}
+	}
+}
+
+#recruitment standards restored
+
+country_event = {
+	id = army_professionalism.201
+	title = "army_professionalism.201.t"
+	desc = "army_professionalism.201.d"
+	picture = training
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		has_country_modifier = poor_recruitment_standards_modifier
+		OR = {
+			NOT = { max_manpower = 125 }
+			army_professionalism = 0.5
+		}
+	}
+	
+	option = {
+		name = "army_professionalism.201.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		remove_country_modifier = poor_recruitment_standards_modifier
+	}
+}
+
+#too low quality controls for generals
+
+country_event = {
+	id = army_professionalism.3
+	title = "army_professionalism.3.t"
+	desc = "army_professionalism.3.d"
+	picture = arrested_person
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		NOT = { army_professionalism = 0.5 }
+		NOT = { army_tradition = 50 }
+		corruption = 5
+	}
+	
+	option = {
+		name = "army_professionalism.3.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_army_tradition = -5
+		add_country_modifier = {
+			name = low_quality_generals_modifier
+			duration = -1
+		}
+	}
+}
+
+#low corruption and professionalism restores generals
+
+country_event = {
+	id = army_professionalism.301
+	title = "army_professionalism.301.t"
+	desc = "army_professionalism.301.d"
+	picture = generals
+	
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		has_country_modifier = low_quality_generals_modifier
+		army_tradition = 50
+		army_professionalism = 0.5
+		NOT = { corruption = 2 }
+	}
+	
+	option = {
+		name = "army_professionalism.301.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		add_army_tradition = 2
+		remove_country_modifier = low_quality_generals_modifier
+	}
+}
