@@ -10,21 +10,202 @@ jewish_missions_1 = {
 	} 
 	has_country_shield = yes
 
-	JUD_army_israel = {
+	JUD_compile_bible = {
 		position = 1
+		icon = mission_scholar
+		
+		trigger = { 
+			OR = {
+				advisor = scholar_advisor
+				advisor = priest_adv
+			}
+			absolutism = 10
+			has_institution = writing_system
+			has_institution = bureaucracy_institution
+		}
+		effect = {
+			add_dip_power = 50
+			change_government_reform_progress = 75
+			add_adm_tech = 1
+			add_country_modifier = {
+				name = jud_compiled_the_bible
+				duration = -1
+			}
+		}
+	}
+
+	JUD_pious_kingdom = {
+		position = 2
+		icon = mission_temple
+
+		required_missions = {
+			JUD_compile_bible
+		}
+		
+		trigger = { 
+			tolerance_to_this = 3
+			legitimacy_equivalent = 95
+			estate_loyalty = {
+				estate = estate_priesthood
+				loyalty = 60
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 100 }
+			add_dip_power = 75
+			add_absolutism = 5
+			add_country_modifier = {
+				name = jud_pious_kingdom
+				duration = 12775
+			}
+		}
+	}
+
+	JUD_canaanite_trade = {
+		position = 3
+		icon = mission_trade
+		
+		trigger = { 
+			2277 = {
+				is_strongest_trade_power = ROOT
+			}
+		}
+		effect = {
+			add_dip_power = 50
+			add_mercantilism = 1
+			add_years_of_income = 0.25
+			add_country_modifier = {
+				name = jud_canaanite_trade
+				duration = 9125
+			}
+			capital_scope = {
+				area = {
+					add_prosperity = 10
+				}
+			}
+		}
+	}
+
+	JUD_wine_honey = {
+		position = 4
+		icon = mission_harvest
+
+		required_missions = {
+			JUD_canaanite_trade
+		}
+		
+		trigger = { 
+			production_leader = {
+				trade_goods = wine
+			}
+			production_leader = {
+				trade_goods = honey
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 100 }
+			add_prestige = 10
+			add_legitimacy = 25
+			every_owned_province = {
+				limit = {
+					culture = ROOT
+					religion = ROOT
+				}
+				add_prosperity = 20
+				add_base_manpower = 1
+			}
+			add_country_modifier = {
+				name = "jud_promised_land"
+				duration = -1
+			}
+		}
+	}
+
+	JUD_access_incense = {
+		position = 5
+		icon = mission_tradeport
+		
+		trigger = {
+			olibanum = 1
+			1482 = {
+				trade_share = {
+					country = ROOT
+					share = 25
+				}
+			}
+			2611 = {
+				trade_share = {
+					country = ROOT
+					share = 20
+				}
+			}
+		}
+		effect = {
+			add_dip_power = 75
+			add_mercantilism = 1
+			add_years_of_income = 0.5
+			add_country_modifier = {
+				name = jud_incense_trade
+				duration = 18250
+			}
+			capital_scope = { change_trade_goods = olibanum }
+		}
+	}
+
+	JUD_conquer_central_cyprus = {
+		position = 7
+		icon = mission_siege
+		required_missions = {
+			JUD_conquer_kition
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = cyprus_center_area
+			}
+		}
+		
+		trigger = { 
+			cyprus_center_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+
+		effect = {
+			add_dip_power = 40
+			add_mil_power = 30
+			add_years_of_income = 0.33
+		}
+	}
+
+	JUD_army_israel = {
+		position = 10
 		icon = mission_cavalry
 		
 		trigger = { 
-			army_size = 10
-			manpower_percentage = 0.6
+			army_size = 8
+			manpower_percentage = 0.5
 		}
 		effect = {
-			add_army_tradition = 10
+			add_army_tradition = 5
+			add_mil_power = 50
 		}
 	}
 
 	JUD_repel_egyptians = {
-		position = 2
+		position = 11
 		icon = mission_hoplite_2
 		required_missions = {
 			JUD_army_israel
@@ -32,8 +213,7 @@ jewish_missions_1 = {
 		
 		trigger = { 
 			war_with = EGY
-			prestige = 15
-			army_tradition = 20
+			NOT = { war_exhaustion = 2 }
 		}
 		effect = {
 			add_country_modifier = {
@@ -43,12 +223,42 @@ jewish_missions_1 = {
 		}
 	}
 
-	JUD_legacy_joseph = {
-		position = 3
-		icon = mission_egypt
+	JUD_repel_babylonians = {
+		position = 12
+		icon = mission_bab_king
 		required_missions = {
 			JUD_repel_egyptians
-			JUD_repel_babylonians
+		}
+		
+		trigger = { 
+			OR = {
+				war_with = ASY
+				war_with = BAB
+			}
+			NOT = { war_exhaustion = 2 }
+			capital_scope = { 
+				has_building = small_city_walls
+				has_building = small_army_camp
+			}
+
+		}
+		effect = {
+			add_mil_power = 75
+			add_army_tradition = 5
+			add_country_modifier = {
+				name = "jud_defend_homeland"
+				duration = 5475 #15 years
+			}
+			add_war_exhaustion = -10
+		}
+	}
+
+	JUD_conquer_delta = {
+		position = 14
+		icon = mission_invasion
+
+		required_missions = {
+			JUD_gate_of_egypt
 		}
 		
 		provinces_to_highlight = {
@@ -56,44 +266,44 @@ jewish_missions_1 = {
 				country_or_non_sovereign_subject_holds = ROOT
 			}
 			OR = {
-				region = lower_egypt_region 
-				region = upper_egypt_region
+				area = khaset
+				area = sap_meh
+				area = ament_area
 			}
 		}
 
 		trigger = {
-			lower_egypt_region = {
+			khaset = {
 				type = all
 				country_or_non_sovereign_subject_holds = ROOT
 			}
+			sap_meh = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			ament_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 100
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 100 }
+			add_splendor = 20
+			add_army_tradition = 5
+			add_navy_tradition = 5
+			add_years_of_income = 1.2
 			upper_egypt_region = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}		}
-		effect = {
-			add_prestige = 25
-			add_adm_power = 300
-		}
-	}
-
-	JUD_army_god = {
-		position = 4
-		icon = mission_jewish
-		required_missions = {
-			JUD_legacy_joseph
-		}
-
-		trigger = {
-			army_size = 150
-			num_of_generals_with_traits = 3
-			num_of_admirals_with_traits = 1
-			navy_size = 300
-		}
-		effect = {
-			add_prestige = 30
-			add_mil_power = 150
-			add_army_tradition = 15
-			add_navy_tradition = 15
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
 		}
 	}
 }
@@ -110,47 +320,377 @@ jewish_missions_2 = {
 	} 
 	has_country_shield = yes
 
-	JUD_canaanite_trade = {
+	JUD_phoenician_allies = {
 		position = 1
-		icon = mission_tribal_construction
+		icon = mission_peace
+		required_missions = {
+			
+		}
 		
 		trigger = { 
-			home_trade_node = {
-				has_most_province_trade_power = ROOT
-				is_strongest_trade_power = ROOT
-				highest_value_trade_node = yes
+			any_known_country = {
+				primary_culture = phoenician
+				capital_scope = { region = phoenicia_region }
+				alliance_with = ROOT
 			}
 		}
 		effect = {
-			add_years_of_income = 2.0
-			add_country_modifier = {
-				name = "jud_canaanite_trade"
-				duration = 7300 #20 years
+			add_dip_power = 30
+			change_dip = 1
+		}
+	}
+
+	JUD_restablish_phoenician_subjects = {
+		position = 2
+		icon = mission_kyros
+		required_missions = {
+			JUD_phoenician_allies
+		}
+		
+		trigger = { 
+			calc_true_if = {
+				all_country = {
+					primary_culture = phoenician
+					capital_scope = { region = phoenicia_region }
+					is_subject_of = ROOT
+				}
+				amount = 1
+			}
+		}
+		effect = {
+			country_event = {
+				id = mission_events.9
 			}
 		}
 	}
 
-	JUD_repel_babylonians = {
-		position = 2
-		icon = mission_bab_king
+	JUD_conquer_tyre_sidon = {
+		position = 4
+		icon = mission_large_army
 		required_missions = {
-			JUD_army_israel
+			JUD_restablish_phoenician_subjects
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = phoenicia_area
+				area = akko_area
+			}
 		}
 		
 		trigger = { 
-			war_with = BAB
-			army_tradition = 30
-			capital_scope = { 
-				has_building = small_city_walls
-				has_building = small_army_camp
+			phoenicia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
 			}
-
+			akko_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
 		}
 		effect = {
-			add_mil_power = 50
+			add_navy_tradition = 5
+			add_years_of_income = 1
+			add_prestige = 5
+			add_dip_power = 40
+			add_mil_power = 30
+		}
+	}
+
+	JUD_build_fleet = {
+		position = 5
+		icon = mission_harbor
+		required_missions = {
+			JUD_conquer_tyre_sidon
+		}
+		
+		trigger = { 
+			sailors_percentage = 1
+			navy_size = 20
+		}
+		effect = {
+			add_navy_tradition = 2
+			add_dip_power = 30
+			3214 = { add_permanent_claim = ROOT }
+		}
+	}
+
+	JUD_conquer_kition = {
+		position = 6
+		icon = mission_big_fleet
+		required_missions = {
+			JUD_build_fleet
+		}
+
+		provinces_to_highlight = {
+			province_id = 3214
+		}
+		
+		trigger = { 
+			owns_core_province = 3214
+		}
+
+		effect = {
+			add_mercantilism = 1
+			add_dip_power = 25
+			add_mil_power = 25
+			cyprus_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_eastern_cyprus = {
+		position = 7
+		icon = mission_boarding
+		required_missions = {
+			JUD_conquer_kition
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = cyprus_east
+			}
+		}
+		
+		trigger = { 
+			cyprus_east = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+
+		effect = {
+			add_dip_power = 50
+			add_mil_power = 40
+			add_navy_tradition = 2
+			add_yearly_sailors = 3
+		}
+	}
+
+	JUD_conquer_western_cyprus = {
+		position = 8
+		icon = mission_captain
+		required_missions = {
+			JUD_conquer_central_cyprus
+			JUD_conquer_eastern_cyprus
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = cyprus_west
+			}
+		}
+		
+		trigger = { 
+			cyprus_west = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+
+		effect = {
+			add_dip_power = 45
+			add_mil_power = 45
+			add_adm_power = 45
+			add_years_of_income = 0.45
 			add_country_modifier = {
-				name = "jud_defend_homeland"
-				duration = 5475 #10 years
+				name = jud_conquered_cyprus
+				duration = -1
+			}
+			
+		}
+	}
+
+	JUD_rival_philistia = {
+		position = 9
+		icon = mission_philistia
+		
+		provinces_to_highlight = {
+			owned_by = PHI
+		}	
+
+		trigger = { 
+			is_rival = PHI
+			army_size = PHI
+		}
+		effect = {
+			add_army_tradition = 5
+			if = {
+				limit = { NOT = { legitimacy = 100 } }
+				add_legitimacy = 5
+			}
+			else = { add_adm_power = 40 }
+			add_country_modifier = {
+				name = jud_reignating_old_rivalries
+				duration = 9125
+			}
+			4883 = { add_permanent_claim = ROOT }
+			4882 = { add_permanent_claim = ROOT }
+		}
+	}
+
+	JUD_conquer_philistian_cities = {
+		position = 10
+		icon = mission_soldiers
+
+		required_missions = {
+			JUD_rival_philistia
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = philistaeia_area
+			}
+		}	
+
+		trigger = { 
+			owns = 4883
+			owns = 4882
+		}
+		effect = {
+			add_mil_power = 30
+			add_army_tradition = 5
+			PHI = {
+				add_stability = -1
+			}
+			philistaeia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_philistia = {
+		position = 11
+		icon = mission_lydia
+
+		required_missions = {
+			JUD_conquer_philistian_cities
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = philistaeia_area
+			}
+		}	
+
+		trigger = { 
+			philistaeia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 40
+			add_prestige = 5
+			qadesh_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_crush_philistia = {
+		position = 12
+		icon = mission_philistia
+
+		required_missions = {
+			JUD_conquer_philistia
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = qadesh_area
+			}
+		}
+
+		trigger = {
+			NOT = { exists = PHI }
+			qadesh_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 20
+			if = {
+				limit = { NOT = { stability = 3 }  }
+				add_stability = 1
+			}
+			country_event = {
+				id = mission_events.8
+			}
+			khent_abt = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_gate_of_egypt = {
+		position = 13
+		icon = mission_egypt
+
+		required_missions = {
+			JUD_crush_philistia
+			JUD_repel_babylonians
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = khent_abt
+			}
+		}
+
+		trigger = {
+			khent_abt = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 45
+			add_navy_tradition = 2
+			add_army_tradition = 5
+			add_country_modifier = {
+				name = jud_gate_egypt_opened
+				duration = 10950
 			}
 			lower_egypt_region = {
 				limit = {
@@ -159,112 +699,48 @@ jewish_missions_2 = {
 				}
 				add_permanent_claim = ROOT
 			}
+		}
+	}
+
+	JUD_turning_tables = {
+		position = 14
+		icon = mission_egypt_2
+
+		required_missions = {
+			JUD_gate_of_egypt
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = aneb_hetch
+				area = heq_at
+			}
+		}
+
+		trigger = {
+			aneb_hetch = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			heq_at = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 200
+			add_splendor = 20
+			add_army_tradition = 10
+			add_years_of_income = 2
 			upper_egypt_region = {
 				limit = {
 					NOT = { is_core = ROOT }
 					NOT = { owned_by = ROOT }
 				}
 				add_permanent_claim = ROOT
-			}
-			every_country = {
-				limit = {  
-					OR = {
-						capital_scope = { region = lower_egypt_region }
-						capital_scope = { region = upper_egypt_region }
-					}
-					total_development = 180
-				}
-				reverse_add_casus_belli = {
-					target = ROOT
-					type = cb_mission_invasion
-					months = 60
-				}
-			} 
-		}
-	}
-
-	JUD_improve_income = {
-		position = 3
-		icon = mission_trade
-		
-		trigger = {
-			OR = {
-				small_water_irrigation = 8
-				big_water_irrigation = 5
-			}
-			OR = {
-				craftsman = 8
-				small_workshop = 5
-			}
-			OR = {
-				small_market = 10
-				medium_market = 7
-			}
-			monthly_income = 30
-			any_owned_province = { base_production = 7 }
-		}
-		effect = {
-			add_years_of_income = 3.0
-			add_adm_power = 75
-			add_prestige = 40
-			add_prestige = 10
-		}
-	}
-
-	JUD_mediterranean_trade = {
-		position = 4
-		icon = mission_asia
-		required_missions = {
-			JUD_improve_income
-		}
-		
-		trigger = {
-			1419 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			1455 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			1381 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			num_of_light_ship = 50
-		}
-		effect = {
-			add_dip_power = 80
-			add_navy_tradition = 15
-			add_mercantilism = 8
-		}
-	}
-
-	JUD_arabian_trade = {
-		position = 5
-		icon = mission_arabia
-		required_missions = {
-			JUD_mediterranean_trade
-		}
-		
-		trigger = {
-			1506 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			1489 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			1482 = {
-				 is_strongest_trade_power = ROOT 
-			}
-			num_of_light_ship = 100
-			trading_bonus = {
-				trade_goods = olibanum
-				value = yes
-			}
-		}
-		effect = {
-			add_dip_power = 100
-			add_country_modifier = {
-				name = "jud_incense_trade"
-				duration = 9125 #25 years
 			}
 		}
 	}
@@ -282,180 +758,474 @@ jewish_missions_3 = {
 	} 
 	has_country_shield = yes
 
-	JUD_solomon_1 = {
+	JUD_expand_solomon_temple = {
 		position = 1
-		icon = mission_jewish
+		icon = mission_artist
 		
 		provinces_to_highlight = {
-			OR = {
-				province_id = 2277
-			}
-		}
+			province_id = 2277
+		}	
 
 		trigger = { 
 			2277 = {
-				has_building = small_townhall
-				has_building = small_market
-				has_building = gravel_road
+				owned_by = ROOT
+				OR = {
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
 			}
 		}
 		effect = {
-			add_adm_power = 50
-			add_legitimacy = 10
-			add_stability = 1
-			add_years_of_income = 1
+			add_prestige = 5
+			if = {
+				limit = { NOT = { legitimacy = 100 } }
+				add_legitimacy = 10
+			}
+			else = { add_dip_power = 50 }
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+			2277 = {
+				add_base_tax = 1
+				add_base_production = 1
+			}
 		}
 	}
 
-	JUD_jerusalem = {
+	JUD_merchants_temple = {
 		position = 2
-		icon = mission_great_leader
-		
+		icon = mission_advisors
+
 		required_missions = {
-			JUD_solomon_1
+			JUD_expand_solomon_temple
 		}
-
-		trigger = { 
-			OR = {
-				jewish = 2
-				samaritan = 2
-			}
-			legitimacy = 100
-			absolutism = 20
-			religious_unity = 0.8
-			faction_in_power = fac_priests
-		}
-		effect = {
-			add_adm_power = 80
-			add_country_modifier = {
-				name = "jud_pious_kingdom"
-				duration = 7300 #20 years
-			}
-		}
-	}
-
-	JUD_samaria_jerusalem = {
-		position = 3
-		icon = mission_city
-		
-		required_missions = {
-			JUD_jerusalem
-		}
-
-		provinces_to_highlight = {
-			OR = {
-				province_id = 2277
-				province_id = 2286
-			}
-		}
-
-		trigger = { 
-			2277 = {	
-				has_building = small_bath
-				has_building = medium_market
-				OR = {
-					has_building = small_theater
-					has_building = big_theater
-				}
-				has_building = taxman
-			}
-			2286 = {
-				has_building = small_bath
-				has_building = medium_market
-				OR = {
-					has_building = small_theater
-					has_building = big_theater
-				}
-				has_building = taxman
-			}
-		}
-		effect = {
-			add_prestige = 15
-			add_splendor = 100
-			add_adm_power = 80
-			2286 = {
-				add_base_tax = 1
-				add_base_production = 2
-			}
-			2277 = {
-				add_base_tax = 1
-				add_base_production = 2
-			}
-		}
-	}
-
-	JUD_solomon_2 = {
-		position = 4
-		icon = mission_temple
 		
 		provinces_to_highlight = {
-			OR = {
-				province_id = 2277
-			}
-		}
-
-		required_missions = {
-			JUD_samaria_jerusalem
-		}
+			province_id = 2277
+		}	
 
 		trigger = {
-			prestige = 40
-			OR = {
-				jewish = 3
-				samaritan = 3
-			}
 			2277 = {
-				has_building = large_city_walls
-				has_building = small_temple
-				has_building = paved_road
-				base_production = 12
+				owned_by = ROOT
 				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+				OR = {
+					has_building = small_townhall
 					has_building = big_townhall
 					has_building = government_palace
+					has_building = government_district
 				}
 			}
 		}
 		effect = {
-			add_legitimacy = 15
-			add_splendor = 50
-			add_years_of_income = 3
-			change_adm = 2
+			add_years_of_income = 0.25
+			add_dip_power = 25
+			2277 = {
+				add_base_production = 1
+				add_permanent_province_modifier = {
+					name = jud_merchants_temple_modifier
+				}
+				if = {
+					limit = { NOT = { province_has_center_of_trade_of_level = 3 } }
+					add_center_of_trade_level = 1
+				}
+				else = { owner = { add_mercantilism = 2 } }
+				if = {
+					limit = { has_building = small_market }
+					remove_building = small_market
+					add_building = medium_market
+				}
+				else_if = {
+					limit = { has_building = medium_market }
+					remove_building = medium_market
+					add_building = great_market
+				}
+			}	
 		}
 	}
 
-	JUD_solomon_3 = {
-		position = 5
-		icon = mission_jewish
-		
+	JUD_rebuild_samaria = {
+		position = 3
+		icon = mission_city
 		required_missions = {
-			JUD_solomon_2
+			JUD_merchants_temple
 		}
 
 		provinces_to_highlight = {
+			province_id = 2286
+		}
+		
+		trigger = {
+			owns_core_province = 2286
+			2286 = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+				OR = {
+					has_building = small_water_irrigation
+					has_building = big_water_irrigation
+					has_building = big_estate
+				}
+			}
+		}
+
+		effect = {
+			2286 = {
+				area = {
+					add_prosperity = 20
+				}
+				add_base_tax = 1
+				add_base_production = 1
+			}
+			add_splendor = 20
+			add_adm_power = 30
+			add_dip_power = 30
+			add_prestige = 5
+		}
+	}
+
+	JUD_conquer_north_phoenicia = {
+		position = 5
+		icon = mission_alexander
+		required_missions = {
+			JUD_conquer_tyre_sidon
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
 			OR = {
-				province_id = 2277
+				area = north_phoenicia
+				area = aradus_area
+			}
+		}
+		
+		trigger = { 
+			north_phoenicia = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			aradus_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_navy_tradition = 5
+			add_dip_power = 40	
+			add_yearly_sailors = 3
+			anti_lebanon = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_country_modifier = {
+				name = jud_phoenicia
+				duration = 18250
+			}
+		}
+	}
+
+	JUD_conquer_libanus = {
+		position = 6
+		icon = mission_mountains
+		required_missions = {
+			JUD_conquer_north_phoenicia
+			JUD_conquer_damascus
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = anti_lebanon
+			}
+		}
+		
+		trigger = { 
+			anti_lebanon = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 50
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+			add_years_of_income = 0.25
+			apamene_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_expand_forestry = {
+		position = 7
+		icon = mission_tribal_construction
+		required_missions = {
+			JUD_conquer_libanus
+		}
+		
+		provinces_to_highlight = {
+			OR = {
+				province_id = 4889
+				province_id = 5874
+				province_id = 2307
+				province_id = 2304
+			}
+		}
+		
+		trigger = { 
+			owns_core_province = 4889
+			owns_core_province = 5874
+			owns_core_province = 2307
+			owns_core_province = 2304
+			4889 = { has_building = lumberjack }
+			5874 = { has_building = lumberjack }
+			2307 = { has_building = lumberjack }
+			2304 = { has_building = lumberjack }
+		}
+		effect = {
+			country_event = {
+				id = mission_events.10
+			}
+			4889 = { add_base_production = 1 }
+			5874 = { add_base_production = 1 }
+			2307 = { add_base_production = 1 }
+			2304 = { add_base_production = 1 }
+		}
+	}
+
+	JUD_rival_edom = {
+		position = 9
+		icon = mission_lostbattle
+		
+		required_missions = {
+			
+		}
+
+		provinces_to_highlight = {
+			owned_by = EDM
+		}	
+
+		trigger = {
+			is_rival = EDM
+			EDM = {
+				NOT = { legitimacy_equivalent = ROOT }
+				NOT = { prestige = ROOT }
+			}
+		}
+		effect = {
+			add_power_projection = {
+				type = humiliated_rival
+				amount = 15
+			}
+			add_dip_power = 30
+			idumaea_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_idumaea = {
+		position = 10
+		icon = missions_chariot_attack
+		
+		required_missions = {
+			JUD_rival_edom
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			area = idumaea_area
+		}
+
+		trigger = {
+			idumaea_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 5
+			add_army_tradition = 5
+			add_mil_power = 30
+		}
+	}
+
+	JUD_masada_fortress = {
+		position = 11
+		icon = mission_babylon
+		
+		required_missions = {
+			JUD_conquer_idumaea
+		}
+
+		provinces_to_highlight = {
+			province_id = 4886
+		}	
+
+		trigger = {
+			owns_core_province = 4886
+			4886 = {
+				OR = {
+					has_building = small_city_walls
+					has_building = large_city_walls
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+			4886 = {
+				add_permanent_province_modifier = {
+					name = tell_fort
+					duration = -1
+				}
+				add_base_tax = 1
+				add_base_production = 1
+				change_province_name = "Masada"
+				rename_capital = "Masada"
+				change_culture = ROOT
+				change_religion = ROOT
+			}
+			nabatene_west = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			arabia_petraea_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_lower_edom = {
+		position = 12
+		icon = mission_lostbattle
+		
+		required_missions = {
+			JUD_masada_fortress
+		}
+
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = arabia_petraea_area
+				area = nabatene_west
+			}
+		}	
+
+		trigger = {
+			NOT = { exists = EDM }
+			num_of_owned_provinces_with = {
+				area = nabatene_west
+				value = 4
+			}
+			nabatene_west = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 50
+			add_adm_power = 40
+			add_army_tradition = 5
+			country_event = {
+				id = mission_events.11
+			}
+			te_mefkat = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_sinai_desert = {
+		position = 13
+		icon = mission_desert
+
+		required_missions = {
+			JUD_crush_philistia
+			JUD_conquer_lower_edom
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = saracena_area
+				area = te_mefkat
 			}
 		}
 
 		trigger = {
-			prestige = 40
-			OR = {
-				jewish = 4
-				samaritan = 4
+			saracena_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
 			}
-			2277 = {
-				has_building = great_temple
-				has_building = imperial_road
-				has_building = government_district
-				has_building = imperial_palace
-				base_production = 15
+			te_mefkat = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
 			}
 		}
 		effect = {
-			add_legitimacy = 20
-			add_splendor = 150
-			add_years_of_income = 6
-			add_adm_power = 150
+			add_army_tradition = 2
+			add_mil_power = 25
+			add_prestige = 2
+			country_event = {
+				id = mission_events.16
+			}
 		}
 	}
 }
@@ -472,62 +1242,12 @@ jewish_missions_4 = {
 	} 
 	has_country_shield = yes
 
-	JUD_destroy_philistia = {
+	JUD_vassalize_ammon = {
 		position = 1
-		icon = mission_soldiers
-		
-		provinces_to_highlight = {
-			NOT = {
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			OR = {
-				area = philistaeia_area
-				area = qadesh_area
-			}
-		}	
-
-		trigger = { 
-			philistaeia_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			qadesh_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			NOT = { exists = PHI }
-		}
-		effect = {
-			add_mil_power = 50
-			add_prestige = 5
-			add_army_tradition = 10
-			ammon_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			moab_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			add_country_modifier = {
-				name = "jud_destroy_philistia"
-				duration = 10950 #30 years
-			}
-		}
-	}
-
-	JUD_destroy_moab = {
-		position = 2
 		icon = mission_lostbattle
 		
 		required_missions = {
-			JUD_destroy_philistia
+			
 		}
 
 		provinces_to_highlight = {
@@ -536,41 +1256,26 @@ jewish_missions_4 = {
 			}
 			OR = {
 				area = ammon_area
-				area = moab_area
 			}
 		}	
 
-		trigger = { 
-			ammon_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+		trigger = {
+			OR = {
+				ammon_area = {
+					type = all
+					country_or_non_sovereign_subject_holds = ROOT
+				}
+				overlord_of = AMM
 			}
-			moab_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			NOT = { exists = MOA }
-			NOT = { exists = AMM }
 		}
 		effect = {
-			add_mil_power = 70
-			add_stability = 1
-			add_army_tradition = 10
-			nabatene_west = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
+			add_mil_power = 35
+			add_dip_power = 35
+			reverse_add_opinion = {
+				who = AMM
+				modifier = jud_rekindling_subject_relations_opinion
 			}
-			arabia_petraea_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			idumaea_area = {
+			moab_area = {
 				limit = {
 					NOT = { is_core = ROOT }
 					NOT = { owned_by = ROOT }
@@ -580,12 +1285,12 @@ jewish_missions_4 = {
 		}
 	}
 
-	JUD_destroy_edom = {
-		position = 3
-		icon = mission_conquest_elam
+	JUD_conquer_moab = {
+		position = 2
+		icon = mission_eastern_soldiers
 		
 		required_missions = {
-			JUD_destroy_moab
+			JUD_vassalize_ammon
 		}
 
 		provinces_to_highlight = {
@@ -593,65 +1298,410 @@ jewish_missions_4 = {
 				country_or_non_sovereign_subject_holds = ROOT
 			}
 			OR = {
-				area = nabatene_west
-				area = arabia_petraea_area
-				area = idumaea_area
+				area = moab_area
+			}
+		}	
+
+		trigger = {
+			moab_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			NOT = { exists = MOA }
+		}
+		effect = {
+			add_mil_power = 40
+			add_prestige = 5
+		}
+	}
+
+	JUD_conquer_ituraea = {
+		position = 3
+		icon = mission_hoplite_1
+
+		required_missions = {
+			JUD_reconquer_israel
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			area = ituraea_area
+		}	
+
+		trigger = { 
+			ituraea_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			capital_scope = {
+				area = {
+					add_base_manpower = 1
+				}
+			}
+			add_mil_power = 25
+			add_years_of_income = 0.5
+			2302 = { add_permanent_claim = ROOT }
+			2303 = { add_permanent_claim = ROOT }
+		}
+	}
+
+	JUD_conquer_damascus = {
+		position = 5
+		icon = mission_siege
+
+		required_missions = {
+			JUD_conquer_ituraea
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				province_id = 2302
+				province_id = 2303
 			}
 		}	
 
 		trigger = { 
-			nabatene_west = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			arabia_petraea_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			idumaea_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			2265 = {
-				culture = ROOT
-				religion = ROOT
-			}
-			NOT = { exists = EDM }
+			owns = 2302
+			owns = 2303
 		}
 		effect = {
-			add_mil_power = 65
-			add_legitimacy = 15
-			add_country_modifier = {
-				name = "jud_destroy_edom"
-				duration = 10950 #20 years
+			add_prestige = 5
+			2302 = { add_core = ROOT }
+			2303 = { add_core = ROOT }
+			add_mercantilism = 2
+			add_years_of_income = 0.33
+			cava_syria = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
 			}
 		}
 	}
 
-	JUD_empire_solomon = {
-		position = 4
-		icon = mission_advisors
-		
-		required_missions = {
-			JUD_destroy_edom
-			JUD_conquer_arameans
-		}
+	JUD_conquer_hammath = {
+		position = 7
+		icon = mission_conquest_elam
 
+		required_missions = {
+			JUD_conquer_damascus
+			JUD_conquer_libanus
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = cava_syria
+				area = apamene_area
+			}
+		}	
 
 		trigger = { 
-			num_of_provinces_in_states = 135
-			prestige = 70
-			government_rank = 5
-			treasury = 11000
-			total_development = 1100
+			cava_syria = {
+				type = all
+				owned_by = ROOT
+			}
+			apamene_area = {
+				type = all
+				owned_by = ROOT
+			}
 		}
 		effect = {
-			add_adm_power = 200
-			add_dip_power = 200
-			add_mil_power = 200
-			add_absolutism = 15
-			add_splendor = 200
-			add_adm_tech = 2
+			add_prestige = 5
+			add_mil_power = 45
+			add_adm_power = 30
+			palmyrene_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			chalybonitis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			trachonitis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_reach_euphrates = {
+		position = 8
+		icon = mission_elephant
+
+		required_missions = {
+			JUD_conquer_hammath
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = palmyrene_area
+				area = chalybonitis_area
+			}
+		}	
+
+		trigger = { 
+			palmyrene_area = {
+				type = all
+				owned_by = ROOT
+			}
+			chalybonitis_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = jud_recent_conquest_trade_route
+				duration = 9125
+			}
+			add_mercantilism = 2
+			add_dip_power = 40
+			add_mil_power = 30
+			syria_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_liberate_north_syria = {
+		position = 9
+		icon = mission_legionary
+
+		required_missions = {
+			JUD_reach_euphrates
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = casiotis_area
+				area = chalcidene_area
+			}
+		}	
+
+		trigger = { 
+			casiotis_area = {
+				type = all
+				owned_by = ROOT
+			}
+			chalcidene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 5
+			add_mercantilism = 1
+			add_dip_power = 50
+			add_mil_power = 50
+			add_army_tradition = 2
+		}
+	}
+
+	JUD_khabur_valley = {
+		position = 10
+		icon = mission_urartu_fall
+
+		required_missions = {
+			JUD_ur_of_chaldees
+			JUD_liberate_north_syria
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = hanigalbat_area
+				area = tingene_area
+			}
+		}	
+
+		trigger = { 
+			hanigalbat_area = {
+				type = all
+				owned_by = ROOT
+			}
+			tingene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 5
+			add_yearly_manpower = 1
+			add_mil_power = 35
+			add_dip_power = 35
+			add_adm_power = 35
+			assyria_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			mesopotamia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			country_event = {
+				id = mission_events.15
+			}
+		}
+	}
+
+	JUD_reach_tigris = {
+		position = 11
+		icon = mission_scythian
+
+		required_missions = {
+			JUD_khabur_valley
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = gauzonitis_area
+				area = acabene_area
+			}
+		}	
+
+		trigger = { 
+			gauzonitis_area = {
+				type = all
+				owned_by = ROOT
+			}
+			acabene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 40
+			add_dip_power = 30
+		}
+	}
+
+	JUD_conquer_niniveh = {
+		position = 12
+		icon = mission_bab_king
+
+		required_missions = {
+			JUD_reach_tigris
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = assyria_area
+				area = assyria_north_area
+			}
+		}	
+
+		trigger = { 
+			assyria_area = {
+				type = all
+				owned_by = ROOT
+			}
+			assyria_north_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			country_event = {
+				id = mission_events.1501
+			}
+			add_yearly_manpower = 1
+			add_prestige = 5
+			add_mil_power = 75
+			add_adm_power = 75
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_dip_power = 75 }
+		}
+	}
+
+	JUD_conquer_adiabene = {
+		position = 13
+		icon = missions_chariot_attack
+
+		required_missions = {
+			JUD_conquer_niniveh
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = adiabene_area
+				area = adiabene_superior
+			}
+		}	
+
+		trigger = { 
+			adiabene_area = {
+				type = all
+				owned_by = ROOT
+			}
+			adiabene_superior = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			country_event = {
+				id = mission_events.1502
+			}
+			add_yearly_manpower = 1
+			add_prestige = 5
+			add_mil_power = 75
+			add_adm_power = 75
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_dip_power = 75 }
 		}
 	}
 }
@@ -668,169 +1718,407 @@ jewish_missions_5 = {
 	} 
 	has_country_shield = yes
 
-	JUD_unite_israel = {
+	JUD_reconquer_samaria = {
 		position = 1
+		icon = mission_macedons
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			province_id = 2286
+		}	
+
+		trigger = { 
+			owns = 2286
+		}
+		effect = {
+			add_prestige = 5
+			add_adm_power = 25
+			add_mil_power = 25
+			samaria_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = ROOT
+			}
+			if = {
+				limit = {
+					OR = {
+						TAG = JUD
+						religion = jewish
+					}
+				}
+				country_event = {
+					id = mission_events.7
+				}
+			}
+		}
+	}
+
+	JUD_reconquer_israel = {
+		position = 2
+		icon = mission_jewish
+
+		required_missions = {
+			JUD_reconquer_samaria
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			area = samaria_area
+		}	
+
+		trigger = { 
+			samaria_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = jud_unify_israel
+				duration = 9125
+			}
+			add_adm_power = 20
+			add_prestige = 5
+			add_mil_power = 40
+			change_mil = 1
+			galilea_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = ROOT
+			}
+			ituraea_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_conquer_galilea = {
+		position = 3
+		icon = mission_harvest
+
+		required_missions = {
+			JUD_reconquer_israel
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			area = galilea_area
+		}	
+
+		trigger = { 
+			galilea_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			capital_scope = {
+				add_base_production = 1
+				add_base_tax = 1
+			}
+			add_mil_power = 30
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 50 }
+		}
+	}
+
+	JUD_reinforce_megiddo = {
+		position = 4
+		icon = mission_city
+		required_missions = {
+			JUD_conquer_galilea
+		}
+
+		provinces_to_highlight = {
+			province_id = 5620
+		}
+		
+		trigger = {
+			manpower_percentage = 1
+			owns_core_province = 5620
+			5620 = {
+				OR = {
+					has_building = small_army_camp
+					has_building = small_military_settlement
+					has_building = big_military_settlement
+				}
+				has_building = large_city_walls
+			}
+		}
+
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_dip_power = 60 }
+			add_adm_power = 40
+			country_event = {
+				id = mission_events.12
+			}
+		}
+	}
+
+	JUD_united_monarchy = {
+		position = 5
 		icon = mission_jewish
 		
 		provinces_to_highlight = {
-			NOT = {
-				country_or_non_sovereign_subject_holds = ROOT
-			}
 			OR = {
-				area = judaea_area
-				area = samaria_area				
+				province_id = 2286
+				province_id = 2277
 			}
+			
 		}	
 
-		trigger = { 
+		trigger = {
+			TAG = ISR
+			owns_core_province = 2286
+			owns_core_province = 2277
+			army_size = 12
+		}
+		effect = {
+			add_prestige = 5
+			add_adm_power = 50
+			add_dip_power = 35
+			add_mil_power = 35
+			country_event = {
+				id = mission_events.17
+			}
+		}
+	}
+
+	JUD_ammend_south_north = {
+		position = 6
+		icon = mission_peace
+		required_missions = {
+			JUD_united_monarchy
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				area = judaea_area
+				area = samaria_area
+			}
+		}
+		
+		trigger = {
 			judaea_area = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			samaria_area = {
 				type = all
+				owned_by = ROOT
+			}
+			OR = {
+				AND = {
+					judaea_area = {
+						culture = ROOT
+					}
+					samaria_area = {
+						culture = ROOT
+					}
+				}
+				if = {
+					limit = { primary_culture = samaritan }
+					accepted_culture = hebrew
+				}
+				else_if = {
+					limit = { primary_culture = hebrew }
+					accepted_culture = samaritan
+				}
+			}
+			
+		}
+
+		effect = {
+			if = {
+				limit = {
+					judaea_area = {
+						culture = ROOT
+					}
+					samaria_area = {
+						culture = ROOT
+					}
+				}
+				country_event = {
+					id = mission_events.13
+				}
+			}
+			else = {
+				country_event = {
+					id = mission_events.1301
+				}
+			}
+		}
+	}
+
+	JUD_conquer_syrian_steppe = {
+		position = 8
+		icon = mission_hoplite_1
+
+		required_missions = {
+			JUD_conquer_hammath
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
 				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = trachonitis_area
+			}
+		}	
+
+		trigger = { 
+			trachonitis_area = {
+				type = all
+				owned_by = ROOT
 			}
 		}
 		effect = {
-			add_adm_power = 100
+			add_mil_power = 33
+			add_adm_power = 25
+		}
+	}
+
+	JUD_ur_of_chaldees = {
+		position = 9
+		icon = mission_siege2
+
+		required_missions = {
+			JUD_reach_euphrates
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = anthemusia_area
+				area = osroene_area
+			}
+		}	
+
+		trigger = { 
+			anthemusia_area = {
+				type = all
+				owned_by = ROOT
+			}
+			osroene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 5
+			country_event = {
+				id = mission_events.14
+			}
+			hanigalbat_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			tingene_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	JUD_middle_euphrates = {
+		position = 11
+		icon = mission_soldiers
+
+		required_missions = {
+			JUD_khabur_valley
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = euphrates_area
+				area = ancobaritis_area
+			}
+		}	
+
+		trigger = { 
+			euphrates_area = {
+				type = all
+				owned_by = ROOT
+			}
+			ancobaritis_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 35
+			add_dip_power = 35
+			add_mercantilism = 1
+		}
+	}
+
+	JUD_conquer_babylonia = {
+		position = 12
+		icon = mission_babylon
+
+		required_missions = {
+			JUD_middle_euphrates
+		}
+		
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = babylonia_area
+				area = sittacene_area
+			}
+		}	
+
+		trigger = { 
+			babylonia_area = {
+				type = all
+				owned_by = ROOT
+			}
+			sittacene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
 			add_prestige = 10
-			add_legitimacy = 20
-			phoenicia_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			north_phoenicia = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			add_country_modifier = {
-				name = "jud_unify_israel"
-				duration = 12775 #35 years
-			}
-		}
-	}
-
-	JUD_conquer_philistia = {
-		position = 2
-		icon = mission_eastern_soldiers
-		
-		required_missions = {
-			JUD_unite_israel
-		}
-
-		provinces_to_highlight = {
-			NOT = {
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			OR = {
-				area = phoenicia_area
-				area = north_phoenicia
-			}
-		}	
-
-		trigger = { 
-			phoenicia_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			north_phoenicia = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			small_harbor = 6
-			small_shipyard = 6
-			sailors = 5000
-		}
-		effect = {
-			add_dip_power = 90
-			add_mercantilism = 5
-			add_navy_tradition = 15
-			syria_region = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			add_country_modifier = {
-				name = "jud_phoenicia"
-				duration = 7300 #20 years
-			}
-		}
-	}
-
-	JUD_conquer_arameans = {
-		position = 3
-		icon = mission_elephant
-		
-		required_missions = {
-			JUD_conquer_philistia
-		}
-
-		provinces_to_highlight = {
-			NOT = {
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-			OR = {
-				region = syria_region
-			}
-		}	
-
-		trigger = { 
-			syria_region = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}
-		}
-		effect = {
-			add_mil_power = 150
 			add_adm_power = 100
+			add_mil_power = 100
 			add_dip_power = 100
-			add_prestige = 20
-		}
-	}
-
-	JUD_wine_honey = {
-		position = 5
-		icon = mission_harvest
-		
-		trigger = { 
-			production_leader = {
-				trade_goods = wine
-			}
-			production_leader = {
-				trade_goods = honey
-			}
-		}
-		effect = {
-			add_stability = 1
-			add_prestige = 10
-			add_legitimacy = 10
-			mesopotamia_region = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			assyria_region = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			add_country_modifier = {
-				name = "jud_promised_land"
-				duration = -1
-			}
+			add_splendor = 25
 		}
 	}
 }
