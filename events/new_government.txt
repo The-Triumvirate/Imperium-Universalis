@@ -4,51 +4,58 @@ namespace = new_governments
 ########################################################################################
 # Powerful Nomarch
 ########################################################################################
-#province_event = {
-	#id = new_governments.1
-	#title = "new_governments.1.t"
-	#desc = "new_governments.1.d"
-	#picture = battle
-	#is_triggered_only = yes
+country_event = {
+	id = new_governments.1
+	title = "new_governments.1.t"
+	desc = "new_governments.1.d"
+	picture = battle
+	is_triggered_only = yes
 	
-	#trigger = {
-		#NOT = { has_province_modifier = powerful_local_nomarch }
-		#local_autonomy = 25
-		#NOT = { owner = { absolutism = 25 }  }
-		#owner = { has_reform = kemetic_kingdom }
-	#}
+	trigger = {
+		NOT = { absolutism = 25 }
+		has_reform = kemetic_kingdom
+		any_owned_province = {
+			NOT = { has_province_modifier = powerful_local_nomarch }
+			local_autonomy = 25
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_area = {
+				limit = { is_state = yes }
+				save_event_target_as = powerful_nomarch_area
+			}
+		}
+	}
 	
-	#mean_time_to_happen = {
-		#days = 1
-	#}
+	option = {
+		name = "new_governments.1.a"
+		ai_chance = { factor = 60 }
+		goto = powerful_nomarch_area
+		event_target:powerful_nomarch_area = {
+			add_province_modifier = {
+				name = powerful_local_nomarch
+				duration = 1825
+			}
+			add_local_autonomy = 10
+		}
+		add_faction_influence = {
+    		faction = fac_nomarchs
+    		influence = 5
+		}
+	}
 	
-	#option = {
-		#name = "new_governments.1.a"
-		#ai_chance = { factor = 60 }
-		#add_province_modifier = {
-    		#name = powerful_local_nomarch
-    		#duration = 1825 
-		#}
-		#owner = {
-			#add_faction_influence = {
-    			#faction = fac_nomarchs
-    			#influence = 5
-			#}
-		#}
-	#}
-	
-	#option = {
-		#name = "new_governments.1.b"
-		#ai_chance = { factor = 40 }
-		#owner = {
-			#add_faction_influence = {
-    			#faction = fac_nomarchs
-    			#influence = -5
-			#}
-			#add_stability = -1
-		#}
-	#}
-#}
+	option = {
+		name = "new_governments.1.b"
+		ai_chance = { factor = 40 }
+		add_faction_influence = {
+			faction = fac_nomarchs
+			influence = -5
+		}
+		add_absolutism = -5
+	}
+}
 
 ########################################################################################
 # Growing power of the priests
@@ -178,74 +185,77 @@ country_event = {
 ########################################################################################
 # temple
 ########################################################################################
-#province_event = {
-	#id = new_governments.5
-	#title = "new_governments.5.t"
-	#desc = "new_governments.5.d"
-	#picture = temple
-	#is_triggered_only = yes
+country_event = {
+	id = new_governments.5
+	title = "new_governments.5.t"
+	desc = "new_governments.5.d"
+	picture = temple
+	is_triggered_only = yes
 	
-	#trigger = {
-		#NOT = {
-			#AND = {
-				#has_building = shrine
-				#has_building = small_temple
-				#has_building = great_temple
-			#}
-		#}
-		#owner = { 
-			#has_reform = kemetic_kingdom
-			#faction_influence = {
-				#faction = fac_priesthood
-				#influence = 50
-			#}
-		#}
-	#}
+	trigger = {
+		any_owned_province = {
+			NOT = { has_building = shrine }
+			NOT = { has_building = small_temple }
+			NOT = { has_building = great_temple }
+		}
+		has_reform = kemetic_kingdom
+		faction_influence = {
+			faction = fac_priesthood
+			influence = 50
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_building = shrine }
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+				}
+				save_event_target_as = province_priests_want_temple
+			}
+		}
+	}
 	
-	#mean_time_to_happen = {
-		#days = 1
-	#}
+	option = {
+		name = "new_governments.5.a"
+		ai_chance = { 
+			factor = 50
+			modifier = {
+				factor = 2
+				treasury = 100
+			}
+		}
+		event_target:province_priests_want_temple = {
+			add_building_construction = {
+				building = shrine
+				speed = 0.25
+				cost = 0
+			}
+		}
+		add_faction_influence = {
+			faction = fac_priesthood
+			influence = 5
+		}
+	}
 	
-	#option = {
-		#name = "new_governments.5.a"
-		#ai_chance = { 
-			#factor = 50
-			#modifier = {
-				#factor = 2
-				#owner = { treasury = 100 }
-			#}
-		#}
-		#owner = { 
-			#add_faction_influence = {
-    			#faction = fac_priesthood
-    			#influence = 5
-			#}
-		#}
-		#add_building_construction = {
-    		#building = shrine
-    		#speed = 0.1
-    		#cost = 0.2
-		#}
-	#}
-	
-	#option = {
-		#name = "new_governments.5.b"
-		#ai_chance = { 
-			#factor = 50
-			#modifier = {
-				#factor = 2
-				#owner = { NOT = { treasury = 100 } }
-			#}
-		#}
-		#owner = { 
-			#add_faction_influence = {
-    			#faction = fac_priesthood
-    			#influence = -5
-			#}
-		#}
-		#owner = { add_treasury = 100 }
-	#}
-#}
+	option = {
+		name = "new_governments.5.b"
+		ai_chance = { 
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = { treasury = 100 }
+			}
+		}
+		add_faction_influence = {
+    		faction = fac_priesthood
+    		influence = -5
+		}
+		add_treasury = 100
+	}
+}
 
 ########################################################################################
 # destiny of the vanquished
