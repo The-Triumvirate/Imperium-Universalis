@@ -667,31 +667,47 @@ country_event = {
 # expansion of new brahmanic orthodoxy
 ########################################################################################
 
-#province_event  = {
-	#id = indian.13
-	#title = "indian.13.t"
-	#desc = "indian.13.d"
-	#picture = ritual_feast
+country_event  = {
+	id = indian.13
+	title = "indian.13.t"
+	desc = "indian.13.d"
+	picture = ritual_feast
 	
 
-	#trigger = {
-		#religion = brahmin
-		#is_religion_enabled = hinduism
-		#any_neighbor_province = {
-			#religion = hinduism
-		#}
-	#}
-	
-	#mean_time_to_happen = {
-		#days = 1
-	#}
+	trigger = {
+		OR = {
+			religion = brahmin
+			religion = hinduism
+		}
+		is_religion_enabled = hinduism
+		neither_tribal_nor_native_trigger = yes
+		any_owned_province = {
+			any_neighbor_province = { religion = hinduism }
+			religion = brahmin
+		}
+	}
 
-	#option = {
-		#name = "indian.13.a"
-		#ai_chance = { factor = 60 }
-		#change_religion = hinduism
-	#}
-#}
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					any_neighbor_province = { religion = hinduism }
+					religion = brahmin
+				}
+				save_event_target_as = province_to_convert_to_hinduism
+			}
+		}
+	}
+
+	option = {
+		name = "indian.13.a"
+		ai_chance = { factor = 60 }
+		goto = province_to_convert_to_hinduism
+		event_target:province_to_convert_to_hinduism = {
+			change_religion = hinduism
+		}
+	}
+}
 
 ########################################################################################
 # kshatriyas refuse to join army
@@ -972,34 +988,42 @@ country_event  = {
 # Buddha preaches in province
 ########################################################################################
 
-#province_event = {
-	#id = indian.21
-	#title = "indian.21.t"
-	#desc = "indian.21.d"
-	#picture = religious
-	#is_triggered_only = yes
+country_event = {
+	id = indian.21
+	title = "indian.21.t"
+	desc = "indian.21.d"
+	picture = religious
+	is_triggered_only = yes
 
-	#trigger = {	
-		#religion = sramana
-		#NOT = { is_month = 7 }
-		#OR = {
-			#is_month = 11
-			#is_month = 1
-		#}
-		#region = northern_india_region
-		#has_global_flag = the_sangha_is_formed
-	#}
+	trigger = {	
+		religion = sramana
+		OR = {
+			AND = {
+				is_month = 1
+				NOT = { is_month = 7 }
+			}
+			is_month = 11
+		}
+		capital_scope = {
+			region = northern_india_region
+		}
+		has_global_flag = the_sangha_is_formed
+		any_owned_province = {
+			religion = sramana
+		}
+	}
 	
-	#mean_time_to_happen = {
-		#days = 1
-	#}
-	
-	#option = {
-		#name = "indian.21.a"
-		#ai_chance = { factor = 50 }
-		#change_religion = buddhism
-	#}
-#}
+	option = {
+		name = "indian.21.a"
+		ai_chance = { factor = 50 }
+		random_owned_province = {
+			limit = {
+				religion = sramana
+			}
+			change_religion = buddhism
+		}
+	}
+}
 
 ########################################################################################
 # Anathapindika's charity
@@ -1908,5 +1932,68 @@ country_event  = {
 		}
 		add_prestige = 5
 		inherit = HEH
+	}
+}
+
+########################################################################################
+# events to convert to some of the advance indian religions
+########################################################################################
+
+#converts vedism to hinduism
+country_event  = {
+	id = indian.41
+	title = "indian.41.t"
+	desc = "indian.41.d"
+	picture = religious
+
+	trigger = {
+		OR = {
+			religion = brahmin
+			religion = sramana
+		}
+		neither_tribal_nor_native_trigger = yes
+		NOT = { dominant_religion = ROOT }
+		OR = {
+			dominant_religion = hinduism
+			dominant_religion = jain
+			dominant_religion = ajivika
+			dominant_religion = buddhism
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+	
+	option = {
+		name = "indian.41.a"
+		ai_chance = {
+			factor = 99
+		}
+		if = {
+			limit = { dominant_religion = hinduism }
+			change_religion = hinduism
+		}
+		else_if = {
+			limit = { dominant_religion = buddhism }
+			change_religion = buddhism
+		}
+		else_if = {
+			limit = { dominant_religion = jain }
+			change_religion = jain
+		}
+		else_if = {
+			limit = { dominant_religion = ajivika }
+			change_religion = ajivika
+		}
+	}
+
+	option = {
+		name = "indian.41.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -1
+		add_prestige = -20
 	}
 }
