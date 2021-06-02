@@ -510,10 +510,7 @@ province_event = {
 		
 		
 		# In case a province does not count at least 1; usually deserts and such
-		if = {
-			limit = { NOT = { check_variable = { which = rural_capacity value = 1 } } }
-			set_variable = { which = rural_capacity value = 1 }
-		}
+		if = { limit = { NOT = { check_variable = { rural_capacity = 1 } } } 		set_variable = { which = rural_capacity value = 1 } }
 		
 		######
 		# 	RURAL GROWTH RATIO
@@ -665,10 +662,24 @@ province_event = {
 		
 		# We will have a multiplier depending on how profitable trade is, depending the prov_type
 		export_to_variable = { which = urban_trade_power value = province_trade_power }
-		if = { limit = { NOT = { check_variable = { urban_trade_power = 0.2 } } } set_variable = { which = urban_trade_power value = 0.2 } }
-		# Simple version for the debug mode: always is 3.3 power for each urban pop. Later it will be modified by province type
-		divide_variable = { which = urban_trade_power value = 3.3 }
-		change_variable = { which = urban_capacity which = urban_trade_power } set_variable = { which = urban_trade_power value = 0 }
+		
+		if = {
+			limit = { check_variable = { urban_trade_power = 42 } } 		# more than 42 power, 10 pops already and /6 afterwards
+			change_variable = { urban_capacity = 10 } subtract_variable = { urban_trade_power = 42 } divide_variable = { urban_trade_power = 6 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 22 } } 		# more than 22 power, 6 pops already and /5 afterwards
+			change_variable = { urban_capacity = 6 } subtract_variable = { urban_trade_power = 22 } divide_variable = { urban_trade_power = 5 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 10 } } 		# more than 10 power, 3 pops already and /4 afterwards
+			change_variable = { urban_capacity = 3 } subtract_variable = { urban_trade_power = 10 } divide_variable = { urban_trade_power = 4 } 
+		}
+		else_if = { limit = { NOT = { check_variable = { urban_trade_power = 0.1 } } } set_variable = { which = urban_trade_power value = 0.1 } }
+		else = { divide_variable = { urban_trade_power = 3.3 } }
+		
+		change_variable = { which = urban_capacity which = urban_trade_power }	# add the remaining trade power (applies to all)
+		set_variable = { which = urban_trade_power value = 0 }
 		
 		#####
 		#	RELATIVE % MODIFIERS
@@ -1370,10 +1381,10 @@ province_event = {
 	hidden = no
 	
 	trigger = {
-		#base_manpower = 2 												# does not let the last rural pop to leave, obviously
-		#check_variable = { which = prov_size value = 1 }				# to avoid newly-colonized provinces to lose population
-		#NOT = { check_variable = { which = rural_growth value = 1 } }	# "poverty", or at least no more growth
-		has_global_flag = popgrowth_future		# not finished, will be blocked from happening
+		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+		check_variable = { which = prov_size value = 1 }				# to only affect if the popgrowth files are active
+		NOT = { check_variable = { which = rural_growth value = 1 } }	# "poverty", or at least no more growth
+		#has_global_flag = popgrowth_future		# to toggle on/off easily
 	}
 	
 	
@@ -1423,25 +1434,12 @@ province_event = {
 		
 		# BLOCK 2: Discover which provinces it may go
 		
-		# Neighboring provinces: up to 3
+		# Neighboring provinces: (will stay as rural)
 		random_neighbor_province = {
 			limit = { check_variable = { rural_growth = 1.2 } NOT = { has_province_modifier = pg_new_pop } NOT = { has_province_flag = pg_mig_taken } }
 			save_event_target_as = rural_1 	set_province_flag = pg_mig_taken
 		}
-		if = {
-			limit = { check_variable = { mig_size = 2 } }
-			random_neighbor_province = {
-				limit = { check_variable = { rural_growth = 1.2 } NOT = { has_province_modifier = pg_new_pop } NOT = { has_province_flag = pg_mig_taken } }
-				save_event_target_as = rural_2 	set_province_flag = pg_mig_taken
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 3 } }
-			random_neighbor_province = {
-				limit = { check_variable = { rural_growth = 1.2 } NOT = { has_province_modifier = pg_new_pop } NOT = { has_province_flag = pg_mig_taken } }
-				save_event_target_as = rural_3 	set_province_flag = pg_mig_taken
-			}
-		}
+			# peasants will move en masse, without distributing among three rural provinces. May cause trouble (over capacity) due to this migration. 
 		
 		# Second improvement: cities within 1000 distance, as long as the institution is present (around 300bc, hellenistic era)
 		if = {
@@ -1507,27 +1505,27 @@ province_event = {
 			}
 			
 		}
-		# own provinces, capital, settlement provinces
+		# own city provinces, capital, rural settlement provinces
 		random_province = {											# can't use a random owned province within a province scope
 			limit = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
 				NOT = { has_province_modifier = pg_new_pop } 	NOT = { has_province_flag = pg_mig_taken }
 			}
-			save_event_target_as = own_1 		set_province_flag = pg_mig_taken
+			save_event_target_as = owncity_1 		set_province_flag = pg_mig_taken
 		}
 		random_province = {
 			limit = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
 				NOT = { has_province_modifier = pg_new_pop } 	NOT = { has_province_flag = pg_mig_taken }
 			}
-			save_event_target_as = own_2 		set_province_flag = pg_mig_taken
+			save_event_target_as = owncity_2 		set_province_flag = pg_mig_taken
 		}
 		random_province = {
 			limit = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
 				NOT = { has_province_modifier = pg_new_pop } 	NOT = { has_province_flag = pg_mig_taken }
 			}
-			save_event_target_as = own_3 		set_province_flag = pg_mig_taken
+			save_event_target_as = owncity_3 		set_province_flag = pg_mig_taken
 		}
 		capital_scope = { save_event_target_as = own_capital 	set_province_flag = pg_mig_taken }
 		random_province = {
@@ -1561,6 +1559,10 @@ province_event = {
 	
 	}
 	
+	#####
+	#	OPTIONS - BY DEFAULT (with no consequence for the player's economy. AI will choose them)
+	#####
+	
 	option = {
 		name = "population_capacity.5.1"		# Voluntarily leave, will spread to whatever province is eligible (rural, urban, etc)
 		trigger = { NOT = { has_province_flag = pg_mig_starvation } }
@@ -1570,71 +1572,36 @@ province_event = {
 			modifier = { factor = 1.3 owner = { NOT = { adm_power = 300 } } }
 		}
 		
-		# Priority: urban city, rural neighboring province, nothing (so you may have 2 leaving and 1 staying, but it's highly improbable)
-		
 		if = {
-			limit = { check_variable = { mig_size = 3 } has_saved_event_target = urban_3 }
-			event_target:urban_3 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }	# if enough cities, 3rd pop will stop here
-				province_event = { id = population_capacity.1 }	
+			limit = { has_saved_event_target = urban_1 }	# to differenciate between migration to city, or migration to neighboring province
+			while = {
+				limit = { check_variable = { mig_size = 1 } } # if no urban 1/2/3, nothing will happen, but variable won't decrease either
+				random_list = {
+					33 = { event_target:urban_3 = { mig_rural_to_urban = yes 	province_event = { id = population_capacity.1 }	} }
+					33 = { event_target:urban_2 = { mig_rural_to_urban = yes 	province_event = { id = population_capacity.1 }	} }
+					33 = { event_target:urban_1 = { mig_rural_to_urban = yes 	province_event = { id = population_capacity.1 }	} }
+				}
 			}
 		}
-		if = {
-			limit = { check_variable = { mig_size = 2 } has_saved_event_target = urban_2 }
-			event_target:urban_2 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				province_event = { id = population_capacity.1 }	
+		else = {	# rural migration, all at once
+			while = { 
+				limit = { check_variable = { mig_size = 1 } }
+				event_target:rural_1 = { mig_rural_to_rural = yes province_event = { id = population_capacity.1 } }
 			}
 		}
-		if = {
-			limit = { check_variable = { mig_size = 1 } has_saved_event_target = urban_1 }
-			event_target:urban_1 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				province_event = { id = population_capacity.1 }
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 3 } has_saved_event_target = rural_3 }
-			event_target:rural_3 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 2 } has_saved_event_target = rural_2 }
-			event_target:rural_2 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 1 } has_saved_event_target = rural_1 }
-			event_target:rural_1 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		province_event = { id = population_capacity.1 }			# recalculate
+		province_event = { id = population_capacity.1 }			# recalculate in the origin province
 		
 	}
 	option = {
 		name = "population_capacity.5.2" # Let them starve (bad)
 		trigger = { has_province_flag = pg_mig_starvation }
-		ai_chance = {  factor = 30 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
+		ai_chance = {  factor = 30 	modifier = { factor = 2.0	owner = { NOT = { treasury = 30 } } } }
 		if = { 		limit = { check_variable = { which = mig_size value = 3 } } add_base_manpower = -3 }
 		else_if = { limit = { check_variable = { which = mig_size value = 2 } } add_base_manpower = -2 }
 		else_if = { limit = { check_variable = { which = mig_size value = 1 } } add_base_manpower = -1 }
 		clr_province_flag = pg_mig_starvation
 		
 	}
-	
-	
 	option = {
 		name = "population_capacity.5.3" # convince them to stay, adm loss due to issuing of new laws. 
 		trigger = { NOT = { has_province_flag = pg_mig_starvation } }
@@ -1652,12 +1619,11 @@ province_event = {
 	option = {
 		name = "population_capacity.5.4" # pay for more food (if starvation)
 		trigger = { has_province_flag = pg_mig_starvation }
-		ai_chance = {  factor = 30 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
+		ai_chance = {  factor = 50 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
 		if = { 		limit = { check_variable = { which = mig_size value = 3 } } owner = { treasury = -30 } }
 		else_if = { limit = { check_variable = { which = mig_size value = 2 } } owner = { treasury = -20 } }
 		else_if = { limit = { check_variable = { which = mig_size value = 1 } } owner = { treasury = -10 } }
 		clr_province_flag = pg_mig_starvation
-		
 	}
 	
 	option = {
@@ -1669,70 +1635,49 @@ province_event = {
 		}
 		add_province_modifier = { name = pg_pop_enslaved duration = 730 } 	# +4 unrest
 		add_nationalism = 5
-		if = { 		limit = { check_variable = { which = mig_size value = 3 } }	add_mil_power = -15 }
-		else_if = { limit = { check_variable = { which = mig_size value = 2 } }	add_mil_power = -10 }
-		else_if = { limit = { check_variable = { which = mig_size value = 1 } }	add_mil_power = -5 }
-		while = {
-			limit = { check_variable = { which = mig_size value = 1 } }
-			subtract_variable = { which = mig_size value = 1 } owner = { change_variable = { which = slaves value = 10 } }
-			add_base_manpower = -1
+		if = {
+			limit = { check_variable = { mig_size = 3 } } 
+			add_base_manpower = -3 owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = { 
+			limit = { check_variable = { mig_size = 2 } }	
+			add_base_manpower = -2 owner = { add_mil_power = -10 change_variable = { slaves = 20 } } 
+		}
+		else_if = { 
+			limit = { check_variable = { mig_size = 1 } }	
+			add_base_manpower = -1 owner = { add_mil_power = -5 change_variable = { slaves = 10 } } 
 		}
 		province_event = { id = population_capacity.1 }
 		clr_province_flag = pg_mig_starvation
 	}
 	
-	
+	####
+	#	PLAYER-DIRECTED OPTIONS (resettle, to capital, etc)
+	####
 	option = {
 		name = "population_capacity.5.6"		# Move them to our capital (if there is space)
 		trigger = { capital_scope = { check_variable = { urban_growth = 1.2 } } }
 		ai_chance = { factor = 0 }
-		while = {
+		while = { 
 			limit = { check_variable = { mig_size = 1 } }
-			capital_scope = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }
-			}
+			capital_scope = { mig_rural_to_urban = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } }
 		}
 		province_event = { id = population_capacity.1 }
-		clr_province_flag = pg_mig_starvation
+		clr_province_flag = pg_mig_starvation			# to be added to all player-driven options, as this is also a possibility
 	}
 	
 	option = {
-		name = "population_capacity.5.7"		# Move them to other prosperous cities
-		trigger = { has_saved_event_target = own_1 }
+		name = "population_capacity.5.7"		# Move them to other prosperous cities. Must not be one of the random city provinces
+		trigger = { has_saved_event_target = owncity_1 }
 		ai_chance = { factor = 0 }
-		
-		if = {
-			limit = { check_variable = { mig_size = 3 } has_saved_event_target = own_3 }
-			event_target:own_3 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }	
+		while = {
+			limit = { check_variable = { mig_size = 1 } }
+			random_list = {
+				33 = { event_target:owncity_3 = { mig_rural_to_urban = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
+				33 = { event_target:owncity_2 = { mig_rural_to_urban = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
+				33 = { event_target:owncity_1 = { mig_rural_to_urban = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
 			}
 		}
-		if = {
-			limit = { check_variable = { mig_size = 2 } has_saved_event_target = own_2 }
-			event_target:own_2 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 1 } has_saved_event_target = own_1 }
-			event_target:own_1 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }
-			}
-		}
-		
-		
 		province_event = { id = population_capacity.1 }
 		clr_province_flag = pg_mig_starvation
 	}
@@ -1741,31 +1686,12 @@ province_event = {
 		name = "population_capacity.5.8"		# Move them to new settled lands
 		trigger = { has_saved_event_target = colony_1 }
 		ai_chance = { factor = 0 }
-		if = {
-			limit = { check_variable = { mig_size = 3 } has_saved_event_target = colony_3 }
-			event_target:colony_3 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 2 } has_saved_event_target = colony_2 }
-			event_target:colony_2 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }	
-			}
-		}
-		if = {
-			limit = { check_variable = { mig_size = 1 } has_saved_event_target = colony_1 }
-			event_target:colony_1 = {
-				PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-				add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-				migrating_distance_cost = yes
-				province_event = { id = population_capacity.1 }
+		while = {
+			limit = { check_variable = { mig_size = 1 } }
+			random_list = {
+				33 = { event_target:colony_3 = { mig_rural_to_rural = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
+				33 = { event_target:colony_2 = { mig_rural_to_rural = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
+				33 = { event_target:colony_1 = { mig_rural_to_rural = yes mig_dist_cost = yes province_event = { id = population_capacity.1 } } }
 			}
 		}
 		province_event = { id = population_capacity.1 }
@@ -1773,15 +1699,20 @@ province_event = {
 	}
 	
 	
-	
-	
 	after = {
 		# clean up
 		#set_variable = { which = ratio_weight value = 0 }
-		#set_variable = { which = totalpop_current value = 0 }
-		#set_variable = { which = totalpop_weighted value = 0 }
-		#set_variable = { which = ratio_share value = 0 }
-		
+		clr_province_flag = pg_mig_starvation
+		event_target:rural_1 = { clr_province_flag = pg_mig_taken }
+		event_target:urban_1 = { clr_province_flag = pg_mig_taken }
+		event_target:urban_2 = { clr_province_flag = pg_mig_taken }
+		event_target:urban_3 = { clr_province_flag = pg_mig_taken }
+		event_target:owncity_1 = { clr_province_flag = pg_mig_taken }
+		event_target:owncity_2 = { clr_province_flag = pg_mig_taken }
+		event_target:owncity_3 = { clr_province_flag = pg_mig_taken }
+		event_target:colony_1 = { clr_province_flag = pg_mig_taken }
+		event_target:colony_2 = { clr_province_flag = pg_mig_taken }
+		event_target:colony_3 = { clr_province_flag = pg_mig_taken }
 	}
 	
 }
