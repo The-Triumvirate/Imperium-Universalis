@@ -1,5 +1,5 @@
 
-NDefines.NGame.START_DATE = "145.8.10"
+NDefines.NGame.START_DATE = "142.8.10"
 NDefines.NGame.END_DATE = "1128.1.1"
 NDefines.NGame.MAX_RANDOM_NEW_WORLD = "1.1.1"
 NDefines.NGame.GREAT_POWER_FRENZY_START = "1.1.1"
