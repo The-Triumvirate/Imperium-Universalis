@@ -1,0 +1,130 @@
+
+#Ask for Socii
+ask_for_socii_subject = {
+	category = influence
+	alert_index = 42
+	alert_tooltip = ask_for_socii_subject_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = no
+		has_reform = res_publica_reform
+		government_rank = 2
+		FROM = {
+			capital_scope = {
+				superregion = italia_superregion
+			}
+			is_subject = no
+		}
+	}
+	is_allowed = {
+		alliance_with = FROM
+		reverse_has_opinion = {
+			who = FROM
+			value = 150
+		}
+		FROM = {
+			is_at_war = no
+			NOT = { war_with = ROOT }
+		}
+		is_bankrupt = no
+		NOT = { war_with = FROM }
+	}
+	on_accept = {
+		add_prestige = 2
+		create_subject = {
+			subject_type = socii_subject
+			subject = FROM
+		}
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 70 }
+		}
+
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = FROM
+				with = ROOT
+			}
+			change_variable = { which = ai_value value = 1 }
+		}
+
+		add_entry = {
+			name = STABILITY
+			export_to_variable = {
+				variable_name = ai_value
+				value = stability
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = FROM
+				with = ROOT
+			}
+			divide_variable = { which = ai_value value = 10 }
+		}
+		
+		add_entry = {
+			name = DIPLOMATIC_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 6 }
+		}
+		
+		add_entry = {
+			name = DIFFERENT_RELIGION
+			limit = { NOT = { religion = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+		add_entry = {
+			name = DIFFERENT_CULTURE_GROUP
+			limit = { NOT = { culture_group = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+	}
+	
+	ai_will_do = {
+		has_any_disaster = no
+		FROM = {
+			is_neighbor_of = ROOT
+			NOT = { army_size = ROOT }
+			NOT = { total_development = ROOT }
+		}
+		reverse_has_opinion = {
+			who = FROM
+			value = 150
+		}
+		stability = 1
+		army_size = 10
+		is_at_war = no
+		NOT = { average_unrest = 1 }
+	}
+}

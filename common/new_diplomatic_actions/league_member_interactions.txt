@@ -1,0 +1,139 @@
+
+#Ask for Socii
+ask_for_league_member_subject = {
+	category = influence
+	alert_index = 42
+	alert_tooltip = ask_for_league_member_subject_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = no
+		culture_group = hellenic
+		total_development = 40
+		capital_scope = {
+			superregion = asia_superregion
+			superregion = haemusia_superregion
+			superregion = italia_superregion
+			superregion = macedonia_superregion
+		}
+		FROM = {
+			capital_scope = {
+				superregion = asia_superregion
+				superregion = haemusia_superregion
+				superregion = italia_superregion
+				superregion = macedonia_superregion
+			}
+			NOT = { total_development = 30 }
+			is_subject = no
+			NOT = { government_rank = 3 }
+		}
+	}
+	is_allowed = {
+		OR = {
+			alliance_with = FROM
+			reverse_has_opinion = {
+				who = FROM
+				value = 160
+			}
+		}
+		FROM = {
+			NOT = { is_rival = ROOT }
+			NOT = {
+				any_ally = {
+					is_rival = ROOT
+				}
+			}
+		}
+		is_bankrupt = no
+		NOT = { war_with = FROM }
+		stability = 0
+	}
+	on_accept = {
+		add_prestige = 2
+		create_subject = {
+			subject_type = league_member_subject
+			subject = FROM
+		}
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 70 }
+		}
+
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = FROM
+				with = ROOT
+			}
+			change_variable = { which = ai_value value = 1 }
+		}
+
+		add_entry = {
+			name = NAVY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = navy_size
+				who = FROM
+				with = ROOT
+			}
+			change_variable = { which = ai_value value = 1 }
+		}
+		
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = FROM
+				with = ROOT
+			}
+			divide_variable = { which = ai_value value = 10 }
+		}
+		
+		add_entry = {
+			name = DIPLOMATIC_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 6 }
+		}
+
+		add_entry = {
+			name = DIFFERENT_PRIMARY_CULTURE
+			limit = { NOT = { primary_culture = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+	}
+	
+	ai_will_do = {
+		has_any_disaster = no
+		FROM = {
+			NOT = { army_size = ROOT }
+			NOT = { navy_size = ROOT }
+			NOT = { total_development = ROOT }
+		}
+		reverse_has_opinion = {
+			who = FROM
+			value = 150
+		}
+		stability = 1
+		army_size = 8
+		is_at_war = no
+	}
+}
