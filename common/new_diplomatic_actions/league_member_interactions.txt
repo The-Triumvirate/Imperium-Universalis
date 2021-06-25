@@ -10,18 +10,23 @@ ask_for_league_member_subject = {
 		is_subject = no
 		culture_group = hellenic
 		total_development = 40
+		government_rank = 2
 		capital_scope = {
-			superregion = asia_superregion
-			superregion = haemusia_superregion
-			superregion = italia_superregion
-			superregion = macedonia_superregion
-		}
-		FROM = {
-			capital_scope = {
+			OR = {
 				superregion = asia_superregion
 				superregion = haemusia_superregion
 				superregion = italia_superregion
 				superregion = macedonia_superregion
+			}
+		}
+		FROM = {
+			capital_scope = {
+				OR = {
+					superregion = asia_superregion
+					superregion = haemusia_superregion
+					superregion = italia_superregion
+					superregion = macedonia_superregion
+				}
 			}
 			NOT = { total_development = 30 }
 			is_subject = no
@@ -58,6 +63,15 @@ ask_for_league_member_subject = {
 	
 	ai_acceptance = {
 		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -2 }
+		}
+		add_entry = {
 			name = TRUST
 			export_to_variable = {
 				variable_name = ai_value
@@ -67,40 +81,33 @@ ask_for_league_member_subject = {
 			}
 			subtract_variable = { which = ai_value value = 70 }
 		}
-
 		add_entry = {
 			name = ARMY_SIZE
 			export_to_variable = {
 				variable_name = ai_value
 				value = land_forcelimit
 				who = FROM
-				with = ROOT
 			}
 			change_variable = { which = ai_value value = 1 }
 		}
-
 		add_entry = {
 			name = NAVY_SIZE
 			export_to_variable = {
 				variable_name = ai_value
 				value = navy_size
 				who = FROM
-				with = ROOT
 			}
 			change_variable = { which = ai_value value = 1 }
 		}
-		
 		add_entry = {
 			name = PRESTIGE
 			export_to_variable = {
 				variable_name = ai_value
 				value = prestige
 				who = FROM
-				with = ROOT
 			}
 			divide_variable = { which = ai_value value = 10 }
 		}
-		
 		add_entry = {
 			name = DIPLOMATIC_REPUTATION
 			export_to_variable = {
@@ -110,10 +117,17 @@ ask_for_league_member_subject = {
 			}
 			multiply_variable = { which = ai_value value = 6 }
 		}
-
 		add_entry = {
 			name = DIFFERENT_PRIMARY_CULTURE
 			limit = { NOT = { primary_culture = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			always = yes
 			export_to_variable = {
 				which = ai_value
 				value = -10
