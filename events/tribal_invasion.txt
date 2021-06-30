@@ -1,0 +1,206 @@
+namespace = tribal_invasion
+
+########################################################################################
+# TRIBAL INVASION EVENTS
+# R&D phase, not definitive
+########################################################################################
+country_event = {
+	id = tribal_invasion.1
+	title = "tribal_invasion.1.t"
+	desc = "tribal_invasion.1.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		
+		# 1) define how many people will rise to war
+		# 2) move migration size (% of eligible warring people) into each province
+		# 3) "rise" the moving population (both soldiers and civilians)
+		# 4) calculate total people migrating, and add total amount into country level, add modifiers for land maintenance & cost
+		# 5) fire event to declare war (if called back, harmful for owner, war exhaustion, etc)
+		
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+		
+		
+		add_country_modifier = { name = ti_free_maint duration = 730 }	# two years until morale erodes and people rethink
+	}
+	
+}
+
+country_event = {
+	id = tribal_invasion.2
+	title = "tribal_invasion.2.t"
+	desc = "tribal_invasion.2.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		
+		# 1) search which countries are around, within distance (mix of tech ++ and migration size -- )
+		# 2) assign up to 10 alternatives, and "target regions" that are to be conquered + province flag there
+		# 3) declare war on the target country, and set each province in the area with that province flag
+		#		I think I can do a scripted effect adding "invader=ROOT" -> province_flag invasion_target_$invader$
+		# 4) ALL provinces that are not the capital, are lost. Both normal provinces and capital lose all buildings and are added as "travelling money" (not cash itself), and is unpacked once arriving in the new provinces. Capital loses buildings and only gets a modifier with fort_level +2 (so, total 3) and defensiveness +100%, as there is no-one around and the siege itself has no effect. 
+		# 5) war starts
+		
+		# 6) if a war is finished by annexing their last province, the invaders stay in the province they have occupied so far, and stay there as a modifier. They can be integrated, paid to leave, attacked, enslaved,... neighboring countries may want to call them back, merge all warriors again, and start a new invasion
+		
+		
+		# join_all_offensive_wars_of  	cool, I don't know if it works
+	}
+	
+	option = {
+		name = "tribal_invasion.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
+
+country_event = {
+	id = tribal_invasion.3
+	title = "tribal_invasion.3.t"
+	desc = "tribal_invasion.3.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		
+		# an on_action is created if a province is occupied and the attacker has contry flag of invader. Once occupied, adds a province_modifier which lasts for X days (one year?) 
+		# the defender gets this event, saying "the invaders have already occupied these provinces for so long. Shall we negotiate with them?
+		#	A) ok, accept to lose these provinces... momentarily -> transfer them, fire event 4, lose core but add claim and CB for 10 years
+		#	B) no, don't stop them. 			Add another year to the timer. After that, they're completely lost
+		#	C) offer them another area (fire event 5, choose which area / region), redirects to event 4
+		
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.3.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
+
+country_event = {
+	id = tribal_invasion.4
+	title = "tribal_invasion.4.t"
+	desc = "tribal_invasion.4.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		
+		# coming from event 3 (defener accept to lose provinces) or event 4 (another province/area is offered)
+		# "The defender is accepting to negotiate. Do you accept?"
+		# 	if yes, Fires event 6, also happens if the war is won and provinces are gained
+		# 	
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.4.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
+
+country_event = {
+	id = tribal_invasion.5
+	title = "tribal_invasion.5.t"
+	desc = "tribal_invasion.5.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		
+		# Choose which area give to them. Sets which is the target province asked by the barbarians, and searches for neighboring (within distance X) areas that can be offered to them. Same code as event 3
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.4.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
+
+country_event = {
+	id = tribal_invasion.6
+	title = "tribal_invasion.6.t"
+	desc = "tribal_invasion.6.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		# Lose the old capital
+		
+		# Decide what to do with the newly conquered provinces. 
+		#	A) expel the original population (50% leave)
+		#	B) enslave some (25% enslave, 25% leave)
+		#	C) enslave many (50% enslave, 25% leave)
+		# 	D) exterminate (33% enslave, 33% leave, 33% killed)
+		# 	E) peacefully coexist (probably won't change cultures, but more development) (25% leaving, nothing else)
+		# then fires the event to redistribute people. 
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.4.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
+country_event = {
+	id = tribal_invasion.7
+	title = "tribal_invasion.7.t"
+	desc = "tribal_invasion.7.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+	
+	
+	immediate = {
+		# calculations to settle the moving tribe. Will conver all the "warriors" (non-professional soldiers) and civilians, and distributes them around the newly gained provinces. 
+		
+		# while, random province, subtract country variable and add province variable
+		# then, every_owned_province,
+		
+	}
+	
+	option = {
+		name = "tribal_invasion.4.a"
+		ai_chance = {
+			factor = 100
+		}
+		
+	}
+	
+}
