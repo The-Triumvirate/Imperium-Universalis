@@ -161,6 +161,7 @@ country_decisions = {
 			army_tradition = 20
 		}
 		allow = {
+			NOT = { stability = 1 } 
 		}
 		effect = {
 			remove_country_modifier = hurrian_not_identity
@@ -1112,19 +1113,19 @@ country_decisions = {
 			prestige = 30
 			byeonhan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			mahan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			samhan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			jinhan_area = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 		}
 		effect = {
@@ -1427,7 +1428,7 @@ country_decisions = {
 			}
 			gojoseon_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 		}
 		effect = {
@@ -1524,7 +1525,7 @@ country_decisions = {
 			stability = 1
 			jinhan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 		}
 		effect = {
@@ -1583,11 +1584,11 @@ country_decisions = {
 			stability = 1
 			mahan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			samhan_region = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 		}
 		effect = {
@@ -1652,11 +1653,11 @@ country_decisions = {
 			}
 			tai_area = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 			sanju_area = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				owned_by = ROOT
 			}
 		}
 		effect = {
@@ -1715,5 +1716,340 @@ country_decisions = {
 			factor = 100
 		}
 	}
+
+	unite_chaldean_tribes = {
+		major = yes
+		potential = {
+			OR = {
+				primary_culture = chaldean
+				TAG = SU4
+			}
+			NOT = { has_reform = elamite_kingdom }
+			NOT = { has_reform = minor_elamite_kingdom }
+			NOT = { exists = CAL }
+			BAB = {
+				NOT = { ruler_culture = chaldean }
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = sealand_mesopotamia
+				area = lower_chaldea
+				area = upper_chaldea
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			owns_core_province = 2507
+			owns_core_province = 2516
+			owns_core_province = 2509
+			owns_core_province = 2508
+			owns_core_province = 2517
+
+		}
+		effect = {
+			change_tag = CAL
+			set_capital = 2507
+			add_prestige = 5
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 3
+			}
+			if = {
+				limit = {
+					was_tag = SU4
+					NOT = { primary_culture = chaldean }
+				}
+				change_primary_culture = chaldean
+			}
+			mesopotamia_region = {
+				limit = {
+					culture = chaldean
+				}
+				add_core = CAL
+			}
+		}
+		ai_importance = 1
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	form_babylonia = {
+		major = yes
+		potential = {
+			OR = {
+				primary_culture = babylonian
+				primary_culture = chaldean
+			}
+			NOT = { exists = BAB }
+			religion = mesopotamian_religion
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = babylonia_area
+				area = mesene_area
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			prestige = 10
+			stability = 1
+			legitimacy_equivalent = 100
+			babylonia_area = {
+				type = all
+				owned_by = ROOT
+			}
+			mesene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			change_tag = BAB
+			set_capital = 2500
+			add_splendor = 50
+			if = {
+				limit = {
+					government = monarchy
+					NOT = { has_reform = assyrian_administration_reform }
+				}
+				add_government_reform = assyrian_administration_reform
+			}
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 3
+			}
+			country_event = { 
+				id = new_ideas.1
+			}
+			mesopotamia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = BAB
+			}
+		}
+		ai_importance = 1
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	form_assyria = {
+		potential = {
+			NOT = { TAG = MIT }
+			NOT = { exists = ASY }
+			primary_culture = assyrian
+			religion = mesopotamian_religion
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = assyria_area
+				area = acabene_area
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			assyria_area = {
+				type = all
+				owned_by = ROOT
+			}
+			acabene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			change_tag = ASY
+			set_capital = 2476
+			add_splendor = 50
+			if = {
+				limit = {
+					government = monarchy
+					NOT = { has_reform = assyrian_administration_reform }
+				}
+				add_government_reform = assyrian_administration_reform
+			}
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 3
+			}
+			assyria_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ASY
+			}
+			country_event = { 
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 100	
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	form_parthia_dahae = {
+		potential = {
+			NOT = { exists = PRT }
+			primary_culture = parni
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = parthyene_area
+				area = comisene_area
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			parthyene_area = {
+				type = all
+				owned_by = ROOT
+			}
+			comisene_area = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			change_tag = PRT
+			change_primary_culture = parthian
+			add_accepted_culture = parni
+			set_capital = 2706
+			add_stability = 2
+			if = {
+				limit = {
+					NOT = { religion = zoroastrianism }
+					is_religion_enabled = zoroastrianism
+					2776 = { religion = zoroastrianism }
+				}
+				change_religion = zoroastrianism
+			}
+			else_if = {
+				limit = {
+					NOT = { religion = zurvanism }
+					is_religion_enabled = zurvanism
+					2776 = { religion = zurvanism }
+				}
+				change_religion = zurvanism
+			}
+			else_if = {
+				limit = {
+					NOT = { religion = mitraism }
+					2776 = { religion = mitraism }
+				}
+				change_religion = mitraism
+			}
+			if = {
+				limit = {
+					tribal_or_native_trigger = yes
+				}
+				change_government = monarchy
+				add_government_reform = parthian_monarchy_reform
+			}
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 3
+			}
+			country_event = { 
+				id = new_ideas.1
+			}
+			parthia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = PRT
+			}
+		}
+		ai_importance = 100	
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	unite_dahae_tribes = {
+		potential = {
+			NOT = { exists = DAH }
+			primary_culture = parni
+		}
+		provinces_to_highlight = {
+			OR = {
+				region = dahaestan_region
+				area = maxerane_area
+				area = margiana_inferior
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			if = {
+				limit = {
+					TAG = PAI
+				}
+				NOT = { exists = DH1 }
+				NOT = { exists = DH2 }
+			}
+			if = {
+				limit = {
+					TAG = DH1
+				}
+				NOT = { exists = PAI }
+				NOT = { exists = DH2 }
+			}
+			if = {
+				limit = {
+					TAG = DH2
+				}
+				NOT = { exists = DH1 }
+				NOT = { exists = PAI }
+			}
+			num_of_owned_provinces_with = {
+				value = 25
+				is_core = ROOT
+				region = dahaestan_region
+			}
+			num_of_owned_provinces_with = {
+				value = 4
+				is_core = ROOT
+				area = maxerane_area
+			}
+			num_of_owned_provinces_with = {
+				value = 2
+				is_core = ROOT
+				area = margiana_inferior
+			}
+			total_development = 80
+		}
+		effect = {
+			change_tag = DAH
+			add_prestige = 10
+			add_mil_power = 100
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 3
+			}
+			dahaestan_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					culture = parni
+				}
+				add_permanent_claim = DAH
+			}
+		}
+		ai_importance = 100	
+		ai_will_do = {
+			factor = 100
+		}
+	}
 }
-	
