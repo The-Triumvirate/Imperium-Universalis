@@ -21,6 +21,63 @@ country_event = {
 		# 5) fire event to declare war (if called back, harmful for owner, war exhaustion, etc)
 		
 		
+		# initial cleanup, country-level
+		set_variable = { which = ti_upper_total value = 0 } 
+		set_variable = { which = ti_urban_total value = 0 } 
+		set_variable = { which = ti_rural_total value = 0 } 
+		
+		every_owned_province = {
+			limit = { culture_group = owner }
+			## Export population into moving pop
+			
+			export_to_variable = { which = ti_upper_total value = base_tax }
+			if = { 		limit = { base_tax = 2 }	subtract_variable = { ti_upper_total = 0.7 } }	# always stays 0.7, both if >2 or 1
+			else_if = { limit = { base_tax = 1 } 	multiply_variable = { ti_upper_total = 0.3 } } 	# 0.7 stays
+			else = { 								set_variable = { which = ti_upper_total value = 0 } }
+			
+			export_to_variable = { which = ti_urban_total value = base_production }
+			if = { 		limit = { base_production = 2 }	subtract_variable = { ti_urban_total = 0.7 } }	# always stays 0.7, both if >2 or 1
+			else_if = { limit = { base_production = 1 } 	multiply_variable = { ti_urban_total = 0.3 } } 	# 0.7 stays
+			else = { 								set_variable = { which = ti_urban_total value = 0 } }
+			
+			export_to_variable = { which = ti_rural_total value = base_manpower }
+			if = { 		limit = { base_manpower = 2 }	subtract_variable = { ti_rural_total = 0.7 } }	# always stays 0.7, both if >2 or 1
+			else_if = { limit = { base_manpower = 1 } 	multiply_variable = { ti_rural_total = 0.3 } } 	# 0.7 stays
+			else = { 								set_variable = { which = ti_rural_total value = 0 } }
+			
+			# send to country level
+			owner = {
+				change_variable = { which = ti_upper_total which = PREV }
+				change_variable = { which = ti_urban_total which = PREV }
+				change_variable = { which = ti_rural_total which = PREV }
+			}
+		}
+		
+		export_to_variable = { which = ti_available_manpower value = manpower }
+		set_variable = { which = ti_base_manpower which = ti_available_manpower } # to use later
+		if = { 		limit = { manpower_percentage = 1.0 } multiply_variable = { ti_available_manpower = 1.30 } }
+		else_if = { limit = { manpower_percentage = 0.8 } multiply_variable = { ti_available_manpower = 1.15 } }
+		multiply_variable = { ti_available_manpower = 4 }	# rural people contribute usually 750 per each 10k, so, x4 to 3k/10k
+		
+		set_variable = { 	which = ti_migration_unarmed which = ti_rural_total }
+		change_variable = { which = ti_migration_unarmed which = ti_urban_total }
+		change_variable = { which = ti_migration_unarmed which = ti_upper_total }
+		multiply_variable = { ti_migration_unarmed = 10 }		# everything in thousands. Unarmed has total value
+		
+		subtract_variable = { which = ti_migration_unarmed which = ti_available_manpower }	# unarmed only
+		
+		# civilian units
+		
+		# One "cart" every 3 thousand. This ratio will be modified with tech and ideas (lower value, more migration size/force)
+		set_variable = { which = ti_army_unarmed which = ti_migration_unarmed }
+		divide_variable = { which = ti_army_unarmed value = 3 }
+		
+		
+		# upper elite units
+		set_variable = { which = ti_elite_army which = ti_upper_total } multiply_variable = { ti_elite_army = 10 }
+		subtract_variable = { which = ti_base_manpower which = ti_elite_army }	# manpower for elites is "reserved" and not deleted
+		#subtract_variable = { which = ti_available_manpower which = ti_elite_army }	# same here, there would be duplicity
+		
 	}
 	
 	option = {
@@ -28,9 +85,104 @@ country_event = {
 		ai_chance = {
 			factor = 100
 		}
+		every_owned_province = {
+			limit = { culture_group = owner }
+		
+			# the variables are stored in the province, and will be used to "remove" the population once the invasion is over
+			add_province_modifier = { name = ti_invader_origin duration = -1 }	# displays information & reduces economic value of province
+			
+		}
+		
+		# recruit all migrating force in the capital
+		
+		capital_scope = {
+			
+			# elite
+			
+			# elite troops are special, in that Banners can't be recruited. So they will need to be recruited by the player; I add here several modifiers adding to the total amount of banners in the capital, to be recruited fast. Available manpower will be deducted from those, to leave enough space for it
+			set_variable = { which = ti_elite_army which = ROOT }
+			if = { limit = { check_variable = { ti_elite_army = 32 } } add_province_modifier = { name = ti_elite_troops_32 duration = -1 } }
+			if = { limit = { check_variable = { ti_elite_army = 16 } } add_province_modifier = { name = ti_elite_troops_16 duration = -1 } }
+			if = { limit = { check_variable = { ti_elite_army = 8 } } add_province_modifier = { name = ti_elite_troops_8 duration = -1 } }
+			if = { limit = { check_variable = { ti_elite_army = 4 } } add_province_modifier = { name = ti_elite_troops_4 duration = -1 } }
+			if = { limit = { check_variable = { ti_elite_army = 2 } } add_province_modifier = { name = ti_elite_troops_2 duration = -1 } }
+			if = { limit = { check_variable = { ti_elite_army = 1 } } add_province_modifier = { name = ti_elite_troops_1 duration = -1 } }
+			set_variable = { which = ti_elite_army value = 0 }
+			
+			# battle-worthy (available manpower)
+			set_variable = { which = ti_available_manpower which = ROOT }
+			while = {
+				limit = { check_variable = { ti_available_manpower = 1 } }
+				subtract_variable = { ti_available_manpower = 1 }
+				random_list = {
+					60 = { infantry = ROOT }
+					10 = { cavalry = ROOT }
+					30 = { artillery = ROOT }
+				}
+			}
+			set_variable = { which = ti_available_manpower value = 0 }
+			set_variable = { which = ti_migration_unarmed which = ROOT }
+			
+			
+			
+			
+		}
+		
+		# Calculate new landforce limit
+		set_variable = { which = ti_landlimit which = ti_available_manpower }
+		change_variable = { which = ti_landlimit which = ti_elite_army }
+		change_variable = { which = ti_landlimit which = ti_army_unarmed }
 		
 		
+		while = {
+			limit = { check_variable = { ti_army_unarmed = 1 } }
+			subtract_variable = { ti_army_unarmed = 1 }
+			random_owned_province = {
+				add_unit_construction = {
+					type = 0_unarmed_migrants
+					amount = 1
+					speed = 0.02
+					cost = 0
+				}
+			}
+		}
+			
+		if = { 
+			limit = { check_variable = { ti_landlimit = 128 } } 
+			subtract_variable = { ti_landlimit = 128 } add_country_modifier = { name = ti_landlimit_128 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 64 } } 
+			subtract_variable = { ti_landlimit = 64 } add_country_modifier = { name = ti_landlimit_64 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 32 } } 
+			subtract_variable = { ti_landlimit = 32 } add_country_modifier = { name = ti_landlimit_32 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 16 } } 
+			subtract_variable = { ti_landlimit = 16 } add_country_modifier = { name = ti_landlimit_16 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 8 } } 
+			subtract_variable = { ti_landlimit = 8 } add_country_modifier = { name = ti_landlimit_8 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 4 } } 
+			subtract_variable = { ti_landlimit = 4 } add_country_modifier = { name = ti_landlimit_4 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 2 } } 
+			subtract_variable = { ti_landlimit = 2 } add_country_modifier = { name = ti_landlimit_2 duration = -1 } 
+		}
+		if = { 
+			limit = { check_variable = { ti_landlimit = 1 } } 
+			subtract_variable = { ti_landlimit = 1 } add_country_modifier = { name = ti_landlimit_1 duration = -1 } 
+		}
 		
+		# add more landforce limit. This will scare the shit out of neighbours
+		
+		#country_event = { id = tribal_invasion.2 }
 		add_country_modifier = { name = ti_free_maint duration = 730 }	# two years until morale erodes and people rethink
 	}
 	
@@ -57,6 +209,17 @@ country_event = {
 		
 		
 		# join_all_offensive_wars_of  	cool, I don't know if it works
+		
+		# 1 to 5
+		random_province = {
+			
+		
+		}
+		
+		
+		
+		
+		
 	}
 	
 	option = {
