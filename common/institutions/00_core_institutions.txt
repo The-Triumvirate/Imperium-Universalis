@@ -540,6 +540,7 @@ coin_usage = {
 					superregion = celtica_superregion
 					superregion = haemusia_superregion
 					region = aethiops
+					region = erythrae_region
 					region = tarim_basin_region
 				}
 				is_year = 657
@@ -557,17 +558,30 @@ coin_usage = {
 	
 	can_start = {
 		is_year = 150
-		region = asia_minor
-		is_state = yes
-		province_has_center_of_trade_of_level = 1
-		OR = {
-			development = 10
-			is_capital = yes
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_asia_flag }
+			}
+			region = asia_minor
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			OR = {
+				development = 10
+				is_capital = yes
+			}
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+			}
 		}
-		owner = {
-			NOT = {
-				government = tribal
-				government = native
+		else = {
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			OR = {
+				development = 10
+				is_capital = yes
+			}
+			owner = {
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -881,25 +895,44 @@ siege_engineering_jnstitution = {
 	
 	can_start = {
 		is_year = 200
-		OR = {
-			region = mesopotamia_region
-			region = haltamti_region
-			region = assyria_region
-		}
-		owner = {
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_mesopotamia_flag }
+			}
 			OR = {
-				has_global_modifier_value = {
-					which = siege_ability
-					value = 0.15
+				region = mesopotamia_region
+				region = haltamti_region
+				region = assyria_region
+			}
+			owner = {
+				OR = {
+					has_global_modifier_value = {
+						which = siege_ability
+						value = 0.15
+					}
+					army_tradition = 20
 				}
-				army_tradition = 20
+			}
+			OR = {
+				has_building = small_city_walls
+				has_building = large_city_walls
 			}
 		}
-		OR = {
-			has_building = small_city_walls
-			has_building = large_city_walls
+		else = {
+			owner = {
+				OR = {
+					has_global_modifier_value = {
+						which = siege_ability
+						value = 0.15
+					}
+					army_tradition = 20
+				}
+			}
+			OR = {
+				has_building = small_city_walls
+				has_building = large_city_walls
+			}
 		}
-		is_in_capital_area = yes
 	}
 	start_chance = 5		#in 100 for when a province can_start
 
@@ -1156,29 +1189,54 @@ bureaucracy_institution = {
 	
 	can_start = {
 		is_year = 250
-		is_island = no
-		is_state = yes
-		OR = {
-			has_building = small_townhall
-			has_building = big_townhall
-			has_building = government_palace
-			has_building = government_district
-		}
-		owner = {
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_mesopotamia_flag }
+				NOT = { has_global_flag = picked_disable_eran_flag }
+			}
+			is_island = no
+			is_state = yes
 			OR = {
-				absolutism = 10
-				num_of_cities = 30
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
 			}
-			total_development = 80
-			NOT = {
-				government = native
+			owner = {
+				OR = {
+					absolutism = 10
+					num_of_cities = 30
+				}
+				total_development = 80
+				NOT = {
+					government = native
+				}
+			}
+			OR = {
+				region = haltamti_region
+				superregion = iran_superregion
 			}
 		}
-		OR = {
-			region = haltamti_region
-			superregion = iran_superregion
+		else = {
+			is_island = no
+			is_state = yes
+			OR = {
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
+			}
+			owner = {
+				OR = {
+					absolutism = 10
+					num_of_cities = 30
+				}
+				total_development = 80
+				NOT = {
+					government = native
+				}
+			}
 		}
-
 	}
 	start_chance = 5	#in 100 for when a province can_start
 	
@@ -1528,10 +1586,19 @@ cast_iron_institution = {
 	
 	can_start = {
 		is_year = 300
-		is_state = yes
-		culture_group = chinese_group
-		superregion = china_superregion
-		trade_goods = iron
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_china_flag }
+			}
+			is_state = yes
+			culture_group = chinese_group
+			superregion = china_superregion
+			trade_goods = iron
+		}
+		else = {
+			is_state = yes
+			trade_goods = iron
+		}
 	}
 	
 	start_chance = 5	#in 100 for when a province can_start
@@ -1750,6 +1817,7 @@ classical_philosophy_institution = {
 				is_year = 550
 				OR = {
 					region = aethiops
+					region = erythrae_region
 					region = hispania_baetica
 				}
 			}
@@ -1777,15 +1845,25 @@ classical_philosophy_institution = {
 	
 	can_start = {
 		is_year = 350
-		is_state = yes
-		culture_group = hellenic
-		base_tax = 1
-		base_production	= 1
-		superregion = macedonia_superregion
-		owner = {
-			NOT = {
-				government = tribal
-				government = native
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_macedonia_flag }
+			}
+			is_state = yes
+			culture_group = hellenic
+			base_tax = 1
+			base_production	= 1
+			superregion = macedonia_superregion
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+			}
+		}
+		else = {
+			is_state = yes
+			base_tax = 1
+			base_production	= 1
+			owner = {
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -2063,6 +2141,7 @@ civil_law_institution = {
 					superregion = korea_superregion
 					superregion = haemusia_superregion
 					region = aethiops
+					region = erythrae_region
 				}
 			}
 			AND = {
@@ -2088,14 +2167,24 @@ civil_law_institution = {
 	
 	can_start = {
 		is_year = 400
-		is_state = yes
-		base_tax = 1
-		base_production	= 1
-		superregion = italia_superregion
-		owner = {
-			NOT = {
-				government = tribal
-				government = native
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_italia_flag }
+			}
+			is_state = yes
+			base_tax = 1
+			base_production	= 1
+			superregion = italia_superregion
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+			}
+		}
+		else = {
+			is_state = yes
+			base_tax = 1
+			base_production	= 1
+			owner = {
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -2397,23 +2486,44 @@ axiomatic_maths_institution = {
 	
 	can_start = {
 		is_year = 450
-		is_state = yes
-		development = 12
-		OR = {
-			has_building = small_townhall
-			has_building = big_townhall
-			has_building = government_palace
-			has_building = government_district
-			has_building = mathematician_academy
-			has_building = library
-			has_building = great_library
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_libya_orientalis_flag }
+			}
+			is_state = yes
+			development = 12
+			OR = {
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
+				has_building = mathematician_academy
+				has_building = library
+				has_building = great_library
+			}
+			OR = {
+				region = lower_egypt_region
+				region = upper_egypt_region
+			}
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+			}
 		}
-		OR = {
-			region = lower_egypt_region
-			region = upper_egypt_region
-		}
-		owner = {
-			neither_tribal_nor_native_trigger = yes
+		else = {
+			is_state = yes
+			development = 12
+			OR = {
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
+				has_building = mathematician_academy
+				has_building = library
+				has_building = great_library
+			}
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+			}
 		}
 	}
 	
@@ -2684,24 +2794,43 @@ blast_furnace_institution = {
 	
 	can_start = {
 		is_year = 500
-		is_state = yes
-		development = 6
-		superregion = china_superregion
-		culture_group = chinese_group
-		owner = {
-			NOT = {
-				government = tribal
-				government = native
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_china_flag }
 			}
-			iron = 1
-			has_global_modifier_value = {
-				which = production_efficiency
-				value = 0.4
+			is_state = yes
+			development = 6
+			superregion = china_superregion
+			culture_group = chinese_group
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+				iron = 1
+				has_global_modifier_value = {
+					which = production_efficiency
+					value = 0.4
+				}
+				OR = {
+					quarry = 4
+					small_mine = 2
+					big_mine = 1
+				}
 			}
-			OR = {
-				quarry = 4
-				small_mine = 2
-				big_mine = 1
+		}
+		else = {
+			is_state = yes
+			development = 6
+			owner = {
+				neither_tribal_nor_native_trigger = yes
+				iron = 1
+				has_global_modifier_value = {
+					which = production_efficiency
+					value = 0.4
+				}
+				OR = {
+					quarry = 4
+					small_mine = 2
+					big_mine = 1
+				}
 			}
 		}
 	}
@@ -2954,25 +3083,52 @@ advanced_hydraulics_institution = {
 	
 	can_start = {
 		is_year = 550
-		is_state = yes
-		development = 7
-		superregion = syria_superregion
-		OR = {
-			trade_goods = grain
-			trade_goods = fruits
-			trade_goods = rice
-			trade_goods = olive
-			trade_goods = wine
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_transeuphratia_flag }
+			}
+			is_state = yes
+			development = 7
+			superregion = syria_superregion
+			OR = {
+				trade_goods = grain
+				trade_goods = fruits
+				trade_goods = rice
+				trade_goods = olive
+				trade_goods = wine
+			}
+			OR = {
+				has_building = small_water_irrigation
+				has_building = big_water_irrigation
+				has_building = big_estate
+			}
+			owner = {
+				has_global_modifier_value = {
+					which = production_efficiency
+					value = 0.5
+				}
+			}
 		}
-		OR = {
-			has_building = small_water_irrigation
-			has_building = big_water_irrigation
-			has_building = big_estate
-		}
-		owner = {
-			has_global_modifier_value = {
-				which = production_efficiency
-				value = 0.5
+		else = {
+			is_state = yes
+			development = 7
+			OR = {
+				trade_goods = grain
+				trade_goods = fruits
+				trade_goods = rice
+				trade_goods = olive
+				trade_goods = wine
+			}
+			OR = {
+				has_building = small_water_irrigation
+				has_building = big_water_irrigation
+				has_building = big_estate
+			}
+			owner = {
+				has_global_modifier_value = {
+					which = production_efficiency
+					value = 0.5
+				}
 			}
 		}
 	}
@@ -3333,15 +3489,25 @@ astronomy_institution = {
 	
 	can_start = {
 		is_year = 600
-		is_state = yes
-		development = 5
-		superregion = macedonia_superregion
-		culture_group = hellenic
-		owner = {
-			has_institution = axiomatic_maths_institution
-			NOT = {
-				government = tribal
-				government = native
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_macedonia_flag }
+			}
+			is_state = yes
+			development = 5
+			superregion = macedonia_superregion
+			culture_group = hellenic
+			owner = {
+				has_institution = axiomatic_maths_institution
+				neither_tribal_nor_native_trigger = yes
+			}
+		}
+		else = {
+			is_state = yes
+			development = 5
+			owner = {
+				has_institution = axiomatic_maths_institution
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -3616,24 +3782,39 @@ engineering_architecture_institution = {
 	
 	can_start = {
 		is_year = 650
-		is_state = yes
-		province_has_center_of_trade_of_level = 1
-		superregion = italia_superregion
-		OR = {
-			culture_group = hellenic
-			culture_group = italic
-			culture_group = etruscan_culture_group
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_italia_flag }
+			}
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			superregion = italia_superregion
+			OR = {
+				culture_group = hellenic
+				culture_group = italic
+				culture_group = etruscan_culture_group
+			}
+			OR = {
+				has_building = gravel_road
+				has_building = paved_road
+				has_building = imperial_road
+			}
+			owner = {
+				has_institution = axiomatic_maths_institution
+				neither_tribal_nor_native_trigger = yes
+			}
 		}
-		OR = {
-			has_building = gravel_road
-			has_building = paved_road
-			has_building = imperial_road
-		}
-		owner = {
-			has_institution = axiomatic_maths_institution
-			NOT = {
-				government = tribal
-				government = native
+		else = {
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			OR = {
+				has_building = gravel_road
+				has_building = paved_road
+				has_building = imperial_road
+			}
+			owner = {
+				has_institution = axiomatic_maths_institution
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -3985,28 +4166,47 @@ tactics_strategy_institution = {
 	
 	can_start = {
 		is_year = 700
-		is_state = yes
-		province_has_center_of_trade_of_level = 1
-		superregion = italia_superregion
-		OR = {
-			culture_group = hellenic
-			culture_group = italic
-			culture_group = etruscan_culture_group
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_italia_flag }
+			}
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			superregion = italia_superregion
+			OR = {
+				culture_group = hellenic
+				culture_group = italic
+				culture_group = etruscan_culture_group
+			}
+			OR = {
+				has_building = military_academy
+				has_building = small_conscription_center
+			}
+			OR = {
+				has_building = small_army_camp
+				has_building = small_military_settlement
+				has_building = big_military_settlement
+			}
+			owner = {
+				army_tradition = 60
+				neither_tribal_nor_native_trigger = yes
+			}
 		}
-		OR = {
-			has_building = military_academy
-			has_building = small_conscription_center
-		}
-		OR = {
-			has_building = small_army_camp
-			has_building = small_military_settlement
-			has_building = big_military_settlement
-		}
-		owner = {
-			army_tradition = 60
-			NOT = {
-				government = tribal
-				government = native
+		else = {
+			is_state = yes
+			province_has_center_of_trade_of_level = 1
+			OR = {
+				has_building = military_academy
+				has_building = small_conscription_center
+			}
+			OR = {
+				has_building = small_army_camp
+				has_building = small_military_settlement
+				has_building = big_military_settlement
+			}
+			owner = {
+				army_tradition = 60
+				neither_tribal_nor_native_trigger = yes
 			}
 		}
 	}
@@ -4305,13 +4505,26 @@ monotheism_institution = {
 	
 	can_start = {
 		is_year = 750
-		is_state = yes
-		superregion = syria_superregion
-		culture_group = semitic
-		OR = {
-			has_building = shrine
-			has_building = small_temple
-			has_building = great_temple
+		if = {
+			limit = {
+				NOT = { has_global_flag = picked_disable_transeuphratia_flag }
+			}
+			is_state = yes
+			superregion = syria_superregion
+			culture_group = semitic
+			OR = {
+				has_building = shrine
+				has_building = small_temple
+				has_building = great_temple
+			}
+		}
+		else = {
+			is_state = yes
+			OR = {
+				has_building = shrine
+				has_building = small_temple
+				has_building = great_temple
+			}
 		}
 	}
 	
@@ -4324,7 +4537,6 @@ monotheism_institution = {
 	can_embrace = {
 		always = yes
 	}
-
 	
 	embracement_speed = {
 	
