@@ -850,6 +850,12 @@ province_event = {
 		else_if = { limit = { owner = { stability = 2 } } multiply_variable = { which = upper_growth value = 1.5 } }
 		else_if = { limit = { owner = { stability = 1 } } multiply_variable = { which = upper_growth value = 1.2 } }
 		
+		
+		# outside upper. check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
+		if = { limit = { check_variable = { which = rural_capacity which = initial_rural } remove_province_modifier = rural_pause } }
+		if = { limit = { check_variable = { which = urban_capacity which = initial_urban } remove_province_modifier = urban_pause } }
+		
+		
 	}
 	
 	
@@ -1410,7 +1416,8 @@ province_event = {
 		base_manpower = 2 												# does not let the last rural pop to leave, obviously
 		check_variable = { which = prov_size value = 1 }				# to only affect if the popgrowth files are active
 		NOT = { check_variable = { which = rural_growth value = 1 } }	# "poverty", or at least no more growth
-		#has_global_flag = popgrowth_future		# to toggle on/off easily
+		NOT = { has_province_modifier = rural_pause }
+		#has_global_flag = popgrowth_future								# to toggle on/off easily
 	}
 	
 	

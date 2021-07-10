@@ -6499,7 +6499,24 @@ country_event = {
 				else_if = { limit = { check_variable = { prov_size = 2 } }  add_province_modifier = { name = popgrowth_size02 duration = 30 } }
 				else_if = { limit = { check_variable = { prov_size = 1 } }  add_province_modifier = { name = popgrowth_size01 duration = 30 } }
 				else = { set_variable = { which = prov_size value = 1 } 	add_province_modifier = { name = popgrowth_size_no duration = 30 } }
+				
+				export_to_variable = { which = initial_rural value = base_manpower }
+				export_to_variable = { which = initial_urban value = base_production }
+				
 				province_event = { id = population_capacity.1 }
+				# adding conditions, in case that the starting dev > capacity. Gives 100-year exception to migration and demotion
+				if = {
+					limit = { check_variable = { which = initial_rural which = rural_capacity } }
+					add_permanent_province_modifier = { name = rural_pause duration = 36500 hidden = yes }
+				}
+				else = { set_variable = { which = initial_rural value = 0 } }
+				if = {
+					limit = { check_variable = { which = initial_urban which = urban_capacity } }
+					add_permanent_province_modifier = { name = urban_pause duration = 36500 hidden = yes }
+				}
+				else = { set_variable = { which = initial_urban value = 0 } }
+				
+				
 			}
 			
 		}
