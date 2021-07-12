@@ -1,4 +1,261 @@
 
+#######################
+#	Religious Policy  #
+#######################
+
+syncretism_reform = {
+	icon = "religious_law"
+	allow_normal_conversion = yes
+
+	potential = {
+		
+	}
+	trigger = {
+		NOT = { has_reform = common_ethnic_origin_reform }
+	}
+	modifiers = {
+		religious_unity = 0.33
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 2
+			NOT = { religious_unity = 0.6 }
+		}
+		modifier = {
+			factor = 2
+			average_unrest = 3
+		}
+		modifier = {
+			factor = 3
+			unreformed_pagan_religious_group_trigger = yes
+			NOT = { dominant_religion = ROOT }
+		}
+		modifier = {
+			factor = 0
+			religion_group = jewish_group
+		}
+		modifier = {
+			factor = 3
+			has_idea_group = syncrenism_ideas
+		}
+		modifier = {
+			factor = 1.25
+			has_idea_group = assimilation_ideas
+		}
+		modifier = {
+			factor = 3
+			culture_group = hellenic
+			any_owned_province = { NOT = { religion_group = ROOT } }
+		}
+		modifier = {
+			factor = 2
+			harmony = 20
+		}
+		modifier = {
+			factor = 2
+			OR = {
+				religion = mesopotamian_religion
+				religion = punic_religion
+				religion = elamite_religion
+				religion = arab_religion
+			}
+			capital_scope = { continent = asia }
+		}
+	}
+}
+
+puritanism_reform = {
+	icon = "religious_law"
+	allow_normal_conversion = yes
+
+	potential = {
+		OR = {
+			unreformed_pagan_religious_group_trigger = no
+			has_reform = theocratic_kingdom
+		}
+	}
+
+	trigger = {
+		has_reform = religious_origin_of_power_reform
+	}
+
+	modifiers = {
+		land_morale = 0.1
+		tolerance_own = 0.5
+		global_missionary_strength = -0.01
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 2
+			religion = jewish
+		}
+		modifier = {
+			factor = 2.0
+			has_reform = theocratic_kingdom
+			has_idea_group = propaganda_ideas
+		}
+		modifier = {
+			factor = 1.5
+			culture_group = indian_group
+			OR = {
+				religion = hinduism
+				religion = brahmin
+			}
+		}
+		modifier = {
+			factor = 3
+			dominant_religion = ROOT
+		}
+		modifier = {
+			factor = 2
+			NOT = { num_accepted_cultures = 1 }
+		}
+		modifier = {
+			factor = 0
+			NOT = { dominant_religion = ROOT }
+		}
+		modifier = {
+			factor = 0
+			religion_group = persian_group
+		}
+		modifier = {
+			factor = 1.5
+			estate_influence = {
+				estate = estate_priesthood
+				influence = 70
+			}
+		}
+	}
+}
+
+cosmopolitanism_reform = {
+	icon = "religious_law"
+	allow_normal_conversion = yes
+
+	potential = {
+	}
+
+	trigger = {
+		NOT = { has_reform = common_ethnic_origin_reform }
+		NOT = { has_reform = religious_origin_of_power_reform }
+		NOT = { has_reform = traditionalist_tribe_reform }
+	}
+
+	modifiers = {
+		tolerance_heretic = 1
+		tolerance_heathen = 2
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 1.1
+			tribal_or_native_trigger = yes
+		}
+		modifier = {
+			factor = 1.25
+			unreformed_pagan_religious_group_trigger = yes
+			NOT = { has_idea_group = cerimonial_ideas }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = {
+				estate_influence = {
+					estate = estate_priesthood
+					influence = 40
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			has_idea_group = syncrenism_ideas
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 3
+			NOT = { dominant_religion = ROOT }
+		}
+		modifier = {
+			factor = 2
+			num_accepted_cultures = 1
+		}
+		modifier = {
+			factor = 1.5
+			OR = {
+				culture_group = western_iranian
+				culture_group = armenian_group
+			}
+			religion_group = persian_group
+		}
+		modifier = {
+			factor = 1.5
+			culture_group = chinese_group
+			religion_group = chinese_religions
+		}
+	}
+}
+
+proselytism_reform = {
+	icon = "religious_law"
+	allow_normal_conversion = yes
+
+	potential = {
+		OR = {
+			unreformed_pagan_religious_group_trigger = no
+			has_country_modifier = high_priest_modifier
+			has_reform = theocratic_kingdom
+		}
+	}
+	trigger = {
+		NOT = { has_reform = isolationist_tribe_reform }
+	}
+
+	modifiers = {
+		global_missionary_strength = 0.02
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 2.0
+			has_idea_group = cerimonial_ideas
+			has_idea_group = assimilation_ideas
+		}
+		modifier = {
+			factor = 6.0
+			religion = christian
+		}
+		modifier = {
+			factor = 2.0
+			has_reform = theocratic_kingdom
+			has_idea_group = assimilation_ideas
+		}
+		modifier = {
+			factor = 3.0
+			OR = {
+				religion = sramana
+				religion = ajivika
+				religion = buddhism
+				religion = jain
+			}
+		}
+		modifier = {
+			factor = 3.0
+			estate_influence = {
+				estate = estate_priesthood
+				influence = 40
+			}
+			estate_loyalty = {
+				estate = estate_priesthood
+				loyalty = 50
+			}
+		}
+	}
+}
 
 #####################
 #	Economic Focus  #
@@ -460,15 +717,19 @@ religious_law_reform = {
 		NOT = { has_reform = chinese_reform_monarchy_reform }
 		NOT = { has_reform = bureaucratic_monarchy_reform }
 	}
+
+	trigger = {
+		NOT = { has_reform = cosmopolitanism_reform }
+		NOT = { has_reform = syncretism_reform }
+	}
+
 	modifiers = {
-			global_missionary_strength = 0.01
-			tolerance_own = 1 
-			tolerance_heretic = -1 
-			tolerance_heathen = -1 
+		global_missionary_strength = 0.01
+		tolerance_own = 1 
+		tolerance_heretic = -1 
+		tolerance_heathen = -1 
 	}
 }
-
-
 
 ##################
 #
