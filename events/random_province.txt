@@ -14,20 +14,21 @@ province_event = {
 		OR = {
 			region = gallia_cisalpina
 			region = italian_region
+			region = magna_graecia
 			region = illyria_region
 			region = thracia_region
 			region = greek_region
 			region = macedonia_region
 			region = mare_aegaeum_islands_region
-			region = asia_minor 
-			region = ionia_region
-			region = bithynia_et_pontus
-			region = canaan_region
-			region = armenia_region
-			region = magna_graecia
+			superregion = asia_superregion
+			superregion = syria_superregion
+			superregion = armenia_superregion
+			region = caucasia_region
 			region = sardinia_corsica_region
-			region = western_india_region
 			region = gandhara
+			region = kamarupa_region
+			region = northern_india_region
+			region = kuru_panchala
 		}
 		NOT = {
 			any_province = { has_province_modifier = earthquake }
@@ -55,7 +56,7 @@ province_event = {
 			}
 			modifier = {
 				factor = 1.2
-				region = canaan_region
+				superregion = syria_superregion
 			}
 			modifier = {
 				factor = 0.8
@@ -63,11 +64,11 @@ province_event = {
 			}
 			modifier = {
 				factor = 0.9
-				region = asia_minor
+				superregion = asia_superregion
 			}
 			modifier = {
 				factor = 0.8
-				region = armenia_region
+				superregion = armenia_superregion
 			}
 			
 	}
@@ -613,12 +614,11 @@ country_event = {
 		any_owned_province = {
 			NOT = { region = africa_region } 
 			NOT = { region = mauretania_region } 
-			NOT = { region = nubia_region } 
-			NOT = { region = lower_egypt_region } 
-			NOT = { region = upper_egypt_region } 
+			NOT = { superregion = eastern_africa_superregion } 
 			NOT = { region = canaan_region } 
 			NOT = { region = mesopotamia_region } 
-			NOT = { region = southern_india_region } 
+			NOT = { region = southern_india_region }
+			NOT = { region = chola_region }
 			NOT = { region = eastern_india_region }
 		}
 	}
@@ -633,12 +633,11 @@ country_event = {
 				limit = {
 					NOT = { region = africa_region } 
 					NOT = { region = mauretania_region } 
-					NOT = { region = nubia_region } 
-					NOT = { region = lower_egypt_region } 
-					NOT = { region = upper_egypt_region } 
+					NOT = { superregion = eastern_africa_superregion } 
 					NOT = { region = canaan_region } 
 					NOT = { region = mesopotamia_region } 
-					NOT = { region = southern_india_region } 
+					NOT = { region = southern_india_region }
+					NOT = { region = chola_region }
 					NOT = { region = eastern_india_region }
 				}
 				save_event_target_as = wolf_province
@@ -648,13 +647,12 @@ country_event = {
 	
 	option = {
 		name = "randomprovince.12.a"
-			event_target:wolf_province = {
-				add_province_modifier = {
-					name = "wild_wolfs"
-					duration = 730
-				}
+		event_target:wolf_province = {
+			add_province_modifier = {
+				name = "wild_wolfs"
+				duration = 730
 			}
-		
+		}
 	}
 }
 ########################################################################################
@@ -668,15 +666,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		num_of_cities = 5
 		any_owned_province = {
-		is_in_capital_area = no
-		has_owner_culture = no
-		can_spawn_rebels = nationalist_rebels
+			is_in_capital_area = no
+			has_owner_culture = no
+			can_spawn_rebels = nationalist_rebels
 		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1	
 	}
 	
 	immediate = {
@@ -694,14 +689,13 @@ country_event = {
 	
 	option = {
 		name = "randomprovince.13.a"
-			event_target:revolt_province = {
-			spawn_rebels = {
-						type = nationalist_rebels
-						size = 3
-						win = yes
-					}
+		event_target:revolt_province = {
+		spawn_rebels = {
+				type = nationalist_rebels
+				size = 3
+				win = yes
 			}
-		
+		}
 	}
 }
 ########################################################################################
@@ -990,29 +984,28 @@ province_event = {
 	desc = "randomprovince.16.d"
 	picture = forum_picture
 	goto = ROOT
-	
+
 	trigger = {
 		always = no
 	}
-	
-	
+
 	mean_time_to_happen = {
 		months = 1
-		
 	}
+
 	option = {
 		name = "randomprovince.16.a"
 		ai_chance = { factor = 30 }
-			owner = {
+		owner = {
 			random_owned_province = {
-						add_base_manpower = -1
-						}
-					}
-					add_base_production = 1
-					add_province_modifier = {
-						name = "slums"
-						duration = 1825
-					}
+				add_base_manpower = -1
+			}
+		}
+		add_base_production = 1
+		add_province_modifier = {
+			name = "slums"
+			duration = 1825
+		}
 	}
 }
 
@@ -1039,23 +1032,20 @@ province_event = {
 	
 	
 	mean_time_to_happen = {
-		months = 60
-		
+		months = 24
 		modifier = {
-				factor = 1.3
-				has_owner_culture = yes
-			}
+			factor = 1.3
+			has_owner_culture = yes
+		}
 		modifier = {
-				factor = 1.25
-				has_owner_accepted_culture = yes
-			}
-	
+			factor = 1.25
+			has_owner_accepted_culture = yes
+		}
 	}
+
 	option = {
 		name = "randomprovince.17.a"
-		
 		change_siege = 25
-			
 	}
 }
 
@@ -1070,10 +1060,11 @@ province_event = {
 	goto = ROOT
 	
 	trigger = {
-			OR = {
-					trade_goods = grain
-					trade_goods = fruits
-				}	
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}	
 		is_month = 4
 		NOT = { is_month = 10 }
 		OR = {
@@ -1138,78 +1129,75 @@ province_event = {
 	goto = ROOT
 	
 	trigger = {
-			development = 14
-			has_owner_culture = no
-			is_capital = no
-			OR = {
-				unrest = 1
-				nationalism = 5
-			}
+		development = 14
+		has_owner_culture = no
+		is_capital = no
+		OR = {
+			unrest = 1
+			nationalism = 5
+		}
 	}
 	
 	mean_time_to_happen = {
 		months = 12000
 		modifier = {
-				factor = 2.0
-					has_owner_accepted_culture = yes
-			}	
+			factor = 2.0
+			has_owner_accepted_culture = yes
+		}	
 		modifier = {
-				factor = 2.0
-					units_in_province = 1
-			}	
+			factor = 2.0
+			units_in_province = 1
+		}	
 		modifier = {
-				factor = 1.5
-					has_owner_religion = yes
-			}	
+			factor = 1.5
+			has_owner_religion = yes
+		}	
 		modifier = {
-				factor = 1.5
-					has_owner_religion = yes
-			}
+			factor = 0.75
+			unrest = 5
+		}
 		modifier = {
-				factor = 0.75
-					unrest = 5
-			}
+			factor = 0.5
+			is_territory = yes
+		}
 		modifier = {
-				factor = 0.5
-					is_territory = yes
-			}
+			factor = 0.75
+			has_missionary = yes
+		}	
 		modifier = {
-				factor = 0.75
-					has_missionary = yes
-			}	
+			factor = 0.5
+			nationalism = 10
+		}
 		modifier = {
-				factor = 0.5
-					nationalism = 10
-			}
+			factor = 0.9
+			devastation = 1
+		}
 		modifier = {
-				factor = 0.9
-				devastation = 1
-			}
+			factor = 0.8
+			devastation = 5
+		}
 		modifier = {
-				factor = 0.8
-				devastation = 5
-			}
-		modifier = {
-				factor = 0.7
-				devastation = 10
-			}			
+			factor = 0.7
+			devastation = 10
+		}			
 	}
 
 	option = {
 		name = "randomprovince.20.a"
-			add_base_tax = -1
-			add_base_production = -1
-			owner = {
-				add_country_modifier = {
-					name = "revenge_for_massacre_taken"
-					duration = 1825
-					}
-				}
+		add_base_tax = -1
+		add_base_production = -1
+		owner = {
+			add_country_modifier = {
+				name = "revenge_for_massacre_taken"
+				duration = 1825
+			}
+		}
 			
 	}
+	
 	option = {
 		name = "randomprovince.20.b"
-			owner = { add_stability = -1 }
+		owner = { add_stability = -1 }
 	}
 }
 
@@ -1339,11 +1327,11 @@ province_event = {
 				government = native
 				NOT = { alliance_with = ROOT }
 				NOT = { 
-						has_opinion = {
-							who = ROOT 
-							value = 25
-						}			
-					}
+					has_opinion = {
+						who = ROOT 
+						value = 25
+					}			
+				}
 				is_at_war = no
 				has_any_disaster = no
 				is_subject_of = ROOT
@@ -1355,55 +1343,61 @@ province_event = {
 	mean_time_to_happen = {
 		months = 240
 		modifier = {
-				factor = 0.5
-				owner = {	has_any_disaster = yes	}
-			}
+			factor = 0.5
+			owner = {	has_any_disaster = yes	}
+		}
 		modifier = {
-				factor = 0.75
-				owner = {	is_at_war = yes	}
-			}
+			factor = 0.75
+			owner = {	is_at_war = yes	}
+		}
 		modifier = {
-				factor = 0.75
-				OR = {	
-					has_terrain = steppe
-					has_terrain = desert
-				}
+			factor = 0.75
+			OR = {	
+				has_terrain = steppe
+				has_terrain = desert
 			}
+		}
 		modifier = {
-				factor = 1.15
-				units_in_province = 1
-			}
+			factor = 1.15
+			units_in_province = 1
+		}
 		modifier = {
-				factor = 1.25
-				units_in_province = 3
-			}
+			factor = 1.25
+			units_in_province = 3
+		}
 		modifier = {
-				factor = 1.35
-				units_in_province = 6
-			}
+			factor = 1.35
+			units_in_province = 6
+		}
 		modifier = {
-				factor = 2.0
-				garrison = 1000
-			}
+			factor = 2.0
+			garrison = 1000
+		}
 		modifier = {
-				factor = 4.0
-				garrison = 2000
-			}
+			factor = 4.0
+			garrison = 2000
+		}
 		modifier = {
-				factor = 2.0
-				has_influencing_fort = yes
-			}	
+			factor = 2.0
+			has_influencing_fort = yes
+		}	
 	}
 	
 	immediate = {
-			hidden_effect = { nomad_raiders = 2 }
+		hidden_effect = {
+			spawn_rebels = {
+				size = 3
+				type = nomad_raiders
+				win = yes
+			}
+			add_devastation = 25
+		}
 	}
 	
 	option = {
 		name = "randomprovince.22.a"
-			tooltip = {
-				nomad_raiders = 2
-			}
-		
+		tooltip = {
+			nomad_raiders = 2
+		}
 	}
 }
