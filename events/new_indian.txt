@@ -3028,3 +3028,234 @@ country_event  = {
 		name = "indian.46.a"
 	}
 }
+
+########################################################################################
+# Satavahana appear
+########################################################################################
+country_event = {
+	id = indian.51
+	title = "indian.51.t"
+	desc = "indian.51.d"
+	picture = religious
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 454
+		NOT = { started_in = 524.1.1 }
+		NOT = { exists = SAT }
+		is_heterodox_trigger = yes
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+		}
+		krishnaveni_area = {
+			type = all
+			owned_by = ROOT
+		}
+		is_religion_enabled = hinduism
+		NOT = { stability = 0 }
+		NOT = { legitimacy_equivalent = 70 }
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			NOT = { manpower_percentage = 0.7 }
+		}
+	}
+
+	immediate = {
+		krishnaveni_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		andhraka_north = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		korounkala_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		mahendragiri_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+	}
+	
+	option = {
+		name = "indian.51.a"
+		add_prestige = -15
+		add_truce_with = SAT
+		hidden_effect = {
+			SAT = {
+				set_capital = 3120
+				add_stability = 3
+				add_absolutism = 20
+				set_government_rank = 3
+				change_government = monarchy
+				add_government_reform = indian_common_monarchy
+				add_legitimacy = 100
+				add_army_tradition = 50
+				if = {
+					limit = { has_dlc = "Cradle of Civilization" }
+					add_army_professionalism = 0.5
+				}
+				add_treasury = 1000
+				add_adm_power = 200
+				add_mil_power = 200
+				add_dip_power = 200
+				change_religion = hinduism
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 0.6
+						artillery = 0.2
+						cavalry = 0.2
+					}
+				}
+				define_ruler = {
+					name = "Simuka I"
+					dynasty = "Satavahana"
+					adm = 5
+					dip = 5
+					mil = 6
+					max_age = 30
+					male = yes
+					fixed = yes
+				}
+				add_country_modifier = {
+					name = achieved_religious_unity_mission
+					duration = 9125
+				}
+			}
+			3120 = {
+				add_base_tax = 2
+				add_base_production = 5
+			}
+		}
+	}
+}
+
+########################################################################################
+# appearance of Chandragupta Maurya
+########################################################################################
+country_event = {
+	id = indian.52
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = religious
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		NOT = { started_in = 429.1.1 }
+		government = monarchy
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+		}
+		owns_core_province = 3027
+		num_of_cities = 5
+		is_year = 424
+		culture_group = indian_group
+	}
+
+	mean_time_to_happen = {
+		months = 36
+		modifier = {
+			factor = 0.6
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 2
+			absolutism = 25
+		}
+		modifier = {
+			factor = 0.25
+			TAG = MAU
+		}
+	}
+	
+	option = {
+		name = "indian.52.a"
+		define_ruler = {
+			name = "Chandragupta"
+			dynasty = "Maurya"
+			culture = magadhi
+			adm = 6
+			dip = 6
+			mil = 6
+			fixed = yes
+			max_age = 30
+		}
+		define_advisor = {
+			type = statesman_adv
+			name = "Chanakya"
+			skill = 5
+			cost_multiplier = -0.66
+			culture = magadhi
+			religion = hinduism
+		}
+		set_capital = 3027
+		hidden_effect = {
+			add_treasury = 2000
+			add_stability = 3
+			add_legitimacy = 100
+			add_absolutism = 25
+			add_adm_power = 250
+			add_mil_power = 250
+			add_adm_power = 250
+			add_army_tradition = 50
+			add_country_modifier = {
+				name = rise_maurya_modifier
+				duration = 10950
+			}
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.5
+			}
+			if = {
+				limit = { NOT = { has_reform = indian_common_monarchy } }
+				add_government_reform = indian_common_monarchy
+			}
+		}
+	}
+	option = {
+		name = "indian.52.b"
+		add_stability = -2
+		add_legitimacy = -40
+		kill_ruler = yes
+		hidden_effect = {
+			set_saved_name = {
+				key = chandragupta_pretender_rebel
+				type = simple
+				name = "Chandragupta Maurya"
+			}
+			3027 = {
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 3
+					leader = chandragupta_pretender_rebel
+					win = yes
+				}
+			}
+			random_owned_province = {
+				limit = { NOT = { province_id = 3027 } }
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 3
+				}
+			}
+		}
+	}
+}
