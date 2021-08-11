@@ -51,7 +51,10 @@ country_event = {
 	
 	trigger = {
 		tag = CAR
-		government = republic
+		OR = {
+			government = republic
+			government = theocracy
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -61,14 +64,14 @@ country_event = {
 	option = {
 		name = "carthage.6.a"
 		ai_chance = { factor = 60 }
-			add_republican_tradition = -5
-			add_mercantilism = 1
+		add_republican_tradition = -5
+		add_mercantilism = 1
 	}
 	option = {
 		name = "carthage.6.b"
 		ai_chance = { factor = 40 }
-			add_republican_tradition = 5
-			add_mercantilism = -1
+		add_republican_tradition = 5
+		add_mercantilism = -1
 	}
 }
 ########################################################################################
@@ -284,5 +287,76 @@ country_event = {
 				}
 			}
 		
+	}
+}
+
+########################################################################################
+# end of the carthaginian monarchy
+########################################################################################
+country_event = {
+	id = carthage.11
+	title = "carthage.11.t"
+	desc = "carthage.11.d"
+	picture = senat_conflict
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = CAR
+		NOT = { has_reform = carthaginian_republic_reform }
+		OR = {
+			government = monarchy
+			government = theocracy
+		}
+		NOT = { started_in = 274.1.1 }
+		owns_core_province = 612
+		is_year = 250
+		NOT = { mil = 4 }
+		NOT = { prestige = 20 }
+		NOT = { army_tradition = 50 }
+		NOT = { absolutism = 30 }
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		modifier = {
+			factor = 0.9
+			war_exhaustion = 4
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { stability = 2 }
+		}
+		modifier = {
+			factor = 0.5
+			NOT = { legitimacy_equivalent = 80 }
+		}
+	}
+	
+	option = {
+		name = "carthage.11.a"
+		ai_chance = { factor = 99 }
+		add_stability = 1
+		add_absolutism = 5
+		add_dip_power = -50
+		add_adm_power = -50
+		if = {
+			limit = { NOT = { government = theocracy } }
+			change_government = theocracy
+		}
+		add_government_reform = carthaginian_republic_reform
+	}
+	option = {
+		name = "carthage.11.a"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_mil_power = 300
+		capital_scope = {
+			add_base_tax = -2
+			add_base_production = -2
+			spawn_rebels = {
+				size = 3
+				type = republican_rebels
+			}
+		}
 	}
 }
