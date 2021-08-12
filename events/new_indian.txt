@@ -731,6 +731,53 @@ country_event  = {
 	}
 }
 
+#Independent spread
+country_event  = {
+	id = indian.1302
+	title = "indian.13.t"
+	desc = "indian.13.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+
+	trigger = {
+		is_orthodox_trigger = yes
+		is_religion_enabled = hinduism
+		religion_years = { hinduism = 50 }
+		neither_tribal_nor_native_trigger = yes
+		has_institution = writing_system
+		has_institution = bureaucracy_institution
+		any_owned_province = {
+			religion = brahmin
+			base_tax = 1
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					religion = brahmin
+					base_tax = 1
+					OR = {
+						writing_system = 100
+						bureaucracy_institution = 100
+					}
+				}
+				save_event_target_as = province_to_convert_to_hinduism
+			}
+		}
+	}
+
+	option = {
+		name = "indian.13.a"
+		ai_chance = { factor = 60 }
+		goto = province_to_convert_to_hinduism
+		event_target:province_to_convert_to_hinduism = {
+			change_religion = hinduism
+		}
+	}
+}
+
 ########################################################################################
 # kshatriyas refuse to join army
 ########################################################################################
@@ -1044,6 +1091,7 @@ country_event = {
 		random_owned_province = {
 			limit = {
 				religion = sramana
+				region = northern_india_region
 			}
 			change_religion = buddhism
 		}
@@ -1371,7 +1419,7 @@ country_event = {
 # Mahavira teaches in province
 ########################################################################################
 
-province_event = {
+country_event = {
 	id = indian.27
 	title = "indian.27.t"
 	desc = "indian.27.d"
@@ -1379,21 +1427,19 @@ province_event = {
 	is_triggered_only = yes
 
 	trigger = {
+		is_heterodox_trigger = yes
+		capital_scope = {
+			region = northern_india_region
+		}
+		has_global_flag = mahavira_first_sermon
+		any_owned_province = {
+			is_heterodox_trigger = yes
+		}
 		has_global_flag = mahavira_first_sermon
 		NOT = { is_month = 7 }
 		OR = {
 			is_month = 11
 			is_month = 1
-		}
-		OR = {
-			religion = sramana
-			religion = buddhism
-			religion = ajivika
-		}
-		OR = {
-			region = northern_india_region
-			region = kamarupa_region
-			region = vanga_region
 		}
 	}
 	
@@ -1404,7 +1450,13 @@ province_event = {
 	option = {
 		name = "indian.27.a"
 		ai_chance = { factor = 50 }
-		change_religion = jain
+		random_owned_province = {
+			limit = {
+				is_heterodox_trigger = yes
+				region = northern_india_region
+			}
+			change_religion = jain
+		}
 	}
 }
 
@@ -3305,5 +3357,149 @@ country_event = {
 				months = 300
 			}
 		}
+	}
+}
+
+########################################################################################
+# hidden buff for conversion from sramana or vedism to respective advanced form
+########################################################################################
+#buff for hinduism
+province_event = {
+	id = indian.54
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = hinduism }
+		religion = brahmin
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		add_province_modifier = {
+			name = older_religion_local_debuff_modifier
+			duration = -1
+			hidden = yes
+		}
+	}
+}
+
+#removes buff if owner changes to sramana
+province_event = {
+	id = indian.5401
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = sramana }
+		religion = brahmin
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
+	}
+}
+
+#buff for heterodox
+province_event = {
+	id = indian.55
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = {
+			OR = {
+				religion = ajivika
+				religion = buddhism
+				religion = jain
+			}
+		}
+		religion = sramana
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		add_province_modifier = {
+			name = older_religion_local_debuff_modifier
+			duration = -1
+			hidden = yes
+		}
+	}
+}
+
+#removes buff if owner changes to vedism
+province_event = {
+	id = indian.5501
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = brahmin }
+		religion = sramana
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
+	}
+}
+
+#removes buff when changed to advanced religion
+province_event = {
+	id = indian.56
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		OR = {
+			religion = ajivika
+			religion = jain
+			religion = buddhism
+			religion = hinduism
+		}
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
 	}
 }
