@@ -471,7 +471,10 @@ country_event = {
 			fixed = yes
 		}
 		hidden_effect = {
-			set_country_flag = nabonidus_is_king_of_babylon_flag
+			set_ruler_flag = nabonidus_is_king_of_babylon_flag
+			add_ruler_modifier = { #For Nabonidus to have a long reign
+				name = nabonidus_life_extender_modifier
+			}
 		}
 	}
 	option = {
@@ -479,40 +482,40 @@ country_event = {
 		ai_chance = { factor = 1 }
 		add_stability = -2
 		release = ASY
+		release_all_subjects = yes
 		declare_war_with_cb = {
 			casus_belli = cb_mission_invasion
 			who = ASY
 		}
-	}
-}
-
-#In case Nabonidus dies earlier than expected
-country_event = {
-	id = babylon.1001
-	title = "babylon.10.t"
-	desc = "babylon.10.d"
-	picture = culture
-	fire_only_once = yes
-	hidden = yes
-
-	trigger = {
-		tag = BAB
-		has_country_flag = nabonidus_is_king_of_babylon_flag
-		NOT = { has_ruler = "Nabu-Na'id" }
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-
-	immediate = {
-		clr_country_flag = nabonidus_is_king_of_babylon_flag
-	}
-
-	option = {
-		name = "babylon.10.a"
-		ai_chance = { factor = 99 }
-		
+		hidden_effect = {
+			ASY = {
+				define_ruler = {
+					name = "Nabu-Na'id"
+					dynasty = "Harranid"
+					culture = hurrian
+					male = yes
+					adm = 1
+					dip = 2
+					mil = 4
+					claim = 60
+					age = 35
+					fixed = yes
+				}
+				define_heir = {
+					name = "Bel-Sharra-Uzur"
+					dynasty = "Harranid"
+					culture = hurrian
+					male = yes
+					adm = 3
+					dip = 3
+					mil = 3
+					claim = 80
+					age = 20
+					no_consort_with_heir = yes
+					fixed = yes
+				}
+			}
+		}
 	}
 }
 
@@ -527,7 +530,7 @@ country_event = {
 	trigger = {
 		tag = BAB
 		has_ruler = "Nabu-Na'id"
-		had_country_flag = {
+		had_ruler_flag = {
 			flag = nabonidus_is_king_of_babylon_flag
 			days = 182
 		}
@@ -562,7 +565,7 @@ country_event = {
 		tag = BAB
 		owns_core_province = 2372
 		has_ruler = "Nabu-Na'id"
-		had_country_flag = {
+		had_ruler_flag = {
 			flag = nabonidus_is_king_of_babylon_flag
 			days = 365
 		}
@@ -579,6 +582,320 @@ country_event = {
 		2372 = {
 			remove_building = small_temple
 			add_building = great_temple
+		}
+	}
+}
+
+#Nabonidus spends all of Babylonia's money in a building
+
+country_event = {
+	id = babylon.13
+	title = "babylon.13.t"
+	desc = "babylon.13.d"
+	picture = religious
+	fire_only_once = yes
+
+	trigger = {
+		tag = BAB
+		has_ruler = "Nabu-Na'id"
+		had_ruler_flag = {
+			flag = nabonidus_is_king_of_babylon_flag
+			days = 730
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "babylon.13.a"
+		ai_chance = { factor = 99 }
+		add_years_of_income = -2.0
+		every_owned_province = {
+			limit = {
+				NOT = { province_id = 2500 }
+				NOT = { province_id = 2372 }
+				NOT = { has_building = shrine }
+				NOT = { has_building = small_temple }
+				NOT = { has_building = great_temple }
+			}
+			add_building = small_temple
+		}
+	}
+}
+
+#Invasion of Arabia
+
+country_event = {
+	id = babylon.14
+	title = "babylon.14.t"
+	desc = "babylon.14.d"
+	picture = generals
+	fire_only_once = yes
+
+	trigger = {
+		tag = BAB
+		has_ruler = "Nabu-Na'id"
+		had_ruler_flag = {
+			flag = nabonidus_is_king_of_babylon_flag
+			days = 2920
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = invasion_arabia_bab_flag
+			arabia_petrea_region = {
+				limit = { NOT = { owned_by = BAB } }
+				add_permanent_claim = BAB
+			}
+			dumatha_area = {
+				limit = { NOT = { owned_by = BAB } }
+				add_permanent_claim = BAB
+			}
+			every_known_country = {
+				limit = {
+					NOT = { is_subject_of = BAB }
+					capital_scope = {
+						OR = {
+							region = arabia_petrea_region
+							area = dumatha_area
+						}
+					}
+				}
+				reverse_add_casus_belli = {
+					type = cb_vassalize_mission
+					target = BAB
+				}
+			}
+			2544 = {
+				owner = { save_global_event_target_as = babylonian_defender_arabia }
+			}
+		}
+	}
+
+	option = {
+		name = "babylon.14.a"
+		ai_chance = { factor = 99 }
+		add_years_of_income = -0.25
+		add_yearly_manpower = -0.5
+		add_war_exhaustion = 4
+		event_target:babylonian_defender_arabia = {
+			if = {
+				limit = { NOT = { is_subject_of = BAB } }
+				BAB = {
+					declare_war_with_cb = {
+						casus_belli = cb_vassalize_mission
+						who = PREV
+					}
+				}
+			}
+		}
+	}
+}
+
+#Nabonidus' retirement to Taima oasis
+
+country_event = {
+	id = babylon.15
+	title = "babylon.15.t"
+	desc = "babylon.15.d"
+	picture = sacrifice
+	fire_only_once = yes
+
+	trigger = {
+		tag = BAB
+		has_ruler = "Nabu-Na'id"
+		has_ruler_flag = nabonidus_is_king_of_babylon_flag
+		has_country_flag = invasion_arabia_bab_flag
+		2544 = { country_or_subject_holds = ROOT }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = invasion_arabia_bab_flag
+			clr_ruler_flag = nabonidus_is_king_of_babylon_flag
+			set_country_flag = nabonidus_retirement_flag
+			add_ruler_modifier = {
+				name = heir_is_coruler
+			}
+		}
+	}
+
+	option = {
+		name = "babylon.15.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_stability = -1
+		add_legitimacy = -20
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -10
+		}
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = -10
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = -10
+		}
+		add_ruler_modifier = {
+			name = absent_king_modifier
+		}
+	}
+}
+
+#cbs against Babylonia
+
+country_event = {
+	id = babylon.16
+	title = "babylon.16.t"
+	desc = "babylon.16.d"
+	picture = crucify
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = BAB
+		has_country_flag = nabonidus_retirement_flag
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "babylon.16.a"
+		ai_chance = { factor = 99 }
+		every_neighbor_country = {
+			add_casus_belli = {
+				type = cb_mission_invasion
+				target = BAB
+				months = 240
+			}
+		}
+	}
+}
+
+#Nabonidus comes out of his retirement
+country_event = {
+	id = babylon.1601
+	title = "babylon.1601.t"
+	desc = "babylon.1601.d"
+	picture = elamite_soldiers
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = BAB
+		has_ruler_modifier = absent_king_modifier
+		is_in_war = {
+			defender_leader = BAB
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "babylon.1601.a"
+		ai_chance = { factor = 99 }
+		remove_country_modifier = absent_king_modifier
+		add_ruler_modifier = {
+			name = abandoned_kingdom_modifier
+		}
+	}
+}
+
+#Babylonia opens it's doors
+
+country_event = {
+	id = babylon.17
+	title = "babylon.17.t"
+	desc = "babylon.17.d"
+	picture = military_parade
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		is_in_war = {
+			attacker_leader = ROOT
+			defender_leader = BAB
+			war_score = 20
+		}
+		mil = 4
+		prestige = 0
+		stability = 0
+		BAB = {
+			has_country_flag = nabonidus_retirement_flag
+			war_exhaustion = 2
+			NOT = { stability = 2 }
+		}
+		2500 = { sieged_by = ROOT }
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	immediate = {
+		BAB = { clr_country_flag = nabonidus_retirement_flag }
+	}
+
+	option = {
+		name = "babylon.17.a"
+		ai_chance = { factor = 99 }
+		inherit = BAB
+		add_prestige = 25
+		add_army_tradition = 10
+		add_stability = 1
+		add_accepted_culture = babylonian
+	}
+}
+
+#when Nabonidus dies
+country_event = {
+	id = babylon.18
+	title = "babylon.18.t"
+	desc = "babylon.18.d"
+	picture = civilwar
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = BAB
+		has_country_flag = nabonidus_retirement_flag
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = nabonidus_retirement_flag
+		}
+	}
+
+	option = {
+		name = "babylon.18.a"
+		ai_chance = { factor = 99 }
+		every_owned_province = {
+			limit = { unrest = 1 }
+			spawn_rebels = {
+				size = 2
+			}
+		}
+		add_country_modifier = {
+			name = nabonidus_legacy_modifier
+			duration = 9125
 		}
 	}
 }
