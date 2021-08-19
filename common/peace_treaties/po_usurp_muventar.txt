@@ -1,0 +1,83 @@
+po_usurp_muventar = {
+	category = 6
+	power_projection = vassalized_rival
+	power_cost_base = 0.33
+	prestige_base = 1.0
+	ae_base = 1.0
+	warscore_cost = {
+		no_provinces = 75.0
+		owner_keeps = 0.0
+		returned_core = 0.0
+		released_nation = 0.0
+	}
+	warscore_cap = 75
+	is_make_subject = no
+	requires_is_allowed = no
+	
+	is_visible = {
+		is_subject = no
+		primary_culture = tamil
+		OR = {
+			has_reform = tamil_tribe_reform
+			has_reform = indian_common_monarchy
+		}
+	}
+	is_allowed = {
+		total_development = FROM
+		OR = {
+			has_reform = tamil_tribe_reform
+			has_reform = indian_common_monarchy
+		}
+		FROM = {
+			OR = {
+				has_reform = tamil_crowned_king_tribal_reform
+				has_reform = tamil_crowned_king_reform
+			}
+		}
+	}
+	effect = {
+		custom_tooltip = po_velir_ct.1
+		hidden_effect = {
+			FROM = {
+				remove_government_reform = tamil_crowned_king_reform
+				remove_government_reform = tamil_crowned_king_tribal_reform
+				if = {
+					limit = { government = tribal }
+					add_government_reform = tamil_tribe_reform
+				}
+				else = { add_government_reform = indian_common_monarchy }
+				set_government_rank = 2
+				add_prestige = -50
+				every_subject_country = {
+					limit = { is_subject_of_type = velir_subject }
+					ROOT = {
+						create_subject = {
+							subject_type = velir_subject
+							subject = PREV
+						}
+					}
+				}
+			}
+			remove_government_reform = tamil_tribe_reform
+			remove_government_reform = indian_common_monarchy
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+			if = {
+				limit = { government = tribal }
+				add_government_reform = tamil_crowned_king_tribal_reform
+			}
+			else = { add_government_reform = tamil_crowned_king_reform }
+		}
+	}
+	ai_weight = {
+		export_to_variable = {
+			variable_name = ai_value
+			value = 100
+		}
+		limit = {
+			total_development = FROM
+		}
+	}
+}
