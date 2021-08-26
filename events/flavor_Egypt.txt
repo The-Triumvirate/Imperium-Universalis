@@ -601,3 +601,129 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# control of the Nile plain
+########################################################################################
+country_event = {
+	id = egypt.9
+	title = "egypt.9.t"
+	desc = "egypt.9.d"
+	picture = battle
+	
+	trigger = {
+		OR = {
+			TAG = PTO
+			TAG = EGY
+			TAG = MEM
+			TAG = THH
+			TAG = MSW
+			has_reform = kemetic_kingdom
+		}
+		capital_scope = {
+			OR = {
+				region = lower_egypt_region
+				region = upper_egypt_region
+			}
+		}
+		aneb_hetch = {
+			type = all
+			owned_by = ROOT
+		}
+		waset_area = {
+			type = all
+			owned_by = ROOT
+		}
+		any_owned_province = {
+			OR = {
+				region = lower_egypt_region
+				region = upper_egypt_region
+			}
+			OR = {
+				has_terrain = nile_plain
+				has_terrain = floodplains
+				has_terrain = wetlands
+				has_terrain = marsh
+				has_terrain = alluvial_plain
+				has_terrain = memphis_t
+				has_terrain = waset_t
+				has_terrain = elephantine_t
+			}
+			NOT = { has_province_modifier = control_nile_plain_modifier }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "egypt.9.a"
+		ai_chance = {  factor = 50 }
+		every_owned_province = {
+			limit = {
+				OR = {
+					region = lower_egypt_region
+					region = upper_egypt_region
+				}
+				OR = {
+					has_terrain = nile_plain
+					has_terrain = floodplains
+					has_terrain = wetlands
+					has_terrain = marsh
+					has_terrain = alluvial_plain
+					has_terrain = memphis_t
+					has_terrain = waset_t
+					has_terrain = elephantine_t
+				}
+			}
+			add_province_modifier = {
+				name = control_nile_plain_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+#Loses control of the Plain
+country_event = {
+	id = egypt.901
+	title = "egypt.901.t"
+	desc = "egypt.901.d"
+	picture = battle
+	
+	trigger = {
+		any_owned_province = {
+			has_province_modifier = control_nile_plain_modifier
+		}
+		OR = {
+			NOT = {
+				aneb_hetch = {
+					type = all
+					owned_by = ROOT
+				}
+			}
+			NOT = {
+				waset_area = {
+					type = all
+					owned_by = ROOT
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "egypt.901.a"
+		ai_chance = {  factor = 50 }
+		every_owned_province = {
+			limit = {
+				has_province_modifier = control_nile_plain_modifier
+			}
+			remove_province_modifier = control_nile_plain_modifier
+		}
+	}
+}
