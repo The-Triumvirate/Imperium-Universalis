@@ -12,7 +12,7 @@ province_event = {
 	
 	trigger = {
 		base_manpower = 1
-		NOT = { has_global_flag = popgrowth_running }
+		has_global_flag = popgrowth_vanilla
 	}
 	
 	
@@ -173,6 +173,7 @@ province_event = {
 			set_variable = { which = tribal_pop value = 0 }
 			set_variable = { which = tribal_pop_grow value = 0 }
 			add_base_manpower = 1
+			change_variable = { PG_trib_vanilla = 1 }				# identify how many times it has fired in the whole campaign
 			owner = {
 				if = {
 					limit = { ai = no}
@@ -199,7 +200,7 @@ province_event = {
 	
 	trigger = {
 		base_production = 1
-		NOT = { has_global_flag = popgrowth_running }
+		has_global_flag = popgrowth_vanilla
 	}
 	
 	
@@ -346,10 +347,10 @@ province_event = {
 	
 	#######################################################
 	immediate = { 
-			export_to_variable = { 
-				variable_name = commoner_pop_grow
-				value = trigger_value:base_production
-			}
+		#if = {
+		#	limit = { NOT = { has_global_flag = popgrowth_running } }	# added failsafe, to avoid problems
+		export_to_variable = { variable_name = commoner_pop_grow value = trigger_value:base_production }
+		#}
 		multiply_variable = { which = commoner_pop_grow value = 0.25 }
 		change_variable = { which = commoner_pop which = commoner_pop_grow }
 		
@@ -360,9 +361,10 @@ province_event = {
 			set_variable = { which = commoner_pop value = 0 }
 			set_variable = { which = commoner_pop_grow value = 0 }
 			add_base_production = 1
+			change_variable = { PG_com_vanilla = 1 }				# identify how many times it has fired in the whole campaign
 			owner = {
 				if = {
-					limit = { ai = no}
+					limit = { ai = no }
 					change_variable = { which = commoner_increased_var value = 1 }
 				}
 			}
@@ -386,7 +388,7 @@ province_event = {
 	
 	trigger = {
 		base_tax = 1
-		NOT = { has_global_flag = popgrowth_running }
+		has_global_flag = popgrowth_vanilla
 	}
 	
 	
@@ -547,6 +549,7 @@ province_event = {
 			set_variable = { which = upper_pop value = 0 }
 			set_variable = { which = upper_pop_grow value = 0 }
 			add_base_tax = 1
+			change_variable = { PG_upp_vanilla = 1 }				# identify how many times it has fired in the whole campaign
 			owner = {
 				if = {
 					limit = { ai = no}
@@ -576,20 +579,19 @@ province_event = {
 	trigger = {
 		base_manpower = 1
 		has_global_flag = popgrowth_running
+		check_variable = { rural_growth = 0.9 }	# Added, since it seems growth was getting out of hand event adding a factor 30 to >0.8
+												# if it is causing more lag we will adjust it back to factors
 	}
 	
 	
 	mean_time_to_happen = {
-		months = 360 # 30 years, one generation
-		# base growth = 30 years, one generation. This is the "organic" growth, but most of this growth will come from migration and promotion. How the initial calculations were done, you add up 25% of rural population up to 2 (so, if there is 4 pops, 4 x 25% = 1; will need the event to fire twice. So after population 8, it will always rise one pop. Based on this "base" growth of 12,5% every 30 years, or a yearly rate of 0,4%, we will increase this rate based on several data from history (ie, the huge growths of emerging world in the 1950s, or sub-saharan africa 1990s as an extreme). 
+		months = 720	
+		
+		# See exact calculation of growth below, on the Inmediate part. Basically it must fire this event FOUR times if base tribal population is 1, and thus the total mtth for a total doubling of population is 4 x 720 months = 2.880 months = 240 years. 1/240 = base yearly growth rate of 0.41%. 
+		
 		
 		modifier = {
-			factor = 30 # won't grow at all
-			NOT = { check_variable = { which = rural_growth value = 0.8 } }
-		}
-		modifier = {
-			factor = 1.5 	# limited growth
-			check_variable = { which = rural_growth value = 0.8 }
+			factor = 2.5	 # limited growth
 			NOT = { check_variable = { which = rural_growth value = 1 } }
 		}
 		modifier = {
@@ -598,7 +600,7 @@ province_event = {
 			NOT = { check_variable = { which = rural_growth value = 1.3 } }
 		}
 		modifier = {
-			factor = 0.65	# 0.6%, early 19th Century France
+			factor = 0.65	# 0.6% yearly, early 19th Century France (slow demographic explosion). // check: 1/(8*360/12*0.65) = 0.641%
 			check_variable = { which = rural_growth value = 1.3 }
 			NOT = { check_variable = { which = rural_growth value = 1.6 } }
 		}
@@ -613,39 +615,31 @@ province_event = {
 			NOT = { check_variable = { which = rural_growth value = 5 } }
 		}
 		modifier = {
-			factor = 0.1 	# 4% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic
+			factor = 0.1 	# 4% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic. Doubles every 24 years
 			check_variable = { which = rural_growth value = 5 }
 			
 		}
 		
 		
-		
 	}
 	
 	
-	#######################################################
-	immediate = { 
-			export_to_variable = { 
-				variable_name = tribal_pop_grow
-				value = trigger_value:base_manpower
-			}
-		multiply_variable = { which = tribal_pop_grow value = 0.25 }
-		change_variable = { which = tribal_pop which = tribal_pop_grow }
+	#######################################################		
+			# How this works: every time this event fires (remember, base mtth is 60 years), the amount of rural population is added to the "counter". Once the counter reaches 4, a new pop is created and the previous counter resetted to zero. 
+			# So, if we have a province with 1 rural population, it will need to fire this event four times. A 2-population will need just twice (2+2), and one at 4 or higher just once. 
+			# But again, the "spirit" of the event is to create an annual growth rate, that's why it takes the same time (60 x 4 = 240 years) to double population, be it from 1 to 2 or from 4 to 8. 
+			# Finally, this is supposing that the growth rate (capacity / current population) is constant, and it will not, so at higher values, growth will be way lower than the start, or just not happening at all. That's how we get a Logistic Function (S) instead of linear growth (/)
+	immediate = {
+		export_to_variable = { variable_name = PG_trib_growth value = trigger_value:base_manpower }
+		change_variable = { which = PG_trib_counter which = PG_trib_growth }
 		
-		while = {
-			limit = {
-				check_variable = { which = tribal_pop value = 2 }
-			}
-			set_variable = { which = tribal_pop value = 0 }
-			set_variable = { which = tribal_pop_grow value = 0 }
-			add_base_manpower = 1
-			owner = {
-				if = {
-					limit = { ai = no}
-					change_variable = { which = tribal_increased_var value = 1 }
-				}
-			}
-			province_event = { id = population_capacity.1 }
+		if = {
+			limit = { check_variable = { PG_trib_counter = 4 } }
+			set_variable = { which = PG_trib_counter value = 0 } set_variable = { which = PG_trib_growth value = 0 }
+			add_base_manpower = 1									
+			change_variable = { PG_trib_popgrowth = 1 }				# identify how many times it has fired in the whole campaign
+			owner = { 	if = { limit = { ai = no } 	change_variable = { tribal_increased_var = 1 } } }
+			province_event = { id = population_capacity.1 }	# Recalculate capacity, once the new population is created (growth also rec'd)
 		}
 	}
 	#######################################################
@@ -667,18 +661,14 @@ province_event = {
 	trigger = {
 		#base_production = 1			# no need, any province may grow it
 		has_global_flag = popgrowth_running
+		check_variable = { urban_growth = 0.9 }
 	}
 	
 	
-	mean_time_to_happen = {
-		months = 600
+	mean_time_to_happen = {			# Urban self-growth is reduced, because theoretically cities must grow through promotion or migration. 
+		months = 1200				# So the base mtth has been raised from 720 (rural) to 1200 (+66% more rarely)
 		modifier = {
-			factor = 15 	# won't grow at all
-			NOT = { check_variable = { which = urban_growth value = 0.8 } }
-		}
-		modifier = {
-			factor = 1.5 	# limited growth
-			check_variable = { which = urban_growth value = 0.8 }
+			factor = 2.5 	# limited growth
 			NOT = { check_variable = { which = urban_growth value = 1 } }
 		}
 		modifier = {
@@ -713,21 +703,21 @@ province_event = {
 	#######################################################
 	immediate = {
 		export_to_variable = { 
-			variable_name = commoner_pop_grow
+			variable_name = PG_com_growth
 			value = trigger_value:base_production
 		}
 		if = { 
-			limit = { NOT = { check_variable = { commoner_pop_grow = 1 } } } 
-			set_variable = { which = commoner_pop_grow value = 4 } 			# if not 1 pop, 4x faster to get the first pop
+			limit = { NOT = { check_variable = { PG_com_growth = 1 } } } 
+			set_variable = { which = PG_com_growth value = 4 } 			# if not 1 pop, it makes it appear its first one
 		}
-		multiply_variable = { which = commoner_pop_grow value = 0.25 }
-		change_variable = { which = commoner_pop which = commoner_pop_grow }
+		change_variable = { which = PG_com_counter which = PG_com_growth }
 		
-		while = {
-			limit = { check_variable = { which = commoner_pop value = 2 } }
-			set_variable = { which = commoner_pop value = 0 }	set_variable = { which = commoner_pop_grow value = 0 }
+		if = {
+			limit = { check_variable = { PG_com_counter = 4 } }
+			set_variable = { which = PG_com_counter value = 0 }	set_variable = { which = PG_com_growth value = 0 }
 			add_base_production = 1
-			owner = { if = { limit = { ai = no } change_variable = { which = commoner_increased_var value = 1 } } }
+			change_variable = { PG_com_popgrowth = 1 }				# identify how many times it has fired in the whole campaign
+			owner = { if = { limit = { ai = no } change_variable = { commoner_increased_var = 1 } } }
 			province_event = { id = population_capacity.1 }
 		}
 	}

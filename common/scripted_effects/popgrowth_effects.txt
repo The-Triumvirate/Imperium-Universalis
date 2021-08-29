@@ -158,8 +158,86 @@ popgrowth_cleanup_world = {
 	set_variable = { which = rural_cap_25 value = 0 } set_variable = { which = urban_cap_25 value = 0 } 
 	set_variable = { which = upper_cap_25 value = 0 } 
 	
+	set_variable = { which = rural_now_26 value = 0 } set_variable = { which = urban_now_26 value = 0 } 
+	set_variable = { which = upper_now_26 value = 0 } set_variable = { which = devel_now_26 value = 0 } 
+	set_variable = { which = prov_size_26 value = 0 } set_variable = { which = total_cap_26 value = 0 } 
+	set_variable = { which = rural_cap_26 value = 0 } set_variable = { which = urban_cap_26 value = 0 } 
+	set_variable = { which = upper_cap_26 value = 0 } 
 	
 }
+
+popgrowth_stats_basic = {
+
+	export_to_variable = { which = rural_now_$regid$ value = base_manpower } set_variable = { which = total_cap_$regid$ which = rural_capacity }
+	export_to_variable = { which = urban_now_$regid$ value = base_production } change_variable = { which = total_cap_$regid$ which = urban_capacity }
+	export_to_variable = { which = upper_now_$regid$ value = base_tax } 		change_variable = { which = total_cap_$regid$ which = upper_capacity }
+	export_to_variable = { which = devel_now_$regid$ value = development }
+	set_variable = { which = rural_cap_$regid$ which = rural_capacity } set_variable = { which = urban_cap_$regid$ which = urban_capacity }
+	set_variable = { which = upper_cap_$regid$ which = upper_capacity } set_variable = { which = prov_size_$regid$ which = prov_size } 
+	ROOT = { 
+		change_variable = { which = rural_now_$regid$ which = PREV } change_variable = { which = urban_now_$regid$ which = PREV } 
+		change_variable = { which = upper_now_$regid$ which = PREV } change_variable = { which = devel_now_$regid$ which = PREV } 
+		change_variable = { which = prov_size_$regid$ which = PREV } change_variable = { which = total_cap_$regid$ which = PREV } 
+		change_variable = { which = rural_cap_$regid$ which = PREV } change_variable = { which = urban_cap_$regid$ which = PREV } 
+		change_variable = { which = upper_cap_$regid$ which = PREV } 
+	}
+
+}
+
+popgrowth_stats_old = {
+	
+	# 1: show current values, storing the capacities in a new name (oldcap instead of cap)
+	set_variable = { which = rural_old which = rural_capacity }	
+	set_variable = { which = urban_old which = urban_capacity }	
+	set_variable = { which = upper_old which = upper_capacity }	
+	set_variable = { which = rural_oldcap_$regid$ which = rural_capacity }	
+	set_variable = { which = urban_oldcap_$regid$ which = urban_capacity }	
+	set_variable = { which = upper_oldcap_$regid$ which = upper_capacity }	
+	set_variable = { which = total_oldcap_$regid$ which = rural_capacity }	
+	change_variable = { which = total_oldcap_$regid$ which = urban_capacity }
+	change_variable = { which = total_oldcap_$regid$ which = upper_capacity }
+	
+	export_to_variable = { which = devold_$regid$ value = base_manpower }
+	export_to_variable = { which = urban_devold_$regid$ value = base_production }
+	export_to_variable = { which = upper_devold_$regid$ value = base_tax } 	
+	change_variable = { which = devold_$regid$ which = urban_devold_$regid$ } set_variable = { which = urban_devold_$regid$ value = 0 }
+	change_variable = { which = devold_$regid$ which = upper_devold_$regid$ } set_variable = { which = upper_devold_$regid$ value = 0 }
+	
+	set_variable = { which = total_new_$regid$ which = total_cap_$regid$ }
+	
+	set_variable = { which = rural_cap_$regid$ which = rural_capacity } set_variable = { which = urban_cap_$regid$ which = urban_capacity }
+	set_variable = { which = upper_cap_$regid$ which = upper_capacity } set_variable = { which = prov_size_$regid$ which = prov_size } 
+	ROOT = {
+		change_variable = { which = total_old_$regid$ which = PREV } 	change_variable = { which = rural_old_$regid$ which = PREV } 
+		change_variable = { which = urban_old_$regid$ which = PREV } 	change_variable = { which = upper_old_$regid$ which = PREV } 
+		change_variable = { which = devold_$regid$ which = PREV }
+	}
+
+}
+
+adjust_pops_to_max = {
+	export_to_variable = { which = rural_now value = base_manpower }	subtract_variable = { which = rural_now which = rural_capacity }
+	export_to_variable = { which = urban_now value = base_production }	subtract_variable = { which = urban_now which = urban_capacity }
+	export_to_variable = { which = upper_now value = base_tax }			subtract_variable = { which = upper_now which = upper_capacity }
+
+	while = {
+		limit = { check_variable = { rural_now = 1 } }		# as long as more rural pop compared to the (new) capacity -> pop to remove
+		subtract_variable = { rural_now = 1 }
+		add_base_manpower = -1
+	}
+	while = {
+		limit = { check_variable = { urban_now = 1 } }		
+		subtract_variable = { urban_now = 1 }
+		add_base_production = -1
+	}
+	while = {
+		limit = { check_variable = { upper_now = 1 } }		
+		subtract_variable = { upper_now = 1 }
+		add_base_tax = -1
+	}
+	
+}
+
 
 mig_dist_cost = {
 	if = { 		limit = { province_distance = { who = PREV distance = 750 } } 	PREV = { owner = { add_treasury = -100 } } }
@@ -183,4 +261,83 @@ mig_rural_to_rural = {
 	add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
 	
 }
+
+PV_find_goods_price = {
+	trigger_switch = {
+		on_trigger = trade_goods
+		grain = { 		set_variable = { which = PV_price value = 0.75 } }
+		wine = { 		set_variable = { which = PV_price value = 3.00 } }
+		wool = { 		set_variable = { which = PV_price value = 1.00 } }
+		cloth = { 		set_variable = { which = PV_price value = 2.5 } }
+		fish = { 		set_variable = { which = PV_price value = 1.5 } }
+		
+		fur = { 		set_variable = { which = PV_price value = 2.5 } }
+		salt = { 		set_variable = { which = PV_price value = 3.0 } }
+		naval_supplies = { set_variable = { which = PV_price value = 2.0 } }
+		copper = { 		set_variable = { which = PV_price value = 4.0 } }
+		gold = { 		set_variable = { which = PV_price value = 8.5 } }
+		
+		iron = { 		set_variable = { which = PV_price value = 3.5 } }
+		horses = { 		set_variable = { which = PV_price value = 2.5 } }
+		spices = { 		set_variable = { which = PV_price value = 3.5 } }
+		fruits = { 		set_variable = { which = PV_price value = 2.0 } }
+		amber = { 		set_variable = { which = PV_price value = 4.0 } }
+		
+		silver = { 		set_variable = { which = PV_price value = 7.0 } }
+		marble = { 		set_variable = { which = PV_price value = 4.0 } }
+		olive = { 		set_variable = { which = PV_price value = 2.5 } }
+		paper = { 		set_variable = { which = PV_price value = 5.0 } }
+		ceramic = { 	set_variable = { which = PV_price value = 2.0 } }
+		
+		meat_animals = { set_variable = { which = PV_price value = 1.5 } }
+		dyes = { 		set_variable = { which = PV_price value = 4.0 } }
+		honey = { 		set_variable = { which = PV_price value = 2.0 } }
+		lead = { 		set_variable = { which = PV_price value = 2.0 } }
+		glas = { 		set_variable = { which = PV_price value = 3.0 } }
+		
+		silk = { 		set_variable = { which = PV_price value = 4.5 } }
+		olibanum = { 	set_variable = { which = PV_price value = 4.0 } }
+		pearls = { 		set_variable = { which = PV_price value = 4.0 } }
+		exotic_animals = { set_variable = { which = PV_price value = 3.5 } }
+		herbs = { 		set_variable = { which = PV_price value = 2.0 } }
+		
+		ivory = { 		set_variable = { which = PV_price value = 3.5 } }
+		jade = { 		set_variable = { which = PV_price value = 5.0 } }
+		tin = { 		set_variable = { which = PV_price value = 4.0 } }
+		rice = { 		set_variable = { which = PV_price value = 0.5 } }
+		gems = { 		set_variable = { which = PV_price value = 5.0 } }
+		
+		cotton = { 		set_variable = { which = PV_price value = 3.0 } }
+		tar_good = { 	set_variable = { which = PV_price value = 3.0 } }
+		tea_good = { 	set_variable = { which = PV_price value = 2.5 } }
+		opium = { 		set_variable = { which = PV_price value = 3.0 } }
+		metalware = { 	set_variable = { which = PV_price value = 5.75 } }
+		
+		sugar = { 		set_variable = { which = PV_price value = 4.0 } }
+		
+	}
+	
+	if = { limit = { has_global_flag = amber_price_increased 	trade_goods = amber }			multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = lead_price_increased 	trade_goods = lead } 			multiply_variable = { PV_price = 1.60 } }
+	if = { limit = { has_global_flag = paper_price_changed 		trade_goods = paper }			multiply_variable = { PV_price = 0.75 } }
+	if = { limit = { has_global_flag = paper_price_changed 		trade_goods = meat_animals }	multiply_variable = { PV_price = 1.10 } }
+	if = { limit = { has_global_flag = wood_price_changed 		trade_goods = naval_supplies }	multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = marble_price_changed 	trade_goods = marble }			multiply_variable = { PV_price = 1.40 } }
+	if = { limit = { has_global_flag = olibanum_price_changed 	trade_goods = olibanum }		multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = ivory_price_changed 		trade_goods = ivory }			multiply_variable = { PV_price = 1.20 } }
+	if = { limit = { has_global_flag = exotic_animals_price_changed	trade_goods = exotic_animals }	multiply_variable = { PV_price = 1.5 } }
+	if = { limit = { has_global_flag = iron_price_changed 		trade_goods = iron }			multiply_variable = { PV_price = 1.25 } }
+	if = { limit = { has_global_flag = iron_price_changed 		trade_goods = copper }			multiply_variable = { PV_price = 0.75 } }
+	if = { limit = { has_global_flag = glass_price_changed 		trade_goods = glas }			multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = glass_price_changed 		trade_goods = ceramic }			multiply_variable = { PV_price = 0.90 } }
+	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = cloth }			multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = wool }			multiply_variable = { PV_price = 1.25 } }
+	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = dyes }			multiply_variable = { PV_price = 1.50 } }
+	if = { limit = { has_global_flag = extiction_of_the_european_lion trade_goods = exotic_animals } multiply_variable = { PV_price = 1.25 } }
+	
+	# I could have done a trigger_switch, but then I needed to also filter by trade good...
+	
+	
+}
+
 
