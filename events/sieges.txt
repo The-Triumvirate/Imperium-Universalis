@@ -1,0 +1,125 @@
+namespace = sieges
+
+##########
+#	SACK OF CITIES events
+#	Flowchart is as follows
+#		if: >8 dev -> this event (although not finished yet)
+#		else_if: >4 -> a hidden event (to be done)			
+#		dev 1 to 4: nothing
+#
+#########
+
+country_event = {
+	id = sieges.1
+	title = "sieges.1.t"
+	desc = "sieges.1.d"
+	picture = looting
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			has_global_flag = siege_unrestricted 
+			AND = { has_global_flag = siege_cities FROM = { development = 6 } }
+		}
+	}
+	
+	
+	immediate = {
+		# Both raid and sack will have the same structure:
+		#	A) Calculate lootable amount (fixed value for each building) and "available" population to be taken away
+		#	B) Define the attacking force: number of soldiers and "ferocity" (base value + several national ideas)
+		# 	C) Show division of People / Sack power. Several options won't be present unless enough attackers are present
+		
+		#	Depending on the option, there will be collateral damage; always tied to the size of the attacking force. This means that sometime you will have won the siege, but the sacking force is too small to destroy anything significant
+		
+		hidden_effect = {
+			FROM = {
+			
+				export_to_variable = { which = prov_inf value = trigger_value:infantry_in_province }
+				export_to_variable = { which = prov_cav value = trigger_value:cavalry_in_province }
+				export_to_variable = { which = prov_arc value = trigger_value:artillery_in_province }
+				
+				set_variable = { which = sack_size which = prov_inf }
+				change_variable = { which = sack_size which = prov_cav } change_variable = { which = sack_size which = prov_arc }
+				
+				set_variable = { which = sack_power value = 5 }
+				# and other modifiers that affect ferocity
+				
+				set_variable = { which = sack_ratio which = sack_size } 
+				multiply_variable = { which = sack_ratio which = sack_power }
+				
+				export_to_variable = { which = pop_total value = development } 
+				multiply_variable = { pop_total = 10 }
+				divide_variable = { which = sack_ratio which = pop_total } 	set_variable = { which = sack_display which = sack_ratio }
+				if = { limit = { check_variable = { sack_ratio = 1 } } 		set_variable = { which = sack_ratio value = 1 } }
+					
+					# The main two variables to have in mind in a siege / sack are: 1) efficiency, 2) ferocity, and 3) total sack value
+					# Efficiency: the ratio of attacking forces compared to population. 
+					# Ferocity: how strong or how vicious the attackers will be. Base is 5, can be increased by ideas, ruler/general traits, etc
+					# Loot value: value that can be taken out, it will be a % of total value of buildings. Depends on the type of attack done
+				
+					# At base values, imagine city of 12 dev, army of 8 thousand: 8 x 5 / 12 x 10 = 40/120 = 0.33. 1 regiment = 5.000 civilians
+					# As you can see, it will be difficult to have a 100% efficiency without overwhelming a certain city, so you can't carpet-siege and expect to win much. It should, at least for the human player, slow down a bit their wartime expansion.
+				
+				# Calculate lootable amount (buildings). Always 75% of build cost
+				set_variable = { which = loot_value value = 0 }
+				find_total_loot_value = yes
+				
+			}
+		}
+		
+	
+		
+	}
+	
+	option = {
+		name = "sieges.1.1"
+		ai_chance = {
+			factor = 100
+		}
+		
+		
+		# Colateral damage
+		
+		
+		
+			# value depending on how much money is being taken out. You take 1000, you may destroy up to 1000 in value. Devastation is the impact other than in buildings, and it will take some time to go away.
+			# Its formula is Devastation % = sack ratio x type of damage done. 
+			# Damages done: Tribute: 5%, Enslave light: 10%, Enslave hard: 25%, Sack: 30%, Destroy: 60%, Delenda est: 100%
+			# Remember that enslave light / hard, and sack / destroy / delenda est, are dependent on the rivalry between the attacker / defender and other government reforms or ideas. 
+		
+		# Province effect
+		FROM = {
+			set_variable = { which = sack_lost value = 0.4 }
+			multiply_variable = { which = sack_lost which = loot_value } multiply_variable = { which = sack_lost which = sack_ratio }
+			set_variable = { which = prov_devst value = 60 } 			multiply_variable = { which = prov_devst which = sack_ratio }
+			set_variable = { which = col_value which = prov_devst }		divide_variable = { col_value = 100 }
+			multiply_variable = { which = col_value which = loot_value }
+			
+			while = { limit = { check_variable = { prov_devst = 1 } } 	subtract_variable = { prov_devst = 1 } add_devastation = 1 }
+			set_variable = { which = cash_income which = sack_lost }
+			
+			while = { limit = { check_variable = { col_value = 10 } } collateral_damage_eff = { hd = 60 } }
+		}
+		
+		# Country, besieger effect
+		set_variable = { which = cash_income which = FROM }	
+		money_income = yes
+		
+	}
+	
+	after = {
+		FROM = {
+			set_variable = { which = sack_size value = 0 } set_variable = { which = sack_power value = 0 } 
+			set_variable = { which = sack_ratio value = 0 } set_variable = { which = sack_display value = 0 } 
+			set_variable = { which = pop_total value = 0 } set_variable = { which = sack_lost value = 0 } 
+			set_variable = { which = loot_value value = 0 } set_variable = { which = prov_devst value = 0 } 
+			set_variable = { which = col_value value = 0 } set_variable = { which = cash_income value = 0 } 
+			set_variable = { which = prov_inf value = 0 } set_variable = { which = prov_cav value = 0 } 
+			set_variable = { which = prov_arc value = 0 } 
+		}
+	
+	}
+	
+}
+
