@@ -24,9 +24,11 @@ iu_pho_missions_slot_1 = {
 				limit = { has_dlc = "Rule Britannia" }
 				innovativeness = 50
 			}
-			any_neighbor_country = {
-				tech_difference = 1
-			} 
+			NOT = {
+				any_neighbor_country = {
+					tech_difference = 1
+				} 
+			}
 			navy_tradition = 50
         }
         effect = {
@@ -93,6 +95,8 @@ iu_pho_missions_slot_1 = {
 				area = syracuse_area
 				area = sicilia_west
 				area = sicilia_est
+				area = sicelia_area
+				area = sicani_area
 			}
             NOT = { country_or_non_sovereign_subject_holds = ROOT }
         }
@@ -103,6 +107,8 @@ iu_pho_missions_slot_1 = {
 					area = syracuse_area
 					area = sicilia_west
 					area = sicilia_est
+					area = sicelia_area
+					area = sicani_area
 				}
             }             
         }
@@ -129,7 +135,7 @@ iu_pho_missions_slot_1 = {
 			NOT = { exists = ROM }
 			NOT = { exists = ROI }
             num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-                value = 3
+                value = 5
 				area = latium_area
             }      
             if = {
@@ -217,12 +223,23 @@ iu_pho_missions_slot_2 = {
 			navy_size_percentage = 0.75
         }
         effect = {
+			custom_tooltip = pho_a_merchant_fleet.tt
+			hidden_effect = {
+				africa_region = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { is_permanent_claim = ROOT }
+						has_port = yes
+					}
+					add_permanent_claim = ROOT
+				}	
+			}
             add_navy_tradition = 10
 			add_yearly_sailors = 1
             add_country_modifier = {
                 name = pho_a_merchant_fleet_mission 
                 duration = -1
-            }             
+            }  			
         }
     }
     hp_pho_dominate_the_great_sea = {
@@ -234,7 +251,10 @@ iu_pho_missions_slot_2 = {
 				limit = { has_dlc = "Dharma" }
 				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
 					value = 10
-					province_has_center_of_trade_of_level = 1
+					OR = {
+						province_has_center_of_trade_of_level = 1
+						province_trade_power = 10
+					}
 				}
 			}
             1455 = { #Phoenicia
@@ -256,15 +276,14 @@ iu_pho_missions_slot_2 = {
 					}
 					add_permanent_claim = ROOT
 				}	
-				africa_region = {
-					limit = {
-						NOT = { is_core = ROOT }
-						NOT = { is_permanent_claim = ROOT }
-						has_port = yes
-					}
-					add_permanent_claim = ROOT
-				}
 			}
+			africa_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			} 
 			1455 = {
 				add_trade_modifier = {
 					who = ROOT
@@ -322,6 +341,22 @@ iu_pho_missions_slot_2 = {
 				}
 				add_permanent_claim = ROOT
 			}  
+			sicani_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+					has_port = yes
+				}
+				add_permanent_claim = ROOT
+			}  
+			sicelia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+					has_port = yes
+				}
+				add_permanent_claim = ROOT
+			}  
 			sardinia_corsica_region = {
 				limit = {
 					NOT = { is_core = ROOT }
@@ -353,7 +388,7 @@ iu_pho_missions_slot_2 = {
         }
         trigger = {
             num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-                value = 10
+                value = 5
 				region = sardinia_corsica_region
             }             
         }
@@ -433,7 +468,14 @@ iu_pho_missions_slot_3 = {
                     NOT = { is_permanent_claim = ROOT }
                 }
                 add_permanent_claim = ROOT
-            }             
+            }            
+			ascalonitis_area = {
+                limit = {
+                    NOT = { is_core = ROOT }
+                    NOT = { is_permanent_claim = ROOT }
+                }
+                add_permanent_claim = ROOT
+            }    			
         }
     }
     hp_pho_capture_gaza = {
@@ -444,18 +486,36 @@ iu_pho_missions_slot_3 = {
 			OR = {
 				area = philistaeia_area
 				area = qadesh_area
+				area = ascalonitis_area
 			}
             NOT = { country_or_non_sovereign_subject_holds = ROOT }
         }
         trigger = {
-            philistaeia_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}     
-            qadesh_area = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}			
+			if = {
+				limit = { has_dlc = "Dharma" }
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 3
+					OR = {
+						province_has_center_of_trade_of_level = 1
+						province_trade_power = 10
+					}
+					OR = {
+						area = philistaeia_area
+						area = qadesh_area
+						area = ascalonitis_area
+					}
+				}
+			}
+			else = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 10
+					OR = {
+						area = philistaeia_area
+						area = qadesh_area
+						area = ascalonitis_area
+					}
+				}
+            } 			
         }
         effect = {
 			add_country_modifier = {
@@ -586,20 +646,26 @@ iu_pho_missions_slot_4 = {
         icon = mission_persian_invasion
         position = 1
         required_missions = {  }
+        provinces_to_highlight = {
+			OR = {
+				area = akko_area
+				area = phoenicia_area
+			}
+            NOT = { country_or_non_sovereign_subject_holds = ROOT }
+        }
         trigger = {
             is_subject = no
-			army_size = 5
-			army_size_percentage = 1
+            akko_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}     
+            phoenicia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
         }
         effect = {
-            phoenicia_area = {
-                limit = {
-                    NOT = { is_core = ROOT }
-                    NOT = { is_permanent_claim = ROOT }
-                }
-                add_permanent_claim = ROOT
-            } 
-            north_phoenicia = {
+            phoenicia_region = {
                 limit = {
                     NOT = { is_core = ROOT }
                     NOT = { is_permanent_claim = ROOT }
@@ -613,21 +679,14 @@ iu_pho_missions_slot_4 = {
         position = 2
         required_missions = { hp_pho_strive_for_sovereignty }
         provinces_to_highlight = {
-			OR = {
-				area = phoenicia_area
-				area = north_phoenicia
-			}
+			region = phoenicia_region
             NOT = { country_or_non_sovereign_subject_holds = ROOT }
         }
         trigger = {
-            phoenicia_area = {
+            phoenicia_region = {
 				type = all
 				country_or_non_sovereign_subject_holds = ROOT
-			}     
-            north_phoenicia = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
-			}			
+			}     		
         }
         effect = {
             cyprus_west = {
@@ -644,7 +703,7 @@ iu_pho_missions_slot_4 = {
                 }
                 add_permanent_claim = ROOT
             } 
-			casiotis_area = {
+			pieria_area = {
                 limit = {
                     NOT = { is_core = ROOT }
                     NOT = { is_permanent_claim = ROOT }
@@ -665,6 +724,13 @@ iu_pho_missions_slot_4 = {
                 }
                 add_permanent_claim = ROOT
             }
+			cilicia_area = {
+                limit = {
+                    NOT = { is_core = ROOT }
+                    NOT = { is_permanent_claim = ROOT }
+                }
+                add_permanent_claim = ROOT
+            }
         }
     }
     hp_pho_cilician_trade_markets = {
@@ -673,19 +739,39 @@ iu_pho_missions_slot_4 = {
         required_missions = { hp_pho_king_of_the_sidonians }
         provinces_to_highlight = {
 			OR = {
-				area = casiotis_area
+				area = pieria_area
 				area = cilicia_pedias
 				area = cilicia_trachea
+				area = cilicia_area
 			}
             NOT = { country_or_non_sovereign_subject_holds = ROOT }
         }
         trigger = {
-            num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-                value = 10
-				OR = {
-					area = casiotis_area
-					area = cilicia_pedias
-					area = cilicia_trachea
+			if = {
+				limit = { has_dlc = "Dharma" }
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 3
+					OR = {
+						province_has_center_of_trade_of_level = 1
+						province_trade_power = 10
+					}
+					OR = {
+						area = pieria_area
+						area = cilicia_pedias
+						area = cilicia_trachea
+						area = cilicia_area
+					}
+				}
+			}
+			else = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 10
+					OR = {
+						area = pieria_area
+						area = cilicia_pedias
+						area = cilicia_trachea
+						area = cilicia_area
+					}
 				}
             }            
         }
@@ -789,8 +875,7 @@ iu_pho_missions_slot_5 = {
         trigger = {
             num_of_owned_provinces_with = {
 				value = 10
-				NOT = { area = phoenicia_area }
-				NOT = { area = north_phoenicia }
+				NOT = { region = phoenicia_region }
 				culture_group = ROOT
 			}
         }
@@ -836,6 +921,20 @@ iu_pho_missions_slot_5 = {
                 }
                 add_permanent_claim = ROOT
             } 
+			hierapytna_area = {
+                limit = {
+                    NOT = { is_core = ROOT }
+                    NOT = { is_permanent_claim = ROOT }
+                }
+                add_permanent_claim = ROOT
+            } 
+			polyrrenia_area = {
+                limit = {
+                    NOT = { is_core = ROOT }
+                    NOT = { is_permanent_claim = ROOT }
+                }
+                add_permanent_claim = ROOT
+            } 
         }
     }
     hp_pho_rule_kriti = {
@@ -846,6 +945,8 @@ iu_pho_missions_slot_5 = {
 			OR = {
 				area = knossos_area
 				area = gortyn_area
+				area = hierapytna_area
+				area = polyrrenia_area
 			}
             NOT = { country_or_non_sovereign_subject_holds = ROOT }
         }
@@ -855,6 +956,8 @@ iu_pho_missions_slot_5 = {
 				OR = {
 					area = knossos_area
 					area = gortyn_area
+					area = hierapytna_area
+					area = polyrrenia_area
 				}
             }      			
         }
