@@ -1,0 +1,624 @@
+panti_mis_main = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		tag = PNK
+	}
+	
+	has_country_shield = yes
+
+	panti_subjugate_psoa = {
+		icon = mission_peace
+		position = 1
+		required_missions = {  }
+		provinces_to_highlight = {
+			province_id = 7186
+		}
+		trigger = {
+			OR = {
+				AND = {
+					army_size = BCP
+					alliance_with = BCP
+				}
+				owns_core_province = 7186
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					NOT = { exists = BCP }
+				}
+				add_prestige = 25
+				7186 = {
+					add_base_production = 2
+				}
+			}
+			
+			else = {
+				7186 = {
+					cede_province = ROOT
+					add_core = ROOT
+					add_base_production = 2
+				}
+			}
+			
+			2068 = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			
+			2070 = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	panti_secure_strait = {
+		icon = mission_invasion
+		position = 2
+		required_missions = { panti_subjugate_psoa }
+		
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2068
+				province_id = 2070
+			}
+		}
+		
+		trigger = {
+			owns_core_province = 2068
+			owns_core_province = 2070
+		}
+		
+		effect = {
+			2068 = {
+				change_religion = greek_religion
+				change_culture = ROOT	
+			}
+			
+			2070 = {
+				change_religion = greek_religion
+				change_culture = ROOT
+				add_base_production = 2
+			}
+		}
+	}
+	
+	panti_scout_palus = {
+		icon = mission_ship2
+		position = 3
+		required_missions = { panti_secure_strait }
+		
+		provinces_to_highlight = {
+		}
+		
+		trigger = {
+			navy_size = 20
+			num_of_light_ship = 5
+		}
+		
+		effect = {
+			define_explorer = {
+				name = "Colaeus"
+				fire = 4
+				shock = 4
+				manuever = 7
+				siege = 0
+			}
+		}
+	}
+	
+	panti_develop_capital = {
+		icon = mission_pantikapaion
+		position = 4
+		required_missions = { panti_scout_palus }
+		
+		provinces_to_highlight = {
+			province_id = 2004
+		}
+		
+		trigger = {
+			2004 = {
+				OR = {
+					has_building = small_harbor
+					has_building = big_harbor
+					has_building = harbor_district
+				}
+				
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+				
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+		}
+		
+		effect = {
+			2004 = {
+				add_base_tax = 2
+				add_base_production = 2
+				add_base_manpower = 2
+				add_building = artisan_district
+			}
+			
+			chersonesus_zenonia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	
+	panti_settle_the_peninsula = {
+		icon = mission_road
+		position = 5
+		required_missions = { panti_develop_capital }
+		
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2001
+				province_id = 2003
+				province_id = 7188
+			}
+		}
+		
+		trigger = {
+			prestige = 25
+			treasury = 200
+		}
+		
+		effect = {
+			2003 = {
+				cede_province = ROOT
+				change_religion = greek_religion
+				change_culture = ROOT
+				center_of_trade = 1
+				add_base_production = 2
+			}
+			
+			2001 = {
+				cede_province = ROOT
+				change_religion = greek_religion
+			}
+			
+			7188 = {
+				cede_province = ROOT
+				change_religion = greek_religion
+			}
+			
+			add_treasury = -200
+		}
+	}
+	
+	
+	panti_fortify_the_isthmus = {
+		icon = mission_macedons
+		position = 6
+		required_missions = { panti_settle_the_peninsula }
+		
+		provinces_to_highlight = {
+			province_id = 2001
+			province_id = 2003
+			province_id = 7188
+		}
+		
+		trigger = {
+			owns_core_province = 7188
+			owns_core_province = 2001
+			owns_core_province = 2003
+			
+			7188 = {
+				OR = {
+					has_building = small_city_walls
+					has_building = large_city_walls
+					has_building = fortress_building
+				}
+			}
+		}
+		
+		effect = {
+			7188 = {
+				add_permanent_province_modifier = {
+					name = "panti_fortified_isthmus"
+					duration = -1
+				}
+			}
+			
+			1999 = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			
+			2000 = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			
+			2007 = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	panti_prepare_to_fight = {
+		icon = mission_large_army
+		position = 7
+		required_missions = { panti_fortify_the_isthmus }
+		
+		trigger = {
+			army_size_percentage = 1
+			num_of_generals = 2
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = "panti_army_modifier"
+				duration = 10950
+			}
+		}
+	}
+		
+	
+	panti_advance_frontier = {
+		icon = mission_invasion
+		position = 8
+		required_missions = { panti_prepare_to_fight }
+		
+		provinces_to_highlight = {
+			province_id = 1999
+			province_id = 2000
+			province_id = 2007
+			province_id = 7189
+		}
+		
+		trigger = {
+			owns_core_province = 1999
+			owns_core_province = 2000
+			owns_core_province = 2007
+			owns_core_province = 7189
+		}
+		
+		effect = {
+			2000 = {
+				change_culture = ROOT
+				change_religion = greek_religion
+				add_base_production = 1
+			}
+			
+			chersonesus_taurica = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	panti_conquer_coast = {
+		icon = mission_tradeport
+		position = 9
+		required_missions = { panti_advance_frontier }
+		
+		provinces_to_highlight = {
+			area = chersonesus_taurica
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			chersonesus_taurica = {
+				type = all
+				is_core = ROOT
+				owned_by = ROOT
+			}
+		}
+		
+		effect = {
+			1999 = {
+				change_trade_goods = iron
+			}
+			7183 = {
+				change_trade_goods = iron
+			}
+			
+			taurica_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			
+			chersonesus_heracle = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	panti_crush_tauri = {
+		icon = mission_scythian
+		position = 10
+		required_missions = { panti_conquer_coast }
+		
+		provinces_to_highlight = {
+			area = taurica_area
+			OR = {
+				NOT = { owned_by = ROOT }
+				NOT = { is_core = ROOT }
+			}
+		}
+		
+		trigger = {
+			NOT = { exists = TUI }
+			
+			taurica_area = {
+				type = all
+				is_core = ROOT
+				owned_by = ROOT
+			}
+		}
+		
+		effect = {
+			2005 = {
+				change_culture = ROOT
+				change_religion = greek_religion
+				center_of_trade = 1
+				add_base_tax = 1
+				add_base_production = 1
+				add_base_manpower = 2
+			}
+			
+			cimmero_scythia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			
+			tauroscythia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+}
+
+
+panti_mis_main_left = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		tag = PNK
+	}
+	has_country_shield = yes
+	
+	panti_expand_metal_production = {
+		icon = mission_mines
+		position = 2
+		required_missions = { panti_subjugate_psoa }
+		
+		provinces_to_highlight = {
+			province_id = 7186
+		}
+		
+		trigger = {
+			owns_core_province = 7186
+			7186 = {
+				OR = {
+					has_building = small_harbor
+					has_building = big_harbor
+					has_building = harbor_district
+				}
+				
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+			}
+		}
+		
+		effect = {
+			7186 = {
+				add_base_production = 1
+				add_base_manpower = 2
+				change_trade_goods = metalware
+			}
+		}
+	}
+	
+	panti_trade_post_tanais = {
+		icon = mission_tradeport
+		position = 4
+		required_missions = { panti_scout_palus }
+		
+		provinces_to_highlight = {
+			province_id = 2013
+		}
+		
+		trigger = {
+			navy_size = 30
+			treasury = 400
+		}
+		
+		effect = {
+			2013 = {
+				cede_province = ROOT
+				add_core = ROOT
+				change_culture = ROOT
+				change_religion = greek_religion
+				add_base_production = 2
+			}
+			add_treasury = -400
+		}
+	}
+	
+	panti_agricultural_investments = {
+		icon = mission_harvest
+		position = 7
+		required_missions = { panti_fortify_the_isthmus }
+		
+		provinces_to_highlight = {
+			province_id = 2003
+		}
+		
+		trigger = {
+			owns_core_province = 2003
+			2003 = {
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+			}
+		}
+		
+		effect = {
+			2003 = {
+				if = {
+					limit = {
+						NOT = { has_building = big_harbor }
+					}
+					add_building = big_harbor
+				}
+				add_base_production = 2
+				add_base_manpower = 2
+			}
+		}
+	}
+	
+	panti_granary_of_black_sea = {
+		icon = mission_harvest
+		position = 11
+		required_missions = { panti_crush_tauri }
+		
+		provinces_to_highlight = {
+			province_id = 7172
+			province_id = 7173
+			province_id = 7175
+			province_id = 7181
+			province_id = 3231
+			province_id = 2007
+			province_id = 2000
+		}
+		
+		trigger = {
+			owns_core_province = 2000
+			owns_core_province = 2007
+			owns_core_province = 3231
+			owns_core_province = 7172
+			owns_core_province = 7173
+			owns_core_province = 7175
+			owns_core_province = 7181
+			
+			num_of_owned_provinces_with = {
+				value = 4
+				OR = {
+					has_building = small_grain_depot
+					has_building = big_grain_depot
+				}
+			}
+			
+			num_of_owned_provinces_with = {
+				value = 10
+				AND = {
+					culture = ROOT
+					religion = ROOT
+				}
+			}
+		}
+		
+		effect = {
+			2000 = {
+				add_permanent_province_modifier = {
+					name = "panti_grain_port"
+					duration = -1
+				}
+				
+				add_base_tax = 1
+				add_base_production = 2
+			}
+			
+			2007 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+			
+			3231 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+			
+			7172 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+			
+			7173 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+			
+			7175 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+			
+			7181 = {
+				change_religion = ROOT
+				change_trade_goods = grain
+				add_base_manpower = 1
+			}
+		}
+	}
+}
+			
