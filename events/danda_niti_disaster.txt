@@ -1,0 +1,670 @@
+namespace = danda_niti
+
+########################################################################################
+# Loss of Danda Niti disaster
+########################################################################################
+
+#Start of the disaster
+
+country_event = {
+	id = danda_niti.1
+	title = "danda_niti.1.t"
+	desc = "danda_niti.1.d"
+	picture = civilwar
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "danda_niti.1.a"
+		kill_ruler = yes
+		add_prestige = -50
+		every_owned_province = {
+			add_unrest = 5
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				add_local_autonomy = 10
+				if = {
+					limit = {
+						can_spawn_rebels = nationalist_rebels
+						unrest = 4
+					}
+					nationalist_rebels = 2
+				}
+				if = {
+					limit = {
+						can_spawn_rebels = leadered_peasant_rebels
+						unrest = 3
+					}
+					leadered_peasant_rebels = 3
+				}
+			}
+			capital_scope = {
+				if = {
+					limit = { owner = { government = monarchy } }
+					spawn_rebels = {
+						type = pretender_rebels
+						size = 3
+					}
+				}
+				else_if = {
+					limit = { owner = { government = republic } }
+					spawn_rebels = {
+						type = republican_rebels
+						size = 3
+					}
+				}
+			}
+		}
+	}
+}
+
+#End of the disaster
+
+country_event = {
+	id = danda_niti.2
+	title = "danda_niti.2.t"
+	desc = "danda_niti.2.d"
+	picture = generals
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "danda_niti.2.a"
+		add_prestige = 10
+		change_adm = 1
+		change_dip = 1
+		change_mil = 1
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				clear_rebels = yes
+				add_unrest = -5
+			}
+		}
+	}
+}
+
+#Great ruler ends disaster
+
+country_event = {
+	id = danda_niti.3
+	title = "danda_niti.3.t"
+	desc = "danda_niti.3.d"
+	picture = ruler
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		adm = 5
+		mil = 5
+	}
+	
+	option = {
+		name = "danda_niti.3.a"
+		end_disaster = loss_of_danda_niti
+		add_prestige = 20
+		add_stability = 6
+		add_legitimacy = 100
+		add_republican_tradition = 100
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				clear_rebels = yes
+				add_unrest = -5
+			}
+		}
+	}
+}
+
+########################################################################################
+# Random revolts
+########################################################################################
+
+#peasant revolt
+
+country_event = {
+	id = danda_niti.4
+	title = "danda_niti.4.t"
+	desc = "danda_niti.4.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_peasant_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		any_owned_province = {
+			unrest = 2
+			is_prosperous = no
+			NOT = { can_spawn_rebels = nationalist_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					is_prosperous = no
+					NOT = { can_spawn_rebels = nationalist_rebels }
+				}
+				save_event_target_as = danda_niti_peasant_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_peasant_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = peasant_rebels
+			}
+			add_devastation = 30
+		}
+	}
+}
+
+#zealots revolt
+
+country_event = {
+	id = danda_niti.5
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = buddhism_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = buddhism_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = buddhism_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.501
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = ajivika_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = ajivika_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = ajivika_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.502
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = jain_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = jain_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = jain_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.503
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = hinduism_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = hinduism_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = hinduism_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.504
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = brahmin_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = brahmin_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = brahmin_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.505
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = sramana_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = sramana_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = sramana_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+#Nobles revolt
+
+country_event = {
+	id = danda_niti.6
+	title = "danda_niti.6.t"
+	desc = "danda_niti.6.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_noble_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_nobility
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = noble_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = noble_rebels
+				}
+				save_event_target_as = danda_niti_noble_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_noble_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = noble_rebels
+			}
+			add_devastation = 20
+		}
+	}
+}
+
+#Separatists revolt
+
+country_event = {
+	id = danda_niti.7
+	title = "danda_niti.7.t"
+	desc = "danda_niti.7.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_separatist_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			can_spawn_rebels = nationalist_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					can_spawn_rebels = nationalist_rebels
+				}
+				save_event_target_as = danda_niti_separatist_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_separatist_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = nationalist_rebels
+			}
+			add_devastation = 20
+		}
+	}
+}
+
+#Democratic revolt
+
+country_event = {
+	id = danda_niti.8
+	title = "danda_niti.8.t"
+	desc = "danda_niti.8.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_democratic_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		government = republic
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			NOT = { can_spawn_rebels = nationalist_rebels }
+			NOT = { can_spawn_rebels = peasant_rebels }
+			NOT = { can_spawn_rebels = noble_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					NOT = { can_spawn_rebels = nationalist_rebels }
+					NOT = { can_spawn_rebels = peasant_rebels }
+					NOT = { can_spawn_rebels = noble_rebels }
+				}
+				save_event_target_as = danda_niti_democratic_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_democratic_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = republican_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+#Pretender revolt
+
+country_event = {
+	id = danda_niti.9
+	title = "danda_niti.9.t"
+	desc = "danda_niti.9.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_pretender_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		government = monarchy
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			NOT = { can_spawn_rebels = nationalist_rebels }
+			NOT = { can_spawn_rebels = peasant_rebels }
+			NOT = { can_spawn_rebels = noble_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					NOT = { can_spawn_rebels = nationalist_rebels }
+					NOT = { can_spawn_rebels = peasant_rebels }
+					NOT = { can_spawn_rebels = noble_rebels }
+				}
+				save_event_target_as = danda_niti_pretender_rebel
+			}
+		}
+	}
+	
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_pretender_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = pretender_rebels
+			}
+			add_devastation = 10
+		}
+		random_owned_province = {
+			spawn_rebels = {
+				size = 2
+				type = pretender_rebels
+			}
+		}
+	}
+}
+
+#Ruler is killed
+
+country_event = {
+	id = danda_niti.10
+	title = "danda_niti.10.t"
+	desc = "danda_niti.10.d"
+	picture = death
+	is_triggered_only = yes
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		NOT = { adm = 5 }
+		NOT = { mil = 5 }
+	}
+	
+	option = {
+		name = "danda_niti.10.a"
+		ai_chance = {
+			factor = 30
+		}
+		kill_ruler = yes
+	}
+	option = {
+		name = "danda_niti.10.b"
+		ai_chance = {
+			factor = 70
+		}
+		trigger = {
+			government = monarchy
+			has_heir = yes
+		}
+		kill_ruler = yes
+		kill_heir = yes
+	}
+}
