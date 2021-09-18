@@ -3,9 +3,9 @@ namespace = sieges
 ##########
 #	SACK OF CITIES events
 #	Flowchart is as follows
-#		if: >8 dev -> this event (although not finished yet)
-#		else_if: >4 -> a hidden, automatic event (to be done)
-#		dev 1 to 4: nothing
+#		if: >X dev -> this event. Starting development can be chosen through a decision, it's 6, 8, 10, 15 or unrestricted
+#		else_if: >6 to X -> a hidden, automatic event (to be done)
+#		dev 1 to 5: nothing
 #
 #########
 
@@ -17,6 +17,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		FROM = {
+			development = 3	# for unrestricted, at least dev 3
+			NOT = { OR = {  has_province_modifier = SS_was_raided 	 has_province_modifier = SS_was_delenda has_province_modifier = SS_was_enslaved
+							has_province_modifier = SS_was_destroyed has_province_modifier = SS_was_sacked 	has_province_modifier = SS_was_tributed } 
+			}
+		}
 		OR = {
 			has_global_flag = siege_unrestricted 
 			AND = { has_global_flag = siege_cities_15 FROM = { development = 15 } }
@@ -24,6 +30,8 @@ country_event = {
 			AND = { has_global_flag = siege_cities_8 FROM = { development = 8 } }
 			AND = { has_global_flag = siege_cities_6 FROM = { development = 6 } }
 		}
+		
+		
 	}
 	
 	
@@ -56,7 +64,8 @@ country_event = {
 				set_variable = { which = sack_ratio which = sack_size } multiply_variable = { which = sack_ratio which = sack_power }
 				
 				export_to_variable = { which = pop_total value = development } 	multiply_variable = { pop_total = 10 }	# pops in thousands
-				divide_variable = { which = sack_ratio which = pop_total } 	set_variable = { which = sack_display which = sack_ratio }
+				divide_variable = { which = sack_ratio which = pop_total } 	
+				set_variable = { which = sack_display which = sack_ratio }	multiply_variable = { sack_display = 100 }
 				if = { limit = { check_variable = { sack_ratio = 1 } } 		set_variable = { which = sack_ratio value = 1 } }		# max 100%
 					
 					# The main two variables to have in mind in a siege / sack are: 1) efficiency, 2) ferocity, and 3) total sack value
@@ -151,18 +160,21 @@ country_event = {
 		
 	}
 	# Options: table of content, for quick reference
-	# 	Name			% ratio min		% value   % devst 	% pops lost, of which % enslaved
-		# Ask Tribute	|	0%			|	20%	|	 5%	 	|	0%				 |	 0%
-		# Sack city		|	50%			|	60%	|	30%	 	|	0%				 |	 0%	# no pop loss, but much more devastation. Will migrate away
-		# Light enslave |	20%			|	 5%	|	10%	 	|	min cap 40/60/80 |	40%
-		# Hard enslave	|	50%			|	10%	|	25%	 	|	min cap 40/60/80 |	80%
-		# Destroy city	|	90%			|	40% |	60%	 	|	min cap 40/60/80 |	40%
-		# Delenda Est	|	90%, rival	|	60%	|  100% 	|	all but 1 pop	 |	20%
+	# 	Name			MIl power  % ratio min		% value   % devst 	% pops lost, of which % enslaved
+		# Ask Tribute		  -5   |	0%			|	20%	|	 5%	 	|	0%				 |	 0%
+		# Sack city			 -20   |	50%			|	60%	|	30%	 	|	0%				 |	 0%	# Devastation, will migrate away
+		# Light enslave 	 -20   |	20%			|	 5%	|	10%	 	|	min cap 40/60/80 |	40%
+		# Hard enslave		 -20   |	50%			|	10%	|	25%	 	|	min cap 40/60/80 |	80%
+		# Destroy city		 -60   |	90%			|	40% |	60%	 	|	min cap 40/60/80 |	40%
+		# Delenda Est	    -100   |	90%, rival	|	60%	|  100% 	|	all but 1 pop	 |	20%
 	
 	option = {
 		name = "sieges.1.1"		# TRIBUTE (20% value, 5% devastation, no pops lost or enslaved)
 		ai_chance = {
 			factor = 100
+		}
+		trigger = {
+			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 		}
 		hidden_effect = {
 			# Province effect
@@ -178,6 +190,7 @@ country_event = {
 			set_variable = { which = cash_income which = FROM }	
 			money_income = yes
 		}
+		add_mil_power = -5
 	}
 	option = {
 		name = "sieges.1.2"		# SACK (60% value, 30% devastation, no pops lost or enslaved)
@@ -201,6 +214,7 @@ country_event = {
 			set_variable = { which = cash_income which = FROM }
 			money_income = yes
 		}
+		add_mil_power = -20
 	}
 	option = {
 		name = "sieges.1.3"		# DESTROY (40% value, 60% devastation, same as Soft Enslave)
@@ -229,6 +243,7 @@ country_event = {
 			money_income = yes
 			enslave_effect = { type = soft days = 40 }
 		}
+		add_mil_power = -60
 	}
 	
 	option = {
@@ -267,6 +282,7 @@ country_event = {
 			enslave_effect = { type = soft days = 60 }		# uses same scripted effect for both
 			
 		}
+		add_mil_power = -20
 	}
 	option = {
 		name = "sieges.1.5"		# HARD ENSLAVEMENT (10% value, 25% devastation, pops above 60/40/20% capacity will be lost or enslaved)
@@ -300,6 +316,7 @@ country_event = {
 			
 			enslave_effect = { type = hard days = 90 }		# uses same scripted effect for both
 		}
+		add_mil_power = -20
 	}
 	option = {
 		name = "sieges.1.6"		# DELENDA EST (60% value, 100% devastation, all pops lost but one, 20% enslaved
@@ -326,6 +343,14 @@ country_event = {
 			
 			enslave_delenda_effect = yes
 		}
+		add_mil_power = -100
+	}
+	option = {
+		name = "sieges.1.7"		# Leave them be
+		ai_chance = {
+			factor = 100
+		}
+		
 	}
 	
 	
@@ -361,11 +386,124 @@ country_event = {
 	
 }
 
+country_event = {		
+	id = sieges.2
+	title = "sieges.2.t"
+	desc = "sieges.2.d"
+	picture = looting
+	hidden = yes				# Hidden! only one options
+	is_triggered_only = yes		
+								# Automatic event, for low-development provinces. Will have very small effects: (only 5% population enslaved, 5% value of buildings, no destruction, and 10% devastation). It will be seen as "Has been raided"
+	trigger = {
+		FROM = { development = 6 }
+		OR = {
+			AND = { has_global_flag = siege_cities_15 	FROM = { NOT = { development = 15 } } }
+			AND = { has_global_flag = siege_cities_10 	FROM = { NOT = { development = 10 } } }
+			AND = { has_global_flag = siege_cities_8 	FROM = { NOT = { development = 8 } } }
+			
+		}
+		NOT = {
+			OR = {  has_province_modifier = SS_was_raided 	 has_province_modifier = SS_was_delenda has_province_modifier = SS_was_enslaved
+					has_province_modifier = SS_was_destroyed has_province_modifier = SS_was_sacked 	has_province_modifier = SS_was_tributed } 
+		}
+		
+	}
+	
+	
+	immediate = {
+		
+		hidden_effect = {
+			FROM = {
+				# Initial cleanup, to remove variables stored in the province modifiers
+				set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 } 
+				
+				# Sack efficiency (army, ferocity, ratio)
+				export_to_variable = { which = prov_inf value = trigger_value:infantry_in_province }
+				export_to_variable = { which = prov_cav value = trigger_value:cavalry_in_province }
+				export_to_variable = { which = prov_arc value = trigger_value:artillery_in_province }
+				
+				set_variable = { which = sack_size which = prov_inf }
+				change_variable = { which = sack_size which = prov_cav } change_variable = { which = sack_size which = prov_arc }
+				
+				set_variable = { which = sack_power value = 5 }
+				# and other modifiers that affect ferocity
+				
+				set_variable = { which = sack_ratio which = sack_size } 	multiply_variable = { which = sack_ratio which = sack_power }
+				
+				export_to_variable = { which = pop_total value = development } 	multiply_variable = { pop_total = 10 }	# pops in thousands
+				divide_variable = { which = sack_ratio which = pop_total } 	set_variable = { which = sack_display which = sack_ratio }
+				if = { limit = { check_variable = { sack_ratio = 1 } } 		set_variable = { which = sack_ratio value = 1 } }		# max 100%
+				
+				# Calculate lootable amount (buildings). Always 75% of build cost
+				set_variable = { which = loot_value value = 0 }
+				find_total_loot_value = yes
+				
+				set_variable = { which = SS_simple_total which = pop_total } 	multiply_variable = { SS_simple_total = 0.05 }
+				multiply_variable = { which = SS_simple_total which = sack_ratio }
+				
+			}
+		}
+		
+	}
+	
+	
+	option = {
+		name = "sieges.2.1"	# Automatic option, direct
+		ai_chance = {
+			factor = 100
+		}
+		
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				set_variable = { which = sack_lost value = 0.05 }
+				multiply_variable = { which = sack_lost which = loot_value } 	multiply_variable = { which = sack_lost which = sack_ratio }
+				set_variable = { which = prov_devst value = 10 } 				multiply_variable = { which = prov_devst which = sack_ratio }
+				
+				# Show variables in the province modifier, to see what happened
+				set_variable = { which = SS_looted_value which = sack_lost }	set_variable = { which = SS_devastation_done which = prov_devst }
+				while = { limit = { check_variable = { prov_devst = 1 } } 		subtract_variable = { prov_devst = 1 } add_devastation = 1 }
+				set_variable = { which = cash_income which = sack_lost }
+				add_province_modifier = { name = SS_was_raided duration = 720 }	# to avoid being hit again in X days
+				set_variable = { which = SS_slaves_taken which = SS_simple_total }
+			}
+			
+			# Country, besieger effect
+			set_variable = { which = cash_income which = FROM }
+			money_income = yes
+			
+			set_variable = { which = SS_simple_total which = FROM }
+			change_variable = { which = slaves which = SS_simple_total }
+			set_variable = { which = SS_simple_total value = 0 }
+			
+		}
+	}
+	
+	
+	after = {
+		FROM = {
+			set_variable = { which = prov_inf value = 0 } 	set_variable = { which = prov_cav value = 0 } 
+			set_variable = { which = prov_arc value = 0 } 
+			set_variable = { which = sack_size value = 0 } 	set_variable = { which = sack_power value = 0 } 
+			set_variable = { which = sack_ratio value = 0 } set_variable = { which = sack_display value = 0 } 
+			
+			set_variable = { which = pop_total value = 0 } 	set_variable = { which = sack_lost value = 0 } 
+			set_variable = { which = loot_value value = 0 } set_variable = { which = prov_devst value = 0 } 
+			set_variable = { which = cash_income value = 0 } 
+			
+			set_variable = { which = SS_simple_total value = 0 } 
+			
+		}
+		
+	}
+	
+}
+
 country_event = {
 	id = sieges.3
 	title = "sieges.3.t"
 	desc = "sieges.3.d"
-	picture = looting
+	picture = column_trajan_1
 	is_triggered_only = yes
 	
 	option = {								
@@ -417,9 +555,25 @@ country_event = {
 		clr_global_flag	= siege_cities_8
 		clr_global_flag	= siege_cities_6
 	}
+	option = {							
+		name = "sieges.3.7"	# Explain me more -> event with a quick explanation
+		country_event = { id = sieges.4 }
+		
+	}
 	
+}
+country_event = {
+	id = sieges.4
+	title = "sieges.4.t"
+	desc = "sieges.4.d"
+	picture = column_trajan_1
+	is_triggered_only = yes
 	
-	
+	option = {							
+		name = "sieges.4.1"	# Explains how this mechanics work
+		
+		
+	}
 	
 }
 
