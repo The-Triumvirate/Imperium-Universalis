@@ -33,8 +33,36 @@ country_event = {
 			}
 			add_ruler_modifier = { name = ruler_coronation }
 		}
+		
+		
+		# Popgrowth
 		set_global_flag = popgrowth_vanilla	
 					# At first, allows growth using the vanilla mechanism. It will be disabled once the Dynamic Popgrowth starts
+		
+		# Slavery
+		every_country = {
+			export_to_variable = { which = slaves value = total_development }
+			# effect of total development: 30% to 10% total value
+			trigger_switch = {
+				on_trigger = total_development
+				1000 = { multiply_variable = { slaves = 1.01 } } # 10%
+				500 = { multiply_variable = { slaves = 1.2 } }	
+				200 = { multiply_variable = { slaves = 1.5 } }	# 15%: 250 dev = 2.500.000 population x 15% = 375.000. 250 x 1.5 = 375 (thousand). OK
+				100 = { multiply_variable = { slaves = 1.8 } }	
+				50 = { multiply_variable = { slaves = 2.5 }	}
+				10 = { multiply_variable = { slaves = 3.0 }	}
+				1 = { multiply_variable = { slaves = 3.5 } }	# 4 dev = 40.000 population x 35% = 14000. 4 x 3.5 = 14. OK
+			}
+			# effect of government type. Native -60%, Tribal -30%, Republics -10%
+			trigger_switch = {
+				on_trigger = government
+				native = { multiply_variable = { slaves = 0.4 } }
+				tribal = { multiply_variable = { slaves = 0.7 } }
+				republic = { multiply_variable = { slaves = 0.9 } }
+			}
+			
+			# Also remember that annexing a foreign country you will acquire 75% of their slaves! (not 100% as we need "friction" somewhere)
+		}
 	}
 	
 	option = {

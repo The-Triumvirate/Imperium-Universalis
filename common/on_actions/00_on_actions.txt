@@ -208,7 +208,8 @@ on_battle_lost_province = {
 # root = winning country, from = location
 on_siege_won_country = {
 	events = {
-		sieges.1
+		sieges.1		# real event for sieges
+		sieges.2		# simplified event, for low-dev places
 		marduk.2
 		marduk.3
 		new_governments.20
@@ -309,8 +310,15 @@ on_replace_governor = {
 on_bankruptcy = {
 }
 
-# country (country annexing, root = target)
+# country (country annexing, root = target)		# (mrkcosta comment): ROOT = surviving country, FROM = annexed country
 on_diplomatic_annex = {
+	# transfer money
+	export_to_variable = { which = cash_income value = treasury who = FROM }
+	money_income = yes
+	
+	# transfer slaves
+	FROM = { multiply_variable = { slaves = 0.75 } }
+	change_variable = { which = slaves which = FROM }	# transfer slaves to annexing country
 	
 }
 
@@ -587,6 +595,14 @@ on_annexed = {
 	events = {
 		indian.65
 	}
+	# transfer money
+	export_to_variable = { which = cash_income value = treasury who = FROM }
+	money_income = yes
+	
+	# transfer slaves
+	FROM = { multiply_variable = { slaves = 0.75 } }
+	change_variable = { which = slaves which = FROM }	# transfer slaves to annexing country
+	
 }
 
 # When the chinese empire gets dismantled (e.g. when the emperor is annexed)
@@ -978,6 +994,7 @@ on_five_year_pulse = {
 	}
 	events = {
 		babylon.1
+		
 	}
 }
 
@@ -994,7 +1011,10 @@ on_five_year_pulse_2 = {
 		#25 = custom_religion.23
 		#25 = custom_religion.24
 	}
-	
+	events = {
+		slaves.1
+		
+	}
 }
 
 on_five_year_pulse_3 = {
