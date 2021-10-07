@@ -5,13 +5,12 @@
 native_basic_reform = {
 	basic_reform = yes
 	native_mechanic = yes
-	allow_migration = no
+	allow_migration = yes
 	valid_for_new_country = no
 	allow_convert = yes
 	
 	modifiers = {
 		amount_of_banners = -1
-		cav_to_inf_ratio = 0.5
 		land_maintenance_modifier = -0.5
 		global_institution_spread = -0.5
 		embracement_cost = 1
@@ -19,11 +18,12 @@ native_basic_reform = {
 		max_absolutism = -10
 		global_supply_limit_modifier = 0.25
 		land_attrition = -0.25
-		cavalry_cost = -0.5
 	}
 	valid_for_nation_designer = yes
 	nation_designer_cost = 0
 }
+
+## First Level
 
 steppe_horde_reform = {
 	icon = "cavalry_focus_reform"
@@ -47,15 +47,17 @@ steppe_horde_reform = {
 
 	conditional = {
 		allow = { has_dlc = "Conquest of Paradise" }
-		allow_migration = no
+		allow_migration = yes
 		custom_attributes = {
-			enable_settled_mechanics = no
-			enable_tribal_grazing = yes
+			enable_settled_mechanics = yes
+			enable_tribal_grazing = no
 		}
 	}
 
 	modifiers = {
 		cavalry_power = 0.1
+		cav_to_inf_ratio = 0.5
+		cavalry_cost = -0.5
 	}
 }
 
@@ -78,10 +80,10 @@ tibetan_tribe_reform = {
 
 	conditional = {
 		allow = { has_dlc = "Conquest of Paradise" }
-		allow_migration = no
+		allow_migration = yes
 		custom_attributes = {
-			enable_settled_mechanics = yes
-			enable_tribal_grazing = no
+			enable_settled_mechanics = no
+			enable_tribal_grazing = yes
 		}
 	}
 
@@ -89,5 +91,314 @@ tibetan_tribe_reform = {
 		land_attrition = -0.1
 		enemy_core_creation = 1
 		governing_capacity_modifier = -0.25
+	}
+}
+
+## Second Level
+
+non_division_labor_reform = {
+	icon = "ZhanGuo_ZhaoGuo_6"
+
+	modifiers = {
+		global_manpower_modifier = 0.25
+	}
+}
+
+some_labor_division_reform = {
+	icon = "noble_council_advisors"
+
+	modifiers = {
+		production_efficiency = 0.1
+	}
+}
+
+specialization_labor_reform = {
+	icon = "building_service"
+
+	potential = {
+		any_neighbor_country = {
+			NOT = { government = native }
+		}
+	}
+
+	modifiers = {
+		global_institution_spread = 0.1
+	}
+}
+
+## Third Level
+
+full_transhumancy_reform = {
+	icon = "transhumancy_tribe_reform"
+
+	modifiers = {
+		land_attrition = -0.1
+		migration_cost = -0.2
+	}
+}
+
+mixed_agriculturalism_reform = {
+	icon = "village_tribunals"
+
+	modifiers = {
+		global_trade_goods_size_modifier = 0.1
+	}
+}
+
+## Fourth Level
+
+meritocratic_structure_reform = {
+	icon = "despot_icon"
+
+	modifiers = {
+		monarch_military_power = 1
+	}
+
+	ai = {
+		factor = 2
+		modifier = {
+			factor = 2
+			adm = 4
+		}
+	}
+}
+
+hereditary_structure_reform = {
+	icon = "royal_family_advisors"
+
+	modifiers = {
+		max_absolutism = 10
+	}
+
+	ai = {
+		factor = 3
+		modifier = {
+			factor = 2
+			mil = 4
+		}
+	}
+}
+
+democratic_structure_reform = {
+	icon = "tribal_republic_reform"
+
+	modifiers = {
+		global_unrest = -1
+	}
+
+	ai = {
+		factor = 2
+		modifier = {
+			factor = 2
+			dip = 4
+		}
+	}
+}
+
+## Seventh Level
+
+continue_nomadism_reform = {
+	icon = "ZhanGuo_ZhaoGuo_5"
+
+	modifiers = {
+		cavalry_power = 0.1
+		cavalry_flanking = 0.5
+	}
+
+	ai = {
+		factor = 2
+		modifier = {
+			factor = 3
+			NOT = { tribal_development = 10 }
+		}
+		modifier = {
+			factor = 0
+			can_migrate = no
+		}
+	}
+}
+
+start_sedentarization_reform = {
+	icon = "personal_property"
+
+	trigger = {
+		if = { 
+			limit = {
+				has_dlc = "Conquest of Paradise"
+			}
+			custom_trigger_tooltip = {
+				tooltip = "MUST_BE_IN_TRIBAL_LAND_TO_SETTLE"
+				capital_scope = { tribal_land_of = ROOT }
+			}
+		}
+		else = {
+			always = yes
+		}
+	}
+
+	modifiers = {
+		embracement_cost = -0.1
+	}
+
+	conditional = {
+		allow = { has_dlc = "Conquest of Paradise" }
+		allow_migration = no
+		custom_attributes = {
+			enable_settled_mechanics = yes
+			enable_tribal_grazing = no
+		}
+	}
+
+	ai = {
+		factor = 2
+		modifier = {
+			factor = 2
+			can_migrate = yes
+		}
+		modifier = {
+			factor = 2
+			tribal_development = 5
+		}
+		modifier = {
+			factor = 4
+			tribal_development = 10
+		}
+	}
+}
+
+## Eighth Level
+
+seek_civilize_patron = {
+	icon = "religious_advisors"
+	allow_normal_conversion = yes
+
+	trigger = {
+		is_migratory_tribe = no
+		custom_trigger_tooltip = {
+			tooltip = "NEEDS_NATIVE_SPONSOR"
+			native_sponsor_scope = {
+				exists = yes
+			}
+		}
+	}
+
+	modifiers = {
+		stability_cost_modifier = -0.1
+	}
+
+	effect = {
+		every_tribal_land_province = {
+			limit = { NOT = { owner = { exists = yes } } }
+			settle_province = ROOT
+		}
+		if = {
+			limit = {
+				native_sponsor_scope = {
+					exists = yes
+				}
+			}
+			change_government = native_sponsor_scope
+			embrace_institutions_of = native_sponsor_scope
+			change_government_reform_progress = -350 # Doing it like this to avoid that migration code triggers
+		}
+		else = {
+			custom_tooltip = "GOVERNMENT_FROM_NATIVE_SPONSOR"
+		}
+	}
+
+	ai = {
+		factor = 2.0
+	}
+}
+
+stay_nomadic_reform = {
+	icon = "parthian_monarchy"
+	allow_normal_conversion = yes
+
+	trigger = {
+		NOT = { has_reform = start_sedentarization_reform }
+	}
+
+	modifiers = {
+		global_institution_spread = 0.25
+		embracement_cost = -0.25
+		max_absolutism = 5
+	}
+
+	effect = {
+		add_stability = 1
+	}
+
+	ai = {
+		factor = 3.0
+	}
+}
+
+reform_monarchy_native = {
+	icon = "appointed_governors"
+	allow_normal_conversion = yes
+
+	trigger = {
+		has_reform = start_sedentarization_reform
+		has_reform = hereditary_structure_reform
+	}
+
+	modifiers = {
+		land_morale = 0.1
+	}
+
+	effect = {
+		lose_reforms = 2
+		change_government = monarchy
+	}
+
+	ai = {
+		factor = 1.0
+	}
+}
+
+reform_republic_native = {
+	icon = "elected_assembly"
+	allow_normal_conversion = yes
+
+	trigger = {
+		has_reform = start_sedentarization_reform
+		has_reform = democratic_structure_reform
+	}
+
+	modifiers = {
+		advisor_cost = -0.2
+	}
+
+	effect = {
+		lose_reforms = 2
+		change_government = republic
+	}
+
+	ai = {
+		factor = 1.0
+	}
+}
+
+reform_oligarchy_native = {
+	icon = "oligarchy"
+	allow_normal_conversion = yes
+
+	trigger = {
+		has_reform = start_sedentarization_reform
+		has_reform = meritocratic_structure_reform
+	}
+
+	modifiers = {
+		global_tax_modifier = 0.1
+	}
+
+	effect = {
+		lose_reforms = 2
+		change_government = theocracy
+	}
+
+	ai = {
+		factor = 1.0
 	}
 }
