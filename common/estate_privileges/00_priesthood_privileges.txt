@@ -61,7 +61,7 @@ estate_priesthood_legitimacy = {
 
 	can_select = {
 		always = yes
-		NOT = { legitimacy = 100 }
+		NOT = { legitimacy_equivalent = 100 }
 	}
 
 	# on_granted = { effects } 					
@@ -286,7 +286,7 @@ estate_priesthood_strict_religion = {
 	loyalty = 0.05
 
 	can_select = {
-		always = yes
+		NOT = { has_estate_privilege = estate_priesthood_protection_cults }
 	}
 
 	on_granted = {
@@ -300,9 +300,10 @@ estate_priesthood_strict_religion = {
 				
 	# on_invalid = { effects } 		
 
-	 penalties = {
+	penalties = {
 		tolerance_heretic = -1
 		tolerance_heathen = -1
+		religious_unity = -0.1
 	} 					
 	# conditional_modifier = { 					
 	# 	trigger = { triggers }
@@ -316,7 +317,7 @@ estate_priesthood_strict_religion = {
 	}
 
 	modifier_by_land_ownership = {
-		
+		global_missionary_strength = 0.02
 	}
 
 	# mechanics = { mechanics } 					
@@ -332,6 +333,70 @@ estate_priesthood_strict_religion = {
 		modifier = {
 			factor = 0
 			has_idea_group = syncrenism_ideas
+		}
+	}
+}
+
+estate_priesthood_protection_cults = {
+	icon = privilege_recruit_minister
+	land_share = 0
+	influence = 0.05
+	loyalty = 0.1
+
+	can_select = {
+		NOT = { has_estate_privilege = estate_priesthood_strict_religion }
+	}
+
+	on_granted = {
+		add_stability = 1
+	}
+	# can_revoke = { triggers } 
+
+	on_revoked = { 
+		add_stability = -1
+	} 		
+				
+	# on_invalid = { effects } 		
+
+	penalties = {
+		global_missionary_strength = -0.01
+		global_heretic_missionary_strength = -0.02
+	} 					
+	# conditional_modifier = { 					
+	# 	trigger = { triggers }
+	# 	modifier = { modifiers }
+	# 	is_bad = yes/no							
+	# }
+
+	benefits = {
+		tolerance_heathen = 1
+		tolerance_heretic = 1
+	}
+
+	modifier_by_land_ownership = {
+		religious_unity = 0.25
+	}
+
+	# mechanics = { mechanics } 					
+	# cooldown_years = int 						
+	# on_cooldown_expires = { effects }		
+
+	ai_will_do = {
+		factor = 1
+		modifier = {
+			factor = 3
+			crown_land_share = 50
+		}
+		modifier = {
+			factor = 3
+			has_idea_group = syncrenism_ideas
+		}
+		modifier = {
+			factor = 3
+			OR = {
+				has_reform = syncretism_reform
+				has_reform = cosmopolitanism_reform
+			}
 		}
 	}
 }
