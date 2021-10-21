@@ -615,50 +615,64 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		always = no
-	}
-
-	mean_time_to_happen = {
-		months = 1
+		FROM = { TAG = GOJ }
 	}
 
 	immediate = {
-		clr_global_flag = jun_goes_south_flag
+		set_saved_name = {
+			key = gojoseon_refugee_pretender
+			type = advisor
+			scope = FROM
+		}
 	}
 
 	option = {
 		name = "korean.7.a"
 		ai_chance = { factor = 90 }
-		every_known_country = {
-			limit = {
+		every_country = {
+			if = {
+				limit = {
+					capital_scope = {
+						OR = {
+							region = mahan_region
+							region = byeonhan_region
+							region = jinhan_region
+						}
+					}
+					NOT = { government = republic }
+					total_development = 120
+				}
 				capital_scope = {
-					OR = {
-						region = mahan_region
-						region = byeonhan_region
-						region = jinhan_region
+					spawn_rebels = {
+						type = pretender_rebels
+						size = 3
+						leader = gojoseon_refugee_pretender
 					}
 				}
-				OR = {
-					government = tribal
-					government = native
-				}
-				NOT = { total_development = 200 }
+				add_stability = -6
+				add_legitimacy = -50
+				collapse_nation = yes
 			}
-			add_stability = -6
-		}
-		every_known_country = {
-			limit = {
-				capital_scope = {
-					OR = {
-						region = mahan_region
-						region = byeonhan_region
-						region = jinhan_region
+			else_if = {
+				limit = {
+					capital_scope = {
+						OR = {
+							region = mahan_region
+							region = byeonhan_region
+							region = jinhan_region
+						}
 					}
 				}
-				total_development = 200
+				capital_scope = {
+					spawn_rebels = {
+						type = pretender_rebels
+						size = 3
+						leader = gojoseon_refugee_pretender
+					}
+				}
+				add_stability = -6
+				add_legitimacy = -50
 			}
-			add_stability = -6
-			collapse_nation = yes
 		}
 	}
 }
