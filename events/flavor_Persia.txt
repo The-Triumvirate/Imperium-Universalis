@@ -86,7 +86,10 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		TAG = ANH
+		OR = {
+			TAG = ANH
+			TAG = PSE
+		}
 		NOT = { started_in = 178.1.1 }
 		is_year = 170
 		NOT = { is_year = 190 }
@@ -642,17 +645,17 @@ country_event = {
 			tag = PSE
 			tag = ANH
 		}
-			has_country_flag = median_ambition_flag
-			war_score_against = {
-				who = MDI
-				value = 20
+		has_country_flag = median_ambition_flag
+		war_score_against = {
+			who = MDI
+			value = 20
+		}
+		MDI = {
+			ai = yes
+			capital_scope = {
+				controlled_by = ROOT
 			}
-			MDI = {
-				ai = yes
-				capital_scope = {
-					controlled_by = ROOT
-				}
-			}	
+		}	
 		army_size = MDI
 	}
 	
@@ -686,3 +689,62 @@ country_event = {
 	}
 }
 
+########################################################################################
+# Persia takes over Media
+########################################################################################
+country_event = {
+	id = persia.16
+	title = "persia.16.t"
+	desc = "persia.16.d"
+	picture = crucify
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = PSE
+		ai = yes
+		is_year = 170
+		NOT = { started_in = 204.1.1 }
+		OR = {
+			has_ruler = "Kouroush"
+			has_ruler = "Koroush II the Great"
+			mil = 6
+		}
+		exists = MDI
+		war_with = MDI
+		OR = {
+			MDI = {
+				capital_scope = { sieged_by = PSE }
+			}
+			war_score_against = {
+				who = MDI
+				value = 15
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "persia.16.a"
+		custom_tooltip = persia.ct.1
+		hidden_effect = {
+			inherit = MDI
+			if = {
+				limit = {
+					exists = SAG
+					SAG = { ai = yes }
+				}
+				inherit = SAG
+			}
+			every_subject_country = {
+				limit = {
+					NOT = { is_subject_of_type = tributary_state }
+				}
+				ROOT = { inherit = PREV }
+			}
+		}
+	}
+}
