@@ -1,36 +1,103 @@
 country_decisions = {
 	
-	 form_aulac_nation = {
+	form_aulac_nation = {
 		major = yes
 		potential = {
 			NOT = { exists = AUC }
+			NOT = { exists = VAL }
+			primary_culture = au_viet
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
 			OR = {
-				primary_culture = lac_viet
-				primary_culture = au_viet
+				area = cuu_chan_area
+				area = giao_chi_area
+				area = au_lac_area
 			}
 		}
 		allow = {
-			is_at_war =  no
-			#namcuong_area = { type = all owned_by = ROOT } # FIX! THROWS ERRORS
-			#vanlang_area = { type = all owned_by = ROOT } # FIX! THROWS ERRORS
+			is_subject = no
+			cuu_chan_area = {
+				type = all
+				owned_by = ROOT
+			}
+			giao_chi_area = {
+				type = all
+				owned_by = ROOT
+			}
+			au_lac_area = {
+				type = all
+				owned_by = ROOT
+			}
 		}
 		effect = {
 			change_tag = AUC
-			add_prestige = 25
-			if = {
+			add_prestige = 10
+			lacviet_region = {
 				limit = {
-					NOT = { government_rank = 3 }		
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
 				}
-				set_government_rank = 3
-				}
+				add_permanent_claim = AUC
 			}
+			if = { limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+			set_capital = 1673
+		}
 		ai_importance = 150
 		ai_will_do = {
-			factor = 1
-				modifier = {
-					factor = 0
-					tag = ROM
+			factor = 3
+		}
+	}
+
+	form_nanyue_kingdom = {
+		major = yes
+		potential = {
+			NOT = { exists = NAN }
+			OR = {
+				primary_culture = au_viet
+				primary_culture = lac_viet
+				culture_group = yue_group
+			}
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				region = jiaozhou_china
+				region = lacviet_region
+			}
+		}
+		allow = {
+			is_subject = no
+			jiaozhou_china = {
+				type = all
+				owned_by = ROOT
+			}
+			num_of_owned_provinces_with = {
+				region = lacviet_region
+				is_core = ROOT
+				value = 12
+			}
+		}
+		effect = {
+			change_tag = NAN
+			add_prestige = 20
+			lacviet_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
 				}
+				add_permanent_claim = NAN
+			}
+			country_event = { id = new_ideas.1 }
+			if = { limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+		}
+		ai_importance = 150
+		ai_will_do = {
+			factor = 3
 		}
 	}
 }
