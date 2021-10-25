@@ -1281,6 +1281,7 @@ country_decisions = {
 		potential = {
 			neither_tribal_nor_native_trigger = yes
 			has_indian_government = no
+			NOT = { has_country_flag = yudhishthiras_nightmare_country_flag }
 			OR = {
 				religion_group = brahmin_group
 				religion_group = eastern_religions
@@ -1365,6 +1366,160 @@ country_decisions = {
 				factor = 0
 				culture_group = hellenic
 			}
+		}
+	}
+
+	yudhistiras_nightmare = {
+		potential = {
+			religion = mleccha_religion
+			culture_group = mleccha_group
+			NOT = { has_country_flag = yudhishthiras_nightmare_country_flag }
+		}
+
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				superregion = dakshinapatha_superregion
+				superregion = uttarapatha_superregion
+			}
+		}
+
+		allow = {
+			OR = {
+				is_great_power = yes
+				government_rank = 4
+			}
+			total_development = 800
+			prestige = 100
+			legitimacy_equivalent = 100
+			num_of_owned_provinces_with = {
+				culture_group = mleccha_group
+				religion = mleccha_religion
+				value = 100
+			}
+			num_of_owned_provinces_with = {
+				value = 250
+				OR = {
+					superregion = dakshinapatha_superregion
+					superregion = uttarapatha_superregion
+				}
+				is_core = ROOT
+			}
+			NOT = {
+				any_country = {
+					culture_group = indian_group
+					OR = {
+						religion = buddhism
+						religion = jain
+						religion = ajivika
+						religion = sramana
+						religion = brahmin
+						religion = hinduism
+					}
+					total_development = ROOT
+					army_size = ROOT
+					prestige = ROOT
+				}
+			}
+		}
+
+		effect = {
+			change_adm = 1
+			change_dip = 1
+			change_mil = 1
+			add_splendor = 200
+			add_army_tradition = 25
+			add_stability = 1
+			override_country_name = mleccha_desa_country
+			if = {
+				limit = { government = tribal }
+				add_government_reform = mleccha_desa_tribal_reform
+			}
+			else_if = {
+				limit = { government = monarchy }
+				add_government_reform = mleccha_desa_monarchy_reform
+			}
+			else_if = {
+				limit = { government = republic }
+				add_government_reform = mleccha_desa_republic_reform
+			}
+			else = { add_government_reform = mleccha_desa_oligarchy_reform }
+			hidden_effect = {
+				uttarapatha_superregion = {
+					limit = {
+						NOT = { owned_by = ROOT }
+						NOT = { is_core = ROOT }
+					}
+					add_permanent_claim = ROOT
+				}
+				dakshinapatha_superregion = {
+					limit = {
+						NOT = { owned_by = ROOT }
+						NOT = { is_core = ROOT }
+					}
+					add_permanent_claim = ROOT
+				}
+				set_country_flag = yudhishthiras_nightmare_country_flag
+				every_country = {
+					if = {
+						limit = {
+							OR = {
+								culture_group = indian_group
+								culture_group = dravidian_group
+							}
+							OR = {
+								religion = buddhism
+								religion = jain
+								religion = ajivika
+								religion = sramana
+								religion = brahmin
+								religion = hinduism
+							}
+							capital_scope = {
+								OR = {
+									superregion = uttarapatha_superregion
+									superregion = dakshinapatha_superregion
+								}
+							}
+							NOT = { is_subject_of = ROOT }
+						}
+						reverse_add_casus_belli = {
+							type = cb_mission_invasion
+							target = ROOT
+						}
+						add_opinion = {
+							who = ROOT
+							modifier = mlecchas_rise_up_opinion
+						}
+						add_opinion = {
+							who = ROOT
+							modifier = mleccha_nation_opinion
+						}
+						add_prestige = -25
+						add_stability = -1
+					}
+					else_if = {
+						limit = {
+							culture_group = mleccha_group
+							religion = mleccha_religion
+							NOT = { is_subject_of = ROOT }
+						}
+						reverse_add_casus_belli = {
+							type = cb_vassalize_mission
+							target = ROOT
+						}
+						add_opinion = {
+							who = ROOT
+							modifier = declared_mleccha_desa
+						}
+					}
+				}
+			}
+		}
+
+		ai_importance = 100
+		ai_will_do = {
+			factor = 2
 		}
 	}
 }
