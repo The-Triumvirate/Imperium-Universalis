@@ -596,6 +596,7 @@ country_decisions = {
 		potential = {
 			religion_group = brahmin_group
 			NOT = { has_ruler_modifier = disregarding_ahimsa_modifier }
+			NOT = { has_country_flag = supremacy_dharma_policy_flag }
 		}
 
 		allow = {
@@ -1520,6 +1521,152 @@ country_decisions = {
 		ai_importance = 100
 		ai_will_do = {
 			factor = 2
+		}
+	}
+
+	supremacy_dharma_policy = {
+		potential = {
+			neither_tribal_nor_native_trigger = yes
+			OR = {
+				religion = ajivika
+				religion = buddhism
+				religion = jain
+				religion = hinduism
+			}
+			has_indian_government = yes
+			NOT = { has_country_flag = supremacy_dharma_policy_flag }
+			NOT = { has_ruler_flag = supremacy_dharma_policy_ruler_flag }
+			NOT = { has_ruler_flag = abolish_supremacy_dharma_policy_ruler_flag }
+		}
+
+		allow = {
+			NOT = { has_reform = inherent_divinity_reform }
+			adm = 6
+			adm_power = 250
+			absolutism = 30
+			adm_tech = 24
+			prestige = 60
+			stability = 0
+			tolerance_to_this = 4
+			OR = {
+				num_of_cities = 120
+				total_development = 400
+			}
+		}
+
+		effect = {
+			add_adm_power = -250
+			add_absolutism = -10
+			add_corruption = -10
+			add_war_exhaustion = -20
+			add_stability = 1
+			add_country_modifier = {
+				name = supremacy_dharma_policy
+				duration = -1
+			}
+			hidden_effect = {
+				set_country_flag = supremacy_dharma_policy_flag
+				set_ruler_flag = supremacy_dharma_policy_ruler_flag
+				capital_scope = { area = { change_religion = ROOT } }
+				every_known_country = {
+					limit = {
+						capital_scope = { continent = india }
+						OR = {
+							religion = ajivika
+							religion = buddhism
+							religion = jain
+							religion = hinduism
+						}
+					}
+					add_opinion = {
+						who = ROOT
+						modifier = dharmaraja_opinion
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 0
+				ruler_has_personality = conqueror_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = pious_personality
+			}
+			modifier = {
+				factor = 3
+				average_unrest = 1
+			}
+			modifier = {
+				factor = 2
+				tolerance_to_this = 5
+			}
+		}
+	}
+	
+	abolish_supremacy_dharma_policy = {
+		potential = {
+			has_country_flag = supremacy_dharma_policy_flag
+			NOT = { has_ruler_flag = supremacy_dharma_policy_ruler_flag }
+			NOT = { has_ruler_flag = abolish_supremacy_dharma_policy_ruler_flag }
+		}
+
+		allow = {
+			mil = 3
+			stability = 1
+			mil_power = 250
+			absolutism = 30
+		}
+
+		effect = {
+			change_mil = 1
+			add_stability = -2
+			add_mil_power = -250
+			add_absolutism = -10
+			remove_country_modifier = supremacy_dharma_policy
+			hidden_effect = {
+				clr_country_flag = supremacy_dharma_policy_flag
+				set_ruler_flag = abolish_supremacy_dharma_policy_ruler_flag
+				every_known_country = {
+					limit = {
+						has_opinion_modifier = {
+							who = ROOT
+							modifier = dharmaraja_opinion
+						}
+					}
+					remove_opinion = {
+						who = ROOT
+						modifier = dharmaraja_opinion
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 2
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = conqueror_personality
+			}
+			modifier = {
+				factor = 0
+				ruler_has_personality = pious_personality
+			}
+			modifier = {
+				factor = 2
+				NOT = { tolerance_to_this = 5 }
+			}
 		}
 	}
 }
