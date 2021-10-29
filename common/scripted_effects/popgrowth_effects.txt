@@ -166,6 +166,112 @@ popgrowth_cleanup_world = {
 	
 }
 
+##########
+#	MIGRATION EFFECTS, the cornerstone of these mechanics. Hard to understand, but does wonders
+##########
+
+PG_update_inforange = {
+	# Set main province's value, and compare
+	export_to_variable = { which = tp_base value = province_trade_power } set_variable = { which = tp_compare which = tp_base }
+	export_to_variable = { which = tp_infomod value = modifier:local_institution_spread } change_variable = { tp_infomod = 0.5 } # info: base -50%
+	if = { limit = { check_variable = { tp_infomod = 0.9 } } set_variable = { which = tp_infomod value = 0.9 } } # max 90%, at least 10% attrition
+	
+	# Look at each of the neighbours values, and "compare" while updating
+	every_neighbor_province = {
+		export_to_variable = { which = tp_compare value = province_trade_power }  
+		set_variable = { which = tp_infomod which = PREV } multiply_variable = { which = tp_compare which = tp_infomod } # use info % from base prov
+		if = { limit = { check_variable = { which = tp_old which = tp_compare } } set_variable = { which = tp_compare which = tp_old } }
+		if = {
+			limit = { check_variable = { which = tp_compare which = PREV } }	# here which prev = the original province
+			PREV = { set_variable = { which = tp_compare which = PREV } } 		# here which prev = the neighbor, so, moving the neighbors to you
+		}
+	}
+	set_variable = { which = PG_info_range which = tp_compare } set_variable = { which = tp_old which = tp_compare }
+	set_variable = { which = tp_infodisp which = tp_infomod } 	multiply_variable = { which = tp_old which = tp_infomod }
+	# compare after passing all neighboring values (highest possible value). Final will be used for travel; old to check later on
+	
+}
+
+PG_find_target_province = {
+	if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 4	# very high CoT
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } }	check_variable = { urban_growth = 1.2 }
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 4
+			}
+			save_event_target_as = PG_target
+		}
+	}
+	else_if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2	# "normal" CoT
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } }	check_variable = { urban_growth = 1.2 }
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2
+			}
+			save_event_target_as = PG_target
+		}
+	}
+	else_if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { has_province_modifier = PG_new_pop } # any other place
+				OR = { check_variable = { rural_growth = 1.2 } check_variable = { urban_growth = 1.2 } }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { has_province_modifier = PG_new_pop }
+				OR = { check_variable = { rural_growth = 1.2 } check_variable = { urban_growth = 1.2 } }			
+			}
+			save_event_target_as = PG_target
+		}
+	}
+	else = { 	# nowhere to go -> starvation! 
+		set_province_flag = PG_starvation_start
+	}
+
+}
+
+mig_dist_cost = {
+	if = { 		limit = { province_distance = { who = PREV distance = 1200 } } 	PREV = { owner = { add_treasury = -100 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 750 } } 	PREV = { owner = { add_treasury = -70 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { owner = { add_treasury = -60 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 400 } } 	PREV = { owner = { add_treasury = -50 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 300 } } 	PREV = { owner = { add_treasury = -40 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { owner = { add_treasury = -30 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { owner = { add_treasury = -20 } } }
+	else = { 																	PREV = { owner = { add_treasury = -10 } } }
+	
+}
+
+mig_rural_to_urban = {
+	PREV = { subtract_variable = { which = mig_size value = $no$ } add_base_manpower = -$no$ 	change_variable = { PGS_rur_emig = $no$ } }
+	add_base_production = $no$ 	add_province_modifier = { name = pg_new_pop duration = 365 }	change_variable = { PGS_urb_imig = $no$ }
+	
+}
+
+mig_rural_to_rural = {
+	PREV = { subtract_variable = { which = mig_size value = $no$ } add_base_manpower = -$no$  	change_variable = { PGS_rur_emig = $no$ } }
+	add_base_manpower = $no$ 	add_province_modifier = { name = pg_new_pop duration = 365 }	change_variable = { PGS_urb_imig = $no$ }
+	
+}
+
+##########
+#	STATISTICS EFFECTS, yes, we love statistics! Here go all the code that aggregates the information in your save game
+##########
+
 popgrowth_stats_basic = {
 
 	export_to_variable = { which = rural_now_$regid$ value = base_manpower } set_variable = { which = total_cap_$regid$ which = rural_capacity }
@@ -183,6 +289,7 @@ popgrowth_stats_basic = {
 	}
 
 }
+
 
 popgrowth_stats_old = {
 	
@@ -239,105 +346,6 @@ adjust_pops_to_max = {
 }
 
 
-mig_dist_cost = {
-	if = { 		limit = { province_distance = { who = PREV distance = 750 } } 	PREV = { owner = { add_treasury = -100 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { owner = { add_treasury = -70 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 400 } } 	PREV = { owner = { add_treasury = -50 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 300 } } 	PREV = { owner = { add_treasury = -40 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { owner = { add_treasury = -30 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { owner = { add_treasury = -20 } } }
-	else = { 																	PREV = { owner = { add_treasury = -10 } } }
-	
-}
 
-mig_rural_to_urban = {
-	PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-	add_base_production = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-	
-}
-
-mig_rural_to_rural = {
-	PREV = { subtract_variable = { which = mig_size value = 1 } add_base_manpower = -1  }
-	add_base_manpower = 1 add_province_modifier = { name = pg_new_pop duration = 365 }
-	
-}
-
-PV_find_goods_price = {
-	trigger_switch = {
-		on_trigger = trade_goods
-		grain = { 		set_variable = { which = PV_price value = 0.75 } }
-		wine = { 		set_variable = { which = PV_price value = 3.00 } }
-		wool = { 		set_variable = { which = PV_price value = 1.00 } }
-		cloth = { 		set_variable = { which = PV_price value = 2.5 } }
-		fish = { 		set_variable = { which = PV_price value = 1.5 } }
-		
-		fur = { 		set_variable = { which = PV_price value = 2.5 } }
-		salt = { 		set_variable = { which = PV_price value = 3.0 } }
-		naval_supplies = { set_variable = { which = PV_price value = 2.0 } }
-		copper = { 		set_variable = { which = PV_price value = 4.0 } }
-		gold = { 		set_variable = { which = PV_price value = 8.5 } }
-		
-		iron = { 		set_variable = { which = PV_price value = 3.5 } }
-		horses = { 		set_variable = { which = PV_price value = 2.5 } }
-		spices = { 		set_variable = { which = PV_price value = 3.5 } }
-		fruits = { 		set_variable = { which = PV_price value = 2.0 } }
-		amber = { 		set_variable = { which = PV_price value = 4.0 } }
-		
-		silver = { 		set_variable = { which = PV_price value = 7.0 } }
-		marble = { 		set_variable = { which = PV_price value = 4.0 } }
-		olive = { 		set_variable = { which = PV_price value = 2.5 } }
-		paper = { 		set_variable = { which = PV_price value = 5.0 } }
-		ceramic = { 	set_variable = { which = PV_price value = 2.0 } }
-		
-		meat_animals = { set_variable = { which = PV_price value = 1.5 } }
-		dyes = { 		set_variable = { which = PV_price value = 4.0 } }
-		honey = { 		set_variable = { which = PV_price value = 2.0 } }
-		lead = { 		set_variable = { which = PV_price value = 2.0 } }
-		glas = { 		set_variable = { which = PV_price value = 3.0 } }
-		
-		silk = { 		set_variable = { which = PV_price value = 4.5 } }
-		olibanum = { 	set_variable = { which = PV_price value = 4.0 } }
-		pearls = { 		set_variable = { which = PV_price value = 4.0 } }
-		exotic_animals = { set_variable = { which = PV_price value = 3.5 } }
-		herbs = { 		set_variable = { which = PV_price value = 2.0 } }
-		
-		ivory = { 		set_variable = { which = PV_price value = 3.5 } }
-		jade = { 		set_variable = { which = PV_price value = 5.0 } }
-		tin = { 		set_variable = { which = PV_price value = 4.0 } }
-		rice = { 		set_variable = { which = PV_price value = 0.5 } }
-		gems = { 		set_variable = { which = PV_price value = 5.0 } }
-		
-		cotton = { 		set_variable = { which = PV_price value = 3.0 } }
-		tar_good = { 	set_variable = { which = PV_price value = 3.0 } }
-		tea_good = { 	set_variable = { which = PV_price value = 2.5 } }
-		opium = { 		set_variable = { which = PV_price value = 3.0 } }
-		metalware = { 	set_variable = { which = PV_price value = 5.75 } }
-		
-		sugar = { 		set_variable = { which = PV_price value = 4.0 } }
-		
-	}
-	
-	if = { limit = { has_global_flag = amber_price_increased 	trade_goods = amber }			multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = lead_price_increased 	trade_goods = lead } 			multiply_variable = { PV_price = 1.60 } }
-	if = { limit = { has_global_flag = paper_price_changed 		trade_goods = paper }			multiply_variable = { PV_price = 0.75 } }
-	if = { limit = { has_global_flag = paper_price_changed 		trade_goods = meat_animals }	multiply_variable = { PV_price = 1.10 } }
-	if = { limit = { has_global_flag = wood_price_changed 		trade_goods = naval_supplies }	multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = marble_price_changed 	trade_goods = marble }			multiply_variable = { PV_price = 1.40 } }
-	if = { limit = { has_global_flag = olibanum_price_changed 	trade_goods = olibanum }		multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = ivory_price_changed 		trade_goods = ivory }			multiply_variable = { PV_price = 1.20 } }
-	if = { limit = { has_global_flag = exotic_animals_price_changed	trade_goods = exotic_animals }	multiply_variable = { PV_price = 1.5 } }
-	if = { limit = { has_global_flag = iron_price_changed 		trade_goods = iron }			multiply_variable = { PV_price = 1.25 } }
-	if = { limit = { has_global_flag = iron_price_changed 		trade_goods = copper }			multiply_variable = { PV_price = 0.75 } }
-	if = { limit = { has_global_flag = glass_price_changed 		trade_goods = glas }			multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = glass_price_changed 		trade_goods = ceramic }			multiply_variable = { PV_price = 0.90 } }
-	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = cloth }			multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = wool }			multiply_variable = { PV_price = 1.25 } }
-	if = { limit = { has_global_flag = cloths_price_changed 	trade_goods = dyes }			multiply_variable = { PV_price = 1.50 } }
-	if = { limit = { has_global_flag = extiction_of_the_european_lion trade_goods = exotic_animals } multiply_variable = { PV_price = 1.25 } }
-	
-	# I could have done a trigger_switch, but then I needed to also filter by trade good...
-	
-	
-}
 
 
