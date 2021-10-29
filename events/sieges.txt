@@ -167,11 +167,15 @@ country_event = {
 		# Hard enslave		 -20   |	50%			|	10%	|	25%	 	|	min cap 40/60/80 |	80%
 		# Destroy city		 -60   |	90%			|	40% |	60%	 	|	min cap 40/60/80 |	40%
 		# Delenda Est	    -100   |	90%, rival	|	60%	|  100% 	|	all but 1 pop	 |	20%
+		# nothing			   0
+		# Liberate (TBD)
 	
 	option = {
 		name = "sieges.1.1"		# TRIBUTE (20% value, 5% devastation, no pops lost or enslaved)
-		ai_chance = {
-			factor = 100
+		
+		ai_chance = {			# AI chance: will do if lacks military power
+			factor = 30
+			modifier = {	factor = 2.0	NOT = { mil_power = 50 } }
 		}
 		trigger = {
 			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active
@@ -187,15 +191,18 @@ country_event = {
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }	
-			money_income = yes
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 		}
-		add_mil_power = -5
+		
 	}
 	option = {
 		name = "sieges.1.2"		# SACK (60% value, 30% devastation, no pops lost or enslaved)
-		ai_chance = {
-			factor = 100
+		
+		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low sack ratio, to economize mil power
+			factor = 30
+			modifier = { factor = 0.5 mil_power = 50 }
+			modifier = { factor = 2.0 FROM = { NOT = { check_variable = { sack_ratio = 0.6 } } } }
+			modifier = { factor = 2.0 check_variable = { var_slaves_pop_ratio = 50 } }
 		}
 		trigger = { 
 			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active, then it is compulsory
@@ -211,20 +218,22 @@ country_event = {
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }
-			money_income = yes
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 		}
 		add_mil_power = -20
 	}
 	option = {
-		name = "sieges.1.3"		# DESTROY (40% value, 60% devastation, same as Soft Enslave)
-		ai_chance = {
-			factor = 100
+		name = "sieges.1.3"		# DESTROY (40% value, 60% devastation, slaves: same as Soft Enslave)
+		
+		ai_chance = {			# AI chance: will do if has enough power, and the sack ratio is high. It will "aim to kill"
+			factor = 30
+			modifier = { factor = 2.5 mil_power = 75 }
+			modifier = { factor = 2.5 FROM = { check_variable = { sack_ratio = 0.6 } } }
 		}
 		trigger = { 
 			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 			OR = {
-				NOT = {	FROM = { owner = { reverse_has_opinion = { who = ROOT value = -100 } } } }	# less than -100 opinion
+				NOT = {	FROM = { owner = { reverse_has_opinion = { who = ROOT value = -100 } } } }	# less than -100 opinion, or rival
 				FROM = { owner = { is_rival = ROOT } }
 			}
 		}
@@ -239,8 +248,7 @@ country_event = {
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }	
-			money_income = yes
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 			enslave_effect = { type = soft days = 40 }
 		}
 		add_mil_power = -60
@@ -248,8 +256,12 @@ country_event = {
 	
 	option = {
 		name = "sieges.1.4"		# SOFT ENSLAVEMENT (5% value, 10% devastation, pops above 60/40/20% capacity will be lost or enslaved)
-		ai_chance = {
-			factor = 100
+		
+		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low sack ratio, to economize mil power
+			factor = 40
+			modifier = { factor = 0.5 mil_power = 50 }
+			modifier = { factor = 0.7 FROM = { NOT = { check_variable = { sack_ratio = 0.6 } } } }
+			modifier = { factor = 4.0 NOT = { check_variable = { var_slaves_pop_ratio = 40 } } }	# priority to enslave, unless it can destroy
 		}
 		trigger = { 
 			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active, then it is compulsory
@@ -261,6 +273,7 @@ country_event = {
 					has_idea  = focus_manuever_idea		has_idea  = own_forces_reserves_idea	has_idea  = military_infrastructure_idea
 					tag = ASY	# as always
 					
+					# remember to copy the same conditions in the hard enslave, but without the NOT
 				}
 			}
 		}
@@ -276,9 +289,7 @@ country_event = {
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }
-			money_income = yes
-			
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 			enslave_effect = { type = soft days = 60 }		# uses same scripted effect for both
 			
 		}
@@ -286,8 +297,11 @@ country_event = {
 	}
 	option = {
 		name = "sieges.1.5"		# HARD ENSLAVEMENT (10% value, 25% devastation, pops above 60/40/20% capacity will be lost or enslaved)
-		ai_chance = {
-			factor = 100
+		
+		ai_chance = {			# AI chance: same as soft enslave, but higher. 
+			factor = 40
+			modifier = { factor = 1.5 FROM = { NOT = { check_variable = { sack_ratio = 0.6 } } } }
+			modifier = { factor = 4.0 NOT = { check_variable = { var_slaves_pop_ratio = 75 } } }	# 75% instead of 40, will go to higher ratio
 		}
 		trigger = {
 			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active, then it is compulsory
@@ -311,8 +325,7 @@ country_event = {
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }
-			money_income = yes
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 			
 			enslave_effect = { type = hard days = 90 }		# uses same scripted effect for both
 		}
@@ -320,8 +333,9 @@ country_event = {
 	}
 	option = {
 		name = "sieges.1.6"		# DELENDA EST (60% value, 100% devastation, all pops lost but one, 20% enslaved
-		ai_chance = {
+		ai_chance = {			# AI chance: ALWAYS
 			factor = 100
+			modifier = { factor = 5.0 FROM = { check_variable = { sack_ratio = 0.6 } } }
 		}
 		trigger = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }
 		hidden_effect = {
@@ -334,21 +348,19 @@ country_event = {
 				
 				set_variable = { which = col_value which = loot_value } multiply_variable = { col_value = 0.9 }	# special, 90% destroyed
 				while = { limit = { check_variable = { col_value = 10 } } collateral_damage_eff = { hd = 90 } }	# See Scripted Effects, very cool
-				add_province_modifier = { name = SS_was_delenda duration = 18250 }	# 50 years, so devastation will start go down in two generations
+				add_province_modifier = { name = SS_was_delenda duration = 18250 }	# 50 years, devastation will START to go down in two generations
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }
-			money_income = yes
-			
+			set_variable = { which = cash_income which = FROM }		money_income = yes
 			enslave_delenda_effect = yes
 		}
-		add_mil_power = -100
+		add_mil_power = -100	# not added to trigger, so you can go negative if the reason is good
 	}
 	option = {
 		name = "sieges.1.7"		# Leave them be
 		ai_chance = {
-			factor = 100
+			factor = 0
 		}
 		
 	}
@@ -378,8 +390,31 @@ country_event = {
 			set_variable = { which = SS_u_base value = 0 } 	set_variable = { which = SS_u_lost value = 0 } 
 			set_variable = { which = SS_u_min value = 0 } 
 			
-			
-			
+			if = {
+				limit = { OR = {
+				has_province_flag = small_bath_lost				has_province_flag = big_bath_lost			has_province_flag = mathematician_academy_lost
+				has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost			
+				has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+				has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+				has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+				has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+				has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+				has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+				has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+				has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+				has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+				has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+				has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+				has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+				has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+				has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+				has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+				has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+				has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+				has_province_flag = hospital_lost
+				} }
+				add_building = building_ruins
+			}
 		}
 		
 	}
@@ -391,7 +426,7 @@ country_event = {
 	title = "sieges.2.t"
 	desc = "sieges.2.d"
 	picture = looting
-	hidden = yes				# Hidden! only one options
+	hidden = yes				# Hidden! only one option
 	is_triggered_only = yes		
 								# Automatic event, for low-development provinces. Will have very small effects: (only 5% population enslaved, 5% value of buildings, no destruction, and 10% devastation). It will be seen as "Has been raided"
 	trigger = {
@@ -464,16 +499,14 @@ country_event = {
 				set_variable = { which = SS_looted_value which = sack_lost }	set_variable = { which = SS_devastation_done which = prov_devst }
 				while = { limit = { check_variable = { prov_devst = 1 } } 		subtract_variable = { prov_devst = 1 } add_devastation = 1 }
 				set_variable = { which = cash_income which = sack_lost }
-				add_province_modifier = { name = SS_was_raided duration = 720 }	# to avoid being hit again in X days
-				set_variable = { which = SS_slaves_taken which = SS_simple_total }
+				add_province_modifier = { name = SS_was_raided duration = 720 }		# to avoid being hit again in X days
+				set_variable = { which = SS_slaves_taken which = SS_simple_total }	# slaves taken: to province modifier
 			}
 			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM }
-			money_income = yes
+			set_variable = { which = cash_income which = FROM } 	money_income = yes
 			
-			set_variable = { which = SS_simple_total which = FROM }
-			change_variable = { which = slaves which = SS_simple_total }
+			set_variable = { which = SS_simple_total which = FROM } change_variable = { which = slaves which = SS_simple_total }
 			set_variable = { which = SS_simple_total value = 0 }
 			
 		}
@@ -499,7 +532,7 @@ country_event = {
 	
 }
 
-country_event = {
+country_event = {		# SIEGES MENU
 	id = sieges.3
 	title = "sieges.3.t"
 	desc = "sieges.3.d"
@@ -548,7 +581,7 @@ country_event = {
 		set_global_flag	= siege_cities_6
 	}
 	option = {								
-		name = "sieges.3.6"	# Remove everything, no events will fire. There will not be any continous source of slaves. 
+		name = "sieges.3.6"	# Remove everything, no events will fire. There will not be any continous source of slaves, and will decrease every year. 
 		clr_global_flag = siege_unrestricted
 		clr_global_flag	= siege_cities_15
 		clr_global_flag = siege_cities_10
@@ -570,10 +603,105 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {							
-		name = "sieges.4.1"	# Explains how this mechanics work
+		name = "sieges.4.1"	# Explains how this mechanics work. 
 		
 		
 	}
 	
 }
+
+country_event = {
+	id = sieges.5
+	title = "sieges.5.t"
+	desc = "sieges.5.d"
+	picture = wall_rebuilding
+	is_triggered_only = yes
+	
+	option = {
+		name = "sieges.5.1"		# TRADE AND ROADS
+		
+		trigger = {		# will affect all provinces with markets and roads. ALWAYS destroys the building repairs planned; ruins are added later
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = small_market_lost	has_province_flag = medium_market_lost	has_province_flag = great_market_lost
+					has_province_flag = gravel_road_lost	has_province_flag = paved_road_lost		has_province_flag = imperial_road_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			# Add each bulding affected
+			trigger_switch = {
+				on_trigger = has_province_flag
+				small_market_lost = { 	clr_province_flag = small_market_lost 	add_building = small_market  ROOT = { add_treasury = -150 } }
+				medium_market_lost = { 	clr_province_flag = medium_market_lost 	add_building = medium_market ROOT = { add_treasury = -225 } }
+				great_market_lost = { 	clr_province_flag = great_market_lost 	add_building = great_market  ROOT = { add_treasury = -300 } }
+			}
+			trigger_switch = {
+				on_trigger = has_province_flag
+				gravel_road_lost = { 	clr_province_flag = gravel_road_lost 	add_building = gravel_road 	 ROOT = { add_treasury = -187 } }
+				paved_road_lost = { 	clr_province_flag = paved_road_lost 	add_building = paved_road 	 ROOT = { add_treasury = -300 } }
+				imperial_road_lost = { 	clr_province_flag = imperial_road_lost 	add_building = imperial_road ROOT = { add_treasury = -375 } }
+			}
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.2"		# TEMPLES
+		
+		trigger = {	
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { has_province_flag = shrine_lost	has_province_flag = small_temple_lost	has_province_flag = great_temple_lost }
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			# Add each bulding affected
+			trigger_switch = {
+				on_trigger = has_province_flag
+				shrine_lost = { 		clr_province_flag = shrine_lost 		add_building = shrine 		ROOT = { add_treasury = -150 } }
+				small_temple_lost = { 	clr_province_flag = small_temple_lost 	add_building = small_temple ROOT = { add_treasury = -225 } }
+				great_temple_lost = { 	clr_province_flag = great_temple_lost 	add_building = great_temple ROOT = { add_treasury = -300 } }
+
+			}
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	
+	option = {
+		name = "sieges.5.9"		# Tear down repairs and clean lots. 5% cost of everything, and 0.5% in ADM points. 
+		every_owned_province = { 
+			limit = { has_building = repairs_planned }
+			SS_clear_land_cost = yes
+			if = { 	limit = { devastation = 50 } add_province_modifier = { name = SS_cleaning_2 duration = 2920 } }
+			else = { 							 add_province_modifier = { name = SS_cleaning_1 duration = 1460 } }
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.10"
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+		
+	}
+	
+	after = {
+		# resets the ruins building, in case something is yet to be repaired. 
+		# Remember that in the next slaves event, if they have more than 5 years, will be gone
+		every_owned_province = {
+			SS_find_existing_ruins = yes
+		
+		}
+	
+	}
+}
+
 

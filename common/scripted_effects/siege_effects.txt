@@ -1,7 +1,7 @@
 ####
 #	SCRIPTED EFFECTS for the Siege events. Colateral damage, enslavement, etc
-#	This code uses heavily the scripted effect and "dynamic inputs", where you can add $xx$, and determine this in the event. 
-#	In your event if you write, insteaf of a simple scripted effect ( collateral damage = yes) you use this: ( collateral = { hd = 20 } ) it will use this 20 inside the $hd$ field. This means that we can use the same effect below, but dependent on several % of 20, 40, 60, etc, withouth having to write one effect for each. 
+#	This code uses heavily the scripted effect and "dynamic inputs", where you can add $xx$ (dollar key), and determine this in the event. 
+#	In your event if you write, instead of a simple scripted effect ( collateral damage = yes ) you use this: ( collateral = { hd = 20 } ) it will use this 20 inside the $hd$ field. This means that we can use the same effect below, but dependent on several % of 20, 40, 60, etc, withouth having to write one effect for each. 
 #	If you have doubts or comments on that, contact us on Discord. Here's the wiki resources: https://eu4.paradoxwikis.com/Commands#Scripted_Effects 
 ####
 
@@ -324,3 +324,126 @@ find_total_loot_value = {
 	}
 }
 	
+SS_find_existing_ruins = {
+	if = {
+		limit = { 
+			OR = {
+				has_province_flag = small_bath_lost				has_province_flag = big_bath_lost		has_province_flag = mathematician_academy_lost
+				has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost	
+				has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+				has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+				has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+				has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+				has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+				has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+				has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+				has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+				has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+				has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+				has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+				has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+				has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+				has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+				has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+				has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+				has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+				has_province_flag = hospital_lost
+			}
+		}
+		add_building = building_ruins
+	}
+	
+}
+
+SS_clear_land_cost = {
+	while = {
+		limit = {
+			OR = {
+				has_province_flag = small_bath_lost				has_province_flag = big_bath_lost		has_province_flag = mathematician_academy_lost
+				has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost	
+				has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+				has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+				has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+				has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+				has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+				has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+				has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+				has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+				has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+				has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+				has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+				has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+				has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+				has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+				has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+				has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+				has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+				has_province_flag = hospital_lost
+			}
+		}
+		trigger_switch = {
+			on_trigger = has_province_flag
+			small_bath_lost = { clr_province_flag = small_bath_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			big_bath_lost = { clr_province_flag = big_bath_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			mathematician_academy_lost = { clr_province_flag = mathematician_academy_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			philosophers_academy_lost = { clr_province_flag = philosophers_academy_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			military_academy_lost = { clr_province_flag = military_academy_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			great_library_lost = { clr_province_flag = great_library_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			library_lost = { clr_province_flag = library_lost  ROOT = { add_treasury = -17 add_adm_power = -1 } }
+			embassy_lost = { clr_province_flag = embassy_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			diplomats_quarter_lost = { clr_province_flag = diplomats_quarter_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			small_townhall_lost = { clr_province_flag = small_townhall_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			big_townhall_lost = { clr_province_flag = big_townhall_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			government_palace_lost = { clr_province_flag = government_palace_lost  ROOT = { add_treasury = -40 add_adm_power = -4 } }
+			government_district_lost = { clr_province_flag = government_district_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			small_grain_depot_lost = { clr_province_flag = small_grain_depot_lost  ROOT = { add_treasury = -15 add_adm_power = -1 } }
+			big_grain_depot_lost = { clr_province_flag = big_grain_depot_lost  ROOT = { add_treasury = -30 add_adm_power = -3 } }
+			small_market_lost = { clr_province_flag = small_market_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			medium_market_lost = { clr_province_flag = medium_market_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			great_market_lost = { clr_province_flag = great_market_lost  ROOT = { add_treasury = -30 add_adm_power = -3 } }
+			small_harbor_lost = { clr_province_flag = small_harbor_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			big_harbor_lost = { clr_province_flag = big_harbor_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			harbor_district_lost = { clr_province_flag = harbor_district_lost  ROOT = { add_treasury = -30 add_adm_power = -3 } }
+			small_army_camp_lost = { clr_province_flag = small_army_camp_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			small_military_settlement_lost = { clr_province_flag = small_military_settlement_lost  ROOT = { add_treasury = -17 add_adm_power = -1 } }
+			big_military_settlement_lost = { clr_province_flag = big_military_settlement_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			small_conscription_center_lost = { clr_province_flag = small_conscription_center_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			small_water_irrigation_lost = { clr_province_flag = small_water_irrigation_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			big_water_irrigation_lost = { clr_province_flag = big_water_irrigation_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			big_estate_lost = { clr_province_flag = big_estate_lost  ROOT = { add_treasury = -27 add_adm_power = -2 } }
+			craftsman_lost = { clr_province_flag = craftsman_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			small_workshop_lost = { clr_province_flag = small_workshop_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			artisan_district_lost = { clr_province_flag = artisan_district_lost  ROOT = { add_treasury = -27 add_adm_power = -2 } }
+			quarry_lost = { clr_province_flag = quarry_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			small_mine_lost = { clr_province_flag = small_mine_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			big_mine_lost = { clr_province_flag = big_mine_lost  ROOT = { add_treasury = -27 add_adm_power = -2 } }
+			small_shipyard_lost = { clr_province_flag = small_shipyard_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			big_shipyard_lost = { clr_province_flag = big_shipyard_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			military_monument_lost = { clr_province_flag = military_monument_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			naval_monument_lost = { clr_province_flag = naval_monument_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			imperial_palace_lost = { clr_province_flag = imperial_palace_lost  ROOT = { add_treasury = -100 add_adm_power = -10 } }
+			palace_garden_lost = { clr_province_flag = palace_garden_lost  ROOT = { add_treasury = -100 add_adm_power = -10 } }
+			taxman_lost = { clr_province_flag = taxman_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			tax_collector_lost = { clr_province_flag = tax_collector_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			shrine_lost = { clr_province_flag = shrine_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			small_temple_lost = { clr_province_flag = small_temple_lost  ROOT = { add_treasury = -15 add_adm_power = -1 } }
+			great_temple_lost = { clr_province_flag = great_temple_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			small_theater_lost = { clr_province_flag = small_theater_lost  ROOT = { add_treasury = -15 add_adm_power = -1 } }
+			big_theater_lost = { clr_province_flag = big_theater_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			great_theater_lost = { clr_province_flag = great_theater_lost  ROOT = { add_treasury = -35 add_adm_power = -3 } }
+			huge_theater_lost = { clr_province_flag = huge_theater_lost  ROOT = { add_treasury = -50 add_adm_power = -5 } }
+			gravel_road_lost = { clr_province_flag = gravel_road_lost  ROOT = { add_treasury = -12 add_adm_power = -1 } }
+			paved_road_lost = { clr_province_flag = paved_road_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+			imperial_road_lost = { clr_province_flag = imperial_road_lost  ROOT = { add_treasury = -25 add_adm_power = -2 } }
+			herbalist_lost = { clr_province_flag = herbalist_lost  ROOT = { add_treasury = -10 add_adm_power = -1 } }
+			medicus_lost = { clr_province_flag = medicus_lost  ROOT = { add_treasury = -15 add_adm_power = -1 } }
+			hospital_lost = { clr_province_flag = hospital_lost  ROOT = { add_treasury = -20 add_adm_power = -2 } }
+
+
+		}
+	}
+}
+
+
+
+
