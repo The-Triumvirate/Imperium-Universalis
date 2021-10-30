@@ -640,15 +640,34 @@ on_dismantle_revolution = {
 
 # province
 on_adm_development = {
-	
+	add_base_tax = -1
 }
 
 # province
 on_dip_development = {
+	# Must add some limit in case there is only 0/0/1. If there is 0/0/2, it will transfer to commoner
+	if = { 
+		limit = { NOT = { base_production = 2 } base_manpower = 2 }		# 0/0/2+
+		add_base_manpower = -1
+		add_province_modifier = { name = PG_commoner002 days = 1080 }
+	}
+	else_if = {
+		limit = { NOT = { base_production = 2 } NOT = { base_manpower = 2 } }	# 0/0/1
+		add_province_modifier = { name = PG_commoner001 days = 1080 }
+	}
+	else = { add_base_production = -1 }
+	
+	events = {
+		population_capacity.8
+	}
 }
 
 # province
-on_mil_development = {
+on_mil_development = {		# manpower. There is always one, so we don't risk on having zero value, as it probably happens in production. 
+	add_base_manpower = -1
+	events = {
+		population_capacity.8
+	}
 }
 
 on_overextension_pulse = {
