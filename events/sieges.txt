@@ -610,12 +610,17 @@ country_event = {
 	
 }
 
-country_event = {
+country_event = {	# REPAIR EVENT, happens once the "repairs planned" buildings have been used. 
 	id = sieges.5
 	title = "sieges.5.t"
 	desc = "sieges.5.d"
 	picture = wall_rebuilding
 	is_triggered_only = yes
+	
+	# Some introduction
+	# In the event of a siege, several buildings may be colaterally destroyed. These will add a province flag into that province, and, as long as there is one such flags present, it will show a "building" called "Ruins". If you click on it (so, "upgrade" the ruins), the Repairs Planned building appears. This Repairs Planned building marks every province that will be repaired through this decision. So if you want to just repair the production buildings of your richest provinces, then build that just there, and then re-do this into another building, etc. 
+	# Remember that these flags and the ruins last for only FIVE years, after that the ruins are beyond repair and will be lost. 
+	# The cost of repairing such buildings is 75% of the original price, without any added cost modifiers. 
 	
 	option = {
 		name = "sieges.5.1"		# TRADE AND ROADS
@@ -626,24 +631,13 @@ country_event = {
 				OR = { 
 					has_province_flag = small_market_lost	has_province_flag = medium_market_lost	has_province_flag = great_market_lost
 					has_province_flag = gravel_road_lost	has_province_flag = paved_road_lost		has_province_flag = imperial_road_lost
+					has_province_flag = small_harbor_lost 	has_province_flag = big_harbor_lost 	has_province_flag = harbor_district_lost 
 				}
 			}
 		}
 		every_owned_province = {
 			limit = { has_building = repairs_planned }
-			# Add each bulding affected
-			trigger_switch = {
-				on_trigger = has_province_flag
-				small_market_lost = { 	clr_province_flag = small_market_lost 	add_building = small_market  ROOT = { add_treasury = -150 } }
-				medium_market_lost = { 	clr_province_flag = medium_market_lost 	add_building = medium_market ROOT = { add_treasury = -225 } }
-				great_market_lost = { 	clr_province_flag = great_market_lost 	add_building = great_market  ROOT = { add_treasury = -300 } }
-			}
-			trigger_switch = {
-				on_trigger = has_province_flag
-				gravel_road_lost = { 	clr_province_flag = gravel_road_lost 	add_building = gravel_road 	 ROOT = { add_treasury = -187 } }
-				paved_road_lost = { 	clr_province_flag = paved_road_lost 	add_building = paved_road 	 ROOT = { add_treasury = -300 } }
-				imperial_road_lost = { 	clr_province_flag = imperial_road_lost 	add_building = imperial_road ROOT = { add_treasury = -375 } }
-			}
+			SS_repair_trade_roads_harbor = yes
 			hidden_effect = { remove_building = repairs_planned }
 		}
 		
@@ -659,21 +653,142 @@ country_event = {
 		}
 		every_owned_province = {
 			limit = { has_building = repairs_planned }
-			# Add each bulding affected
-			trigger_switch = {
-				on_trigger = has_province_flag
-				shrine_lost = { 		clr_province_flag = shrine_lost 		add_building = shrine 		ROOT = { add_treasury = -150 } }
-				small_temple_lost = { 	clr_province_flag = small_temple_lost 	add_building = small_temple ROOT = { add_treasury = -225 } }
-				great_temple_lost = { 	clr_province_flag = great_temple_lost 	add_building = great_temple ROOT = { add_treasury = -300 } }
-
+			SS_repair_temples = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.3"		# HEALTH AND PRODUCTION
+		
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost	
+					has_province_flag = small_water_irrigation_lost	has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+					has_province_flag = craftsman_lost 	has_province_flag = small_workshop_lost has_province_flag = artisan_district_lost 
+					has_province_flag = quarry_lost 	has_province_flag = small_mine_lost 	has_province_flag = big_mine_lost 
+					has_province_flag = herbalist_lost 	has_province_flag = medicus_lost 		has_province_flag = hospital_lost 
+				}
 			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_health_industry = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.4"		# MILITARY: army camps, conscription, and shipyards
+		
+		trigger = {	
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = small_conscription_center_lost	has_province_flag = small_army_camp_lost	
+					has_province_flag = small_military_settlement_lost	has_province_flag = big_military_settlement_lost 
+					has_province_flag = small_shipyard_lost 			has_province_flag = big_shipyard_lost 
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_military_shipyards = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.5"		# GOVERNMENT: governor offices, tax collector, embassies
+		
+		trigger = {	
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = small_townhall_lost		has_province_flag = big_townhall_lost	
+					has_province_flag = government_palace_lost	has_province_flag = government_district_lost 
+					has_province_flag = taxman_lost				has_province_flag = tax_collector_lost 
+					has_province_flag = embassy_lost 			has_province_flag = diplomats_quarter_lost 
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_government = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.6"		# EDUCATION AND LESIURE
+		
+		trigger = {	
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost	
+					has_province_flag = imperial_palace_lost		has_province_flag = palace_garden_lost 
+					has_province_flag = small_theater_lost			has_province_flag = big_theater_lost 
+					has_province_flag = great_theater_lost 			has_province_flag = huge_theater_lost
+					has_province_flag = mathematician_academy_lost 	has_province_flag = philosophers_academy_lost
+					has_province_flag = military_academy_lost 	has_province_flag = great_library_lost has_province_flag = library_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_leisure_education = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+		
+	}
+	option = {
+		name = "sieges.5.7"		# EVERYTHING
+		
+		trigger = {	
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { 
+					has_province_flag = small_bath_lost				has_province_flag = big_bath_lost		has_province_flag = mathematician_academy_lost
+					has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost	
+					has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+					has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+					has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+					has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+					has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+					has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+					has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+					has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+					has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+					has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+					has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+					has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+					has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+					has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+					has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+					has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+					has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+					has_province_flag = hospital_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_trade_roads_harbor = yes
+			SS_repair_temples = yes
+			SS_repair_health_industry = yes
+			SS_repair_military_shipyards = yes
+			SS_repair_government = yes
+			SS_repair_leisure_education = yes
 			hidden_effect = { remove_building = repairs_planned }
 		}
 		
 	}
 	
 	option = {
-		name = "sieges.5.9"		# Tear down repairs and clean lots. 5% cost of everything, and 0.5% in ADM points. 
+		name = "sieges.5.8"		# Tear down repairs and clean lots. 5% cost of everything, and 0.5% in ADM points. 
 		every_owned_province = { 
 			limit = { has_building = repairs_planned }
 			SS_clear_land_cost = yes
@@ -684,7 +799,7 @@ country_event = {
 		
 	}
 	option = {
-		name = "sieges.5.10"
+		name = "sieges.5.9"	# Nothing, go back
 		every_owned_province = {
 			limit = { has_building = repairs_planned }
 			hidden_effect = { remove_building = repairs_planned }
@@ -695,7 +810,7 @@ country_event = {
 	
 	after = {
 		# resets the ruins building, in case something is yet to be repaired. 
-		# Remember that in the next slaves event, if they have more than 5 years, will be gone
+		# Remember that in the next pop capacity event, if they have more than 5 years, they will be gone
 		every_owned_province = {
 			SS_find_existing_ruins = yes
 		
