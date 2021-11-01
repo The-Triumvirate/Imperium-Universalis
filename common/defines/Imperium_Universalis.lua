@@ -98,8 +98,19 @@ NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_4 = 1323
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_5 = 1490
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_6 = 1472
 
-NDefines.NCountry.RAZE_PROVINCE_DEVELOPMENT_DECREASE = 1.0
-
+NDefines.NCountry.CONCENTRATE_DEVELOPMENT_DEVELOPMENT_DECREASE = 0.0	-- disabled in the mod (vanilla 0.2)
+NDefines.NCountry.PILLAGE_CAPITAL_DEVELOPMENT_DECREASE = 0.0	-- disabled in the mod (vanilla 0.2)
+NDefines.NCountry.RAZE_UNREST_DURATION = 20					-- Years of unrest. 10 vanilla; raised to 20
+NDefines.NCountry.RAZE_PROVINCE_DEVELOPMENT_DECREASE = 0.00 	-- No population loss. It will cause +10% initial devastation + 0,30 for 20 years
+NDefines.NCountry.RAZE_PROVINCE_POWER_PER_DEVELOPMENT = 25.0	-- This is enough devastation to lower growth rates and make people flee
+NDefines.NCountry.RAZE_TECH_BASE_LEVEL = 40 			-- changed to 50 (vanilla 3). Always possible to raze at max value
+NDefines.NCountry.RAZE_TECH_POWER_DECREASE = 0.01 	-- Per military tech above base level. changed -4% vanilla to -1%
+NDefines.NCountry.RAZE_TECH_POWER_DECREASE_MAX = 0.8 -- the intersection of number of techs at -x% to -80% gives the top. tech raised to +40; always possible to raze
+NDefines.NCountry.RAZE_PROVINCE_COOLDOWN_YRS = 20 	-- Same duration of cooldown and unrest
+NDefines.NCountry.RAZE_PROVINCE_CONQUERED_TIME_LIMIT_MONTHS = 6
+NDefines.NCountry.HORDE_UNITY_PER_LOOT = 0.15		-- Horde unity gained per ducat looted.
+NDefines.NCountry.HORDE_UNITY_PER_RAZE = 0.75		-- Horde unity gained per development level razed. Raisef from 0.50 Vanilla to 0.75
+	
 NDefines.NCountry.MIN_DEV_FOR_OLD_GREAT_POWER = 100
 NDefines.NCountry.MAX_ACTIVE_POLICIES = 3
 NDefines.NCountry.MINIMUM_POLICY_TIME = 5
