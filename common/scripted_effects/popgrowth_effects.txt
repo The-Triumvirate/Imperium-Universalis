@@ -197,13 +197,13 @@ PG_find_target_province = {
 		limit = { 
 			any_province = {
 				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 4	# very high CoT
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2	# very high CoT
 			}
 		}
 		random_province = {
 			limit = {
 				NOT = { province_distance = { who = PREV distance = $range$ } }	check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 4
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2
 			}
 			save_event_target_as = PG_target
 		}
@@ -212,13 +212,13 @@ PG_find_target_province = {
 		limit = { 
 			any_province = {
 				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2	# "normal" CoT
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 1	# "normal" CoT
 			}
 		}
 		random_province = {
 			limit = {
 				NOT = { province_distance = { who = PREV distance = $range$ } }	check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 1
 			}
 			save_event_target_as = PG_target
 		}
@@ -272,20 +272,46 @@ mig_rural_to_rural = {
 #	STATISTICS EFFECTS, yes, we love statistics! Here go all the code that aggregates the information in your save game
 ##########
 
-popgrowth_stats_basic = {
-
-	export_to_variable = { which = rural_now_$regid$ value = base_manpower } set_variable = { which = total_cap_$regid$ which = rural_capacity }
-	export_to_variable = { which = urban_now_$regid$ value = base_production } change_variable = { which = total_cap_$regid$ which = urban_capacity }
-	export_to_variable = { which = upper_now_$regid$ value = base_tax } 		change_variable = { which = total_cap_$regid$ which = upper_capacity }
-	export_to_variable = { which = devel_now_$regid$ value = development }
-	set_variable = { which = rural_cap_$regid$ which = rural_capacity } set_variable = { which = urban_cap_$regid$ which = urban_capacity }
-	set_variable = { which = upper_cap_$regid$ which = upper_capacity } set_variable = { which = prov_size_$regid$ which = prov_size } 
+popgrowth_stats_basic = {		# Basic is sending all basic values (trib/com/upp, now and capacity) to your country. Nothing else
+	
+	export_to_variable = { which = PS_rurnow_$regid$ value = base_manpower } 	set_variable = { which = PS_capnow_$regid$ which = rural_capacity }
+	export_to_variable = { which = PS_urbnow_$regid$ value = base_production } 	change_variable = { which = PS_capnow_$regid$ which = urban_capacity }
+	export_to_variable = { which = PS_uppnow_$regid$ value = base_tax } 		change_variable = { which = PS_capnow_$regid$ which = upper_capacity }
+	export_to_variable = { which = PS_totnow_$regid$ value = development }
+	set_variable = { which = PS_rurcap_$regid$ which = rural_capacity } 	set_variable = { which = PS_urbcap_$regid$ which = urban_capacity }
+	set_variable = { which = PS_uppcap_$regid$ which = upper_capacity } 	set_variable = { which = PS_provsize_$regid$ which = prov_size } 
 	ROOT = { 
-		change_variable = { which = rural_now_$regid$ which = PREV } change_variable = { which = urban_now_$regid$ which = PREV } 
-		change_variable = { which = upper_now_$regid$ which = PREV } change_variable = { which = devel_now_$regid$ which = PREV } 
-		change_variable = { which = prov_size_$regid$ which = PREV } change_variable = { which = total_cap_$regid$ which = PREV } 
-		change_variable = { which = rural_cap_$regid$ which = PREV } change_variable = { which = urban_cap_$regid$ which = PREV } 
-		change_variable = { which = upper_cap_$regid$ which = PREV } 
+		change_variable = { which = PS_rurnow_$regid$ which = PREV } 	change_variable = { which = PS_urbnow_$regid$ which = PREV } 
+		change_variable = { which = PS_uppnow_$regid$ which = PREV } 	change_variable = { which = PS_totnow_$regid$ which = PREV } 
+		change_variable = { which = PS_provsize_$regid$ which = PREV } 	change_variable = { which = PS_capnow_$regid$ which = PREV } 
+		change_variable = { which = PS_rurcap_$regid$ which = PREV } 	change_variable = { which = PS_urbcap_$regid$ which = PREV } 
+		change_variable = { which = PS_uppcap_$regid$ which = PREV } 
+	}
+
+}
+popgrowth_stats_complex = {		# Basic is sending all basic values (trib/com/upp, now and capacity) to your country. Nothing else
+	
+	export_to_variable = { which = PS_rurnow_$regid$ value = base_manpower } 
+	export_to_variable = { which = PS_urbnow_$regid$ value = base_production } 	
+	export_to_variable = { which = PS_uppnow_$regid$ value = base_tax } 		
+	export_to_variable = { which = PS_totnow_$regid$ value = development }
+	
+	set_variable = { which = PS_capnow_$regid$ which = rural_capacity }		change_variable = { which = PS_capnow_$regid$ which = urban_capacity }
+	change_variable = { which = PS_capnow_$regid$ which = upper_capacity }	set_variable = { which = PS_sizenow_$regid$ which = prov_size } 
+	
+	set_variable = { which = PS_provnow_$regid$ value = 1 }	
+	export_to_variable = { which = PS_tpownow_$regid$ value = province_trade_power }
+	if = { 		limit = { province_has_center_of_trade_of_level = 3 } set_variable = { which = PS_cotnow_$regid$ value = 3 } }
+	else_if = { limit = { province_has_center_of_trade_of_level = 2 } set_variable = { which = PS_cotnow_$regid$ value = 2 } }
+	else_if = { limit = { province_has_center_of_trade_of_level = 1 } set_variable = { which = PS_cotnow_$regid$ value = 1 } }
+	
+	ROOT = { 
+		change_variable = { which = PS_rurnow_$regid$ which = PREV } 	change_variable = { which = PS_urbnow_$regid$ which = PREV } 
+		change_variable = { which = PS_uppnow_$regid$ which = PREV } 	change_variable = { which = PS_totnow_$regid$ which = PREV } 
+		
+		change_variable = { which = PS_capnow_$regid$ which = PREV } 	change_variable = { which = PS_sizenow_$regid$ which = PREV } 
+		change_variable = { which = PS_provnow_$regid$ which = PREV } 	change_variable = { which = PS_tpownow_$regid$ which = PREV } 
+		change_variable = { which = PS_cotnow_$regid$ which = PREV } 	
 	}
 
 }
@@ -322,7 +348,205 @@ popgrowth_stats_old = {
 
 }
 
-adjust_pops_to_max = {
+PS_move_old_variables = {
+	move_old_stats_by_region = { reg = 01 }	move_old_stats_by_region = { reg = 02 }	move_old_stats_by_region = { reg = 03 }
+	move_old_stats_by_region = { reg = 04 }	move_old_stats_by_region = { reg = 05 }	move_old_stats_by_region = { reg = 06 }
+	move_old_stats_by_region = { reg = 07 }	move_old_stats_by_region = { reg = 08 }	move_old_stats_by_region = { reg = 09 }
+	move_old_stats_by_region = { reg = 10 }	move_old_stats_by_region = { reg = 11 }	move_old_stats_by_region = { reg = 12 }
+	move_old_stats_by_region = { reg = 13 }	move_old_stats_by_region = { reg = 14 }	move_old_stats_by_region = { reg = 15 }
+	move_old_stats_by_region = { reg = 16 }	move_old_stats_by_region = { reg = 17 }	move_old_stats_by_region = { reg = 18 }
+	move_old_stats_by_region = { reg = 19 }	move_old_stats_by_region = { reg = 20 }	move_old_stats_by_region = { reg = 21 }
+	move_old_stats_by_region = { reg = 22 }	move_old_stats_by_region = { reg = 23 }	move_old_stats_by_region = { reg = 24 }
+	move_old_stats_by_region = { reg = 25 }	move_old_stats_by_region = { reg = 26 }	move_old_stats_by_region = { reg = 27 }
+	
+	set_variable = { which = PG_year_old which = PG_year_now } 
+}
+move_old_stats_by_region = {
+	set_variable = { which = PS_rurold_$reg$ which = PS_rurnow_$reg$ } 		set_variable = { which = PS_rurnow_$reg$ value = 0 }
+	set_variable = { which = PS_urbold_$reg$ which = PS_urbnow_$reg$ } 		set_variable = { which = PS_urbnow_$reg$ value = 0 }
+	set_variable = { which = PS_uppold_$reg$ which = PS_uppnow_$reg$ } 		set_variable = { which = PS_uppnow_$reg$ value = 0 }
+	set_variable = { which = PS_totold_$reg$ which = PS_totnow_$reg$ } 		set_variable = { which = PS_totnow_$reg$ value = 0 }
+	set_variable = { which = PS_capold_$reg$ which = PS_capnow_$reg$ } 		set_variable = { which = PS_capnow_$reg$ value = 0 }
+	set_variable = { which = PS_provold_$reg$ which = PS_provnow_$reg$ } 	set_variable = { which = PS_provnow_$reg$ value = 0 }
+	set_variable = { which = PS_sizeold_$reg$ which = PS_capnow_$reg$ } 	set_variable = { which = PS_sizenow_$reg$ value = 0 }
+	set_variable = { which = PS_tpowold_$reg$ which = PS_tpownow_$reg$ } 	set_variable = { which = PS_tpownow_$reg$ value = 0 }
+	set_variable = { which = PS_cotold_$reg$ which = PS_cotnow_$reg$ } 		set_variable = { which = PS_cotnow_$reg$ value = 0 }
+	
+}
+
+PS_find_variation_complex = {
+	variation_complex_by_region = { reg = 01 }	variation_complex_by_region = { reg = 02 }	variation_complex_by_region = { reg = 03 }
+	variation_complex_by_region = { reg = 04 }	variation_complex_by_region = { reg = 05 }	variation_complex_by_region = { reg = 06 }
+	variation_complex_by_region = { reg = 07 }	variation_complex_by_region = { reg = 08 }	variation_complex_by_region = { reg = 09 }
+	variation_complex_by_region = { reg = 10 }	variation_complex_by_region = { reg = 11 }	variation_complex_by_region = { reg = 12 }
+	variation_complex_by_region = { reg = 13 }	variation_complex_by_region = { reg = 14 }	variation_complex_by_region = { reg = 15 }
+	variation_complex_by_region = { reg = 16 }	variation_complex_by_region = { reg = 17 }	variation_complex_by_region = { reg = 18 }
+	variation_complex_by_region = { reg = 19 }	variation_complex_by_region = { reg = 20 }	variation_complex_by_region = { reg = 21 }
+	variation_complex_by_region = { reg = 22 }	variation_complex_by_region = { reg = 23 }	variation_complex_by_region = { reg = 24 }
+	variation_complex_by_region = { reg = 25 }	variation_complex_by_region = { reg = 26 }	variation_complex_by_region = { reg = 27 }
+	
+
+}
+variation_complex_by_region = {
+	set_variable = { which = PS_rurvar_$reg$ which = PS_rurnow_$reg$ } subtract_variable = { which = PS_rurvar_$reg$ which = PS_rurold_$reg$ }
+	set_variable = { which = PS_urbvar_$reg$ which = PS_urbnow_$reg$ } subtract_variable = { which = PS_urbvar_$reg$ which = PS_urbold_$reg$ }
+	set_variable = { which = PS_uppvar_$reg$ which = PS_uppnow_$reg$ } subtract_variable = { which = PS_uppvar_$reg$ which = PS_uppold_$reg$ }
+	
+	set_variable = { which = PS_totvar_$reg$ which = PS_totnow_$reg$ } subtract_variable = { which = PS_totvar_$reg$ which = PS_totold_$reg$ }
+	if = { limit = { NOT = { check_variable = { PS_totold_$reg$ = 1 } } } set_variable = { which = PS_totvpc_$reg$ value = 0 } } # div by zero
+	else = { set_variable = { which = PS_totvpc_$reg$ which = PS_totvar_$reg$ } divide_variable = { which = PS_totvpc_$reg$ which = PS_totold_$reg$ } }
+	multiply_variable = { PS_totvpc_$reg$ = 100 }
+	
+	set_variable = { which = PS_capvar_$reg$ which = PS_capnow_$reg$ } subtract_variable = { which = PS_capvar_$reg$ which = PS_capold_$reg$ }
+	if = { limit = { NOT = { check_variable = { PS_capold_$reg$ = 1 } } } set_variable = { which = PS_capvpc_$reg$ value = 0 } } # div by zero
+	else = { set_variable = { which = PS_capvpc_$reg$ which = PS_capvar_$reg$ } divide_variable = { which = PS_capvpc_$reg$ which = PS_capold_$reg$ } }
+	multiply_variable = { PS_capvpc_$reg$ = 100 } 
+	
+	# remove decimal digits
+	multiply_variable = { PS_capnow_$reg$ = 0.001 } multiply_variable = { PS_capnow_$reg$ = 1000 } 
+	multiply_variable = { PS_capvar_$reg$ = 0.001 } multiply_variable = { PS_capvar_$reg$ = 1000 } 
+	
+	set_variable = { which = PS_provvar_$reg$ which = PS_provnow_$reg$ } subtract_variable = { which = PS_provvar_$reg$ which = PS_provold_$reg$ }
+	set_variable = { which = PS_sizevar_$reg$ which = PS_sizenow_$reg$ } subtract_variable = { which = PS_sizevar_$reg$ which = PS_sizeold_$reg$ }
+	set_variable = { which = PS_tpowvar_$reg$ which = PS_tpownow_$reg$ } subtract_variable = { which = PS_tpowvar_$reg$ which = PS_tpowold_$reg$ }
+	set_variable = { which = PS_cotvar_$reg$ which = PS_cotnow_$reg$ } subtract_variable = { which = PS_cotvar_$reg$ which = PS_cotold_$reg$ }
+	
+	multiply_variable = { PS_tpownow_$reg$ = 0.001 } multiply_variable = { PS_tpownow_$reg$ = 1000 } 
+	multiply_variable = { PS_tpowvar_$reg$ = 0.001 } multiply_variable = { PS_tpowvar_$reg$ = 1000 } 
+	
+}
+
+
+
+PS_showmap_inforange = {
+	if = { 		limit = { check_variable = { PG_info_range = 50 } } add_province_modifier = { name = PS_inforange_50 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 30 } } add_province_modifier = { name = PS_inforange_30 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 20 } } add_province_modifier = { name = PS_inforange_20 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 10 } } add_province_modifier = { name = PS_inforange_10 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 5 } } 	add_province_modifier = { name = PS_inforange_05 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 2 } } 	add_province_modifier = { name = PS_inforange_02 duration = 30 } }
+	else_if = { limit = { check_variable = { PG_info_range = 0 } } 	add_province_modifier = { name = PS_inforange_01 duration = 30 } }
+
+}
+
+PS_showmap_rurals = {	
+	if = { 		limit = { check_variable = { rural_capacity = 50 } } 	add_province_modifier = { name = PS_ruralpop_50 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 40 } } 	add_province_modifier = { name = PS_ruralpop_40 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 35 } } 	add_province_modifier = { name = PS_ruralpop_35 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 30 } } 	add_province_modifier = { name = PS_ruralpop_30 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 25 } } 	add_province_modifier = { name = PS_ruralpop_25 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 21 } } 	add_province_modifier = { name = PS_ruralpop_21 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 18 } } 	add_province_modifier = { name = PS_ruralpop_18 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 15 } } 	add_province_modifier = { name = PS_ruralpop_15 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 12 } } 	add_province_modifier = { name = PS_ruralpop_12 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 10 } } 	add_province_modifier = { name = PS_ruralpop_10 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 8 } } 	add_province_modifier = { name = PS_ruralpop_08 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 6 } } 	add_province_modifier = { name = PS_ruralpop_06 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 4 } } 	add_province_modifier = { name = PS_ruralpop_04 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 2 } } 	add_province_modifier = { name = PS_ruralpop_02 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_capacity = 1 } } 	add_province_modifier = { name = PS_ruralpop_01 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_ruralpop_00 duration = 30 } }
+	
+	
+	if = { 		limit = { check_variable = { rural_growth = 5.0 } } 	add_province_modifier = { name = PS_ruralgrow_50 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 4.0 } } 	add_province_modifier = { name = PS_ruralgrow_40 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 3.5 } } 	add_province_modifier = { name = PS_ruralgrow_35 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 3.0 } } 	add_province_modifier = { name = PS_ruralgrow_30 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 2.5 } } 	add_province_modifier = { name = PS_ruralgrow_25 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 2.1 } } 	add_province_modifier = { name = PS_ruralgrow_21 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 1.8 } } 	add_province_modifier = { name = PS_ruralgrow_18 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 1.5 } } 	add_province_modifier = { name = PS_ruralgrow_15 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 1.2 } } 	add_province_modifier = { name = PS_ruralgrow_12 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 1.1 } } 	add_province_modifier = { name = PS_ruralgrow_11 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 1.0 } } 	add_province_modifier = { name = PS_ruralgrow_10 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 0.9 } } 	add_province_modifier = { name = PS_ruralgrow_09 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 0.8 } } 	add_province_modifier = { name = PS_ruralgrow_08 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 0.7 } } 	add_province_modifier = { name = PS_ruralgrow_07 duration = 30 } }
+	else_if = { limit = { check_variable = { rural_growth = 0.5 } } 	add_province_modifier = { name = PS_ruralgrow_05 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_ruralgrow_01 duration = 30 } }
+	
+}
+
+
+
+
+PS_showmap_urbans = {	
+	if = { 		limit = { check_variable = { urban_capacity = 50 } } 	add_province_modifier = { name = PS_urbanpop_50 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 40 } } 	add_province_modifier = { name = PS_urbanpop_40 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 35 } } 	add_province_modifier = { name = PS_urbanpop_35 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 30 } } 	add_province_modifier = { name = PS_urbanpop_30 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 25 } } 	add_province_modifier = { name = PS_urbanpop_25 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 21 } } 	add_province_modifier = { name = PS_urbanpop_21 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 18 } } 	add_province_modifier = { name = PS_urbanpop_18 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 15 } } 	add_province_modifier = { name = PS_urbanpop_15 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 12 } } 	add_province_modifier = { name = PS_urbanpop_12 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 10 } } 	add_province_modifier = { name = PS_urbanpop_10 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 8 } } 	add_province_modifier = { name = PS_urbanpop_08 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 6 } } 	add_province_modifier = { name = PS_urbanpop_06 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 4 } } 	add_province_modifier = { name = PS_urbanpop_04 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 2 } } 	add_province_modifier = { name = PS_urbanpop_02 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_capacity = 1 } } 	add_province_modifier = { name = PS_urbanpop_01 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_urbanpop_00 duration = 30 } }
+	
+	if = { 		limit = { check_variable = { urban_growth = 5.0 } } 	add_province_modifier = { name = PS_urbangrow_50 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 4.0 } } 	add_province_modifier = { name = PS_urbangrow_40 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 3.5 } } 	add_province_modifier = { name = PS_urbangrow_35 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 3.0 } } 	add_province_modifier = { name = PS_urbangrow_30 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 2.5 } } 	add_province_modifier = { name = PS_urbangrow_25 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 2.1 } } 	add_province_modifier = { name = PS_urbangrow_21 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 1.8 } } 	add_province_modifier = { name = PS_urbangrow_18 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 1.5 } } 	add_province_modifier = { name = PS_urbangrow_15 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 1.2 } } 	add_province_modifier = { name = PS_urbangrow_12 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 1.1 } } 	add_province_modifier = { name = PS_urbangrow_11 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 1.0 } } 	add_province_modifier = { name = PS_urbangrow_10 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 0.9 } } 	add_province_modifier = { name = PS_urbangrow_09 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 0.8 } } 	add_province_modifier = { name = PS_urbangrow_08 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 0.7 } } 	add_province_modifier = { name = PS_urbangrow_07 duration = 30 } }
+	else_if = { limit = { check_variable = { urban_growth = 0.5 } } 	add_province_modifier = { name = PS_urbangrow_05 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_urbangrow_01 duration = 30 } }
+	
+}
+
+PS_showmap_uppers = {
+	if = { 		limit = { check_variable = { upper_capacity = 15 } } 	add_province_modifier = { name = PS_upperpop_15 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 12 } } 	add_province_modifier = { name = PS_upperpop_12 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 10 } } 	add_province_modifier = { name = PS_upperpop_10 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 8 } } 	add_province_modifier = { name = PS_upperpop_08 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 6 } } 	add_province_modifier = { name = PS_upperpop_06 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 5 } } 	add_province_modifier = { name = PS_upperpop_05 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 4 } } 	add_province_modifier = { name = PS_upperpop_04 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 3 } } 	add_province_modifier = { name = PS_upperpop_03 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 2 } } 	add_province_modifier = { name = PS_upperpop_02 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_capacity = 1 } } 	add_province_modifier = { name = PS_upperpop_01 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_upperpop_00 duration = 30 } }
+	
+	if = { 		limit = { check_variable = { upper_growth = 5.0 } } 	add_province_modifier = { name = PS_uppergrow_50 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 4.0 } } 	add_province_modifier = { name = PS_uppergrow_40 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 3.5 } } 	add_province_modifier = { name = PS_uppergrow_35 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 3.0 } } 	add_province_modifier = { name = PS_uppergrow_30 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 2.5 } } 	add_province_modifier = { name = PS_uppergrow_25 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 2.1 } } 	add_province_modifier = { name = PS_uppergrow_21 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 1.8 } } 	add_province_modifier = { name = PS_uppergrow_18 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 1.5 } } 	add_province_modifier = { name = PS_uppergrow_15 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 1.2 } } 	add_province_modifier = { name = PS_uppergrow_12 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 1.1 } } 	add_province_modifier = { name = PS_uppergrow_11 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 1.0 } } 	add_province_modifier = { name = PS_uppergrow_10 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 0.9 } } 	add_province_modifier = { name = PS_uppergrow_09 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 0.8 } } 	add_province_modifier = { name = PS_uppergrow_08 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 0.7 } } 	add_province_modifier = { name = PS_uppergrow_07 duration = 30 } }
+	else_if = { limit = { check_variable = { upper_growth = 0.5 } } 	add_province_modifier = { name = PS_uppergrow_05 duration = 30 } }
+	else = { 															add_province_modifier = { name = PS_uppergrow_01 duration = 30 } }
+	
+}
+
+
+####
+#	POPGROWTH DEVELOPMENT TOOLS
+#	Look on my works, ye Mighty, and despair!
+#	These effects will affect the population of every province in the world, either upwards or downwards. 
+####
+
+adjust_pops_down_to_max = {
 	export_to_variable = { which = rural_now value = base_manpower }	subtract_variable = { which = rural_now which = rural_capacity }
 	export_to_variable = { which = urban_now value = base_production }	subtract_variable = { which = urban_now which = urban_capacity }
 	export_to_variable = { which = upper_now value = base_tax }			subtract_variable = { which = upper_now which = upper_capacity }
@@ -330,20 +554,78 @@ adjust_pops_to_max = {
 	while = {
 		limit = { check_variable = { rural_now = 1 } }		# as long as more rural pop compared to the (new) capacity -> pop to remove
 		subtract_variable = { rural_now = 1 }
-		add_base_manpower = -1
+		add_base_manpower = -1			change_variable = { PGS_rur_dvtdown = 1 }
 	}
 	while = {
 		limit = { check_variable = { urban_now = 1 } }		
 		subtract_variable = { urban_now = 1 }
-		add_base_production = -1
+		add_base_production = -1		change_variable = { PGS_urb_dvtdown = 1 }
 	}
 	while = {
 		limit = { check_variable = { upper_now = 1 } }		
 		subtract_variable = { upper_now = 1 }
-		add_base_tax = -1
+		add_base_tax = -1				change_variable = { PGS_upp_dvtdown = 1 }
 	}
 	
 }
+adjust_pops_up_to_perc = {
+	set_variable = { which = rur_targ which = rural_capacity }		export_to_variable = { which = rural_now value = base_manpower }	
+	set_variable = { which = urb_targ which = urban_capacity }		export_to_variable = { which = urban_now value = base_production }	
+	set_variable = { which = upp_targ which = upper_capacity }		export_to_variable = { which = upper_now value = base_tax }			
+	
+	multiply_variable = { rur_targ = $perc$ } multiply_variable = { urb_targ = $perc$ } multiply_variable = { upp_targ = $perc$ }
+	
+	subtract_variable = { which = rur_targ which = rural_now }
+	subtract_variable = { which = urb_targ which = urban_now }
+	subtract_variable = { which = upp_targ which = upper_now }
+	
+	while = {
+		limit = { check_variable = { rur_targ = 1 } }		# target is now the missing population amount that will be added
+		subtract_variable = { rur_targ = 1 }
+		add_base_manpower = 1			change_variable = { PGS_rur_dvtup = 1 }
+	}
+	while = {
+		limit = { check_variable = { urb_targ = 1 } }		
+		subtract_variable = { urb_targ = 1 }
+		add_base_production = 1			change_variable = { PGS_urb_dvtup = 1 }
+	}
+	while = {
+		limit = { check_variable = { upp_targ = 1 } }		
+		subtract_variable = { upp_targ = 1 }
+		add_base_tax = 1				change_variable = { PGS_upp_dvtup = 1 }
+	}
+}
+adjust_pops_down_to_perc = {
+	set_variable = { which = rur_targ which = rural_capacity }		export_to_variable = { which = rural_now value = base_manpower }	
+	set_variable = { which = urb_targ which = urban_capacity }		export_to_variable = { which = urban_now value = base_production }	
+	set_variable = { which = upp_targ which = upper_capacity }		export_to_variable = { which = upper_now value = base_tax }			
+	
+	multiply_variable = { rur_targ = $perc$ } multiply_variable = { urb_targ = $perc$ } multiply_variable = { upp_targ = $perc$ }
+	
+	subtract_variable = { which = rural_now which = rur_targ }		set_variable = { which = rur_targ value = 0 }
+	subtract_variable = { which = urban_now which = urb_targ }		set_variable = { which = urb_targ value = 0 }
+	subtract_variable = { which = upper_now which = upp_targ }		set_variable = { which = upp_targ value = 0 }
+	
+	while = {
+		limit = { check_variable = { rural_now = 1 } }		# target is now the missing population amount that will be added
+		subtract_variable = { rural_now = 1 }
+		add_base_manpower = -1			change_variable = { PGS_rur_dvtdown = 1 }
+	}
+	while = {
+		limit = { check_variable = { urban_now = 1 } }		
+		subtract_variable = { urban_now = 1 }
+		add_base_production = -1		change_variable = { PGS_urb_dvtdown = 1 }
+	}
+	while = {
+		limit = { check_variable = { upper_now = 1 } }		
+		subtract_variable = { upper_now = 1 }
+		add_base_tax = -1				change_variable = { PGS_upp_dvtdown = 1 }
+	}
+}
+
+
+
+
 
 
 

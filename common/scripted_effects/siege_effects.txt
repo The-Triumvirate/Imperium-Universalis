@@ -17,22 +17,38 @@ define_sack_and_devastation = {
 	
 }
 
-enslave_effect = {
+###
+#	ENSLAVEMENT EFFECTS, happening in the Siege events
+###
+
+enslave_effect_soft = {
 	# Send slaves to besieger
-	set_variable = { which = SS_$type$_total which = FROM } 
-	change_variable = { which = slaves which = SS_$type$_total }
-	set_variable = { which = SS_$type$_total value = 0 }
+	set_variable = { which = SS_soft_total which = FROM } 
+	change_variable = { which = slaves which = SS_soft_total }
+	set_variable = { which = SS_soft_total value = 0 }
 	
 	# Lose pops. Uses the xx lost done in the event, immediate phase
 	FROM = {
-		set_variable = { which = SS_slaves_taken which = SS_$type$_total }	# display in prov modifier
+		set_variable = { which = SS_slaves_taken which = SS_soft_total }	# display in prov modifier
 		set_variable = { which = SS_tlost_display which = SS_t_lost }
 		set_variable = { which = SS_clost_display which = SS_c_lost }
 		set_variable = { which = SS_ulost_display which = SS_u_lost }
 		
-		while = { limit = { check_variable = { SS_t_lost = 1 } } subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 }
-		while = { limit = { check_variable = { SS_c_lost = 1 } } subtract_variable = { SS_c_lost = 1 } add_base_production = -1 }
-		while = { limit = { check_variable = { SS_u_lost = 1 } } subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 }
+		while = { 
+			limit = { check_variable = { SS_t_lost = 1 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PGS_rur_slv = 0.4 } change_variable = { PGS_rur_sig = 0.6 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 1 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PGS_urb_slv = 0.4 } change_variable = { PGS_urb_sig = 0.6 }
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 1 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PGS_upp_slv = 0.4 } change_variable = { PGS_upp_sig = 0.6 }
+		}
 	
 		# Province modifier effect
 		add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
@@ -50,6 +66,51 @@ enslave_effect = {
 	
 	
 }
+
+enslave_effect_soft = {
+	# Send slaves to besieger
+	set_variable = { which = SS_hard_total which = FROM } 
+	change_variable = { which = slaves which = SS_hard_total }
+	set_variable = { which = SS_hard_total value = 0 }
+	
+	# Lose pops. Uses the xx lost done in the event, immediate phase
+	FROM = {
+		set_variable = { which = SS_slaves_taken which = SS_hard_total }	# display in prov modifier
+		set_variable = { which = SS_tlost_display which = SS_t_lost }
+		set_variable = { which = SS_clost_display which = SS_c_lost }
+		set_variable = { which = SS_ulost_display which = SS_u_lost }
+		
+		while = { 
+			limit = { check_variable = { SS_t_lost = 1 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PGS_rur_slv = 0.8 } change_variable = { PGS_rur_sig = 0.2 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 1 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PGS_urb_slv = 0.8 } change_variable = { PGS_urb_sig = 0.2 }
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 1 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PGS_upp_slv = 0.8 } change_variable = { PGS_upp_sig = 0.2 }
+		}
+	
+		# Province modifier effect
+		add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+		every_neighbor_province = {
+			limit = { owned_by = FROM }
+			add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+		}
+		every_neighbor_province = {
+			limit = { owned_by = ROOT }
+			add_province_modifier = { name = SS_enslavement_ongoing_there duration = $days$ }
+		}
+		
+	}
+	
+}
+
 enslave_delenda_effect = {
 	# Define everyone (all but the 1 pop left). Recalculates amount lost, the event desc will be different
 		
@@ -69,9 +130,24 @@ enslave_delenda_effect = {
 		
 		set_variable = { which = SS_slaves_taken which = SS_delenda_total }	# display in prov modifier
 		
-		while = { limit = { check_variable = { SS_t_lost = 0.9 } } subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 }
-		while = { limit = { check_variable = { SS_c_lost = 0.9 } } subtract_variable = { SS_c_lost = 1 } add_base_production = -1 }
-		while = { limit = { check_variable = { SS_u_lost = 0.9 } } subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 }
+		while = { 
+			limit = { check_variable = { SS_t_lost = 0.9 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PGS_rur_slv = 0.2 } change_variable = { PGS_rur_sig = 0.8 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 0.9 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PGS_rur_slv = 0.2 } change_variable = { PGS_rur_sig = 0.8 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 0.9 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PGS_rur_slv = 0.2 } change_variable = { PGS_rur_sig = 0.8 }	# slv enslaved; sig perished in siege
+		}
+	
+	
+	
 	
 		# Province modifier effect
 		add_province_modifier = { name = SS_enslavement_ongoing_here duration = 180 }

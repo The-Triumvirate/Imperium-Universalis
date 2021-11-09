@@ -14,7 +14,7 @@ province_event = {
 	# will fire after what may have changed the rural population, every two years
 	
 	
-	immediate = { 
+	immediate = {
 		# HARD BASE, province size. Basically the natural limit to sustain people in this province
 		set_variable = { which = rural_capacity which = prov_size }
 		multiply_variable = { which = rural_capacity value = 2 } # aprox will be 20.000 farmers for a plot of 1.500 sqkm (40x40km, two days travel by foot)
@@ -436,23 +436,16 @@ province_event = {
 			
 		}
 		
-		# Not having starting institution (minimum), causes 40% decrease. Will affect all places outside Greek influence, Egypt, Fertile Crescent
-		#if = {
-		#	limit = { NOT = { OR = { has_terrain = steppe has_terrain = forest_steppe } } NOT = { writing_system = 100 } }
-		#	multiply_variable = { which = rural_capacity value = 0.60 }
-		#}
-		# Removed, as writing systems would affect Gaul and other "not so uncivilized" places. Winters will work good as well. 
-		
-		
 		
 		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
 		trigger_switch = {
 			on_trigger = has_province_modifier
-			land_reclamtion_1 = { change_variable = { rural_capacity = 1 } multiply_variable = { rural_capacity = 1.05 } }
-			land_reclamtion_2 = { change_variable = { rural_capacity = 2 } multiply_variable = { rural_capacity = 1.10 } }
-			land_reclamtion_3 = { change_variable = { rural_capacity = 3 } multiply_variable = { rural_capacity = 1.15 } }
-			land_reclamtion_4 = { change_variable = { rural_capacity = 4 } multiply_variable = { rural_capacity = 1.20 } }
-			land_reclamtion_5 = { change_variable = { rural_capacity = 5 } multiply_variable = { rural_capacity = 1.25 } }
+			land_reclamtion_5 = { change_variable = { which = rural_capacity value = 5 } multiply_variable = { which = rural_capacity value = 1.25 } }
+			land_reclamtion_4 = { change_variable = { which = rural_capacity value = 4 } multiply_variable = { which = rural_capacity value = 1.20 } }
+			land_reclamtion_3 = { change_variable = { which = rural_capacity value = 3 } multiply_variable = { which = rural_capacity value = 1.15 } }
+			land_reclamtion_2 = { change_variable = { which = rural_capacity value = 2 } multiply_variable = { which = rural_capacity value = 1.10 } }
+			land_reclamtion_1 = { change_variable = { which = rural_capacity value = 1 } multiply_variable = { which = rural_capacity value = 1.05 } }	
+			
 		}
 		
 		# FISHING BLOCK - depending on province size (and coastal), and coastal buildings
@@ -469,18 +462,18 @@ province_event = {
 			limit = { has_port = yes check_variable = { prov_size = 1 } NOT = { has_province_flag = coastal_river } } 
 			set_variable = { which = rural_fishermen value = 1 } 
 		}
+		if = {
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			change_variable = { rural_fishermen = 1.5 }
+		}
+		trigger_switch = {	
+			on_trigger = has_building
+			harbor_district = { change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } }
+			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
+			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
+		}
 		
-		if = {		
-			limit = { has_port = yes OR = { 	has_building = big_harbor has_building = harbor_district } } # port lv 2 or 3
-			change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } 
-		}
-		else_if = {		
-			limit = { 
-				has_port = yes 
-				OR = { 	has_building = small_harbor 	 has_building = big_harbor	 	has_building = harbor_district	}	# any port
-			}
-			change_variable = { rural_fishermen = 1 } 
-		}
 		change_variable = { which = rural_capacity which = rural_fishermen }
 		set_variable = { which = rural_fishermen value = 0 } 
 		
@@ -523,20 +516,7 @@ province_event = {
 		#}
 		
 		# Special province modifiers
-		# To be implemented, it will be any kind of modifer that increases rural cap
-		#trigger_switch = {
-		#	on_trigger = has_province_modifier
-		#	migration_wave_1 = { multiply_variable = { which = rural_capacity value = 0.80 } }
-		#	migration_wave_2 = { multiply_variable = { which = rural_capacity value = 0.70 } }
-		#	migration_wave_3 = { multiply_variable = { which = rural_capacity value = 0.60 } }
-		#}
-		#trigger_switch = {					
-		#	on_trigger = has_province_modifier
-		#	rural_cap1 = { change_variable = { which = rural_capacity value = 1 } }
-		#	rural_cap2 = { change_variable = { which = rural_capacity value = 2 } }
-		#	rural_cap3 = { change_variable = { which = rural_capacity value = 3 } }
-		#}
-		
+			# Nothing added so far
 		
 		# In case a province does not count at least 1; usually deserts and such
 		if = { limit = { NOT = { check_variable = { rural_capacity = 1 } } } 		set_variable = { which = rural_capacity value = 1 } }
@@ -546,7 +526,7 @@ province_event = {
 		######
 		export_to_variable = { which = rural_pop value = base_manpower }
 		set_variable = { which = rural_growth which = rural_capacity }
-		divide_variable = { which = rural_growth which = rural_pop }		
+		divide_variable = { which = rural_growth which = rural_pop }
 		
 		# MODIFIERS that apply at the end
 		
@@ -728,11 +708,12 @@ province_event = {
 		
 		trigger_switch = {
 			on_trigger = has_province_modifier
-			land_reclamtion_1 = { multiply_variable = { urban_capacity = 1.05 } }
-			land_reclamtion_2 = { multiply_variable = { urban_capacity = 1.10 } }
-			land_reclamtion_3 = { multiply_variable = { urban_capacity = 1.15 } }
-			land_reclamtion_4 = { multiply_variable = { urban_capacity = 1.20 } }
-			land_reclamtion_5 = { multiply_variable = { urban_capacity = 1.25 } }
+			land_reclamtion_5 = { multiply_variable = { which = urban_capacity value = 1.25 } }
+			land_reclamtion_4 = { multiply_variable = { which = urban_capacity value = 1.20 } }
+			land_reclamtion_3 = { multiply_variable = { which = urban_capacity value = 1.15 } }
+			land_reclamtion_2 = { multiply_variable = { which = urban_capacity value = 1.10 } }
+			land_reclamtion_1 = { multiply_variable = { which = urban_capacity value = 1.05 } }
+			
 		}
 		
 		# COMMONER POPULATION COMING FROM RURAL
@@ -758,30 +739,9 @@ province_event = {
 		change_variable = { which = urban_capacity which = rural_exports } set_variable = { which = rural_exports value = 0 }
 		
 		
-		# Devastation, will reduce as a simple scale 1 to 99% malus. Prosperity increases up to 10%
-		#trigger_switch = {
-		#	on_trigger = devastation
-		#	65 = { multiply_variable = { which = urban_capacity value = 0.10 } }	# completely destroyed
-		#	40 = { multiply_variable = { which = urban_capacity value = 0.25 } }
-		#	30 = { multiply_variable = { which = urban_capacity value = 0.50 } }
-		#	15 = { multiply_variable = { which = urban_capacity value = 0.70 } }
-		#	5 = {  multiply_variable = { which = urban_capacity value = 0.80 } }
-		#}
 		
-		# Special province modifiers
-		# To be implemented, it will be any kind of modifer that increases rural cap
-		#trigger_switch = {
-		#	on_trigger = has_province_modifier
-		#	migration_wave_1 = { multiply_variable = { which = urban_capacity value = 0.70 } }
-		#	migration_wave_2 = { multiply_variable = { which = urban_capacity value = 0.60 } }
-		#	migration_wave_3 = { multiply_variable = { which = urban_capacity value = 0.50 } }
-		#}
-		#trigger_switch = {					
-		#	on_trigger = has_province_modifier
-		#	rural_cap1 = { change_variable = { which = urban_capacity value = 1 } }
-		#	rural_cap2 = { change_variable = { which = urban_capacity value = 2 } }
-		#	rural_cap3 = { change_variable = { which = urban_capacity value = 3 } }
-		#}
+		# Other province modifiers
+			# (nothing)
 		
 		# 	URBAN GROWTH RATIO
 		export_to_variable = { which = urban_pop value = base_production }
@@ -844,18 +804,12 @@ province_event = {
 			imperial_palace = { 		change_variable = { which = upper_capacity value = 1.5 } }
 		}
 		
-		# TEMPLES AND BURIAL GROUNDS
-		#if = {
-		#	limit = { OR = { has_province_modifier = pt_holy_site has_province_modifier = pt_temple_city } }
-		#	set_variable = { which = temple_upper which = temple_power } multiply_variable = { which = temple_upper value = 0.25 }
-		#	change_variable = { which = upper_capacity which = temple_upper }	set_variable = { which = temple_upper value = 0 }
-		#	set_variable = { which = burial_upper which = burial_power } multiply_variable = { which = burial_upper value = 0.25 }
-		#	change_variable = { which = upper_capacity which = burial_upper }	set_variable = { which = burial_upper value = 0 }
-		#}
-		#else = {
-		#	set_variable = { which = temple_upper which = temple_power } multiply_variable = { which = temple_upper value = 0.10 }
-		#	change_variable = { which = upper_capacity which = temple_upper }	set_variable = { which = temple_upper value = 0 }
-		#}
+		trigger_switch = {
+			on_trigger = has_building
+			shrine = { 			change_variable = { which = upper_capacity value = 0.2 } }
+			small_temple = { 	change_variable = { which = upper_capacity value = 0.4 } }
+			great_temple = { 	change_variable = { which = upper_capacity value = 1.0 } }
+		}
 		
 		# IMPERIAL CAPITAL
 		# CAPITAL PALACE (small city, capital of the country)
@@ -921,9 +875,9 @@ province_event = {
 		else_if = { limit = { owner = { stability = 1 } } change_variable = { upper_growth = 0.10 } }
 		
 		###
-		#	OTHER EFFECTS
+		#	OTHER EFFECTS, outside upper capacity
 		###
-		# outside upper. check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
+		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
 		if = { limit = { check_variable = { which = rural_capacity which = initial_rural } remove_province_modifier = rural_pause } }
 		if = { limit = { check_variable = { which = urban_capacity which = initial_urban } remove_province_modifier = urban_pause } }
 		
@@ -937,7 +891,9 @@ province_event = {
 		divide_variable = { rural_growth = 100 } multiply_variable = { rural_growth = 100 }
 		divide_variable = { urban_growth = 100 } multiply_variable = { urban_growth = 100 }
 		divide_variable = { upper_growth = 100 } multiply_variable = { upper_growth = 100 }
-		
+		export_to_variable = { which = PG_rur_now value = base_manpower }
+		export_to_variable = { which = PG_urb_now value = base_production }
+		export_to_variable = { which = PG_upp_now value = base_tax }
 	}
 	
 	
@@ -982,127 +938,45 @@ country_event = {
 	}
 	
 }
-####
-# DISPLAY EACH SUPER-REGION ECONOMIC CAPABILITIES
-####
+
+# SUBMOD Menu
 country_event = {
 	id = population_capacity.3
 	title = "population_capacity.3.t"
 	desc = "population_capacity.3.d"
-	picture = peasant_woman
-	
-	is_triggered_only = yes
-	
-	immediate = {
-		popgrowth_cleanup_world = yes
-		every_province = {
-			trigger_switch = {
-				on_trigger = superregion		# See scripted effects, popgrowth effects. Uses the dynamic identifiers ($$ things), really cool
-				
-				# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
-				hispania_superregion = { popgrowth_stats_basic = { regid = 01 } }
-				celtica_superregion = { popgrowth_stats_basic = { regid = 02 } }
-				germania_superregion = { popgrowth_stats_basic = { regid = 03 } }
-				britannia_superregion = { popgrowth_stats_basic = { regid = 04 } }
-				italia_superregion = { popgrowth_stats_basic = { regid = 05 } }
-				
-				# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
-				macedonia_superregion = { popgrowth_stats_basic = { regid = 06 } }
-				haemusia_superregion = { popgrowth_stats_basic = { regid = 07 } }
-				asia_superregion = { popgrowth_stats_basic = { regid = 08 } }
-				mesopotamia_superregion = { popgrowth_stats_basic = { regid = 09 } }
-				syria_superregion = { popgrowth_stats_basic = { regid = 10 } }
-				
-				# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
-				parthia_superregion = { popgrowth_stats_basic = { regid = 11 } }
-				scythia_superregion = { popgrowth_stats_basic = { regid = 12 } }
-				aethiopia_superregion = { popgrowth_stats_basic = { regid = 13 } }
-				eastern_africa_superregion = { popgrowth_stats_basic = { regid = 14 } }
-				western_africa_superregion = { popgrowth_stats_basic = { regid = 15 } }
-				
-				# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
-				arabia_superregion = { popgrowth_stats_basic = { regid = 16 } }
-				armenia_superregion = { popgrowth_stats_basic = { regid = 17 } }
-				iran_superregion = { popgrowth_stats_basic = { regid = 18 } }
-				uttarapatha_superregion = { popgrowth_stats_basic = { regid = 19 } }
-				dakshinapatha_superregion = { popgrowth_stats_basic = { regid = 20 } }
-				
-				# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands
-				china_superregion = { popgrowth_stats_basic = { regid = 21 } }
-				turan_superregion = { popgrowth_stats_basic = { regid = 22 } }
-				tibet_superregion = { popgrowth_stats_basic = { regid = 23 } }
-				sakastan_superregion = { popgrowth_stats_basic = { regid = 24 } }
-				korea_superregion = { popgrowth_stats_basic = { regid = 25 } }
-				chryse_insula_superregion = { popgrowth_stats_basic = { regid = 26 } }
-				
-			}
-			
-		}
-	}
-	# One option for each super-region, added through 1 to X in variables, to show for each region in detail. TBD
-	option = {								
-		name = "population_capacity.3.a"	# Nothing, save the variables in your country view and export them later into excel
-		
-	}
-	
-	option = {								# View each superregions' inner values (regions)
-		name = "population_capacity.3.1"
-		hispania_superregion = {
-			trigger_switch = {
-				on_trigger = region
-				hispania_baetica = { popgrowth_stats_basic = { regid = 01 } }
-				lusitania = { popgrowth_stats_basic = { regid = 02 } }
-				cartaginensis_region = { popgrowth_stats_basic = { regid = 03 } }
-				gallaecia = { popgrowth_stats_basic = { regid = 04 } }
-				hispania_tarraconensis = { popgrowth_stats_basic = { regid = 05 } }
-			}
-		}
-		
-		
-	}
-	
-	
-	
-}
-
-# SUBMOD Menu
-country_event = {
-	id = population_capacity.4
-	title = "population_capacity.4.t"
-	desc = "population_capacity.4.d"
 	picture = celebration_priestess
 	
 	is_triggered_only = yes
 
 	option = {								
-		name = "population_capacity.4.1"	# Initiate for first time. Adds flag "initiated", startup.2 sets flag "running". Init + running
+		name = "population_capacity.3.1"	# Initiate for first time. Adds flag "initiated", startup.2 sets flag "running". Init + running
 		trigger = { has_global_flag = popgrowth_vanilla }
 		country_event = { id = startup.2 }
 	}
 	option = {								
-		name = "population_capacity.4.2"	# Apply the submod again
+		name = "population_capacity.3.2"	# Apply the submod again
 		trigger = { has_global_flag = popgrowth_initiated 	has_global_flag = popgrowth_vanilla }
 		set_global_flag = popgrowth_running
 		clr_global_flag = popgrowth_vanilla
 	}
 	option = {								
-		name = "population_capacity.4.3"	# Disable the submod
+		name = "population_capacity.3.3"	# Disable the submod
 		trigger = {  has_global_flag = popgrowth_initiated has_global_flag = popgrowth_running }
 		clr_global_flag = popgrowth_running
 		set_global_flag = popgrowth_vanilla
 	}
 	option = {
-		name = "population_capacity.4.4"	# Update all pop capacity values for my country
+		name = "population_capacity.3.4"	# Update all pop capacity values for my country
 		trigger = { has_global_flag = popgrowth_running }
 		country_event = { id = population_capacity.2 }
 	}
 	option = {
-		name = "population_capacity.4.5"	# Statistics: calculate all world variables
+		name = "population_capacity.3.5"	# Statistics: calculate all world variables
 		trigger = { has_global_flag = popgrowth_running }
 		country_event = { id = population_capacity.3 }
 	}
 	option = {
-		name = "population_capacity.4.6"	# Statistics: show province sizes (trade map)
+		name = "population_capacity.3.6"	# Statistics: show province sizes (trade map)
 		trigger = { has_global_flag = popgrowth_running }
 		hidden_effect = {
 			every_province = {
@@ -1122,18 +996,18 @@ country_event = {
 	}
 	
 	option = {								
-		name = "population_capacity.4.7"	# Nothing, go back
+		name = "population_capacity.3.7"	# Nothing, go back
 		
 	}
 	
 	
 	# DEV OPTIONS - disabled by default
 	#option = {								
-	#	name = "population_capacity.4.8"	# Give modifier to build fast
+	#	name = "population_capacity.3.8"	# Give modifier to build fast
 	#	add_country_modifier = { name = popgrowth_debug_build duration = 7300 }
 	#}
 	#option = {								
-	#	name = "population_capacity.4.8"	# Set rural infrastructure to the max
+	#	name = "population_capacity.3.8"	# Set rural infrastructure to the max
 	#	hidden_effect = {
 	#		every_country = {
 	#			every_owned_province = { add_building = hospital }
@@ -1147,9 +1021,9 @@ country_event = {
 #	MIGRATION event, rural to X
 ######
 province_event = {
-	id = population_capacity.5
-	title = "population_capacity.5.t"
-	desc = "population_capacity.5.d"
+	id = population_capacity.4
+	title = "population_capacity.4.t"
+	desc = "population_capacity.4.d"
 	picture = peasant_woman
 	#hidden = no
 	
@@ -1222,7 +1096,7 @@ province_event = {
 	
 	# 1: the simplest one: LET THEM LEAVE to the province targeted before. 
 	option = {
-		name = "population_capacity.5.1"
+		name = "population_capacity.4.1"
 		trigger = { NOT = { has_province_flag = PG_starvation_start } }
 		ai_chance = { 
 			factor = 50 
@@ -1249,7 +1123,7 @@ province_event = {
 	}
 	# 2: Convince them to stay, mana loss due to issuing of new laws. (spend dip points)
 	option = {
-		name = "population_capacity.5.2" 
+		name = "population_capacity.4.2" 
 		trigger = { NOT = { has_province_flag = PG_starvation_start } }
 		ai_chance = { 
 			factor = 30 
@@ -1262,7 +1136,7 @@ province_event = {
 	}
 	# 3. Nasty option: spend military but risk a revolt of the population being-converted to slaves (spend mil points)
 	option = {
-		name = "population_capacity.5.3" # enslave them. Expect much unrest, but may be necessary in money-hungry countries
+		name = "population_capacity.4.3" # enslave them. Expect much unrest, but may be necessary in money-hungry countries
 		ai_chance = {
 			factor = 20 
 			modifier = { factor = 0.5	owner = { NOT = { mil_power = 100 } } }
@@ -1293,7 +1167,7 @@ province_event = {
 	
 	# 4. Starving: there is nothing we can do. It can snowball very fast!!
 	option = {
-		name = "population_capacity.5.4"
+		name = "population_capacity.4.4"
 		trigger = { has_province_flag = PG_starvation_start }
 		ai_chance = {   factor = 30 	 modifier = { factor = 2.5	NOT = { owner = { treasury = 30 } } } }
 		
@@ -1310,7 +1184,7 @@ province_event = {
 	
 	# 5. Pay for more food. Lose money and mana (adm power), and no devastation happened
 	option = {
-		name = "population_capacity.5.5" 
+		name = "population_capacity.4.5" 
 		trigger = { has_province_flag = PG_starvation_start }
 		ai_chance = {  factor = 50 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
 		
@@ -1327,7 +1201,7 @@ province_event = {
 	####
 	# 6. Move them to our capital (if there is space). First urban, then rural
 	option = {
-		name = "population_capacity.5.6"		
+		name = "population_capacity.4.6"		
 		trigger = { capital_scope = { OR = { check_variable = { urban_growth = 1.2 } check_variable = { rural_growth = 1.2 } } } }
 		ai_chance = { factor = 0 }
 		capital_scope = {
@@ -1352,7 +1226,7 @@ province_event = {
 	
 	# 7. Move them to another prosperous city (urban growth >1.2 + center of trade lv2 at least)
 	option = {
-		name = "population_capacity.5.7"		
+		name = "population_capacity.4.7"		
 		ai_chance = { factor = 0 }
 		trigger = {  
 			any_province = {
@@ -1379,7 +1253,7 @@ province_event = {
 	
 	# 8. Move them to new settled lands (provinces with the Resettlement edict)
 	option = {
-		name = "population_capacity.5.8"		
+		name = "population_capacity.4.8"		
 		trigger = {  
 			any_province = {
 				owned_by = PREV 								check_variable = { rural_growth = 1.2 }
@@ -1412,132 +1286,19 @@ province_event = {
 	
 }
 
-country_event = {	# More Development tools. Only accessable with console command
-	id = population_capacity.6
-	title = "population_capacity.6.t"
-	desc = "population_capacity.6.d"
-	picture = celebration_priestess
-	
-	is_triggered_only = yes
-		
-		# This event basically is to identify where is an error or miscalculation. 
-		#	Option 1 stores Values everywhere, saved as old values
-		#	Option 2 updates Pop Capacity everywhere
-		#	Option 3 stores Values everywhere, saved as new values
-		#	Option 4 subtracts New Cap against Old Cap, and if the difference is negative, population is reduced to the maximum
-		#	Option 5 updates Pop Capacity in owned provinces
-		
-		
-		
-	option = {
-		name = "population_capacity.6.1"	# Statistics: calculate world variables, as old ones (allows to compare old and new values)
-		trigger = { has_global_flag = popgrowth_running }
-		hidden_effect = {
-			every_province = {
-				trigger_switch = {
-					on_trigger = superregion
-					
-					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
-					hispania_superregion = { popgrowth_stats_old = { regid = 01 } }
-					celtica_superregion = { popgrowth_stats_old = { regid = 02 } }
-					germania_superregion = { popgrowth_stats_old = { regid = 03 } }
-					britannia_superregion = { popgrowth_stats_old = { regid = 04 } }
-					italia_superregion = { popgrowth_stats_old = { regid = 05 } }
-					
-					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
-					macedonia_superregion = { popgrowth_stats_old = { regid = 06 } }
-					haemusia_superregion = { popgrowth_stats_old = { regid = 07 } }
-					asia_superregion = { popgrowth_stats_old = { regid = 08 } }
-					mesopotamia_superregion = { popgrowth_stats_old = { regid = 09 } }
-					syria_superregion = { popgrowth_stats_old = { regid = 10 } }
-					
-					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
-					parthia_superregion = { popgrowth_stats_old = { regid = 11 } }
-					scythia_superregion = { popgrowth_stats_old = { regid = 12 } }
-					aethiopia_superregion = { popgrowth_stats_old = { regid = 13 } }
-					eastern_africa_superregion = { popgrowth_stats_old = { regid = 14 } }
-					western_africa_superregion = { popgrowth_stats_old = { regid = 15 } }
-					
-					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
-					arabia_superregion = { popgrowth_stats_old = { regid = 16 } }
-					armenia_superregion = { popgrowth_stats_old = { regid = 17 } }
-					iran_superregion = { popgrowth_stats_old = { regid = 18 } }
-					uttarapatha_superregion = { popgrowth_stats_old = { regid = 19 } }
-					dakshinapatha_superregion = { popgrowth_stats_old = { regid = 20 } }
-					
-					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands
-					china_superregion = { popgrowth_stats_old = { regid = 21 } }
-					turan_superregion = { popgrowth_stats_old = { regid = 22 } }
-					tibet_superregion = { popgrowth_stats_old = { regid = 23 } }
-					sakastan_superregion = { popgrowth_stats_old = { regid = 24 } }
-					korea_superregion = { popgrowth_stats_old = { regid = 25 } }
-					chryse_insula_superregion = { popgrowth_stats_old = { regid = 26 } }
-					
-				}
-				
-			}
-		}
-	}
-	option = {
-		name = "population_capacity.6.2"	# Update all pop capacity values everywhere
-		trigger = { has_global_flag = popgrowth_running }
-		hidden_effect = {
-			every_province = {
-				province_event = { id = population_capacity.1 }
-			}
-		}
-	}
-	option = {
-		name = "population_capacity.6.3"	# Statistics: calculate world variables, as new ones
-		trigger = { has_global_flag = popgrowth_running }
-		country_event = { id = population_capacity.3 }
-	}
-	option = {
-		name = "population_capacity.6.4"	# Shows modifier with pre/post values, and adjusts population downwards (so, savegame compatible)
-		trigger = { has_global_flag = popgrowth_running }
-		hidden_effect = {
-			every_province = {
-				add_province_modifier = { name = popgrowth_dev_viewer duration = 30 }
-				adjust_pops_to_max = yes
-				
-			}
-		}
-		
-	}
-	option = {
-		name = "population_capacity.6.5"	# Update all pop capacity values for my country (same as the menu event)
-		trigger = { has_global_flag = popgrowth_running }
-		country_event = { id = population_capacity.2 }
-	}
-	option = {
-		name = "population_capacity.6.6"	# Adds calculation detail to all provinces
-		trigger = { has_global_flag = popgrowth_running }
-		hidden_effect = {
-			every_province = {
-				province_event = { id = population_capacity.7 }
-			}
-		}
-		
-	}
-	
-	option = {								
-		name = "population_capacity.4.7"	# Nothing, go back
-		
-	}
-	
-}
+# population_capacity.5 is empty. It will contain the "simplified" pop capacity calculation, for horde countries once it is back to the mod. 
 
 ##################################################
 # POPULATION CAPACITY CALCULATION, DEBUG MODE
 # 	Same as pop capacity.1, but shows a breakdown of what constitutes growth. Only activated if asked by the player
 #	All information that is displayed is done one tab to the right, and starts by PGD_xxx (PopGrowth Display)
-# 	Most code comments from the main event are gone, but I've added some numerical examples. Assume a "normal" province, size 4
+# 	Most code comments from the main event are gone, but I've added some numerical examples. 
 ##################################################
 
 province_event = {			
-	id = population_capacity.7
-	title = "population_capacity.7.t"
-	desc = "population_capacity.7.d"
+	id = population_capacity.6
+	title = "population_capacity.6.t"
+	desc = "population_capacity.6.d"
 	picture = peasant_woman
 	hidden = yes
 	
@@ -1975,61 +1736,61 @@ province_event = {
 			
 			trigger_switch = {
 				on_trigger = has_terrain
-				farmlands = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				rome_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				carthage_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				athen_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				neapel_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				byzantion_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				syracuse_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				milet_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				ephesus_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				corinth_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				sardis_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				susa_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				tyros_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				halicarnassus_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				argos_t = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				grasslands = { set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
-				steppe = { set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
-				savannah = { set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
-				mediterranean = { set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
-				drylands = { set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
-				ninive_t = { set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
-				coastline = { set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
-				naxos_t = { set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
-				steep_coast = { set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
-				patara_t = { set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
-				coastal_desert = { set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
-				woods = { set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
-				forest = { set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
-				forest_steppe = { set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
-				mangrove = { set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
-				jungle = { set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
-				hills = { set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
-				jerusalem_t = { set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
-				mountain = { set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
-				highlands = { set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
-				fertile_highlands = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				parsa_t = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				oasis = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				siwa_t = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				wetlands = { set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
-				marsh = { set_variable = { which = PGD_hosp_multiplier value = 1.05 } }
-				floodplains = { set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
-				alluvial_plain = { set_variable = { which = PGD_hosp_multiplier value = 1.6 } }
-				mesopotamian_plain = { set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
-				babil_t = { set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
-				uruk_t = { set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
-				nile_plain = { set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
-				memphis_t = { set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
-				waset_t = { set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
-				elephantine_t = { set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
-				desert_river = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				assur_t = { set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
-				desert = { set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
-				salt_desert = { set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
-				desert_mountain = { set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				farmlands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				rome_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				carthage_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				athen_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				neapel_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				byzantion_t = { 		set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				syracuse_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				milet_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				ephesus_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				corinth_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				sardis_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				susa_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				tyros_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				halicarnassus_t = { 	set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				argos_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				grasslands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
+				steppe = { 				set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				savannah = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				mediterranean = { 		set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				drylands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
+				ninive_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
+				coastline = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				naxos_t = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				steep_coast = { 		set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				patara_t = { 			set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				coastal_desert = { 		set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				woods = { 				set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				forest = { 				set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				forest_steppe = { 		set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				mangrove = { 			set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				jungle = { 				set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				hills = { 				set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				jerusalem_t = { 		set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
+				mountain = { 			set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				highlands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				fertile_highlands = { 	set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				parsa_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				oasis = { 				set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				siwa_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				wetlands = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				marsh = { 				set_variable = { which = PGD_hosp_multiplier value = 1.05 } }
+				floodplains = { 		set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				alluvial_plain = { 		set_variable = { which = PGD_hosp_multiplier value = 1.6 } }
+				mesopotamian_plain = { 	set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				babil_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				uruk_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				nile_plain = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				memphis_t = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				waset_t = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				elephantine_t = { 		set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				desert_river = { 		set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				assur_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				desert = { 				set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				salt_desert = { 		set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				desert_mountain = { 	set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
 			}
 			set_variable = { which = PGD_rur_terr_max which = PGD_rur_base }
 			multiply_variable = { which = PGD_rur_terr_max which = PGD_hosp_multiplier }
@@ -2040,29 +1801,33 @@ province_event = {
 			set_variable = { which = PGD_reclam_base which = rural_capacity }		# Total before land reclamation: 3.84 + 5.4 = 9.24
 		
 		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
-		trigger_switch = {
-			on_trigger = has_province_modifier
-			land_reclamtion_1 = { 
-				change_variable = { rural_capacity = 1 } multiply_variable = { rural_capacity = 1.05 } 
-				set_variable = { which = PGD_reclam_abs value = 1 }
-			}
-			land_reclamtion_2 = { 
-				change_variable = { rural_capacity = 2 } multiply_variable = { rural_capacity = 1.10 } 
-				set_variable = { which = PGD_reclam_abs value = 2 }
-			}
-			land_reclamtion_3 = { 
-				change_variable = { rural_capacity = 3 } multiply_variable = { rural_capacity = 1.15 } 
-				set_variable = { which = PGD_reclam_abs value = 3 }
-			}
-			land_reclamtion_4 = { 
-				change_variable = { rural_capacity = 4 } multiply_variable = { rural_capacity = 1.20 } 
-				set_variable = { which = PGD_reclam_abs value = 4 }
-			}
-			land_reclamtion_5 = { 
-				change_variable = { rural_capacity = 5 } multiply_variable = { rural_capacity = 1.25 } 
-				set_variable = { which = PGD_reclam_abs value = 5 }
-			}
+		
+		if = {
+			limit = { has_province_modifier = land_reclamtion_5 }
+			change_variable = { which = rural_capacity value = 5 } multiply_variable = { which = rural_capacity value = 1.25 } 
+			set_variable = { which = PGD_reclam_abs value = 5 }
 		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamtion_4 }
+			change_variable = { which = rural_capacity value = 4 } multiply_variable = { which = rural_capacity value = 1.20 } 
+			set_variable = { which = PGD_reclam_abs value = 4 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamtion_3 }
+			change_variable = { which = rural_capacity value = 3 } multiply_variable = { which = rural_capacity value = 1.15 } 
+			set_variable = { which = PGD_reclam_abs value = 3 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamtion_2 }
+			change_variable = { which = rural_capacity value = 2 } multiply_variable = { which = rural_capacity value = 1.10 } 
+			set_variable = { which = PGD_reclam_abs value = 2 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamtion_1 }
+			change_variable = { which = rural_capacity value = 1 } multiply_variable = { which = rural_capacity value = 1.05 } 
+			set_variable = { which = PGD_reclam_abs value = 1 }
+		}
+		
 			set_variable = { which = PGD_reclam_perc which = rural_capacity }			
 			subtract_variable = { which = PGD_reclam_perc which = PGD_reclam_base }		
 			subtract_variable = { which = PGD_reclam_perc which = PGD_reclam_abs }		
@@ -2081,22 +1846,23 @@ province_event = {
 			limit = { has_port = yes check_variable = { prov_size = 1 } NOT = { has_province_flag = coastal_river } } 
 			set_variable = { which = rural_fishermen value = 1 } 
 		}
-		
 			set_variable = { which = PGD_fishing_base which = rural_fishermen }
-		if = {		
-			limit = {  has_port = yes  OR = { 	has_building = big_harbor has_building = harbor_district } }
-			change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } 
+		
+		if = {
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			change_variable = { rural_fishermen = 1.5 }		set_variable = { which = PGD_fishing_terrain value = 1.5 }
 		}
-		else_if = {		
-			limit = { 
-				has_port = yes 
-				OR = { 	has_building = small_harbor 	 has_building = big_harbor	 	has_building = harbor_district	}	# any port
-			}
-			change_variable = { rural_fishermen = 1 } 
+		trigger_switch = {
+			on_trigger = has_building
+			harbor_district = { change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } }
+			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
+			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
 		}
-		change_variable = { which = rural_capacity which = rural_fishermen }				# if size 4 and big harbor:
-			set_variable = { which = PGD_fishing_buildings which = rural_fishermen }		# (2 + 2) x 1.35 = 5.4
-			subtract_variable = { which = PGD_fishing_buildings which = PGD_fishing_base }	# of which, 2 due to base, 3.4 buildings
+		change_variable = { which = rural_capacity which = rural_fishermen }					# if size 4, terrain coastal and big harbor:
+			set_variable = { which = PGD_fishing_buildings which = rural_fishermen }			# (2 + 1.5 + 2) x 1.35 = 7.425
+			subtract_variable = { which = PGD_fishing_buildings which = PGD_fishing_terrain }	# of which, 2 due to base, 1.5 coastal, 3.9 buildings
+			subtract_variable = { which = PGD_fishing_buildings which = PGD_fishing_base }	
 		set_variable = { which = rural_fishermen value = 0 } 
 		
 			set_variable = { which = PGD_rural_subtotal which = rural_capacity }		
@@ -2343,14 +2109,27 @@ province_event = {
 		
 			set_variable = { which = PGD_urban_preland which = urban_capacity }
 		
-		trigger_switch = {
-			on_trigger = has_province_modifier
-			land_reclamtion_1 = { multiply_variable = { urban_capacity = 1.05 } }
-			land_reclamtion_2 = { multiply_variable = { urban_capacity = 1.10 } }
-			land_reclamtion_3 = { multiply_variable = { urban_capacity = 1.15 } }
-			land_reclamtion_4 = { multiply_variable = { urban_capacity = 1.20 } }
-			land_reclamtion_5 = { multiply_variable = { urban_capacity = 1.25 } }
+		if = {
+			limit = { has_province_modifier = land_reclamtion_5 }
+			multiply_variable = { which = urban_capacity value = 1.25 } 
 		}
+		else_if = {
+			limit = { has_province_modifier = land_reclamtion_4 }
+			multiply_variable = { which = urban_capacity value = 1.20 }
+		}
+		else_if = {
+			limit = { has_province_modifier = land_reclamtion_3 } 
+			multiply_variable = { which = urban_capacity value = 1.15 } 
+		}
+		else_if = {
+			limit = { has_province_modifier = land_reclamtion_2 }
+			multiply_variable = { which = urban_capacity value = 1.10 } 
+		}
+		else_if = {
+			limit = { has_province_modifier = land_reclamtion_1 }
+			multiply_variable = { which = urban_capacity value = 1.05 } 
+		}
+		
 			
 			set_variable = { which = PGD_urban_total which = urban_capacity }
 			set_variable = { which = PGD_urb_reclperc which = urban_capacity } 
@@ -2447,6 +2226,13 @@ province_event = {
 		}
 		trigger_switch = {
 			on_trigger = has_building
+			shrine = { 			change_variable = { which = upper_capacity value = 0.2 } set_variable = { PGD_build_upptemple = 0.2 } }
+			small_temple = { 	change_variable = { which = upper_capacity value = 0.4 } set_variable = { PGD_build_upptemple = 0.4 } }
+			great_temple = { 	change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_upptemple = 1.0 } }
+			
+		}
+		trigger_switch = {
+			on_trigger = has_building
 			imperial_palace = { 		change_variable = { which = upper_capacity value = 1.5 } set_variable = { PGD_build_uppother = 1.5 } }
 			great_library = { 			change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
 			mathematician_academy = { 	change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
@@ -2459,7 +2245,7 @@ province_event = {
 			set_variable = { which = PGD_builds_upper which = 0 }
 			change_variable = { which = PGD_builds_upper which = PGD_build_upphall }
 			change_variable = { which = PGD_builds_upper which = PGD_build_uppother }
-			
+			change_variable = { which = PGD_builds_upper which = PGD_build_uppother }
 		
 		
 		# IMPERIAL CAPITAL
@@ -2555,14 +2341,17 @@ province_event = {
 			set_variable = { which = PGD_upp_growth_stability which = upper_growth }
 			subtract_variable = { which = PGD_upp_growth_stability which = PGD_upp_growth_devastation }
 			subtract_variable = { which = PGD_upp_growth_stability which = PGD_upp_growth_devastation }
-			
 		
+		# Other basic calculations
+		export_to_variable = { which = PG_rur_now value = base_manpower }
+		export_to_variable = { which = PG_urb_now value = base_production }
+		export_to_variable = { which = PG_upp_now value = base_tax }
 			
 	}
 	
 	
 	option = {
-		name = "population_capacity.7.a"
+		name = "population_capacity.6.a"
 		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
 	}
 	
@@ -2570,9 +2359,9 @@ province_event = {
 
 
 province_event = {				# PROVINCE INTERACTION MENU
-	id = population_capacity.8
-	title = "population_capacity.8.t"
-	desc = "population_capacity.8.d"
+	id = population_capacity.7
+	title = "population_capacity.7.t"
+	desc = "population_capacity.7.d"
 	picture = forum_picture
 	is_triggered_only = yes
 	#hidden = yes
@@ -2586,26 +2375,27 @@ province_event = {				# PROVINCE INTERACTION MENU
 			export_to_variable = { which = PG_rur_now value = base_manpower }
 			export_to_variable = { which = PG_urb_now value = base_production }
 			export_to_variable = { which = PG_upp_now value = base_tax }
+			save_event_target_as = PGS_provtarget
 		}
 	}
 	
 	option = {
-		name = "population_capacity.8.1"
+		name = "population_capacity.7.1"	# Explain me the detailed Capacities, choose scope
+		owner = { country_event = { id = popgrowth_stats.5 } }
+		
+	}
+	option = {
+		name = "population_capacity.7.2"
 		
 		
 	}
 	option = {
-		name = "population_capacity.8.2"
+		name = "population_capacity.7.3"
 		
 		
 	}
 	option = {
-		name = "population_capacity.8.3"
-		
-		
-	}
-	option = {
-		name = "population_capacity.8.4"
+		name = "population_capacity.7.4"
 		
 		
 	}
@@ -2613,61 +2403,6 @@ province_event = {				# PROVINCE INTERACTION MENU
 	
 }
 
-country_event = {
-	id = population_capacity.9
-	title = "population_capacity.9.t"
-	desc = "population_capacity.9.d"
-	picture = peasant_woman
-	is_triggered_only = yes
-	#hidden = yes
-	#fire_only_once = yes
-	
-	mean_time_to_happen = {
-		months = 2	
-	}
-	immediate = {
-		# Cleanup old values
-		
-		
-	}
-	
-	option = {
-		name = "population_capacity.8.a"
-		asia_superregion = {
-			province_event = { id = population_capacity.8 }
-			
-		}
-		
-	}
-	option = {
-		name = "population_capacity.8.b"
-		asia_superregion = {
-			trigger_switch = {
-				on_trigger = has_province_modifier  
-				tp_30 = { remove_province_modifier = tp_30 }
-				tp_24 = { remove_province_modifier = tp_24 }
-				tp_18 = { remove_province_modifier = tp_18 }
-				tp_15 = { remove_province_modifier = tp_15 }
-				tp_10 = { remove_province_modifier = tp_10 }
-				tp_7 = { remove_province_modifier = tp_7 }
-				tp_5 = { remove_province_modifier = tp_5 }
-				tp_3 = { remove_province_modifier = tp_3 }
-				tp_1 = { remove_province_modifier = tp_1 }
-			
-			}
-			if = { 		limit = { check_variable = { PG_info_range = 30 } } add_province_modifier = { name = tp_30 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 24 } } add_province_modifier = { name = tp_24 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 18 } } add_province_modifier = { name = tp_18 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 15 } } add_province_modifier = { name = tp_15 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 10 } } add_province_modifier = { name = tp_10 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 7 } } add_province_modifier = { name = tp_7 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 5 } } add_province_modifier = { name = tp_5 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 3 } } add_province_modifier = { name = tp_3 duration = 30 } }
-			else_if = { limit = { check_variable = { PG_info_range = 0 } } add_province_modifier = { name = tp_1 duration = 30 } }
-			
-		}
-		
-	}
-	
-	
-}
+
+
+
