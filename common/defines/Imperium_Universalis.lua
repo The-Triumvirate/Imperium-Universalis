@@ -52,8 +52,6 @@ NDefines.NDiplomacy.RIVAL_PRESTIGE_BONUS = 0.1
 NDefines.NDiplomacy.RIVAL_SPY_OFFENCE = 0.1
 NDefines.NDiplomacy.MAX_PEACE_TREATY_COST = 100
 
-NDefines.NCountry.MAX_TOLERANCE_HERETIC = 6
-NDefines.NCountry.MAX_TOLERANCE_HEATHEN = 6
 NDefines.NCountry.CONVERSION_COOLDOWN = 240
 NDefines.NCountry.CONVERSION_COOLDOWN_SECONDARY = 240
 
@@ -187,7 +185,6 @@ NDefines.NCountry.LIBERTY_DESIRE_GREAT_POWER_VASSAL = 30
 NDefines.NCountry.CORRUPTION_FROM_BANNERS = 0.5
 NDefines.NCountry.PS_ARTILLERY_BARRAGE = 3000
 NDefines.NCountry.LIBERTY_DESIRE_ROYAL_MARRIAGE = -15
-NDefines.NCountry.TRADE_LEAGUE_TECH_LIMIT = 1
 NDefines.NCountry.BREAK_ALLIANCE_PRESTIGE_LOSS = 10.0
 NDefines.NCountry.BREAK_ALLIANCE_TRUST_COST = 5
 NDefines.NCountry.NEW_HEIR_QUEEN_CHANCE = 50
@@ -304,10 +301,7 @@ NDefines.NMilitary.TRANSPORT_TIME = 160
 NDefines.NMilitary.INFANTRY_SPEED = 1.1						
 NDefines.NMilitary.CAVALRY_SPEED = 1.6						
 NDefines.NMilitary.ARTILLERY_SPEED = 1.1
-
-					
-				
-NDefines.NMilitary.TRANSPORT_SPEED = 7.0 							
+							
 NDefines.NMilitary.INFANTRY_COST = 16.0	
 NDefines.NMilitary.CAVALRY_COST = 32.0
 NDefines.NMilitary.ARTILLERY_COST = 16.0
