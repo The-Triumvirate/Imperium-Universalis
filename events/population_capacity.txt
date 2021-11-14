@@ -891,9 +891,9 @@ province_event = {
 		divide_variable = { rural_growth = 100 } multiply_variable = { rural_growth = 100 }
 		divide_variable = { urban_growth = 100 } multiply_variable = { urban_growth = 100 }
 		divide_variable = { upper_growth = 100 } multiply_variable = { upper_growth = 100 }
-		export_to_variable = { which = PG_rur_now value = base_manpower }
-		export_to_variable = { which = PG_urb_now value = base_production }
-		export_to_variable = { which = PG_upp_now value = base_tax }
+		export_to_variable = { which = PS_rur_now value = base_manpower }
+		export_to_variable = { which = PS_urb_now value = base_production }
+		export_to_variable = { which = PS_upp_now value = base_tax }
 	}
 	
 	
@@ -903,7 +903,7 @@ province_event = {
 	}
 	
 }
-country_event = {
+country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	id = population_capacity.2
 	title = "population_capacity.2.t"
 	desc = "population_capacity.2.d"
@@ -916,7 +916,7 @@ country_event = {
 		name = "population_capacity.2.a"
 		hidden_effect = {
 			every_owned_province = {
-				# Pop capacities
+				# PG: Pop Growth (capacities)
 				province_event = { id = population_capacity.1 }	# Pop capacities for rural, urban, upper
 				if = { 
 					limit = { NOT = { has_province_modifier = popgrowth_viewer } }
@@ -930,8 +930,12 @@ country_event = {
 					remove_province_modifier = PG_commoner001 remove_province_modifier = PG_commoner002
 				}
 				
-				# Sieges and repairs
-				if = { limit = { has_building = building_ruins } 	SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
+				# SS: Sieges and repairs
+				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
+				
+				# DR Dynamic Resources
+				# Postponed to after 3.0 release
+				#if = { limit = { had_province_flag = { flag = DR_2years days = 700 } } DR_run_extractions = yes DR_update_wildlife = yes }
 				
 			}
 		}
@@ -971,49 +975,21 @@ country_event = {
 		country_event = { id = population_capacity.2 }
 	}
 	option = {
-		name = "population_capacity.3.5"	# Statistics: calculate all world variables
-		trigger = { has_global_flag = popgrowth_running }
-		country_event = { id = population_capacity.3 }
-	}
-	option = {
-		name = "population_capacity.3.6"	# Statistics: show province sizes (trade map)
-		trigger = { has_global_flag = popgrowth_running }
-		hidden_effect = {
-			every_province = {
-				if = { 		limit = { check_variable = { prov_size = 10 } } add_province_modifier = { name = popgrowth_size10 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 9 } }  add_province_modifier = { name = popgrowth_size09 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 8 } }  add_province_modifier = { name = popgrowth_size08 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 7 } }  add_province_modifier = { name = popgrowth_size07 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 6 } }  add_province_modifier = { name = popgrowth_size06 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 5 } }  add_province_modifier = { name = popgrowth_size05 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 4 } }  add_province_modifier = { name = popgrowth_size04 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 3 } }  add_province_modifier = { name = popgrowth_size03 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 2 } }  add_province_modifier = { name = popgrowth_size02 duration = 30 } }
-				else_if = { limit = { check_variable = { prov_size = 1 } }  add_province_modifier = { name = popgrowth_size01 duration = 30 } }
-			}
-		}
-		
+		name = "population_capacity.3.5"	# Open the Analysis and Statistics menu
+		trigger = { has_global_flag = popgrowth_initiated }
+		country_event = { id = popgrowth_stats.1 }
 	}
 	
 	option = {								
-		name = "population_capacity.3.7"	# Nothing, go back
+		name = "population_capacity.3.6"	# Keep plyaing with vanilla mechanics
+		trigger = { has_global_flag = popgrowth_vanilla }
 		
 	}
-	
-	
-	# DEV OPTIONS - disabled by default
-	#option = {								
-	#	name = "population_capacity.3.8"	# Give modifier to build fast
-	#	add_country_modifier = { name = popgrowth_debug_build duration = 7300 }
-	#}
-	#option = {								
-	#	name = "population_capacity.3.8"	# Set rural infrastructure to the max
-	#	hidden_effect = {
-	#		every_country = {
-	#			every_owned_province = { add_building = hospital }
-	#		}
-	#	}
-	#}
+	option = {								
+		name = "population_capacity.3.7"	# Nothing, go back
+		trigger = { has_global_flag = popgrowth_running }
+		
+	}
 	
 }
 
@@ -1149,17 +1125,17 @@ province_event = {
 		# not using the while sintax, so that in the option values it can be seen
 		if = {
 			limit = { check_variable = { mig_size = 3 } }
-			add_base_manpower = -3 change_variable = { PGS_rur_slv = 3 } 	# PGS = "pop growth statistics", will appear in the province interaction
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PGS = "pop growth statistics", will appear in the province interaction
 			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
 		}
 		else_if = {
 			limit = { check_variable = { mig_size = 2 } }
-			add_base_manpower = -2 change_variable = { PGS_rur_slv = 2 } 
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
 			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
 		}
 		else_if = {
 			limit = { check_variable = { mig_size = 1 } }
-			add_base_manpower = -1 change_variable = { PGS_rur_slv = 1 } 
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
 			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
 		}
 		province_event = { id = population_capacity.1 }
@@ -1172,9 +1148,9 @@ province_event = {
 		ai_chance = {   factor = 30 	 modifier = { factor = 2.5	NOT = { owner = { treasury = 30 } } } }
 		
 		# not using the while sintax, so that in the option values it can be seen
-		if = { 		limit = { check_variable = { mig_size = 3 } } add_base_manpower = -3 change_variable = { PGS_rur_svd = 3 } }
-		else_if = { limit = { check_variable = { mig_size = 2 } } add_base_manpower = -2 change_variable = { PGS_rur_svd = 2 } }
-		else_if = { limit = { check_variable = { mig_size = 1 } } add_base_manpower = -1 change_variable = { PGS_rur_svd = 1 } }
+		if = { 		limit = { check_variable = { mig_size = 3 } } add_base_manpower = -3 change_variable = { PS_rur_strv = 3 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } add_base_manpower = -2 change_variable = { PS_rur_strv = 2 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } add_base_manpower = -1 change_variable = { PS_rur_strv = 1 } }
 		
 		# get ready for trouble
 		add_devastation = 20	add_province_modifier = { name = PG_pop_starved duration = 730 } 	# +4 unrest
@@ -1390,16 +1366,17 @@ province_event = {
 				else = { 											multiply_variable = { rural_capacity = 1.1 } }
 			}
 			rome_t = { 
-				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
-				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
-				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
-				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = 1.2 } }
+				else = { 											multiply_variable = { rural_capacity = 1.1 } }
+				
 			}
 			carthage_t = { 
-				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
-				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
-				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
-				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = 1.2 } }
+				else = { 											multiply_variable = { rural_capacity = 1.1 } }
 			}
 			athen_t = { 
 				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
@@ -1940,9 +1917,9 @@ province_event = {
 		
 		trigger_switch = {
 			on_trigger = has_province_flag
-			flag_severe_monsoon = { change_variable = { rural_growth = 0.3 } }
-			flag_normal_monsoon = { change_variable = { rural_growth = 0.2 } }
-			flag_mild_monsoon = { 	change_variable = { rural_growth = 0.1 } }
+			flag_severe_monsoon = { multiply_variable = { rural_growth = 1.2 } }
+			flag_normal_monsoon = { multiply_variable = { rural_growth = 1.175 } }
+			flag_mild_monsoon = { 	multiply_variable = { rural_growth = 1.15 } }
 		}
 			set_variable = { which = PGD_rur_growth_monsoon which = rural_growth }
 			subtract_variable = { which = PGD_rur_growth_monsoon which = PGD_rur_growth_base }
@@ -2245,7 +2222,7 @@ province_event = {
 			set_variable = { which = PGD_builds_upper which = 0 }
 			change_variable = { which = PGD_builds_upper which = PGD_build_upphall }
 			change_variable = { which = PGD_builds_upper which = PGD_build_uppother }
-			change_variable = { which = PGD_builds_upper which = PGD_build_uppother }
+			change_variable = { which = PGD_builds_upper which = PGD_build_upptemple }
 		
 		
 		# IMPERIAL CAPITAL
@@ -2343,9 +2320,9 @@ province_event = {
 			subtract_variable = { which = PGD_upp_growth_stability which = PGD_upp_growth_devastation }
 		
 		# Other basic calculations
-		export_to_variable = { which = PG_rur_now value = base_manpower }
-		export_to_variable = { which = PG_urb_now value = base_production }
-		export_to_variable = { which = PG_upp_now value = base_tax }
+		export_to_variable = { which = PS_rur_now value = base_manpower }
+		export_to_variable = { which = PS_urb_now value = base_production }
+		export_to_variable = { which = PS_upp_now value = base_tax }
 			
 	}
 	
@@ -2372,34 +2349,43 @@ province_event = {				# PROVINCE INTERACTION MENU
 	#}
 	immediate = {
 		hidden_effect = {
-			export_to_variable = { which = PG_rur_now value = base_manpower }
-			export_to_variable = { which = PG_urb_now value = base_production }
-			export_to_variable = { which = PG_upp_now value = base_tax }
+			export_to_variable = { which = PS_rur_now value = base_manpower }
+			export_to_variable = { which = PS_urb_now value = base_production }
+			export_to_variable = { which = PS_upp_now value = base_tax }
 			save_event_target_as = PGS_provtarget
 		}
 	}
 	
 	option = {
-		name = "population_capacity.7.1"	# Explain me the detailed Capacities, choose scope
+		name = "population_capacity.7.1"	# Show only detailed capacities in this province
+		province_event = { id = population_capacity.6 }
+		
+	}
+	option = {
+		name = "population_capacity.7.2"	# Explain me the detailed Capacities, choose scope
+		owner = { country_event = { id = popgrowth_stats.401 } }
+		
+	}
+	option = {
+		name = "population_capacity.7.3"	# Show population variations, only this province
+		province_event = { id = popgrowth_stats.6 }
+		
+	}
+	option = {
+		name = "population_capacity.7.4"	# Show population variations, choose scope
+		owner = { country_event = { id = popgrowth_stats.402 } }
+		
+	}
+	option = {
+		name = "population_capacity.7.5"	# Paint the map, based on this province
 		owner = { country_event = { id = popgrowth_stats.5 } }
 		
 	}
-	option = {
-		name = "population_capacity.7.2"
-		
-		
-	}
-	option = {
-		name = "population_capacity.7.3"
-		
-		
-	}
-	option = {
-		name = "population_capacity.7.4"
-		
-		
-	}
 	
+	option = {
+		name = "population_capacity.7.99"	# (nothing, close this)
+		
+	}
 	
 }
 
