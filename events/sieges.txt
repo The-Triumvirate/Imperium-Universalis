@@ -17,12 +17,19 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		# Province
 		FROM = {
-			development = 3	# for unrestricted, at least dev 3
+			development = 3		# for unrestricted, at least dev 3
 			NOT = { OR = {  has_province_modifier = SS_was_raided 	 has_province_modifier = SS_was_delenda has_province_modifier = SS_was_enslaved
 							has_province_modifier = SS_was_destroyed has_province_modifier = SS_was_sacked 	has_province_modifier = SS_was_tributed } 
 			}
+			NOT = { owned_by = ROOT }		# Avoids sacking previously occupied owned provinces
+			OR = {
+				owner = { is_in_war = { attackers = ROOT } }	# checks the owner is at war with the besieger. 
+				owner = { is_in_war = { defenders = ROOT } }	# this way it only works for wars, not for rebels
+			}
 		}
+		# Siege rules
 		OR = {
 			has_global_flag = siege_unrestricted 
 			AND = { has_global_flag = siege_cities_15 FROM = { development = 15 } }
@@ -50,6 +57,10 @@ country_event = {
 				set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 } 
 				set_variable = { which = SS_blds value = 0 } set_variable = { which = SS_blds value = 0 } 
 				set_variable = { which = SS_blds value = 0 } set_variable = { which = SS_blds value = 0 } 
+				
+				# define the owner of the province (the country being besieged)
+				owner = { save_event_target_as = SS_prov_owner }
+				if = { limit = { has_province_modifier = SS_enslv_there_hostile } remove_province_modifier = SS_enslv_there_hostile }
 				
 				# Sack efficiency (army, ferocity, ratio)
 				export_to_variable = { which = prov_inf value = trigger_value:infantry_in_province }
@@ -100,9 +111,9 @@ country_event = {
 					multiply_variable = { SS_t_lost = 0.2 } multiply_variable = { SS_c_lost = 0.4 } multiply_variable = { SS_u_lost = 0.75 }
 				}
 				else = {
-					set_variable = { which = SS_t_min which = rural_capacity } multiply_variable = { SS_t_min = 0.6 }
-					set_variable = { which = SS_c_min which = urban_capacity } multiply_variable = { SS_c_min = 0.4 }
-					set_variable = { which = SS_u_min which = upper_capacity } multiply_variable = { SS_u_min = 0.2 }
+					set_variable = { which = SS_t_min which = rural_capacity } multiply_variable = { SS_t_min = 0.6 }	# min 60% rural cap
+					set_variable = { which = SS_c_min which = urban_capacity } multiply_variable = { SS_c_min = 0.4 }	# min 40% urban cap
+					set_variable = { which = SS_u_min which = upper_capacity } multiply_variable = { SS_u_min = 0.2 }	# min 20% upper cap
 					
 					if = { 	limit = { check_variable = { which = SS_t_lost which = SS_t_min } } 
 							subtract_variable = { which = SS_t_lost which = SS_t_min } 			}

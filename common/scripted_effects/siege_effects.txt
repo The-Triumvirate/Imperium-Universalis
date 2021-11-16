@@ -52,14 +52,14 @@ enslave_effect_soft = {
 		}
 	
 		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
 		every_neighbor_province = {
-			limit = { owned_by = FROM }
-			add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+			limit = { controlled_by = event_target:SS_prov_owner }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
 		}
 		every_neighbor_province = {
-			limit = { owned_by = ROOT }
-			add_province_modifier = { name = SS_enslavement_ongoing_there duration = $days$ }
+			limit = { controlled_by = ROOT }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
 		}
 		
 	}
@@ -68,7 +68,7 @@ enslave_effect_soft = {
 	
 }
 
-enslave_effect_soft = {
+enslave_effect_hard = {
 	# Send slaves to besieger
 	set_variable = { which = SS_hard_total which = FROM } 
 	change_variable = { which = slaves which = SS_hard_total }
@@ -99,14 +99,14 @@ enslave_effect_soft = {
 		}
 	
 		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
 		every_neighbor_province = {
-			limit = { owned_by = FROM }
-			add_province_modifier = { name = SS_enslavement_ongoing_here duration = $days$ }
+			limit = { controlled_by = event_target:SS_prov_owner }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
 		}
 		every_neighbor_province = {
-			limit = { owned_by = ROOT }
-			add_province_modifier = { name = SS_enslavement_ongoing_there duration = $days$ }
+			limit = { controlled_by = ROOT }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
 		}
 		
 	}
@@ -152,15 +152,16 @@ enslave_delenda_effect = {
 	
 	
 		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_ongoing_here duration = 180 }
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
 		every_neighbor_province = {
-			limit = { owned_by = FROM }
-			add_province_modifier = { name = SS_enslavement_ongoing_here duration = 180 }
+			limit = { OR = { owned_by = event_target:SS_prov_owner controlled_by = event_target:SS_prov_owner } }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
 		}
 		every_neighbor_province = {
-			limit = { owned_by = ROOT }
-			add_province_modifier = { name = SS_enslavement_ongoing_there duration = 180 }
+			limit = { OR = { owned_by = ROOT controlled_by = ROOT } }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
 		}
+		
 	}
 	
 	set_variable = { which = SS_delenda_total which = FROM }
