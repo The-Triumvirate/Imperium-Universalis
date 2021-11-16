@@ -1844,4 +1844,153 @@ country_decisions = {
 			}
 		}
 	}
+
+	expand_tamil_confederation = {
+		potential = {
+			NOT = { has_country_flag = can_diplomatically_establish_velir_flag }
+			OR = {
+				has_reform = tamil_crowned_king_tribal_reform
+				has_reform = tamil_crowned_king_reform
+			}
+		}
+
+		allow = {
+			dip_tech = 10
+			dip_power = 200
+			prestige = 0
+		}
+
+		effect = {
+			add_dip_power = -200
+			hidden_effect = {
+				set_country_flag = can_diplomatically_establish_velir_flag
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	seek_independence_velir = {
+		potential = {
+			is_subject_of_type = velir_subject
+		}
+
+		allow = {
+			prestige = 0
+			adm_power = 100
+			dip_power = 100
+			mil_power = 100
+			stability = 1
+		}
+
+		effect = {
+			add_adm_power = -100
+			add_dip_power = -100
+			add_mil_power = -100
+			add_stability = -2
+			hidden_effect = { overlord = { save_event_target_as = former_muventar_overlord } }
+			grant_independence = yes
+			event_target:former_muventar_overlord = {
+				add_opinion = {
+					who = ROOT
+					modifier = broke_velir_status_opinion
+				}
+				add_casus_belli = {
+					type = cb_restablish_velir
+					target = ROOT
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				overlord = { prestige = 75 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { liberty_desire = 50 }
+			}
+			modifier = {
+				factor = 1.5
+				liberty_desire = 60
+			}
+			modifier = {
+				factor = 2
+				liberty_desire = 70
+			}
+			modifier = {
+				factor = 3
+				liberty_desire = 80
+			}
+			modifier = {
+				factor = 4
+				liberty_desire = 90
+			}
+			modifier = {
+				factor = 5
+				liberty_desire = 100
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					overlord = {
+						reverse_has_opinion = {
+							who = ROOT
+							value = 0
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 10
+				overlord = { NOT = { total_development = ROOT } }
+			}
+			modifier = {
+				factor = 2
+				overlord = { NOT = { prestige = -10 } }
+			}
+		}
+	}
+
+	centralize_tamil_confederation = {
+		potential = {
+			has_country_flag = can_diplomatically_establish_velir_flag
+			has_reform = tamil_crowned_king_reform
+		}
+
+		allow = {
+			dip_tech = 21
+			dip_power = 400
+			prestige = 10
+			absolutism = 30
+			stability = 2
+		}
+
+		effect = {
+			add_dip_power = -400
+			add_stability = -1
+			add_absolutism = -20
+			hidden_effect = {
+				set_country_flag = can_integrate_velir_flag
+				every_subject_country = {
+					if = {
+						limit = { is_subject_of_type = velir_subject }
+						add_liberty_desire = 10
+						add_opinion = {
+							who = ROOT
+							modifier = decreased_autonomy_opinion
+						}
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
 }
