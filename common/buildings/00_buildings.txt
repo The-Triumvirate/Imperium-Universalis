@@ -3924,17 +3924,26 @@ manpower_infrastructure_horde_building = { #year 125
 			mil_power = 300
 		}
 		base_manpower = 1
-		if = {
-			limit = {
-				has_terrain = desert
-				has_terrain = salt_desert
-				has_terrain = coastal_desert
-				has_terrain = desert_mountain
+		OR = {	
+			AND = { 
+				has_global_flag = popgrowth_vanilla
+				if = {
+					limit = {
+						has_terrain = desert
+						has_terrain = salt_desert
+						has_terrain = coastal_desert
+						has_terrain = desert_mountain
+					}
+					NOT = { base_manpower = 5 }
+				}
+				else = {
+					NOT = { base_manpower = 10 }
+				}
 			}
-			NOT = { base_manpower = 5 }
-		}
-		else = {
-			NOT = { base_manpower = 10 }
+			AND = {
+				has_global_flag = popgrowth_running
+				check_variable = { rural_growth = 1.1 }
+			}
 		}
 	}
 
@@ -3947,6 +3956,7 @@ manpower_infrastructure_horde_building = { #year 125
 			hidden_effect = {
 				remove_building = manpower_infrastructure_horde_building
 				increase_manpower_dev_effect = yes
+				province_event = { id = population_capacity.1 }
 			}
 		}
 	}
@@ -4041,44 +4051,24 @@ land_reclamation = { #year 125
 		ROOT = {
 			hidden_effect = { remove_building = land_reclamation }
 			if = {
-				limit = {
-						has_province_modifier = land_reclamtion_4
-				}
+				limit = { has_province_modifier = land_reclamtion_4 }
 				hidden_effect = { remove_province_modifier = land_reclamtion_4 }
-				add_permanent_province_modifier = { 
-					name = land_reclamtion_5
-					duration = -1  
-				}
+				add_permanent_province_modifier = {  name = land_reclamtion_5 duration = -1   }
 			}
 			if = {
-				limit = {
-						has_province_modifier = land_reclamtion_3
-				}
+				limit = { has_province_modifier = land_reclamtion_3 }
 				hidden_effect = { remove_province_modifier = land_reclamtion_3 }
-				add_permanent_province_modifier = { 
-					name = land_reclamtion_4
-					duration = -1  
-				}
+				add_permanent_province_modifier = { name = land_reclamtion_4 duration = -1  }
 			}
 			if = {
-				limit = {
-						has_province_modifier = land_reclamtion_2 
-				}
+				limit = { has_province_modifier = land_reclamtion_2  }
 				hidden_effect = { remove_province_modifier = land_reclamtion_2 }
-				add_permanent_province_modifier = { 
-					name = land_reclamtion_3
-					duration = -1  
-				}
+				add_permanent_province_modifier = {  name = land_reclamtion_3 duration = -1  }
 			}
 			if = {
-				limit = {
-						has_province_modifier = land_reclamtion_1 
-				}
+				limit = { has_province_modifier = land_reclamtion_1  }
 				hidden_effect = { remove_province_modifier = land_reclamtion_1 }
-				add_permanent_province_modifier = { 
-					name = land_reclamtion_2
-					duration = -1  
-				}
+				add_permanent_province_modifier = {  name = land_reclamtion_2 duration = -1   }
 			}
 			if = {
 				limit = {
@@ -4154,18 +4144,26 @@ manpower_infrastructure_building = { #year 125
 	build_trigger = {
 		base_manpower = 1
 		owner = { mil_power = 300 }
-		has_global_flag = popgrowth_vanilla
-		if = {
-			limit = {
-				has_terrain = desert
-				has_terrain = salt_desert
-				has_terrain = coastal_desert
-				has_terrain = desert_mountain
+		OR = {
+			AND = {
+				has_global_flag = popgrowth_vanilla
+				if = {
+					limit = {
+						has_terrain = desert
+						has_terrain = salt_desert
+						has_terrain = coastal_desert
+						has_terrain = desert_mountain
+					}
+					NOT = { base_manpower = 5 }
+				}
+				else = {
+					NOT = { base_manpower = 10 }
+				}
 			}
-			NOT = { base_manpower = 5 }
-		}
-		else = {
-			NOT = { base_manpower = 10 }
+			AND = {
+				has_global_flag = popgrowth_running
+				check_variable = { rural_growth = 1.1 }
+			}
 		}
 	}
 
@@ -4178,6 +4176,10 @@ manpower_infrastructure_building = { #year 125
 			hidden_effect = {
 				remove_building = manpower_infrastructure_building
 				increase_manpower_dev_effect = yes
+				if = {
+					limit = { has_global_flag = popgrowth_running }
+					province_event = { id = population_capacity.1 }
+				}
 			}
 		}
 	}
@@ -4210,20 +4212,30 @@ production_infrastructure_building = { #year 125
 	one_per_country = yes
 	
 	build_trigger = {
-		base_production = 1
+		
 		owner = { dip_power = 300 }
-		has_global_flag = popgrowth_vanilla
-		if = {
-			limit = {
-				has_terrain = desert
-				has_terrain = salt_desert
-				has_terrain = coastal_desert
-				has_terrain = desert_mountain
+		OR = {
+			AND = {
+				base_production = 1
+				has_global_flag = popgrowth_vanilla
+				if = {
+					limit = {
+						has_terrain = desert
+						has_terrain = salt_desert
+						has_terrain = coastal_desert
+						has_terrain = desert_mountain
+					}
+					NOT = { base_production = 4	}
+				}
+				else = {
+					NOT = { base_production = 8 }
+				}
 			}
-			NOT = { base_production = 4	}
-		}
-		else = {
-			NOT = { base_production = 8 }
+			AND = {
+				has_global_flag = popgrowth_running
+				check_variable = { urban_growth = 1.1 }
+			}
+			
 		}
 	}
 
@@ -4236,6 +4248,10 @@ production_infrastructure_building = { #year 125
 			hidden_effect = {
 				remove_building = production_infrastructure_building
 				increase_production_dev_effect = yes
+				if = {
+					limit = { has_global_flag = popgrowth_running }
+					province_event = { id = population_capacity.1 }
+				}
 			}
 		}
 	}
@@ -4268,20 +4284,29 @@ taxes_infrastructure_building = { #year 125
 	one_per_country = yes
 	
 	build_trigger = {
-		base_tax = 1
+		
 		owner = { adm_power = 300 }
-		has_global_flag = popgrowth_vanilla
-		if = {
-			limit = {
-				has_terrain = desert
-				has_terrain = salt_desert
-				has_terrain = coastal_desert
-				has_terrain = desert_mountain
+		OR = {
+			AND = {
+				base_tax = 1
+				has_global_flag = popgrowth_vanilla
+				if = {
+					limit = {
+						has_terrain = desert
+						has_terrain = salt_desert
+						has_terrain = coastal_desert
+						has_terrain = desert_mountain
+					}
+					NOT = { base_tax = 3 }
+				}
+				else = {
+					NOT = { base_tax = 6 }
+				}
 			}
-			NOT = { base_tax = 3 }
-		}
-		else = {
-			NOT = { base_tax = 6 }
+			AND = {
+				has_global_flag = popgrowth_running
+				check_variable = { upper_growth = 1.1 }
+			}
 		}
 	}
 
@@ -4294,6 +4319,10 @@ taxes_infrastructure_building = { #year 125
 			hidden_effect = {
 				remove_building = taxes_infrastructure_building
 				increase_tax_dev_effect = yes
+				if = {
+					limit = { has_global_flag = popgrowth_running }
+					province_event = { id = population_capacity.1 }
+				}
 			}
 		}
 	}

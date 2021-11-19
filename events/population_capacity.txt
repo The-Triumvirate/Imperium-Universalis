@@ -523,14 +523,6 @@ province_event = {
 		subtract_variable = { which = rural_capacity which = rural_exports }	# aaand they are gone from the fields
 		
 		
-		# Devastation, will reduce as a simple scale 1 to 99% malus. Prosperity increases up to 10%
-		#trigger_switch = {
-		#	on_trigger = devastation
-		#	75 = { multiply_variable = { which = rural_capacity value = 0.50 } }	# much less devastation, but urban life will be over
-		#	60 = { multiply_variable = { which = rural_capacity value = 0.60 } }	# it will actually affect rural growth ratio, so, no growth at all
-		#	40 = { multiply_variable = { which = rural_capacity value = 0.75 } }
-		#	15 = { multiply_variable = { which = rural_capacity value = 0.90 } }
-		#}
 		
 		# Special province modifiers
 			# Nothing added so far
@@ -576,6 +568,7 @@ province_event = {
 		# Weather effects
 		if = { 		limit = { has_province_modifier = pg_food_surplus } multiply_variable = { rural_growth = 1.30 } }
 		else_if = { limit = { has_province_modifier = pg_food_shortage } multiply_variable = { rural_growth = 0.80 } }
+		
 		
 	######################
 	## URBAN CAPACITY
@@ -926,20 +919,22 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 		name = "population_capacity.2.a"
 		hidden_effect = {
 			every_owned_province = {
-				# PG: Pop Growth (capacities)
-				province_event = { id = population_capacity.1 }	# Pop capacities for rural, urban, upper
-				if = { 
-					limit = { NOT = { has_province_modifier = popgrowth_viewer } }
-					add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
-				}
 				if = {
-					limit = { 
-						OR = { has_province_modifier = PG_commoner001 has_province_modifier = PG_commoner002 }
-						check_variable = { urban_capacity = 1 }
+					limit = { has_global_flag = popgrowth_running }
+					# PG: Pop Growth (capacities)
+					province_event = { id = population_capacity.1 }	# Pop capacities for rural, urban, upper
+					if = { 
+						limit = { NOT = { has_province_modifier = popgrowth_viewer } }
+						add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
 					}
-					remove_province_modifier = PG_commoner001 remove_province_modifier = PG_commoner002
+					if = {
+						limit = { 
+							OR = { has_province_modifier = PG_commoner001 has_province_modifier = PG_commoner002 }
+							check_variable = { urban_capacity = 1 }
+						}
+						remove_province_modifier = PG_commoner001 remove_province_modifier = PG_commoner002
+					}
 				}
-				
 				# SS: Sieges and repairs
 				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
 				
@@ -964,11 +959,13 @@ country_event = {
 
 	option = {								
 		name = "population_capacity.3.1"	# Initiate for first time. Adds flag "initiated", startup.2 sets flag "running". Init + running
+		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_vanilla }
 		country_event = { id = startup.2 }
 	}
 	option = {								
 		name = "population_capacity.3.2"	# Apply the submod again
+		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_initiated 	has_global_flag = popgrowth_vanilla }
 		set_global_flag = popgrowth_running
 		clr_global_flag = popgrowth_vanilla
@@ -997,6 +994,7 @@ country_event = {
 	}
 	option = {								
 		name = "population_capacity.3.7"	# Nothing, go back
+		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_running }
 		
 	}
