@@ -13,8 +13,8 @@ country_event = {
 		tag = MAC
 		started_in = 395.1.1
 		NOT = { started_in = 418.1.1 }
-		owns = 1032
-		has_ruler = "Philip II Argead"
+		owns = 1061
+		has_ruler = "Philip II"
 		NOT = {	has_country_flag = philipe_start }
 		}
 	mean_time_to_happen = {
@@ -27,11 +27,12 @@ country_event = {
 	option = {
 		name = "rm.1.a"
 		ai_chance = { factor = 100 }
-		1032 = {
+		add_legitimacy = -50
+		1061 = {
 			spawn_rebels = {
 				type = pretender_rebels
-				size = 1
-				leader = "Argeus Argead"
+				size = 0.5
+				leader = "Argeus Argead"				
 			}
 		}
 	}
@@ -50,13 +51,13 @@ country_event = {
 		tag = MAC
 		started_in = 395.1.1
 		NOT = { started_in = 418.1.1 }
-		has_ruler = "Philip II Argead"
-                has_country_flag = philipe_start
+		has_ruler = "Philip II"
+        has_country_flag = philipe_start
 		NOT = {	has_country_modifier = military_reform_army }
 		} 
 	
 	mean_time_to_happen = {
-		months = 12
+		months = 6
 	}
 	
 	immediate = {
@@ -71,17 +72,32 @@ country_event = {
 				duration = 3650
 			}
 		add_mil_power = 100
-		add_yearly_manpower = 4.0
+		add_yearly_manpower = 4
 		add_army_tradition = 10
 		add_prestige = 10
 		inherit = LNK
 		inherit = ORE
 		inherit = ELM
 		inherit = EOR
+		inherit = TMH
+		inherit = ALM
+		inherit = KRS
+		inherit = MGD
+		inherit = BSL
+		vassalize = AMF
+		any_owned_province = {
+			limit = {
+				AND = {
+					region = macedonia_region
+					owned_by = MAC
+				}
+			}
+			change_culture = macedon
+			change_religion = greek_religion
+		}
 	}
 }
 
-			
 #########################################################################################
 # Philip II - Reforms Finish (after you own mount Pangaion)
 ######################################################################################## 
@@ -95,25 +111,36 @@ country_event = {
 		tag = MAC
 		started_in = 395.1.1
 		NOT = { started_in = 418.1.1 }
-		has_ruler = "Philip II Argead"
+		has_ruler = "Philip II"
         has_country_flag = philipe_start
 		has_country_flag = philipe_reform
-		owns = 1074
-		owns = 1075
+		owns = 1076
 		NOT = {	has_country_modifier = macedonian_reforms }
 		} 
 	
 	mean_time_to_happen = {
 		months = 6
 	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = philipe_final_reform }
+	}
 	
 	option = {
 		name = "rm.3.a"
-		add_army_professionalism = 0.05
-		add_treasury = 200
+		add_army_professionalism = 0.4
+		add_treasury = 2000
 		add_mil_power = 100
 		add_yearly_manpower = 3
 		add_prestige = 10
+		1076 = {
+			change_culture = macedon
+			change_religion = greek_religion
+			add_base_manpower = -2
+			add_base_production = 1
+
+		}
+
 	}
 }
 
@@ -148,6 +175,9 @@ country_event = {
 			dip = 5
 			mil = 3
 			}
+			MAC = {
+				create_alliance = MOL
+			}
 	}
 }
 
@@ -168,7 +198,7 @@ country_event = {
 		NOT = { started_in = 418.1.1 }
 		is_year = 398
 		has_country_flag = olympias
-		NOT = {			has_country_flag = alex_birth		}
+		NOT = {	has_country_flag = alex_birth }
 	}
 	
 	mean_time_to_happen = {
@@ -181,16 +211,14 @@ country_event = {
 			define_heir = {
 			name = "Alexander III the Great"
 			dynasty = "Argead"
-			adm = 6
-			dip = 6
+			adm = 5
+			dip = 3
 			mil = 6
 			}
 	}
 }
 
-#########################################################################################
-# Philipe II - Securing the Borders (claim neighbours)
-######################################################################################## 
+
 #########################################################################################
 # Philipe II - Pydna and Amphiopolis - Athens offers you your Pydna if you will give them occupied Amphiopolis
 ######################################################################################## 
@@ -208,14 +236,16 @@ country_event = {
 		NOT = { started_in = 418.1.1 }
 		NOT = { war_with = ATH }
 		NOT = { is_year = 408 }
-		601 = {
+		has_country_flag = bardylis_victory
+		NOT = {	has_country_flag = amphipolis_war }
+		1062 = {
 			owned_by = ATH
 		}
 		OR = {
-			611 = {
+			1074 = {
 				controlled_by = MAC
 				}
-			611 = {
+			1074 = {
 				owned_by = MAC
 				}
 		}
@@ -224,14 +254,16 @@ country_event = {
 	mean_time_to_happen = {
 		days = 7
 	}
-
+	immediate = {
+		hidden_effect = { set_country_flag = amphipolis_war }
+	}
 	option = {
 		name = "rm.6.a" #we have a deal
 		ai_chance = {	factor = 15 }
-			611 = {
+			1074 = {
 				cede_province = ATH
 			}
-			601 = {
+			1062 = {
 				cede_province = MAC
 			}
 		add_truce_with = ATH
@@ -239,7 +271,7 @@ country_event = {
 	}
 	option = {
 		name = "rm.6.b" #nah, go away, fools
-		ai_chance = {	factor = 35 }
+		ai_chance = {	factor = 15 }
 		add_prestige = -5
 		ATH = {
 			add_opinion = {
@@ -250,7 +282,7 @@ country_event = {
 	}
 	option = {
 		name = "rm.6.c" #phah, i can take both cities and you will do nothing to me
-		ai_chance = {	factor = 50	}
+		ai_chance = {	factor = 70	}
 		ATH = {
 			add_opinion = {
 				who = ROOT
@@ -258,15 +290,274 @@ country_event = {
 			}
 		}
 		ATH = {
+			create_alliance = BSS
+			create_alliance = ODR
+			create_alliance = POE
+			create_alliance = DT1
+		}
+		ATH = { form_coalition_against = MAC }
+		BSS = { form_coalition_against = MAC }
+		ODR = { form_coalition_against = MAC }
+		POE = { form_coalition_against = MAC }
+		DT1 = { form_coalition_against = MAC }
+
+		ATH = {
 			declare_war_with_cb = {
 				who = MAC
 				casus_belli = cb_insult
 			}
 		}
-		601 = {
-			change_controller = MAC
+		1062 = {
+			add_core = MAC
+			cede_province = MAC
+			
+		}
+		1074 = {
+			add_core = MAC
+			cede_province = MAC
+			
 		}
 		add_dip_power = -25
 		add_treasury = -25
 	}
 }
+#########################################################################################
+# Philip II - tribute to Paeonians
+######################################################################################## 	
+#country_event = {
+#	id = rm.7
+#	title = rm.7.t
+#	desc = rm.7.d
+#	picture = alexander
+#########################################################################################
+# Philip II -Emergency peace with Bardylis
+######################################################################################## 	
+#country_event = {
+#	id = rm.8
+#	title = rm.8.t
+#	desc = rm.8.d
+#	picture = alexander
+#########################################################################################
+# Philip II - Intrusion of Argeus and Athens
+######################################################################################## 	
+#country_event = {
+#	id = rm.9
+#	title = rm.9.t
+#	desc = rm.9.d
+#	picture = alexander
+#########################################################################################
+# Philip II - Assasination of Pausanias at Western Odrysia court
+######################################################################################## 	
+#country_event = {
+#	id = rm.10
+#	title = rm.10.t
+#	desc = rm.10.d
+#	picture = alexander
+#########################################################################################
+# Philip II - War with Bardylis
+######################################################################################## 		
+#
+#country_event = {
+#	id = rm.11
+#	title = rm.11.t
+#	desc = rm.11.d
+#	picture = alexander
+#
+#	trigger = {
+#		tag = MAC
+#		started_in = 395.1.1
+#		NOT = { started_in = 418.1.1 }
+#		has_ruler = "Philip II"
+ #       has_country_flag = philipe_reform
+#		NOT = {	has_country_flag = bardylis_war }
+#		} 
+#	
+#	mean_time_to_happen = {
+#		months = 1
+#	}
+#	
+#	immediate = {
+#		hidden_effect = { set_country_flag = bardylis_war }
+#	}
+#	
+#	option = {
+#		name = "rm.11.a"
+#		ai_chance = { factor = 100 }
+#		add_mil_power = 20
+#		MAC = {
+#			declare_war_with_cb = {
+#				who = DT1
+#				casus_belli = cb_core
+#			}
+#		}
+#	}
+#}
+#
+#
+#########################################################################################
+# Philip II - Victory over Bardylis
+######################################################################################## 		
+
+#country_event = {
+	# id = rm.12
+	#title = rm.12.t
+#	desc = rm.12.d
+	#picture = alexander
+
+	#trigger = {
+	#	tag = MAC
+	#	started_in = 395.1.1
+		#NOT = { started_in = 418.1.1 }
+		#has_ruler = "Philip II"
+       # has_country_flag = bardylis_war
+		#NOT = {	has_country_flag = bardylis_victory }
+		#AND = {						
+		#	5533 = {
+		#	controller = MAC
+		#	}
+		#	1049 = {
+		#		controller = MAC
+		#		}
+		#	1050 = {
+		#		controller = MAC
+		#		}
+		#}
+	#}	
+#
+#
+	#mean_time_to_happen = {
+#		months = 1
+#	}
+	
+#	immediate = {
+#		hidden_effect = { set_country_flag = bardylis_victory }
+#	}
+	
+#	option = {
+#		name = "rm.12.a"
+#		ai_chance = { factor = 100 }
+#
+#		5533 = {
+#			cede_province = MAC
+#		}
+#		1049 = {
+#			cede_province = MAC
+#		}
+#		1050 = {
+#			cede_province = MAC
+#		}
+#		1056 = {
+#			cede_province = MAC
+#		}
+#		5854 = {
+#			cede_province = MAC
+#		}
+#		1133 = {
+#			cede_province = MAC
+#		}
+#		DT1 = {
+#			white_peace = MAC
+#		}		
+#	}
+#}
+
+#########################################################################################
+# Philip II - Foundation of Heracleia Lyncestis, Massacre of unloyal lynkestis nobility
+######################################################################################## 
+
+#########################################################################################
+# Philip II - Polis creation politics - stage 1 - Obiostos, Eratyra, Edessa, Europos, Berroia (+noble also), Sindos, Tauriana, Gortyna, Berge, Lychnidos
+######################################################################################## 	
+
+#########################################################################################
+# Philip II - Amphiopolis revolt (they throw out Macedonian garrison) - cede Philippi to them, start independance war
+######################################################################################## 
+
+#########################################################################################
+# Satraps Revolt - Hellespontine Phrygia and Ionia revolt against Persia and Phrygia
+######################################################################################## 
+
+#########################################################################################
+# Satraps Revolt - Allied War - Alliance of Byzantium, Perinthos, Chios, Kos, Rhodes, and Caria agains athens
+######################################################################################## 
+
+#########################################################################################
+# Philip II - On-Occupation of Potidaea - cede it to Chalkic league, alliance with it
+######################################################################################## 
+
+#########################################################################################
+# Philip II - On-Occupation of Methone - cede it to Macedon, Phillip lose eye, methone loses walls and population is resettled (from commoners to rurals) -1 tax -2 commoners +1 rural +1 commone in Pella
+######################################################################################## 	
+
+#########################################################################################
+# Philip II - On-Occupation of Oesyme
+######################################################################################## 
+
+#########################################################################################
+# Philip II - On-Occupation of Abdera
+######################################################################################## 
+
+#########################################################################################
+# Philip II - On-Occupation of Maroneia
+######################################################################################## 
+
+#########################################################################################
+# Satraps Revolt - Allied War end - if Helelspontine Phrygia is vassal of Persia - Allied war stopped with white peace by Persian King  and allies gain independance
+######################################################################################## 
+
+#########################################################################################
+# Philip II - Third Sacred War - attack on Pherae-Phocis - on occupation of Pherae and Pasagae Philipp inherits Pherae and Hestiotis, Thessalia unites into Thessalian League and Philipp Vassalizes ut.
+######################################################################################## 
+
+#########################################################################################
+# Philip II - Athens take control of Thermopylae - cede Lamia to Athens, add citadel, whitepeace Macedon in older war
+######################################################################################## 
+
+#########################################################################################
+# Philip II - 352 to 346 BC - subjigation of Odomantii, Western Odrysia, Central Odrysia
+######################################################################################## 
+
+#########################################################################################
+#348 BC Philip II - attack on Chalkidike
+######################################################################################## 
+
+#########################################################################################
+#348 BC Philip II - on-occupation of Olynthus - minus dev, and choise - kill or not his father Alcetas bastard children to gain legitimacy
+######################################################################################## 
+
+#########################################################################################
+#345 BC - Ardiaei campaign
+########################################################################################
+
+#########################################################################################
+#In 342 BC, Philip led a military expedition north against the Scythians
+#########################################################################################
+
+#########################################################################################
+#In 340 BC - attack on Perinthos and Byzantium
+#########################################################################################
+
+#########################################################################################
+# 339 - whitepeace on persian behalf, if Perinthos and Byzantium still exist OR you continue fight but Byzantion occupies your closest prov and spawn 30k persian troops.
+#########################################################################################
+
+#########################################################################################
+# War with Boeotia - it allies anthenian empire. All their vassals join.
+#########################################################################################
+
+#########################################################################################
+# if warscore is positive, year is 338 and Thebes, Athents, Corynth and Charonea is occupied - battle of Cheronea - Macedon vassalized Athens, Corynth, Boeotia
+#########################################################################################
+
+
+#########################################################################################
+# Establishment of League of Corynth
+#########################################################################################
+
+#########################################################################################
+# Attack on Persia - sends 10k "rebels" to Hellespontine Phrygia led by Parmenion
+#########################################################################################
+
+#########################################################################################
+# Assasination event - marry Cleopatra or not (if yes - assasination)
+#########################################################################################
