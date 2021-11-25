@@ -1303,3 +1303,120 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Tahrid dynasty
+########################################################################################
+
+country_event = {
+	id = elam.35
+	title = "elam.35.t"
+	desc = "elam.35.d"
+	picture = high_king
+	is_triggered_only = yes
+	
+	trigger = {
+		dynasty = "Tahrid"
+		government = monarchy
+		culture_group = elamite_group
+	}
+	
+	option = {
+		name = "elam.35.a"
+		ai_chance = { factor = 100 }
+		add_legitimacy = 12
+		add_prestige = -3
+	}
+}
+
+########################################################################################
+# lack of bureaucrats
+########################################################################################
+
+country_event = {
+	id = elam.36
+	title = "elam.36.t"
+	desc = "elam.36.d"
+	picture = libary
+	is_triggered_only = yes
+	goto = elamite_understaffed_province
+	
+	trigger = {
+		neither_tribal_nor_native_trigger = yes
+		culture_group = elamite_group
+		NOT = { absolutism = 50 }
+		any_owned_province = {
+			is_core = ROOT
+			is_capital = no
+			NOT = { local_autonomy = 50 }
+			NOT = { has_province_modifier = understaffed_bureaucrats_modifier }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+					is_capital = no
+					NOT = { local_autonomy = 50 }
+					NOT = { has_province_modifier = understaffed_bureaucrats_modifier }
+				}
+				save_event_target_as = elamite_understaffed_province
+			}
+		}
+	}
+	
+	option = {
+		name = "elam.36.a"
+		ai_chance = { factor = 45 }
+		event_target:elamite_understaffed_province = {
+			add_province_modifier = {
+				name = understaffed_bureaucrats_modifier
+				duration = 5110
+			}
+			add_local_autonomy = 10
+		}
+	}
+
+	option = {
+		name = "elam.36.b"
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 0
+				NOT = { absolutism = 10 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { adm_power = 120 }
+			}
+			modifier = {
+				factor = 3
+				absolutism = 20
+				adm_power = 150
+			}
+		}
+		add_absolutism = -4
+		add_adm_power = -100
+	}
+
+	option = {
+		name = "elam.36.c"
+		trigger = {
+			any_owned_province = { event_target:elamite_understaffed_province = { higher_development_than = PREV } }
+		}
+		ai_chance = { factor = 10 }
+		random_owned_province = {
+			limit = {
+				NOT = { province_id = event_target:elamite_understaffed_province }
+				event_target:elamite_understaffed_province = { higher_development_than = PREV }
+			}
+			add_province_modifier = {
+				name = understaffed_bureaucrats_modifier
+				duration = 5110
+			}
+			add_local_autonomy = 10
+		}
+	}
+}
