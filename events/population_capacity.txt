@@ -444,26 +444,17 @@ province_event = {
 		
 		
 		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
-		if = {
-			limit = { has_province_modifier = land_reclamtion_5 }
-			change_variable = { which = rural_capacity value = 5 } multiply_variable = { which = rural_capacity value = 1.25 } 
-		}
-		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_4 }
-			change_variable = { which = rural_capacity value = 4 } multiply_variable = { which = rural_capacity value = 1.20 } 
-		}
-		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_3 }
-			change_variable = { which = rural_capacity value = 3 } multiply_variable = { which = rural_capacity value = 1.15 } 
-		}
-		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_2 }
-			change_variable = { which = rural_capacity value = 2 } multiply_variable = { which = rural_capacity value = 1.10 } 
-		}
-		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_1 }
-			change_variable = { which = rural_capacity value = 1 } multiply_variable = { which = rural_capacity value = 1.05 } 
-		}
+		#	New for 3.0.2: land reclamation % effect is now read through the modifier local_development_cost, as is any other modifier. Easier!
+		
+		if = {		limit = { has_province_modifier = land_reclamation_5 } change_variable = { rural_capacity = 5 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_4 } change_variable = { rural_capacity = 4 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_3 } change_variable = { rural_capacity = 3 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_2 } change_variable = { rural_capacity = 2 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_1 } change_variable = { rural_capacity = 1 } }
+		
+		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
+		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural pop raised
 		
 		# FISHING BLOCK - depending on province size (and coastal), and coastal buildings
 		# Fishing done after land reclamation, as land reclamation should affect only agricultural activities, not fishing
@@ -712,11 +703,7 @@ province_event = {
 		#	RELATIVE % MODIFIERS
 		#####
 		
-		if = {		limit = { has_province_modifier = land_reclamtion_5 } multiply_variable = { which = urban_capacity value = 1.25 } }
-		else_if = { limit = { has_province_modifier = land_reclamtion_4 } multiply_variable = { which = urban_capacity value = 1.20 } }
-		else_if = { limit = { has_province_modifier = land_reclamtion_3 } multiply_variable = { which = urban_capacity value = 1.15 } }
-		else_if = { limit = { has_province_modifier = land_reclamtion_2 } multiply_variable = { which = urban_capacity value = 1.10 } }
-		else_if = { limit = { has_province_modifier = land_reclamtion_1 } multiply_variable = { which = urban_capacity value = 1.05 } }
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }			# urban pop raised. Done before coming values from rural
 		
 		
 		# COMMONER POPULATION COMING FROM RURAL
@@ -942,6 +929,32 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				# Postponed to after 3.0 release
 				#if = { limit = { had_province_flag = { flag = DR_2years days = 700 } } DR_run_extractions = yes DR_update_wildlife = yes }
 				
+				# other corrective things
+				trigger_switch = {	
+					on_trigger = has_province_modifier 
+					land_reclamtion_5 = { 
+						add_permanent_province_modifier = { name = land_reclamation_5 duration = -1 }
+						remove_province_modifier = land_reclamtion_5
+					}
+					land_reclamtion_4 = { 
+						add_permanent_province_modifier = { name = land_reclamation_4 duration = -1 }
+						remove_province_modifier = land_reclamtion_4
+					}
+					land_reclamtion_3 = { 
+						add_permanent_province_modifier = { name = land_reclamation_3 duration = -1 }
+						remove_province_modifier = land_reclamtion_3
+					}
+					land_reclamtion_2 = { 
+						add_permanent_province_modifier = { name = land_reclamation_2 duration = -1 }
+						remove_province_modifier = land_reclamtion_2
+					}
+					land_reclamtion_1 = { 
+						add_permanent_province_modifier = { name = land_reclamation_1 duration = -1 }
+						remove_province_modifier = land_reclamtion_1
+					}
+				
+				
+				}
 			}
 		}
 	}
@@ -998,6 +1011,16 @@ country_event = {
 		trigger = { has_global_flag = popgrowth_running }
 		
 	}
+	option = {								
+		name = "population_capacity.3.7"	# I don't know if it may happen, but there is a possible lack of options, this should work
+		ai_chance = { factor = 100 }
+		trigger = { 
+			NOT = { has_global_flag = popgrowth_running }
+			NOT = { has_global_flag = popgrowth_vanilla }
+			
+		}
+		
+	}
 	
 }
 
@@ -1052,26 +1075,26 @@ province_event = {
 	}
 	
 	immediate = {
-		
-		# BLOCK 1: define migration size. 
-		# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10. 
-		if = { 		limit = { base_manpower = 10 }	set_variable = { which = mig_size value = 3 } }
-		else_if = { limit = { base_manpower = 5 } 	set_variable = { which = mig_size value = 2 } }
-		else = {									set_variable = { which = mig_size value = 1 } }
-		
-		# BLOCK 2: Discover which provinces it may go. 
-		# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
-		#	A very high center of trade (lv4 or higher), then a regional one (lv2), then any other province with rural place. 
-		
-		if = { 		limit = { check_variable = { PG_info_range = 50 } } PG_find_target_province = { range = 2000 } }
-		else_if = { limit = { check_variable = { PG_info_range = 30 } } PG_find_target_province = { range = 1200 } }
-		else_if = { limit = { check_variable = { PG_info_range = 20 } } PG_find_target_province = { range = 800 } }
-		else_if = { limit = { check_variable = { PG_info_range = 10 } } PG_find_target_province = { range = 500 } }
-		else_if = { limit = { check_variable = { PG_info_range = 5 } }  PG_find_target_province = { range = 300 } }
-		else_if = { limit = { check_variable = { PG_info_range = 2 } }  PG_find_target_province = { range = 150 } }
-		else = { 														PG_find_target_province = { range = 75 } }
-		
-		
+		hidden_effect = {
+			# BLOCK 1: define migration size. 
+			# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10. 
+			if = { 		limit = { base_manpower = 10 }	set_variable = { which = mig_size value = 3 } }
+			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = mig_size value = 2 } }
+			else = {									set_variable = { which = mig_size value = 1 } }
+			
+			# BLOCK 2: Discover which provinces it may go. 
+			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
+			#	A very high center of trade (lv4 or higher), then a regional one (lv2), then any other province with rural place. 
+			
+			if = { 		limit = { check_variable = { PG_info_range = 50 } } PG_find_target_province = { range = 2000 } }
+			else_if = { limit = { check_variable = { PG_info_range = 30 } } PG_find_target_province = { range = 1200 } }
+			else_if = { limit = { check_variable = { PG_info_range = 20 } } PG_find_target_province = { range = 800 } }
+			else_if = { limit = { check_variable = { PG_info_range = 10 } } PG_find_target_province = { range = 500 } }
+			else_if = { limit = { check_variable = { PG_info_range = 5 } }  PG_find_target_province = { range = 300 } }
+			else_if = { limit = { check_variable = { PG_info_range = 2 } }  PG_find_target_province = { range = 150 } }
+			else = { 														PG_find_target_province = { range = 75 } }
+			
+		}
 	}
 	
 	#####
@@ -1208,20 +1231,20 @@ province_event = {
 		
 	}
 	
-	# 7. Move them to another prosperous city (urban growth >1.2 + center of trade lv2 at least)
+	# 7. Move them to another prosperous city (urban growth >1.2 + center of trade lv1 at least)
 	option = {
 		name = "population_capacity.4.7"		
 		ai_chance = { factor = 0 }
 		trigger = {  
 			any_province = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 2
+				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 1
 			}
 		}
 		random_province = {
 			limit = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 2
+				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 1
 			}
 			mig_dist_cost = yes
 			if = {
@@ -1235,19 +1258,19 @@ province_event = {
 		province_event = { id = population_capacity.1 }
 	}
 	
-	# 8. Move them to new settled lands (provinces with the Resettlement edict)
+	# 8. Move them to other agricultural lands
 	option = {
 		name = "population_capacity.4.8"		
 		trigger = {  
 			any_province = {
-				owned_by = PREV 								check_variable = { rural_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	has_state_edict = colonization_edict
+				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
+				NOT = { has_province_modifier = pg_new_pop } 	
 			}
 		}
 		random_province = {
 			limit = {
-				owned_by = PREV 								check_variable = { rural_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	has_state_edict = colonization_edict
+				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
+				NOT = { has_province_modifier = pg_new_pop } 	
 			}
 			mig_dist_cost = yes
 			if = {
@@ -1796,40 +1819,48 @@ province_event = {
 			subtract_variable = { which = PGD_rur_terr_max which = PGD_rur_base }			# The effect of maximum terrain building
 		
 		
-			# Prepare amount to be raised for Land Reclamation
-			set_variable = { which = PGD_reclam_base which = rural_capacity }		# Total before land reclamation: 3.84 + 5.4 = 9.24
-		
+			
 		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
 		
-		if = {
-			limit = { has_province_modifier = land_reclamtion_5 }
-			change_variable = { which = rural_capacity value = 5 } multiply_variable = { which = rural_capacity value = 1.25 } 
-			set_variable = { which = PGD_reclam_abs value = 5 }
+		if = {		
+			limit = { has_province_modifier = land_reclamation_5 } 
+			change_variable = { rural_capacity = 5 } 
+			set_variable = { which = PGD_reclam_abs value = 5 } set_variable = { which = PGD_reclam_perc value = 0.25 }
 		}
 		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_4 }
-			change_variable = { which = rural_capacity value = 4 } multiply_variable = { which = rural_capacity value = 1.20 } 
-			set_variable = { which = PGD_reclam_abs value = 4 }
+			limit = { has_province_modifier = land_reclamation_4 } 
+			change_variable = { rural_capacity = 4 } 
+			set_variable = { which = PGD_reclam_abs value = 4 } set_variable = { which = PGD_reclam_perc value = 0.20 }
 		}
 		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_3 }
-			change_variable = { which = rural_capacity value = 3 } multiply_variable = { which = rural_capacity value = 1.15 } 
-			set_variable = { which = PGD_reclam_abs value = 3 }
+			limit = { has_province_modifier = land_reclamation_3 } 
+			change_variable = { rural_capacity = 3 } 
+			set_variable = { which = PGD_reclam_abs value = 3 } set_variable = { which = PGD_reclam_perc value = 0.15 }
 		}
 		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_2 }
-			change_variable = { which = rural_capacity value = 2 } multiply_variable = { which = rural_capacity value = 1.10 } 
-			set_variable = { which = PGD_reclam_abs value = 2 }
+			limit = { has_province_modifier = land_reclamation_2 } 
+			change_variable = { rural_capacity = 2 } 
+			set_variable = { which = PGD_reclam_abs value = 2 } set_variable = { which = PGD_reclam_perc value = 0.10 }
 		}
 		else_if = { 
-			limit = { has_province_modifier = land_reclamtion_1 }
-			change_variable = { which = rural_capacity value = 1 } multiply_variable = { which = rural_capacity value = 1.05 } 
-			set_variable = { which = PGD_reclam_abs value = 1 }
+			limit = { has_province_modifier = land_reclamation_1 } 
+			change_variable = { rural_capacity = 1 } 
+			set_variable = { which = PGD_reclam_abs value = 1 } set_variable = { which = PGD_reclam_perc value = 0.05 }
 		}
-		
-			set_variable = { which = PGD_reclam_perc which = rural_capacity }			
-			subtract_variable = { which = PGD_reclam_perc which = PGD_reclam_base }		
-			subtract_variable = { which = PGD_reclam_perc which = PGD_reclam_abs }		
+			# Prepare amount to be multiplied with total modifier
+			set_variable = { which = PGD_rurmod_before which = rural_capacity }	
+			
+		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost } change_variable = { PG_dev_extra = 1 }
+		multiply_variable = { which = rural_capacity which = PG_dev_extra }
+			
+			# Effect on population
+			set_variable = { which = PGD_rurmod_after which = rural_capacity }
+			subtract_variable = { which = PGD_rurmod_after which = PGD_rurmod_before }
+			
+			# Find the components of the percentage
+			set_variable = { which = PGD_dev_other which = PG_dev_extra } 	subtract_variable = { PGD_dev_other = 1 }
+			subtract_variable = { which = PGD_dev_other which = PGD_reclam_perc }
+			multiply_variable = { PGD_dev_other = 100 } multiply_variable = { PGD_reclam_perc = 100 }
 			
 			
 		# FISHING BLOCK - depending on province size (and coastal), and coastal buildings
@@ -2106,34 +2137,15 @@ province_event = {
 		#	RELATIVE % MODIFIERS
 		#####
 		
-			set_variable = { which = PGD_urban_preland which = urban_capacity }
-		
-		if = {
-			limit = { has_province_modifier = land_reclamtion_5 }
-			multiply_variable = { which = urban_capacity value = 1.25 } 
-		}
-		else_if = {
-			limit = { has_province_modifier = land_reclamtion_4 }
-			multiply_variable = { which = urban_capacity value = 1.20 }
-		}
-		else_if = {
-			limit = { has_province_modifier = land_reclamtion_3 } 
-			multiply_variable = { which = urban_capacity value = 1.15 } 
-		}
-		else_if = {
-			limit = { has_province_modifier = land_reclamtion_2 }
-			multiply_variable = { which = urban_capacity value = 1.10 } 
-		}
-		else_if = {
-			limit = { has_province_modifier = land_reclamtion_1 }
-			multiply_variable = { which = urban_capacity value = 1.05 } 
-		}
-		
+			set_variable = { which = PGD_urbmod_pre which = urban_capacity }
 			
-			set_variable = { which = PGD_urban_total which = urban_capacity }
-			set_variable = { which = PGD_urb_reclperc which = urban_capacity } 
-			subtract_variable = { which = PGD_urb_reclperc which = PGD_urban_preland }	
-			set_variable = { which = PGD_reclpercdisplay which = PGD_reclam_abs } multiply_variable = { PGD_reclpercdisplay = 5 }
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }
+			
+			# Effect on population
+			set_variable = { which = PGD_urbmod_after which = urban_capacity }
+			subtract_variable = { which = PGD_urbmod_after which = PGD_urbmod_pre }
+			
+			
 		
 		# COMMONER POPULATION COMING FROM RURAL
 		
@@ -2314,33 +2326,41 @@ province_event = {
 		}
 		set_variable = { which = upper_growth which = upper_capacity } divide_variable = { which = upper_growth which = upper_pop }
 		set_variable = { which = upper_pop value = 0 }
-			set_variable = { which = PGD_upp_growth_base which = upper_growth }
 			
+			set_variable = { which = PGD_upp_growth_base which = upper_growth }
 		trigger_switch = {
 			on_trigger = devastation
-			75 = { multiply_variable = { which = upper_growth value = 0.10 } }
-			60 = { multiply_variable = { which = upper_growth value = 0.25 } }
-			40 = { multiply_variable = { which = upper_growth value = 0.50 } }
-			15 = { multiply_variable = { which = upper_growth value = 0.70 } }
-			5 = {  multiply_variable = { which = upper_growth value = 0.80 } }
+			75 = { multiply_variable = { upper_growth = 0.10 } }
+			60 = { multiply_variable = { upper_growth = 0.25 } }
+			40 = { multiply_variable = { upper_growth = 0.50 } }
+			15 = { multiply_variable = { upper_growth = 0.70 } }
+			5 = {  multiply_variable = { upper_growth = 0.80 } }
 		}
 		trigger_switch = {
 			on_trigger = prosperity
-			99 = { multiply_variable = { which = upper_growth value = 1.15 } }
-			50 = { multiply_variable = { which = upper_growth value = 1.10 } }
-			25 = { multiply_variable = { which = upper_growth value = 1.05 } }
+			99 = { multiply_variable = { upper_growth = 1.15 } }
+			50 = { multiply_variable = { upper_growth = 1.10 } }
+			25 = { multiply_variable = { upper_growth = 1.05 } }
 		}
 			set_variable = { which = PGD_upp_growth_devastation which = upper_growth }
 			subtract_variable = { which = PGD_upp_growth_devastation which = PGD_upp_growth_base }
 			
 		# Stability increases total growth
-		if = { 		limit = { owner = { stability = 3 } } change_variable = { which = upper_growth value = 0.20 } }
-		else_if = { limit = { owner = { stability = 2 } } change_variable = { which = upper_growth value = 0.15 } }
-		else_if = { limit = { owner = { stability = 1 } } change_variable = { which = upper_growth value = 0.10 } }
-			set_variable = { which = PGD_upp_growth_stability which = upper_growth }
-			subtract_variable = { which = PGD_upp_growth_stability which = PGD_upp_growth_devastation }
-			subtract_variable = { which = PGD_upp_growth_stability which = PGD_upp_growth_devastation }
-		
+		if = { 		
+			limit = { owner = { stability = 3 } } 
+			change_variable = { upper_growth = 0.20 } set_variable = { which = PGD_upp_grow_stab value = 0.20 } 
+		}
+		else_if = { 
+			limit = { owner = { stability = 2 } } 
+			change_variable = { upper_growth = 0.15 } set_variable = { which = PGD_upp_grow_stab value = 0.15 } 
+		}
+		else_if = { 
+			limit = { owner = { stability = 1 } } 
+			change_variable = { upper_growth = 0.10 } set_variable = { which = PGD_upp_grow_stab value = 0.10 } 
+		}
+			
+			
+			
 		# Other basic calculations
 		export_to_variable = { which = PS_rur_now value = base_manpower }
 		export_to_variable = { which = PS_urb_now value = base_production }
@@ -2350,7 +2370,7 @@ province_event = {
 	
 	
 	option = {
-		name = "population_capacity.6.a"
+		name = "population_capacity.1.a"
 		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
 	}
 	
@@ -2402,6 +2422,78 @@ province_event = {				# PROVINCE INTERACTION MENU
 		name = "population_capacity.7.5"	# Paint the map, based on this province
 		owner = { country_event = { id = popgrowth_stats.5 } }
 		
+	}
+	
+	option = {
+		name = "population_capacity.7.99"	# (nothing, close this)
+		
+	}
+	
+}
+
+province_event = {				# PROVINCE INTERACTION MENU
+	id = population_capacity.8
+	title = "population_capacity.8.t"
+	desc = "population_capacity.8.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+	
+	#mean_time_to_happen = {
+	#	months = 2	
+	#}
+	immediate = {
+		
+	}
+	
+	option = {
+		name = "population_capacity.7.1"
+		add_province_modifier = { name = PG_dev_01 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.2"
+		add_province_modifier = { name = PG_dev_02 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.3"
+		add_province_modifier = { name = PG_dev_03 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.4"
+		add_province_modifier = { name = PG_dev_04 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.5"
+		add_province_modifier = { name = PG_dev_05 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.6"
+		add_province_modifier = { name = PG_dev_06 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.7"
+		add_province_modifier = { name = PG_dev_07 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.8"
+		add_province_modifier = { name = PG_dev_08 duration = 20 }
+		
+	}
+	option = {
+		name = "population_capacity.7.9"
+		owner = {
+			every_owned_province = {
+				export_to_variable = { which = PG_development_cost value = modifier:local_development_cost }
+			}
+		}
 	}
 	
 	option = {
