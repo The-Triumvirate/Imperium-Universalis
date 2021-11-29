@@ -97,7 +97,6 @@ NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_4 = 1323
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_5 = 1490
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_6 = 1472
 
-<<<<<<< HEAD
 NDefines.NCountry.CONCENTRATE_DEVELOPMENT_DEVELOPMENT_DECREASE = 0.0	-- disabled in the mod (vanilla 0.2)
 NDefines.NCountry.PILLAGE_CAPITAL_DEVELOPMENT_DECREASE = 0.2	-- disabled in the mod (vanilla 0.2)
 NDefines.NCountry.RAZE_UNREST_DURATION = 20					-- Years of unrest. 10 vanilla; raised to 20
@@ -111,10 +110,6 @@ NDefines.NCountry.RAZE_PROVINCE_CONQUERED_TIME_LIMIT_MONTHS = 6
 NDefines.NCountry.HORDE_UNITY_PER_LOOT = 0.15		-- Horde unity gained per ducat looted.
 NDefines.NCountry.HORDE_UNITY_PER_RAZE = 0.75		-- Horde unity gained per development level razed. Raisef from 0.50 Vanilla to 0.75
 	
-=======
-NDefines.NCountry.RAZE_PROVINCE_DEVELOPMENT_DECREASE = 0.0
-
->>>>>>> main
 NDefines.NCountry.MIN_DEV_FOR_OLD_GREAT_POWER = 100
 NDefines.NCountry.MAX_ACTIVE_POLICIES = 3
 NDefines.NCountry.MINIMUM_POLICY_TIME = 5
@@ -483,10 +478,7 @@ NDefines.NFrontend.MP_OPTIONS_LOOK_X = 1320.0
 NDefines.NFrontend.MP_OPTIONS_LOOK_Z = 900.0
 
 NDefines.NReligion.HARMONY_LOSS_PER_DEV_CONVERTED = 0.0
-<<<<<<< HEAD
 NDefines.NReligion.ASPECT_REMOVE_COST = 1
-=======
->>>>>>> main
 
 NDefines.NReligion.MAX_CHRISTIAN_RELIGIOUS_CENTERS = 5
 NDefines.NReligion.MAX_RELIGIOUS_CENTER_SPREAD_DISTANCE = 400.0
