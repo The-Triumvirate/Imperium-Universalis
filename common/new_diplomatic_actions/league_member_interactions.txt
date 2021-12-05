@@ -28,6 +28,7 @@ ask_for_league_member_subject = {
 					superregion = macedonia_superregion
 				}
 			}
+			NOT = { has_country_modifier = banned_league_modifier }
 			NOT = { total_development = 30 }
 			is_subject = no
 			NOT = { government_rank = 3 }
@@ -149,5 +150,52 @@ ask_for_league_member_subject = {
 		stability = 1
 		army_size = 8
 		is_at_war = no
+	}
+}
+
+
+#Removes League Member
+remove_league_member_subject = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = remove_league_member_subject_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of_type = league_member_subject
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+		is_at_war = no
+		has_any_disaster = no
+		FROM = {
+			is_subject_of_type = league_member_subject
+			is_subject_of = ROOT
+		}
+	}
+	on_accept = {
+		FROM = {
+			grant_independence = yes
+			add_country_modifier = {
+				name = banned_league_modifier
+				duration = 3650
+			}
+			add_opinion = {
+				who = ROOT
+    			modifier = banned_from_league_opinion
+			}
+		}
+		add_prestige = -5
+	}
+	
+	ai_will_do = {
+		FROM = {
+			OR = {
+				total_development = ROOT
+				liberty_desire = 60
+			}
+		}
 	}
 }
