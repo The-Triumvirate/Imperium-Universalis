@@ -23,43 +23,47 @@ country_event = {
 	immediate = {
 		####
 		hidden_effect = {
-			
+			# Find total income
 			export_to_variable = { which = var_slave_income value = monthly_income }
-			multiply_variable  = { var_slave_income = 20 }	# monthly to yearly x every 5 years x 1/3 slave income = 12 x 5 x 1/3 = 20
+			multiply_variable  = { var_slave_income = 20 }		# monthly to yearly x every 5 years x 1/3 slave income = 12 x 5 x 1/3 = 20
 			
+			set_variable = { which = SS_slave_income_2 which = var_slave_income }	# variable for the new system
+			
+			# Total population
 			export_to_variable = { which = var_total_pop value = total_development }
-			multiply_variable  = { var_total_pop = 10 }									# population in thousands, now
+			multiply_variable = { var_total_pop = 10 }									# population in thousands, now
 			set_variable = { which = var_slaves_pop_ratio which = slaves }
-			divide_variable = { which = var_slaves_pop_ratio which = var_total_pop }	# slave percentage
-			multiply_variable = { which = var_slave_income which = var_slaves_pop_ratio } # total income multiplied by slave %
-			multiply_variable = { var_slaves_pop_ratio = 100 }							# to be in percentage (1 to 100), not units (0,x to 1,0)
+			
+			if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
+			divide_variable = { which = var_slaves_pop_ratio which = var_total_pop }		# slave percentage
+			multiply_variable = { which = var_slave_income which = var_slaves_pop_ratio } 	# total income multiplied by slave %
+			multiply_variable = { var_slaves_pop_ratio = 100 }								# to be in percentage (1 to 100), not units (0,x to 1,0)
+			
 			
 			# cleanup of previous modifier
-			trigger_switch = {
-				on_trigger = has_country_modifier
-				slaves_ratio_00 = { remove_country_modifier = slaves_ratio_00 }
-				slaves_ratio_20 = { remove_country_modifier = slaves_ratio_20 }
-				slaves_ratio_40 = { remove_country_modifier = slaves_ratio_40 }
-				slaves_ratio_60 = { remove_country_modifier = slaves_ratio_60 }
-				slaves_ratio_80 = { remove_country_modifier = slaves_ratio_80 }
-				slaves_ratio_100 = { remove_country_modifier = slaves_ratio_100 }
-				slaves_ratio_120 = { remove_country_modifier = slaves_ratio_120 }
-				slaves_ratio_150 = { remove_country_modifier = slaves_ratio_150 }
-				slaves_ratio_200 = { remove_country_modifier = slaves_ratio_200 }
-				slaves_ratio_250 = { remove_country_modifier = slaves_ratio_250 }
-			}
+			SS_slaves_remove_basic_modifiers = yes
+			SS_slaves_remove_complex_modifiers = yes
 			
+			# New system
+			SS_find_coordinates = yes
+			multiply_variable = { which = SS_slave_income_2 which = SS_slave_adj_ratio }
+			multiply_variable = { SS_slave_income_2 = 0.01 }
+			
+			# Show slaves for display (rounds to thousands)
+			set_variable = { which = SS_slaves_display which = slaves }	
+			multiply_variable = { SS_slaves_display = 0.001 }	multiply_variable = { SS_slaves_display = 1000 }
 		}
 	}
 	
 	option = {
-		name = "slaves.1.a"
+		name = "slaves.1.a"		# Use "old" system
 		if = { 
 			limit = { check_variable = { var_slave_income = 0.1 } }
 			set_variable = { which = cash_income which = var_slave_income }
 			money_income = yes  
 		}
 		
+		# Liberate new slaves, or assign the ratio
 		if = {
 			limit = { has_country_modifier = slavery_abolished } 
 			# no modifier
@@ -76,12 +80,31 @@ country_event = {
 		else_if = { limit = { check_variable = { var_slaves_pop_ratio = 20 } } add_country_modifier = { name = slaves_ratio_20 duration = -1 } }
 		else_if = { limit = { check_variable = { var_slaves_pop_ratio = 0 } } add_country_modifier = { name = slaves_ratio_00 duration = -1 } }
 		
-		
+		hidden_effect = {
+			multiply_variable = { slaves = 0.95 }	# Loss of 1% slave population per year
+		}
 	}
+	
+	option = {
+		name = "slaves.1.b"		# Use "new" system
+		if = { 
+			limit = { check_variable = { SS_slave_income_2 = 0.1 } }
+			set_variable = { which = cash_income which = SS_slave_income_2 }
+			money_income = yes  
+		}
+		SS_slaves_ratio_create_high = yes
+		
+		hidden_effect = {
+			
+			multiply_variable = { slaves = 1.0125 }		# 0.25% yearly, 1.25% every 5 years
+		}
+	}
+	
 	after = {
 		set_variable = { which = var_slave_income value = 0 }
-		set_variable = { which = var_total_pop value = 0 }
-		multiply_variable = { slaves = 0.95 }	# Loss of 1% slave population per year
+		set_variable = { which = var_slave_income value = 0 }
+		#set_variable = { which = var_total_pop value = 0 }		# used in localization
+		
 	}
 }
 ########
