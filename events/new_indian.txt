@@ -4819,3 +4819,94 @@ province_event = {
 		}
 	}
 }
+
+########################################################################################
+# Ahimsa
+########################################################################################
+
+country_event = {
+	id = indian.75
+	title = "indian.75.t"
+	desc = "indian.75.d"
+	picture = harvest
+
+	trigger = {
+		NOT = {
+			OR = {
+				has_country_modifier = amhisa_orthodox_modifier
+				has_country_modifier = amhisa_modifier
+			}
+		}
+		OR = {
+			is_orthodox_trigger = yes
+			is_heterodox_trigger = yes
+		}
+		NOT = { has_ruler_modifier = disregarding_ahimsa_modifier }
+		dominant_religion = ROOT
+		is_in_war = { attackers = THIS }
+		NOT = {
+			OR = {
+				is_in_war = { defenders = THIS }
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_moral_sanction
+				}
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_restore_order
+				}
+			}	
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.75.a"
+		if = {
+			limit = { is_heterodox_trigger = yes }
+			add_country_modifier = {
+				name = amhisa_orthodox_modifier
+				duration = -1
+			}
+		}
+		else = {
+			add_country_modifier = {
+				name = amhisa_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+#Clears modifiers after war
+country_event = {
+	id = indian.7501
+	title = "indian.75.t"
+	desc = "indian.75.d"
+	picture = harvest
+	hidden = yes
+
+	trigger = {
+		OR = {
+			has_country_modifier = amhisa_orthodox_modifier
+			has_country_modifier = amhisa_modifier
+		}
+		OR = {
+			is_at_war = no
+			is_in_war = { defenders = THIS }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.75.a"
+		remove_country_modifier = amhisa_orthodox_modifier
+		remove_country_modifier = amhisa_modifier
+	}
+}

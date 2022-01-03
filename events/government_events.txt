@@ -709,3 +709,231 @@ country_event = {
 			}
 	}
 }
+
+########################################################################################
+# Forced Heir
+########################################################################################
+country_event = {
+    id = government.28
+	title = "government.28.t"
+	desc = "government.28.d"
+	picture = "family"
+	
+	trigger = {
+        OR = {
+		    AND = { 
+			    has_reform = chinese_feudalism_reform
+				have_had_reform = matriarchal_tribe_reform
+				OR = {
+				    has_heir = no
+					has_female_heir = no
+				}
+			}
+			AND = {
+			    has_reform = ShiQing_feudalism_reform
+				have_had_reform = matriarchal_tribe_reform
+				OR = {
+				    has_heir = no
+					has_female_heir = no
+				}
+			}
+			AND = {
+			    has_reform = chinese_reform_monarchy_reform
+				have_had_reform = matriarchal_tribe_reform
+				OR = {
+				    has_heir = no
+					has_female_heir = no
+				}
+			}
+			AND = {
+			    has_reform = celestial_empire
+				have_had_reform = matriarchal_tribe_reform
+				OR = {
+				    has_heir = no
+					has_female_heir = no
+				}
+			}
+			AND = {
+			    has_reform = heaven_republic_reform 
+				has_heir = no
+			}
+			AND = {
+			    has_reform = pirate_kingdom_reform
+				has_heir = no
+				}
+			AND = {
+	            has_reform = matriarchate_reform
+		        OR = {
+		            has_heir = no
+			        has_female_heir = no
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 24
+	}
+	
+	option = {
+	    name = "government.28.a"
+		trigger = {
+		    OR = {
+		        NOT = { has_reform = heaven_republic_reform }
+			    AND = { 
+			        has_reform = pirate_kingdom_reform
+				    have_had_reform = matriarchal_tribe_reform
+			    }
+		    }
+		}
+		custom_tooltip = matriarchate_tooltip
+		hidden_effect = {
+		    random_list = {
+			    #it's a girl
+		        30 = { 
+		            define_heir = {
+		            female = yes
+			        dynasty = ROOT
+			        age = 0
+			        claim = 60
+		            }
+			    }
+                #waste of time				
+		        40 = {
+				    add_legitimacy = -0.01
+		        }
+				#bad luck, it's a boy
+		        30 = { 
+		            define_heir = {
+		            male = yes
+			        dynasty = ROOT
+			        age = 0
+			        claim = 40
+		            }
+				}
+		    }
+		}
+	}
+
+	option = {
+	    name = "government.28.b"
+		trigger = { 
+		NOT = { has_reform = heaven_republic_reform }
+		NOT = { has_reform = pirate_kingdom_reform }
+		}
+		define_heir = {
+		    female = yes
+			dynasty = ROOT
+			age = 6
+			claim = 40
+			no_consort_with_heir = yes
+		}
+	}
+	option = {
+	    name = "government.28.c"
+		trigger = {
+		    OR = {
+		        has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+			NOT = { republican_tradition = 30 }
+		}
+		if = { 
+		    limit = { has_reform = heaven_republic_reform }
+		        define_ruler = {
+		            culture = ROOT
+			        min_age = 24
+			        max_age = 35
+		        }
+				add_republican_tradition = 30
+		}
+		if = {
+		    limit = { has_reform = pirate_kingdom_reform }
+			add_government_reform = pirate_republic_reform
+			kill_ruler = yes
+			add_republican_tradition = 30
+		}
+		else = {
+		add_republican_tradition = 30
+	    }
+	}
+	option = {
+	    name = "government.28.e"
+		trigger = {
+		    OR = {
+		        has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+	    }
+		define_heir = {
+		    dynasty = ROOT
+			male = yes
+			min_age = 6
+			max_age = 18
+            claim = 60
+		}
+	}
+	option = {
+	    name = "government.28.f"
+		trigger = {
+		    OR = {
+		        has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+		}
+		define_heir = {
+		    dynasty = ROOT
+			male = yes
+			min_age = 5
+			max_age = 12
+			claim = 40
+		}
+	}
+}
+
+country_event = {
+    id = government.29
+	title = "government.29.t"
+	desc = "government.29.d"
+	picture = "forum_picture"
+	
+	fire_only_once = yes
+	
+	trigger = {
+	    OR = {
+	        have_had_reform = matriarchal_tribe_reform 
+			have_had_reform = egalitarian_tribe_reform
+        }			
+		NOT = { government = native }
+		NOT = { government = tribal }
+	}
+	
+	mean_time_to_happen = {
+	    days = 1
+	}
+	
+	option = {
+	    name = "government.29.a"
+	    add_legitimacy = 1
+	}
+	
+	option = {
+	    name = "government.29.b"
+		add_legitimacy = 1
+		add_country_modifier = { 
+            name = equality
+            duration = -1  
+        }	
+    }
+	
+	option = {
+	    name = "government.29.c"
+	    trigger = {
+		    government = monarchy
+			NOT = { has_reform = chinese_feudalism_reform }
+			have_had_reform = matriarchal_tribe_reform
+		}
+	    add_stability = -1
+		add_government_reform = matriarchate_reform
+	}
+}
