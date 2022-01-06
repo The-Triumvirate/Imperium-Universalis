@@ -1816,3 +1816,57 @@ move_capital_effect = {
 		}
 	}
 }
+
+first_emmigration_effect_test = {
+	every_owned_province = {
+		add_base_manpower = -999
+		if = {
+			limit = { is_capital = yes }
+			set_province_flag = former_migratory_tribal_capital_flag
+		}
+		else_if = {
+			limit = { any_neighbor_province = { is_empty = no } }
+			random_neighbor_province = { owner = { save_event_target_as = new_tribal_owner_country } }
+			cede_province = event_target:new_tribal_owner_country
+		}
+		else = { cede_province = XXX }
+	}
+	set_country_flag = migratory_tribe_flag
+	add_manpower = 10
+	add_treasury = 50
+	capital_scope = {
+		if = {
+			limit = {
+				owner = {
+					OR = {
+						has_reform = steppe_horde_reform
+						has_reform = pastoral_tribe_reform
+					}
+				}
+				
+			}
+			build_to_forcelimit = { cavalry = 1 }
+		}
+		else = { build_to_forcelimit = { infantry = 1 } }
+	}
+}
+
+second_emmigration_effect_test = {
+	random_owned_province = {
+		if = {
+			limit = { NOT = { has_province_flag = former_migratory_tribal_capital_flag } }
+			owner = { set_capital = PREV }
+			change_culture = owner
+			change_religion = owner
+		}
+		else_if = {
+			limit = { any_neighbor_province = { is_empty = no } }
+			random_neighbor_province = { owner = { save_event_target_as = new_tribal_owner_country } }
+			cede_province = event_target:new_tribal_owner_country
+		}
+		else_if = {
+			limit = { has_province_flag = former_migratory_tribal_capital_flag }
+			cede_province = XXX
+		}
+	}
+}
