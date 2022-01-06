@@ -152,11 +152,14 @@ country_event = {
     picture = religious
             
 	is_triggered_only = yes
+
+	goto = random_prov_add_shrine
 	
     trigger = {
         uses_patriarch_authority = yes
 		treasury = 100
 		NOT = { government = native }
+		adm_tech = 2
         any_owned_province = {
             num_free_building_slots = 1
             NOT = { has_building = shrine }
@@ -164,26 +167,41 @@ country_event = {
             NOT = { has_building = great_temple }
         }
     }
-    
-    mean_time_to_happen = {
-        days = 1
-    }
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_building = shrine }
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+					num_free_building_slots = 1
+				}
+				save_event_target_as = random_prov_add_shrine
+			}
+		}
+	}
     
     option = {
         name = "religion.8.a"
-        random_owned_province = {
-            limit = {
-                NOT = {    has_building = shrine }
-				NOT = { has_building = small_temple }
-				NOT = { has_building = great_temple }
-                num_free_building_slots = 1
-            }
-            add_building = shrine
-        }
-            add_treasury = -100
-            add_patriarch_authority = 0.05
-			add_adm_power = 75
-    }
+        event_target:random_prov_add_shrine = {
+			if = {
+				limit = { adm_tech = 2 }
+				add_building = shrine
+			}
+			else_if = {
+				limit = { adm_tech = 6 }
+				add_building = small_temple
+			}
+			else_if = {
+				limit = { adm_tech = 19 }
+				add_building = great_temple
+			}
+		}
+        add_treasury = -100
+        add_patriarch_authority = 0.05
+		add_adm_power = 75
+   	}
     
     option = {
         name = "religion.8.b"

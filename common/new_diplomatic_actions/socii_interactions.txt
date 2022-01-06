@@ -36,6 +36,7 @@ ask_for_socii_subject = {
 		FROM = {
 			is_at_war = no
 			NOT = { war_with = ROOT }
+			NOT = { has_country_modifier = recently_removed_socii }
 		}
 		is_bankrupt = no
 		NOT = { war_with = FROM }
@@ -145,5 +146,49 @@ ask_for_socii_subject = {
 		army_size = 10
 		is_at_war = no
 		NOT = { average_unrest = 1 }
+	}
+}
+
+#Frees Socii
+remove_socii_subject = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = remove_socii_subject.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of_type = socii_subject
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+		is_at_war = no
+		has_any_disaster = no
+		FROM = {
+			is_subject_of_type = socii_subject
+			is_subject_of = ROOT
+		}
+	}
+	on_accept = {
+		FROM = {
+			grant_independence = yes
+			add_truce_with = ROOT
+			add_country_modifier = {
+				name = recently_removed_socii
+				duration = 7300
+			}
+		}
+		add_prestige = -5
+		add_mil_power = -20
+	}
+	
+	ai_will_do = {
+		FROM = {
+			OR = {
+				total_development = ROOT
+				liberty_desire = 80
+			}
+		}
 	}
 }
