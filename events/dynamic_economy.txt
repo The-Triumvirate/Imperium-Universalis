@@ -33,83 +33,95 @@ country_event = {
 		DE_cleanup_prior_prices = yes
 		DE_cleanup_flags = yes 
 		
+		#every_country = {
+			#limit = { exists = yes }
 		every_province = {
 			limit = { is_city = yes }	# not uncolonized or nomad
-			
-			export_to_variable = { which = DE_rur value = base_manpower }
-			export_to_variable = { which = DE_urb value = base_production }
-			export_to_variable = { which = DE_upp value = base_tax }
-			
-			export_to_variable = { which = DE_base_supply value = modifier:trade_goods_size }		
-			export_to_variable = { which = DE_goodsmod value = modifier:trade_goods_size_modifier } 
-			change_variable = { DE_goodsmod = 1 }		# +% goods size modifier
-			
-			multiply_variable = { which = DE_base_supply which = DE_goodsmod } 		set_variable = { which = DE_goodsmod value = 0 }
-			
-			trigger_switch = {
-				on_trigger = trade_goods
-				grain = { 	DE_supply_effect = { good = grain } }
-				wine = { 	DE_supply_effect = { good = wine } }
-				wool = { 	DE_supply_effect = { good = wool } }
-				cloth = { 	DE_supply_effect = { good = cloth } }
-				fish = { 	DE_supply_effect = { good = fish } }
+				owner = {
+					export_to_variable = { which = DE_goodsmod value = modifier:global_trade_goods_size_modifier }
+					change_variable = { DE_goodsmod = 1 }
+					PREV = { set_variable = { which = DE_goodsmod which = PREV } } 		# 1st prev: from owner to province. 2nd prev: owner
+				}
+				export_to_variable = { which = DE_rur value = base_manpower }
+				export_to_variable = { which = DE_urb value = base_production }
+				export_to_variable = { which = DE_upp value = base_tax }
 				
-				fur = { 	DE_supply_effect = { good = fur } }
-				salt = { 	DE_supply_effect = { good = salt } }
-				naval_supplies = { DE_supply_effect = { good = naval } }
-				copper = { 	DE_supply_effect = { good = copper } }
-				gold = { 	DE_supply_effect = { good = gold } }	# Gold and silver count 50% towards supply (jewelery)
+				export_to_variable = { which = DE_base_supply value = modifier:trade_goods_size }
+				#set_variable = { which = DE_goodsmod which = PREV }
+				#change_variable = { DE_goodsmod = 1 }		# +% goods size modifier
+				multiply_variable = { which = DE_base_supply which = DE_goodsmod } 			# applied % from country (mostly from Slaves)
 				
-				iron = { 	DE_supply_effect = { good = iron } }
-				horses = { 	DE_supply_effect = { good = horses } }
-				spices = { 	DE_supply_effect = { good = spices } }
-				fruits = { 	DE_supply_effect = { good = fruits } }
-				amber = { 	DE_supply_effect = { good = amber } }
+				export_to_variable = { which = DE_goodsmod value = modifier:trade_goods_size_modifier } # provincial, re-use the variable
+				change_variable = { DE_goodsmod = 1 }		# +% goods size modifier
 				
-				silver = { 	DE_supply_effect = { good = silver } }	# Gold and silver count 50% towards supply (jewelery)
-				marble = { 	DE_supply_effect = { good = marble } }
-				olive = { 	DE_supply_effect = { good = olive } }
-				paper = { 	DE_supply_effect = { good = paper } }
-				ceramic = { DE_supply_effect = { good = ceramic } }
+				multiply_variable = { which = DE_base_supply which = DE_goodsmod } 			# applied % from province (whatever it has)
 				
-				meat_animals = { DE_supply_effect = { good = meatan } }
-				dyes = { 	DE_supply_effect = { good = dyes } }
-				honey = { 	DE_supply_effect = { good = honey } }
-				lead = { 	DE_supply_effect = { good = lead } }
-				glas = { 	DE_supply_effect = { good = glas } }
+				set_variable = { which = DE_goodsmod value = 0 }
 				
-				silk = { 	DE_supply_effect = { good = silk } }
-				olibanum = { DE_supply_effect = { good = olibanum } }
-				pearls = { 	DE_supply_effect = { good = pearls } }
-				exotic_animals = { DE_supply_effect = { good = exotics } }
-				herbs = { 	DE_supply_effect = { good = herbs } }
-				
-				ivory = { 	DE_supply_effect = { good = ivory } }
-				jade = { 	DE_supply_effect = { good = jade } }
-				tin = { 	DE_supply_effect = { good = tin } }
-				rice = { 	DE_supply_effect = { good = rice } }
-				gems = { 	DE_supply_effect = { good = gems } }
-				
-				cotton = { 	DE_supply_effect = { good = cotton } }
-				tar_good = { DE_supply_effect = { good = targood } }
-				tea_good = { DE_supply_effect = { good = teagood } }
-				opium = { 	DE_supply_effect = { good = opium } }
-				metalware = { DE_supply_effect = { good = metalware } }
-				
-				sugar = { 	DE_supply_effect = { good = sugar } }
+				trigger_switch = {
+					on_trigger = trade_goods
+					grain = { 	DE_supply_effect = { good = grain } }
+					wine = { 	DE_supply_effect = { good = wine } }
+					wool = { 	DE_supply_effect = { good = wool } }
+					cloth = { 	DE_supply_effect = { good = cloth } }
+					fish = { 	DE_supply_effect = { good = fish } }
 					
-			
+					fur = { 	DE_supply_effect = { good = fur } }
+					salt = { 	DE_supply_effect = { good = salt } }
+					naval_supplies = { DE_supply_effect = { good = naval } }
+					copper = { 	DE_supply_effect = { good = copper } }
+					gold = { 	DE_supply_effect = { good = gold } }	# Gold and silver count 50% towards supply (jewelery)
+					
+					iron = { 	DE_supply_effect = { good = iron } }
+					horses = { 	DE_supply_effect = { good = horses } }
+					spices = { 	DE_supply_effect = { good = spices } }
+					fruits = { 	DE_supply_effect = { good = fruits } }
+					amber = { 	DE_supply_effect = { good = amber } }
+					
+					silver = { 	DE_supply_effect = { good = silver } }	# Gold and silver count 50% towards supply (jewelery)
+					marble = { 	DE_supply_effect = { good = marble } }
+					olive = { 	DE_supply_effect = { good = olive } }
+					paper = { 	DE_supply_effect = { good = paper } }
+					ceramic = { DE_supply_effect = { good = ceramic } }
+					
+					meat_animals = { DE_supply_effect = { good = meatan } }
+					dyes = { 	DE_supply_effect = { good = dyes } }
+					honey = { 	DE_supply_effect = { good = honey } }
+					lead = { 	DE_supply_effect = { good = lead } }
+					glas = { 	DE_supply_effect = { good = glas } }
+					
+					silk = { 	DE_supply_effect = { good = silk } }
+					olibanum = { DE_supply_effect = { good = olibanum } }
+					pearls = { 	DE_supply_effect = { good = pearls } }
+					exotic_animals = { DE_supply_effect = { good = exotics } }
+					herbs = { 	DE_supply_effect = { good = herbs } }
+					
+					ivory = { 	DE_supply_effect = { good = ivory } }
+					jade = { 	DE_supply_effect = { good = jade } }
+					tin = { 	DE_supply_effect = { good = tin } }
+					rice = { 	DE_supply_effect = { good = rice } }
+					gems = { 	DE_supply_effect = { good = gems } }
+					
+					cotton = { 	DE_supply_effect = { good = cotton } }
+					tar_good = { DE_supply_effect = { good = targood } }
+					tea_good = { DE_supply_effect = { good = teagood } }
+					opium = { 	DE_supply_effect = { good = opium } }
+					metalware = { DE_supply_effect = { good = metalware } }
+					
+					sugar = { 	DE_supply_effect = { good = sugar } }
+					
+				}
+				ROOT = {
+					change_variable = { which = DE_rur which = PREV }
+					change_variable = { which = DE_urb which = PREV }
+					change_variable = { which = DE_upp which = PREV }
+				}
+				#set_variable = { which = DE_base_supply value = 0 }
+				set_variable = { which = DE_rur value = 0 }
+				set_variable = { which = DE_urb value = 0 }
+				set_variable = { which = DE_upp value = 0 }
 			}
-			ROOT = {
-				change_variable = { which = DE_rur which = PREV }
-				change_variable = { which = DE_urb which = PREV }
-				change_variable = { which = DE_upp which = PREV }
-			}
-			set_variable = { which = DE_base_supply value = 0 }
-			set_variable = { which = DE_rur value = 0 }
-			set_variable = { which = DE_urb value = 0 }
-			set_variable = { which = DE_upp value = 0 }
-		}
+		#}
 		
 		# Calculate supply for each good group
 		
@@ -149,12 +161,12 @@ country_event = {
 		
 		multiply_variable = { DE_sup_horses = 0.33 } 
 		change_variable = { which = DE_sup_normfood which = DE_sup_horses } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_horses } 
+		change_variable = { which = DE_sup_luxgood which = DE_sup_horses } 
 		change_variable = { which = DE_sup_miligood which = DE_sup_horses } 
 		multiply_variable = { DE_sup_horses = 3.0 } 
 		
 		multiply_variable = { DE_sup_spices = 0.5 } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_spices } 
+		change_variable = { which = DE_sup_normfood which = DE_sup_spices } 
 		change_variable = { which = DE_sup_luxgood which = DE_sup_spices } 
 		multiply_variable = { DE_sup_spices = 2.0 } 
 		
@@ -254,10 +266,10 @@ country_event = {
 		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.01 }
 		change_variable = { which = DE_dem_miligood which = DE_dem_uppers }
 		
-			# for now, I will move all the civic amounts to 10% of total luxury demand. It can later be tied to "civilization", widespread use of marble for construction, hellenization, etc. Anyway, the bas is already done for now. 
+			# for now, I will move all the civic amounts to 10% of total luxury demand. It can later be tied to "civilization", widespread use of marble for construction, hellenization, etc. Anyway, the basic is already done for now. 
 		set_variable = { which = DE_dem_civgood which = DE_dem_luxgood } multiply_variable = { DE_dem_civgood = 0.1 }
 		
-			# Demand for mineral ores: dependent on the current production of metalware and mintage (50% of gold + silver production)
+			# Demand for mineral ores: dependent on the current production of metalware (mixed) and mintage (50% of gold + silver production)
 		set_variable = { which = DE_dem_tin which = DE_sup_metalware }  multiply_variable = { DE_dem_tin = 0.1 }
 		set_variable = { which = DE_dem_iron which = DE_sup_metalware } set_variable = { which = DE_dem_copper which = DE_sup_metalware } 
 		if = {
@@ -265,6 +277,7 @@ country_event = {
 				 multiply_variable = { DE_dem_iron = 0.6 } multiply_variable = { DE_dem_copper = 0.3 }
 		}
 		else = { multiply_variable = { DE_dem_iron = 0.2 } multiply_variable = { DE_dem_copper = 0.7 } }
+		
 		set_variable = { which = DE_dem_lead which = DE_sup_gold }
 		change_variable = { which = DE_dem_lead which = DE_sup_silver }
 		multiply_variable = { DE_dem_lead = 0.5 }
