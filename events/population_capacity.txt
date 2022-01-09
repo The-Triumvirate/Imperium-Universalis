@@ -478,9 +478,10 @@ province_event = {
 			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
 			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
 		}
+		if = { limit = { has_province_flag = PG_river_port } multiply_variable = { rural_fishermen = 0.50 }	}	# River ports, -50% effect
 		
 		change_variable = { which = rural_capacity which = rural_fishermen }
-		set_variable = { which = rural_fishermen value = 0 } 
+		set_variable = { which = rural_fishermen value = 0 }
 		
 		
 		# TRANSFER TO "URBAN" POPULATION - where Urban means "connected" enough to the normal markets, like exports, cash-crops, etc
@@ -958,6 +959,11 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				
 				
 				}
+				
+				# Update naval forcelimit nerfs, in inland and river ports
+				if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
+				else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
+				
 			}
 		}
 	}
@@ -2171,6 +2177,12 @@ province_event = {
 			harbor_district = { change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } }
 			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
 			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
+		}
+		if = { 
+			limit = { has_province_flag = PG_river_port } 
+			multiply_variable = { rural_fishermen = 0.50 }		# River ports, -50% effect
+			multiply_variable = { PGD_fishing_base = 0.50 }	
+			multiply_variable = { PGD_fishing_terrain = 0.50 }
 		}
 		change_variable = { which = rural_capacity which = rural_fishermen }					# if size 4, terrain coastal and big harbor:
 			set_variable = { which = PGD_fishing_buildings which = rural_fishermen }			# (2 + 1.5 + 2) x 1.35 = 7.425
