@@ -92,18 +92,121 @@ mig_dist_cost = {
 }
 
 mig_rural_to_urban = {
-	PREV = { subtract_variable = { which = mig_size value = $no$ } add_base_manpower = -$no$ 	change_variable = { PS_rur_emig = $no$ } }
-	add_base_production = $no$ 	add_province_modifier = { name = pg_new_pop duration = 365 }	change_variable = { PS_urb_imig = $no$ }
+	# Origin province
+	PREV = { 
+		subtract_variable = { which = mig_size value = $no$ } 
+		add_base_manpower = -$no$ 	change_variable = { PS_rur_emig = $no$ } 
 	
+	}
+	# Destination province
+	add_base_production = $no$ 	add_province_modifier = { name = PG_new_pop duration = 365 }	change_variable = { PS_urb_imig = $no$ }
+	set_variable = { which = PG_newpop value = $no$ } 			set_variable = { which = PG_provid which = PREV }
+	set_variable = { which = PG_idorigin which = PG_provid } 	set_variable = { which = PG_provid value = 0 }
 }
 
 mig_rural_to_rural = {
-	PREV = { subtract_variable = { which = mig_size value = $no$ } add_base_manpower = -$no$  	change_variable = { PS_rur_emig = $no$ } }
-	add_base_manpower = $no$ 	add_province_modifier = { name = pg_new_pop duration = 365 }	change_variable = { PS_rur_imig = $no$ }
+	# Origin province
+	PREV = { 
+		subtract_variable = { which = mig_size value = $no$ } 
+		add_base_manpower = -$no$  	change_variable = { PS_rur_emig = $no$ } 
+	}
+	# Destination province
+	add_base_manpower = $no$ 	add_province_modifier = { name = PG_new_pop duration = 365 }	change_variable = { PS_rur_imig = $no$ }
+	set_variable = { which = PG_newpop value = $no$ } 			set_variable = { which = PG_provid which = PREV }
+	set_variable = { which = PG_idorigin which = PG_provid } 	set_variable = { which = PG_provid value = 0 }
+}
+
+PG_inland_navalsize = {
+	# cleanup previous modifiers
+	if = { limit = { has_province_modifier = PG_navsize_16 } 	remove_province_modifier = PG_navsize_16 }
+	if = { limit = { has_province_modifier = PG_navsize_8 } 	remove_province_modifier = PG_navsize_8 }
+	if = { limit = { has_province_modifier = PG_navsize_4 } 	remove_province_modifier = PG_navsize_4 }
+	if = { limit = { has_province_modifier = PG_navsize_2 } 	remove_province_modifier = PG_navsize_2 }
+	if = { limit = { has_province_modifier = PG_navsize_1 } 	remove_province_modifier = PG_navsize_1 }
+	if = { limit = { has_province_modifier = PG_navsize_0.5 } 	remove_province_modifier = PG_navsize_0.5 }
+	if = { limit = { has_province_modifier = PG_navsize_0.25 } 	remove_province_modifier = PG_navsize_0.25 }
+	if = { limit = { has_province_modifier = PG_navsize_0.125 } remove_province_modifier = PG_navsize_0.125 }
+	
+	# calculate
+	export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
+	export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
+	export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
+	change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav } 
+	set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 } 
+	
+	# Now we have the amount of ships to be deducted
+	if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_navalsize = { amt = 16 } } 
+	if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_navalsize = { amt = 8 } } 
+	if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_navalsize = { amt = 4 } } 
+	if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_navalsize = { amt = 2 } } 
+	if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_navalsize = { amt = 1 } } 
+	if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_navalsize = { amt = 0.5 } } 
+	if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_navalsize = { amt = 0.25 } } 
+	if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_navalsize = { amt = 0.125 } } 
+	set_variable = { which = PG_nav value = 0 }
+	
+}
+
+PG_riverport_navalsize = {
+	# cleanup previous modifiers
+	if = { limit = { has_province_modifier = PG_riversize_16 } 		remove_province_modifier = PG_riversize_16 }
+	if = { limit = { has_province_modifier = PG_riversize_8 } 		remove_province_modifier = PG_riversize_8 }
+	if = { limit = { has_province_modifier = PG_riversize_4 } 		remove_province_modifier = PG_riversize_4 }
+	if = { limit = { has_province_modifier = PG_riversize_2 } 		remove_province_modifier = PG_riversize_2 }
+	if = { limit = { has_province_modifier = PG_riversize_1 } 		remove_province_modifier = PG_riversize_1 }
+	if = { limit = { has_province_modifier = PG_riversize_0.5 } 	remove_province_modifier = PG_riversize_0.5 }
+	if = { limit = { has_province_modifier = PG_riversize_0.25 } 	remove_province_modifier = PG_riversize_0.25 }
+	if = { limit = { has_province_modifier = PG_riversize_0.125 } 	remove_province_modifier = PG_riversize_0.125 }
+	
+	# calculate
+		# different from before: buildings also affected
+	set_variable = { which = PG_nav value = 0 }
+	
+	trigger_switch = {
+		on_trigger = has_building
+		small_harbor = { change_variable = { PG_nav = 2 } }
+		big_harbor = { change_variable = { PG_nav = 3 } }
+		harbor_district = { change_variable = { PG_nav = 4 } }
+	}
+	if = { 		limit = { province_has_center_of_trade_of_level = 3 } change_variable = { PG_nav = 5 } }
+	else_if = { limit = { province_has_center_of_trade_of_level = 2 } change_variable = { PG_nav = 3 } }
+	else_if = { limit = { province_has_center_of_trade_of_level = 1 } change_variable = { PG_nav = 1 } }
+	
+	export_to_variable = { which = PG_tnav value = base_manpower } 		multiply_variable = { PG_tnav = 0.05 }
+	export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
+	export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
+	change_variable = { which = PG_nav which = PG_tnav }
+	change_variable = { which = PG_nav which = PG_cnav }
+	change_variable = { which = PG_nav which = PG_unav }
+	
+	# River port effect: -50% naval forcelimit
+	multiply_variable = { PG_nav = 0.5 }
+	set_variable = { which = PG_tnav value = 0 } set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 } 
+	
+	# Now we have the amount of ships to be deducted
+	if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_riversize = { amt = 16 } } 
+	if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_riversize = { amt = 8 } } 
+	if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_riversize = { amt = 4 } } 
+	if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_riversize = { amt = 2 } } 
+	if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_riversize = { amt = 1 } } 
+	if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_riversize = { amt = 0.5 } } 
+	if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_riversize = { amt = 0.25 } } 
+	if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_riversize = { amt = 0.125 } } 
+	set_variable = { which = PG_nav value = 0 }
 	
 }
 
 
+PG_reduce_navalsize = {
+	subtract_variable = { which = PG_nav value = $amt$ }
+	add_province_modifier = { name = PG_navsize_$amt$ duration = -1 hidden = yes }
+
+}
+PG_reduce_riversize = {
+	subtract_variable = { which = PG_nav value = $amt$ }
+	add_province_modifier = { name = PG_riversize_$amt$ duration = -1 hidden = yes }
+
+}
 
 
 

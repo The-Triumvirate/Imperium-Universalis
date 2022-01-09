@@ -20,13 +20,10 @@ province_event = {
 		multiply_variable = { which = rural_capacity value = 2 } # aprox will be 20.000 farmers for a plot of 1.500 sqkm (40x40km, two days travel by foot)
 		
 		##### MODIFIERS
-		## Weather, winters, etc. Winters will have the option to be "avoidable" if enough Institutions / technology is used in this province. The targets are farming 3 (farming by the time of Greek Classical golden age) and farming 5 (late roman republic; major architectural feats, etc)
-		
-		# Institutions: 
-		# 	- writing_system: without, penalty to total capacity
-		# 	- siege_engineering_institution / cast_iron_institution: mitigates Mild Winter, and gives +15% food surplus
-		# 	- blast_furnace_institution / advanced_hydraulics_institution: mitigates Normal Winter, and +40% food surplus
-		#	- engineering_architecture_institution: mitigates most of Several, and +65% food surplus
+		## Weather, winters, etc. Winters will have the option to be "avoidable" if enough Institutions / technology is used in this province. 
+		# 	- siege_engineering_institution / cast_iron_institution: mitigates Mild Winter
+		# 	- blast_furnace_institution / advanced_hydraulics_institution: mitigates Normal Winter
+		#	- engineering_architecture_institution: mitigates most of Several
 		
 		# Winters
 		trigger_switch = {
@@ -884,6 +881,9 @@ province_event = {
 		export_to_variable = { which = PS_rur_now value = base_manpower }
 		export_to_variable = { which = PS_urb_now value = base_production }
 		export_to_variable = { which = PS_upp_now value = base_tax }
+		
+		
+		
 	}
 	
 	
@@ -893,6 +893,9 @@ province_event = {
 	}
 	
 }
+# population_capacity.X is empty. It will contain the "simplified" pop capacity calculation, for horde countries once it is back to the mod. 
+
+
 country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	id = population_capacity.2
 	title = "population_capacity.2.t"
@@ -900,7 +903,7 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	picture = peasant_woman
 	hidden = yes
 	
-	is_triggered_only = yes
+	is_triggered_only = yes		# Happens ALWAYS, either having Popgrowth turned or on off. It does many other things
 	
 	option = {
 		name = "population_capacity.2.a"
@@ -925,12 +928,12 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				# SS: Sieges and repairs
 				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
 				
-				# DR Dynamic Resources
+				# DE Dynamic Economy
 				# Postponed to after 3.0 release
 				#if = { limit = { had_province_flag = { flag = DR_2years days = 700 } } DR_run_extractions = yes DR_update_wildlife = yes }
 				
 				# other corrective things
-				trigger_switch = {	
+				trigger_switch = {
 					on_trigger = has_province_modifier 
 					land_reclamtion_5 = { 
 						add_permanent_province_modifier = { name = land_reclamation_5 duration = -1 }
@@ -1006,6 +1009,11 @@ country_event = {
 		
 	}
 	option = {								
+		name = "population_capacity.3.6"	# Show menu for automated migration options and variables
+		trigger = { has_global_flag = popgrowth_running }
+		country_event = { id = population_capacity.8 }
+	}
+	option = {								
 		name = "population_capacity.3.7"	# Nothing, go back
 		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_running }
@@ -1039,37 +1047,24 @@ province_event = {
 		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
 		NOT = { check_variable = { which = rural_growth value = 1 } }	# negative growth, anything under 1.00
 		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
-		
+		owner = { has_country_flag = PG_migration_manual }				# new, to allow the automatic event happening
 	}
 	
 	
 	mean_time_to_happen = {
 		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
 		
-		
-		# PUSH - reasons to leave. Devastation will NOT appear here, since it already influences rural_growth. 
+		# Reasons to leave. Devastation will NOT appear here, since it already influences rural_growth. 
 		modifier = {
 			factor = 3.0
 			check_variable = { which = urban_growth which = rural_growth }	# is not supposed to fire if there is still work in the city, same province
 		}
-		modifier = {
-			factor = 0.65
-			check_variable = { which = rural_growth value = 0.60 }
-			NOT = { check_variable = { which = rural_growth value = 0.80 } }
-		}
-		modifier = {
-			factor = 0.40
-			check_variable = { which = rural_growth value = 0.50 }
-			NOT = { check_variable = { which = rural_growth value = 0.60 } }
-		}
-		modifier = {
-			factor = 0.25
-			check_variable = { which = rural_growth value = 0.40 }
-			NOT = { check_variable = { which = rural_growth value = 0.50 } }
-		}
+		modifier = {	factor = 0.65	check_variable = { rural_growth = 0.60 }	NOT = { check_variable = { rural_growth = 0.80 } }	}
+		modifier = {	factor = 0.40	check_variable = { rural_growth = 0.50 }	NOT = { check_variable = { rural_growth = 0.60 } }	}
+		modifier = {	factor = 0.25	check_variable = { rural_growth = 0.40 }	NOT = { check_variable = { rural_growth = 0.50 } }	}
 		modifier = {
 			factor = 0.05 				# one year
-			NOT = { check_variable = { which = rural_growth value = 0.40 } }	# they must be really miserable...
+			NOT = { check_variable = { rural_growth = 0.40 } }	# they must be really miserable...
 		}
 		
 	}
@@ -1094,6 +1089,7 @@ province_event = {
 			else_if = { limit = { check_variable = { PG_info_range = 2 } }  PG_find_target_province = { range = 150 } }
 			else = { 														PG_find_target_province = { range = 75 } }
 			
+			set_variable = { which = PG_provid which = prov_id }
 		}
 	}
 	
@@ -1111,7 +1107,7 @@ province_event = {
 			modifier = { factor = 1.3 owner = { NOT = { adm_power = 300 } } }
 		}
 		event_target:PG_target = { 		# move pops and recalculate capacity in the target province
-										# not using the while sintax, so that in the option values it can be seen
+			# not using the while sintax, so that in the option values it can be seen
 			if = {
 				limit = { check_variable = { urban_growth = 1.2 } }
 				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
@@ -1126,8 +1122,35 @@ province_event = {
 			}
 			province_event = { id = population_capacity.1 }
 		}
-		province_event = { id = population_capacity.1 }	# recalculate in the origin province
+		province_event = { id = population_capacity.1 }		# recalculate in the origin province
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+		# If someone modifies the code, remember to copy it in the following option as well!
 	}
+	option = {	# Same, but activates the automatic
+		name = "population_capacity.4.1"
+		highlight = yes
+		trigger = { NOT = { has_province_flag = PG_starvation_start } owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		event_target:PG_target = { 		# move pops and recalculate capacity in the target province
+										# not using the while sintax, so that values can be seen by the player
+			if = {
+				limit = { check_variable = { urban_growth = 1.2 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { rural_growth = 1.2 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = population_capacity.1 }
+		}
+		province_event = { id = population_capacity.1 }		# recalculate in the origin province
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_leave }
+	}
+	
 	# 2: Convince them to stay, mana loss due to issuing of new laws. (spend dip points)
 	option = {
 		name = "population_capacity.4.2" 
@@ -1140,6 +1163,17 @@ province_event = {
 		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
 		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
 		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "population_capacity.4.2" 
+		highlight = yes
+		trigger = { NOT = { has_province_flag = PG_starvation_start } owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_stay }
 	}
 	# 3. Nasty option: spend military but risk a revolt of the population being-converted to slaves (spend mil points)
 	option = {
@@ -1153,10 +1187,10 @@ province_event = {
 		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	# +4 unrest
 		add_nationalism = 5		add_devastation = 5							# 5 nationalism for the resistence; 5 devastation due to risk of famine
 		
-		# not using the while sintax, so that in the option values it can be seen
+		# not using the while sintax, so that values can be seen by the player
 		if = {
 			limit = { check_variable = { mig_size = 3 } }
-			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PGS = "pop growth statistics", will appear in the province interaction
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PS = "pop growth statistics", will appear in the province interaction
 			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
 		}
 		else_if = {
@@ -1170,6 +1204,34 @@ province_event = {
 			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
 		}
 		province_event = { id = population_capacity.1 }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "population_capacity.4.3" # enslave them. Expect much unrest, but may be necessary in money-hungry countries
+		highlight = yes
+		trigger = { owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	# +4 unrest
+		add_nationalism = 5		add_devastation = 5							# 5 nationalism for the resistence; 5 devastation due to risk of famine
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = {
+			limit = { check_variable = { mig_size = 3 } }
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PS = "pop growth statistics", will appear in the province interaction
+			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 2 } }
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
+			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 1 } }
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
+			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
+		}
+		province_event = { id = population_capacity.1 }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_imprison }
 	}
 	
 	# 4. Starving: there is nothing we can do. It can snowball very fast!!
@@ -1178,7 +1240,7 @@ province_event = {
 		trigger = { has_province_flag = PG_starvation_start }
 		ai_chance = {   factor = 30 	 modifier = { factor = 2.5	NOT = { owner = { treasury = 30 } } } }
 		
-		# not using the while sintax, so that in the option values it can be seen
+		# not using the while sintax, so that values can be seen by the player
 		if = { 		limit = { check_variable = { mig_size = 3 } } add_base_manpower = -3 change_variable = { PS_rur_strv = 3 } }
 		else_if = { limit = { check_variable = { mig_size = 2 } } add_base_manpower = -2 change_variable = { PS_rur_strv = 2 } }
 		else_if = { limit = { check_variable = { mig_size = 1 } } add_base_manpower = -1 change_variable = { PS_rur_strv = 1 } }
@@ -1187,6 +1249,7 @@ province_event = {
 		add_devastation = 20	add_province_modifier = { name = PG_pop_starved duration = 730 } 	# +4 unrest
 		every_neighbor_province = { add_devastation = 5 }
 		province_event = { id = population_capacity.1 }
+		# This one will never be automatable, it is very hard..
 	}
 	
 	# 5. Pay for more food. Lose money and mana (adm power), and no devastation happened
@@ -1195,11 +1258,23 @@ province_event = {
 		trigger = { has_province_flag = PG_starvation_start }
 		ai_chance = {  factor = 50 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
 		
-		# not using the while sintax, so that in the option values it can be seen
+		# not using the while sintax, so that values can be seen by the player
 		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
 		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
 		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "population_capacity.4.5" 
+		highlight = yes
+		trigger = { has_province_flag = PG_starvation_start 	owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
 		
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_pay }
 	}
 	
 	
@@ -1209,9 +1284,14 @@ province_event = {
 	# 6. Move them to our capital (if there is space). First urban, then rural
 	option = {
 		name = "population_capacity.4.6"		
-		trigger = { capital_scope = { OR = { check_variable = { urban_growth = 1.2 } check_variable = { rural_growth = 1.2 } } } }
+		trigger = { owner = { capital_scope = { OR = { check_variable = { urban_growth = 1.2 } check_variable = { rural_growth = 1.2 } } } } }
 		ai_chance = { factor = 0 }
-		capital_scope = {
+		
+		random_province = {
+			limit = {
+				owned_by = PREV		is_capital = yes		NOT = { has_province_modifier = PG_new_pop }
+				OR = { check_variable = { urban_growth = 1.2 } check_variable = { rural_growth = 1.2 } }
+			}
 			mig_dist_cost = yes
 			if = {
 				limit = { check_variable = { urban_growth = 1.2 } }
@@ -1227,8 +1307,8 @@ province_event = {
 			}
 			province_event = { id = population_capacity.1 } 
 		}
-		province_event = { id = population_capacity.1 }
-		
+		province_event = { id = population_capacity.1 } 
+		# no automation
 	}
 	
 	# 7. Move them to another prosperous city (urban growth >1.2 + center of trade lv1 at least)
@@ -1238,13 +1318,13 @@ province_event = {
 		trigger = {  
 			any_province = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 1
+				NOT = { has_province_modifier = PG_new_pop } 	province_has_center_of_trade_of_level = 1
 			}
 		}
 		random_province = {
 			limit = {
 				owned_by = PREV 								check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = pg_new_pop } 	province_has_center_of_trade_of_level = 1
+				NOT = { has_province_modifier = PG_new_pop } 	province_has_center_of_trade_of_level = 1
 			}
 			mig_dist_cost = yes
 			if = {
@@ -1256,6 +1336,7 @@ province_event = {
 			province_event = { id = population_capacity.1 }
 		}
 		province_event = { id = population_capacity.1 }
+		# no automation
 	}
 	
 	# 8. Move them to other agricultural lands
@@ -1264,13 +1345,13 @@ province_event = {
 		trigger = {  
 			any_province = {
 				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
-				NOT = { has_province_modifier = pg_new_pop } 	
+				NOT = { has_province_modifier = PG_new_pop } 	
 			}
 		}
 		random_province = {
 			limit = {
 				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
-				NOT = { has_province_modifier = pg_new_pop } 	
+				NOT = { has_province_modifier = PG_new_pop } 	
 			}
 			mig_dist_cost = yes
 			if = {
@@ -1282,6 +1363,7 @@ province_event = {
 			province_event = { id = population_capacity.1 }
 		}
 		province_event = { id = population_capacity.1 }
+		# no automation
 	}
 	
 	
@@ -1289,11 +1371,212 @@ province_event = {
 		# clean up
 		set_variable = { which = mig_size value = 0 }
 		clr_province_flag = PG_starvation_start
+		
+		# Has the country flag really been added? Check general flag, and specific flags (there must be only one)
+		if = { limit = { owner = { has_country_flag = PG_migration_automated } } owner = { clr_country_flag = PG_migration_manual } }
+		if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_imprison } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_stay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison } 
+		}
+		
 	}
 	
 }
-
-# population_capacity.5 is empty. It will contain the "simplified" pop capacity calculation, for horde countries once it is back to the mod. 
+# The automatic event for migration. Same MTTH, trigger adds the automated flag, but simplified options and only one will fire. 
+province_event = {
+	id = population_capacity.5
+	title = "population_capacity.5.t"
+	desc = "population_capacity.5.d"
+	picture = peasant_woman
+	#hidden = no
+	
+	trigger = {
+		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { which = rural_growth value = 1 } }	# negative growth, anything under 1.00
+		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+		owner = { has_country_flag = PG_migration_automated }			# new, to allow the automatic event happening
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+		
+		# Reasons to leave. Devastation will NOT appear here, since it already influences rural_growth. 
+		modifier = {
+			factor = 3.0
+			check_variable = { which = urban_growth which = rural_growth }	# is not supposed to fire if there is still work in the city, same province
+		}
+		modifier = {	factor = 0.65	check_variable = { rural_growth = 0.60 }	NOT = { check_variable = { rural_growth = 0.80 } }	}
+		modifier = {	factor = 0.40	check_variable = { rural_growth = 0.50 }	NOT = { check_variable = { rural_growth = 0.60 } }	}
+		modifier = {	factor = 0.25	check_variable = { rural_growth = 0.40 }	NOT = { check_variable = { rural_growth = 0.50 } }	}
+		modifier = {
+			factor = 0.05 				# one year
+			NOT = { check_variable = { rural_growth = 0.40 } }	# they must be really miserable...
+		}
+		
+	}
+	
+	immediate = {
+			# BLOCK 1: define migration size. 
+			# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10. 
+			if = { 		limit = { base_manpower = 10 }	set_variable = { which = mig_size value = 3 } }
+			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = mig_size value = 2 } }
+			else = {									set_variable = { which = mig_size value = 1 } }
+			
+			# BLOCK 2: Discover which provinces it may go. 
+			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
+			#	A very high center of trade (lv4 or higher), then a regional one (lv2), then any other province with rural place. 
+			
+			if = { 		limit = { check_variable = { PG_info_range = 50 } } PG_find_target_province = { range = 2000 } }
+			else_if = { limit = { check_variable = { PG_info_range = 30 } } PG_find_target_province = { range = 1200 } }
+			else_if = { limit = { check_variable = { PG_info_range = 20 } } PG_find_target_province = { range = 800 } }
+			else_if = { limit = { check_variable = { PG_info_range = 10 } } PG_find_target_province = { range = 500 } }
+			else_if = { limit = { check_variable = { PG_info_range = 5 } }  PG_find_target_province = { range = 300 } }
+			else_if = { limit = { check_variable = { PG_info_range = 2 } }  PG_find_target_province = { range = 150 } }
+			else = { 														PG_find_target_province = { range = 75 } }
+			
+		# Anti-CTD measure: make sure there is only ONE flag present. This is also added in the after of the manual event, but who knows. 
+		if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } has_province_flag = PG_starvation_start } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } NOT = { has_province_flag = PG_starvation_start } } 
+			owner = { set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_imprison } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_stay } }
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison } 
+		}
+		else_if = { 
+			limit = { has_province_flag = PG_starvation_start }
+			owner = { set_country_flag = PG_migr_pay clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		else = { 
+			owner = { set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		
+	}
+	
+	#####
+	#	OPTIONS
+	#####
+	
+	# 1: Leave the province
+	option = {
+		name = "population_capacity.5.1"
+		trigger = { owner = { has_country_flag = PG_migr_leave } }
+		ai_chance = { factor = 100 }
+		event_target:PG_target = {
+			if = {
+				limit = { check_variable = { urban_growth = 1.2 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { rural_growth = 1.2 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = population_capacity.1 }
+		}
+		province_event = { id = population_capacity.1 }		# recalculate in the origin province
+		set_variable = { which = PG_var_leave which = mig_size } 
+		owner = { change_variable = { which = PG_var_leave which = PREV } }  set_variable = { which = PG_var_leave value = 0 }
+	}
+	
+	# 2: Convince them to stay (spend DIP points)
+	option = {
+		name = "population_capacity.5.2" 
+		trigger = { owner = { has_country_flag = PG_migr_stay } }
+		ai_chance = { factor = 100 }
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		set_variable = { which = PG_var_stay which = mig_size } 
+		owner = { change_variable = { which = PG_var_stay which = PREV } }  set_variable = { which = PG_var_stay value = 0 }
+	}
+	# 3. Enslave (spend MIL points)
+	option = {
+		name = "population_capacity.5.3" 
+		trigger = { owner = { has_country_flag = PG_migr_imprison } }
+		ai_chance = { factor = 100 }
+		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	
+		add_nationalism = 5		add_devastation = 5							
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = {
+			limit = { check_variable = { mig_size = 3 } }
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	
+			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 2 } }
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
+			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 1 } }
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
+			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
+		}
+		province_event = { id = population_capacity.1 }
+		set_variable = { which = PG_var_imprison which = mig_size } 
+		owner = { change_variable = { which = PG_var_imprison which = PREV } }  set_variable = { which = PG_var_imprison value = 0 }
+	}
+	
+	# 4. Starving. Not in the automated event
+	
+	# 5. Pay for more food. Spend ADM points
+	option = {
+		name = "population_capacity.5.4" 
+		trigger = { owner = { has_country_flag = PG_migr_pay } }
+		ai_chance = { factor = 100 }
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		set_variable = { which = PG_var_pay which = mig_size } 
+		owner = { change_variable = { which = PG_var_pay which = PREV } }  set_variable = { which = PG_var_pay value = 0 }
+	}
+	
+	
+	after = {
+		# clean up
+		set_variable = { which = mig_size value = 0 }
+		clr_province_flag = PG_starvation_start
+		if = { limit = { owner = { has_country_flag = PG_migration_automated } } owner = { clr_country_flag = PG_migration_manual } }
+		
+	}
+	
+}
 
 ##################################################
 # POPULATION CAPACITY CALCULATION, DEBUG MODE
@@ -2431,7 +2714,7 @@ province_event = {				# PROVINCE INTERACTION MENU
 	
 }
 
-province_event = {				# PROVINCE INTERACTION MENU
+country_event = {				# MIGRATION AUTOMATION, OPTIONS
 	id = population_capacity.8
 	title = "population_capacity.8.t"
 	desc = "population_capacity.8.d"
@@ -2448,47 +2731,119 @@ province_event = {				# PROVINCE INTERACTION MENU
 	}
 	
 	option = {
-		name = "population_capacity.7.1"
+		name = "population_capacity.8.1"	# Stop the automation
+		trigger = { has_country_flag = PG_migration_automated }
+		clr_country_flag = PG_migration_automated 	set_country_flag = PG_migration_manual
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "population_capacity.8.2"	# Apply Leave
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "population_capacity.8.3"	# Apply Stay
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay set_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "population_capacity.8.4"	# Apply Pay
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave set_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "population_capacity.8.5"	# Apply Imprison
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay set_country_flag = PG_migr_imprison
+	}
+	
+	option = {
+		name = "population_capacity.8.6"	# (nothing, close this)
+		
+	}
+	
+	after = {
+		set_variable = { which = PG_var_leave value = 0 }		set_variable = { which = PG_var_stay value = 0 }	
+		set_variable = { which = PG_var_imprison value = 0 }	set_variable = { which = PG_var_pay value = 0 }	
+	}
+	
+}
+
+
+province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
+	id = population_capacity.99
+	title = "population_capacity.99.t"
+	desc = "population_capacity.99.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+	
+	#mean_time_to_happen = {
+	#	months = 2	
+	#}
+	immediate = {
+		export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
+		export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
+		export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
+		change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav } 
+		#set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 } 
+		
+		# Now we have the amount of ships to be deducted
+		if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_navalsize = { amt = 16 } } 
+		if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_navalsize = { amt = 8 } } 
+		if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_navalsize = { amt = 4 } } 
+		if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_navalsize = { amt = 2 } } 
+		if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_navalsize = { amt = 1 } } 
+		if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_navalsize = { amt = 0.5 } } 
+		if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_navalsize = { amt = 0.25 } } 
+		if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_navalsize = { amt = 0.125 } } 
+		set_variable = { which = PG_nav value = 0 }
+		
+	}
+	
+	option = {
+		name = "population_capacity.99.1"
 		add_province_modifier = { name = PG_dev_01 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.2"
+		name = "population_capacity.99.2"
 		add_province_modifier = { name = PG_dev_02 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.3"
+		name = "population_capacity.99.3"
 		add_province_modifier = { name = PG_dev_03 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.4"
+		name = "population_capacity.99.4"
 		add_province_modifier = { name = PG_dev_04 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.5"
+		name = "population_capacity.99.5"
 		add_province_modifier = { name = PG_dev_05 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.6"
+		name = "population_capacity.99.6"
 		add_province_modifier = { name = PG_dev_06 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.7"
+		name = "population_capacity.99.7"
 		add_province_modifier = { name = PG_dev_07 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.8"
+		name = "population_capacity.99.8"
 		add_province_modifier = { name = PG_dev_08 duration = 20 }
 		
 	}
 	option = {
-		name = "population_capacity.7.9"
+		name = "population_capacity.99.9"
 		owner = {
 			every_owned_province = {
 				export_to_variable = { which = PG_development_cost value = modifier:local_development_cost }
