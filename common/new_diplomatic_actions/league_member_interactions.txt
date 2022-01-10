@@ -153,7 +153,6 @@ ask_for_league_member_subject = {
 	}
 }
 
-
 #Removes League Member
 remove_league_member_subject = {
 	category = influence
@@ -197,6 +196,110 @@ remove_league_member_subject = {
 				total_development = ROOT
 				liberty_desire = 60
 			}
+		}
+	}
+}
+
+#Settle Clerurchy
+settle_clerurchy_interaction = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = settle_clerurchy_interaction_alert_tooltip.1
+	require_acceptance = no
+
+	is_visible = {
+		FROM = {
+			is_subject_of_type = league_member_subject
+			is_subject_of = ROOT
+		}
+		league_member_subject = 6
+		NOT = { has_country_modifier = settled_clerurch_modifier }
+	}
+	is_allowed = {
+		is_at_war = no
+		has_any_disaster = no
+		absolutism = 20
+		stability = 1
+		any_owned_province = {
+			is_core = ROOT
+			base_manpower = 2
+		}
+		FROM = {
+			NOT = { total_development = ROOT }
+			NOT = { army_size = ROOT }
+			NOT = { navy_size = ROOT }
+			NOT = { liberty_desire = 50 }
+			has_opinion = {
+				who = ROOT
+				value = 50
+			}
+		}
+	}
+	on_accept = {
+		add_absolutism = -5
+		add_country_modifier = {
+			name = settled_clerurch_modifier
+			duration = 3650
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = league_member_subject
+				NOT = { TAG = FROM }
+			}
+			add_opinion = {
+				who = ROOT
+    			modifier = banned_from_league_opinion
+			}
+			add_liberty_desire = 5
+		}
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+					base_manpower = 2
+				}
+				add_base_manpower = -1
+			}
+			FROM = {
+				random_owned_province = {
+					if = {
+						limit = { is_prosperous = yes }
+						add_core = ROOT
+						cede_province = ROOT
+						change_culture = ROOT
+						change_religion = ROOT
+						add_base_production = -1
+					}
+					else = {
+						add_core = ROOT
+						cede_province = ROOT
+						change_culture = ROOT
+						change_religion = ROOT
+						add_base_production = -1
+					}
+				}
+			}
+		}
+		FROM = {
+			if = {
+				limit = { exists = yes }
+				add_opinion = {
+					who = ROOT
+					modifier = recently_settled_clerurch_opinion
+				}
+				add_liberty_desire = 20
+			}
+		}
+	}
+	
+	ai_will_do = {
+		personality = ai_militarist
+		stability = 1
+		absolutism = 30
+		total_development = 60
+		FROM = {
+			NOT = { total_development = ROOT }
+			NOT = { liberty_desire = 60 }
 		}
 	}
 }
