@@ -1,50 +1,52 @@
 
-#Ask for Socii
-ask_for_socii_subject = {
+#Reconciliate Sukkal
+reconciliate_sukkal = {
 	category = influence
 	alert_index = 30
-	alert_tooltip = ask_for_socii_subject_alert_tooltip.1
+	alert_tooltip = reconciliate_sukkal_alert_tooltip.1
 	
 	require_acceptance = yes
 	is_visible = {
 		is_subject = no
-		OR = {
-			has_reform = res_publica_reform
-			has_reform = roman_kingdom_reform
-		}
-		government_rank = 2
+		has_reform = elamite_kingdom
 		FROM = {
-			capital_scope = {
-				OR = {
-					region = italian_region
-					area = lucania_area
-					area = apulia_area
-					area = salento_area
-					area = samnium_area
-				}
-				
+			OR = {
+				TAG = SUS
+				TAG = SU1
+				TAG = SU2
+				TAG = SU3
+				TAG = SU4
+				TAG = SU5
+				TAG = SU6
+				TAG = SU7
+				TAG = SU8
 			}
+			culture_group = elamite_group
 			is_subject = no
 		}
 	}
+
 	is_allowed = {
-		alliance_with = FROM
+		is_at_war =  no
+		NOT = { war_with = FROM }
+		NOT = { truce_with = FROM }
 		reverse_has_opinion = {
 			who = FROM
-			value = 150
+			value = 100
 		}
-		FROM = {
-			is_at_war = no
-			NOT = { war_with = ROOT }
-			NOT = { has_country_modifier = recently_removed_socii }
-		}
+		FROM = { is_at_war = no }
 		is_bankrupt = no
-		NOT = { war_with = FROM }
+		has_any_disaster = no
+		diplomatic_reputation = 0
+		stability = 0
+		legitimacy = 100
 	}
+
 	on_accept = {
-		add_prestige = 2
+		add_prestige = 10
+		add_absolutism = 5
 		create_subject = {
-			subject_type = socii_subject
+			subject_type = sukkal_vassal
 			subject = FROM
 		}
 	}
@@ -106,27 +108,11 @@ ask_for_socii_subject = {
 			multiply_variable = { which = ai_value value = 6 }
 		}
 		add_entry = {
-			name = DIFFERENT_RELIGION
-			limit = { NOT = { religion = FROM } }
-			export_to_variable = {
-				which = ai_value
-				value = -10
-			}
-		}
-		add_entry = {
-			name = DIFFERENT_CULTURE_GROUP
-			limit = { NOT = { culture_group = FROM } }
-			export_to_variable = {
-				which = ai_value
-				value = -10
-			}
-		}
-		add_entry = {
 			name = BASE_VALUE_CUSTOM
 			limit = { FROM = { ai = yes } }
 			export_to_variable = {
 				which = ai_value
-				value = -15
+				value = -10
 			}
 		}
 	}
@@ -140,7 +126,7 @@ ask_for_socii_subject = {
 		}
 		reverse_has_opinion = {
 			who = FROM
-			value = 150
+			value = 100
 		}
 		stability = 1
 		army_size = 10
@@ -149,16 +135,16 @@ ask_for_socii_subject = {
 	}
 }
 
-#Frees Socii
-remove_socii_subject = {
+#Frees Sukkal
+remove_sukkal_subject = {
 	category = influence
 	alert_index = 41
-	alert_tooltip = remove_socii_subject_alert_tooltip.1
+	alert_tooltip = remove_sukkal_subject_alert_tooltip.1
 	
 	require_acceptance = no
 	is_visible = {
 		FROM = {
-			is_subject_of_type = socii_subject
+			is_subject_of_type = sukkal_vassal
 			is_subject_of = ROOT
 		}
 	}
@@ -166,7 +152,7 @@ remove_socii_subject = {
 		is_at_war = no
 		has_any_disaster = no
 		FROM = {
-			is_subject_of_type = socii_subject
+			is_subject_of_type = sukkal_vassal
 			is_subject_of = ROOT
 		}
 	}
@@ -174,21 +160,11 @@ remove_socii_subject = {
 		FROM = {
 			grant_independence = yes
 			add_truce_with = ROOT
-			add_country_modifier = {
-				name = recently_removed_socii
-				duration = 7300
-			}
 		}
-		add_prestige = -5
-		add_mil_power = -20
+		add_stability = -1
 	}
 	
 	ai_will_do = {
-		FROM = {
-			OR = {
-				total_development = ROOT
-				liberty_desire = 80
-			}
-		}
+		always = no
 	}
 }
