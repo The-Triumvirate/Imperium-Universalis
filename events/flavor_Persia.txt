@@ -94,7 +94,6 @@ country_event = {
 		is_year = 170
 		NOT = { is_year = 190 }
 		NOT =  { started_in = 198.1.1 }
-		has_heir = no 
 		has_regency = no 
 	}
 
@@ -112,6 +111,10 @@ country_event = {
 	
 	option = {
 		name = "persia.6.a"
+		if = {
+			limit = { has_heir = yes }
+			kill_heir = { allow_new_heir = no }
+		}
 		define_heir = {
 			male = yes
 			name = "Kouroush"
@@ -693,18 +696,25 @@ country_event = {
 }
 
 ########################################################################################
-# Persia takes over Media
+# Persia takes over Elam
 ########################################################################################
 country_event = {
 	id = persia.16
 	title = "persia.16.t"
 	desc = "persia.16.d"
-	picture = crucify
+	picture = elamite_soldiers
 	fire_only_once = yes
 	major = yes
 	
 	trigger = {
-		always = no
+		TAG = PSE
+		has_global_flag = allowed_rise_media_persia_flag
+		has_country_flag = persian_empire_flag
+		NOT = { started_in = 195.1.1 }
+		is_year = 214
+		adm = 5
+		dip = 5
+		mil = 5
 	}
 	
 	mean_time_to_happen = {
@@ -714,21 +724,122 @@ country_event = {
 	option = {
 		name = "persia.16.a"
 		custom_tooltip = persia.ct.1
+		add_treasury = 2000
 		hidden_effect = {
-			inherit = MDI
-			if = {
+			every_country = {
 				limit = {
-					exists = SAG
-					SAG = { ai = yes }
+					capital_scope = {
+						OR = {
+							superregion = mesopotamia_superregion
+							superregion = iran_superregion
+						}
+					}
+					OR = {
+						culture_group = elamite_group
+						culture_group = zargos_group
+					}
 				}
-				inherit = SAG
+				every_subject_country = {
+					kill_all_units_effect = yes
+					PSE = { inherit = PREV }
+				}
+				kill_all_units_effect = yes
+				PSE = { inherit = PREV }
 			}
-			every_subject_country = {
+		}
+	}
+}
+
+########################################################################################
+# Persia takes over Babylonia
+########################################################################################
+country_event = {
+	id = persia.17
+	title = "persia.17.t"
+	desc = "persia.17.d"
+	picture = elamite_soldiers
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = PSE
+		has_global_flag = allowed_rise_media_persia_flag
+		has_country_flag = persian_empire_flag
+		NOT = { started_in = 195.1.1 }
+		is_year = 215
+		adm = 5
+		dip = 5
+		mil = 5
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "persia.16.a"
+		custom_tooltip = persia.ct.2
+		add_treasury = 6000
+		hidden_effect = {
+			every_country = {
 				limit = {
-					NOT = { is_subject_of_type = tributary_state }
+					capital_scope = { superregion = mesopotamia_superregion }
+					culture_group = akkadian_group
 				}
-				ROOT = { inherit = PREV }
+				every_subject_country = {
+					kill_all_units_effect = yes
+					PSE = { inherit = PREV }
+				}
+				kill_all_units_effect = yes
+				PSE = { inherit = PREV }
 			}
+		}
+	}
+}
+
+########################################################################################
+# Persia takes over Lydia
+########################################################################################
+country_event = {
+	id = persia.18
+	title = "persia.18.t"
+	desc = "persia.18.d"
+	picture = battle
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = PSE
+		has_global_flag = allowed_rise_media_persia_flag
+		has_country_flag = persian_empire_flag
+		NOT = { started_in = 195.1.1 }
+		is_year = 208
+		adm = 5
+		dip = 5
+		mil = 5
+		LYD = {
+			exists = yes
+			is_neighbor_of = PSE
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "persia.16.a"
+		custom_tooltip = persia.ct.3
+		add_treasury = 5000
+		hidden_effect = {
+			LYD = {
+				every_subject_country = {
+					kill_all_units_effect = yes
+					PSE = { inherit = PREV }
+				}
+				kill_all_units_effect = yes
+			}
+			inherit = LYD
 		}
 	}
 }
