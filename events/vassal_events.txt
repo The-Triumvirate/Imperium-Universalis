@@ -381,8 +381,8 @@ country_event = {
 ########################################################################################
 country_event = {
 	id = subject_event.10
-	title = "subject_event.1.t"
-	desc = "subject_event.1.d"
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
 	picture = deligation
 	hidden = yes
 	is_triggered_only = yes
@@ -391,13 +391,57 @@ country_event = {
 	}
 	
 	option = {
-		name = "subject_event.1.a"
+		name = "subject_event.6.a"
 		every_owned_province = {
 			limit = { previous_owner = FROM }
 			add_local_autonomy = 20
 			add_named_unrest = {
 				name = recently_annexed_subject
 				value = 4
+			}
+		}
+	}
+}
+
+########################################################################################
+# removes phoenician colony subjects
+########################################################################################
+country_event = {
+	id = subject_event.10
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		NOT = { primary_culture = phoenician }
+		NOT = { primary_culture = punic }
+		NOT = { primary_culture = ibero_phoenician }
+		NOT = { primary_culture = sardo_phoenician }
+		any_subject_country = {
+			NOT = { same_continent = ROOT }
+			is_subject_of_type = phoenician_colony_subject
+		}
+	}
+	
+	option = {
+		name = "subject_event.6.a"
+		every_subject_country = {
+			if = {
+				limit = {
+					NOT = { same_continent = ROOT }
+					is_subject_of_type = phoenician_colony_subject
+				}
+				grant_independence = yes
+			}
+			else_if = {
+				limit = { is_subject_of_type = phoenician_colony_subject }
+				ROOT = {
+					create_subject = {
+						subject_type = vassal
+						subject = PREV
+					}
+				}
 			}
 		}
 	}
