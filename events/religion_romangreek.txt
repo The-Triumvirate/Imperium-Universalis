@@ -12,38 +12,45 @@ country_event = {
 	is_triggered_only = yes
 
 	trigger = {
-		
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
+			religion = roman_religion
+			religion = greek_religion
 		}
-		
+		NOT = { any_owned_province = { has_province_modifier = boars } }
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	# kill the boars
 	option = {
 		name = "religion_romangreek.1.a"
-			add_prestige = -5
-			add_patriarch_authority = -0.03
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				prestige = 30
+			}
+		}
+		add_prestige = -5
+		add_patriarch_authority = -0.03
 	}
 	# a sign of the gods
 	option = {
 		name = "religion_romangreek.1.b"
-			add_prestige = 5
-			random_owned_province = {
-				add_province_modifier = {
-					name = "boars"
-					duration = 1095
-				}
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				NOT = { prestige = 10 }
 			}
-			add_patriarch_authority = 0.03
-				
+		}
+		add_prestige = 5
+		random_owned_province = {
+			add_province_modifier = {
+				name = "boars"
+				duration = 1095
+			}
+		}
+		add_patriarch_authority = 0.03
 	}
-
 }
 ########################################################################################
 # Young Oracle
@@ -58,47 +65,50 @@ country_event = {
 	trigger = {
 		num_of_cities = 3
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
+			religion = roman_religion
+			religion = greek_religion
 		}
-		
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
+		NOT = {
+			any_owned_province = {
+				OR = {
+					has_province_modifier = oracle_removed
+					has_province_modifier = local_oracle
+				}
+			}
+		}
 	}
 	# to the capital
 	option = {
 		name = "religion_romangreek.2.a"
-			add_patriarch_authority = 0.025
-			define_advisor = {
-				type = oracle
-				skill = 1
-				discount = yes
-				female = yes
+		ai_chance = { factor = 50}
+		add_patriarch_authority = 0.025
+		define_advisor = {
+			type = oracle
+			skill = 1
+			discount = yes
+			female = yes
+		}
+		random_owned_province = {
+			limit = { is_capital = no }
+			add_province_modifier = {
+				name = "oracle_removed"
+				duration = 1825
 			}
-			random_owned_province = {
-				limit = { is_capital = no }
-				add_province_modifier = {
-					name = "oracle_removed"
-					duration = 1825
-				}
-			}
+		}
 	}
 	# let her in peace
 	option = {
 		name = "religion_romangreek.2.b"
-			add_patriarch_authority = -0.025
-			random_owned_province = {
-				limit = { is_capital = no }
-				add_province_modifier = {
-					name = "local_oracle"
-					duration = 1825
-				}
+		ai_chance = { factor = 50}
+		add_patriarch_authority = -0.025
+		random_owned_province = {
+			limit = { is_capital = no }
+			add_province_modifier = {
+				name = "local_oracle"
+				duration = 1825
 			}
+		}
 	}
-
 }
 ########################################################################################
 # festival of artemis
@@ -112,13 +122,12 @@ country_event = {
 	trigger = {
 		num_of_cities = 3
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
-		religion = etruscan_religion
+			religion = roman_religion
+			religion = greek_religion
+			religion = etruscan_religion
 		}
-		
+		NOT = { has_country_modifier = festival_of_artemis }
 	}
-
 	desc = {
 		trigger = { religion = greek_religion }
 		desc = "religion_romangreek.3.d1"
@@ -131,16 +140,17 @@ country_event = {
 		trigger = { religion = etruscan_religion }
 		desc = "religion_romangreek.3.d3"
 	}
-
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
 	# greek
 	option = {
 		trigger = { religion = greek_religion }
 		name = "religion_romangreek.3.a"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_artemis
 			duration = 365
@@ -153,6 +163,13 @@ country_event = {
 	option = {
 		trigger = { religion = roman_religion }
 		name = "religion_romangreek.3.b"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_artemis
 			duration = 365
@@ -165,6 +182,13 @@ country_event = {
 	option = {
 		trigger = { religion = etruscan_religion }
 		name = "religion_romangreek.3.c"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_artemis
 			duration = 365
@@ -176,7 +200,14 @@ country_event = {
 	# to expansive
 	option = {
 		name = "religion_romangreek.3.e"
-			add_prestige = -5
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.05 }
+			}
+		}
+		add_prestige = -5
 		add_patriarch_authority = -0.03
 	}
 
@@ -193,11 +224,11 @@ country_event = {
 	trigger = {
 		num_of_cities = 3
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
-		religion = etruscan_religion
+			religion = roman_religion
+			religion = greek_religion
+			religion = etruscan_religion
 		}
-		
+		NOT = { has_country_modifier = festival_of_zeus }
 	}
 	
 	desc = {
@@ -212,54 +243,74 @@ country_event = {
 		trigger = { religion = etruscan_religion }
 		desc = "religion_romangreek.4.d3"
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	# greek
 	option = {
 		trigger = { religion = greek_religion }
 		name = "religion_romangreek.4.a"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_zeus
 			duration = 365
 		}
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
-		
 	}
 	# roman
 	option = {
 		trigger = { religion = roman_religion }
 		name = "religion_romangreek.4.b"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_zeus
 			duration = 365
 		}
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
-		
 	}
 	# etruscan
 	option = {
 		trigger = { religion = etruscan_religion }
 		name = "religion_romangreek.4.c"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_zeus
 			duration = 365
 		}
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
-		
 	}
 	# to expansive
 	option = {
 		name = "religion_romangreek.4.e"
-			add_prestige = -5
-			add_patriarch_authority = -0.03
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.05 }
+			}
+		}
+		add_prestige = -5
+		add_patriarch_authority = -0.03
 	}
-
 }
 
 ########################################################################################
@@ -275,11 +326,11 @@ country_event = {
 		num_of_cities = 3
 		num_of_ports = 1
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
-		religion = etruscan_religion
+			religion = roman_religion
+			religion = greek_religion
+			religion = etruscan_religion
 		}
-		
+		NOT = { has_country_modifier = festival_of_poseidon }
 	}
 	desc = {
 		trigger = { religion = greek_religion }
@@ -293,39 +344,54 @@ country_event = {
 		trigger = { religion = etruscan_religion }
 		desc = "religion_romangreek.5.d3"
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	# greek
 	option = {
 		trigger = { religion = greek_religion }
 		name = "religion_romangreek.5.a"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_poseidon
 			duration = 365
 		}
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
-		
 	}
 	# roman
 	option = {
 		trigger = { religion = roman_religion }
 		name = "religion_romangreek.5.b"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_poseidon
 			duration = 365
 		}
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
-		
 	}
 	# etruscan
 	option = {
 		trigger = { religion = etruscan_religion }
 		name = "religion_romangreek.5.c"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_country_modifier = {
 			name = festival_of_poseidon
 			duration = 365
@@ -337,10 +403,16 @@ country_event = {
 	# to expansive
 	option = {
 		name = "religion_romangreek.5.e"
-			add_prestige = -5
-			add_patriarch_authority = -0.03
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.05 }
+			}
+		}
+		add_prestige = -5
+		add_patriarch_authority = -0.03
 	}
-
 }
 
 ########################################################################################
@@ -355,31 +427,34 @@ country_event = {
 
 	trigger = {
 		uses_patriarch_authority = yes
-			NOT = { religion = christian }
-			NOT = { religion = jain }
-			NOT = { religion = buddhism }
-		
+		NOT = { patriarch_authority = 0.8 }
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	# yes
 	option = {
 		name = "religion_romangreek.6.a"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.08
+			}
+		}
 		add_years_of_income = -0.02
-		
 		add_patriarch_authority = 0.03
 	}
 	# no
 	option = {
-		trigger = { religion = roman_religion }
 		name = "religion_romangreek.6.b"
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.05 }
+			}
+		}
 		add_patriarch_authority = -0.03
 	}
-
-
 }
 
 ########################################################################################
@@ -394,12 +469,11 @@ country_event = {
 	trigger = {
 		num_of_cities = 3
 		OR = {
-		religion = roman_religion
-		religion = greek_religion
+			religion = roman_religion
+			religion = greek_religion
 		}
-		
 	}
-	
+
 	desc = {
 		trigger = { religion = greek_religion }
 		desc = "religion_romangreek.7.d1"
@@ -408,25 +482,33 @@ country_event = {
 		trigger = { religion = roman_religion }
 		desc = "religion_romangreek.7.d2"
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	# yes
 	option = {
-			trigger = { religion = greek_religion }
-			name = "religion_romangreek.7.a" 
-			
+		trigger = { religion = greek_religion }
+		name = "religion_romangreek.7.a"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_army_tradition = 5
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
 		
 	}
 	option = {
-			trigger = { religion = roman_religion }
-			name = "religion_romangreek.7.b" 
-			
+		trigger = { religion = roman_religion }
+		name = "religion_romangreek.7.b"
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 2
+				years_of_income = 0.1
+			}
+		}
 		add_army_tradition = 5
 		add_years_of_income = -0.03
 		add_patriarch_authority = 0.03
@@ -435,10 +517,16 @@ country_event = {
 	# to expansive
 	option = {
 		name = "religion_romangreek.4.e"
-			add_prestige = -5
-			add_patriarch_authority = -0.03
+		ai_chance = {
+			factor = 45
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.05 }
+			}
+		}
+		add_prestige = -5
+		add_patriarch_authority = -0.03
 	}
-
 }
 
 ########################################################################################
@@ -457,31 +545,39 @@ country_event = {
 			primary_culture = piceni
 			primary_culture = samnitic
 		}
-		any_owned_province = { has_owner_culture = yes }
+		any_owned_province = {
+			has_owner_culture = yes
+			NOT = { has_province_modifier = sacred_spring_happened }
+		}
 		is_tribal = yes
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	option = {
-			name = "religion_romangreek.8.a" 
-			random_owned_province = {
-				limit = {	has_owner_culture = yes }
-				owner = { add_patriarch_authority = 0.05 }
-				add_base_manpower = 1
-				change_variable = { PS_rur_evtu = 1 }
-				add_province_modifier = {
-					name = "sacred_spring_happened"
-					duration = 1825
-				}
+		name = "religion_romangreek.8.a"
+		ai_chance = {
+			factor = 90
+		}
+		random_owned_province = {
+			limit = {
+				has_owner_culture = yes
+				NOT = { has_province_modifier = sacred_spring_happened }
 			}
-	}
-	option = {
-			name = "religion_romangreek.8.b" 
-			add_patriarch_authority = -0.03
-			add_prestige = -3
+			owner = { add_patriarch_authority = 0.05 }
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }
+			add_province_modifier = {
+				name = "sacred_spring_happened"
+				duration = 1825
+			}
+		}
 	}
 
+	option = {
+		name = "religion_romangreek.8.b"
+		ai_chance = {
+			factor = 10
+		}
+		add_patriarch_authority = -0.03
+		add_prestige = -3
+	}
 }
