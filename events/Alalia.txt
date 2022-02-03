@@ -542,29 +542,10 @@ country_event = {
 	}
 
 	after = {
-		random_country = {
-			if = {
-				limit = { TAG = I16 }
-				country_event = {
-					id = alalia.9
-					days = 7
-				}
-			}
-			else_if = {
-				limit = {
-					culture_group = hellenic
-					capital_scope = {
-						OR = {
-							superregion = italia_superregion
-							superregion = hispania_superregion
-							superregion = celtica_superregion
-						}
-					}
-				}
-				country_event = {
-					id = alalia.9
-					days = 10
-				}
+		5654 = {
+			province_event = {
+				id = alalia.9
+				days = 7
 			}
 		}
 	}
@@ -657,29 +638,125 @@ country_event = {
 }
 
 ########################################################################################
-# Alalian refugees
+# Alalian refugees in Elea
 ########################################################################################
-country_event = {
+province_event = {
 	id = alalia.9
 	title = "alalia.9.t"
 	desc = "alalia.9.d"
 	picture = plebs
 	fire_only_once = yes
 	is_triggered_only = yes
+	major = yes
+	goto = 5654
 	
 	trigger = {
-		culture_group = hellenic
+		province_id = 5654
+	}
+
+	immediate = {
+		hidden_effect = {
+			5654 = {
+				add_core = I16
+				change_culture = italiote
+				change_religion = greek_religion
+				add_base_tax = 1
+				add_base_production = 2
+				add_base_manpower = -1
+				change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtu = 2 }	change_variable = { PS_upp_evtu = 1 }
+			}
+		}
 	}
 
 	option = {
 		name = "alalia.9.a"
-		ai_chance = { factor = 90 }
-		capital_scope = { add_base_production = 1 }
+		ai_chance = { factor = 99 }
+		remove_core = ROOT
+		owner = {
+			release = I16
+			add_truce_with = I16
+			add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_native
+			}
+			reverse_add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_colony
+			}
+			if = {
+				limit = { culture_group = hellenic }
+				create_alliance = I16
+			}
+		}
+		hidden_effect = {
+			I16 = {
+				every_neighbor_country = { add_truce_with = PREV }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = republic
+				add_government_reform = greek_polis_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+		}
 	}
 
 	option = {
 		name = "alalia.9.b"
-		ai_chance = { factor = 10 }
-		add_prestige = -4
+		ai_chance = { factor = 1 }
+		spawn_rebels = {
+			size = 2
+			type = nationalist_rebels
+		}
+		add_named_unrest = {
+			name = greek_colonists_oppressed
+			value = 5
+		}
+		add_nationalism	= 20
+	}
+
+	#Player only
+	option = {
+		name = "alalia.9.c"
+		trigger = { owner = { ai = no } }
+		remove_core = ROOT
+		owner = {
+			release = I16
+			add_truce_with = I16
+			add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_native
+			}
+			reverse_add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_colony
+			}
+			switch_tag = I16
+			if = {
+				limit = { culture_group = hellenic }
+				create_alliance = I16
+			}
+		}
+		hidden_effect = {
+			I16 = {
+				every_neighbor_country = { add_truce_with = PREV }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = republic
+				add_government_reform = greek_polis_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+		}
 	}
 }
