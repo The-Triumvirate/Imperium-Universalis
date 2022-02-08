@@ -274,34 +274,50 @@ province_event = {
 			culture = byeonhan
 			culture = mumun
 		}
-		any_neighbor_province = {
-			culture_group = korean_group
-		}
-		superregion = korea_superregion
-		is_island = no
-		if = {
-			limit = {
-				owner = { culture_group = japonic_group }
+		any_neighbor_province = { culture_group = korean_group }
+		NOT = {
+			owner = {
+				OR = {
+					TAG = GYA
+					TAG = KO9
+				}
 			}
+		}
+		has_global_flag = korean_culture_spread_south_flag
+		OR = {
+			region = mahan_region
+			region = dongye_region
+			region = lelang_zhenfan_region
+			region = gojoseon_region
+			#Byeonhan
+			area = sollim_paek_area
+			area = hyesong_area
+			area = buan_area
+			#Jinhan
+			area = kamme_baeki_area
+			area = jinhan_area
+			area = nannan_area
+			area = saro_area
+			area = soyabol_area
+			area = silla_area
+		}
+		if = {
+			limit = { owner = { culture_group = japonic_group } }
 			owner = {
 				government = tribal
 				government = native
 			}
 		}
 		if = {
-			limit = {
-				owner = { culture_group = korean_group }
-			}
-			owner = {
-				has_any_disaster = no
-			}
+			limit = { owner = { culture_group = korean_group } }
+			owner = { has_any_disaster = no }
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 1200
+		months = 600
 		modifier = {
-			factor = 1.1
+			factor = 1.25
 			owner = {
 				culture_group = japonic_group
 				absolutism = 20
@@ -385,6 +401,7 @@ country_event = {
 			primary_culture = byeonhan
 			primary_culture = mumun
 		}
+		has_global_flag = korean_culture_spread_south_flag
 		capital_scope = {
 			is_island = no
 			culture_group = korean_group
@@ -406,13 +423,7 @@ country_event = {
 		name = "korean.301.a"
 		ai_chance = { factor = 90 }
 		if = {
-			limit = {
-				capital_scope = {
-					OR = {
-						region = mahan_region
-					}
-				}
-			}
+			limit = { capital_scope = { region = mahan_region } }
 			change_primary_culture = mahan
 		}
 		if = {
@@ -432,6 +443,51 @@ country_event = {
 		name = "korean.301.b"
 		ai_chance = { factor = 10 }
 		add_adm_power = -100
+	}
+}
+
+########################################################################################
+# Start of korean culture in the south
+########################################################################################
+country_event = {
+	id = korean.302
+	title = "korean.302.t"
+	desc = "korean.302.d"
+	picture = ritual_feast
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		culture_group = japonic_group
+		is_year = 454
+		NOT = { started_in = 454.1.1 }
+		any_country = {
+			culture_group = korean_group
+			prestige = 1
+			total_development = 40
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			exists = GOJ
+		}
+		modifier = {
+			factor = 0.5
+			any_country = {
+				culture_group = korean_group
+				is_rival = YAN
+			}
+		}
+	}
+
+	option = {
+		name = "korean.302.a"
+		ai_chance = { factor = 90 }
+		custom_tooltip = korean.ct.5
+		hidden_effect = { set_global_flag = korean_culture_spread_south_flag }
 	}
 }
 
@@ -831,9 +887,9 @@ country_event = {
 		NOT = { TAG = GOJ }
 		OR = {
 			primary_culture = jinhan
+			primary_culture = byeonhan
 			primary_culture = mahan
 			primary_culture = puyo_culture
-			primary_culture = gojoseon
 			primary_culture = yemaek
 			primary_culture = okjeo
 			primary_culture = dongye
@@ -871,78 +927,26 @@ country_event = {
 	option = {
 		name = "korean.8.a"
 		ai_chance = { factor = 90 }
-		if = {
-			limit = {
-				OR = {
-					primary_culture = gojoseon
-					primary_culture = puyo_culture
-					primary_culture = yemaek
-					primary_culture = okjeo
-					primary_culture = dongye
-				}
-			}
-			change_primary_culture = goguryeo
-		}
-		if = {
-			limit = {
-				primary_culture = jinhan
-				capital_scope = { region = jinhan_region }
-			}
-			change_primary_culture = sillan
-		}
-		if = {
-			limit = {
-				primary_culture = jinhan
-				OR = {
-					capital_scope = { region = byeonhan_region }
-					TAG = KO9
-					TAG = GYA
-				}
-			}
-			change_primary_culture = gaya
-		}
-		if = {
-			limit = {
-				primary_culture = mahan
-			}
-			change_primary_culture = baekje
+		trigger_switch = {
+			on_trigger = primary_culture
+			puyo_culture = { change_primary_culture = goguryeo }
+			yemaek = { change_primary_culture = goguryeo }
+			okjeo = { change_primary_culture = goguryeo }
+			dongye = { change_primary_culture = goguryeo }
+			jinhan = { change_primary_culture = sillan }
+			byeonhan = { change_primary_culture = gaya }
+			mahan = { change_primary_culture = baekje }
 		}
 		every_owned_province = {
-			if = {
-				limit = {
-					OR = {
-						culture = gojoseon
-						culture = puyo_culture
-						culture = yemaek
-						culture = okjeo
-						culture = dongye
-					}
-				}
-				change_culture = goguryeo
-			}
-			if = {
-				limit = {
-					culture = jinhan
-					region = jinhan_region
-				}
-				change_culture = sillan
-			}
-			if = {
-				limit = {
-					culture = jinhan
-					OR = {
-						region = byeonhan_region
-						owned_by = KO9
-						owned_by = GYA
-					}
-				}
-				change_culture = gaya
-			}
-			if = {
-				limit = {
-					culture = mahan
-				}
-				change_culture = baekje
+			trigger_switch = {
+				on_trigger = culture
+				puyo_culture = { change_culture = goguryeo }
+				yemaek = { change_culture = goguryeo }
+				okjeo = { change_culture = goguryeo }
+				dongye = { change_culture = goguryeo }
+				jinhan = { change_culture = sillan }
+				byeonhan = { change_culture = gaya }
+				mahan = { change_culture = baekje }
 			}
 		}
 		add_adm_tech = 1
@@ -1454,9 +1458,7 @@ country_event = {
 			religion = muism
 		}
 		is_religion_reformed = no
-		capital_scope = {
-			region = mahan_region
-		}
+		capital_scope = { region = mahan_region }
 		is_year = 500
 		NOT = { started_in = 646.1.1 }
 	}
@@ -1561,6 +1563,8 @@ country_event = {
 			religion = shinto
 			religion = legalism
 			religion = taoism
+			religion = confucianism
+			religion = mohism
 			religion = liyuebadao
 			religion = chinese_religion
 		}
