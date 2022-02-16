@@ -1564,18 +1564,18 @@ country_event = {
 country_event = {
 	id = grk_col.28
 	title = "grk_col.28.t"
-	desc = "grk_col.2.d"
+	desc = "grk_col.28.d"
 	picture = alexandria
 	fire_only_once = yes
 	
 	goto = 19
 	
 	trigger = {
-		owns_core_province = 959
 		culture_group = hellenic
+		NOT = { primary_culture = italiote }
+		NOT = { capital_scope = { superregion = italia_superregion } }
 		is_year = 311
-		has_discovered = 19
-		NOT = {	exists = THU }
+		owns = 19
 		NOT = {	exists = SYB }
 		NOT = { started_in = 311.1.1 }
 		NOT = { has_global_flag = blocked_greek_colonization_flag }
@@ -1586,32 +1586,66 @@ country_event = {
 	}
 		
 	option = {
-		name = "grk_col.1.a"
+		name = "grk_col.28.a"
 		ai_chance = { 
 			factor = 99
 		}
-		custom_tooltip = grk_col_ct.1
 		add_prestige = 5
 		hidden_effect = {
 			19 = {
-				add_core = THU
+				add_core = SYB
 				change_culture = italiote
 				change_religion = greek_religion
-				save_event_target_as = greek_colony_province
-				owner = { country_event = { id = grk_col.0 } }
+				add_base_tax = 1
+				add_base_production = 1
+				change_province_name = "Thurioi"
+				rename_capital = "Thurioi"
+				change_variable = { PS_urb_evtu = 1 }	change_variable = { PS_upp_evtu = 1 }
+			}
+		}
+		release = SYB
+		create_alliance = SYB
+		add_historical_friend = SYB
+		SYB = {
+			add_historical_friend = ROOT
+			override_country_name = "THURIOI"
+			hidden_effect = {
+				add_truce_with = ROOT
+				every_neighbor_country = { add_truce_with = PREV }
+				reverse_add_opinion = {
+					who = ROOT
+					modifier = greek_colonisation_allowed_native
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = greek_colonisation_allowed_colony
+				}
+				add_treasury = 50
+				add_manpower = 3
+				change_government = republic
+				add_government_reform = greek_polis_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
 			}
 		}
 	}
 
 	option = {
-		name = "grk_col.1.b"
+		name = "grk_col.28.b"
 		ai_chance = { 
 			factor = 1
 		}
-		add_stability = -1
-		959 = {
-			add_base_production = 1
-			change_variable = { PS_urb_evtu = 1 }
+		19 = {
+			remove_core = SYB
+			add_devastation = 25
+			add_unrest = 5
+			add_base_production = -1
+			add_base_manpower = 1
 		}
 	}
 }
