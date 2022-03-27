@@ -342,6 +342,327 @@ PG_add_river_ports = {
 
 }
 
+PG_winter_rurcap = {
+	if = { 
+		limit = { OR = { 
+			blast_furnace_institution = 100 
+			advanced_hydraulics_institution = 100 
+			owner = { has_reform = steppe_horde_reform }	# Nomads act like if they had the most tech; but can't get pop from buildings
+		} }
+		multiply_variable = { rural_capacity = $tier3$ } 
+	}
+	
+	else_if = { 
+		limit = { OR = { 
+			siege_engineering_institution = 100 
+			cast_iron_institution = 100 
+			owner = { government = tribal }				# Tribals (other than nomads) are like having "some" technology, but 1/2 build effs. 
+		} }
+		multiply_variable = { rural_capacity = $tier2$ }
+	}
+	
+	
+	else = { multiply_variable = { rural_capacity = $tier1$ } }
+
+	
+}
+
+
+PG_terrain_rurcap = {
+	if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = $tier4$ } }
+	else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = $tier3$ } }
+	else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = $tier2$ } }
+	else = { 											multiply_variable = { rural_capacity = $tier1$ } }
+}
+
+PS_terr_max = {
+	set_variable = { which = PS_terrmax which = PS_rur2 } multiply_variable = { PS_terrmax = $max$ }
+
+}
+PG_growth_modify_all = { 
+	multiply_variable = { PG_trb_grow = $trb$ }
+	multiply_variable = { PG_com_grow = $com$ }
+	multiply_variable = { PG_upp_grow = $upp$ }
+}
+PG_growth_add_all = { 
+	change_variable = { PG_trb_grow = $trb$ }
+	change_variable = { PG_com_grow = $com$ }
+	change_variable = { PG_upp_grow = $upp$ }
+}
+
+PG_urban_buildings = {
+
+	trigger_switch = {
+		on_trigger = has_building
+		small_harbor = { 	change_variable = { urban_capacity = 0.1 } }
+		big_harbor = { 		change_variable = { urban_capacity = 0.3 } }
+		harbor_district = { change_variable = { urban_capacity = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_shipyard = { change_variable = { urban_capacity = 0.3 } }
+		big_shipyard = { change_variable = { urban_capacity = 0.7 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_market = { 	change_variable = { urban_capacity = 0.1 } }
+		medium_market = { 	change_variable = { urban_capacity = 0.3 } }
+		great_market = { 	change_variable = { urban_capacity = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_army_camp = { 			change_variable = { urban_capacity = 0.2 } }
+		small_military_settlement = { 	change_variable = { urban_capacity = 0.5 } }
+		big_military_settlement = { 	change_variable = { urban_capacity = 1.2 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		gravel_road = { 	change_variable = { urban_capacity = 0.1 } }
+		paved_road = { 		change_variable = { urban_capacity = 0.3 } }
+		imperial_road = { 	change_variable = { urban_capacity = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 			change_variable = { urban_capacity = 0.2 } }
+		small_temple = { 	change_variable = { urban_capacity = 0.5 } }
+		great_temple = { 	change_variable = { urban_capacity = 1.2 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		big_theater = { 	change_variable = { urban_capacity = 0.3 } }
+		great_theater = { 	change_variable = { urban_capacity = 0.6 } }
+		huge_theater = { 	change_variable = { urban_capacity = 1.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		taxman = { 			change_variable = { urban_capacity = 0.2 } }
+		tax_collector = { 	change_variable = { urban_capacity = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { urban_capacity = 0.2 } }
+		government_palace = { 	change_variable = { urban_capacity = 0.4 } }
+		government_district = { change_variable = { urban_capacity = 0.6 } }
+	}
+	trigger_switch = {						# Soldiers live somewhere, don't you think?
+		on_trigger = has_building
+		small_city_walls = { change_variable = { urban_capacity = 0.4 } }
+		large_city_walls = { change_variable = { urban_capacity = 1.0 } }
+		fortress_building = { change_variable = { urban_capacity = 1.8 } }
+		border_garrison = { change_variable = { urban_capacity = 0.2 } }
+	}
+	
+	trigger_switch = {
+		on_trigger = has_building
+		great_library = { 		change_variable = { urban_capacity = 1.5 } }
+		library = { 			change_variable = { urban_capacity = 0.3 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		mathematician_academy = { change_variable = { urban_capacity = 1.0 } }
+		philosophers_academy = { change_variable = { urban_capacity = 1.0 } }
+		military_academy = { 	change_variable = { urban_capacity = 1.0 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		imperial_palace = { 	change_variable = { urban_capacity = 1.0 } }
+		palace_garden = { 		change_variable = { urban_capacity = 0.5 } }
+	}
+
+}
+
+PG_urban_buildings_details = {
+	trigger_switch = {
+		on_trigger = has_building
+		small_harbor = { 	change_variable = { urban_capacity = 0.1 } set_variable = { which = PS_urb_bld1 value = 0.1 } }
+		big_harbor = { 		change_variable = { urban_capacity = 0.3 } set_variable = { which = PS_urb_bld1 value = 0.3 } }
+		harbor_district = { change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld1 value = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_shipyard = { change_variable = { urban_capacity = 0.3 } set_variable = { which = PS_urb_bld2 value = 0.3 } }
+		big_shipyard = { change_variable = { urban_capacity = 0.7 } set_variable = { which = PS_urb_bld2 value = 0.7 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_market = { 	change_variable = { urban_capacity = 0.1 } set_variable = { which = PS_urb_bld3 value = 0.1 } }
+		medium_market = { 	change_variable = { urban_capacity = 0.3 } set_variable = { which = PS_urb_bld3 value = 0.3 } }
+		great_market = { 	change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld3 value = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_army_camp = { 			change_variable = { urban_capacity = 0.2 } set_variable = { which = PS_urb_bld4 value = 0.2 } }
+		small_military_settlement = { 	change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld4 value = 0.5 } }
+		big_military_settlement = { 	change_variable = { urban_capacity = 1.2 } set_variable = { which = PS_urb_bld4 value = 1.2 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		gravel_road = { 	change_variable = { urban_capacity = 0.1 } set_variable = { which = PS_urb_bld5 value = 0.1 } }
+		paved_road = { 		change_variable = { urban_capacity = 0.3 } set_variable = { which = PS_urb_bld5 value = 0.3 } }
+		imperial_road = { 	change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld5 value = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 			change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld6 value = 0.5 } }
+		small_temple = { 	change_variable = { urban_capacity = 1.0 } set_variable = { which = PS_urb_bld6 value = 1.0 } }
+		great_temple = { 	change_variable = { urban_capacity = 2.0 } set_variable = { which = PS_urb_bld6 value = 2.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		big_theater = { 	change_variable = { urban_capacity = 0.3 } set_variable = { which = PS_urb_bld7 value = 0.3 } }
+		great_theater = { 	change_variable = { urban_capacity = 0.6 } set_variable = { which = PS_urb_bld7 value = 0.6 } }
+		huge_theater = { 	change_variable = { urban_capacity = 1.5 } set_variable = { which = PS_urb_bld7 value = 1.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		taxman = { 			change_variable = { urban_capacity = 0.2 } set_variable = { which = PS_urb_bld8 value = 0.2 } }
+		tax_collector = { 	change_variable = { urban_capacity = 0.5 } set_variable = { which = PS_urb_bld8 value = 0.5 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { urban_capacity = 0.4 } set_variable = { which = PS_urb_bld9 value = 0.4 } }
+		government_palace = { 	change_variable = { urban_capacity = 0.8 } set_variable = { which = PS_urb_bld9 value = 0.8 } }
+		government_district = { change_variable = { urban_capacity = 1.5 } set_variable = { which = PS_urb_bld9 value = 1.5 } }
+	}
+	trigger_switch = {	
+		on_trigger = has_building
+		small_city_walls = { change_variable = { urban_capacity = 0.4 } set_variable = { which = PS_urb_bld10 value = 0.4 } }
+		large_city_walls = { change_variable = { urban_capacity = 1.0 } set_variable = { which = PS_urb_bld10 value = 1.0 } }
+		fortress_building = { change_variable = { urban_capacity = 1.8 } set_variable = { which = PS_urb_bld10 value = 1.8 } }
+		border_garrison = { change_variable = { urban_capacity = 0.2 } set_variable = { which = PS_urb_bld10 value = 0.2 } }
+	}
+	
+	trigger_switch = {
+		on_trigger = has_building
+		great_library = { 		change_variable = { urban_capacity = 2.5 } set_variable = { which = PS_urb_bld11 value = 2.5 } }
+		library = { 			change_variable = { urban_capacity = 1.0 } set_variable = { which = PS_urb_bld11 value = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		mathematician_academy = { change_variable = { urban_capacity = 2.0 } set_variable = { which = PS_urb_bld12 value = 2.0 } }
+		philosophers_academy = { change_variable = { urban_capacity = 2.0 } set_variable = { which = PS_urb_bld12 value = 2.0 } }
+		military_academy = { 	change_variable = { urban_capacity = 2.0 } set_variable = { which = PS_urb_bld12 value = 2.0 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		imperial_palace = { 	change_variable = { urban_capacity = 3.0 } set_variable = { which = PS_urb_bld13 value = 3.0 } }
+		palace_garden = { 		change_variable = { urban_capacity = 1.0 } set_variable = { which = PS_urb_bld13 value = 1.0 } }
+	}
+
+}
+
+PG_ruralupper_buildings = {
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { PG_ruralupper = 0.2 } }
+		government_palace = { 	change_variable = { PG_ruralupper = 0.4 } }
+		government_district = { change_variable = { PG_ruralupper = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 			change_variable = { PG_ruralupper = 0.2 } }
+		small_temple = { 	change_variable = { PG_ruralupper = 0.5 } }
+		great_temple = { 	change_variable = { PG_ruralupper = 1.0 } }
+	}
+	
+}
+PG_ruralupper_buildings_detail = {
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { PG_ruralupper = 0.2 } set_variable = { which = PS_rur_upp1 value = 0.2 } }
+		government_palace = { 	change_variable = { PG_ruralupper = 0.4 } set_variable = { which = PS_rur_upp1 value = 0.4 } }
+		government_district = { change_variable = { PG_ruralupper = 1.0 } set_variable = { which = PS_rur_upp1 value = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 			change_variable = { PG_ruralupper = 0.2 } set_variable = { which = PS_rur_upp2 value = 0.2 } }
+		small_temple = { 	change_variable = { PG_ruralupper = 0.5 } set_variable = { which = PS_rur_upp2 value = 0.5 } }
+		great_temple = { 	change_variable = { PG_ruralupper = 1.0 } set_variable = { which = PS_rur_upp2 value = 1.0 } }
+	}
+	
+}
+PG_urbanupper_buildings = {
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { PG_urbanupper = 0.2 } }
+		government_palace = { 	change_variable = { PG_urbanupper = 0.4 } }
+		government_district = { change_variable = { PG_urbanupper = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 				change_variable = { PG_urbanupper = 0.2 } }
+		small_temple = { 		change_variable = { PG_urbanupper = 0.5 } }
+		great_temple = { 		change_variable = { PG_urbanupper = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		great_library = { 		change_variable = { PG_urbanupper = 1.0 } }
+		library = { 			change_variable = { PG_urbanupper = 0.2 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		mathematician_academy = { 	change_variable = { PG_urbanupper = 1.0 } }
+		philosophers_academy = { 	change_variable = { PG_urbanupper = 1.0 } }
+		military_academy = { 		change_variable = { PG_urbanupper = 1.0 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		imperial_palace = { 	change_variable = { PG_urbanupper = 1.0 } }
+		palace_garden = { 		change_variable = { PG_urbanupper = 0.5 } }
+		
+	}
+	
+}
+PG_urbanupper_buildings_detail = {
+	trigger_switch = {
+		on_trigger = has_building
+		big_townhall = { 		change_variable = { PG_urbanupper = 0.2 } set_variable = { which = PS_urb_upp1 value = 0.2 } }
+		government_palace = { 	change_variable = { PG_urbanupper = 0.4 } set_variable = { which = PS_urb_upp1 value = 0.4 } }
+		government_district = { change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp1 value = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 				change_variable = { PG_urbanupper = 0.2 } set_variable = { which = PS_urb_upp2 value = 0.2 } }
+		small_temple = { 		change_variable = { PG_urbanupper = 0.5 } set_variable = { which = PS_urb_upp2 value = 0.5 } }
+		great_temple = { 		change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp2 value = 1.0 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		great_library = { 		change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp3 value = 1.0 } }
+		library = { 			change_variable = { PG_urbanupper = 0.2 } set_variable = { which = PS_urb_upp3 value = 0.2 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		mathematician_academy = { 	change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp4 value = 1.0 } }
+		philosophers_academy = { 	change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp4 value = 1.0 } }
+		military_academy = { 		change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp4 value = 1.0 } }
+		
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		imperial_palace = { 	change_variable = { PG_urbanupper = 1.0 } set_variable = { which = PS_urb_upp5 value = 1.0 } }
+		palace_garden = { 		change_variable = { PG_urbanupper = 0.5 } set_variable = { which = PS_urb_upp5 value = 0.5 } }
+		
+	}
+	
+}
+
+
+PG_urbanupper_capital = {
+	# IMPERIAL CAPITAL
+	if = { 		limit = { is_capital = yes owner = { total_development = 5000 } } change_variable = { PG_urbanupper = 7 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 3500 } } change_variable = { PG_urbanupper = 6 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 2500 } } change_variable = { PG_urbanupper = 5 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 2000 } } change_variable = { PG_urbanupper = 4 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 1500 } } change_variable = { PG_urbanupper = 3 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 1000 } } change_variable = { PG_urbanupper = 2 } }
+	else_if = { limit = { is_capital = yes owner = { total_development = 500 } }  change_variable = { PG_urbanupper = 1.5 } }
+}
 
 PG_update_inforange = {
 	# Set main province's value, and compare
@@ -468,7 +789,7 @@ PG_inland_navalsize = {
 	# calculate
 	export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
 	export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
-	export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
+	export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 } # must match static modifiers
 	change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav } 
 	set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 } 
 	
@@ -497,16 +818,16 @@ PG_riverport_navalsize = {
 	if = { limit = { has_province_modifier = PG_riversize_0.125 } 	remove_province_modifier = PG_riversize_0.125 }
 	
 	# calculate
-		# different from before: buildings also affected
+		# different from before: buildings also affected. These buildings can't exist in-land, so no need to code it
 	set_variable = { which = PG_nav value = 0 }
 	
-	trigger_switch = {
+	trigger_switch = {					# Should be the same as in the common/buildings file
 		on_trigger = has_building
 		small_harbor = { change_variable = { PG_nav = 2 } }
 		big_harbor = { change_variable = { PG_nav = 3 } }
 		harbor_district = { change_variable = { PG_nav = 4 } }
 	}
-	if = { 		limit = { province_has_center_of_trade_of_level = 3 } change_variable = { PG_nav = 5 } }
+	if = { 		limit = { province_has_center_of_trade_of_level = 3 } change_variable = { PG_nav = 5 } }	# Same as in common/cot
 	else_if = { limit = { province_has_center_of_trade_of_level = 2 } change_variable = { PG_nav = 3 } }
 	else_if = { limit = { province_has_center_of_trade_of_level = 1 } change_variable = { PG_nav = 1 } }
 	
@@ -542,7 +863,7 @@ PG_reduce_navalsize = {
 }
 PG_reduce_riversize = {
 	subtract_variable = { which = PG_nav value = $amt$ }
-	add_province_modifier = { name = PG_riversize_$amt$ duration = -1 hidden = yes }
+	add_province_modifier = { name = PG_riversize_$amt$ duration = -1 hidden = yes }	# Different modifier
 
 }
 
