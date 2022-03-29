@@ -4008,7 +4008,7 @@ repairs_planned = { #always
 		has_building = building_ruins
 		
 	}
-
+	
 	modifier = {
 		allowed_num_of_buildings = 1
 	}
@@ -4310,71 +4310,97 @@ manufactory = {
 		trade_goods_size = 0.25
 		local_production_efficiency = 0.1
 	}
+	
+}
+
+manufactory_slave_up = {
+	cost = 10
+	time = 1
+	build_trigger = {
+		#has_building = manufactory				# it needs each of the manufactory buildings. Removed, to allow other sources of slaves
+		check_variable = { SS_slot_free = 1 }
+		owner = { check_variable = { slaves = 10 } }
+	}
+	
+	modifier = {
+		allowed_num_of_buildings = 1	# for itself
+	}
+
+	on_built = {
+		hidden_effect = {
+			# owner: 
+			owner = { subtract_variable = { slaves = 10 } change_variable = { slave_manufactory = 10 } }	# Allocated to separate list
+			# province:
+			change_variable = { slave_manufactory = 10 }
+			subtract_variable = { SS_slot_free = 1 } change_variable = { SS_slot_taken = 1 }	# slot will be either slaves or civilians
+			SS_update_manuf_production = yes
+			remove_building = manufactory_slave_up
+		}
+	}
+	
+	ai_will_do = { factor = 0 }
+}
+manufactory_slave_out = {
+	cost = 10
+	time = 1
+	build_trigger = {
+		#has_building = manufactory	# Technically it could happen without manufactory, so it's better to just limit it by variable
+		check_variable = { slave_manufactory = 1 }	# as long as there is any slave around
+		
+	}
+	
+	modifier = {
+		allowed_num_of_buildings = 1	# for itself
+	}
+
+	on_built = {
+		hidden_effect = {
+			# province:
+			set_variable = { which = slaves which = slave_manufactory } set_variable = { which = slave_manufactory value = 0 }
+			# owner: 
+			owner = { change_variable = { which = slaves which = PREV } }
+			change_variable = { which = SS_slot_free which = SS_slot_taken } 
+			set_variable = { which = SS_slot_taken value = 0 }
+			set_variable = { which = SS_manuf_power value = 0 }
+			set_variable = { which = slaves value = 0 }
+			
+			SS_remove_manuf_modifiers = yes
+			remove_building = manufactory_slave_out
+		}
+	}
+	
+	ai_will_do = { factor = 0 }
 }
 
 # Farming Settlement
 
 farming_settlement = {
     manufactory = {
-	    grain
-		spices
-		fruits
-		olive
-		paper
-		olibanum
-		herbs
-		rice
-		tea_good
-		opium
-		sugar
+	    grain		spices		fruits
+		olive		paper		olibanum
+		herbs		rice		tea_good
+		opium		sugar
+	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
 	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4384,53 +4410,26 @@ winery = {
     manufactory = {
 	    wine
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4443,53 +4442,26 @@ shepherds = {
 		exotic_animals
 		ivory
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4499,53 +4471,26 @@ apiary = {
     manufactory = {
 	    honey
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4557,53 +4502,26 @@ weavers = {
 		silk
 		cotton
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4615,53 +4533,26 @@ fishermen_huts = {
 		amber
 		pearls
 	}
-
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
+	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4671,53 +4562,26 @@ tannery = {
     manufactory = {
 	    fur
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4727,53 +4591,26 @@ salt_gatherers = {
     manufactory = {
 	    salt
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4787,54 +4624,28 @@ miners_camp = {
 		lead
 		jade
 		tin
+		gems
+	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
 	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4844,53 +4655,26 @@ pottery = {
     manufactory = {
 	    ceramic
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4900,53 +4684,26 @@ glassmaker = {
     manufactory = {
 	    glas
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4955,53 +4712,26 @@ tar_pit = {
     manufactory = {
 	    tar_good
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -5011,53 +4741,26 @@ blacksmith = {
     manufactory = {
 	    metalware
 	}
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
 	
 	ai_will_do = {
-		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 5			# more, it is an expensive trade good
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -5075,61 +4778,34 @@ horsebreeder = { #year 265
 	modifier = {
 		cav_to_inf_ratio = 0.005
 	}
-
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
+	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
 # Goldsmith
 
-goldsmith = { #year 280
+goldsmith = { #year 280	
 	manufactory = {
-		gems
+			# nope, not used
 	}
 
 	modifier = {
@@ -5138,50 +4814,17 @@ goldsmith = { #year 280
 
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -5195,53 +4838,26 @@ lumberjack = { #year 250
 	modifier = {
 		naval_forcelimit = 3
 	}
-
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
+	}
+	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -5251,56 +4867,25 @@ dyer = { #year 310
 	manufactory = {
 		dyes
 	}
-
-	modifier = {
-		trade_value = 4
+	on_built = {
+		add_permanent_province_modifier = { name = manf_slave_00 duration = -1 } 
+		hidden_effect = { set_variable = { which = SS_slot_total value = 5 } set_variable = { which = SS_slot_free value = 5 } }
+		
+		# Remember to add the "inmediate allocation" if it is decided, as a country flag
 	}
-
+	
 	ai_will_do = {
 		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
