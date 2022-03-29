@@ -4637,7 +4637,11 @@ country_event = {
 	trigger = {
 		ai = yes
 		is_in_coalition_war = yes
-		NOT = { has_country_modifier = coalition_member }
+		AND = {
+		    NOT = { has_country_modifier = coalition_member_1 }
+		    NOT = { has_country_modifier = coalition_member_2 }
+			NOT = { has_country_modifier = coalition_member_3 }
+		}
 	}
 
 	mean_time_to_happen = {
@@ -4646,9 +4650,58 @@ country_event = {
 
 	option = {
 		name = "new_governments.38.a"
-		add_country_modifier = {
+		if = {
+		    limit = {
+			    any_known_country = {
+			        ai = no
+				    OR = {
+				        has_country_modifier = administrative_stress_modifier_1
+					    num_of_subjects = 2
+				    }
+			    }
+			}
+		    add_country_modifier = {
+			name = coalition_member_1
+			duration = -1
+		    }
+		}
+		else_if = {
+		    limit = {
+			    any_known_country = {
+			    ai = no
+			        OR = {
+                        has_country_modifier = administrative_stress_modifier_3
+                        num_of_subjects = 4
+				        has_country_flag = every_second
+                    }
+                }
+			}
+            add_country_modifier = {
+			name = coalition_member_2
+			duration = -1
+		    }
+		}
+		else_if = {
+		    limit = {
+			    any_known_country = {
+			    ai = no
+			        OR = {
+			            has_country_modifier = administrative_stress_modifier_5
+				        num_of_subjects = 6
+				        has_country_flag = easy_ride
+			        }
+			    }
+			}
+			add_country_modifier = {
+			name = coalition_member_3
+			duration = -1
+		    }
+		}
+		else = { 
+		    add_country_modifier = {
 			name = coalition_member
 			duration = -1
+		    }
 		}
 	}
 }
@@ -4663,7 +4716,12 @@ country_event = {
 	trigger = {
 		ai = yes
 		is_in_coalition_war = no
-		has_country_modifier = coalition_member
+		OR = {
+		    has_country_modifier = coalition_member
+		    has_country_modifier = coalition_member_1
+			has_country_modifier = coalition_member_2
+			has_country_modifier = coalition_member_3
+		}
 	}
 
 	mean_time_to_happen = {
@@ -4673,5 +4731,8 @@ country_event = {
 	option = {
 		name = "new_governments.39.a"
 		remove_country_modifier = coalition_member
+		remove_country_modifier = coalition_member_1
+		remove_country_modifier = coalition_member_2
+		remove_country_modifier = coalition_member_3
 	}
 }
