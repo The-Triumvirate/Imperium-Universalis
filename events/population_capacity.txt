@@ -2689,8 +2689,8 @@ province_event = {				# PROVINCE INTERACTION MENU
 	#}
 	immediate = {
 		hidden_effect = {
-			export_to_variable = { which = PS_rur_now value = base_manpower }
-			export_to_variable = { which = PS_urb_now value = base_production }
+			export_to_variable = { which = PS_trb_now value = base_manpower }
+			export_to_variable = { which = PS_com_now value = base_production }
 			export_to_variable = { which = PS_upp_now value = base_tax }
 			save_event_target_as = PGS_provtarget
 		}
@@ -2698,7 +2698,7 @@ province_event = {				# PROVINCE INTERACTION MENU
 	
 	option = {
 		name = "population_capacity.7.1"	# Show only detailed capacities in this province
-		province_event = { id = population_capacity.6 }
+		province_event = { id = population_capacity.24 }
 		
 	}
 	option = {
@@ -3032,10 +3032,9 @@ province_event = {
 		
 		
 		# 6. MODIFIER %
-		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance  }	# as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
-		
 		
 		
 		# EFFECT OF INSTITUTIONS
@@ -3271,9 +3270,9 @@ province_event = {
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0 } }	# reset
 		
 		
-		# MODIFIERS that apply to each growth
-		# Using scripted effects to compress the code. See common/scripted effects/popgrowth effects
-		
+		# MODIFIERS, province level
+		# Now using the local modifiers local_development_cost. It works in a MULTIPLICATIVELY way and affects growth the more extreme it is
+			# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type. 
 		trigger_switch = {
 			on_trigger = devastation
 			75 = { PG_growth_modify_all = { trb = 0.20 com = 0.10 upp = 0.10 } }
@@ -3288,7 +3287,6 @@ province_event = {
 			50 = { PG_growth_modify_all = { trb = 1.10 com = 1.10 upp = 1.10 } }
 			25 = { PG_growth_modify_all = { trb = 1.05 com = 1.05 upp = 1.05 } }
 		}
-		
 		# Monsoons reduces capacity but increases growth
 		trigger_switch = {
 			on_trigger = has_province_flag
@@ -3296,13 +3294,22 @@ province_event = {
 			flag_normal_monsoon = { multiply_variable = { PG_trb_grow = 1.15 } }
 			flag_mild_monsoon = {   multiply_variable = { PG_trb_grow = 1.10 } }
 		}
-		# Weather effects
-		if = { 		limit = { has_province_modifier = pg_food_surplus }  multiply_variable = { PG_trb_grow = 1.30 } }
-		else_if = { limit = { has_province_modifier = pg_food_shortage } multiply_variable = { PG_trb_grow = 0.80 } }
 		
-		if = { 		limit = { owner = { stability = 3 } } PG_growth_add_all = { trb = 0.20 com = 0.20 upp = 0.20 } }
-		else_if = { limit = { owner = { stability = 2 } } PG_growth_add_all = { trb = 0.10 com = 0.10 upp = 0.10 } }
-		else_if = { limit = { owner = { stability = 1 } } PG_growth_add_all = { trb = 0.05 com = 0.05 upp = 0.05 } }
+		export_to_variable = { which = PG_grow_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		change_variable = { PG_grow_extra = 1 }														# now 1.2, will modify things
+		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }						
+		multiply_variable = { which = PG_com_grow which = PG_grow_extra }						
+		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }						
+		
+		
+		# MODIFIERS, country level
+		# Country modifiers affect ADDITIVELY
+		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner } 
+		
+		change_variable = { which = PG_trb_grow which = PG_grow_country }
+		change_variable = { which = PG_com_grow which = PG_grow_country }
+		change_variable = { which = PG_upp_grow which = PG_grow_country }
+		
 		
 		
 		
@@ -3516,7 +3523,7 @@ province_event = {
 		set_variable = { which = PS_rur5 which = rural_capacity }
 		
 		# 6. MODIFIER %
-		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance } # as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
 		set_variable = { which = PS_rur6 which = rural_capacity }
@@ -3728,37 +3735,6 @@ province_event = {
 		#	set_variable = { which = PG_com_cap which = PG_com_old }	set_variable = { which = PG_com_old value = 0 }
 		#}
 		
-		##
-		# DETAILED: SHOW EACH VARIATION
-		## Must be from higherst to lowest, or they will not be there for the next one
-		subtract_variable = { which = PS_rur6 which = PS_rur5 }
-		subtract_variable = { which = PS_rur5 which = PS_rur4 }
-		subtract_variable = { which = PS_rur4 which = PS_rur3 }
-		subtract_variable = { which = PS_rur3 which = PS_rur2 }
-		subtract_variable = { which = PS_terrmax which = PS_rur2 }
-		subtract_variable = { which = PS_rur2 which = PS_rur1 }
-		subtract_variable = { which = PS_rur1 which = prov_size }
-		
-		subtract_variable = { which = PG_fisher3 which = PG_fisher2 }
-		subtract_variable = { which = PG_fisher2 which = PG_fisher1 }
-		
-		subtract_variable = { which = PS_urb5 which = PS_urb4 }
-		subtract_variable = { which = PS_urb4 which = PS_urb3 }
-		subtract_variable = { which = PS_urb3 which = PS_urb2 }
-		subtract_variable = { which = PS_urb2 which = PS_urb1 }
-		divide_variable = { PS_urb2 = 100 } 		multiply_variable = { PS_urb2 = 100 }
-		divide_variable = { PS_trade_power = 100 } 	multiply_variable = { PS_trade_power = 100 }
-		
-		subtract_variable = { which = PS_urbanupper3 which = PS_urbanupper2 }
-		subtract_variable = { which = PS_urbanupper2 which = PS_urbanupper1 }
-		
-		subtract_variable = { which = PS_urbtransfer3 which = PS_urbtransfer2 } multiply_variable = { PS_urbtransfer3 = 100 }
-		subtract_variable = { which = PS_urbtransfer2 which = PS_urbtransfer1 } multiply_variable = { PS_urbtransfer2 = 100 }
-		subtract_variable = { which = PG_upptransfer2 which = PG_upptransfer1 } multiply_variable = { PG_upptransfer2 = 100 }
-		multiply_variable = { PG_upptransfer1 = 100 }	multiply_variable = { PS_urbtransfer1 = 100 }
-				
-		set_variable = { which = PS_devextra which = PG_dev_extra } 
-		subtract_variable = { PS_devextra = 1 } multiply_variable = { PS_devextra = 100 }
 		
 		
 		######################
@@ -3787,8 +3763,15 @@ province_event = {
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0 } }	# reset
 		
 		
-		# MODIFIERS that apply to each growth
-		# Using scripted effects to compress the code. See common/scripted effects/popgrowth effects
+		# MODIFIERS, province level
+		# Now using the local modifiers local_development_cost. It works in a MULTIPLICATIVELY way and affects growth the more extreme it is
+			# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type. 
+			# If it is left inside the modifier, it will be linear. It is better having it non-linear (very bad at first, not so after)
+			
+			# Let's track growth components
+			set_variable = { which = PS_trbgrw_0 which = PG_trb_grow }
+			set_variable = { which = PS_comgrw_0 which = PG_com_grow }
+			set_variable = { which = PS_uppgrw_0 which = PG_upp_grow }
 		
 		trigger_switch = {
 			on_trigger = devastation
@@ -3802,9 +3785,12 @@ province_event = {
 			on_trigger = prosperity
 			99 = { PG_growth_modify_all = { trb = 1.10 com = 1.15 upp = 1.20 } }
 			50 = { PG_growth_modify_all = { trb = 1.10 com = 1.10 upp = 1.10 } }
-			25 = { PG_growth_modify_all = { trb = 1.05 com = 1.05 upp = 1.05 } }
+			25 = { PG_growth_modify_all = { trb = 1.10 com = 1.05 upp = 1.05 } }
 		}
-		
+			set_variable = { which = PS_trbgrw_1 which = PG_trb_grow }
+			set_variable = { which = PS_comgrw_1 which = PG_com_grow }
+			set_variable = { which = PS_uppgrw_1 which = PG_upp_grow }
+			
 		# Monsoons reduces capacity but increases growth
 		trigger_switch = {
 			on_trigger = has_province_flag
@@ -3812,14 +3798,27 @@ province_event = {
 			flag_normal_monsoon = { multiply_variable = { PG_trb_grow = 1.15 } }
 			flag_mild_monsoon = {   multiply_variable = { PG_trb_grow = 1.10 } }
 		}
-		# Weather effects
-		if = { 		limit = { has_province_modifier = pg_food_surplus }  multiply_variable = { PG_trb_grow = 1.30 } }
-		else_if = { limit = { has_province_modifier = pg_food_shortage } multiply_variable = { PG_trb_grow = 0.80 } }
+			set_variable = { which = PS_trbgrw_2 which = PG_trb_grow }
+			
+		export_to_variable = { which = PG_grow_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		change_variable = { PG_grow_extra = 1 }														# now 1.2, will modify things
+		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }						
+		multiply_variable = { which = PG_com_grow which = PG_grow_extra }						
+		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }						
+			set_variable = { which = PS_trbgrw_3 which = PG_trb_grow }
+			set_variable = { which = PS_comgrw_3 which = PG_com_grow }
+			set_variable = { which = PS_uppgrw_3 which = PG_upp_grow }
 		
-		if = { 		limit = { owner = { stability = 3 } } PG_growth_add_all = { trb = 0.20 com = 0.20 upp = 0.20 } }
-		else_if = { limit = { owner = { stability = 2 } } PG_growth_add_all = { trb = 0.10 com = 0.10 upp = 0.10 } }
-		else_if = { limit = { owner = { stability = 1 } } PG_growth_add_all = { trb = 0.05 com = 0.05 upp = 0.05 } }
+		# MODIFIERS, country level
+		# Country modifiers affect ADDITIVELY
+		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner } 
 		
+		change_variable = { which = PG_trb_grow which = PG_grow_country }
+		change_variable = { which = PG_com_grow which = PG_grow_country }
+		change_variable = { which = PG_upp_grow which = PG_grow_country }
+			set_variable = { which = PS_trbgrw_4 which = PG_trb_grow }
+			set_variable = { which = PS_comgrw_4 which = PG_com_grow }
+			set_variable = { which = PS_uppgrw_4 which = PG_upp_grow }
 		
 		
 		######################
@@ -3860,12 +3859,71 @@ province_event = {
 		divide_variable = { PG_upp_grow = 10 } multiply_variable = { PG_upp_grow = 1000 }
 		
 		
+		##
+		# DETAILED: SHOW EACH VARIATION
+		## Must be from higherst to lowest, or they will not be there for the next one
+		subtract_variable = { which = PS_rur6 which = PS_rur5 }
+		subtract_variable = { which = PS_rur5 which = PS_rur4 }
+		subtract_variable = { which = PS_rur4 which = PS_rur3 }
+		subtract_variable = { which = PS_rur3 which = PS_rur2 }
+		subtract_variable = { which = PS_terrmax which = PS_rur2 }
+		subtract_variable = { which = PS_rur2 which = PS_rur1 }
+		subtract_variable = { which = PS_rur1 which = prov_size }
+		
+		subtract_variable = { which = PG_fisher3 which = PG_fisher2 }
+		subtract_variable = { which = PG_fisher2 which = PG_fisher1 }
+		
+		subtract_variable = { which = PS_urb5 which = PS_urb4 }
+		subtract_variable = { which = PS_urb4 which = PS_urb3 }
+		subtract_variable = { which = PS_urb3 which = PS_urb2 }
+		subtract_variable = { which = PS_urb2 which = PS_urb1 }
+		divide_variable = { PS_urb2 = 100 } 		multiply_variable = { PS_urb2 = 100 }
+		divide_variable = { PS_trade_power = 100 } 	multiply_variable = { PS_trade_power = 100 }
+		
+		subtract_variable = { which = PS_urbanupper3 which = PS_urbanupper2 }
+		subtract_variable = { which = PS_urbanupper2 which = PS_urbanupper1 }
+		
+		subtract_variable = { which = PS_urbtransfer3 which = PS_urbtransfer2 } multiply_variable = { PS_urbtransfer3 = 100 }
+		subtract_variable = { which = PS_urbtransfer2 which = PS_urbtransfer1 } multiply_variable = { PS_urbtransfer2 = 100 }
+		subtract_variable = { which = PG_upptransfer2 which = PG_upptransfer1 } multiply_variable = { PG_upptransfer2 = 100 }
+		multiply_variable = { PG_upptransfer1 = 100 }	multiply_variable = { PS_urbtransfer1 = 100 }
+		
+		subtract_variable = { which = PS_trbgrw_4 which = PS_trbgrw_3 }
+		subtract_variable = { which = PS_trbgrw_3 which = PS_trbgrw_2 }
+		subtract_variable = { which = PS_trbgrw_2 which = PS_trbgrw_1 }
+		subtract_variable = { which = PS_trbgrw_1 which = PS_trbgrw_0 } 
+		
+		subtract_variable = { which = PS_comgrw_4 which = PS_comgrw_3 }
+		subtract_variable = { which = PS_comgrw_3 which = PS_comgrw_1 }
+		subtract_variable = { which = PS_comgrw_1 which = PS_comgrw_0 }
+		
+		subtract_variable = { which = PS_uppgrw_4 which = PS_uppgrw_3 }
+		subtract_variable = { which = PS_uppgrw_3 which = PS_uppgrw_1 }
+		subtract_variable = { which = PS_uppgrw_1 which = PS_uppgrw_0 }
+		
+		multiply_variable = { PS_trbgrw_0 = 100 } multiply_variable = { PS_trbgrw_1 = 100 } multiply_variable = { PS_trbgrw_2 = 100 }
+		multiply_variable = { PS_trbgrw_3 = 100 } multiply_variable = { PS_trbgrw_4 = 100 } 
+		multiply_variable = { PS_comgrw_0 = 100 } multiply_variable = { PS_comgrw_1 = 100 } 
+		multiply_variable = { PS_comgrw_3 = 100 } multiply_variable = { PS_comgrw_4 = 100 }
+		multiply_variable = { PS_uppgrw_0 = 100 } multiply_variable = { PS_uppgrw_1 = 100 }
+		multiply_variable = { PS_uppgrw_3 = 100 } multiply_variable = { PS_uppgrw_4 = 100 }
+		
+		set_variable = { which = PS_devextra which = PG_dev_extra } 
+		subtract_variable = { PS_devextra = 1 } multiply_variable = { PS_devextra = 100 }
+		set_variable = { which = PS_growextra which = PG_grow_extra } 
+		subtract_variable = { PS_growextra = 1 } multiply_variable = { PS_growextra = 100 }
+		set_variable = { which = PS_growctry which = PG_grow_country } 
+		subtract_variable = { PS_growctry = 1 } multiply_variable = { PS_growctry = 100 }
+		
+		
+		
 	}
 	
 	
 	option = {
 		name = "population_capacity.24.a"
 		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
+		add_province_modifier = { name = PGD_growth_viewer duration = 30 }
 	}
 	
 }
