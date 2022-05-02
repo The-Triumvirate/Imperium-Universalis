@@ -6,26 +6,48 @@ namespace = greek
 country_event = {
 	id = greek.1
 	title = "greek.1.t"
-	desc = "greek.1.d"
+	desc = { 
+	    trigger = { capital_scope = { superregion = macedonia_superregion } }
+		desc = "greek.1.1.d"
+	}
+	desc = {
+	    trigger = { NOT = { capital_scope = { superregion = macedonia_superregion } } }
+		desc = "greek.1.2.d"
+	}
 	picture = forum_picture
 	fire_only_once = yes
-	major = yes
-	
 	
 	trigger = {
-		culture_group = hellenic
-		NOT = { started_in = 425.1.1 }
-		capital_scope = {
-			OR = {
-				region = greek_region
-				region = macedonia_region
-				region = mare_aegaeum_islands_region
-				region = ionia_region
-			}
-		}
 		OR = {
-			is_year = 425
-			total_development = 400
+		    AND = {
+			    culture_group = hellenic
+				total_development = 400
+				NOT = { capital_scope = { superregion = macedonia_superregion } }
+			}
+            AND = {
+			    NOT = { culture_group = hellenic }
+				owns_all_provinces = {
+				    region = macedonia_region
+				}
+				owns_all_provinces = {
+				    region = greek_region
+				}
+			}
+			AND = {
+			    culture_group = hellenic
+				capital_scope = {
+				    OR = {
+					    region = macedonia_region
+						region = greek_region
+					}
+				}
+			    owns_all_provinces = {
+	                region = macedonia_region
+			    }
+			    owns_all_provinces = {
+			        region = greek_region
+			    }
+		    }
 		}
 	}
 	
@@ -33,10 +55,14 @@ country_event = {
 		months = 36	
 	}
 	
+	after = {
+	    country_event = { id = greek.101 }
+	}
+	
 	option = {
 		name = "greek.1.a"
 		hidden_effect = {
-			every_province = {
+			every_owned_province = {
 				if = {
 					limit = {
 						culture_group = hellenic
@@ -137,10 +163,6 @@ country_event = {
 					change_culture = greek
 				}
 			}
-			every_country = {
-				limit = { culture_group = hellenic }
-				country_event = { id = greek.101 }
-			}
 		}
 	}
 
@@ -150,11 +172,11 @@ country_event = {
 	title = "greek.1.t"
 	desc = "greek.1.d"
 	picture = city
+	hidden = yes
 	is_triggered_only = yes
 	
 	
 	trigger = {
-
 	}
 	
 	immediate = { 
@@ -165,7 +187,6 @@ country_event = {
 	
 	option = {
 		name = "greek.1.a" 
-		tooltip = { change_primary_culture = capital }
 	}
 }
 
