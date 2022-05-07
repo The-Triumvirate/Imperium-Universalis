@@ -219,22 +219,15 @@ country_event = {
 	trigger = {
 		has_reform = greek_polis_reform
 		has_country_modifier = polis_oligarchy_modifier
-		OR = {
-		    NOT = { stability = 1 } 
-			is_year = 160
-		}
-		
-		is_year = 155
-		NOT = { started_in = 160.1.1  }
+		is_year = 160
 		NOT = { has_global_flag = solons_reform_flag  }
-		
-			capital_scope = {
-				OR = {
-					region = greek_region
-					region = mare_aegaeum_islands_region
-					region = ionia_region
-				}
+		capital_scope = {
+			OR = {
+				region = greek_region
+				region = mare_aegaeum_islands_region
+				region = ionia_region
 			}
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -301,6 +294,16 @@ country_event = {
 	    name = "greek.3.a"
 	    add_faction = fac_democrats
 		add_faction_influence = { faction = fac_democrats influence = 15 }
+		if = {
+		    limit = {
+			    tag = ATH
+			}
+			add_country_modifier = {
+			    name = solons_reform
+				desc = SOLONS_REFORMS_DESC
+				duration = -1
+			}
+		}
 	}
 }
 
@@ -357,12 +360,13 @@ country_event = {
 	
 	trigger = {
 		has_country_modifier = solons_reform
-		has_reform = greek_polis_reform
+		government = republic
 		faction_influence = {
 				faction = fac_democrats
 				influence = 40
 			}
-		is_year = 240
+		tag = ATH
+		is_year = 229
 	}
 	
 	mean_time_to_happen = {
@@ -374,14 +378,23 @@ country_event = {
 			remove_country_modifier = solons_reform
 			add_country_modifier = {
 				name = kleisthenes_reform
-				duration = 36500
+				duration = -1
 			}
 			define_advisor = {
-								name = "Kleisthenes"
-								type = statesman_adv
-								skill = 2
-								discount = yes
-							}
+			    name = "Kleisthenes"
+			    type = statesman_adv
+				skill = 2
+				discount = yes
+			}
+			every_owned_province = {
+		    limit = {
+			    NOT = { has_province_modifier = kleisthenian_reforms_modifier }
+			}
+			add_province_modifier = {
+			    name = kleisthenian_reforms_modifier
+				duration = -1
+			}
+		}
 	}
 }
 ########################################################################################
