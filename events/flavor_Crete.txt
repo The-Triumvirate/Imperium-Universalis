@@ -1044,3 +1044,121 @@ country_event = {
 		}
 	}
 }
+
+####End of War
+country_event = {
+    id = crete.11
+	title = "crete.11.t"
+	desc = "crete.11.d"
+	fire_only_once = yes
+	
+	trigger = {
+	    OR = {
+		    tag = POL
+			tag = KNO
+		}
+	    has_global_flag = cretan_wars_war_in_progress
+		OR = {
+		    has_won_war_against = {
+			    who = KNO
+				max_years_since = 5
+			}
+			has_won_war_against = {
+			    who = POL
+				max_years_since = 5
+			}
+		}
+		is_at_war = no
+	}
+	
+	mean_time_to_happen = {
+	    months = 1
+	}
+	
+	immediate = {
+	    clr_global_flag = cretan_wars_war_in_progress
+	}
+	
+	option = { #Polyrrhenia wins
+	    name = crete.11.a
+		trigger = { tag = POL }
+		hidden_effect = {
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+				NOT = { tag = POL }
+			}
+			country_event = { id = crete.12 }
+		}
+		}
+	}
+	
+	option = { #Knossos wins
+	    name = crete.11.b
+		trigger = { tag = KNO }
+		hidden_effect = {
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+				NOT = { tag = KNO }
+			}
+			country_event = { id = crete.12 }
+		}
+	    }
+	}
+}
+
+####End of War 2
+
+country_event = {
+    id = crete.12
+	title = "crete.12.t"
+	desc = "crete.12.d"
+	is_triggered_only = yes
+	
+	option = { #Agree
+	    name = crete.12.a
+	    FROM = {
+	        inherit = ROOT
+	    }
+		ai_chance = { factor = 40 }
+	}
+	
+	option = { #League
+	    name = crete.12.b
+		add_prestige = 15
+		FROM = {
+		    create_subject = {
+                subject_type = league_member_subject
+                subject = ROOT
+            }
+		}
+		ai_chance = { factor = 30 }
+	}
+	
+	option = { #Rebellious
+	    name = crete.12.c
+		add_prestige = 30
+		break_marriage = FROM
+		reverse_add_casus_belli = {
+            target = ROOT
+            type = cb_great_conqueror_invasion
+            months = 120
+		}
+		ai_chance = { factor = 30 }
+	}
+}
