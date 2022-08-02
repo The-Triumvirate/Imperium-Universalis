@@ -36,6 +36,18 @@ start_tribal_raid = {
 				}
 			}
 		}
+		custom_trigger_tooltip = {
+			tooltip = NOT_RECENTLY_RAIDED_CT
+			FROM = {
+				OR = {
+					NOT = { has_country_flag = recently_raided_flag }
+					had_country_flag = {
+						flag = recently_raided_flag
+						days = 1825
+					}
+				}
+			}
+		}
 	}
 	on_accept = {
 		add_spy_network_in = {
@@ -44,7 +56,14 @@ start_tribal_raid = {
 		}
 		country_event = { id = tribal_raid.1 }
 		hidden_effect = {
-			FROM = { save_global_event_target_as = country_raid_target }
+			FROM = {
+				save_global_event_target_as = country_raid_target
+				if = {
+					limit = { NOT = { has_country_flag = recently_raided_flag } }
+					set_country_flag = recently_raided_flag
+				}
+				else = { clr_country_flag = recently_raided_flag }
+			}
 			if = {
 				limit = { NOT = { has_country_flag = made_recent_raid_flag } }
 				set_country_flag =  made_recent_raid_flag
@@ -64,5 +83,10 @@ start_tribal_raid = {
 				value = 100
 			}
 		}
+		if = {
+			limit = { any_neighbor_country = { neither_tribal_nor_native_trigger = yes } }
+			FROM = { neither_tribal_nor_native_trigger = yes }
+		}
+		else = { FROM = { tribal_or_native_trigger = yes } }
 	}
 }
