@@ -836,3 +836,343 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Kition Mission Events
+########################################################################################
+#Nesiotic League
+country_event = {
+	id = mission_events.20
+	title = "mission_events.20.t"
+	desc = "mission_events.20.d"
+	picture = religious
+	is_triggered_only = yes
+	
+	option = { #join nesiotic league
+		name = "mission_events.20.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 2
+				ai_attitude = {
+					who = FROM
+					attitude = attitude_threatened
+				}
+			}
+		}
+		CYC = { inherit = ROOT }
+		FROM = { #Accept alert
+			country_event = {
+				id = mission_events.201
+				days = 7
+			}
+		}
+	}
+	
+	option = { #refuse nesiotic league
+		name = "mission_events.20.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				ai_attitude = {
+					who = FROM
+					attitude = attitude_hostile
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 100
+					}
+				}
+			}
+		}
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = archipelagos_area
+					area = cyclades_area
+				}
+			}
+			add_core = ZY2
+			add_core = CYC
+		}
+		FROM = { #Refusal alert
+			country_event = {
+				id = mission_events.202
+				days = 7
+			}
+		}
+	}
+
+	after = { hidden_effect = { FROM = { country_event = { id = mission_events.203 } } } }
+}
+
+country_event = { #Submittance alert
+	id = mission_events.201
+	title = "mission_events.201.t"
+	desc = "mission_events.201.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.201.a"
+		add_prestige = 1
+		add_treasury = -500
+	}
+}
+
+country_event = { #Refusal alert
+	id = mission_events.202
+	title = "mission_events.202.t"
+	desc = "mission_events.202.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.202.a"
+		add_prestige = -2
+	}
+}
+
+country_event = { #Makes cyclades a vassal
+	id = mission_events.203
+	title = "mission_events.202.t"
+	desc = "mission_events.202.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+	hidden = yes
+	fire_only_once = yes
+	
+	option = {
+		name = "mission_events.202.a"
+		CYC = {
+			set_government_rank = 2
+			change_government = republic
+			add_government_reform = league_reform
+			stabilize_country_effect = yes
+		}
+		create_subject = {
+			subject_type = league_member_subject
+			subject = CYC
+		}
+	}
+}
+
+#North Aegean League
+country_event = {
+	id = mission_events.21
+	title = "mission_events.21.t"
+	desc = "mission_events.21.d"
+	picture = religious
+	is_triggered_only = yes
+	
+	option = { #join north aegean league
+		name = "mission_events.21.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 2
+				ai_attitude = {
+					who = FROM
+					attitude = attitude_threatened
+				}
+			}
+		}
+		LES = { inherit = ROOT }
+		FROM = { #Accept alert
+			country_event = {
+				id = mission_events.201
+				days = 10
+			}
+		}
+	}
+	
+	option = { #refuse north aegean  league
+		name = "mission_events.21.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				ai_attitude = {
+					who = FROM
+					attitude = attitude_hostile
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 100
+					}
+				}
+			}
+		}
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = lesbos_area
+					area = lesbos_et_chios
+					area = thasus_et_lemnus
+					area = kos_area
+				}
+			}
+			add_core = ZY2
+			add_core = LES
+		}
+		FROM = { #Refusal alert
+			country_event = {
+				id = mission_events.202
+				days = 10
+			}
+		}
+	}
+
+	after = { hidden_effect = { FROM = { country_event = { id = mission_events.211 } } } }
+}
+
+country_event = { #Makes lesbos a vassal
+	id = mission_events.211
+	title = "mission_events.202.t"
+	desc = "mission_events.202.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+	hidden = yes
+	fire_only_once = yes
+	
+	option = {
+		name = "mission_events.202.a"
+		LES = {
+			set_government_rank = 2
+			change_government = republic
+			add_government_reform = league_reform
+			stabilize_country_effect = yes
+			override_country_name = "NORTH_AEGEAN_LEAGUE"
+		}
+		create_subject = {
+			subject_type = league_member_subject
+			subject = LES
+		}
+	}
+}
+
+#Euboean Partition
+country_event = {
+	id = mission_events.22
+	title = "mission_events.22.t"
+	desc = "mission_events.22.d"
+	picture = religious
+	is_triggered_only = yes
+	
+	option = { #give it all to northern league
+		name = "mission_events.22.a"
+		ai_chance = { factor = 25 }
+		euboea_superior = {
+			remove_core = ROOT
+			add_core = LES
+			cede_province = LES
+		}
+		euboea_inferior = {
+			remove_core = ROOT
+			add_core = LES
+			cede_province = LES
+		}
+		add_historical_friend = LES
+		LES = { add_historical_friend = ROOT }
+		reverse_add_opinion = {
+			who = LES
+			modifier = kition_gave_us_euboea_opinion
+		}
+		reverse_add_opinion = {
+			who = CYC
+			modifier = kition_refused_euboea_opinion
+		}
+	}
+	
+	option = { #give it all to nesiotic league
+		name = "mission_events.22.b"
+		ai_chance = { factor = 25 }
+		euboea_superior = {
+			remove_core = ROOT
+			add_core = CYC
+			cede_province = CYC
+		}
+		euboea_inferior = {
+			remove_core = ROOT
+			add_core = CYC
+			cede_province = CYC
+		}
+		add_historical_friend = CYC
+		CYC = { add_historical_friend = ROOT }
+		reverse_add_opinion = {
+			who = CYC
+			modifier = kition_gave_us_euboea_opinion
+		}
+		reverse_add_opinion = {
+			who = LES
+			modifier = kition_refused_euboea_opinion
+		}
+	}
+	option = { #split the island
+		name = "mission_events.22.c"
+		ai_chance = { factor = 25 }
+		euboea_superior = {
+			remove_core = ROOT
+			add_core = CYC
+			add_core = LES
+			cede_province = CYC
+		}
+		euboea_inferior = {
+			remove_core = ROOT
+			add_core = LES
+			add_core = CYC
+			cede_province = LES
+		}
+		reverse_add_opinion = {
+			who = CYC
+			modifier = kition_gave_us_euboea_secondary_opinion
+		}
+		reverse_add_opinion = {
+			who = LES
+			modifier = kition_gave_us_euboea_secondary_opinion
+		}
+	}
+	option = { #it's ours
+		name = "mission_events.22.e"
+		ai_chance = { factor = 25 }
+		euboea_superior = {
+			add_core = CYC
+			add_core = LES
+		}
+		euboea_inferior = {
+			add_core = LES
+			add_core = CYC
+		}
+		reverse_add_opinion = {
+			who = CYC
+			modifier = kition_refused_euboea_secondary_opinion
+		}
+		reverse_add_opinion = {
+			who = LES
+			modifier = kition_refused_euboea_secondary_opinion
+		}
+	}
+}
