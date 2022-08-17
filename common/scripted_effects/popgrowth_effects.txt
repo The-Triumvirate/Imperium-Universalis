@@ -682,11 +682,12 @@ PG_update_inforange = {
 }
 
 PG_find_target_province = {
+	# very high CoT
 	if = {
 		limit = { 
 			any_province = {
 				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2	# very high CoT
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 2	
 			}
 		}
 		random_province = {
@@ -697,11 +698,12 @@ PG_find_target_province = {
 			save_event_target_as = PG_target
 		}
 	}
+	# "normal" CoT
 	else_if = {
 		limit = { 
 			any_province = {
 				NOT = { province_distance = { who = PREV distance = $range$ } } check_variable = { urban_growth = 1.2 }
-				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 1	# "normal" CoT
+				NOT = { has_province_modifier = PG_new_pop }					province_has_center_of_trade_of_level = 1	
 			}
 		}
 		random_province = {
@@ -712,10 +714,11 @@ PG_find_target_province = {
 			save_event_target_as = PG_target
 		}
 	}
+	# any other place
 	else_if = {
 		limit = { 
 			any_province = {
-				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { has_province_modifier = PG_new_pop } # any other place
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { has_province_modifier = PG_new_pop } 
 				OR = { check_variable = { rural_growth = 1.2 } check_variable = { urban_growth = 1.2 } }
 			}
 		}
@@ -730,20 +733,326 @@ PG_find_target_province = {
 	else = { 	# nowhere to go -> starvation! 
 		set_province_flag = PG_starvation_start
 	}
-
+	
 }
 
+
+PG_find_target_province_2 = {
+	# Destination priorities for those who want to leave:
+	# 1- High CoT (lv 5 or higher, or lv2 in old system)
+	# 2- Simple CoT (lv2 / lv1)
+	# 3- Same culture
+	# 4- Same culture group
+	# 5- Same religion
+	# 6- Owned by same country
+	# 7- Anything else, both tribal and commoner
+	
+	# 1- high CoT
+	if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 5	
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } }	NOT = { PG_trigger_has_new_pop = yes }
+				check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 5
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	# 2- "normal" CoT
+	else_if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 2
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } }	NOT = { PG_trigger_has_new_pop = yes }
+				check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 2
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	# 3- Same culture, same owner
+	else_if = {
+		limit = {
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+				culture = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }	
+				culture = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	# 4- Same culture group
+	else_if = {
+		limit = {
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+				culture_group = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }			
+				culture_group = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	# 5- Same religion
+	else_if = {
+		limit = {
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+				religion = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }	
+				religion = PREV
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	# 6- any other place
+	else_if = {
+		limit = { 
+			any_province = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+		}
+		random_province = {
+			limit = {
+				NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+				OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }			
+				NOT = { has_province_flag = PG_trib_migr_target }
+			}
+			PG_migr_target_fixed = yes
+		}
+	}
+	
+	else = { 	# nowhere to go -> starvation! 
+		set_province_flag = PG_starvation_start
+	}
+	
+}
+
+PG_migr_target_fixed = {			# Must be scoped to the target province, and Prev is the origin province
+	set_variable = { which = prov_id which = prov_id_base }
+	set_province_flag = PG_trib_migr_target
+	PREV = {
+		set_variable = { which = prov_id which = PREV } 
+		set_variable = { which = PG_migration_to which = prov_id }
+		set_province_flag = PG_trib_migr_start
+	}
+	
+}
+
+mig_dist_budget = {
+	if = { 		limit = { province_distance = { who = PREV distance = 1500 } } 	PREV = { set_variable = { which = PG_mig_budget value = 150 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 1000 } } 	PREV = { set_variable = { which = PG_mig_budget value = 120 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 700 } } 	PREV = { set_variable = { which = PG_mig_budget value = 100 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { set_variable = { which = PG_mig_budget value = 80 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 350 } } 	PREV = { set_variable = { which = PG_mig_budget value = 70 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { set_variable = { which = PG_mig_budget value = 50 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { set_variable = { which = PG_mig_budget value = 40 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 50 } } 	PREV = { set_variable = { which = PG_mig_budget value = 20 } } }
+	else_if = { 																PREV = { set_variable = { which = PG_mig_budget value = 10 } } }
+	
+}
+mig_dist_budget1 = {
+	if = { 		limit = { province_distance = { who = PREV distance = 1500 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 150 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 1000 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 120 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 700 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 100 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 80 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 350 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 70 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 50 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 40 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 50 } } 	PREV = { set_variable = { which = PG_mig_budget1 value = 20 } } }
+	else_if = { 																PREV = { set_variable = { which = PG_mig_budget1 value = 10 } } }
+	
+}
+mig_dist_budget2 = {
+	if = { 		limit = { province_distance = { who = PREV distance = 1500 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 150 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 1000 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 120 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 700 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 100 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 80 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 350 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 70 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 50 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 40 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 50 } } 	PREV = { set_variable = { which = PG_mig_budget2 value = 20 } } }
+	else_if = { 																PREV = { set_variable = { which = PG_mig_budget2 value = 10 } } }
+	
+}
+
+
 mig_dist_cost = {
-	if = { 		limit = { province_distance = { who = PREV distance = 1200 } } 	PREV = { owner = { add_treasury = -100 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 750 } } 	PREV = { owner = { add_treasury = -70 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { owner = { add_treasury = -60 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 400 } } 	PREV = { owner = { add_treasury = -50 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 300 } } 	PREV = { owner = { add_treasury = -40 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { owner = { add_treasury = -30 } } }
-	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { owner = { add_treasury = -20 } } }
+	if = { 		limit = { province_distance = { who = PREV distance = 1500 } } 	PREV = { owner = { add_treasury = -150 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 1000 } } 	PREV = { owner = { add_treasury = -120 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 700 } } 	PREV = { owner = { add_treasury = -100 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 500 } } 	PREV = { owner = { add_treasury = -80 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 350 } } 	PREV = { owner = { add_treasury = -70 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 200 } } 	PREV = { owner = { add_treasury = -50 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 120 } } 	PREV = { owner = { add_treasury = -40 } } }
+	else_if = { limit = { province_distance = { who = PREV distance = 50 } } 	PREV = { owner = { add_treasury = -20 } } }
 	else = { 																	PREV = { owner = { add_treasury = -10 } } }
 	
 }
+
+# MIGRATION EFFECTS
+# I have divided them in several types. Basically which kind of pop comes (tribal or commoner), and their reason to leave (normal, refugees, expelled, etc). This depends on what will happen with the origin country. 
+
+# Migration from tribal, "happy" (voluntary, with money/skills, with happy origin country)
+
+
+PG_migrate_tribal_happy = {
+	# Origin province
+	PREV = {
+		add_base_manpower = -$size$ 	change_variable = { PS_rur_emig = $size$ } 
+		set_variable = { which = prov_id which = prov_id_base }
+	}
+	# Destination province
+	if = {
+		limit = { check_variable = { PG_com_grow = 120 } }
+		add_base_production = $size$
+	
+	}
+	else = {
+		add_base_manpower = $size$
+		
+	}
+	set_variable = { which = prov_id which = PREV }	set_variable = { which = PG_mig_trb_origin which = prov_id }
+	set_variable = { which = prov_id which = prov_id_base }
+	
+	# Newcomer modifier, depending on culture and religion
+	if = {
+		limit = { culture = PREV	religion = PREV }
+		add_province_modifier = { name = PG_migr_new_allsame duration = 730 }
+	}
+	else_if = {
+		limit = { culture_group = PREV	religion = PREV }
+		add_province_modifier = { name = PG_migr_new_cultgroup duration = 730 }
+		PG_change_culture_attempt = { strength = 3 }
+		# latent event
+	}
+	else_if = {
+		limit = { culture_group = PREV	NOT = { religion = PREV } }
+		add_province_modifier = { name = PG_migr_new_otherrelg duration = 730 }
+		# latent event
+	}
+	else_if = {
+		limit = { 
+			owner = { culture_group = event_target:PG_origin_prov } 		# newcomers are the same culture group as the destination owner
+			NOT = { culture_group = PREV }
+		}
+		PG_change_culture_attempt = { strength = 2 }
+		add_province_modifier = { name = PG_migr_new_rulercult duration = 730 }
+		# latent event
+	}
+	else_if = {
+		limit = { NOT = { culture_group = PREV } religion = PREV }
+		add_province_modifier = { name = PG_migr_new_othercult duration = 730 }
+		PG_change_culture_attempt = { strength = 2 }
+		# latent event
+	}
+	else_if = {
+		limit = { NOT = { culture_group = PREV } }
+		random_list = {
+			70 = { 
+				add_province_modifier = { name = PG_migr_new_none_neutral duration = 730 } 
+				PG_change_culture_attempt = { strength = 1 }
+			}
+			30 = { 
+				add_province_modifier = { name = PG_migr_new_none_tension duration = 730 } 
+				PG_change_culture_attempt = { strength = 0 }
+			}
+			# latent event, tries to change culture
+		}
+	}
+	
+	# Finish
+	set_variable = { which = PG_trb_migsize value = 0 }
+}
+
+PG_change_culture_attempt = {
+	# "Formula" of this culture change %: base values + migration size (-1) + strength of the effect / total population, AFTER arrival
+	
+	export_to_variable = { which = PG_cultconv_points value = trigger_value:num_accepted_cultures who = ROOT }	
+	change_variable = { PG_cultconv_points = $strength$ }
+	export_to_variable = { which = PG_cultconv_denominator value = development }
+	multiply_variable = { PG_cultconv_denominator = 0.3 }
+	if = {
+		limit = { check_variable = { which = PG_cultconv_points which = PG_cultconv_denominator } }	# if already >30%, capped
+		set_variable = { which = PG_cultconv_points which = PG_cultconv_denominator }
+	}
+	change_variable = { which = PG_cultconv_points which = PG_trb_migsize } subtract_variable =  { PG_cultconv_points = 1 }
+	export_to_variable = { which = PG_cultconv_denominator value = development }
+	
+	# Final division, will determine the randomizer
+	divide_variable = { which = PG_cultconv_points which = PG_cultconv_denominator }
+	if = { 		limit = { check_variable = { PG_cultconv_points = 0.8 } } PG_change_culture_random = { perc_chance = 80 } }
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.7 } } PG_change_culture_random = { perc_chance = 70 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.6 } } PG_change_culture_random = { perc_chance = 60 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.5 } } PG_change_culture_random = { perc_chance = 50 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.4 } } PG_change_culture_random = { perc_chance = 40 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.3 } } PG_change_culture_random = { perc_chance = 30 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.2 } } PG_change_culture_random = { perc_chance = 20 } }	
+	else_if = { limit = { check_variable = { PG_cultconv_points = 0.1 } } PG_change_culture_random = { perc_chance = 15 } }	
+	else = {	PG_change_culture_random = { perc_chance = 10 }		}
+	set_variable = { which = PG_cultconv_points value = 0 }
+	set_variable = { which = PG_cultconv_denominator value = 0 }
+}
+PG_change_culture_random = {
+	random = {
+		chance = $perc_chance$
+		export_to_variable = { which = PG_previous_culture value = culture }	# Stores previous culture in a variable, in case it fights back
+		change_culture = PREV
+	}
+}
+PG_change_culture_def = {
+	export_to_variable = { which = PG_previous_culture value = culture }	# Stores previous culture in a variable, in case it fights back
+	change_culture = $new_culture$
+	
+}
+	
+	# to be done later:
+# Migration from tribal, "poor" (voluntary, but without money/skills) -> only go for Tribal jobs, even if common jobs are available. 
+# 	They may settle in places where there is not enough growth (range 90% to 120%), will create discontent
+# Migration from tribal, "escaped" (involuntary, will take a relations hit with the previous owner)
+# Migration from commoners, "happy" (voluntary, more % of additional trade good, more good relations. Only happen with very high growth, 150%+)
+# Migration from commoners, "poor" (voluntary, no trade good, no effects on relations, may go to 90-120% places). 
+# Migration from commoners, "admins" (sent by the state, more effect on changing culture)
 
 mig_rural_to_urban = {
 	# Origin province
