@@ -1449,3 +1449,736 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Invasion scythian events
+########################################################################################
+
+#Conquest of Media
+country_event = {
+	id = mission_events.26
+	title = "mission_events.26.t"
+	desc = "mission_events.26.d"
+	picture = battle
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.26.a"
+		ai_chance = { factor = 33 }
+		add_accepted_culture = medians
+		custom_tooltip = invasion_scythian_missions_ct.8
+		hidden_effect = {
+			set_country_flag = ishkuza_treat_iranians_equally_flag
+			every_owned_province = {
+				if = {
+					limit = {
+						OR = {
+							culture_group = western_iranian
+							culture_group = eastern_iranian_group
+						}
+						is_core = ROOT
+						has_owner_accepted_culture = no
+					}
+					add_province_modifier = {
+						name = invasion_scythian_iranian_tolerance_accepted
+						hidden = yes
+						duration = -1
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = "mission_events.26.b"
+		ai_chance = { factor = 33 }
+		add_country_modifier = {
+			name = invasion_scythian_lenient_overlord
+			duration = -1
+		}
+		if = {
+			limit = { NOT = { exists = MDI } }
+			release = MDI
+			create_subject = {
+				subject_type = non_autonomous_vassal
+				subject = MDI
+			}
+			reverse_add_opinion = {
+				who = MDI
+				modifier = invasion_scythian_overlord_media_opinion
+			}
+		}
+		else_if = {
+			limit = { overlord_of = MDI }
+			reverse_add_opinion = {
+				who = MDI
+				modifier = invasion_scythian_overlord_media_opinion
+			}
+		}
+	}
+	option = {
+		name = "mission_events.26.c"
+		ai_chance = { factor = 33 }
+		if = {
+			limit = { overlord_of = MDI }
+			inherit = MDI
+		}
+		every_owned_province = {
+			limit = {
+				OR = {
+					culture_group = western_iranian
+					culture_group = eastern_iranian_group
+				}
+			}
+			add_devastation = 100
+			set_base_tax = 0
+			set_base_production = 0
+			set_base_manpower = 2
+			add_province_modifier = {
+				name = invasion_scythian_clear_grazing_field
+				duration = 25550
+			}
+		}
+	}
+}
+
+#removes wrong culture modifier for choosing to tolerate iranians
+country_event = {
+	id = mission_events.2601
+	title = "mission_events.26.t"
+	desc = "mission_events.26.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		tag = SX2
+		has_country_flag = ishkuza_treat_iranians_equally_flag
+		any_owned_province = {
+			OR = {
+				culture_group = western_iranian
+				culture_group = eastern_iranian_group
+			}
+			is_core = ROOT
+			has_owner_accepted_culture = no
+			NOT = { has_province_modifier = invasion_scythian_iranian_tolerance_accepted }
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "mission_events.26.a"
+		every_owned_province = {
+			if = {
+				limit = {
+					OR = {
+						culture_group = western_iranian
+						culture_group = eastern_iranian_group
+					}
+					is_core = ROOT
+					has_owner_accepted_culture = no
+					NOT = { has_province_modifier = invasion_scythian_iranian_tolerance_accepted }
+				}
+				add_province_modifier = {
+					name = invasion_scythian_iranian_tolerance_accepted
+					hidden = yes
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+#removes tolerate iranians modifier if culture changes or becomes accepted culture
+province_event = {
+	id = mission_events.2602
+	title = "mission_events.26.t"
+	desc = "mission_events.26.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		owner = { TAG = SX2 }
+		has_province_modifier = invasion_scythian_iranian_tolerance_accepted
+		OR = {
+			has_owner_accepted_culture = yes
+			AND = {
+				NOT = { culture_group = western_iranian }
+				NOT = { culture_group = eastern_iranian_group }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "mission_events.26.a"
+		remove_province_modifier = invasion_scythian_iranian_tolerance_accepted
+	}
+}
+
+#Conquest of Tosp
+country_event = {
+	id = mission_events.27
+	title = "mission_events.27.t"
+	desc = "mission_events.27.d"
+	picture = military_parade
+	is_triggered_only = yes
+	goto = 2391
+	
+	option = {
+		name = "mission_events.27.a"
+		ai_chance = { factor = 33 }
+		add_treasury = 400
+		every_known_country = {
+			limit = {
+				OR = {
+					primary_culture = urartian
+					primary_culture = alarodian
+					primary_culture = hurrite
+					culture_group = armenian_group
+				}
+			}
+			add_stability = -2
+			add_prestige = -50
+			add_legitimacy = -30
+			add_opinion = {
+				who = ROOT
+				modifier = invasion_scythian_destroyed_tushpa
+			}
+		}
+		2391 = {
+			set_base_tax = 0
+			set_base_production = 0
+			set_base_manpower = 1
+			add_devastation = 100
+			destroy_all_buildings_effect = yes
+		}
+	}
+	option = {
+		name = "mission_events.27.b"
+		ai_chance = { factor = 33 }
+		add_accepted_culture = armenian
+		every_owned_province = {
+			limit = { culture = armenian }
+			add_named_unrest = {
+				name = invasion_scythian_gave_armenians_recognition
+				value = -10
+			}
+		}
+		tospites_area = {
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = armenian
+			change_religion = armenian_religion
+		}
+	}
+	option = {
+		name = "mission_events.27.c"
+		ai_chance = { factor = 33 }
+		add_accepted_culture = urartian
+		2391 = {
+			add_core = ROOT
+			add_base_tax = 2
+			change_culture = ROOT
+			change_religion = ROOT
+		}
+		set_capital = 2391
+		custom_tooltip = invasion_scythian_missions_ct.9
+		hidden_effect = { set_country_flag = ishkuza_missions_can_use_tushpa_wonder_flag }
+	}
+}
+
+#applies modifier when at war with a country
+country_event = {
+	id = mission_events.28
+	title = "mission_events.26.t"
+	desc = "mission_events.26.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		TAG = SX2
+		NOT = { has_country_modifier = invasion_scythian_war_morale_buff }
+		OR = {
+			AND = {
+				war_with = MDI
+				has_country_flag = ishkuza_missions_media_war_buff_flag
+			}
+			AND = {
+				war_with = URT
+				has_country_flag = ishkuza_missions_urartu_war_buff_flag
+			}
+			AND = {
+				any_country = {
+					capital_scope = { superregion = mesopotamia_superregion }
+					war_with = ROOT
+				}
+				has_country_flag = ishkuza_missions_mesopotamian_war_buff_flag
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		name = "mission_events.26.a"
+		add_country_modifier = {
+			name = invasion_scythian_war_morale_buff
+			duration = -1
+		}
+	}
+}
+
+#removes previous modifier
+country_event = {
+	id = mission_events.2801
+	title = "mission_events.26.t"
+	desc = "mission_events.26.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		TAG = SX2
+		has_country_modifier = invasion_scythian_war_morale_buff
+		if = {
+			limit = { has_country_flag = ishkuza_missions_media_war_buff_flag }
+			NOT = { war_with = MDI }
+		}
+		if = {
+			limit = { has_country_flag = ishkuza_missions_urartu_war_buff_flag }
+			NOT = { war_with = URT }
+		}
+		if = {
+			limit = { has_country_flag = ishkuza_missions_mesopotamian_war_buff_flag }
+			NOT = {
+				any_country = {
+					capital_scope = { superregion = mesopotamia_superregion }
+					war_with = ROOT
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		name = "mission_events.26.a"
+		remove_country_modifier = invasion_scythian_war_morale_buff
+	}
+}
+
+#Ishkuzan assimilation
+province_event = {
+	id = mission_events.29
+	title = "mission_events.29.t"
+	desc = "mission_events.29.d"
+	picture = scythians
+	goto = ROOT
+	
+	trigger = {
+		has_global_flag = ishkuza_missions_death_urartu_flag
+		OR = {
+			culture = urartian
+			culture = alarodian
+			culture = hurrite
+		}
+		any_neighbor_province = {
+			owned_by = SX2
+			is_core = SX2
+			culture_group = steppe_people
+		}
+		is_core = SX2
+		NOT = { nationalism = 1 }
+		owner = { TAG = SX2 }
+	}
+	
+	mean_time_to_happen = {
+		months = 480
+		modifier = {
+			factor = 0.66
+			NOT = {
+				any_country = {
+					OR = {
+						primary_culture = urartian
+						primary_culture = alarodian
+						primary_culture = hurrite
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			devastation = 100
+		}
+		modifier = {
+			factor = 0.8
+			has_owner_accepted_culture = yes
+		}
+		modifier = {
+			factor = 0.8
+			NOT = { pure_unrest = 1 }
+		}
+	}
+	
+	option = {
+		name = "mission_events.29.a"
+		change_culture = owner
+		change_religion = owner
+	}
+}
+
+#Place of natives
+country_event = {
+	id = mission_events.30
+	title = "mission_events.30.t"
+	desc = "mission_events.30.d"
+	picture = senat_conflict
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.30.a"
+		ai_chance = { factor = 50 }
+		custom_tooltip = invasion_scythian_missions_ct.17
+		hidden_effect = {
+			set_country_flag = ishkuza_missions_minority_rights_flag
+			every_owned_province = {
+				limit = {
+					is_core = ROOT
+					NOT = { culture_group = ROOT }
+				}
+				add_province_modifier = {
+					name = invasion_scythian_limited_minority_rights
+					duration = -1
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "mission_events.30.b"
+		ai_chance = { factor = 50 }
+		custom_tooltip = invasion_scythian_missions_ct.18
+		hidden_effect = {
+			set_country_flag = ishkuza_missions_minority_serfs_flag
+			every_owned_province = {
+				limit = {
+					is_core = ROOT
+					NOT = { culture_group = ROOT }
+				}
+				add_province_modifier = {
+					name = invasion_scythian_limited_minority_serfs
+					duration = -1
+					hidden = yes
+				}
+			}
+		}
+	}
+}
+
+#adds previous modifier to new provinces
+country_event = {
+	id = mission_events.3001
+	title = "mission_events.30.t"
+	desc = "mission_events.30.d"
+	picture = senat_conflict
+	hidden = yes
+
+	trigger = {
+		TAG = SX2
+		OR = {
+			has_country_flag = ishkuza_missions_minority_rights_flag
+			has_country_flag = ishkuza_missions_minority_serfs_flag
+		}
+		any_owned_province = {
+			NOT = { culture_group = ROOT }
+			if = {
+				limit = { ROOT = { has_country_flag = ishkuza_missions_minority_rights_flag } }
+				NOT = { has_province_modifier = invasion_scythian_limited_minority_rights }
+			}
+			else_if = {
+				limit = { ROOT = { has_country_flag = ishkuza_missions_minority_serfs_flag } }
+				NOT = { has_province_modifier = invasion_scythian_limited_minority_serfs }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "mission_events.30.a"
+		every_owned_province = {
+			if = {
+				limit = {
+					ROOT = { has_country_flag = ishkuza_missions_minority_rights_flag }
+					NOT = { has_province_modifier = invasion_scythian_limited_minority_rights }
+				}
+				add_province_modifier = {
+					name = invasion_scythian_limited_minority_rights
+					duration = -1
+					hidden = yes
+				}
+			}
+			else_if = {
+				limit = {
+					ROOT = { has_country_flag = ishkuza_missions_minority_serfs_flag }
+					NOT = { has_province_modifier = invasion_scythian_limited_minority_serfs }
+				}
+				add_province_modifier = {
+					name = invasion_scythian_limited_minority_serfs
+					duration = -1
+					hidden = yes
+				}
+			}
+		}
+	}
+}
+
+#removes previous modifiers if culture changes
+province_event = {
+	id = mission_events.3002
+	title = "mission_events.30.t"
+	desc = "mission_events.30.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		owner = { TAG = SX2 }
+		OR = {
+			has_province_modifier = invasion_scythian_limited_minority_rights
+			has_province_modifier = invasion_scythian_limited_minority_serfs
+		}
+		culture_group = owner
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "mission_events.30.a"
+		if = {
+			limit = { has_province_modifier = invasion_scythian_limited_minority_rights }
+			remove_province_modifier = invasion_scythian_limited_minority_rights
+		}
+		else = { remove_province_modifier = invasion_scythian_limited_minority_serfs }
+	}
+}
+
+#adds province modifier to boost capacity
+province_event = {
+	id = mission_events.3003
+	title = "mission_events.30.t"
+	desc = "mission_events.30.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+		owner = {
+			TAG = SX2
+			has_country_flag = ishkuza_missions_expanded_grazing_fields_flag
+		}
+		is_core = SX2
+		culture_group = owner
+		NOT = { has_province_modifier = invasion_scythian_new_grazing_fields }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "mission_events.30.a"
+		add_province_modifier = {
+			name = invasion_scythian_new_grazing_fields
+			duration = -1
+			hidden = yes
+		}
+	}
+}
+
+#Zoroastrianism
+country_event = {
+	id = mission_events.31
+	title = "mission_events.31.t"
+	desc = "mission_events.31.d"
+	picture = zoroastrianism
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.31.a"
+		ai_chance = { factor = 60 }
+		add_prestige = 5
+		if = {
+			limit = { NOT = { stability = 3 } }
+			add_stability = 1
+		}
+		else = { add_adm_power = 120 }
+		every_owned_province = {
+			limit = { religion = ROOT }
+			add_province_modifier = {
+				name = invasion_scythian_enforced_religious_orthodoxy
+				duration = 36500
+			}
+		}
+	}
+
+	option = {
+		name = "mission_events.31.b"
+		ai_chance = { factor = 40 }
+		add_horde_unity = -20
+		change_religion = zoroastrianism
+		every_owned_province = {
+			limit = { religion = ROOT }
+			random = {
+				chance = 33
+				change_religion = zoroastrianism
+			}
+		}
+		add_country_modifier = {
+			name = "conversion_zeal"
+			duration = 3650
+		}
+		define_advisor = {
+			type = priest_adv
+			religion = zoroastrianism
+			discount = yes
+		}
+	}
+}
+
+#Zurvanism
+country_event = {
+	id = mission_events.32
+	title = "mission_events.32.t"
+	desc = "mission_events.32.d"
+	picture = zoroastrianism
+	is_triggered_only = yes
+	
+	option = {
+		name = "mission_events.32.a"
+		ai_chance = { factor = 40 }
+		add_prestige = 5
+		add_stability = -1
+		every_owned_province = {
+			limit = { religion = ROOT }
+			random = {
+				chance = 20
+				change_religion = zurvanism
+			}
+		}
+		add_country_modifier = {
+			name = invasion_scythian_defended_traditional_faith
+			duration = 29200
+		}
+	}
+
+	option = {
+		name = "mission_events.32.b"
+		ai_chance = { factor = 30 }
+		add_prestige = -10
+		if = {
+			limit = { NOT = { stability = 3 } }
+			add_stability = 1
+		}
+		else = { add_adm_power = 120 }
+		add_country_modifier = {
+			name = invasion_scythian_zurvanism_tolerance
+			duration = -1
+		}
+		every_owned_province = {
+			limit = { religion = ROOT }
+			random = {
+				chance = 33
+				change_religion = zurvanism
+			}
+		}
+		custom_tooltip = invasion_scythian_missions_ct.21
+		hidden_effect = { set_country_flag = ishkuza_missions_religious_zurvanism_tolerance_flag }
+	}
+
+	option = {
+		name = "mission_events.32.c"
+		ai_chance = { factor = 30 }
+		add_stability = -1
+		change_religion = zurvanism
+		every_owned_province = {
+			limit = { religion = ROOT }
+			random = {
+				chance = 50
+				change_religion = zurvanism
+			}
+		}
+		add_country_modifier = {
+			name = "conversion_zeal"
+			duration = 3650
+		}
+	}
+}
+
+#Sack of Sardeis
+country_event = {
+	id = mission_events.33
+	title = "mission_events.33.t"
+	desc = "mission_events.33.d"
+	picture = fire
+	is_triggered_only = yes
+	goto = 2158
+	
+	option = {
+		name = "mission_events.33.a"
+		ai_chance = { factor = 33 }
+		add_treasury = 250
+		add_army_tradition = 5
+		if = {
+			limit = { has_dlc = "Cradle of Civilization" }
+			add_army_professionalism = 0.025
+		}
+		2158 = {
+			add_devastation = 100
+			destroy_all_buildings_effect = yes
+			add_base_tax = -1
+			add_base_production = -2
+		}
+	}
+
+	option = {
+		name = "mission_events.33.b"
+		ai_chance = { factor = 33 }
+		add_treasury = 700
+		add_country_modifier = {
+			name = invasion_scythian_barbarous_plunderer
+			duration = 7300
+		}
+		add_legitimacy_equivalent_10_effect = yes
+		add_army_tradition = -5
+		if = {
+			limit = { has_dlc = "Cradle of Civilization" }
+			add_army_professionalism = -0.025
+		}
+		2158 = {
+			add_devastation = 100
+			destroy_all_buildings_effect = yes
+			set_base_tax = 0
+			set_base_production = 0
+			add_base_manpower = -2
+		}
+	}
+
+	option = {
+		name = "mission_events.33.c"
+		ai_chance = { factor = 33 }
+		add_treasury = 300
+		add_army_tradition = -10
+	}
+}
