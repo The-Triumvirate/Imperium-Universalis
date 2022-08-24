@@ -668,6 +668,7 @@ country_event = {
 	option = { #First raid, prov has units, fort or is a capital
 		name = "tribal_raid.6.b"
 		trigger = { event_target:raid_target_province = { has_province_flag = raid_prov_has_fort_units_capital_flag } }
+		country_event = { id = tribal_raid.7 }
 	}
 }
 
@@ -712,6 +713,7 @@ country_event = {
 		ai_chance = { factor = 40 }
 		trigger = { event_target:raid_target_province = { is_capital = yes } }
 		tribal_raid_attack_on_capital_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Fight, province has fort and units
 		name = "tribal_raid.7.aa"
@@ -723,6 +725,7 @@ country_event = {
 			}
 		}
 		tribal_raid_attack_on_fort_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Fight, province has fort
 		name = "tribal_raid.7.ab"
@@ -734,6 +737,7 @@ country_event = {
 			}
 		}
 		tribal_raid_attack_on_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Fight, province has units
 		name = "tribal_raid.7.ac"
@@ -745,6 +749,7 @@ country_event = {
 			}
 		}
 		tribal_raid_attack_on_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Run away, province is capital
 		name = "tribal_raid.7.b"
@@ -762,6 +767,7 @@ country_event = {
 			}
 		}
 		tribal_raid_run_fort_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Run away, province has fort
 		name = "tribal_raid.7.bb"
@@ -773,6 +779,7 @@ country_event = {
 			}
 		}
 		tribal_raid_run_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 	option = { #Run away, province has units
 		name = "tribal_raid.7.bc"
@@ -784,6 +791,7 @@ country_event = {
 			}
 		}
 		tribal_raid_run_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
 	}
 }
 
@@ -804,6 +812,7 @@ country_event = {
 		ai_chance = { factor = 60 }
 		trigger = { tribal_raid_manpower_check_low_trigger = no }
 		goto = raid_target_province
+
 	}
 	option = { #call off raid
 		name = "tribal_raid.701.a"
@@ -815,7 +824,7 @@ country_event = {
 			}
 			modifier = {
 				factor = 100
-				limit = { check_variable = { which = raid_party_accumulated_loot value = 2000 } }
+				check_variable = { which = raid_party_accumulated_loot value = 2000 }
 			}
 		}
 		trigger = { tribal_raid_manpower_check_low_trigger = no }
@@ -825,5 +834,89 @@ country_event = {
 		name = "tribal_raid.701.a"
 		trigger = { tribal_raid_manpower_check_low_trigger = yes }
 		tribal_raid_end_effect = yes
+	}
+}
+
+########################################################################################
+# Informs prov owners of raids
+########################################################################################
+country_event = {
+	id = tribal_raid.702
+	title = "tribal_raid.702.t"
+	desc = "tribal_raid.702.d" #Province has units
+	picture = boar
+	is_triggered_only = yes
+	goto = raid_target_province
+	
+	option = { #bastards
+		name = "tribal_raid.702.a"
+		ai_chance = { factor = 60 }
+		add_prestige = -1
+	}
+}
+
+########################################################################################
+# Continous raids
+########################################################################################
+country_event = {
+	id = tribal_raid.8
+	title = "tribal_raid.8.t"
+	desc = { #Province is capital
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		desc = "tribal_raid.8.da"
+	}
+	desc = { #Province has fort and units
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		desc = "tribal_raid.8.db"
+	}
+	desc = { #Province has fort
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		desc = "tribal_raid.8.dc"
+	}
+	desc = { #Province has units
+		trigger = { event_target:raid_target_province = { units_in_province = 1 } }
+		desc = "tribal_raid.8.dd"
+	}
+	desc = "tribal_raid.8.d" #Province doesn't have fort, units nor is a capital
+	picture = boar
+	is_triggered_only = yes
+
+	goto = raid_target_province
+
+	immediate = {
+		hidden_effect = {
+			set_variable = {
+				which = raid_party_local_loot
+				value = 0
+			}
+			event_target:raid_target_province = { #Calculating prov wealth and setting flags
+				if = { #Forts units or capital
+					limit = {
+						OR = {
+							units_in_province = 1
+							fort_level = 1
+							is_capital = yes
+						}
+					}
+					set_province_flag = raid_prov_has_fort_units_capital_flag
+				}
+				prov_wealth_calculation_effect = yes
+			}
+		}
+	}
+	
+	option = {
+		name = "tribal_raid.8.a"
+		
 	}
 }
