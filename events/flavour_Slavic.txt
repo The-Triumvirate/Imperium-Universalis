@@ -124,14 +124,12 @@ country_event = {
 	picture = forum_picture
 	fire_only_once = yes
 	
+	is_triggered_only = yes
+	
 	trigger = {
 	    primary_culture = slavic
 		government = native
 		is_year = 190
-	}
-	
-	mean_time_to_happen = {
-	    months = 300
 	}
 	
 	immediate = { hidden_effect = { set_country_flag = reform_block_flag } }
@@ -175,14 +173,12 @@ country_event = {
 	picture = religious
 	fire_only_once = yes
 	
+	is_triggered_only = yes
+	
 	trigger = {
 	    primary_culture = slavic
 		religion = baltic_religion
 		has_country_modifier = high_priest_modifier
-	}
-	
-	mean_time_to_happen = {
-	    months = 300
 	}
 	
 	#To Slavic People Slavic Religion
@@ -210,6 +206,8 @@ country_event = {
 	picture = forum_picture
 	fire_only_once = yes
 	
+	is_triggered_only = yes
+	
 	trigger = {
 	    primary_culture = slavic
 		capital = 1894
@@ -221,16 +219,13 @@ country_event = {
 		}
 	}
 	
-	mean_time_to_happen = {
-	    months = 300
-	}
-	
 	#Kingdom
 	option = {
 	    name = "slavic.7.a"
 		trigger = {
 		    OR = {
 		        has_reform = tribal_kingdom_reform
+				has_reform = pastoral_tribe_reform
 				has_reform = tribal_federation_reform
 			}
 			has_country_flag = slavic_kingdom
@@ -275,13 +270,15 @@ country_event = {
 	option = {
 	    name = "slavic.7.e"
 		trigger = {
-		    has_country_flag = slavic_kingdom
+		    OR = {
+			    has_reform = tribal_republic_reform
+				has_reform = slavic_tribe_reform
+			}
 		    has_reform = religious_origin_of_power_reform
 		}
 		change_government = monarchy
 		add_government_reform = theocratic_kingdom
 		override_country_name = V4N_Theocracy
-		clr_country_flag = slavic_kingdom
 		clr_country_flag = slavic_republic
 		clr_country_flag = slavic_state
 		clr_country_flag = reform_block_flag
@@ -313,18 +310,15 @@ country_event = {
 	desc = "slavic.8.d"
     picture = cavalry
 	fire_only_once = yes
+	
+	is_triggered_only = yes
 
     trigger = {
         primary_culture = slavic
 		capital = 1894
-        government = tribal
 		religion = slavic_religion
     }
 	
-	mean_time_to_happen = {
-	    months = 300
-	}
-
     option = {
         name = "slavic.8.a"
 		add_stability = -1
@@ -341,6 +335,7 @@ country_event = {
 	option = {
 	    name = "slavic.8.b"
 		change_religion = slavic_religion
+		change_government = tribal
 		add_government_reform = tribal_kingdom_reform
 		
 		define_ruler = {
@@ -348,9 +343,9 @@ country_event = {
             dynasty = "Kravets"
 			culture = slavic
 			religion = slavic_religion
-            adm = 4
-            dip = 4
-            mil = 6
+            adm = 3
+            dip = 3
+            mil = 5
             age = 24
             claim = 70
 		}
@@ -716,7 +711,7 @@ country_event = {
 	trigger = {
 	    has_reform = veche_republic_reform
 		faction_in_power = veche_faction
-		republican_tradition = 80
+		republican_tradition = 70
 	}
 	
 	mean_time_to_happen = {
@@ -725,9 +720,9 @@ country_event = {
 	
 	option = {
 	    name = "slavic.27.a"
-		add_adm_power = 50
-		add_dip_power = 50
-		add_mil_power = 50
+		add_adm_power = 30
+		add_dip_power = 30
+		add_mil_power = 30
 		add_corruption = -2
 	}
 }
@@ -880,7 +875,10 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-	    has_reform = slavic_kingdom_reform
+	    OR = {
+	        has_reform = slavic_kingdom_reform
+			has_reform = slavic_state_reform
+		}
 		religion = slavic_religion
 	    JUD = {
 		    NOT = { owns = 2277 }
@@ -935,7 +933,10 @@ country_event = {
 	fire_only_once = yes
 	
     trigger = {
-	    has_reform = slavic_kingdom_reform
+	    OR = {
+	        has_reform = slavic_kingdom_reform
+			has_reform = slavic_state_reform
+		}
 		OR = {
 		    secondary_religion = jewish
 			secondary_religion = samaritan
@@ -1060,8 +1061,8 @@ country_event = {
 	    OR = {
 	        has_reform = slavic_state_reform
 			has_reform = slavic_kingdom_reform
+			has_reform = veche_republic_reform
 		}
-		has_country_modifier = slavic_bardiche
 		mil_tech = 16
 	}
 
@@ -1132,6 +1133,9 @@ country_event = {
 
     option = {
         name = "slavic.38.a"
+		remove_country_modifier = slavic_bardiche
+		remove_country_modifier = slavic_streltsy
+		remove_country_modifier = slavic_pomestnoye_voysko
         add_country_modifier = {
             name = slavic_prikazy
             duration = -1
@@ -1263,11 +1267,11 @@ country_event = {
 		    change_culture = slavic
 			add_institution_embracement = {
                 which = writing_system
-                value = 50
+                value = 20
             }
             add_institution_embracement = {
             which = coin_usage
-            value = 30
+            value = 15
             }
 			if = {
 			    limit = { 
@@ -1292,5 +1296,93 @@ country_event = {
 		    add_base_tax = -1
 			change_variable = { PS_upp_evtu = -1 }
 		}
+	}
+}
+
+#Slavic Writing System
+country_event = {
+    id = slavic.43
+	title = "slavic.43.t"
+	desc = "slavic.43.d"
+	picture = culture
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+	    OR = {
+		    tag = V4N
+			primary_culture = slavic
+		}
+		has_institution = writing_system
+	}
+	
+	option = {
+	    name = "slavic.43.a" #our own
+		add_prestige = 10
+		add_mil_power = 30
+		add_corruption = -2
+	}
+	
+	option = {
+	    name = "slavic.43.b" #Latin
+		add_absolutism = 2
+		add_adm_power = 30
+		add_stability = 1
+		define_advisor = {
+            type = governor
+            skill = 1
+            culture = latin
+            religion = roman_religion
+			cost_multiplier = 0.33
+        }
+	}
+	
+	option = {
+	    name = "slavic.43.c" #Greek
+		add_absolutism = 2
+		add_dip_power = 30
+		add_mercantilism = 2
+		define_advisor = {
+            type = philosopher_adv
+            skill = 1
+            culture = ionic
+            religion = greek_religion
+			cost_multiplier = 0.33
+        }
+	}
+	
+	option = {
+	    name = "slavic.43.e" #Babylonian
+		add_absolutism = 3
+		add_adm_power = 15
+		add_dip_power = 15
+		add_mil_power = 15
+		define_advisor = {
+            type = foreign_advisor
+            skill = 1
+            culture = babylonian
+            religion = mesopotamian_religion
+			cost_multiplier = 0.33
+        }
+	}
+}
+
+#Slavic Romans
+country_event = {
+    id = slavic.44
+	title = "slavic.44.t"
+	desc = "slavic.44.d"
+	picture = roman_king
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+	}
+	
+	option = {
+	    name = "slavic.44.a"
+	    add_splendor = 100
 	}
 }
