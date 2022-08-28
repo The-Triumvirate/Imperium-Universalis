@@ -605,34 +605,46 @@ on_dismantle_revolution = {
 }
 
 # province
-on_adm_development = {
+on_adm_development = {	# Base tax, upper pops
 	add_base_tax = -1
-}
-
-# province
-on_dip_development = {
-	# Must add some limit in case there is only 0/0/1. If there is 0/0/2, it will transfer to commoner
-	if = { 
-		limit = { NOT = { base_production = 2 } base_manpower = 2 }		# 0/0/2+
-		add_base_manpower = -1
-		add_province_modifier = { name = PG_commoner002 duration = 1080 }
+	# Checks whether to reduce (add base x) or set to zero (if only one)
+	if = {
+		limit = { base_tax = 2 }
+		add_base_tax = -1
 	}
 	else_if = {
-		limit = { NOT = { base_production = 2 } NOT = { base_manpower = 2 } }	# 0/0/1
-		add_province_modifier = { name = PG_commoner001 duration = 1080 }
+		limit = { NOT = { base_tax = 2 } base_tax = 1 }
+		set_base_tax = 0
 	}
-	else = { add_base_production = -1 }
 	
 	events = {
-		population_capacity.7
+		population_capacity.3	# Base tax is transparent and won't fire, but anyway, I add it just in case
 	}
 }
 
 # province
-on_mil_development = {		# manpower. There is always one, so we don't risk on having zero value, as it probably happens in production. 
+on_dip_development = {	# Production, commoners
+	
+	# Checks whether to reduce (add base x) or set to zero (if only one)
+	if = {
+		limit = { base_production = 2 }
+		add_base_production = -1
+	}
+	else_if = {
+		limit = { NOT = { base_production = 2 } base_production = 1 }
+		set_base_production = 0
+	}
+	
+	events = {
+		population_capacity.3
+	}
+}
+
+# province
+on_mil_development = {		# manpower. There is always one, so we don't risk on having zero value. 
 	add_base_manpower = -1
 	events = {
-		population_capacity.7
+		population_capacity.3
 	}
 }
 
