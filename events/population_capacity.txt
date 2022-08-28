@@ -47,15 +47,12 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 					}
 					clr_province_flag = DE_2years set_province_flag = DE_2years		# reset counter. Avoids losing ores if used manually
 				}
-				if = {
-					limit = { has_global_flag = DE_recalc_prices }
-					DE_update_goods = yes 
-					DE_update_value = yes
-				}
+				#if = {
+				#	limit = { has_global_flag = DE_recalc_prices }
+				#	DE_update_goods = yes 
+				#	DE_update_value = yes
+				#}
 				
-				# Update naval forcelimit nerfs, in inland and river ports
-				if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
-				else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
 				
 			}
 		}
@@ -193,7 +190,9 @@ province_event = {				# PROVINCE INTERACTION MENU
 	}
 	
 }
-
+######
+#	POPULATION CAPACITY, MAIN EVENT
+######
 province_event = {
 	id = population_capacity.4			# Population capacity heavily re-written. This is version 4, as of March 2022
 	title = "population_capacity.4.t"	# v1 was Feb'19, v2 June'20, v3 (first in the public mod) Oct'21
@@ -436,39 +435,66 @@ province_event = {
 		PG_urban_buildings = yes
 		
 		# THE TRADE POWER MULTIPLIER
-		
-		# I forgot the excel with the new formula in the other pc. I'll change it later
+		#	updated August'22
 		
 		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
-		export_to_variable = { which = urban_trade_power value = province_trade_power }
+		export_to_variable = { which = PG_urb_tp value = province_trade_power }
 		
 			# Trade power points are less effective the bigger it is. In economics this is called "Diminishing marginal returns":
-			# 1-10 	: 3.3 each (up to 3 pops)
-			# 10-22 : 4 each (+3 pops)
-			# 22-42 : 5 each (+4 pops)
-			# 42-60 : 6 each (+3 pops)
-			# >60 	: 10 each
-			# So a trade power of 30 will be: 10/3.3 + 12/4 + 6/5 = 3 + 3 + 1.2 = 7.2
-			# Trade 120: 10/3.3 + 12/4 + 20/5 + 18/6 + (120-10-12-20-18)/10 = 3 + 3 + 4 + 3 + 60/10 = 19
+			# After trade power 10 (10 = 3 pops), every new pop will need one more point (4th pop: 4 points, 5th pop: 5 points). Capped at 15/110tp
+			# So a trade power of 30 will be: 30 -10(3) -4 -5 -6 = 6 pops
+			# Trade 120: 120 -10(3) -4 -5 -6 -7 -8 -9 -10 -11 -12 -13 -14 = 14 pops
 			if = {
-				limit = { check_variable = { urban_trade_power = 60 } }	subtract_variable = { urban_trade_power = 60 } 
-				change_variable = { urban_capacity = 13 } 				divide_variable = { urban_trade_power = 10 } 
+				limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 } 
+				change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 42 } } subtract_variable = { urban_trade_power = 42 } 
-				change_variable = { urban_capacity = 10 } 				divide_variable = { urban_trade_power = 6 } 
+				limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 } 
+				change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 22 } } subtract_variable = { urban_trade_power = 22 } 
-				change_variable = { urban_capacity = 6 } 				divide_variable = { urban_trade_power = 5 } 
+				limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 } 
+				change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 10 } } subtract_variable = { urban_trade_power = 10 } 
-				change_variable = { urban_capacity = 3 } 				divide_variable = { urban_trade_power = 4 } 
+				limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 } 
+				change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 } 
 			}
-			else = { divide_variable = { urban_trade_power = 3.3 } }
-			change_variable = { which = urban_capacity which = urban_trade_power }	# add the remaining trade power (applies to all)
-			set_variable = { which = urban_trade_power value = 0 }
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 } 
+				change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 } 
+				change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 } 
+				change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 } 
+				change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 } 
+				change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 } 
+				change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 } 
+				change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 } 
+				change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 } 
+			}
+			else = { divide_variable = { PG_urb_tp = 3.3 } }
+			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
+			set_variable = { which = PG_urb_tp value = 0 }
 		
 		
 		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -50% reduction, but it stays in commoners, and the rural transfer still works. 
@@ -651,6 +677,11 @@ province_event = {
 			remove_province_modifier  = popgrowth_viewer2 
 			add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
 		}
+		
+		# Update naval forcelimit nerfs, in inland and river ports
+		if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
+		else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
+		
 		
 		# Clean variables to be good-looking (/100 for rounding; x100 for percentages)
 			# Caps
@@ -938,28 +969,62 @@ province_event = {
 		
 		
 		# 2. THE TRADE POWER MULTIPLIER
-		export_to_variable = { which = urban_trade_power value = province_trade_power }
-		set_variable = { which = PS_trade_power which = urban_trade_power }
+		export_to_variable = { which = PG_urb_tp value = province_trade_power }
+		set_variable = { which = PS_trade_power which = PG_urb_tp }
 			if = {
-				limit = { check_variable = { urban_trade_power = 60 } }	subtract_variable = { urban_trade_power = 60 } 
-				change_variable = { urban_capacity = 13 } 				divide_variable = { urban_trade_power = 10 } 
+				limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 } 
+				change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 42 } } subtract_variable = { urban_trade_power = 42 } 
-				change_variable = { urban_capacity = 10 } 				divide_variable = { urban_trade_power = 6 } 
+				limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 } 
+				change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 22 } } subtract_variable = { urban_trade_power = 22 } 
-				change_variable = { urban_capacity = 6 } 				divide_variable = { urban_trade_power = 5 } 
+				limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 } 
+				change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 } 
 			}
 			else_if = {
-				limit = { check_variable = { urban_trade_power = 10 } } subtract_variable = { urban_trade_power = 10 } 
-				change_variable = { urban_capacity = 3 } 				divide_variable = { urban_trade_power = 4 } 
+				limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 } 
+				change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 } 
 			}
-			else = { divide_variable = { urban_trade_power = 3.3 } }
-			change_variable = { which = urban_capacity which = urban_trade_power }	# add the remaining trade power (applies to all)
-			set_variable = { which = urban_trade_power value = 0 }
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 } 
+				change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 } 
+				change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 } 
+				change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 } 
+				change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 } 
+				change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 } 
+				change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 } 
+				change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 } 
+			}
+			else_if = {
+				limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 } 
+				change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 } 
+			}
+			else = { divide_variable = { PG_urb_tp = 3.3 } }
+			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
+			set_variable = { which = PG_urb_tp value = 0 }
 		set_variable = { which = PS_urb2 which = urban_capacity }
+		
+		
 		
 		
 		# 3. Maluses from primitive governments: Natives (HORDES, migrating ones) can't effectively use commoners, and HALF will be converted to tribals. The other half will not count, due to inefficiencies of this govenrment. TRIBALS will count 50% to tribal and 50% remains as commoners. 
