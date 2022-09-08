@@ -223,9 +223,9 @@ NDefines.NCountry.LIBERTY_DESIRE_ANNEXATION = 15.0
 NDefines.NCountry.LAND_FORCELIMIT_EXTRA_COST_FACTOR = 2.0
 NDefines.NCountry.NAVAL_FORCELIMIT_EXTRA_COST_FACTOR = 2.0
 	
-NDefines.NCountry.HRE_RANK = 4
-NDefines.NCountry.HRE_MAX_RANK = 2
-NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 3
+NDefines.NCountry.HRE_RANK = 5
+NDefines.NCountry.HRE_MAX_RANK = 3
+NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 4
 
 
 NDefines.NCountry.PS_BUY_IDEA = 300
@@ -618,7 +618,7 @@ NDefines.NFrontend.MP_OPTIONS_POS_Z = 750.0
 NDefines.NFrontend.MP_OPTIONS_LOOK_X = 1320.0
 NDefines.NFrontend.MP_OPTIONS_LOOK_Z = 900.0
 
-NDefines.NReligion.HARMONY_LOSS_PER_DEV_CONVERTED = 0.2
+NDefines.NReligion.HARMONY_LOSS_PER_DEV_CONVERTED = 0
 NDefines.NReligion.ASPECT_REMOVE_COST = 1
 
 NDefines.NReligion.MAX_CHRISTIAN_RELIGIOUS_CENTERS = 5

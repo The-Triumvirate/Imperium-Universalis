@@ -99,18 +99,25 @@ country_decisions = {
 	Zhou_LiNian = { 
 		potential = { 
 			tag = ZHO
-			
 			NOT = { has_country_flag = Zhou_LiNian }
 		}
 		allow = { 
 			OR = {
-				NOT = { religion = chinese_religion }
-				custom_trigger_tooltip = {
-					tooltip = subject_all_chinese_religions
-					NOT = {
-						any_province = {
-							religion_group = chinese_religions
-							NOT = { country_or_non_sovereign_subject_holds = ROOT }
+				OR = {
+					AND = {
+						hre_size = 1
+						is_emperor = yes
+					}
+					AND = {
+						NOT = { hre_size = 1 }
+						custom_trigger_tooltip = {
+							tooltip = subject_all_chinese_religions
+							NOT = {
+								any_province = {
+									religion_group = chinese_religions
+									NOT = { country_or_non_sovereign_subject_holds = ROOT }
+								}
+							}
 						}
 					}
 				}
@@ -157,29 +164,91 @@ country_decisions = {
 		}
 	}
 
-	#Xin_Form = {
-		#potential = {
-		  	#OR = {
-				#tag = CHN
-				#dynasty = "Gui"
-				#dynasty = "Tian"
-				#dynasty = "Wang"
-		  	#}
-		  	#NOT = { exists = XIN }
-		#}
-		#allow = {
-		  	#is_at_war = no
-		  	#is_emperor_of_china = yes
-		  	#religion = confucianism
-		  	#religious_unity = 1
-		  	#has_country_modifier = slavery_abolished
-		#}
-		#effect = {
-			#change_tag = XIN
-			#country_event = {  id = new_ideas.1 }
-		#}
-		#ai_will_do = {
-			#factor = 1
-		#}
-	#}
+	Xin_Form = {
+		potential = {
+		  	OR = {
+				tag = CHN
+				dynasty = "Gui"
+				dynasty = "Tian"
+				dynasty = "Wang"
+		  	}
+		  	NOT = { exists = XIN }
+		}
+		allow = {
+		  	is_at_war = no
+		  	is_emperor_of_china = yes
+		  	religion = confucianism
+		  	religious_unity = 1
+		  	has_country_modifier = slavery_abolished
+		}
+		effect = {
+			change_tag = XIN
+			country_event = {  id = new_ideas.1 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	bianshen_han = {
+		potential = {
+			NOT = { exists = HNW }
+			NOT = { tag = HNW }
+			OR = {
+				tag = FAN
+				dynasty = "Fan"
+				dynasty = "Xun"
+				dynasty = "Liu"
+				dynasty = "Shi"
+			}
+		}
+		allow = {
+			is_at_war = no
+			is_subject = no
+			hanzhong_area = {
+				owned_by = ROOT
+				controlled_by = ROOT
+				type = all
+			}
+			north_nan_area_west = {
+				owned_by = ROOT
+				controlled_by = ROOT
+				type = all
+		  	}
+			north_nan_area = {
+				owned_by = ROOT
+				controlled_by = ROOT
+				type = all
+			}
+			nan_area_east = {
+				owned_by = ROOT
+				controlled_by = ROOT
+				type = all
+			}
+			jiangxia_area_south = {
+				owned_by = ROOT
+				controlled_by = ROOT
+				type = all
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = hanzhong_area
+				area = north_nan_area_west
+				area = north_nan_area
+				area = nan_area_east
+				area = jiangxia_area_south
+			}
+			NOT = { owned_by = ROOT }
+		}
+		effect = {
+			change_tag = HNW
+			hidden_effect = {
+			every_owned_province = { remove_core = FAN } }
+			swap_free_idea_group = yes
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
 }
