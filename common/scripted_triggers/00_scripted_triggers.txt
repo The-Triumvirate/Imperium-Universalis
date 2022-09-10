@@ -18,6 +18,35 @@
 # Usage:
 # my_test_trigger = { ARG1=foo ARG2=bar CONTEXT=FROM }
 
+is_subject_other_than_tributary_trigger = { #Ie Tags that cannot conduct independent diplomacy
+	custom_trigger_tooltip = {
+		tooltip = is_subject_other_than_tributary_trigger_tooltip
+		is_subject = yes
+		NOT = { is_subject_of_type = tributary_state }
+	}
+}
+
+is_free_or_tributary_trigger = { #I.e. Tags that can conduct independent diplomacy
+	custom_trigger_tooltip = {
+		tooltip = is_free_or_tributary_trigger_tooltip
+		OR = {
+			is_subject = no
+			is_subject_of_type = tributary_state
+		}
+	}
+}
+
+highest_supply_limit_in_area = {
+	NOT = {
+		area_for_scope_province = { 
+			NOT = { province_id = prev }
+			owned_by = root
+			supply_limit = prev 
+			NOT = { prev = { supply_limit = prev } }
+		}
+	}
+}
+
 #GENERAL TRIGGERS
 has_mil_advisor = {
 	custom_trigger_tooltip = {
@@ -169,25 +198,6 @@ has_dip_advisor_3 = {
 			naval_leader_adv = 3
 			governor = 3
 			diplomat_adv = 3
-		}
-	}
-}
-
-
-is_subject_other_than_tributary_trigger = { #Ie Tags that cannot conduct independent diplomacy
-	custom_trigger_tooltip = {
-		tooltip = is_subject_other_than_tributary_trigger_tooltip
-		is_subject = yes
-		NOT = { is_subject_of_type = tributary_state }
-	}
-}
-
-is_free_or_tributary_trigger = { #I.e. Tags that can conduct independent diplomacy
-	custom_trigger_tooltip = {
-		tooltip = is_free_or_tributary_trigger_tooltip
-		OR = {
-			is_subject = no
-			is_subject_of_type = tributary_state
 		}
 	}
 }
@@ -833,18 +843,6 @@ valid_for_personal_unions_trigger = {
 is_shadow_kingdom_eligible_trigger = {}
 
 will_leave_for_shadow_kingdom_trigger = {}
-
-#province scope; checks it is highest or joint highest supply limit in the area owned by you (useful for spawning rebels)
-highest_supply_limit_in_area = {
-	NOT = {
-		area_for_scope_province = { 
-			NOT = { province_id = prev }
-			owned_by = root
-			supply_limit = prev 
-			NOT = { prev = { supply_limit = prev } }
-		}
-	}
-}
 
 # Has current fort level
 province_has_current_tech_fort_trigger = {
