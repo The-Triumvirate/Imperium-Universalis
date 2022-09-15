@@ -95,7 +95,15 @@ on_war_won = {
 # country
 # root = winning country, from = loser country
 on_main_war_won = {
-	
+	#Ishkuza mission tree
+	if = {
+		limit = {
+			TAG = SX2
+			is_at_war = no
+			has_country_modifier = invasion_scythian_war_morale_buff
+		}
+		remove_country_modifier = invasion_scythian_war_morale_buff
+	}
 }
 
 # country
@@ -124,6 +132,15 @@ on_war_lost = {
 # country
 # root = loser country, from = winner country
 on_main_war_lost = {
+	#Ishkuza mission tree
+	if = {
+		limit = {
+			TAG = SX2
+			is_at_war = no
+			has_country_modifier = invasion_scythian_war_morale_buff
+		}
+		remove_country_modifier = invasion_scythian_war_morale_buff
+	}
 }
 
 # country
@@ -1270,6 +1287,35 @@ on_province_owner_change = {
 	events = {
 		new_governments.7
 		#new_governments.21
+	}
+	#Ishkuza mission tree
+	if = {
+		limit = {
+			owner = {
+				TAG = SX2
+				OR = {
+					has_country_flag = ishkuza_missions_minority_rights_flag
+					has_country_flag = ishkuza_missions_minority_serfs_flag
+				}
+			}
+			NOT = { culture_group = SX2 }
+		}
+		if = {
+			limit = { SX2 = { has_country_flag = ishkuza_missions_minority_rights_flag } }
+			add_province_modifier = {
+				name = invasion_scythian_limited_minority_rights
+				duration = -1
+				hidden = yes
+			}
+		}
+		else_if = {
+			limit = { SX2 = { has_country_flag = ishkuza_missions_minority_serfs_flag } }
+			add_province_modifier = {
+				name = invasion_scythian_limited_minority_serfs
+				duration = -1
+				hidden = yes
+			}
+		}
 	}
 }
 
