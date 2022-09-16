@@ -1,0 +1,964 @@
+yue_slot_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+		tag = YUE
+		tag = XIA
+		}
+		NOT = {
+			map_setup = map_setup_random
+		}
+	}
+	has_country_shield = yes
+	#开拓越地 越国的土地多而人少，夏君需要夷民，我们应该尽量开拓其他地方来获取更广袤的土地和人口。
+	yue_kaituoyuedi = {
+		#position = 1
+		icon = missions_china_reclaim
+		#completed_by = 190.1.1
+		required_missions = {   }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			treasury = 100
+			stability = 1
+		}
+		effect = {
+			every_owned_province = {
+			  limit = {
+               culture = wuyue			 
+			  }
+			  add_province_modifier = {
+				name = "yue_kaituoyued_modifier" #人口增长加速
+				duration = 7300
+			  }
+			}
+		}
+	}
+	#十年生聚 随着我们的国家更加强大，休养生息将成为十分重要的事情。十年生聚，十年教训将给我们强大的力量。
+	yue_shinianshengju = {
+		#position = 2
+		icon = missions_china_army
+		#completed_by = 250.1.1
+		required_missions = {
+			yue_kaituoyuedi
+		}
+		provinces_to_highlight = {
+			area = kuaiji_area_west
+		}
+		trigger = {
+			kuaiji_area_west = {
+				owned_by = ROOT
+				type = all
+			}
+			total_development = 100
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yue_shinianshengju_modifier" #国家税收增长修正25％、陆军上限修正增加20％
+				duration = 3650
+			}
+		}
+	}
+	#吴越争霸 时机已经成熟，苦心人天不负，卧薪尝胆，三千越甲可吞吴，胜利终将属于我们。
+	yue_wuyuezhengba = {
+		#position = 3
+		icon = missions_china_dashing
+		required_missions = {
+			yue_shinianshengju
+			yue_beizhanwuren
+		}
+		provinces_to_highlight = {
+		    OR = {
+			area = piling_area_south
+			area = wu_area
+			}
+		}
+		trigger = {
+			wu_area = {
+			 owned_by = ROOT
+			 type = all
+			}
+			piling_area_south = {
+			 owned_by = ROOT
+			 type = all
+			}
+			have_had_reform = sinofication_government_1
+			have_had_reform = sinofication_government_1
+			have_had_reform = sinofication_government_1
+		}
+		effect = {
+			add_casus_belli = {
+				target = WUU
+				type = cb_mission_invasion
+				months = 120
+			}
+		}
+	}
+	#十年九战 十年九战，灭掉吴国，终成假话。
+	yue_shinianjiuzhan = {
+		position = 4
+		icon = missions_china_vicyory
+		required_missions ={
+			yue_wuyuezhengba
+		}
+		provinces_to_highlight = {
+		    area = piling_area
+		}
+		trigger = {
+			NOT = { exists = WUU }
+			piling_area = {
+			 owned_by = ROOT
+			 type = all
+			}
+			have_had_reform = sinofication_government_2
+			have_had_reform = sinofication_government_2
+			have_had_reform = sinofication_government_2
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_shinianjiuzhan_modifier"#士气恢复速度+20％ 陆军维护费-25％
+
+			duration = 9125 #25 年
+			}
+		}
+	}
+	#越女剑 越女阿青剑术精妙，她将剑术教导我们的军队。
+	yue_yuenvjian = {
+		position = 5
+		icon = missions_china_alliance
+		required_missions = { yue_shinianjiuzhan }
+		trigger = {
+			has_mil_advisor_2 = yes
+		}
+		effect = {
+			define_general = {
+			 shock = 5
+			 fire = 0
+			 manuever = 5
+			 siege = 0
+			 female = yes
+			}
+			add_country_modifier = {
+			name = "yue_yuenvjian_modifier"#步兵作战能力+10%
+			duration = 9125 #25 年
+			}
+		}
+	}
+	#争霸中原 大禹的子孙不单单是南方的一个小小诸侯，更担负着圣王后代应该承担的义务，也许称霸中原是一个不错的选择。
+	yue_zhengbazhongyuan = {
+		position = 6
+		icon = missions_china_dashing
+		required_missions = {
+			yue_yuenvjian
+			yue_yuerenge
+		}
+		provinces_to_highlight = {
+		 OR = {
+		  area = hengshan_area
+		  area = linhuai_area_south
+	     }
+		}
+		trigger = {
+			hengshan_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			linhuai_area_south = {
+			  type = all
+			  owned_by = ROOT
+			}
+			have_had_reform = sinofication_government_3
+			have_had_reform = sinofication_government_3
+			have_had_reform = sinofication_government_3
+		}
+		effect = {
+			if = {
+			 limit = {
+			 NOT = { religion_group = chinese_religions }
+			 }
+			 country_event = { id = chinese_school_events.3 }
+			}
+			yangzhou_china = {
+			  add_permanent_claim = ROOT
+			}
+			linhuai_area = {
+			  add_claim = ROOT
+			}
+			donghai_area_south = {
+			  add_claim = ROOT
+			}
+			emperor = {
+			country_event = { id = ShiJian.30 }
+			}
+		}
+	}
+	#征徐 跨过长江，徐夷从很久之前就不服从天子的号令，现在是时候让这些蛮子付出代价了。
+	yue_zhengxu = {
+		position = 6
+		icon = missions_china_army
+		required_missions = {
+			yue_zhengbazhongyuan
+		}
+		provinces_to_highlight = {
+		 OR = {
+		  area = donghai_area_south
+	     }
+		}
+		trigger = {
+			donghai_area_south = {
+			  type = all
+			  owned_by = ROOT
+			}
+			NOT = { exists = XUG }
+		}
+		effect = {
+			add_treasury = 500
+			add_country_modifier = {
+			name = "yue_zhengxu_modifier"#外交威望+1
+			duration = 9125 #25 年
+			}
+			langya_area = {
+			 add_core = ROOT
+			}
+		}
+	}
+	#齐鲁之间 争霸中原最关键的地方在于控制齐鲁，控制齐鲁就能称霸中原。
+	yue_qiluzhijian = {
+		position = 6
+		icon = missions_china_diplomacy
+		required_missions = {
+			yue_zhengxu
+			yue_binghuai
+		}
+		provinces_to_highlight = {
+		 OR = {
+		  area = donghai_area
+		  area = langya_area
+	     }
+		}
+		trigger = {
+			donghai_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			langya_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			have_had_reform = chinese_feudalism_reform
+		}
+		effect = {
+			set_capital = 4292
+			4292 = {
+			  change_culture = ROOT
+			  add_province_modifier = {
+			   name = "yue_qiluzhijian_modifier"#本地税收修正25％ 直属州维护费-20％
+			   duration = 9125 #25 年
+			 }
+			}
+			if = {
+			 limit = {
+			  ROOT = { is_part_of_hre = yes }
+			 }
+			 4292 = { set_in_empire = yes }
+			}
+		}
+	}
+	#南方伯长 争霸中原最关键的地方在于控制齐鲁，控制齐鲁就能称霸中原。
+	yue_nanfangbozhang = {
+		position = 6
+		icon = missions_china_bureaucrat
+		required_missions = {
+			yue_qiluzhijian
+		}
+		provinces_to_highlight = {
+		 
+		}
+		trigger = {
+			OR = {
+			is_emperor = yes
+			 AND = {
+			  is_elector = yes
+			  OR = {
+			   QII = { is_elector = no }
+			   LUU = { is_elector = no } 
+			  }
+			 }
+			 AND = {
+			  is_emperor = no
+			  is_elector = no
+			   QII = { is_subject_of = ROOT }
+			   LUU = { is_subject_of = ROOT } 
+			 }
+			}
+			exists = ZHO
+		}
+		effect = {
+			ZHO = {
+			 country_event = { id = ShiJian.31 }
+			}
+		}
+	}
+}
+yue_slot_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+		tag = YUE
+		tag = XIA
+		}
+		NOT = {
+			map_setup = map_setup_random
+		}
+	}
+	has_country_shield = yes
+	#备战吴人 北方的吴人已经是我们最大的危险，南方只能有一个霸主，是时候向吴人蛮子展示我们的力量了。
+	yue_beizhanwuren = {
+		position = 2
+		icon = missions_china_camp
+		#completed_by = 190.1.1
+		required_missions = { yue_kaituoyuedi  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			army_size_percentage = 1
+			manpower_percentage = 0.8
+			any_known_country = {
+			 OR = {
+			  is_emperor = yes
+			  is_elector = yes
+			  is_great_power = yes
+			 }
+			 NOT = { tag = ROOT }
+			 has_opinion = {
+			  who = ROOT
+			  value = 100
+			 }
+			 NOT = {
+			  has_opinion = {
+			  who = WUU
+			  value = 0
+			  }
+			 }
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yue_beizhanwuren_modifier" #陆军士气+10％
+				duration = 9125
+			  }
+			  emperor = {
+			  country_event = { id = ShiJian.29 }
+			  }
+			if = {
+			 limit = {
+			  is_neighbor_of = WUU
+			 } 
+			 
+		YUE = {
+		 every_owned_province = {
+		  limit = {
+           any_neighbor_province = {
+		    owned_by = WUU
+		   }		   
+		  }
+           add_core = WUU
+		 }
+		}
+		WUU = {
+		 every_owned_province = {
+		  limit = {
+           any_neighbor_province = {
+		    owned_by = YUE
+		   }		   
+		  }
+           add_core = YUE
+		 }
+		}
+			}
+		}
+	}
+	#越人歌 越人唱着会稽的歌谣征服了吴人，我们的目光将望向中原，那是我们祖先曾经居住的地方。今夕何夕兮搴洲中流，今日何日兮得与王子同舟。 蒙羞被好兮不訾诟耻，心几烦而不绝兮得知王子。 山有木兮木有枝，心说君兮君不知。滥兮抃草滥。予昌枑泽，予昌州。州鍖州焉乎，秦胥胥。缦予乎，昭澶秦逾。渗惿随河湖。
+	yue_yuerenge = {
+		position = 5
+		icon = missions_china_bureaucrat
+		#completed_by = 250.1.1
+		required_missions = {
+			yue_shinianjiuzhan
+		}
+		provinces_to_highlight = {
+			#area = kuaiji_area_west
+		}
+		trigger = {
+			has_adm_advisor_2 = yes
+		}
+		effect = {
+			hengshan_area = {
+			  add_claim = ROOT
+			}
+			linhuai_area_south = {
+			  add_claim = ROOT
+			}
+		}
+	}
+	#并淮
+	yue_binghuai = {
+		position = 7
+		icon = missions_china_army
+		required_missions = {
+			yue_zhengbazhongyuan
+		}
+		provinces_to_highlight = {
+		    area = linhuai_area
+		}
+		trigger = {
+			linhuai_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			NOT = {
+			 any_known_country = {
+			  primary_culture = huaiyi
+			 }
+			}
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_binghuai_modifier"#外交威望+1
+			duration = 9125 #25 年
+			}
+			donghai_area = {
+			  add_claim = ROOT
+			}
+			change_primary_culture = yue_chinese
+			
+		}
+	}
+}
+yue_slot_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+		 tag = YUE
+		 tag = XIA
+		}
+		NOT = {
+			map_setup = map_setup_random
+		}
+	}
+	has_country_shield = yes
+	#身奉禹祀 越国的君主相传是大禹的后代，其国家是为了祭祀圣王而生。
+	yue_shenfengyusi = {
+		position = 2
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { yue_kaituoyuedi  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			government = monarchy
+			stability = 2
+			prestige = 25
+			OR = {
+			 any_neighbor_country = {
+			  primary_culture = yinyi
+			 }
+			 any_owned_province = {
+			  any_neighbor_province = {
+			   culture = yinyi
+			  }
+			 }
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yue_shenfengyusi_modifier" #正统性+1 
+				duration = -1
+			  }
+			 sishui_area = {
+			   add_core = ROOT
+			 } 
+			 sishui_area_north = {
+			   add_permanent_claim = ROOT
+			 } 
+		}
+	}
+	#向商人复仇 商汤叛乱颠覆了我们的国家，现在是时候让商汤的子孙付出代价了。
+	yue_xiangshangrenfuchou = {
+		#position = 2
+		icon = missions_china_army
+		#completed_by = 250.1.1
+		required_missions = {
+			yue_shenfengyusi
+		}
+		provinces_to_highlight = {
+			OR = {
+			 area = sishui_area
+			 area = sishui_area_north
+			}
+		}
+		trigger = {
+			sishui_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			sishui_area_north = {
+			  type = all
+			  owned_by = ROOT
+			}
+		}
+		effect = {
+			dang_area_north = {
+			  add_permanent_claim = ROOT
+			}
+			dang_area = {
+			  add_core = ROOT
+			}
+			chenliu_area = {
+			  add_core = ROOT
+			}
+		}
+	}
+	#重夺九鼎 九鼎本大禹所制，今为周王所有，禹王子孙当讨回！
+	yue_chongduojiuding = {
+		#position = 3
+		icon = missions_china_great
+		required_missions = {
+			yue_xiangshangrenfuchou
+		}
+		provinces_to_highlight = {
+			OR = {
+			 province_id = 4349
+			}
+		}
+		trigger = {
+			capital_scope = {
+			 has_great_project = {
+				type = jiuding_jizhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yanzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_qingzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_xuzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yangzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_jingzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yuzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_liangzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yongzhou
+				tier = 1
+			 }
+			}
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_chongduojiuding_modifier"#威望衰退-1%
+			duration = -1 #25 年
+			}
+			henan_area = {
+			  add_permanent_claim = ROOT
+			}
+			henan_area_west = {
+			  add_permanent_claim = ROOT
+			}
+		}
+	}
+	#洛书 五百年必有王者出，有一女子自称为洛神，增洛书予我君。
+	yue_luoshu = {
+		#position = 3
+		icon = missions_china_bureaucrat
+		required_missions = {
+			yue_chongduojiuding
+		}
+		provinces_to_highlight = {
+			OR = {
+			 area = henan_area
+			 area = henan_area_west
+			}
+		}
+		trigger = {
+			henan_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			henan_area_west = {
+			  type = all
+			  owned_by = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_luoshu_modifier"#稳定花费修正减少30％ 天命修正+0.05％
+			duration = -1 #25 年
+			}
+			add_stability = 1
+		}
+	}
+	#定都中原 唯有定都中原才能重新征服华夏，才能再次建立少康一样的功业。
+	yue_dingduzhongyuan = {
+		#position = 3
+		icon = missions_china_great
+		required_missions = {
+			yue_luoshu
+			yue_hetu
+		}
+		provinces_to_highlight = {
+			OR = {
+			 province_id = 4322
+			 province_id = 4349
+			 province_id = 4356
+			}
+		}
+		trigger = {
+			4322 = {
+			  owned_by = ROOT
+			}
+			4349 = {
+			  owned_by = ROOT
+			}
+			4356 = {
+			  owned_by = ROOT
+			}
+		}
+		effect = {
+			country_event = { id = ShiJian.32 }
+		}
+	}
+	#九鼎归越 禹传子，家天下，四百年迁夏社。汤伐夏，国号商，五百载，至纣亡。现如今九鼎终于重新回归圣王子孙。
+	yue_jiudingguiyue = {
+		#position = 3
+		icon = missions_china_bureaucrat
+		required_missions = {
+			yue_dingduzhongyuan
+		}
+		provinces_to_highlight = {
+			OR = {
+			 province_id = 4349
+			}
+		}
+		trigger = {
+			4349 = {
+			  owned_by = ROOT
+			}
+			
+			capital_scope = {
+			 has_great_project = {
+				type = jiuding_jizhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yanzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_qingzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_xuzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yangzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_jingzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yuzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_liangzhou
+				tier = 1
+			 }
+			 has_great_project = {
+				type = jiuding_yongzhou
+				tier = 1
+			 }
+			}
+		}
+		effect = {
+			#九鼎奇观迁到首都所在 变为3级
+			hedong_area = {
+			  add_core = ROOT
+			}
+			pingyang_area = {
+			  add_permanent_claim = ROOT
+			}
+			henei_area = {
+			  add_permanent_claim = ROOT
+			}
+			
+			capital_scope = {
+			 add_great_project_tier = {
+				type = jiuding_jizhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_yanzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_qingzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_xuzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_yangzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_jingzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_yuzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_liangzhou
+				tier = 3
+			 }
+			 add_great_project_tier = {
+				type = jiuding_yongzhou
+				tier = 3
+			 }
+			}
+		}
+	}
+	#夏都 安邑古称夏邑，曾经是夏朝的旧都，河东富庶之地，居晋控秦，南御周郑王霸之地也。
+	yue_xiadu = {
+		#position = 3
+		icon = missions_china_great
+		required_missions = {
+			yue_jiudingguiyue
+		}
+		provinces_to_highlight = {
+			OR = {
+			 area = hedong_area
+			}
+		}
+		trigger = {
+			hedong_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+		}
+		effect = {
+			set_capital = 4077
+			
+	    capital_scope = {
+		 add_base_tax = 1
+		 add_base_production = 2
+		 add_base_manpower = 4
+		}
+		}
+	}
+	#圣王的启示 天数有变，神器更易，而归有德之人，自然之理也。
+	yue_shengwangdeqishi = {
+		#position = 3
+		icon = missions_china_bureaucrat
+		required_missions = {
+			yue_xiadu
+		}
+		provinces_to_highlight = {
+			OR = {
+			 area = pingyang_area
+			 area = henei_area
+			}
+		}
+		trigger = {
+			pingyang_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			henei_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+		}
+		effect = {
+			change_tag = XIA
+			hidden_effect = {
+			 every_owned_province = {
+			  remove_core = YUE
+			  remove_core = QIG
+			  remove_core = THG
+			  remove_core = ZNG
+			 }
+			}
+			country_event = {
+			 id = new_ideas.1
+			}
+		}
+	}
+	#少康之业 今效少康复夏故事，中兴之业再造，使我子孙统治中国，直到千秋万世。
+	yue_shaokangzhiye = {
+		#position = 3
+		icon = missions_china_learning
+		required_missions = {
+			yue_shengwangdeqishi
+		}
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			tag = XIA
+			is_emperor_of_china = yes
+		}
+		effect = {
+	      custom_tooltip = yue_shaokangzhiye.tt
+		  hidden_effect = {
+			every_known_country = {
+			  limit = {
+			   is_subject_of = ROOT
+			   NOT = { is_subject_of_type = tributary_state }
+			  }
+			  save_event_target_as = yue_shaokangzhiye_a
+			}
+			create_subject = {
+					who = event_target:yue_shaokangzhiye
+					subject_type = tributary_state
+				}
+		  }
+		}
+	}
+}
+yue_slot_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+		 tag = YUE
+		 tag = XIA
+		}
+		NOT = {
+			map_setup = map_setup_random
+		}
+	}
+	has_country_shield = yes
+	
+	#殷墟 玄鸟子孙在殷墟中哭泣，桐宫之中宋公现在被囚禁在那里，滔天烈火之中圣王的子孙夺取了殷墟。
+	yue_yinxu = {
+		position = 4
+		icon = missions_china_vicyory
+		required_missions = {
+			yue_xiangshangrenfuchou
+		}
+		provinces_to_highlight = {
+			OR = {
+			 area = dang_area_north
+			 area = dang_area
+			 area = chenliu_area
+			}
+		}
+		trigger = {
+			dang_area_north = {
+			  type = all
+			  owned_by = ROOT
+			}
+			dang_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			chenliu_area = {
+			  type = all
+			  owned_by = ROOT
+			}
+			NOT = { exists = SON }
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_yinxu_modifier"#击败玄鸟 陆军士气+10％
+			duration = -1 #25 年
+			}
+		}
+	}
+	
+	#河图 圣王出世则河图现，有人听闻一只千年神龟托着一个河图在河滨现世，天命在孤。
+	yue_hetu = {
+		position = 5
+		icon = missions_china_ship
+		#completed_by = 250.1.1
+		required_missions = {
+			yue_yinxu
+		}
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 2
+			prestige = 80
+		}
+		effect = {
+			add_country_modifier = {
+			name = "yue_hetu_modifier"#击败玄鸟 外交威望+2天命修正+％0.05
+			duration = -1 #25 年
+			}
+		}
+	}
+	#龙纹三尺剑 我有龙纹三尺之长剑，真刚不做绕指柔。云昔黄帝轩辕氏，用斩铜头铁额横行天下之蚩尤。
+	yue_longwensanchijian = {
+		position = 10
+		icon = missions_china_manufacturer
+		#completed_by = 250.1.1
+		required_missions = {
+			yue_shengwangdeqishi
+		}
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			tag = XIA
+			is_emperor_of_china = yes
+			imperial_mandate = 100
+		}
+		effect = {
+			china_superregion = {
+			 limit = {
+			  NOT = { 
+			   owned_by = ROOT
+			  }
+			 }
+			 add_permanent_claim = ROOT
+			}
+		}
+	}
+}
