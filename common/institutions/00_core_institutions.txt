@@ -2,6 +2,7 @@
 
 #Table of contents
 
+#	iron_age
 #	writing_system
 #	coin_usage
 #	elephant_domestication
@@ -24,6 +25,325 @@
 # if a modifier is scaled, its multiplied with development in the province.
 
 #######################################
+# Ferrous Metallurgy
+#######################################
+
+iron_age = {
+	bonus = {
+		global_trade_goods_size = 0.075
+	}
+	trade_company_efficiency = 0.0
+
+	history = {
+		OR = {
+			#Iberian iron age
+			region = hispania_tarraconensis
+			#Middle East iron age
+			culture_group = semitic
+			superregion = asia_superregion
+			superregion = armenia_superregion
+			superregion = arabia_superregion
+			superregion = syria_superregion
+			superregion = mesopotamia_superregion
+			region = upper_egypt_region
+			region = lower_egypt_region
+			owned_by = KUS
+			#Italian Iron age
+			culture_group = italic
+			culture_group = etruscan_culture_group
+			culture_group = nuragic_group
+			culture = oenotrian
+			#Greek iron age
+			culture_group = hellenic
+			culture_group = macedon_group
+			superregion = macedonia_superregion
+			region = thracia_region
+			#Iranian iron age
+			superregion = iran_superregion
+			culture_group = western_iranian
+			culture_group = eastern_iranian_group
+			#Scythian iron age
+			culture = scythian
+			culture = cimmerian
+			culture = getoscythian
+			culture = tauri
+			#Hallstat culture
+			culture_group = eastern_celtic
+			culture_group = gaulish_group
+			#First iron in China produced in 900 BC
+			culture_group = chinese_group
+			culture_group = beidixirong_group
+			#Indian iron age
+			superregion = uttarapatha_superregion
+			culture_group = indian_group
+			culture_group = mleccha_group
+			culture_group = dravidian_group
+			culture = kiratan
+			region = eastern_india_region
+			region = western_india_region
+			region = konkana_region
+			region = chola_region
+			#Nok culture
+			region = aethiopia_interior_region
+			region = hesperia_aethiopia_region
+			#Sa Huynh culture
+			region = lacviet_region
+			region = jiaozhou_china
+			AND = {
+				is_year = 180
+				OR = {
+					culture = neuri
+					culture = finno_ugric
+					culture_group = caucasian_group
+					#Pazyryk Culture
+					culture = saka
+					culture = massagetean
+					culture = chorasmian
+					culture = amard
+					culture = parni
+				}
+			}
+			AND = {
+				is_year = 200
+				OR = {
+					superregion = hispania_superregion
+					superregion = parthia_superregion
+					superregion = sakastan_superregion
+					#Hallstat Influence
+					superregion = italia_superregion
+					region = illyria_region
+					region = pannonia_region
+				}
+			}
+			AND = {
+				is_year = 254
+				OR = {
+					region = aethiops
+					region = erythrae_region
+					region = nubia_region
+					#Wu region produces iron
+					culture = wuyue
+					culture = gouwu
+					#British Iron Age
+					culture_group = britannic_group
+				}
+			}
+			AND = {
+				is_year = 300
+				OR = {
+					superregion = china_superregion
+					culture_group = ligures_group
+					culture_group = north_atlantic_group
+				}
+			}
+			AND = {
+				is_year = 304
+				OR = {
+					region = burma_region
+					region = upper_burma_region
+					#Germanic Iron Age
+					region = germania_region
+				}
+			}
+			AND = {
+				is_year = 352
+				#Celtic expansion in Dacia
+				OR = {
+					region = dacia_region
+					region = sarmatia_region
+				}
+			}
+			AND = {
+				is_year = 354
+				OR = {
+					superregion = scythia_superregion
+					region = suebia_region
+					region = germania_scandza_region
+					#Oc Eo Culture
+					region = champa_region
+					region = dvaravati_region
+					region = funan_region
+				}
+			}
+			AND = {
+				is_year = 454
+				OR = {
+					superregion = turan_superregion
+					owned_by = ZHN
+				}
+			}
+			AND = {
+				is_year = 554
+				OR = {
+					superregion = chryse_insula_superregion
+					region = suvarnadvipa_region
+					region = malayadvipa_region
+				}
+			}
+			AND = {
+				#Wiman in Joseon
+				is_year = 560
+				owned_by = GOJ
+			}
+			AND = {
+				#Samhan period
+				is_year = 656
+				superregion = korea_superregion
+			}
+			AND = {
+				is_year = 754
+				OR = {
+					superregion = japan_superregion
+					superregion = tibet_superregion
+					superregion = suvarnabhumi_superregion
+				}
+			}
+		}
+	}
+	
+	# no need for events, as its there from the start.
+	#can_start = {	is_year = 1000	}
+	#start_chance = 100
+	#on_start = iu_institution_events.1
+
+	can_embrace = {
+		always = yes
+	}
+
+	embracement_speed = {
+		modifier = {
+			scale = yes
+			factor = 0.5
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = { iron_age = 100 }
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.25
+			potential = { NOT = { any_friendly_coast_border_province = { iron_age = 100 } } }
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+					iron_age = 100
+				}
+			}
+		}
+		modifier = {
+			factor = 1
+			scale = yes
+			potential = { owner = { has_institution = iron_age } }
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_age_embraced
+				owner = { has_institution = iron_age }
+			}
+		}
+		modifier = {
+			factor = 0.04
+			scale = yes
+			potential = {
+				any_trade_node_member_province = { iron_age = 100 }
+				province_has_center_of_trade_of_level = 1
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_tradenode_prov_iron_age
+				province_has_center_of_trade_of_level = 1
+				any_trade_node_member_province = { iron_age = 100 }
+			}
+		}
+		modifier = {
+			factor = 0.025
+			scale = yes
+			potential = { trade_goods = iron }
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_province_miners
+				trade_goods = iron
+				OR = {
+					has_building = miners_camp
+					has_building = foundry
+				}
+			}
+			owner = { absolutism = 10 }
+		}
+		modifier = {
+			factor = 0.033
+			scale = yes
+			potential = { trade_goods = iron }
+			custom_trigger_tooltip = {
+				tooltip = tooltip_iron_province_mine
+				trade_goods = iron
+				OR = {
+					has_building = quarry
+					has_building = small_mine
+					has_building = big_mine
+				}
+				owner = { absolutism = 10 }
+			}
+		}
+		modifier = {
+			factor = 0.033
+			scale = yes
+			potential = {
+				is_capital = yes
+				owner = { advisor = armor_smith }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_capital_master_smith
+				is_capital = yes
+				owner = {
+					armor_smith = 3
+					absolutism = 15
+				}
+			}
+		}
+		modifier = {
+			factor = 0.05
+			scale = yes
+			potential = {
+				is_capital = yes
+				owner = { any_ally = { has_institution = iron_age } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_ally_iron_age
+				is_capital = yes
+				owner = { any_ally = { has_institution = iron_age } }
+			}
+		}
+		modifier = {
+			factor = 0.2
+			scale = yes
+			potential = {
+				is_capital = yes
+				owner = { any_subject_country = { has_institution = iron_age } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_vassal_iron_age
+				is_capital = yes
+				owner = { any_subject_country = { has_institution = iron_age } }
+			}
+		}
+	}
+	
+	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+		factor = 24
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
+		}
+	}
+}
+
+#######################################
 # Elephant Domestication
 #######################################
 
@@ -32,7 +352,6 @@ elephant_domestication = {
 		cavalry_power = 0.025
 	}
 	trade_company_efficiency = 0.0
-
 
 	history = {
 		OR = {
@@ -186,7 +505,14 @@ elephant_domestication = {
 	
 	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.5
 			is_at_war = yes
@@ -410,7 +736,14 @@ writing_system = {
 	
 	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.5
 			is_at_war = yes
@@ -750,7 +1083,14 @@ coin_usage = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -1044,7 +1384,14 @@ siege_engineering_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -1470,7 +1817,14 @@ bureaucracy_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -1556,12 +1910,15 @@ cast_iron_institution = {
 				superregion = germania_superregion
 			}
 			AND = {
-				is_year = 600
+				is_year = 620
 				OR = {
-					superregion = korea_superregion
 					superregion = chryse_insula_superregion
 					superregion = suvarnabhumi_superregion
 				}
+			}
+			AND = {
+				is_year = 670
+				superregion = korea_superregion
 			}
 		}
 	}
@@ -1596,7 +1953,13 @@ cast_iron_institution = {
 
 	
 	embracement_speed = {
-	
+		modifier = {
+			factor = 0
+			custom_trigger_tooltip = {
+				tooltip = tooltip_bronze_age
+				NOT = { iron_age = 100 }
+			}
+		}
 		modifier = {
 			factor = 0.8
 			scale = yes
@@ -1702,7 +2065,14 @@ cast_iron_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -2009,7 +2379,14 @@ classical_philosophy_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -2327,7 +2704,14 @@ civil_law_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -2620,7 +3004,14 @@ axiomatic_maths_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -2693,7 +3084,6 @@ blast_furnace_institution = {
 					superregion = arabia_superregion
 					superregion = eastern_africa_superregion
 					superregion = turan_superregion
-					superregion = korea_superregion
 				}
 			}
 			AND = {
@@ -2711,6 +3101,7 @@ blast_furnace_institution = {
 				OR = {
 					superregion = hispania_superregion
 					superregion = germania_superregion
+					superregion = korea_superregion
 				}
 			}
 		}
@@ -2779,6 +3170,13 @@ blast_furnace_institution = {
 	
 	embracement_speed = {
 	
+		modifier = {
+			factor = 0
+			custom_trigger_tooltip = {
+				tooltip = tooltip_bronze_age
+				NOT = { iron_age = 100 }
+			}
+		}
 		modifier = {
 			factor = 0.33
 			scale = yes
@@ -2917,7 +3315,14 @@ blast_furnace_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -3336,7 +3741,14 @@ advanced_hydraulics_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -3618,7 +4030,14 @@ astronomy_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -3999,7 +4418,14 @@ engineering_architecture_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
@@ -4366,7 +4792,14 @@ tactics_strategy_institution = {
 	
 	ai_will_do = {
 		factor = 24
-		
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
 		modifier = {
 			factor = 0.25
 			is_at_war = yes
