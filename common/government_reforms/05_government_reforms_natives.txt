@@ -445,9 +445,95 @@ stay_nomadic_reform = {
 	}
 }
 
+organize_horde_reform = {
+	icon = "cavalry_focus_reform"
+	allow_normal_conversion = yes
+
+	trigger = {
+		OR = {
+			has_reform = specialization_labor_reform
+			has_reform = some_labor_division_reform
+		}
+		NOT = { has_reform = start_sedentarization_reform }
+	}
+
+	effect = {
+		lose_reforms = 2
+		change_government = tribal
+		add_government_reform = steppe_horde_reform
+	}
+
+	ai = {
+		factor = 2.0
+		modifier = {
+			factor = 0
+			NOT = {
+				capital_scope = {
+					OR = {
+						superregion = scythia_superregion
+						superregion = turan_superregion
+						superregion = sakastan_superregion
+						superregion = parthia_superregion
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 10
+			capital_scope = {
+				OR = {
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = sakastan_superregion
+					superregion = parthia_superregion
+				}
+			}
+		}
+	}
+}
+
+become_tribe_reform = {
+	icon = "multicultural_armies_reform"
+	allow_normal_conversion = yes
+
+	trigger = {
+		OR = {
+			has_reform = specialization_labor_reform
+			has_reform = some_labor_division_reform
+		}
+		has_reform = start_sedentarization_reform
+	}
+
+	effect = {
+		lose_reforms = 2
+		change_government = tribal
+		if = {
+			limit = { has_reform = democratic_structure_reform }
+			add_government_reform = tribal_republic_reform
+		}
+		else_if = {
+			limit = { has_reform = hereditary_structure_reform }
+			add_government_reform = tribal_kingdom_reform
+		}
+		else = { add_government_reform = tribal_federation_reform }
+	}
+
+	ai = {
+		factor = 2.0
+		modifier = {
+			factor = 2
+			any_neighbor_country = { government = tribal }
+		}
+	}
+}
+
 reform_monarchy_native = {
 	icon = "appointed_governors"
 	allow_normal_conversion = yes
+
+	potential = {
+		has_institution = writing_system
+	}
 
 	trigger = {
 		has_reform = start_sedentarization_reform
@@ -459,7 +545,7 @@ reform_monarchy_native = {
 	}
 
 	effect = {
-		lose_reforms = 2
+		lose_reforms = 4
 		change_government = monarchy
 		add_government_reform = aristocratic_monarchy_reform
 	}
@@ -473,6 +559,10 @@ reform_republic_native = {
 	icon = "elected_assembly"
 	allow_normal_conversion = yes
 
+	potential = {
+		has_institution = writing_system
+	}
+
 	trigger = {
 		has_reform = start_sedentarization_reform
 		has_reform = democratic_structure_reform
@@ -483,7 +573,7 @@ reform_republic_native = {
 	}
 
 	effect = {
-		lose_reforms = 2
+		lose_reforms = 4
 		change_government = republic
 		add_government_reform = citizens_republic_reform
 	}
@@ -497,6 +587,10 @@ reform_oligarchy_native = {
 	icon = "oligarchy"
 	allow_normal_conversion = yes
 
+	potential = {
+		has_institution = writing_system
+	}
+
 	trigger = {
 		has_reform = start_sedentarization_reform
 		has_reform = meritocratic_structure_reform
@@ -507,7 +601,7 @@ reform_oligarchy_native = {
 	}
 
 	effect = {
-		lose_reforms = 2
+		lose_reforms = 4
 		change_government = theocracy
 		add_government_reform = oligarchy_reform
 	}
