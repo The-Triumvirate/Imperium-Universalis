@@ -13,28 +13,8 @@ ask_for_league_member_subject = {
 			culture_group = macedon_group
 		}
 		neither_tribal_nor_native_trigger = yes
-		total_development = 40
-		government_rank = 2
-		capital_scope = {
-			OR = {
-				superregion = asia_superregion
-				superregion = haemusia_superregion
-				superregion = macedonia_superregion
-			}
-		}
 		FROM = {
-			capital_scope = {
-				OR = {
-					superregion = asia_superregion
-					superregion = haemusia_superregion
-					superregion = macedonia_superregion
-				}
-			}
-			NOT = { has_country_modifier = banned_league_modifier }
-			NOT = { total_development = 30 }
-			is_subject = no
-			NOT = { government_rank = 3 }
-			neither_tribal_nor_native_trigger = yes
+			NOT = { is_subject_of = ROOT }
 			OR = {
 				culture_group = hellenic
 				culture_group = macedon_group
@@ -42,49 +22,24 @@ ask_for_league_member_subject = {
 		}
 	}
 	is_allowed = {
-		hidden_trigger = {
-			is_subject = no
-			total_development = 40
-			government_rank = 2
-			capital_scope = {
-				OR = {
-					superregion = asia_superregion
-					superregion = haemusia_superregion
-					superregion = macedonia_superregion
-				}
-			}
-			FROM = {
-				capital_scope = {
-					OR = {
-						superregion = asia_superregion
-						superregion = haemusia_superregion
-						superregion = macedonia_superregion
-					}
-				}
-				NOT = { has_country_modifier = banned_league_modifier }
-				NOT = { total_development = 30 }
-				is_subject = no
-				NOT = { government_rank = 3 }
-			}
+		reverse_has_opinion = {
+			who = FROM
+			value = 100
 		}
-		OR = {
-			alliance_with = FROM
-			reverse_has_opinion = {
-				who = FROM
-				value = 160
-			}
-		}
-		FROM = {
-			NOT = { is_rival = ROOT }
-			NOT = {
-				any_ally = {
-					is_rival = ROOT
-				}
-			}
-		}
+		total_development = FROM
 		is_bankrupt = no
-		NOT = { war_with = FROM }
+		is_at_war = no
 		stability = 0
+		NOT = { is_rival = FROM }
+		FROM = {
+			is_subject = no
+			NOT = { has_country_modifier = banned_league_modifier }
+			NOT = { league_member_subject = 1 }
+			NOT = { government_rank = 3 }
+			NOT = { is_rival = ROOT }
+			NOT = { any_ally = { is_rival = ROOT } }
+			is_at_war = no
+		}
 	}
 	on_accept = {
 		add_prestige = 2
@@ -105,6 +60,17 @@ ask_for_league_member_subject = {
 			multiply_variable = { which = ai_value value = -2 }
 		}
 		add_entry = {
+			name = BORDER_DISTANCE
+			export_to_variable = {
+				variable_name = ai_value
+				value = border_distance
+				who = FROM
+				with = ROOT
+			}
+			change_variable = {	which = ai_value value = 2.5 } #round
+			divide_variable = { which = ai_value value = -5 }
+		}
+		add_entry = {
 			name = TRUST
 			export_to_variable = {
 				variable_name = ai_value
@@ -112,50 +78,71 @@ ask_for_league_member_subject = {
 				who = FROM
 				with = ROOT
 			}
-			subtract_variable = { which = ai_value value = 70 }
+			subtract_variable = { which = ai_value value = 50 }
+			divide_variable = { which = ai_value value = 2 } #max = 25
 		}
 		add_entry = {
 			name = ARMY_SIZE
 			export_to_variable = {
 				variable_name = ai_value
 				value = land_forcelimit
-				who = FROM
+				who = ROOT
 			}
-			change_variable = { which = ai_value value = 1 }
+			change_variable = {	which = ai_value value = 1.5 } #round
+			divide_variable = { which = ai_value value = 3 }
 		}
 		add_entry = {
 			name = NAVY_SIZE
 			export_to_variable = {
 				variable_name = ai_value
-				value = navy_size
-				who = FROM
+				value = naval_forcelimit
+				who = ROOT
 			}
-			change_variable = { which = ai_value value = 1 }
+			change_variable = {	which = ai_value value = 3 } #round
+			divide_variable = { which = ai_value value = 6 }
+		}
+		add_entry = {
+			name = NUMBER_OF_SUBJECTS #avoid infinite vassal swarm since they take no diplo slot
+			export_to_variable = {
+				variable_name = ai_value
+				value = trigger_value:num_of_subjects
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = -2 }
 		}
 		add_entry = {
 			name = PRESTIGE
 			export_to_variable = {
 				variable_name = ai_value
 				value = prestige
-				who = FROM
+				who = ROOT
 			}
-			divide_variable = { which = ai_value value = 10 }
+			change_variable = { which = ai_value value = 2.5 } 	#round
+			divide_variable = { which = ai_value value = 5 } 	#max = 20
 		}
 		add_entry = {
-			name = DIPLOMATIC_REPUTATION
+			name = DIP_REPUTATION
 			export_to_variable = {
 				variable_name = ai_value
 				value = modifier:diplomatic_reputation
 				with = ROOT
 			}
-			multiply_variable = { which = ai_value value = 4 }
+			multiply_variable = { which = ai_value value = 3 }
 		}
 		add_entry = {
 			name = DIFFERENT_PRIMARY_CULTURE
 			limit = { NOT = { primary_culture = FROM } }
 			export_to_variable = {
 				which = ai_value
-				value = -20
+				value = -10
+			}
+		}
+		add_entry = {
+			name = DIFFERENT_CULTURE_GROUP #should make it really more difficult
+			limit = { NOT = { culture_group = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -40
 			}
 		}
 		add_entry = {
@@ -163,25 +150,12 @@ ask_for_league_member_subject = {
 			limit = { FROM = { ai = yes } }
 			export_to_variable = {
 				which = ai_value
-				value = -30
+				value = -10
 			}
 		}
 	}
 	
 	ai_will_do = {
-		has_any_disaster = no
-		FROM = {
-			NOT = { army_size = ROOT }
-			NOT = { navy_size = ROOT }
-			NOT = { total_development = ROOT }
-		}
-		reverse_has_opinion = {
-			who = FROM
-			value = 150
-		}
-		stability = 1
-		army_size = 8
-		is_at_war = no
 	}
 }
 
@@ -199,12 +173,6 @@ remove_league_member_subject = {
 		}
 	}
 	is_allowed = {
-		hidden_trigger = {
-			FROM = {
-				is_subject_of_type = league_member_subject
-				is_subject_of = ROOT
-			}
-		}
 		is_at_war = no
 		has_any_disaster = no
 		FROM = {
@@ -218,7 +186,7 @@ remove_league_member_subject = {
 			add_truce_with = ROOT
 			add_country_modifier = {
 				name = banned_league_modifier
-				duration = 3650
+				duration = 1825
 			}
 			add_opinion = {
 				who = ROOT
@@ -232,7 +200,14 @@ remove_league_member_subject = {
 		FROM = {
 			OR = {
 				total_development = ROOT
-				liberty_desire = 60
+				liberty_desire = 70
+				AND = {
+					liberty_desire = 60
+					reverse_has_opinion = {
+						who = FROM
+						NOT = { value = 100 }
+					}
+				}
 			}
 		}
 	}
