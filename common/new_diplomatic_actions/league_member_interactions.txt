@@ -15,6 +15,7 @@ ask_for_league_member_subject = {
 		neither_tribal_nor_native_trigger = yes
 		FROM = {
 			NOT = { is_subject_of = ROOT }
+			neither_tribal_nor_native_trigger = yes
 			OR = {
 				culture_group = hellenic
 				culture_group = macedon_group
@@ -41,34 +42,32 @@ ask_for_league_member_subject = {
 		FROM = { is_at_war = no }
 	}
 	on_accept = {
-		add_prestige = 2
+		add_prestige = 5
 		create_subject = {
 			subject_type = league_member_subject
 			subject = FROM
 		}
 	}
+
+	# PDX uses 1000 as "infinite" value, so using 100 as a base "maximum" (then uncapped modifiers will start to outgrow capped ones)
+	# Positive modifiers
+	# trust 100 	= 30 -> high weight, I find trust to be the best modifier to model relation between countries, as opinion can be maxed in a few months and dip rep is passive and applies to everyone
+	# opinion 200 	= 20 -> lower weight, from previous explanation, but still existing as it makes it interactive/engaging
+	# prestige 100 	= 20 -> high weight for more "historical"
+	# dip rep 5 	= 20 -> classic dip rep weight
+	# army size 20 	= 5 -> low weight as it's not capped
+	# navy size 80 	= 5 -> even lower weight than army to reduce gap between landlocked and non landlocked tags
+	# total 		= 100
+
+	# Negative modifiers
+	# dev 20 				= -20 -> from testing (low to avoid big disparity between very small tags and others, mostly compensated in base value)
+	# border distance 150 	= -30 -> from testing
+	# number of subjects 20 = -10  -> avoid infinite vassal swarm since they take no diplo slot
+	# different culture 	= -10 -> small weight as it's already kind of included in border distance, but kept for more historic logic
+	# base 					= -30 -> high weight to avoid making it possible in very early game
+	# total                 = -100
 	
 	ai_acceptance = {
-		add_entry = {
-			name = TOTAL_DEVELOPMENT
-			export_to_variable = {
-				variable_name = ai_value
-				value = total_development
-				who = FROM
-			}
-			multiply_variable = { which = ai_value value = -2 }
-		}
-		add_entry = {
-			name = BORDER_DISTANCE
-			export_to_variable = {
-				variable_name = ai_value
-				value = border_distance
-				who = FROM
-				with = ROOT
-			}
-			change_variable = {	which = ai_value value = 2.5 } #round
-			divide_variable = { which = ai_value value = -5 }
-		}
 		add_entry = {
 			name = TRUST
 			export_to_variable = {
@@ -78,36 +77,17 @@ ask_for_league_member_subject = {
 				with = ROOT
 			}
 			subtract_variable = { which = ai_value value = 50 }
-			divide_variable = { which = ai_value value = 2 } #max = 25
+			multiply_variable = { which = ai_value value = 0.6 }
 		}
 		add_entry = {
-			name = ARMY_SIZE
+			name = OPINION
 			export_to_variable = {
 				variable_name = ai_value
-				value = land_forcelimit
-				who = ROOT
+				value = opinion
+				who = FROM
+				with = ROOT
 			}
-			change_variable = {	which = ai_value value = 1.5 } #round
-			divide_variable = { which = ai_value value = 3 }
-		}
-		add_entry = {
-			name = NAVY_SIZE
-			export_to_variable = {
-				variable_name = ai_value
-				value = naval_forcelimit
-				who = ROOT
-			}
-			change_variable = {	which = ai_value value = 3 } #round
-			divide_variable = { which = ai_value value = 6 }
-		}
-		add_entry = {
-			name = NUMBER_OF_SUBJECTS #avoid infinite vassal swarm since they take no diplo slot
-			export_to_variable = {
-				variable_name = ai_value
-				value = trigger_value:num_of_subjects
-				who = ROOT
-			}
-			multiply_variable = { which = ai_value value = -2 }
+			multiply_variable = { which = ai_value value = 0.1 }
 		}
 		add_entry = {
 			name = PRESTIGE
@@ -116,8 +96,7 @@ ask_for_league_member_subject = {
 				value = prestige
 				who = ROOT
 			}
-			change_variable = { which = ai_value value = 2.5 } 	#round
-			divide_variable = { which = ai_value value = 5 } 	#max = 20
+			multiply_variable = { which = ai_value value = 0.2 }
 		}
 		add_entry = {
 			name = DIP_REPUTATION
@@ -126,7 +105,53 @@ ask_for_league_member_subject = {
 				value = modifier:diplomatic_reputation
 				with = ROOT
 			}
-			multiply_variable = { which = ai_value value = 3 }
+			multiply_variable = { which = ai_value value = 4 }
+		}
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.25 }
+		}
+		add_entry = {
+			name = NAVY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = naval_forcelimit
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.0625 }
+		}
+		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -1 }
+		}
+		add_entry = {
+			name = BORDER_DISTANCE
+			export_to_variable = {
+				variable_name = ai_value
+				value = border_distance
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = -0.2 }
+		}
+		add_entry = {
+			name = NUMBER_OF_SUBJECTS
+			export_to_variable = {
+				variable_name = ai_value
+				value = trigger_value:num_of_subjects
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = -0.5 }
 		}
 		add_entry = {
 			name = DIFFERENT_PRIMARY_CULTURE
@@ -137,19 +162,11 @@ ask_for_league_member_subject = {
 			}
 		}
 		add_entry = {
-			name = DIFFERENT_CULTURE_GROUP #should make it really more difficult
-			limit = { NOT = { culture_group = FROM } }
-			export_to_variable = {
-				which = ai_value
-				value = -40
-			}
-		}
-		add_entry = {
 			name = BASE_VALUE_CUSTOM
 			limit = { FROM = { ai = yes } }
 			export_to_variable = {
 				which = ai_value
-				value = -10
+				value = -30
 			}
 		}
 	}
@@ -199,12 +216,14 @@ remove_league_member_subject = {
 		FROM = {
 			OR = {
 				total_development = ROOT
-				liberty_desire = 70
+				liberty_desire = 80
 				AND = {
-					liberty_desire = 60
-					reverse_has_opinion = {
-						who = FROM
-						NOT = { value = 100 }
+					liberty_desire = 65
+					NOT = {
+						reverse_has_opinion = {
+							who = FROM
+							value = 100
+						}
 					}
 				}
 			}
