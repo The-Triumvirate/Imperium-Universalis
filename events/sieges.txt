@@ -318,7 +318,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			modifier = { factor = 2.5 FROM = { check_variable = { SD_siege_power = 0.6 } } }
 		}
 		trigger = { 
-			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 			OR = {
 				NOT = {	FROM = { owner = { reverse_has_opinion = { who = ROOT value = -100 } } } }	# less than -100 opinion, or rival
 				FROM = { owner = { is_rival = ROOT } }
@@ -350,7 +350,9 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			factor = 100
 			modifier = { factor = 5.0 FROM = { check_variable = { SD_siege_power = 0.6 } } }
 		}
-		trigger = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }
+		trigger = { 
+			FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } 	# upped development to 20, only for real capitals
+		}
 		custom_tooltip = SD_SIEGES_DELENDA
 		hidden_effect = {
 			# Province effect
@@ -359,7 +361,17 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				SD_population_loss = { loss = 300 enslave = 100 }	# absolutely everyone
 				collateral_damage_eff = { hd = 80 size = 300 }	SD_slave_prov_modifiers = { days = 120 }
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
-				add_province_modifier = { name = SD_was_delenda duration = 18250 }	# 50 years, devastation will START to go down in two generations
+				if = {
+					limit = { FROM = { check_variable = { SD_siege_power = 0.80 } } }
+					add_province_modifier = { name = SD_was_delenda duration = 18250 } # 50 years, devastation will START to go down in two generations
+				}
+				else_if = {
+					limit = { FROM = { check_variable = { SD_siege_power = 0.40 } } }
+					add_province_modifier = { name = SD_was_delenda duration = 9000 } # 25 years
+				}
+				else = {
+					add_province_modifier = { name = SD_was_delenda duration = 4500 } # 12 years
+				}
 				province_event = { id = population_capacity.4 }
 			}
 			# Country, besieger effect
@@ -370,7 +382,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 	option = {
 		name = "sieges.1.6"		# Leave them be
 		ai_chance = {
-			factor = 0
+			factor = 10
 		}
 		
 	}
@@ -848,7 +860,7 @@ country_event = {
 	
 }
 
-country_event = {
+country_event = {		# Experimental
 	id = sieges.7
 	title = "sieges.7.t"
 	desc = "sieges.7.d"
