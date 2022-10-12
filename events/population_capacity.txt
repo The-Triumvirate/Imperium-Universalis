@@ -537,7 +537,6 @@ province_event = {
 					PG_ruralupper_buildings = yes
 		}
 		else = { 	PG_urbanupper_buildings = yes }
-		PG_upper_buildings = yes 		# other buildings that are not dependent on the country's government
 		
 		######################
 		# 	ASSIGN CAPACITIES to Tribal, Commoner and Upper pops
@@ -601,6 +600,8 @@ province_event = {
 		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap } 
 		
 		# Growths
+			# avoid zero values
+		if = { limit = { NOT = { check_variable = { PG_trb_now = 1 } } } set_variable = { which = PG_trb_now value = 0.2 } }
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0.2 } }
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0.2 } }
 		
@@ -608,6 +609,7 @@ province_event = {
 		set_variable = { which = PG_com_grow which = PG_com_cap } 		 divide_variable = { which = PG_com_grow which = PG_com_now }
 		set_variable = { which = PG_upp_grow which = PG_upp_cap } 		 divide_variable = { which = PG_upp_grow which = PG_upp_now }
 		
+		if = { limit = { NOT = { check_variable = { PG_trb_now = 1 } } } set_variable = { which = PG_trb_now value = 0 } }	# reset
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0 } }	# reset
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0 } }	# reset
 		
@@ -660,8 +662,8 @@ province_event = {
 		#	OTHER EFFECTS
 		######################
 		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
-		if = { limit = { check_variable = { which = PG_trb_cap which = initial_rural } } remove_province_modifier = rural_pause }
-		if = { limit = { check_variable = { which = PG_com_cap which = initial_urban } } remove_province_modifier = urban_pause }
+		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
+		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
 		
 		# Find how much information is flowing to this province. Will allow for long-range migration
 		PG_update_inforange = yes		
@@ -1219,8 +1221,8 @@ province_event = {
 		#	OTHER EFFECTS
 		######################
 		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
-		if = { limit = { check_variable = { which = PG_trb_cap which = initial_rural } remove_province_modifier = rural_pause } }
-		if = { limit = { check_variable = { which = PG_com_cap which = initial_urban } remove_province_modifier = urban_pause } }
+		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
+		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
 		
 		# Find how much information is flowing to this province. Will allow for long-range migration
 		PG_update_inforange = yes		
@@ -1309,7 +1311,7 @@ province_event = {
 		set_variable = { which = PS_growctry which = PG_grow_country } 
 		subtract_variable = { PS_growctry = 1 } multiply_variable = { PS_growctry = 100 }
 		
-		
+		PG_detail_zerovalues = yes
 		
 	}
 	
