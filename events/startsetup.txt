@@ -46,17 +46,40 @@ country_event = {
 				10 = { multiply_variable = { slaves = 3.0 }	}
 				1 = { multiply_variable = { slaves = 3.5 } }	# 4 dev = 40.000 population x 35% = 14000. 4 x 3.5 = 14. OK
 			}
-			# effect of government type. Native -60%, Tribal -30%, Republics -10%
+			# Assign slave types by government type. Values: Native -60%, Tribal -30%, Republics -10%, Oligarchy 0%, Monarchy +10%
 			trigger_switch = {
 				on_trigger = government
-				native = { multiply_variable = { slaves = 0.4 } }
-				tribal = { multiply_variable = { slaves = 0.7 } }
-				republic = { multiply_variable = { slaves = 0.9 } }
+				native = { 			# shouldn't have slaves estate, anyway
+					multiply_variable = { slaves = 0.4 } 
+					set_estate_privilege = estate_slaves_status_1 	# war captives
+					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
+				}	
+				tribal = { 			# shouldn't have slaves estate, anyway
+					multiply_variable = { slaves = 0.7 } 
+					set_estate_privilege = estate_slaves_status_1 	# war captives
+					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
+				}
+				republic = { 
+					multiply_variable = { slaves = 0.9 } 
+					set_estate_privilege = estate_slaves_status_3 	# normal type
+					set_estate_privilege = estate_slaves_jobs_2		# normal use
+				}
+				theocracy = { 	# oligarchy
+					set_estate_privilege = estate_slaves_status_3 	# normal type
+					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
+				}
+				monarchy = { 
+					multiply_variable = { slaves = 1.10 } 
+					set_estate_privilege = estate_slaves_status_2 	# serfdom
+					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
+				}
+				
 			}
-			
-			# Also remember that annexing a foreign country you will acquire 75% of their slaves! (not 100% as we need "friction" somewhere)
+			set_estate_privilege = estate_slaves_condition_3		# 3 is normal. Ranges from 1 to 7
+			change_estate_land_share = { estate = estate_slaves share = -100 }
 		}
 		
+		# Flag, to remove naval forcelimit from inland provinces, and -50% in "river ports"
 		PG_add_river_ports = yes
 		
 		# Correct production buildings where they are not correct

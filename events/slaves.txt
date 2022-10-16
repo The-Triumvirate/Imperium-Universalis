@@ -24,7 +24,7 @@ country_event = {
 		hidden_effect = {
 			# Find total income
 			export_to_variable = { which = slave_income value = monthly_income }
-			multiply_variable  = { slave_income = 20 }		# monthly to yearly x every 5 years x 1/3 slave income = 12 x 5 x 1/3 = 20
+			multiply_variable  = { slave_income = 60 }		# monthly to yearly x every 5 years = 12 x 5 = 60
 			
 			# Total population
 			export_to_variable = { which = var_total_pop value = total_development }
@@ -44,7 +44,7 @@ country_event = {
 			divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
 			multiply_variable = { slave_pop_social = 100 }						 # to be in percentage (1 to 100), not units (0,x to 1,0)
 			
-			export_to_variable = { which = slave_pop_economic value = modifier:global_tariffs }	# repurposed for Slave Productivity
+			export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
 			change_variable = { slave_pop_economic = 1 }
 			multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
 			divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
@@ -61,36 +61,60 @@ country_event = {
 			subtract_variable = { slave_autonomy = 100 } 
 			multiply_variable = { slave_autonomy = -0.01 }	# imagine 25%. 25-100 = -75 x -0,01 = 0,75. Ok
 			multiply_variable = { which = slave_income which = slave_autonomy }
+			export_to_variable = { which = slave_state_income value = modifier:slavesmod_state_income }
+			if = { limit = { NOT = { check_variable = { slave_state_income = 0 } } } set_variable = { which = slave_state_income value = 0 } }
+			multiply_variable = { which = slave_income which = slave_state_income }
 			
 			# Let's find where we are (coordinates x and y)
 			slaves_find_coordinates = yes
 			
-			# Prepare the growth for the period: ups, downs, transfers
-			# Later it will be tied to the slaves-as-an-estate thing, where each of these things is tied to a privilege
-			set_variable = { which = slave_gain value = 0.060 }
-			set_variable = { which = slave_loss value = 0.055 }
-			set_variable = { which = slave_net_growth which = slave_gain } 
-			subtract_variable = { which = slave_net_growth which = slave_loss }
-			change_variable = { slave_net_growth = 1 }
+			# Demographics
+			export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
+			export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
+			export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
+			
+			if = {
+				limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
+				set_variable = { which = slave_net_growth which = slave_loss }	
+				change_variable = { which = slave_libratio which = slave_gain } 
+			}
+			else = {
+				set_variable = { which = slave_net_growth which = slave_gain }
+				subtract_variable = { which = slave_net_growth which = slave_loss }
+			}
+			
+			if = { limit = { NOT = { check_variable = { slave_libratio = 0 } } } set_variable = { which = slave_libratio value = 0 } }
+			
+			set_variable = { which = slaves_change which = slaves } multiply_variable = { which = slaves_change which = slave_net_growth }
+			set_variable = { which = slaves_libers which = slaves } multiply_variable = { which = slaves_libers which = slave_libratio }
+			multiply_variable = { slaves_change = 5 } multiply_variable = { slaves_libers = 5 } 	# 5 years
 			
 			# Show variables for display
 			set_variable = { which = slaves_tot_display which = slaves } 
-			change_variable = { which = slaves_tot_display which = slave_manufactory }
+			change_variable = { which = slaves_tot_display which = slaves_in_province }
 			multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }	# rounding
 			
 			set_variable = { which = slaves_oth_disp which = slaves } 
 			multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
 			
-			set_variable = { which = slaves_mnf_display which = slave_manufactory } 
+			set_variable = { which = slaves_mnf_display which = slaves_in_province } 
 			multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
-			export_to_variable = { which = slave_productivity value = modifier:global_tariffs }		  # for display purposes
+			export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
 			change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
+			
+			multiply_variable = { slaves_change = 0.001 }	multiply_variable = { slaves_change = 1000 }
+			multiply_variable = { slaves_libers = 0.001 }	multiply_variable = { slaves_libers = 1000 }
+			
+			multiply_variable = { slave_gain = 100 }		multiply_variable = { slave_net_growth = 100 }
+			multiply_variable = { slave_loss = 100 }		multiply_variable = { slave_libratio = 100 }
+			multiply_variable = { slave_state_income = 100 }
+			export_to_variable = { which = var_total_pop value = total_development }
 		}
 	}
 	
 	
 	option = {
-		name = "slaves.1.a"		
+		name = "slaves.1.1"		
 		slaves_ratio_create_high = yes				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
 		
 		hidden_effect = {
@@ -99,15 +123,46 @@ country_event = {
 				set_variable = { which = cash_income which = slave_income }
 				money_income = yes  
 			}
-		
-			#multiply_variable = { slaves = 1.0125 }		# no loss for now; it will come later
+			
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+			
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+			
 		}
+		custom_tooltip = SLAVES_EVENT_INCOME
+	}
+	option = {
+		name = "slaves.1.2"		
+		
+		hidden_effect = {
+			slaves_ratio_create_high = yes
+			if = { 
+				limit = { check_variable = { slave_income = 0.1 } }
+				set_variable = { which = cash_income which = slave_income }
+				money_income = yes  
+			}
+			
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+			
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+			
+		}
+		custom_tooltip = SLAVES_EVENT_NORMAL
+		custom_tooltip = SLAVES_EVENT_RATIOS
+		custom_tooltip = SLAVES_EVENT_FORMULA
 	}
 	
 	after = {
 		set_variable = { which = var_slave_income value = 0 }
 		set_variable = { which = slave_income value = 0 }
-		
+		set_variable = { which = slaves_change value = 0 }
+		set_variable = { which = slaves_libers value = 0 }
 		
 	}
 }
