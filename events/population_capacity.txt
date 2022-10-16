@@ -430,16 +430,20 @@ province_event = {
 		## URBAN CAPACITY; those living in the cities. Will then be assigned to Commoners and Upper pops
 		######################
 		
-			set_variable = { which = urban_capacity value = 0 }	# Cleanup
-		
-		# BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
-		PG_urban_buildings = yes
-		
 		# THE TRADE POWER MULTIPLIER
 		#	updated August'22
 		
-		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
+			
+		# correct for autonomy: it can go as low as -50%, so this must be corrected back
+		export_to_variable = { which = urban_capacity value = local_autonomy }	multiply_variable = { urban_capacity = 0.5 }
+		subtract_variable = { urban_capacity = 100 }							multiply_variable = { urban_capacity = -0.01 }
 		export_to_variable = { which = PG_urb_tp value = province_trade_power }
+		divide_variable = { which = PG_urb_tp which = urban_capacity }
+	
+		set_variable = { which = urban_capacity value = 0 }	# Cleanup
+		
+		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
+		
 		
 			# Trade power points are less effective the bigger it is. In economics this is called "Diminishing marginal returns":
 			# After trade power 10 (10 = 3 pops), every new pop will need one more point (4th pop: 4 points, 5th pop: 5 points). Capped at 15/110tp
@@ -497,6 +501,8 @@ province_event = {
 			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
 			set_variable = { which = PG_urb_tp value = 0 }
 		
+		# BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
+		PG_urban_buildings = yes
 		
 		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -50% reduction, but it stays in commoners, and the rural transfer still works. 
 		if = {
@@ -970,15 +976,17 @@ province_event = {
 		## URBAN CAPACITY; those living in the cities. Will then be assigned to Commoners and Upper pops
 		######################
 		
-			set_variable = { which = urban_capacity value = 0 }	# Cleanup
-		
-		# 1. BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
-		PG_urban_buildings_details = yes
-		set_variable = { which = PS_urb1 which = urban_capacity }
-		
-		
-		# 2. THE TRADE POWER MULTIPLIER
+		# 1. THE TRADE POWER MULTIPLIER
+		#	updated August'22
+		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
+			
+		# correct for autonomy: it can go as low as -50%, so this must be corrected back
+		export_to_variable = { which = urban_capacity value = local_autonomy }	multiply_variable = { urban_capacity = 0.5 }
+		subtract_variable = { urban_capacity = 100 }							multiply_variable = { urban_capacity = -0.01 }
 		export_to_variable = { which = PG_urb_tp value = province_trade_power }
+		divide_variable = { which = PG_urb_tp which = urban_capacity }
+		set_variable = { which = urban_capacity value = 0 }	# Cleanup
+		
 		set_variable = { which = PS_trade_power which = PG_urb_tp }
 			if = {
 				limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 } 
@@ -1031,8 +1039,11 @@ province_event = {
 			else = { divide_variable = { PG_urb_tp = 3.3 } }
 			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
 			set_variable = { which = PG_urb_tp value = 0 }
-		set_variable = { which = PS_urb2 which = urban_capacity }
+		set_variable = { which = PS_urb1 which = urban_capacity }
 		
+		# 2. BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
+		PG_urban_buildings_details = yes
+		set_variable = { which = PS_urb2 which = urban_capacity }
 		
 		
 		
