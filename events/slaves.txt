@@ -32,13 +32,13 @@ country_event = {
 			
 			
 			# Slave population (at country and manufactories)
-			set_variable = { which = slave_manufactory value = 0 }		# reset at country level
+			set_variable = { which = slaves_in_province value = 0 }		# reset at country level
 			every_owned_province = {
-				limit = { check_variable = { slave_manufactory = 1 } }	# any province with slaves there
-				owner = { change_variable = { which = slave_manufactory which = PREV } }
+				limit = { check_variable = { slaves_in_province = 1 } }	# any province with slaves there
+				owner = { change_variable = { which = slaves_in_province which = PREV } }
 			}
 			set_variable = { which = slave_pop_social which = slaves } 
-			change_variable = { which = slave_pop_social which = slave_manufactory }
+			change_variable = { which = slave_pop_social which = slaves_in_province }
 			
 			if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
 			divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
@@ -1081,13 +1081,13 @@ country_event = {
 	
 	immediate = {
 		# Prepare initial slave count
-		set_variable = { which = slave_manufactory value = 0 }		# reset at country level
+		set_variable = { which = slaves_in_province value = 0 }		# reset at country level
 		every_owned_province = {
-			limit = { check_variable = { slave_manufactory = 1 } }	# any province with slaves there
-			owner = { change_variable = { which = slave_manufactory which = PREV } }
+			limit = { check_variable = { slaves_in_province = 0.1 } }	# any province with slaves there
+			owner = { change_variable = { which = slaves_in_province which = PREV } }
 		}
 		set_variable = { which = slave_total which = slaves }
-		change_variable = { which = slave_total which = slave_manufactory }
+		change_variable = { which = slave_total which = slaves_in_province }
 		
 		# Population
 		export_to_variable = { which = var_total_pop value = total_development }
@@ -1109,10 +1109,10 @@ country_event = {
 			}
 			random_owned_province = {
 				limit = { check_variable = { SS_slot_free = 1 } }
-				owner = { subtract_variable = { slaves = 10 } change_variable = { slave_manufactory = 10 } }
-				change_variable = { slave_manufactory = 10 }
+				owner = { subtract_variable = { slaves = 10 } change_variable = { slaves_in_province = 10 } }
+				change_variable = { slaves_in_province = 10 }
 				subtract_variable = { SS_slot_free = 1 } change_variable = { SS_slot_taken = 1 }
-				SS_update_manuf_production = yes
+				SD_update_prov_output = yes
 			}
 		}
 		
@@ -1121,13 +1121,13 @@ country_event = {
 	option = {
 		name = "slaves.9.2"	# Remove all from manufactories
 		every_owned_province = {
-			limit = { check_variable = { slave_manufactory = 1 } }
-			set_variable = { which = slaves which = slave_manufactory } 
-			set_variable = { which = slave_manufactory value = 0 }
+			limit = { check_variable = { slaves_in_province = 1 } }
+			set_variable = { which = slaves which = slaves_in_province } 
+			set_variable = { which = slaves_in_province value = 0 }
 			owner = { change_variable = { which = slaves which = PREV } }
 			change_variable = { which = SS_slot_free which = SS_slot_taken } 
 			set_variable = { which = SS_slot_taken value = 0 }
-			set_variable = { which = SS_manuf_power value = 0 }
+			set_variable = { which = SD_slave_output value = 0 }
 			set_variable = { which = slaves value = 0 }
 			SS_remove_manuf_modifiers = yes
 		}
@@ -1166,7 +1166,7 @@ country_event = {
 		set_variable = { which = slave_pop_social which = slave_total } 
 		divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
 		multiply_variable = { slave_pop_social = 100 }						 # to be in percentage (1 to 100), not units (0,x to 1,0)
-		export_to_variable = { which = slave_pop_economic value = modifier:global_tariffs }	# repurposed for Slave Productivity
+		export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
 		change_variable = { slave_pop_economic = 1 }
 		multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
 		divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
@@ -1177,13 +1177,13 @@ country_event = {
 		
 		# Show variables for display
 		set_variable = { which = slaves_tot_display which = slaves } 
-		change_variable = { which = slaves_tot_display which = slave_manufactory }
+		change_variable = { which = slaves_tot_display which = slaves_in_province }
 		multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }
 		set_variable = { which = slaves_oth_disp which = slaves } 
 		multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
-		set_variable = { which = slaves_mnf_display which = slave_manufactory } 
+		set_variable = { which = slaves_mnf_display which = slaves_in_province } 
 		multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
-		export_to_variable = { which = slave_productivity value = modifier:global_tariffs }		  # for display purposes
+		export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
 		change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
 
 	}
