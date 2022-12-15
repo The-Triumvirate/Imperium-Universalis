@@ -29,29 +29,47 @@ province_event = {
 	
 	immediate = { 
 		hidden_effect = {
+			owner = { save_event_target_as = tamraparni_original_owner }
 			tamraparni_area = {
-				remove_core = ROOT
-				add_core = SMV
-				cede_province = SMV
+				remove_core = event_target:tamraparni_original_owner
 				change_culture = sinhala
 				change_religion = brahmin
+				add_core = SMV
+				cede_province = SMV
 			}
 		}
 	}
 	
 	option = {
 		name = "india.1.a"	
+		ai_chance = {
+			factor = 1
+		}
 		tooltip = { cede_province = SMV }
-		owner = {
+		event_target:tamraparni_original_owner = {
 			declare_war_with_cb = {
 				who = SMV
 				casus_belli = cb_vassalize_mission
+			}
+		}
+		hidden_effect = {
+			SMV = {
+				every_neighbor_country = {
+					limit = { NOT = { TAG = event_target:tamraparni_original_owner } }
+					add_truce_with = PREV
+				}
 			}
 		}
 	}
 	option = {
 		name = "india.1.b"	
 		tooltip = { cede_province = SMV }
+		ai_chance = {
+			factor = 99
+		}
+		hidden_effect = {
+			SMV = { every_neighbor_country = { add_truce_with = PREV } }
+		}
 	}
 
 	after = {
@@ -59,13 +77,16 @@ province_event = {
 			SMV = {
 				change_government = tribal
 				add_government_reform = vedic_kingdom_reform
+				change_government_reform_progress = 100
+				change_government_reform_progress = 100
+				change_government_reform_progress = 100
 				set_government_rank = 2
 				add_stability = 2
 				add_mil_power = 100
 				add_dip_power = 100
 				add_adm_power = 100
-				add_years_of_income = 3
-				add_yearly_manpower = 10
+				add_treasury = 400
+				add_manpower = 10
 				add_yearly_sailors = 8
 				add_prestige = 10
 				add_absolutism = 10
@@ -80,10 +101,7 @@ province_event = {
 				add_ruler_modifier = {
 					name = vijaya_king_modifier
 				}
-				ROOT = {
-					build_to_forcelimit = {
-					}
-				}
+				capital_scope = { build_to_forcelimit = {} }
 			}
 		}
 	}
