@@ -93,7 +93,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				# LOOT: Calculate lootable amount (buildings). Max amount: 33% of build cost. Affected by siege % ratio
 				# Inflation, first part
 				export_to_variable = { which = SD_loot value = trigger_value:monthly_income who = ROOT }
-				set_variable = { which = SD_inflation value = 1 } 
+				set_variable = { which = SD_inflation value = 100 } 
 				if = { limit = { NOT = { check_variable = { SD_loot = 1 } } } set_variable = { which = SD_loot value = 1 } }
 				divide_variable = { which = SD_inflation which = SD_loot } 
 				
@@ -103,7 +103,8 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				multiply_variable = { which = SD_loot which = SD_siege_power }
 				
 				# Inflation, second part
-				multiply_variable = { which = SD_inflation which = SD_loot } multiply_variable = { SD_inflation = 0.005 }	# Done!
+				multiply_variable = { which = SD_inflation which = SD_loot } 	multiply_variable = { SD_inflation = 0.01 }	# 100 back
+				multiply_variable = { SD_inflation = 0.12 }	# 4x the inflation gotten from peace deals (0,015 x 4), and x2 from the Inflation from Peace Gold formula. 
 				
 				##
 				# ENSLAVEMENT
@@ -125,16 +126,16 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 					set_variable = { which = SD_c_slave which = PG_com_cap } multiply_variable = { SD_c_slave = 0.4 }	# min 40% urban cap
 					set_variable = { which = SD_u_slave which = PG_upp_cap } multiply_variable = { SD_u_slave = 0.3 }	# min 30% upper cap
 					
-					# if to lose > min capacity, lose the excess. If not, minimum prize of 0.6 (x% enslaved), no pop will be lost
+					# if to lose > min capacity, lose the excess. If not, minimum prize of 0.45 (x% enslaved), no pop will be lost
 					if = { 		limit = { check_variable = { which = SD_t_lost which = SD_t_slave } } 
-								subtract_variable = { which = SD_t_lost which = SD_t_slave } }	
-					else = { 	set_variable = { which = SD_t_lost value = 0.6 } }
+								subtract_variable = { which = SD_t_lost which = SD_t_slave } }
+					else = { 	set_variable = { which = SD_t_lost value = 0.45 } }
 					if = { 		limit = { check_variable = { which = SD_c_lost which = SD_c_slave } } 
 								subtract_variable = { which = SD_c_lost which = SD_c_slave } }
-					else = { 	set_variable = { which = SD_c_lost value = 0.6 } }
+					else = { 	set_variable = { which = SD_c_lost value = 0.45 } }
 					if = { 		limit = { check_variable = { which = SD_u_lost which = SD_u_slave } }
 								subtract_variable = { which = SD_u_lost which = SD_u_slave } }
-					else = { 	set_variable = { which = SD_u_lost value = 0.6 } }
+					else = { 	set_variable = { which = SD_u_lost value = 0.45 } }
 					
 				}
 				# First separation: enslavement % from total lost
@@ -161,7 +162,6 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				# From now on, these values on Enslave and Lost can be applied fully or partially in every option. 
 				
 				
-				
 				##
 				# Leave used variables ready to be displayed in the event localization:
 				set_variable = { which = SD_total_lost which = SD_t_lost } 		set_variable = { which = SD_total_slaves which = SD_t_slave } 		
@@ -170,8 +170,9 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				multiply_variable = { SD_total_slaves = 10 }
 				
 				set_variable = { which = SD_loot_25 which = SD_loot } 		multiply_variable = { SD_loot_25 = 0.25 }
-				set_variable = { which = SD_loot_50 which = SD_loot } 		multiply_variable = { SD_loot_50 = 0.50 }
+				set_variable = { which = SD_infl_25 which = SD_inflation } 	multiply_variable = { SD_infl_25 = 0.25 }
 				set_variable = { which = SD_lost_25 which = SD_total_lost } multiply_variable = { SD_lost_25 = 0.25 }
+				
 				
 				export_to_variable = { which = SD_devast value = development } 	
 				export_to_variable = { which = SD_ferocity value = modifier:max_revolutionary_zeal who = ROOT }
@@ -198,13 +199,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			# value depending on how much money is being taken out. You take 1000, you may destroy up to 1000 in value. Devastation is the impact over things other than in buildings, and it will take some time to go away. Also, notice that as long as there is some value to be taken, ANY building is eligible to be hit. So don't think that because you won't cause 500 of value you can't hit a building valued 500 or higher. 
 			# Its formula is Devastation % = sack ratio x type of damage done. 
 			
-		# Remember that the two Enslaves (light/hard) and sack/destroy/delenda, are dependent on several conditions:
-			# When to use Enslave Hard: any of the following: A) Casus Belli: Insult, Dishonored Call, Vassal Independence, Overthrow, Badboy, Tribal Raid, Shatter Country. B) Rivalry. C) Normal / National Ideas
-			# Enslave light: all other cases.
-			# When to use Delenda Est: only if 1) Is Rival, 2) Is the capital. Any CB type
-			# When to use Destroy: A) More than -100 relations, or B) Is Rival
-			# Sack in all other cases. Sack and Destroy are unabled if the option to Delenda Est is active
-	
+		
 		
 	}
 	#############
@@ -214,7 +209,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 		# Ask Tribute		  -5   |	25%	|	10%	 		|	0
 		# Sack city			 -20   |   100%	|	40%	 		|	1/4 of lost
 		# Enslave 	 		 -20   |	25%	|	20%	 		|	1/4 of lost + enslave
-		# Destroy city		 -50   |	50% |	40%/60bld	|	minimum capacity + enslave
+		# Destroy city		 -50   |   100% |	40%/60bld	|	minimum capacity + enslave
 		# Delenda Est	    -150   |   100%	|  100%/100bld  |	all + enslave
 		# nothing			   0
 		# Liberate (TBD)	
@@ -228,7 +223,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			modifier = {	factor = 1.5	NOT = { mil_power = 500 } }
 		}
 		trigger = {
-			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 		}
 		custom_tooltip = SD_SIEGES_TRIBUTE
 		hidden_effect = {
@@ -256,7 +251,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			modifier = { factor = 2.0 check_variable = { var_slaves_pop_ratio = 50 } }
 		}
 		trigger = { 
-			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active, then it is compulsory
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 		}
 		custom_tooltip = SD_SIEGES_SACK
 		hidden_effect = {
@@ -287,7 +282,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			modifier = { factor = 4.0 NOT = { check_variable = { var_slaves_pop_ratio = 40 } } }	# priority to enslave, unless it can destroy
 		}
 		trigger = { 
-			NOT = { FROM = { is_capital = yes  owner = { is_rival = ROOT } } }	# in case Delenda Est is active, then it is compulsory
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
 			NOT = { has_country_modifier = slavery_abolished }
 		}
 		custom_tooltip = SD_SIEGES_ENSLAVE
@@ -311,7 +306,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 		else = { add_mil_power = -10 }
 	}
 	option = {
-		name = "sieges.1.4"		# DESTROY (50% loot value, 40% devastation with 2x loot size, same slaves as before)
+		name = "sieges.1.4"		# DESTROY (100% loot value, 40% devastation with 2x loot size, same slaves as before)
 		
 		ai_chance = {			# AI chance: will do if has enough power, and the sack ratio is high. It will "aim to kill"
 			factor = 30
@@ -329,7 +324,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 		hidden_effect = {
 			# Province effect
 			FROM = {
-				SD_sack_devastation = {	lootvalue = 50	devst = 40 }
+				SD_sack_devastation = {	lootvalue = 100	devst = 40 }
 				SD_population_loss = { loss = 25 enslave = 100 }
 				collateral_damage_eff = { hd = 60 size = 200 }	SD_slave_prov_modifiers = { days = 60 }
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
