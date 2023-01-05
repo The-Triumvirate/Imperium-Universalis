@@ -100,8 +100,13 @@ NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_4 = 1323
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_5 = 1490
 NDefines.NCountry.CIRCUMNAVIGATION_PROVINCE_6 = 1472
 
+NDefines.NCountry.CONCENTRATE_DEVELOPMENT_COOLDOWN_DURATION = 9999999	-- disabled in the mod
 NDefines.NCountry.CONCENTRATE_DEVELOPMENT_DEVELOPMENT_DECREASE = 0.0	-- disabled in the mod (vanilla 0.2)
-NDefines.NCountry.PILLAGE_CAPITAL_DEVELOPMENT_DECREASE = 0.0	-- disabled in the mod (vanilla 0.2)
+NDefines.NCountry.CONCENTRATE_DEVELOPMENT_CAPITAL_PROPORTION = 0	-- disabled in the mod
+NDefines.NCountry.FREE_CONCENTRATE_DEVELOPMENT_CAPITAL_PROPORTION = 0	-- disabled in the mod
+NDefines.NCountry.FREE_CONCENTRATE_DEVELOPMENT_OTHER_STATE_PROVINCES_PROPORTION = 0	-- disabled in the mod
+NDefines.NCountry.PILLAGE_CAPITAL_DEVELOPMENT_DECREASE = 0	-- disabled in the mod
+NDefines.NCountry.PILLAGE_CAPITAL_MAX_DEV_PILLAGED = 0	-- disabled in the mod
 NDefines.NCountry.RAZE_UNREST_DURATION = 20					-- Years of unrest. 10 vanilla; raised to 20
 NDefines.NCountry.RAZE_PROVINCE_DEVELOPMENT_DECREASE = 0 	-- No population loss. It will cause +10% initial devastation + 0,30 for 20 years
 NDefines.NCountry.RAZE_PROVINCE_POWER_PER_DEVELOPMENT = 25.0	-- This is enough devastation to lower growth rates and make people flee
