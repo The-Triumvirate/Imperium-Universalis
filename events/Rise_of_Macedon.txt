@@ -104,7 +104,7 @@ country_event = {
 	id = rm.2
 	title = rm.2.t
 	desc = rm.2.d
-	picture = philip
+	picture = cavalry
 
 	trigger = {
 		tag = MAC
@@ -281,7 +281,7 @@ country_event = {
 	id = rm.5
 	title = rm.5.t
 	desc = rm.5.d
-	picture = philip2
+	picture = assassination_noble
 
 	trigger = {
 		tag = MAC
@@ -372,13 +372,48 @@ country_event = {
 			change_culture = macedon
 			change_religion = greek_religion
 		}
+		define_general = {
+			name = "Antiochus of Europos"
+			age = 45
+			shock = 3
+			fire = 4
+			manuever = 4
+			siege = 1
+		}
+		define_general = {
+			name = "Alexander of Orestia"
+			age = 51
+			shock = 2
+			fire = 4
+			manuever = 2
+			siege = 2
+		}
+		define_advisor = {
+			name = "Derdas III Elymeitid"
+			age = 41
+			skill = 1
+			type = patrician
+		}
+		define_advisor = {
+			name = "Nicanoros Nicanoridai"
+			age = 41
+			skill = 1
+			discount = yes
+			type = diplomat_adv
+		}
+		define_advisor = {
+			name = "Antipater Antipatridai"
+			age = 30
+			skill = 2
+			discount = yes
+			type = governor
+		}
 	}
 }
 
 #########################################################################################
 # Philip II - War with Bardylis
 ######################################################################################## 		
-
 country_event = {
 	id = rm.7
 	title = rm.7.t
@@ -537,6 +572,8 @@ country_event = {
 			rename_capital = "Herakleia Lynkos"
 			change_province_name = "Herakleia Lynkestis"
 			change_culture = macedon
+			remove_building = small_city_walls
+			add_building = border_garrison	
 		}
 		random_owned_province = {
 			limit = {
@@ -662,8 +699,7 @@ country_event = {
 			add_core = AMF
 			cede_province = AMF	
 		}	
-		AMF = {	declare_war =  MAC } 		
-		MAC = { declare_war = POE } #Parmenion mentioned as winning a great victory against illyrians before the taking of Amphiopolis, probably it is when Paeonia become a vassal/tributary
+		AMF = {	declare_war =  MAC }		
 	}	
 }
 
@@ -765,7 +801,7 @@ country_event = {
 				define_general = {
 					name = "Chares from Athens"	
 					fire = 8	
-					shock = 9	
+					shock = 8
 					manuever = 4	
 					siege = 3
 				}
@@ -997,9 +1033,18 @@ country_event = {
 		ATH = { form_coalition_against = MAC }
 		BSS = { form_coalition_against = MAC }
 		ODR = { form_coalition_against = MAC }
-		POE = { form_coalition_against = MAC }
+		if = { 
+			limit = {
+				POE = {	
+					NOT = {
+						is_subject_of = MAC
+					} 
+				}
+			}
+			POE = { form_coalition_against = MAC }
+		}		
 		DT1 = { form_coalition_against = MAC }
-
+		
 		ATH = {
 			declare_war = MAC
 		}
@@ -1009,6 +1054,20 @@ country_event = {
 		ATH = {
 			every_ally = {
 		   		join_all_offensive_wars_of = ATH
+			}
+		}
+		if = { 
+			limit = {
+				MAC = {	
+					has_country_flag = pausanias_alive 
+				}
+			}
+			1074 = {
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 1.5
+					leader = "Pausanias Argead"			
+				}
 			}
 		}
 		1062 = {
@@ -1059,7 +1118,7 @@ country_event = {
 	option = {
 		name = rm.17.a
 		add_army_professionalism = 0.4
-		add_treasury = 2000
+		add_treasury = 1000
 		add_mil_power = 500
 		add_yearly_manpower = 3
 		add_prestige = 10
@@ -1069,7 +1128,9 @@ country_event = {
 			add_base_manpower = -2
 			add_base_production = 1
 			rename_capital = "Philippi"
-			change_province_name = "Philippi"			
+			change_province_name = "Philippi"	
+			remove_building = small_city_walls
+			add_building = border_garrison		
 		}
 		5522 = { #assimilation of bysaltes
 			change_culture = macedon
@@ -1290,8 +1351,8 @@ country_event = {
         has_country_flag = philipe_start
 		has_country_flag = philipe_reform		
 		NOT = { has_country_flag = oesyme_flag }
-		MAC = {
-			controls = 5826
+		5826 = {
+			controls = MAC
 		}
 	} 
 	
@@ -1377,7 +1438,7 @@ country_event = {
 		war_with = MRN
         has_country_flag = philipe_start
 		has_country_flag = philipe_reform		
-		NOT = { has_country_flag = abdera_flag }
+		NOT = { has_country_flag = maroneia_flag }
 		MAC = {
 			controls = 1078
 		}
@@ -1388,7 +1449,7 @@ country_event = {
 	}
 
 	immediate = {
-		hidden_effect = { set_country_flag = abdera_flag }
+		hidden_effect = { set_country_flag = maroneia_flag }
 	}
 	
 	option = {
@@ -1473,7 +1534,7 @@ country_event = {
 	id = rm.26
 	title = rm.26.t
 	desc = rm.26.d
-	picture = shrine
+	picture = looting
 	major = yes
 
 	trigger = {
@@ -1498,16 +1559,18 @@ country_event = {
 	}
 
 	immediate = {
-		hidden_effect = { set_country_flag = third_sacred_war_flag }
-		PHE = {
-			create_alliance = PHC
-		}
-		BOE = {
-			create_alliance = PLG
-			create_alliance = TES
-			create_alliance = HES
-			create_alliance = MGN
-		}
+		hidden_effect = {
+			set_country_flag = third_sacred_war_flag
+			PHE = {
+				create_alliance = PHC
+			}
+			BOE = {
+				create_alliance = PLG
+				create_alliance = TES
+				create_alliance = HES
+				create_alliance = MGN
+			}
+		}		
 	}
 
 	option = {
@@ -1650,6 +1713,10 @@ country_event = {
 			add_core = THL
 			cede_province = THL
 		}
+		1022 = {
+			cede_province = ATH
+			add_building = small_city_walls
+		}
 	}
 	
 	option = {
@@ -1668,58 +1735,860 @@ country_event = {
 #########################################################################################
 #346 BC - https://en.wikipedia.org/wiki/Peace_of_Philocrates
 #########################################################################################
-#
+country_event = {
+	id = rm.28
+	title = rm.28.t
+	desc = rm.28.d
+	picture = peace
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 408
+		war_with = ATH
+		has_country_flag = thessalia_flag	
+		NOT = { has_country_flag = philocrates_peace_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = philocrates_peace_flag }		
+	}
+	
+	option = {
+		name = rm.28.a
+		ai_chance = {factor = 100 }
+		MAC = {
+			white_peace = ATH
+			add_truce_with = ATH
+			add_prestige = 5
+			983 = {
+				add_core = MAC
+				cede_province = MAC
+			}
+		}
+	}
+}
 #########################################################################################
 # Philip II - 352 to 346 BC - subjigation of Odomantii, Western Odrysia, Central Odrysia
-######################################################################################## 
-#rm.29 - start
+########################################################################################
+country_event = {
+	id = rm.29
+	title = rm.29.t
+	desc = rm.29.d
+	picture = soldiers_in_snow
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 402		
+		has_country_flag = maroneia_flag 
+		NOT = { has_country_flag = thracian_attack_1_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = thracian_attack_1_flag }		
+	}
+
+	option = {
+		name = rm.29.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			declare_war = ODO
+		}
+		MAC = {
+			declare_war = TT1
+		}
+		MAC = {
+			declare_war = BSS
+			create_alliance = AGR
+		}
+	}
+}
+
 #rm.30 - on high warscore odomantii
-#rm.31- on high warscore western Odrysia a vassal
+country_event = {
+	id = rm.30
+	title = rm.30.t
+	desc = rm.30.d
+	picture = soldiers_in_snow
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 402
+		war_with = ODO
+		war_score_against = {
+			who = ODO
+			value = 40
+		}
+		has_country_flag = thracian_attack_1_flag
+		NOT = { has_country_flag = thracian_attack_odomantia_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = thracian_attack_odomantia_flag }		
+	}
+
+	option = {
+		name = rm.30.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			inherit = ODO
+			add_years_of_income = 0.25			
+		}
+		5522 = {
+			change_culture = macedon
+			change_religion = greek_religion
+		}
+	}
+}
+
+#rm.31- on high warscore western Odrysia stops existing
+country_event = {
+	id = rm.31
+	title = rm.31.t
+	desc = rm.31.d
+	picture = soldiers_in_snow
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 402
+		war_with = BSS
+		war_score_against = {
+			who = BSS
+			value = 40
+		}
+		has_country_flag = thracian_attack_1_flag
+		NOT = { has_country_flag = thracian_attack_westernodrysia_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = thracian_attack_westernodrysia_flag }
+		1118 = {
+			add_core = TT1
+			cede_province = TT1
+		}
+		1122 = {
+			add_core = TT1
+			cede_province = TT1
+		}
+		5845 = {
+			add_core = TT1
+			cede_province = TT1
+		}
+	}
+
+	option = {
+		name = rm.30.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			inherit = BSS
+			add_years_of_income = 0.25
+		}
+		1117 = {
+			add_core = MAC
+			cede_province = MAC
+			change_culture = macedon
+			change_religion = greek_religion
+		}
+	}
+}
 #rm.32 - on high warscore central odrysia a vassal or joins western odrysia into 1 tag
 #########################################################################################
+country_event = {
+	id = rm.32
+	title = rm.32.t
+	desc = rm.32.d
+	picture = soldiers_in_snow
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 402
+		war_with = TT1
+		war_score_against = {
+			who = TT1
+			value = 40
+		}
+		has_country_flag = thracian_attack_1_flag
+		NOT = { has_country_flag = thracian_attack_centralodrysia_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = thracian_attack_centralodrysia_flag }
+		1113 = {
+			add_core = MAC
+			cede_province = MAC
+		}
+		5844 = {
+			add_core = MAC
+			cede_province = MAC
+		}
+		1129 = {
+			add_core = MAC
+			cede_province = MAC
+		}
+		1114 = {
+			add_core = MAC
+			cede_province = MAC
+		}
+		5857 = {
+			add_core = MAC
+			cede_province = MAC
+		}
+		1128 = {
+			add_core = AGR
+			cede_province = AGR
+		}
+	}
+
+	option = {
+		name = rm.32.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			white_peace = TT1
+			create_subject = {
+				subject_type = tributary_state
+				subject = TT1
+			}
+			add_years_of_income = 0.25
+		}
+	}
+}
+#348 BC Philip II - attack on Phokis
+######################################################################################## 
+#rm.33 - its vassalage in case if occupied and in war
+country_event = {
+	id = rm.33
+	title = rm.33.t
+	desc = rm.33.d
+	picture = city
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		war_with = PHC
+		war_score_against = {
+			who = PHC
+			value = 30
+		}
+		has_country_flag = thessalia_flag
+		NOT = { has_country_flag = phocis_pacification_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = phocis_pacification_flag }		
+	}
+
+	option = {
+		name = rm.33.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			create_subject = {
+				subject_type = vassal
+				subject = PHC
+			}
+			add_years_of_income = 0.5
+		}
+	}
+}
 #348 BC Philip II - attack on Chalkidike
 ######################################################################################## 
-#rm.33 - normal event attack
-#rm.34 - if player attacked it earlier on his own initiative
+#rm.34 - normal event attack
+country_event = {
+	id = rm.34
+	title = rm.34.t
+	desc = rm.34.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 406	
+		has_country_flag = oesyme_flag
+		NOT = { has_country_flag = chalkidike_attack_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = chalkidike_attack_flag }		
+	}
+
+	option = {
+		name = rm.34.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			declare_war = CHL
+		}		
+	}
+}
+
+#rm.35 - revolt in Euboea - Eretria becomes independent (send money and spend dip)
+country_event = {
+	id = rm.35
+	title = rm.35.t
+	desc = rm.35.d
+	picture = senat_conflict
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 406
+		has_country_flag = chalkidike_attack_flag
+		NOT = { has_country_flag = eretria_revolt_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = eretria_revolt_flag }		
+	}
+
+	option = {
+		name = rm.35.a
+		ai_chance = {factor = 100 }		
+		ERT = {
+			grant_independence = yes
+		}
+		MAC = {
+			add_years_of_income = -0.5
+			add_dip_power = -50
+			add_mil_power = -50
+			add_prestige = 5
+		}
+	}
+}
 #########################################################################################
-#348 BC Philip II - on-occupation of Olynthus - minus dev, and choise - kill or not his father Alcetas bastard children to gain legitimacy
+# Missing event - peace out Dardania and thracians after Amphiopolis events - 
+#Thriumph of Parmenion- he heroicly defeated illyrians in battle while Phil was busy with cities
 ######################################################################################## 
-#rm.35
+#rm.36
+country_event = {
+	id = rm.36
+	title = rm.36.t
+	desc = rm.36.d
+	picture = philip2
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+        has_country_flag = amphipolis_war
+		NOT = { has_country_flag = parmenion_victory }
+		war_with = DT1
+		war_score_against = {
+			who = DT1
+			value = 10
+		}
+		war_score_against = {
+			who = BSS
+			value = 3
+		}		
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	immediate = {
+		hidden_effect = { set_country_flag = parmenion_victory }
+	}
+	
+	option = {
+		name = "rm.36.a"
+		ai_chance = { factor = 100 }		
+		DT1 = {
+			white_peace = MAC
+		}
+		TT1 = {
+			white_peace = MAC
+		}
+		BSS = {
+			white_peace = MAC
+		}
+		ODR = {
+			white_peace = MAC
+		}
+		MAC = {
+			create_subject = {
+				subject_type = tributary_state
+				subject = DT1
+			}
+		}
+		add_prestige = 8
+		add_army_tradition = 8
+		add_years_of_income = 0.25
+	}
+}
+
 #########################################################################################
+#348 BC Philip II - on-occupation of Olynthus (regardless if you attacked via event or on your own - minus dev and tradegood change to ceramics
+######################################################################################## 
+#rm.37
+country_event = {
+	id = rm.37
+	title = rm.37.t
+	desc = rm.37.d
+	picture = fire
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+        has_country_flag = amphipolis_war
+		NOT = {	has_country_flag = chalkidike_end_flag }
+		war_with = CHL
+		war_score_against = {
+			who = CHL
+			value = 15
+		}
+		1067 = {
+			controlled_by = MAC
+		}		
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = { set_country_flag = chalkidike_end_flag }
+	}
+	
+	option = {
+		name = "rm.37.a"
+		ai_chance = { factor = 100 }
+		MAC = {
+			inherit = CHL
+			add_prestige = 5
+			add_years_of_income = 2
+			country_event = { id = rm.38 }
+		}
+		1067 = {
+			add_base_production = -4
+			add_base_tax = -3
+			remove_building = small_city_walls
+			change_trade_goods = ceramic
+		}
+		5525 = {
+			change_culture = macedon
+			change_religion = greek_religion
+		}
+	}
+}
+#rm.38 choise - kill or not his father Alcetas bastard children to gain legitimacy
+#########################################################################################
+country_event = {
+	id = rm.38
+	title = rm.38.t
+	desc = rm.38.d
+	picture = palace_evacuation
+
+	immediate = {
+		hidden_effect = { set_country_flag = childrenkilling_flag }
+	}
+	
+	option = {
+		name = "rm.38.a"
+		ai_chance = { factor = 100 }
+		add_legitimacy = 10
+		add_prestige = -5
+	}
+	option = {
+		name = "rm.38.b"
+		ai_chance = { factor = 100 }
+		add_legitimacy = -10
+		add_prestige = 10
+	}
+}
+
 #345 BC - Ardiaei campaign
 ########################################################################################
-#rm.36
+#rm.39
+country_event = {
+	id = rm.39
+	title = rm.39.t
+	desc = rm.39.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 410
+		NOT = { has_country_flag = adriaei_attack_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = adriaei_attack_flag }		
+	}
+
+	option = {
+		name = rm.39.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			declare_war = TL1
+			declare_war = AR1
+		}		
+	}
+}
+#Ardiaei campaign victory - tributary
+########################################################################################
+#rm.40
+country_event = {
+	id = rm.40
+	title = rm.40.t
+	desc = rm.40.d
+	picture = philip2
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+        has_country_flag = amphipolis_war
+		NOT = { has_country_flag = parmenion_victory }
+		war_with = DT1
+		war_score_against = {
+			who = DT1
+			value = 10
+		}
+		war_score_against = {
+			who = BSS
+			value = 3
+		}		
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	immediate = {
+		hidden_effect = { set_country_flag = parmenion_victory }
+	}
+	
+	option = {
+		name = "rm.40.a"
+		ai_chance = { factor = 100 }		
+		TL1 = {
+			white_peace = MAC
+		}
+		AR1 = {
+			white_peace = MAC
+		}
+		MAC = {
+			create_subject = {
+				subject_type = tributary_state
+				subject = TL1
+			}
+			create_subject = {
+				subject_type = tributary_state
+				subject = AR1
+			}
+		}
+		add_prestige = 5
+		add_years_of_income = 0.5
+	}
+}
 #########################################################################################
 #In 342 BC, Philip led a military expedition north against the Scythians
 #########################################################################################
-# - attack
-# - battle with Ateas forces (if positive warscore) - weakens scythia, gives horses modifier since scythians had no gold with them :)
-# - triballian attack - lose some manpower and gold and prestige and get CB on tribali and -relations - triballi ambushed Philipp and took part of loot
+# rm.41- attack on Thracia 
+country_event = {
+	id = rm.41
+	title = rm.41.t
+	desc = rm.41.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 412
+		has_country_flag = thracian_attack_centralodrysia_flag
+		NOT = { has_country_flag = odrysia_attack_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = odrysia_attack_flag }		
+	}
+
+	option = {
+		name = rm.41.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			declare_war = ODR
+		}
+	}
+}
+
+# rm.42- if 40% - annexex southern parts of odrysia and border Bys and Perinthos and Scythians
+country_event = {
+	id = rm.42
+	title = rm.42.t
+	desc = rm.42.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		war_with = ODR
+		war_score_against = {
+			who = ODR
+			value = 40
+		}
+		has_country_flag = odrysia_attack_flag
+		NOT = { has_country_flag = odrysia_end_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = odrysia_end_flag }		
+	}
+
+	option = {
+		name = rm.42.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			white_peace = ODR
+			inherit = THY
+			vassalize = ODR
+		}
+		ODR = {
+			every_owned_province = {
+				limit = {
+					OR = {
+						area = odryssia_area
+						area = hellespont_area
+						area = europa_area
+					}
+				}
+				cede_province = MAC
+				add_core = MAC
+			}
+			inherit = TT1
+		}
+		1092 = {
+			cede_province = MAC
+		}
+		5829 = {
+			cede_province = MAC
+		}
+		1074 = {
+			change_culture = macedon
+			change_religion = greek_religion
+		}
+		5582 = {			
+			change_religion = greek_religion
+		}
+		5583 = {
+			change_religion = greek_religion
+		}
+		5828 = {
+			remove_building = small_city_walls
+		}
+		1088 = {
+			remove_building = small_city_walls
+		}
+	}
+}
 #########################################################################################
 #In 340 BC - attack on Perinthos and Byzantium
 #########################################################################################
+#  rm.43 attack and unsuccessful sieges - adds modidifer "athenian and persian help" adding insane fort defence
+country_event = {
+	id = rm.43
+	title = rm.43.t
+	desc = rm.43.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		has_country_flag = odrysia_end_flag
+		NOT = { has_country_flag = byz_fail_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = byz_fail_flag }		
+	}
+
+	option = {
+		name = rm.43.a
+		ai_chance = {factor = 100 }		
+		MAC = {
+			declare_war = BYS
+			declare_war = PRI
+			declare_war = SLB
+		}
+		1085 = {
+			add_province_modifier = {
+				name = unsuccessful_siege_scenario
+				duration = 365
+			}
+		}
+		5586 = {
+			add_province_modifier = {
+				name = unsuccessful_siege_scenario
+				duration = 365
+			}
+		}
+		1086 = {
+			add_province_modifier = {
+				name = unsuccessful_siege_scenario
+				duration = 365
+			}
+		}
+	}
+}
+
+# rm.44 scythians appear on borders - start war with SCY
+country_event = {
+	id = rm.44
+	title = rm.44.t
+	desc = rm.44.d
+	picture = philip
+
+	trigger = {
+		tag = MAC
+		started_in = 395.1.1
+		NOT = { started_in = 418.1.1 }
+		has_ruler = "Philip II"
+		is_year = 413
+		has_country_flag = byz_fail_flag
+		NOT = { has_country_flag = ateas_war_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = ateas_war_flag }		
+	}
+
+	option = {
+		name = rm.44.a
+		ai_chance = {factor = 100 }		
+		SCY = {
+			declare_war = MAC
+		}
+	}
+}
 #########################################################################################
 # 340 bc (414 auc) - Conquest of Egypt by persia
 #########################################################################################
+#  rm.45
+
+# # rm.46 - battle with Ateas forces (if positive warscore) - weakens scythia, revive Getae, split off Scythia Minor, gives horses modifier since scythians had no gold with them :)
+
+# rm.47 - triballian attack - lose some manpower and gold and prestige and get CB on tribali and -relations - triballi ambushed Philipp and took part of loot
+
+
 #########################################################################################
 # 339 - whitepeace on persian behalf, if Perinthos and Byzantium still exist OR you continue fight but Byzantion occupies your closest prov and spawn 30k persian troops.
 #########################################################################################
-#########################################################################################
-# War with Boeotia - it allies anthenian empire. All their vassals join.
-#########################################################################################
-#########################################################################################
-# if warscore is positive, year is 338 bc (412?) and Thebes, Athents, Corynth and Chaeronea is occupied - battle of Chaeronea - Macedon vassalized Athens, Corynth, Boeotia
-#########################################################################################
+# rm.48
 
 #########################################################################################
-# Establishment of League of Corynth - all Greece (who are not vassals) except Epirus, Aetolia and Sparta - become league members?
+# War with Boeotia - it allies Athenian empire. All their vassals join. Battle royale begins
 #########################################################################################
-# 338 BC - eunuch Bagoas kills Artaxerxes III and almost all his sons
-#########################################################################################
-# Probe Attack on Persia - sends 10k "rebels" to Hellespontine Phrygia led by Parmenion
-#########################################################################################
+# rm.49
 
 #########################################################################################
-# Assasination event - marry Cleopatra or not (if yes - assasination)
+# if warscore is positive, year is 338 bc (412?) and Thebes, Athents, Corynth and Chaeronea is occupied - 
+#battle of Chaeronea - Macedon vassalized Athens, Corynth, Boeotia...fire next event in few days
 #########################################################################################
+# rm.50
+
+#########################################################################################
+# Establishment of League of Corynth - all Greece (who are not vassals) except Epirus, Achaea, Acarnania, Aetolia and Sparta - become league members?
+#########################################################################################
+# rm.51
+
+# 338 BC - eunuch Bagoas kills Artaxerxes III and almost all his sons. Puppet king Artaxerxes IV (Arses) put on throne
+# rm.52
+
+# Probe Attack on Persia - sends 10k "rebels" to Hellespontine Phrygia led by Parmenion and Attalus?
+#########################################################################################
+# rm.53
+
+# #  Arses tried to get rid of Bagoas and poisoned. Armenian satrap Codomannus with consent of nobility deposing Bagoas and becomes Darius III.
+#########################################################################################
+# rm.54
+
+#########################################################################################
+# Assasination events - marry Cleopatra or not (if yes - assasination)
+#########################################################################################
+# rm.55
 # 2 options: Yes and YES! (Do you want to play as Alexander the Great or no, goddamit?!)
+# rm.56. Philipp II killed
