@@ -8,19 +8,13 @@ ask_for_league_member_subject = {
 	require_acceptance = yes
 	is_visible = {
 		is_subject = no
-		OR = {
-			culture_group = hellenic
-			culture_group = macedon_group
-		}
+		culture_group = hellenic
 		neither_tribal_nor_native_trigger = yes
 		NOT = { is_rival = FROM }
 		FROM = {
 			is_subject = no
 			neither_tribal_nor_native_trigger = yes
-			OR = {
-				culture_group = hellenic
-				culture_group = macedon_group
-			}
+			culture_group = hellenic
 			NOT = { is_rival = ROOT }
 			NOT = { league_member_subject = 1 }
 			NOT = { government_rank = 3 }
@@ -35,7 +29,6 @@ ask_for_league_member_subject = {
 		is_bankrupt = no
 		is_at_war = no
 		stability = 0
-		NOT = { truce_with = FROM }
 		FROM = { NOT = { has_country_modifier = banned_league_modifier } }
 		FROM = { NOT = { any_ally = { is_rival = ROOT } } }
 		FROM = { is_at_war = no }
@@ -198,10 +191,6 @@ remove_league_member_subject = {
 	is_allowed = {
 		is_at_war = no
 		has_any_disaster = no
-		FROM = {
-			is_subject_of_type = league_member_subject
-			is_subject_of = ROOT
-		}
 	}
 	on_accept = {
 		add_truce_with = FROM
@@ -246,26 +235,15 @@ settle_clerurchy_interaction = {
 	require_acceptance = no
 
 	is_visible = {
-		NOT = { truce_with = FROM }
 		FROM = {
 			is_subject_of_type = league_member_subject
 			is_subject_of = ROOT
 		}
-		league_member_subject = 6
-		NOT = { has_country_modifier = settled_clerurch_modifier }
 	}
 	is_allowed = {
-		hidden_trigger = {
-			FROM = {
-				is_subject_of_type = league_member_subject
-				is_subject_of = ROOT
-			}
-			league_member_subject = 6
-			NOT = { has_country_modifier = settled_clerurch_modifier }
-		}
+		NOT = { truce_with = FROM }
 		is_at_war = no
 		has_any_disaster = no
-		absolutism = 20
 		stability = 1
 		capital_scope = { base_manpower = 2 }
 		FROM = {
@@ -280,52 +258,47 @@ settle_clerurchy_interaction = {
 		}
 	}
 	on_accept = {
-		add_absolutism = -5
-		add_country_modifier = {
-			name = settled_clerurch_modifier
-			duration = 3650
-		}
 		every_subject_country = {
 			limit = {
 				is_subject_of_type = league_member_subject
-				NOT = { TAG = FROM }
 			}
 			add_opinion = {
 				who = ROOT
-    			modifier = banned_from_league_opinion
+    			modifier = recently_settled_clerurch_opinion
 			}
-			add_liberty_desire = 5
+			add_trust = {
+				who = ROOT
+    			modifier = -10
+			}
+			add_liberty_desire = 10
 		}
-		hidden_effect = {
-			capital_scope = { add_base_manpower = -1 }
-			FROM = {
-				random_owned_province = {
-					if = {
-						limit = { is_prosperous = yes }
-						add_core = ROOT
-						cede_province = ROOT
-						change_culture = ROOT
-						change_religion = ROOT
-						add_base_production = -1
-					}
-					else = {
-						add_core = ROOT
-						cede_province = ROOT
-						change_culture = ROOT
-						change_religion = ROOT
-						add_base_production = -1
-					}
+		add_truce_with = FROM
+		capital_scope = { add_base_manpower = -1 }
+		FROM = {
+			random_owned_province = {
+				if = {
+					limit = { is_prosperous = yes }
+					add_core = ROOT
+					cede_province = ROOT
+					change_culture = ROOT
+					change_religion = ROOT
+					add_base_production = -1
+				}
+				else = {
+					add_core = ROOT
+					cede_province = ROOT
+					change_culture = ROOT
+					change_religion = ROOT
+					add_base_production = -1
 				}
 			}
-		}
-		FROM = {
 			if = {
 				limit = { exists = yes }
-				add_opinion = {
+				add_trust = {
 					who = ROOT
-					modifier = recently_settled_clerurch_opinion
+					modifier = -10
 				}
-				add_liberty_desire = 20
+				add_liberty_desire = 10
 			}
 		}
 	}
@@ -352,19 +325,13 @@ ask_to_join_league = {
 	is_visible = {
 		FROM = {
 			is_subject = no
-			OR = {
-				culture_group = hellenic
-				culture_group = macedon_group
-			}
+			culture_group = hellenic
 			neither_tribal_nor_native_trigger = yes
 			NOT = { is_rival = ROOT }
 		}
 		is_subject = no
 		neither_tribal_nor_native_trigger = yes
-		OR = {
-			culture_group = hellenic
-			culture_group = macedon_group
-		}
+		culture_group = hellenic
 		NOT = { is_rival = FROM }
 		NOT = { league_member_subject = 1 }
 		NOT = { government_rank = 3 }
@@ -379,7 +346,6 @@ ask_to_join_league = {
 			is_bankrupt = no
 			is_at_war = no
 			stability = 0
-			NOT = { truce_with = ROOT }
 		}
 		NOT = { has_country_modifier = banned_league_modifier }
 		NOT = { any_ally = { is_rival = FROM } }
@@ -562,20 +528,13 @@ abandon_league_overlord = {
 		stability = 1
 		dip_power = 300
 		is_in_deficit = no
-		OR = {
-			total_development = FROM
-			army_size = FROM
-			navy_size = FROM
-			liberty_desire = 95
-			AND = {
-				liberty_desire = 80
-				NOT = {
-					reverse_has_opinion = {
-						who = FROM
-						value = 60
-					}
-				}
+		AND = {
+			OR = {
+				total_development = FROM
+				army_size = FROM
+				navy_size = FROM
 			}
+			liberty_desire = 60
 		}
 	}
 }
