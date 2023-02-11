@@ -1036,7 +1036,7 @@ country_event = {
 	option = {
 	    name = "rome.31.a"
 		add_stability = -1
-		add_devotion = -40
+		add_devotion = -40`
 	}
 	
 	option = {
@@ -1045,5 +1045,218 @@ country_event = {
 		change_government = monarchy
 		add_government_reform = despotism_reform
 		add_legitimacy = 40
+	}
+}
+########################################################################################
+# Latin Wars Start
+########################################################################################
+country_event = {
+    id = rome.32
+	title = "rome.32.t"
+	desc = "rome.32.d"
+	picture = maniple
+		
+	trigger = {
+	    tag = ROM
+		socii_subject = 4
+		num_of_owned_provinces_with = {
+			value = 2
+			area = latium_area
+		}
+		NOT = {
+			num_of_owned_provinces_with = {
+				value = 6
+				area = latium_area
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+	   years = 20
+	}
+	immediate = {
+		hidden_effect = { 
+			every_country = {
+				limit = {
+					is_subject_of = ROM
+				}
+				add_country_modifier = {
+					name = latin_wars_unloyalty
+					duration = 718
+				}
+				country_event = {
+					id = rome.33
+					days = 100
+				}
+			}
+		 }
+	}
+
+	option = {
+	    name = "rome.32.a"
+		ai_chance = { factor = 100 }
+		country_event = {
+			id = rome.34
+			days = 365
+		}
+		add_stability = -1	
+	}
+}
+
+########################################################################################
+# Latin Wars - latins ally each other
+########################################################################################
+country_event = {
+    id = rome.33
+	title = "rome.33.t"
+	desc = "rome.33.d"
+	picture = maniple
+	is_triggered_only = yes
+		
+	option = {
+	    name = "rome.33.a"
+		ai_chance = { factor = 100 }
+		every_country = {
+			limit = {
+				capital_scope = {
+					area = latium_area
+				}
+				is_subject_of = ROM
+				liberty_desire = 25
+			}
+			add_liberty_desire = 75	
+			if = {
+				limit = {
+					exists = LAT
+				}
+				create_alliance = LAT
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						exists = LAT
+					}
+					exists = PRE
+				}
+				create_alliance = PRE
+			}
+			else = {
+				limit = {
+					NOT = {
+						exists = LAT
+						exists = PRE
+					}
+					exists = VEL
+				}
+				create_alliance = VEL
+			}
+		}
+	}	
+}
+
+
+########################################################################################
+# Latin Wars - latins start a war
+########################################################################################
+country_event = {
+    id = rome.34
+	title = "rome.34.t"
+	desc = "rome.34.d"
+	picture = maniple
+	is_triggered_only = yes
+
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = LAT
+		}
+		every_ally = {
+			join_all_offensive_wars_of = PRE
+		}
+		every_ally = {
+			join_all_offensive_wars_of = VEL
+		}
+	}
+
+	option = {
+	    name = "rome.34.a"
+		ai_chance = { factor = 100 }
+		every_country = {
+			limit = {
+				capital_scope = {
+					area = latium_area
+				}
+				is_subject_of = ROM				
+				NOT = {
+					liberty_desire = 25
+				}
+			}
+			break_alliance = LAT
+			break_alliance = PRE
+			break_alliance = VEL
+		}
+		if = {
+			limit = {
+				exists = LAT
+				LAT = {
+					liberty_desire = 25
+				}
+			}
+			VOL = {
+				create_alliance = LAT
+			}
+			LAT = {
+				add_casus_belli = {
+					type = cb_independence_war
+					target = ROM
+				}
+				declare_war_with_cb = {
+					casus_belli = cb_independence_war
+					who = ROM
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					exists = LAT
+				}
+				exists = PRE
+			}
+			VOL = {
+				create_alliance = PRE
+			}
+			PRE = {
+				add_casus_belli = {
+					type = cb_independence_war
+					target = ROM
+				}
+				declare_war_with_cb = {
+					casus_belli = cb_independence_war
+					who = ROM
+				}
+			}
+		}
+		else = {
+			limit = {
+				NOT = {
+					exists = LAT
+					exists = PRE
+				}
+				exists = VEL
+			}
+			VOL = {
+				create_alliance = VEL
+			}
+			VEL = {
+				add_casus_belli = {
+					type = cb_independence_war
+					target = ROM
+				}
+				declare_war_with_cb = {
+					casus_belli = cb_independence_war
+					who = ROM
+				}
+			}
+		}
 	}
 }
