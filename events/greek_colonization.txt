@@ -2175,3 +2175,73 @@ country_event = {
 		set_global_flag = blocked_greek_colonization_flag
 	}
 }
+
+########################################################################################
+# Special
+########################################################################################
+
+#Parthenope-Neapolis
+province_event = {
+	id = grk_col.39
+	title = "grk_col.39.t"
+	desc = "grk_col.39.d"
+	picture = battle_spoils
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+		province_id = 5664
+		FROM = { TAG = I22 }
+		owner = { NOT = { culture_group = hellenic } }
+		exists = NPL
+		NPL = { owns = 39 }
+	}
+
+	immediate = {
+		NPL = { country_event = { id = grk_col.3901 days = 2 } }
+		5664 = {
+			add_base_manpower = -1
+			add_base_production = -1
+			add_base_tax = -1
+		}
+	}
+	
+	option = {
+		name = "grk_col.39.a"
+	}
+}
+
+country_event = {
+	id = grk_col.3901
+	title = "grk_col.39.t"
+	desc = "grk_col.39.d"
+	picture = guard
+	is_triggered_only = yes
+	goto = 5664
+		
+	option = {
+		name = "grk_col.39.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 10
+		add_treasury = -100
+		39 = {
+			add_base_manpower = 1
+			add_base_production = 1
+			add_base_tax = 1
+			change_province_name = "Neapolis"
+			rename_capital = "Neapolis"
+		}
+		restore_country_name = yes
+	}
+	option = {
+		name = "grk_col.39.b"
+		ai_chance = { factor = 1 }
+		add_prestige = -10
+		5664 = {
+			add_base_manpower = 1
+			add_base_production = 1
+			add_devastation = 100
+		}
+	}
+}
