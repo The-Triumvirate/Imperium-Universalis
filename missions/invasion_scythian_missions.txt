@@ -2009,6 +2009,13 @@ invasion_scythian_missions_5 = {
 					overlord_of = SX1
 					NOT = { SX1 = { is_subject_of_type = tributary_state } }
 				}
+				AND = {
+					SX1 = {
+						trust = { who = ROOT value = 100 }
+						owes_favors = { who = ROOT value = 100 }
+						alliance_with = ROOT
+					}
+				}
 				all_province = {
 					culture = ishkuzan
 					owned_by = ROOT
@@ -2017,13 +2024,27 @@ invasion_scythian_missions_5 = {
 		}
 		effect = {
 			if = {
-				limit = { overlord_of = SX1 }
+				limit = {
+					OR = {
+						overlord_of = SX1
+						alliance_with = SX1
+					}
+				}
 				inherit = SX1
 			}
 			every_owned_province = {
-				limit = { culture = ishkuzan }
-				add_core = ROOT
-				add_base_manpower = 1
+				if = {
+					limit = {
+						culture = ishkuzan
+						NOT = { is_core = ROOT }
+					}
+					add_core = ROOT
+					add_base_manpower = 1
+				}
+				else_if = {
+					limit = { culture = ishkuzan }
+					add_base_manpower = 1
+				}
 			}
 			orbalisene_area = {
 				limit = {
