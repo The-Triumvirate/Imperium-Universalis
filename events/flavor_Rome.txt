@@ -331,36 +331,32 @@ country_event = {
 	title = "rome.15.t"
 	desc = "rome.15.d"
 	picture = senat_conflict
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ROM
-		italian_region = { type = all owned_by = ROM }
-		NOT = { has_country_flag = hegemony_of_italy }
-		NOT = { started_in = 464.1.1 }
-		
-	}
-	
-	mean_time_to_happen = {
-		months = 12
-		
-	}
+	is_triggered_only = yes
 	option = {
 		name = "rome.15.a"
 		ai_chance = { factor = 90 }
-		add_mil_power = 200
-		add_stability = 1
+		add_mil_power = 300
+		add_yearly_manpower = 2
+		add_country_modifier = {
+			name = "secured_italia_mission"
+			duration = 18250
+		}
 	}
 	option = {
 		name = "rome.15.b"
 		ai_chance = { factor = 10 }
 		add_stability = 1
+		add_adm_power = 100
 		hidden_effect = {
 			every_owned_province = {
 				add_local_autonomy = -20
 				}
 			}
-			custom_tooltip = rome.15.tt.a
+		custom_tooltip = rome.15.tt.a
+		add_country_modifier = {
+			name = "secured_italia_mission"
+			duration = 18250
+		}
 	}
 }
 
@@ -606,27 +602,7 @@ country_event = {
 	title = "rome.17.t"
 	desc = "rome.17.d"
 	picture = battle
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ROM
-		NOT = { started_in = 220.1.1 }
-		MIL = 4
-		NOT = { has_country_flag = servius_tullius_mil_reform }
-	}
-	
-	mean_time_to_happen = {
-		months = 50
-		
-		modifier = {
-				factor = 0.75
-				advisor = army_reformer_adv
-			}
-		modifier = {
-				factor = 0.25
-				mil_tech = 2
-			}
-	}
+	is_triggered_only = yes
 	option = {
 		name = "rome.17.a"
 		ai_chance = { factor = 100 }
@@ -635,12 +611,10 @@ country_event = {
 				name = servius_tullius_mil
 				duration = -1
 			}	
-			set_country_flag = servius_tullius_mil_reform
 	}
 	option = {
 		name = "rome.17.b"
-		ai_chance = { factor = 0 }	
-			set_country_flag = servius_tullius_mil_reform
+		add_prestige = -5
 	}
 }
 ########################################################################################
@@ -684,11 +658,6 @@ country_event = {
 				duration = -1
 			}	
 	}
-	option = {
-		name = "rome.18.b"
-		ai_chance = { factor = 0 }
-			add_adm_power = 50
-	}
 }
 
 ########################################################################################
@@ -699,46 +668,21 @@ country_event = {
 	title = "rome.19.t"
 	desc = "rome.19.d"
 	picture = training
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ROM
-		NOT = { has_country_flag = camillan_mil_reform }
-		NOT = { started_in = 420.1.1 }
-		mil_tech = 18
-	}
-	
-	mean_time_to_happen = {
-		months = 60
-		
-		modifier = {
-				factor = 0.5
-				MIL = 5
-			}
-		
-	}
+	is_triggered_only = yes
 	option = {
 		name = "rome.19.a"
 		ai_chance = { factor = 100 }
 		add_mil_power = -50
-		add_stability = -1
 		add_army_tradition = -5
 		add_army_professionalism = 0.05
 		add_country_modifier = {
 				name = camillan_mil
 				duration = -1
 			}
-			if = {
-				limit = { has_country_modifier = servius_tullius_mil }
+		if = {
+			limit = { has_country_modifier = servius_tullius_mil }
 			remove_country_modifier = servius_tullius_mil
-			}
-			set_country_flag = camillan_mil_reform
-	}
-	option = {
-		name = "rome.19.b"
-		ai_chance = { factor = 0 }
-			add_army_tradition = 5
-			set_country_flag = camillan_mil_reform
+		}
 	}
 }
 
@@ -751,58 +695,74 @@ country_event = {
 	title = "rome.20.t"
 	desc = "rome.20.d"
 	picture = rivercrossing
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ROM
-		OR = {
-			CAR = {
-				is_rival = ROM
-			}
-			total_development = 300
-			ROM = {
-				war_with = CAR
-			}
-		}
-		NOT = { started_in = 490.1.1 }
-		mil_tech = 28
-		NOT = { has_country_flag = polybian_mil_reform }
-	}
-	
-	mean_time_to_happen = {
-		months = 60
-		
-		modifier = {
-				factor = 0.5
-				MIL = 5
-			}
-	}
+	is_triggered_only = yes
 	option = {
 		name = "rome.20.a"
 		ai_chance = { factor = 100 }
 		add_mil_power = -50
 		add_stability = -1
 		add_army_tradition = -5
+		add_yearly_manpower = 1
+		add_country_modifier = {
+			name = polybian_mil
+			duration = -1
+		}
+		if = {
+			limit = { has_country_modifier = camillan_mil }
+			remove_country_modifier = camillan_mil	
+		}	
+	}
+}
+
+########################################################################################
+# Marian Military Reforms
+########################################################################################
+country_event = {
+	id = rome.35
+	title = "rome.35.t"
+	desc = "rome.35.d"
+	picture = training
+	is_triggered_only = yes
+	option = {
+		name = "rome.35.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_stability = 1
+		add_army_tradition = 10
 		add_army_professionalism = 0.05
 		add_country_modifier = {
-				name = polybian_mil
+				name = marian_mil
 				duration = -1
 			}
-			if = {
-					limit = { 	has_country_modifier = camillan_mil	 }
-								remove_country_modifier = camillan_mil	
-			}	
-			if = {
-					limit = { 	has_country_modifier = servius_tullius_mil }
-								remove_country_modifier = servius_tullius_mil
-			}
-			set_country_flag = polybian_mil_reform
+		if = {
+			limit = { has_country_modifier = polybian_mil }
+			remove_country_modifier = polybian_mil	
+		}	
 	}
+}
+
+########################################################################################
+# Imperial Military Reforms
+########################################################################################
+country_event = {
+	id = rome.36
+	title = "rome.36.t"
+	desc = "rome.36.d"
+	picture = training
+	is_triggered_only = yes
 	option = {
-		name = "rome.20.b"
-		ai_chance = { factor = 0 }
-			add_mil_power = 50	
-			set_country_flag = polybian_mil_reform
+		name = "rome.36.a"
+		ai_chance = { factor = 100 }
+		add_mil_power = -50
+		add_army_tradition = 10
+		add_country_modifier = {
+				name = roman_empire_mil
+				duration = -1
+			}
+		if = {
+			limit = { has_country_modifier = marian_mil }
+			remove_country_modifier = marian_mil	
+		}	
 	}
 }
 
@@ -814,26 +774,7 @@ country_event = {
 	title = "rome.21.t"
 	desc = "rome.21.d"
 	picture = defense
-	fire_only_once = yes
-		
-	trigger = {
-		tag = ROM
-		is_year = 190
-		NOT = { started_in = 200.1.1 }
-		owns = 53
-		treasury = 50
-		53 = {
-				is_capital = yes
-				num_free_building_slots = 1
-            	NOT = { has_building = small_city_walls }
-        	}
-		NOT = { has_country_flag = servianwall }
-	}
-
-	mean_time_to_happen = {
-		months = 60
-	}
-
+	is_triggered_only = yes
 	option = {
 		name = "rome.21.a"
 		ai_chance = {	factor = 95	}
@@ -1056,7 +997,7 @@ country_event = {
 	title = "rome.32.t"
 	desc = "rome.32.d"
 	picture = maniple
-		
+	fire_only_once = yes
 	trigger = {
 	    tag = ROM
 		socii_subject = 4
@@ -1066,7 +1007,7 @@ country_event = {
 		}
 		NOT = {
 			num_of_owned_provinces_with = {
-				value = 6
+				value = 8
 				area = latium_area
 			}
 		}
@@ -1074,7 +1015,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-	   years = 20
+	   years = 2
 	}
 	immediate = {
 		hidden_effect = { 
@@ -1095,6 +1036,7 @@ country_event = {
 	}
 
 	option = {
+		custom_tooltip = rom_latin_war_info.tooltip
 	    name = "rome.32.a"
 		ai_chance = { factor = 100 }
 		country_event = {
@@ -1106,7 +1048,7 @@ country_event = {
 }
 
 ########################################################################################
-# Latin Wars - latins ally each other
+# Latin Wars - latins get disloyalty
 ########################################################################################
 country_event = {
     id = rome.33
@@ -1118,14 +1060,6 @@ country_event = {
 	option = {
 	    name = "rome.33.a"
 		ai_chance = { factor = 100 }
-		every_country = {
-			limit = {
-				capital_scope = {
-					area = latium_area
-				}
-				is_subject_of = ROM
-				liberty_desire = 25
-			}
 			add_liberty_desire = 100
 			if = {
 				limit = {
@@ -1152,8 +1086,7 @@ country_event = {
 				}
 				create_alliance = VEL
 			}
-		}
-	}	
+	}
 }
 
 
@@ -1166,7 +1099,39 @@ country_event = {
 	desc = "rome.34.d"
 	picture = maniple
 	is_triggered_only = yes
-	
+	immediate = {
+		every_country = {
+			limit = {
+				is_subject_of = ROM
+				liberty_desire = 25
+			}
+			if = {
+				limit = {
+					exists = LAT
+				}
+				create_alliance = LAT
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						exists = LAT
+					}
+					exists = PRE
+				}
+				create_alliance = PRE
+			}
+			else = {
+				limit = {
+					NOT = {
+						exists = LAT
+						exists = PRE
+					}
+					exists = VEL
+				}
+				create_alliance = VEL
+			}
+		}
+	}
 	after = {
 		every_ally = {
 			join_all_offensive_wars_of = LAT
@@ -1184,84 +1149,91 @@ country_event = {
 		ai_chance = { factor = 100 }
 		immediate = {
 			hidden_effect = { set_country_flag = latin_war_started_flag }		
-		} 
-		every_country = {
-			limit = {
-				capital_scope = {
-					area = latium_area
-				}
-				is_subject_of = ROM				
-				NOT = {
-					liberty_desire = 25
-				}
-			}
-			break_alliance = LAT
-			break_alliance = PRE
-			break_alliance = VEL
 		}
-		if = {
-			limit = {
-				exists = LAT
+		custom_tooltip = rom_latin_war_begin.tooltip
+		hidden_effect = {
+			every_country = {
+				limit = {
+					capital_scope = {
+						area = latium_area
+					}
+					is_subject_of = ROM				
+					NOT = {
+						liberty_desire = 25
+					}
+				}
+				break_alliance = LAT
+				break_alliance = PRE
+				break_alliance = VEL
+				set_country_flag = rom_rebel_socii
+			}
+			if = {
+				limit = {
+					exists = LAT
+					OR = {
+						LAT = {
+							liberty_desire = 25
+						}
+						NOT = { is_subject = yes }
+					}
+				}
+				VOL = {
+					create_alliance = LAT
+				}
 				LAT = {
-					liberty_desire = 25
+					declare_war_with_cb = {
+						casus_belli = cb_super_badboy
+						who = ROM
+					}
+					declare_war = ROM
 				}
 			}
-			VOL = {
-				create_alliance = LAT
-			}
-			LAT = {
-				add_casus_belli = {
-					type = cb_independence_war
-					target = ROM
-				}
-				declare_war_with_cb = {
-					casus_belli = cb_independence_war
-					who = ROM
-				}
-			}
-		}
-		else_if = {
-			limit = {
-				NOT = {
-					exists = LAT
-				}
-				exists = PRE
-			}
-			VOL = {
-				create_alliance = PRE
-			}
-			PRE = {
-				add_casus_belli = {
-					type = cb_independence_war
-					target = ROM
-				}
-				declare_war_with_cb = {
-					casus_belli = cb_independence_war
-					who = ROM
-				}
-			}
-		}
-		else = {
-			limit = {
-				NOT = {
-					exists = LAT
+			else_if = {
+				limit = {
+					NOT = {
+						exists = LAT
+					}
 					exists = PRE
 				}
-				exists = VEL
-			}
-			VOL = {
-				create_alliance = VEL
-			}
-			VEL = {
-				add_casus_belli = {
-					type = cb_independence_war
-					target = ROM
+				VOL = {
+					create_alliance = PRE
 				}
-				declare_war_with_cb = {
-					casus_belli = cb_independence_war
-					who = ROM
+				PRE = {
+					declare_war_with_cb = {
+						casus_belli = cb_super_badboy
+						who = ROM
+					}
+				}
+			}
+			else = {
+				limit = {
+					NOT = {
+						exists = LAT
+						exists = PRE
+					}
+					exists = VEL
+				}
+				VOL = {
+					create_alliance = VEL
+				}
+				VEL = {
+					declare_war_with_cb = {
+						casus_belli = cb_super_badboy
+						who = ROM
+					}
 				}
 			}
 		}
 	}
+	#cont from id 37
+	
+########################################################################################
+# Latin Wars - Roman win case
+########################################################################################
+
+
+
+########################################################################################
+# Latin Wars - Roman lose case
+########################################################################################
 }

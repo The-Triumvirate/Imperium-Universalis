@@ -8,44 +8,22 @@ rome1 = {
 			tag = ROI
 		}
 	}
-	rom_the_servian_army_reform_mission = {
-		icon = mission_spqr
-		position = 1
-		required_missions = {}
-		trigger = {
-			if = {
-				limit = {
-					has_dlc = "Cradle of Civilization"
-				}
-				army_professionalism = 0.15
-			}
-			army_size = 10
-			manpower_percentage = 0.8
-			army_tradition = 25
-		}
-		effect = {
-			add_army_professionalism = 0.05
-			add_army_tradition = 10
-			ROM = {
-				country_event = {
-					id = rome.17
-					days = 1
-				}
-			}
-		}
-	}
+	
 	rom_campus_martius_mission = {
 		icon = mission_spqr
 		position = 2
-		required_missions = {}
+		required_missions = { }
 		trigger = {
 			53 = {
-				OR = {
+				custom_trigger_tooltip = {
+					tooltip = rom_army_building.tooltip
+					OR = {
 						has_building = small_army_camp
-						has_building = small_military_settlement 
+						has_building = small_military_settlement
 						has_building = big_military_settlement
 						has_building = small_conscription_center
 					}
+				}
 			}
 		}
 		effect = {
@@ -53,6 +31,7 @@ rome1 = {
 			add_army_tradition = 10
 		}
 	}
+	
 	rom_res_publica_mission = {
 		icon = mission_spqr
 		position = 4
@@ -66,7 +45,7 @@ rome1 = {
 		effect = {
 			add_country_modifier = {
 				name = roman_expansion_modifier
-				duration = 4000
+				duration = 3650
 			}
 		}
 	}
@@ -291,7 +270,7 @@ rome1 = {
 		}
 		trigger = {
 			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-				value = 100
+				value = 160
 				superregion = italia_superregion
 			}
 		}
@@ -858,32 +837,6 @@ rome2 = {
 			tag = ROI
 		}
 	}
-	rom_the_camillan_army_reform_mission = {
-		icon = mission_spqr
-		position = 1
-		required_missions = {}
-		trigger = {
-			if = {
-				limit = {
-					has_dlc = "Cradle of Civilization"
-				}
-				army_professionalism = 0.15
-			}
-			army_size = 10
-			manpower_percentage = 0.8
-			army_tradition = 25
-		}
-		effect = {
-			add_army_professionalism = 0.05
-			add_army_tradition = 10
-			ROM = {
-				country_event = {
-					id = rome.17
-					days = 1
-				}
-			}
-		}
-	}
 	rom_populate_the_7_hills_mission = {
 		icon = mission_spqr
 		position = 2
@@ -894,6 +847,23 @@ rome2 = {
 			}
 		}
 		effect = {
+			53 = {
+				if = {
+					limit = {
+						NOT = {
+							has_province_modifier = land_reclamation_1
+							has_province_modifier = land_reclamation_2
+							has_province_modifier = land_reclamation_3
+							has_province_modifier = land_reclamation_4
+							has_province_modifier = land_reclamation_5
+							}
+						}
+					add_permanent_province_modifier = {
+						name = land_reclamation_1
+						duration = -1
+					}
+				}
+			}
 			latium_area = {
 				limit = {
 					NOT = { is_core = ROOT }
@@ -1181,13 +1151,15 @@ rome2 = {
 			}
 			gallia_cisalpina = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
 			}
 		}
-		effect = { 
-			add_country_modifier = {
-			name = "secured_italia_mission"
-			duration = 20125
+		effect = {
+			country_event = {
+				id = rome.15
 			}
 		}
 	}
@@ -2937,32 +2909,6 @@ rome3 = {
 			tag = ROI
 		}
 	}
-	rom_the_polybian_army_reform_mission = {
-		icon = mission_spqr
-		position = 1
-		required_missions = {}
-		trigger = {
-			if = {
-				limit = {
-					has_dlc = "Cradle of Civilization"
-				}
-				army_professionalism = 0.15
-			}
-			army_size = 10
-			manpower_percentage = 0.8
-			army_tradition = 25
-		}
-		effect = {
-			add_army_professionalism = 0.05
-			add_army_tradition = 10
-			ROM = {
-				country_event = {
-					id = rome.17
-					days = 1
-				}
-			}
-		}
-	}
 	rom_the_roman_forum_mission = {
 		icon = mission_temple
 		position = 2
@@ -3033,6 +2979,10 @@ rome3 = {
 				set_government_rank = 2
 			}			
 			53 = { center_of_trade = 1 }
+			add_great_project_tier = {
+				type = capitoline_hill_forum
+				tier = 1
+			}
 		}
 	}
 	rom_conquest_of_the_volscii_mission = {
@@ -3198,186 +3148,6 @@ rome3 = {
 					add_historical_rival = CAR
 					CAR = { add_historical_rival = ROOT }
 				}
-			}
-		}
-	}
-	rom_expand_the_via_appia_mission = {
-		icon = mission_road
-		position = 10
-		required_missions = { rom_stomp_out_the_south_mission }
-		provinces_to_highlight = {
-			OR = {
-				province_id = 46
-				province_id = 40
-				province_id = 36
-				province_id = 31
-				province_id = 26
-				province_id = 21
-				province_id = 22
-				province_id = 24
-				province_id = 5666
-				province_id = 5659
-				province_id = 5682
-				province_id = 5657
-			}
-		}
-		trigger = {
-			46 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			40 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			36 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			31 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			26 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			21 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			22 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			24 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			5666 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			5659 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			5682 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-			5657 = {
-				custom_trigger_tooltip = {
-					tooltip = rom_via_appia.tooltip
-					OR = {
-						has_building = gravel_road
-						has_building = paved_road
-						has_building = imperial_road
-					}
-				}
-			}
-		}
-		effect = {
-			sicilia_west = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			sicilia_est = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			syracuse_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			sicani_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
-			}
-			sicelia_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
-				}
-				add_permanent_claim = ROOT
 			}
 		}
 	}
@@ -4309,32 +4079,6 @@ rome4 = {
 			tag = ROI
 		}
 	}
-	rom_the_marian_army_reform_mission = {
-		icon = mission_spqr
-		position = 1
-		required_missions = {}
-		trigger = {
-			if = {
-				limit = {
-					has_dlc = "Cradle of Civilization"
-				}
-				army_professionalism = 0.15
-			}
-			army_size = 10
-			manpower_percentage = 0.8
-			army_tradition = 25
-		}
-		effect = {
-			add_army_professionalism = 0.05
-			add_army_tradition = 10
-			ROM = {
-				country_event = {
-					id = rome.17
-					days = 1
-				}
-			}
-		}
-	}
 	rom_a_sewage_system_mission = {
 		icon = mission_city
 		position = 3
@@ -4356,7 +4100,7 @@ rome4 = {
 					limit = {
 						NOT = { has_building = herbalist }
 					}
-					add_building = medicus
+					add_building = herbalist
 				}
 				add_base_manpower = 1
 			}
@@ -4368,48 +4112,133 @@ rome4 = {
 		required_missions = { rom_more_than_just_a_city_mission }
 		provinces_to_highlight = {
 			OR = {
-				province_id = 52
-				province_id = 56
+				province_id = 52 #ostia
+				province_id = 5642 #fidenae
+				province_id = 5638 #satricum?
 			}
 		}
 		trigger = {
 			52 = {
-				OR = {
-					has_building = gravel_road
-					has_building = paved_road
-					has_building = imperial_road
+				owned_by = ROOT
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
 				}
-				OR = {
-					has_building = small_harbor
-					has_building = big_harbor
+				custom_trigger_tooltip = {
+					tooltip = rom_shipyard_building.tooltip
+					OR = {
+						has_building = small_shipyard
+						has_building = big_shipyard
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = rom_religious_building.tooltip
+					OR = {
+						has_building = small_temple
+						has_building = shrine
+						has_building = great_temple
+					}
 				}
 			}
-			56 = {
-				OR = {
-					has_building = gravel_road
-					has_building = paved_road
-					has_building = imperial_road
+			5642 = {
+				owned_by = ROOT
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
 				}
-				OR = {
-					has_building = small_harbor
-					has_building = big_harbor
+				custom_trigger_tooltip = {
+					tooltip = rom_army_building.tooltip
+					OR = {
+						has_building = small_army_camp
+						has_building = small_military_settlement
+						has_building = big_military_settlement
+						has_building = small_conscription_center
+					}
+				}
+			}
+			5638 = {
+				owned_by = ROOT
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = rom_army_building.tooltip
+					OR = {
+						has_building = small_army_camp
+						has_building = small_military_settlement
+						has_building = big_military_settlement
+						has_building = small_conscription_center
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = rom_defense_building.tooltip
+					OR = {
+						has_building = small_city_walls
+						has_building = large_city_walls
+						has_building = fortress_building
+						has_building = border_garrison
+					}
 				}
 			}
 		}
 		effect = {
 			52 = {
-				add_base_production = 1
-				add_base_manpower = 1
+				custom_tooltip = rom_colonia.tooltip
+				hidden_effect = {
+					add_base_production = 1
+					add_base_tax = 1
+					change_culture = latin
+				}
 			}
-			56 = {
-				add_base_production = 1
-				add_base_manpower = 1
-				change_culture = latin
+			5642 = {
+				custom_tooltip = rom_colonia.tooltip
+				hidden_effect = {
+					add_base_production = 1
+					add_base_manpower = 1
+					change_culture = latin
+				}
+			}
+			5638 = {
+				custom_tooltip = rom_colonia.tooltip
+				hidden_effect = {
+					add_base_manpower = 2
+					change_culture = latin
+				}
 			}
 			add_mercantilism = 2
 			add_yearly_sailors = 2.0
-			light_ship = 52
-			heavy_ship = 52
+			52 = {
+				add_unit_construction = {
+					type = light_ship
+					amount = 4
+					speed = 0.25
+					cost = 0
+				}
+				if = { 
+					limit = {
+						dip_tech = 4
+					}
+					add_unit_construction = {
+						type = heavy_ship
+						amount = 2
+						speed = 0.25
+						cost = 0
+					}
+				}
+			}
 		}
 	}
 	rom_construct_the_via_appia_mission = {
@@ -4533,33 +4362,214 @@ rome4 = {
 			}
 		}
 		effect = {
-			45 = {
-				add_base_production = 1
-				add_base_manpower = 1
+			custom_tooltip = rom_via_appia_effect.tooltip
+			hidden_effect = {
+				5634 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				5638 = {
+					add_base_manpower = 1
+				}
+				51 = {
+					add_base_manpower = 1
+				}
+				48 = {
+					add_base_manpower = 1
+				}
+				5671 = {
+					add_base_manpower = 1
+				}
+				5665 = { 
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				45 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
 			}
-			39 = {
-				add_base_production = 1
-				add_base_manpower = 1
+		}
+	}
+	rom_expand_the_via_appia_mission = {
+		icon = mission_road
+		position = 9
+		required_missions = { rom_end_the_illyrian_presence_mission }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 40
+				province_id = 36
+				province_id = 31
+				province_id = 26
+				province_id = 21
+				province_id = 22
+				province_id = 24
+				province_id = 5659
+				province_id = 5657
 			}
-			51 = {
-				add_base_production = 1
-				add_base_manpower = 1
+		}
+		trigger = {
+			40 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
 			}
-			48 = {
-				add_base_production = 1
-				add_base_manpower = 1
+			36 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
 			}
-			5665 = {
-				add_base_production = 1
-				add_base_manpower = 1
+			31 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
 			}
-			5664 = {
-				add_base_production = 1
-				add_base_manpower = 1
+			26 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
 			}
-			5671 = {
-				add_base_production = 1
-				add_base_manpower = 1
+			21 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+			22 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+			24 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+			5659 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+			5657 = {
+				custom_trigger_tooltip = {
+					tooltip = rom_via_appia.tooltip
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+		}
+		effect = {
+			custom_tooltip = rom_via_appia_effect.tooltip
+			hidden_effect = {
+				40 = {
+					add_base_manpower = 1
+				}
+				36 = {
+					add_base_manpower = 1
+				}
+				31 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				26 = {
+					add_base_manpower = 1
+				}
+				21 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				22 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				24 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				5659 = {
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+				5657 = {
+					add_base_manpower = 1
+				}
+			}
+			sicilia_west = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sicilia_est = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			syracuse_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sicani_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sicelia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
 			}
 		}
 	}
@@ -4810,6 +4820,21 @@ rome4 = {
 		icon = mission_boarding
 		position = 12
 		required_missions = { rom_carthago_delenda_est_mission }
+		provinces_to_highlight = {
+			is_city = yes
+			OR = {
+			area = carthago_area
+			area = zeugitana_area
+			area = byzacium_area
+			area = mediterranea_insulae
+			area = numidia_maritimae
+			province_id = 625
+			province_id = 629
+			province_id = 621
+			area = tripolitania_east
+			area = tripolitania_west
+			}
+		}
 		trigger = {
 			carthago_area = {
 				type = all
@@ -4831,22 +4856,22 @@ rome4 = {
 				type = all
 				country_or_non_sovereign_subject_holds = ROOT
 			}
-			emporia_area = {
+			625 = { owned_by = ROOT }
+			629 = { owned_by = ROOT }
+			621 = { owned_by = ROOT }
+			tripolitania_east = {
 				type = all
 				OR = {
 					country_or_non_sovereign_subject_holds = ROOT
-					province_id = 625
-					province_id = 629
-					province_id = 621
+					is_empty = yes
 				}
-			}
-			tripolitania_east = {
-				type = all
-				country_or_non_sovereign_subject_holds = ROOT
 			}
 			tripolitania_west = {
 				type = all
-				country_or_non_sovereign_subject_holds = ROOT
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
 			}
 		}
 		effect = {
@@ -5102,33 +5127,6 @@ rome5 = {
 			tag = ROI
 		}
 	}
-
-	rom_the_imperial_army_reform_mission = {
-		icon = mission_spqr
-		position = 1
-		required_missions = {}
-		trigger = {
-			if = {
-				limit = {
-					has_dlc = "Cradle of Civilization"
-				}
-				army_professionalism = 0.15
-			}
-			army_size = 10
-			manpower_percentage = 0.8
-			army_tradition = 25
-		}
-		effect = {
-			add_army_professionalism = 0.05
-			add_army_tradition = 10
-			ROM = {
-				country_event = {
-					id = rome.17
-					days = 1
-				}
-			}
-		}
-	}
 	rom_construction_of_the_servian_wall_mission = {
 		icon = mission_spqr
 		position = 3
@@ -5145,11 +5143,8 @@ rome5 = {
 			mil_tech = 2
 		}
 		effect = {
-			ROM = {
-				country_event = {
-					id = rome.21
-					days = 1
-				}
+			country_event = {
+				id = rome.21
 			}
 			add_army_tradition = 5
 			add_mil_power = -50
@@ -5203,18 +5198,31 @@ rome5 = {
 		trigger = {
 			num_of_owned_provinces_with = {
 				value = 8
-				has_building = small_shipyard
+				custom_trigger_tooltip = {
+					tooltip = rom_shipyard_building.tooltip
+					OR = {
+						has_building = small_shipyard
+						has_building = big_shipyard
+					}
+				}
 			}
 			any_owned_province = {
 				culture_group = hellenic
-				has_building = small_shipyard
+				custom_trigger_tooltip = {
+					tooltip = rom_shipyard_building.tooltip
+					OR = {
+						has_building = small_shipyard
+						has_building = big_shipyard
+					}
+				}
 			}
 		}
 		effect = {
 			add_dip_power = 50
+			add_yearly_sailors = 1
 			add_country_modifier = {
 				name = shipyards_modifier
-				duration = 10
+				duration = 3650
 			}
 			define_advisor = {
 				type = ship_builder
@@ -5308,6 +5316,13 @@ rome5 = {
 				}
 				add_permanent_claim = ROOT
 			}
+			cartaginensis_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
 		}
 	}
 	rom_conquer_eastern_hispania_mission = {
@@ -5326,9 +5341,14 @@ rome5 = {
 				area = iberus_area
 				area = etobesa_area
 				area = edetania_area
+				area = lacetania_area
 			}
 		}
 		trigger = {
+			lacetania_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
 			rhoda_area = {
 				type = all
 				country_or_non_sovereign_subject_holds = ROOT
