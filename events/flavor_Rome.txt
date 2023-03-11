@@ -1015,10 +1015,59 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-	   years = 2
+		years = 10
+	   
+		modifier = {
+			factor = 0.80
+			5643 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			66 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5634 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5635 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5641 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			54 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5644 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5636 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5638 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5640 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.80
+			5683 = { owned_by = ROM }
+		}
+		modifier = {
+			factor = 0.40
+			socii_subject = 6
+		}
 	}
 	immediate = {
-		hidden_effect = { 
+		hidden_effect = {
 			every_country = {
 				limit = {
 					is_subject_of = ROM
@@ -1029,10 +1078,10 @@ country_event = {
 				}
 				country_event = {
 					id = rome.33
-					days = 100
+					days = 40
 				}
 			}
-		 }
+		}
 	}
 
 	option = {
@@ -1041,9 +1090,33 @@ country_event = {
 		ai_chance = { factor = 100 }
 		country_event = {
 			id = rome.34
-			days = 365
-		}		
-		add_stability = -1		
+			days = 240
+		}
+		add_stability = -1
+		if = {
+			limit = {
+				alliance_with = LAT
+			}
+		break_alliance = LAT
+		}
+		if = {
+			limit = {
+				alliance_with = PRE
+			}
+		break_alliance = PRE
+		}
+		if = {
+			limit = {
+				alliance_with = VEL
+			}
+		break_alliance = VEL
+		}
+		if = {
+			limit = {
+				alliance_with = VOL
+			}
+		break_alliance = VOL
+		}
 	}
 }
 
@@ -1100,63 +1173,67 @@ country_event = {
 	picture = maniple
 	is_triggered_only = yes
 	immediate = {
-		every_country = {
-			limit = {
-				is_subject_of = ROM
-				liberty_desire = 25
-			}
-			if = {
+		hidden_effect = {
+			every_country = {
 				limit = {
-					exists = LAT
+					is_subject_of = ROM
+					liberty_desire = 25
 				}
-				create_alliance = LAT
-			}
-			else_if = {
-				limit = {
-					NOT = {
+				set_country_flag = rom_rebel_socii
+				if = {
+					limit = {
 						exists = LAT
 					}
-					exists = PRE
+					create_alliance = LAT
 				}
-				create_alliance = PRE
-			}
-			else = {
-				limit = {
-					NOT = {
-						exists = LAT
+				else_if = {
+					limit = {
+						NOT = {
+							exists = LAT
+						}
 						exists = PRE
 					}
-					exists = VEL
+					create_alliance = PRE
 				}
-				create_alliance = VEL
+				else = {
+					limit = {
+						NOT = {
+							exists = LAT
+							exists = PRE
+						}
+						exists = VEL
+					}
+					create_alliance = VEL
+				}
 			}
 		}
 	}
 	after = {
-		every_ally = {
-			join_all_offensive_wars_of = LAT
+		LAT = {
+			every_ally = {
+				join_all_offensive_wars_of = LAT
+			}
 		}
-		every_ally = {
-			join_all_offensive_wars_of = PRE
+		PRE = {
+			every_ally = {
+				join_all_offensive_wars_of = PRE
+			}
 		}
-		every_ally = {
-			join_all_offensive_wars_of = VEL
+		VEL = {
+			every_ally = {
+				join_all_offensive_wars_of = VEL
+			}
 		}
 	}
 
 	option = {
 	    name = "rome.34.a"
 		ai_chance = { factor = 100 }
-		immediate = {
-			hidden_effect = { set_country_flag = latin_war_started_flag }		
-		}
 		custom_tooltip = rom_latin_war_begin.tooltip
 		hidden_effect = {
+			set_country_flag = latin_war_started_flag
 			every_country = {
 				limit = {
-					capital_scope = {
-						area = latium_area
-					}
 					is_subject_of = ROM				
 					NOT = {
 						liberty_desire = 25
@@ -1165,7 +1242,6 @@ country_event = {
 				break_alliance = LAT
 				break_alliance = PRE
 				break_alliance = VEL
-				set_country_flag = rom_rebel_socii
 			}
 			if = {
 				limit = {
@@ -1179,6 +1255,7 @@ country_event = {
 				}
 				VOL = {
 					create_alliance = LAT
+					set_country_flag = rom_vol_war
 				}
 				LAT = {
 					declare_war_with_cb = {
@@ -1186,6 +1263,7 @@ country_event = {
 						who = ROM
 					}
 					declare_war = ROM
+					set_country_flag = rom_lat_war
 				}
 			}
 			else_if = {
@@ -1197,12 +1275,14 @@ country_event = {
 				}
 				VOL = {
 					create_alliance = PRE
+					set_country_flag = rom_vol_war
 				}
 				PRE = {
 					declare_war_with_cb = {
 						casus_belli = cb_super_badboy
 						who = ROM
 					}
+					set_country_flag = rom_pre_war
 				}
 			}
 			else = {
@@ -1215,25 +1295,183 @@ country_event = {
 				}
 				VOL = {
 					create_alliance = VEL
+					set_country_flag = rom_vol_war
 				}
 				VEL = {
 					declare_war_with_cb = {
 						casus_belli = cb_super_badboy
 						who = ROM
 					}
+					set_country_flag = rom_vel_war
 				}
 			}
 		}
 	}
-	#cont from id 37
-	
+}
+
 ########################################################################################
 # Latin Wars - Roman win case
 ########################################################################################
 
+country_event = {
+    id = rome.37
+	title = "rome.37.t"
+	desc = "rome.37.d"
+	picture = maniple
+	fire_only_once = yes
+	trigger = {
+		OR = {
+			NOT = {
+				is_at_war = yes
+				LAT = {
+					has_won_war_against = {
+						who = ROM
+						max_years_since = 1
+					} 
+				}
+				PRE = { 
+					has_won_war_against = {
+						who = ROM
+						max_years_since = 1
+					} 
+				}
+				VOL = { 
+					has_won_war_against = {
+						who = ROM
+						max_years_since = 1
+					}
+				}
+			}
+			has_won_war_against = {
+				who = LAT
+				max_years_since = 1
+			}
+			has_won_war_against = {
+				who = PRE
+				max_years_since = 1
+			}
+			has_won_war_against = {
+				who = VOL
+				max_years_since = 1
+			}
+		}
+		has_country_flag = latin_war_started_flag
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+	after = {
+		every_country = {
+			limit = {
+				OR = {
+					AND = {
+						capital_scope = {
+							area = latium_area
+						}
+						has_country_flag = rom_rebel_socii
+					}
+					has_country_flag = rom_lat_war
+					has_country_flag = rom_vol_war
+					has_country_flag = rom_pre_war
+					has_country_flag = rom_vel_war
+				}
+			}
+			break_alliance = LAT
+			break_alliance = PRE
+			break_alliance = VEL
+			break_alliance = VOL	
+			add_liberty_desire = -50
+			clr_country_flag = rom_rebel_socii
+			ROM = {
+				create_subject = {
+					subject_type = socii_subject
+					subject = PREV
+				}
+			}
+		}
+	}
 
+	option = {
+	    name = "rome.37.a"
+		ai_chance = { factor = 100 }
+		immediate = {
+			hidden_effect = { clr_country_flag = latin_war_started_flag }		
+		}
+		custom_tooltip = rom_latin_war_won.tooltip
+		
+	}
+}
 
 ########################################################################################
 # Latin Wars - Roman lose case
 ########################################################################################
+
+country_event = {
+    id = rome.38
+	title = "rome.38.t"
+	desc = "rome.38.d"
+	picture = maniple
+	fire_only_once = yes
+	trigger = {
+		OR = {
+			LAT = {
+				has_won_war_against = {
+					who = ROM
+					max_years_since = 1
+				} 
+			}
+			PRE = { 
+				has_won_war_against = {
+					who = ROM
+					max_years_since = 1
+				} 
+			}
+			VOL = { 
+				has_won_war_against = {
+					who = ROM
+					max_years_since = 1
+				}
+			}
+		}
+		has_country_flag = latin_war_started_flag
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+	after = {
+		every_country = {
+			limit = {
+				OR = {
+					AND = {
+						capital_scope = {
+							area = latium_area
+						}
+						has_country_flag = rom_rebel_socii
+					}
+					has_country_flag = rom_lat_war
+					has_country_flag = rom_vol_war
+					has_country_flag = rom_pre_war
+					has_country_flag = rom_vel_war
+				}
+			}	
+			add_stability = 1
+			add_prestige = 20
+			add_historical_rival = ROM
+		}
+	}
+
+	option = {
+	    name = "rome.38.a"
+		ai_chance = { factor = 100 }
+		immediate = {
+			hidden_effect = { clr_country_flag = latin_war_started_flag }		
+		}
+		custom_tooltip = rom_latin_war_lost.tooltip
+		hidden_effect = {
+			add_stability = -2
+			add_prestige = -50
+			add_legitimacy = -25
+			release_all_subjects = yes
+		}
+	}
 }
