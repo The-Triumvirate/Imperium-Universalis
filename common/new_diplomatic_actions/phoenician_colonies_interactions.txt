@@ -156,25 +156,53 @@ phoenician_colony_part_way = {
 	}
 	on_accept = {
 		grant_independence = yes
-		add_adm_power = -100
-		add_dip_power = -100
-		add_mil_power = -100
-		add_prestige = 10
-		hidden_effect = {
-			reverse_add_opinion = {
-				who = FROM
-				modifier = colonial_ties_cut_opinion
+		if = {
+			limit = {
+				FROM = {
+					NOT = { primary_culture = phoenician }
+					NOT = { primary_culture = ibero_phoenician }
+					NOT = { primary_culture = sardo_phoenician }
+					NOT = { primary_culture = punic }
+				}
 			}
-			reverse_add_casus_belli = {
-				target = FROM
-				type = cb_insult
-				months = 120
+			add_adm_power = 50
+			add_dip_power = 50
+			add_mil_power = 50
+			add_prestige = 10
+		}
+		else = {
+			add_adm_power = -100
+			add_dip_power = -100
+			add_mil_power = -100
+			add_prestige = 10
+			hidden_effect = {
+				reverse_add_opinion = {
+					who = FROM
+					modifier = colonial_ties_cut_opinion
+				}
+				reverse_add_casus_belli = {
+					target = FROM
+					type = cb_insult
+					months = 120
+				}
 			}
 		}
 	}
 	
 	ai_will_do = {
-		liberty_desire = 80
+		OR = {
+			AND = {
+				TAG = CAR
+				is_year = 215
+			}
+			FROM = {
+				NOT = { primary_culture = phoenician }
+				NOT = { primary_culture = ibero_phoenician }
+				NOT = { primary_culture = sardo_phoenician }
+				NOT = { primary_culture = punic }
+			}
+			liberty_desire = 80
+		}
 	}
 }
 
@@ -194,18 +222,31 @@ abandon_colony_subject = {
 		always = yes
 	}
 	on_accept = {
-		add_prestige = -5
-		hidden_effect = {
-			reverse_add_opinion = {
-				who = FROM
-				modifier = colonial_ties_cut_opinion
+		if = {
+			limit = {
+				OR = {
+					primary_culture = phoenician
+					primary_culture = ibero_phoenician
+					primary_culture = sardo_phoenician
+					primary_culture = punic
+				}
+			}
+			add_prestige = -5
+			hidden_effect = {
+				reverse_add_opinion = {
+					who = FROM
+					modifier = colonial_ties_cut_opinion
+				}
 			}
 		}
 		FROM = { grant_independence = yes }
 	}
 	
 	ai_will_do = {
-		always = no
+		NOT = { primary_culture = phoenician }
+		NOT = { primary_culture = ibero_phoenician }
+		NOT = { primary_culture = sardo_phoenician }
+		NOT = { primary_culture = punic }
 	}
 }
 
@@ -216,6 +257,12 @@ enforce_rule_colony = {
 	
 	require_acceptance = no
 	is_visible = {
+		OR = {
+			primary_culture = phoenician
+			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
+			primary_culture = punic
+		}
 		FROM = {
 			is_subject_of = ROOT
 			is_subject_of_type = phoenician_colony_subject
