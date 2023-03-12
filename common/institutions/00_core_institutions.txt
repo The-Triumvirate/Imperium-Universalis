@@ -2,10 +2,9 @@
 
 #Table of contents
 
-#	iron_age
 #	writing_system
+#	iron_age
 #	coin_usage
-#	elephant_domestication
 #	siege_engineering_institution
 #	bureaucracy_institution
 #	cast_iron_institution
@@ -17,12 +16,247 @@
 #	astronomy_institution
 #	engineering_architecture_institution
 #	tactics_strategy_institution
+#	elephant_domestication
 
 
 #
 # remember to add graphics for relevant ones when you add to this
 #
 # if a modifier is scaled, its multiplied with development in the province.
+
+#######################################
+# Writing System
+#######################################
+
+writing_system = {
+	bonus = {
+		administrative_efficiency = 0.05
+	}
+	trade_company_efficiency = 0.0
+
+	history = {
+		OR = {
+			owned_by = TTQ
+			culture_group = hellenic
+			culture_group = anatolian_group
+			culture_group = semitic
+			culture_group = akkadian_group
+			culture_group = elamite_group
+			culture_group = egyptian_group
+			culture_group = chinese_group
+			culture_group = indian_group
+			culture_group = thraco_phrygian_group
+			culture_group = italic
+			culture_group = etruscan_culture_group
+			culture_group = arabic_group
+			culture_group = minoan_group
+			culture = daamat
+			culture = meroitic
+			culture = urartian
+			culture = mannean
+			culture = medians
+			culture = persian
+			culture = gutian
+			culture = kassite
+			culture = lullubi
+			region = italian_region
+			region = magna_graecia
+			AND = {
+				OR = {
+					culture = lepontic
+					culture_group = nuragic_group
+				}
+				is_year = 154
+			}
+			AND = {
+				owned_by = PSE
+				is_year = 204
+			}
+			AND = {
+				culture_group = turdetani_group
+				is_year = 210
+			}
+			AND = {
+				culture_group = iberian_group
+				is_year = 250
+			}
+			AND = {
+				OR = {
+					culture_group = dravidian_group
+					culture_group = mleccha_group
+					culture_group = macedon_group
+				}
+				is_year = 260
+			}
+			AND = {
+				OR = {
+					culture_group = armenian_group
+					culture_group = caucasian_group
+					culture_group = urarto_hurrian_group
+				}
+				is_year = 271
+			}
+			AND = {
+				OR = {
+					culture_group = western_iranian
+					culture_group = eastern_iranian_group
+				}
+				is_year = 300
+			}
+			AND = {
+				OR = {
+					culture_group = mleccha_group
+					culture = chorasmian
+					culture = odrysian
+				}
+				is_year = 354
+			}
+			AND = {
+				culture_group = ibero_celtic_group
+				is_year = 410
+			}
+			AND = {
+				culture_group = north_african_group
+				is_year = 454
+			}
+			AND = {
+				culture = parni
+				is_year = 513
+			}
+			AND = {
+				is_year = 549
+				owner = { TAG = XIO }
+				is_core = XIO
+				culture = xiongnu
+			}
+			AND = {
+				is_year = 570
+				culture = yemaek
+			}
+			AND = {
+				OR = {
+					culture_group = eastern_celtic
+					culture_group = gaulish_group
+				}
+				is_year = 600
+			}
+		}
+	}
+	
+	# no need for events, as its there from the start.
+	#can_start = {	is_year = 1000	}
+	#start_chance = 100
+	#on_start = iu_institution_events.1
+	
+	can_embrace = {
+		always = yes
+	}
+
+	embracement_speed = {
+		
+		modifier = {
+			scale = yes
+			factor = 1.0
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = { writing_system = 100 }
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.5
+			potential = { NOT = { any_friendly_coast_border_province = { writing_system = 100 } } }
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+					writing_system = 100
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 0.2
+			potential = {
+				is_capital = yes
+				owner = { tribal_or_native_trigger = no }
+			}
+			custom_trigger_tooltip = {
+				tooltip = skilled_ruler_adm
+				owner = { ADM = 6 }
+			}
+		}
+		modifier = {
+			factor = 0.15
+			potential = {
+				is_capital = yes
+				owner = {
+					tribal_or_native_trigger = no
+					advisor = scholar_advisor
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = has_advisor_scholar_skill
+				owner = {
+					tribal_or_native_trigger = no
+					OR  = {
+						scholar_advisor = 1
+						scholar_advisor = 2
+						scholar_advisor = 3
+					}
+				}
+			}
+		}
+		modifier = {
+			factor = 0.1
+			scale = yes
+			potential = {
+				owner = { 
+				    absolutism = 15
+                    tribal_or_native_trigger = no
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_high_absolutism_10
+				owner = { absolutism = 15 }
+			}
+		}
+		modifier = {
+			factor = 0
+			potential = {
+				NOT = {
+					AND = {
+						owner = {
+							has_institution = writing_system
+							tribal_or_native_trigger = yes
+						}
+						any_neighbor_province = { writing_system = 100 }
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_isolated_illiterate_tribe
+				owner = { tribal_or_native_trigger = yes }
+			}
+		}
+	}
+	
+	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+		factor = 24
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
+		}
+	}
+}
 
 #######################################
 # Ferrous Metallurgy
@@ -347,408 +581,6 @@ iron_age = {
 				tooltip = tooltip_vassal_iron_age
 				is_capital = yes
 				owner = { any_subject_country = { has_institution = iron_age } }
-			}
-		}
-	}
-	
-	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
-		factor = 24
-		modifier = {
-			factor = 0
-			OR = {
-				is_bankrupt = yes
-				is_in_deficit = yes
-				is_in_large_debt = yes
-			}
-		}
-		modifier = {
-			factor = 0.5
-			is_at_war = yes
-		}
-	}
-}
-
-#######################################
-# Elephant Domestication
-#######################################
-
-elephant_domestication = {
-	bonus = {
-		cavalry_power = 0.01
-	}
-	trade_company_efficiency = 0.0
-
-	history = {
-		OR = {
-			superregion = uttarapatha_superregion
-			superregion = dakshinapatha_superregion
-			superregion = aethiopia_superregion
-			superregion = mesopotamia_superregion
-			superregion = iran_superregion
-			superregion = syria_superregion
-			superregion = eastern_africa_superregion
-			superregion = western_africa_superregion
-			region = baktria_region
-			region = ariana_region
-			region = parthia_region
-		}
-		OR = {
-			culture_group = indian_group
-			culture_group = dravidian_group
-			culture_group = lanka_group
-			culture_group = mleccha_group
-			AND = {
-				culture_group = tibetan_group
-				OR = {
-					superregion = uttarapatha_superregion
-					superregion = dakshinapatha_superregion
-					superregion = suvarnabhumi_superregion
-				}
-			}
-			AND = {
-				culture_group = viet_group
-				superregion = suvarnabhumi_superregion
-			}
-			AND = {
-				culture_group = malay_group
-				superregion = suvarnabhumi_superregion
-			}
-			AND = {
-				culture_group = eastern_iranian_group
-				is_year = 245
-			}
-			AND = {
-				culture_group = malay_group
-				is_year = 265
-			}
-			AND = {
-				culture_group = western_iranian
-				is_year = 275
-			}
-			AND = {
-				culture_group = akkadian_group
-				is_year = 325
-			}
-			AND = {
-				culture_group = semitic
-				is_year = 350
-			}
-			AND = {
-				culture_group = egyptian_group
-				is_year = 350
-			}
-			AND = {
-				culture_group = cushitic_group
-				is_year = 400
-			}
-			AND = {
-				OR = {
-					culture = greco_semitic
-					culture = seleucid
-					culture = ptolemaic
-					culture = greco_bactrian
-					culture = greco_indian
-					culture = greco_persian
-				}
-				is_year = 422
-			}
-		}	
-	}
-	
-	# no need for events, as its there from the start.
-	#can_start = {	is_year = 1000	}
-	#start_chance = 100
-	#on_start = iu_institution_events.1
-
-	can_embrace = {
-		always = yes
-	}
-
-	embracement_speed = {
-		
-		modifier = {
-			scale = yes
-			factor = 2.5
-			potential = {
-				OR = {
-					elephant_region = yes
-					owner = {
-						OR = {
-							any_owned_province = { elephant_domestication = 100 }
-							has_institution = elephant_domestication
-						}
-					}
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
-				any_friendly_coast_border_province = {
-					elephant_domestication = 100
-				}
-			}
-		}
-		modifier = {
-			scale = yes
-			factor = 1.0
-			potential = {
-				OR = {
-					elephant_region = yes
-					owner = {
-						OR = {
-							any_owned_province = { elephant_domestication = 100 }
-							has_institution = elephant_domestication
-						}
-					}
-				}
-				NOT = {
-					any_friendly_coast_border_province = {
-						elephant_domestication = 100
-					}
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = tooltip_any_coast_border_province_has_embraced_institution
-				any_neighbor_province = {
-					NOT = { owned_by = ROOT }
-					elephant_domestication = 100
-				}
-			}
-		}
-		
-		modifier = {
-			factor = 0.5
-			scale = yes
-			potential = {
-				owner = { has_institution = elephant_domestication }
-			}
-			custom_trigger_tooltip = {
-				tooltip = tooltip_elephant_domestication_embraced
-				owner = { has_institution = elephant_domestication }
-			}
-		}
-	}
-	
-	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
-		factor = 24
-		modifier = {
-			factor = 0
-			OR = {
-				is_bankrupt = yes
-				is_in_deficit = yes
-				is_in_large_debt = yes
-			}
-		}
-		modifier = {
-			factor = 0.5
-			is_at_war = yes
-		}
-	}
-}
-
-#######################################
-# Writing System
-#######################################
-
-writing_system = {
-	bonus = {
-		administrative_efficiency = 0.05
-	}
-	trade_company_efficiency = 0.0
-
-	history = {
-		OR = {
-			owned_by = TTQ
-			owned_by = CYM
-			owned_by = SX2
-			owned_by = SX1
-			owned_by = MNN
-			culture_group = hellenic
-			culture_group = anatolian_group
-			culture_group = semitic
-			culture_group = akkadian_group
-			culture_group = elamite_group
-			culture_group = egyptian_group
-			culture_group = chinese_group
-			culture_group = indian_group
-			culture_group = thraco_phrygian_group
-			culture_group = italic
-			culture_group = etruscan_culture_group
-			culture_group = arabic_group
-			culture_group = minoan_group
-			culture_group = zargos_group
-			culture_group = western_iranian
-			culture_group = eastern_iranian_group
-			culture = daamat
-			culture = meroitic
-			culture = urartian
-			culture = mannean
-			region = italian_region
-			region = magna_graecia
-			AND = {
-				OR = {
-					culture = lepontic
-					culture_group = nuragic_group
-				}
-				is_year = 154
-			}
-			AND = {
-				culture_group = turdetani_group
-				is_year = 210
-			}
-			AND = {
-				culture_group = iberian_group
-				is_year = 250
-			}
-			AND = {
-				OR = {
-					culture_group = dravidian_group
-					culture_group = mleccha_group
-					culture_group = macedon_group
-				}
-				is_year = 260
-			}
-			AND = {
-				OR = {
-					culture_group = armenian_group
-					culture_group = caucasian_group
-					culture_group = urarto_hurrian_group
-				}
-				is_year = 271
-			}
-			AND = {
-				OR = {
-					culture_group = mleccha_group
-					culture = chorasmian
-					culture = odrysian
-				}
-				is_year = 354
-			}
-			AND = {
-				culture_group = ibero_celtic_group
-				is_year = 410
-			}
-			AND = {
-				culture_group = north_african_group
-				is_year = 454
-			}
-			AND = {
-				culture = parni
-				is_year = 513
-			}
-			AND = {
-				is_year = 549
-				owner = { TAG = XIO }
-				is_core = XIO
-				culture = xiongnu
-			}
-			AND = {
-				is_year = 570
-				culture = yemaek
-			}
-			AND = {
-				OR = {
-					culture_group = eastern_celtic
-					culture_group = gaulish_group
-				}
-				is_year = 600
-			}
-		}
-	}
-	
-	# no need for events, as its there from the start.
-	#can_start = {	is_year = 1000	}
-	#start_chance = 100
-	#on_start = iu_institution_events.1
-	
-	can_embrace = {
-		always = yes
-	}
-
-	embracement_speed = {
-		
-		modifier = {
-			scale = yes
-			factor = 1.0
-			custom_trigger_tooltip = {
-				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
-				any_friendly_coast_border_province = { writing_system = 100 }
-			}
-		}
-		modifier = {
-			scale = yes
-			factor = 0.5
-			potential = { NOT = { any_friendly_coast_border_province = { writing_system = 100 } } }
-			custom_trigger_tooltip = {
-				tooltip = tooltip_any_coast_border_province_has_embraced_institution
-				any_neighbor_province = {
-					NOT = { owned_by = ROOT }
-					writing_system = 100
-				}
-			}
-		}
-		modifier = {
-			scale = yes
-			factor = 0.2
-			potential = {
-				is_capital = yes
-				owner = { tribal_or_native_trigger = no }
-			}
-			custom_trigger_tooltip = {
-				tooltip = skilled_ruler_adm
-				owner = { ADM = 6 }
-			}
-		}
-		modifier = {
-			factor = 0.15
-			potential = {
-				is_capital = yes
-				owner = {
-					tribal_or_native_trigger = no
-					advisor = scholar_advisor
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = has_advisor_scholar_skill
-				owner = {
-					tribal_or_native_trigger = no
-					OR  = {
-						scholar_advisor = 1
-						scholar_advisor = 2
-						scholar_advisor = 3
-					}
-				}
-			}
-		}
-		modifier = {
-			factor = 0.1
-			scale = yes
-			potential = {
-				owner = { 
-				    absolutism = 15
-                    tribal_or_native_trigger = no
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = tooltip_high_absolutism_10
-				owner = { absolutism = 15 }
-			}
-		}
-		modifier = {
-			factor = 0
-			potential = {
-				NOT = {
-					AND = {
-						owner = {
-							has_institution = writing_system
-							tribal_or_native_trigger = yes
-						}
-						any_neighbor_province = { writing_system = 100 }
-					}
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = tooltip_isolated_illiterate_tribe
-				owner = { tribal_or_native_trigger = yes }
 			}
 		}
 	}
@@ -4812,6 +4644,183 @@ tactics_strategy_institution = {
 		modifier = {
 			factor = 2
 			neighbors_tech_discount = 0.4
+		}
+	}
+}
+
+#######################################
+# Elephant Domestication
+#######################################
+
+elephant_domestication = {
+	bonus = {
+		cavalry_power = 0.01
+	}
+	trade_company_efficiency = 0.0
+
+	history = {
+		OR = {
+			superregion = uttarapatha_superregion
+			superregion = dakshinapatha_superregion
+			superregion = aethiopia_superregion
+			superregion = mesopotamia_superregion
+			superregion = iran_superregion
+			superregion = syria_superregion
+			superregion = eastern_africa_superregion
+			superregion = western_africa_superregion
+			region = baktria_region
+			region = ariana_region
+			region = parthia_region
+		}
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+			culture_group = lanka_group
+			culture_group = mleccha_group
+			AND = {
+				culture_group = tibetan_group
+				OR = {
+					superregion = uttarapatha_superregion
+					superregion = dakshinapatha_superregion
+					superregion = suvarnabhumi_superregion
+				}
+			}
+			AND = {
+				culture_group = viet_group
+				superregion = suvarnabhumi_superregion
+			}
+			AND = {
+				culture_group = malay_group
+				superregion = suvarnabhumi_superregion
+			}
+			AND = {
+				culture_group = eastern_iranian_group
+				is_year = 245
+			}
+			AND = {
+				culture_group = malay_group
+				is_year = 265
+			}
+			AND = {
+				culture_group = western_iranian
+				is_year = 275
+			}
+			AND = {
+				culture_group = akkadian_group
+				is_year = 325
+			}
+			AND = {
+				culture_group = semitic
+				is_year = 350
+			}
+			AND = {
+				culture_group = egyptian_group
+				is_year = 350
+			}
+			AND = {
+				culture_group = cushitic_group
+				is_year = 400
+			}
+			AND = {
+				OR = {
+					culture = greco_semitic
+					culture = seleucid
+					culture = ptolemaic
+					culture = greco_bactrian
+					culture = greco_indian
+					culture = greco_persian
+				}
+				is_year = 422
+			}
+		}	
+	}
+	
+	# no need for events, as its there from the start.
+	#can_start = {	is_year = 1000	}
+	#start_chance = 100
+	#on_start = iu_institution_events.1
+
+	can_embrace = {
+		always = yes
+	}
+
+	embracement_speed = {
+		
+		modifier = {
+			scale = yes
+			factor = 2.5
+			potential = {
+				OR = {
+					elephant_region = yes
+					owner = {
+						OR = {
+							any_owned_province = { elephant_domestication = 100 }
+							has_institution = elephant_domestication
+						}
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_friendly_coast_border_province_has_embraced_institution
+				any_friendly_coast_border_province = {
+					elephant_domestication = 100
+				}
+			}
+		}
+		modifier = {
+			scale = yes
+			factor = 1.0
+			potential = {
+				OR = {
+					elephant_region = yes
+					owner = {
+						OR = {
+							any_owned_province = { elephant_domestication = 100 }
+							has_institution = elephant_domestication
+						}
+					}
+				}
+				NOT = {
+					any_friendly_coast_border_province = {
+						elephant_domestication = 100
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_any_coast_border_province_has_embraced_institution
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+					elephant_domestication = 100
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 0.5
+			scale = yes
+			potential = {
+				owner = { has_institution = elephant_domestication }
+			}
+			custom_trigger_tooltip = {
+				tooltip = tooltip_elephant_domestication_embraced
+				owner = { has_institution = elephant_domestication }
+			}
+		}
+	}
+	
+	ai_will_do = { #Cost of embracing institution must be lower than this factor * last month's regular income. (Or it has a more than long term goal...)
+		factor = 24
+		modifier = {
+			factor = 0
+			OR = {
+				is_bankrupt = yes
+				is_in_deficit = yes
+				is_in_large_debt = yes
+			}
+		}
+		modifier = {
+			factor = 0.5
+			is_at_war = yes
 		}
 	}
 }
