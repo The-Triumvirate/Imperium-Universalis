@@ -1519,3 +1519,140 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Disloyal Socii Rebellion - socii
+########################################################################################
+
+country_event = {
+    id = rome.40
+	title = "rome.40.t"
+	desc = "rome.40.d"
+	picture = maniple
+	trigger = {
+		NOT = {
+			has_country_flag = rebel_socii
+			has_global_flag = rebel_socii_happening
+			truce_with = ROM
+		}
+		ai = yes
+		is_subject_of_type = socii_subject
+		or = {
+			historical_rival_with = ROM
+			historical_rival_with = ROI
+		}
+	}
+	mean_time_to_happen = {
+	    months = 24
+		modifier = {
+			factor = 0.25
+			is_at_war = yes
+		}
+	}
+
+	option = {
+	    name = "rome.40.a"
+		ai_chance = { factor = 100 }
+		overlord = {
+			country_event = {
+			id = rome.41
+			}
+		}
+		set_global_flag = rebel_socii_happening
+		set_country_flag = rebel_socii
+		add_army_tradition = 20
+	}
+}
+
+########################################################################################
+# Disloyal Socii Rebellion - rome
+########################################################################################
+
+country_event = {
+    id = rome.41
+	title = "rome.41.t"
+	desc = "rome.41.d"
+	picture = maniple
+	is_triggered_only = yes
+	option = {
+	    name = "rome.41.a"
+		ai_chance = { factor = 100 }
+		custom_tooltip = rom_socii_rebellion.tooltip
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			FROM = {
+				declare_war_with_cb = {
+					who = PREV
+					casus_belli = cb_liberation
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Disloyal Socii Rebellion - Win
+########################################################################################
+
+country_event = {
+    id = rome.42
+	title = "rome.42.t"
+	desc = "rome.42.d"
+	picture = maniple
+	trigger = {
+		has_country_flag = rebel_socii
+		ai = yes
+		is_at_war = no
+		NOT = {
+			has_won_war_against = { 
+				who = ROM 
+				max_years_since = 2
+			}
+		}
+		or = {
+			historical_rival_with = ROM
+			historical_rival_with = ROI
+		}
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+	option = {
+	    name = "rome.42.a"
+		ai_chance = { factor = 100 }
+		clr_country_flag = rebel_socii
+		add_prestige = -20
+		remove_historical_rival = ROM
+		ROM = {
+			remove_historical_rival = PREV
+		}
+	}
+}
+
+########################################################################################
+# Disloyal Socii Rebellion - Clear flag if they win somehow
+########################################################################################
+
+country_event = {
+    id = rome.43
+	title = "rome.43.t"
+	desc = "rome.43.d"
+	picture = maniple
+	trigger = {
+		has_country_flag = rebel_socii
+		ai = yes
+		is_at_war = no
+		has_won_war_against = { 
+			who = ROM 
+			max_years_since = 2
+		}
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+	option = {
+	    name = "rome.43.a"
+		ai_chance = { factor = 100 }
+		clr_country_flag = rebel_socii
+	}
+}
