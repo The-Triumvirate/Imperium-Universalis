@@ -606,15 +606,15 @@ country_event = {
 	option = {
 		name = "rome.17.a"
 		ai_chance = { factor = 100 }
+		if = {
+			limit = { has_country_modifier = rome_basic_mil }
+			remove_country_modifier = rome_basic_mil
+		}
 		add_mil_power = -50
 		add_country_modifier = {
 				name = servius_tullius_mil
 				duration = -1
-			}	
-	}
-	option = {
-		name = "rome.17.b"
-		add_prestige = -5
+		}	
 	}
 }
 ########################################################################################
@@ -656,7 +656,7 @@ country_event = {
 		add_country_modifier = {
 				name = servius_tullius_adm
 				duration = -1
-			}	
+		}	
 	}
 }
 
@@ -788,12 +788,6 @@ country_event = {
 				duration = -1
 			}
 		}
-			set_country_flag = servianwall
-	}
-	option = {
-		name = "rome.21.b"
-		ai_chance = {	factor = 5	}
-			add_prestige = -5
 			set_country_flag = servianwall
 	}
 }
@@ -1136,32 +1130,32 @@ country_event = {
 	option = {
 	    name = "rome.33.a"
 		ai_chance = { factor = 100 }
-			add_liberty_desire = 100
-			if = {
-				limit = {
+		add_liberty_desire = 100
+		if = {
+			limit = {
+				exists = LAT
+			}
+			create_alliance = LAT
+		}
+		else_if = {
+			limit = {
+				NOT = {
 					exists = LAT
 				}
-				create_alliance = LAT
+				exists = PRE
 			}
-			else_if = {
-				limit = {
-					NOT = {
-						exists = LAT
-					}
+			create_alliance = PRE
+		}
+		else = {
+			limit = {
+				NOT = {
+					exists = LAT
 					exists = PRE
 				}
-				create_alliance = PRE
+				exists = VEL
 			}
-			else = {
-				limit = {
-					NOT = {
-						exists = LAT
-						exists = PRE
-					}
-					exists = VEL
-				}
-				create_alliance = VEL
-			}
+			create_alliance = VEL
+		}
 	}
 }
 
@@ -1654,5 +1648,35 @@ country_event = {
 	    name = "rome.43.a"
 		ai_chance = { factor = 100 }
 		clr_country_flag = rebel_socii
+	}
+}
+
+########################################################################################
+# Conscription 
+########################################################################################
+
+country_event = {
+    id = rome.44
+	title = "rome.44.t"
+	desc = "rome.44.d"
+	picture = maniple
+	is_triggered_only = yes
+	option = {
+	    name = "rome.44.a"
+		ai_chance = { factor = 100 }
+		add_country_modifier = {
+			name = rom_conscript
+			duration = -1
+		}
+		add_yearly_manpower = 3
+		add_mil_power = -100
+		add_army_tradition = -5
+		add_army_professionalism = -0.025
+		add_stability = -1
+	}
+	
+	option = {
+	    name = "rome.44.b"
+		ai_chance = { factor = 0 }
 	}
 }
