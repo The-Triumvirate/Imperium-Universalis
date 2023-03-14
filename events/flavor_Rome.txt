@@ -1688,3 +1688,335 @@ country_event = {
 		ai_chance = { factor = 0 }
 	}
 }
+
+########################################################################################
+# Etruscan Wars Start
+########################################################################################
+country_event = {
+    id = rome.45
+	title = "rome.45.t"
+	desc = "rome.45.d"
+	picture = maniple
+	fire_only_once = yes
+	trigger = {
+	    tag = ROM
+		has_global_flag = etr_unified
+		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+			value = 2
+			or = {
+				area = etruria_east
+				area = etruria_west
+				area = etruria_maritima_area
+				area = etruria_centralis_area
+			}
+		}
+		NOT = { has_country_flag = etruscan_war_started_flag }
+	}
+	
+	mean_time_to_happen = {
+		months = 96
+	   
+		modifier = {
+			factor = 0.6
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 4
+				or = {
+					area = etruria_east
+					area = etruria_west
+					area = etruria_maritima_area
+					area = etruria_centralis_area
+				}
+			}
+		}
+		modifier = {
+			factor = 0.6
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 6
+				or = {
+					area = etruria_east
+					area = etruria_west
+					area = etruria_maritima_area
+					area = etruria_centralis_area
+				}
+			}
+		}
+		modifier = {
+			factor = 0.6
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 8
+				or = {
+					area = etruria_east
+					area = etruria_west
+					area = etruria_maritima_area
+					area = etruria_centralis_area
+				}
+			}
+		}
+	}
+	immediate = {
+		hidden_effect = {
+			every_country = {
+				limit = {
+					is_subject_of = ROM
+					capital_scope = {
+						area = etruria_east
+						area = etruria_west
+						area = etruria_maritima_area
+						area = etruria_centralis_area
+					}
+				}
+				add_country_modifier = {
+					name = latin_wars_unloyalty
+					duration = 718
+				}
+				country_event = {
+					id = rome.46
+					days = 40
+				}
+			}
+		}
+	}
+
+	option = {
+		custom_tooltip = rom_etruscan_war_info.tooltip
+	    name = "rome.45.a"
+		ai_chance = { factor = 100 }
+		country_event = {
+			id = rome.47
+			days = 240
+		}
+	}
+}
+
+########################################################################################
+# Etruscan Wars - Etruscans get disloyalty
+########################################################################################
+country_event = {
+    id = rome.46
+	title = "rome.46.t"
+	desc = "rome.46.d"
+	picture = maniple
+	is_triggered_only = yes
+		
+	option = {
+	    name = "rome.46.a"
+		ai_chance = { factor = 100 }
+		add_liberty_desire = 100
+		if = {
+			limit = {
+				exists = ETR
+			}
+			create_alliance = ETR
+		}
+	}
+}
+
+
+########################################################################################
+# Etruscan Wars - Etruscans start a war
+########################################################################################
+country_event = {
+    id = rome.47
+	title = "rome.47.t"
+	desc = "rome.47.d"
+	picture = maniple
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			every_country = {
+				limit = {
+					is_subject_of = ROM
+					liberty_desire = 25
+				}
+				set_country_flag = rom_rebel_socii
+				if = {
+					limit = {
+						exists = ETR
+					}
+					create_alliance = ETR
+				}
+			}
+		}
+	}
+
+	option = {
+	    name = "rome.47.a"
+		ai_chance = { factor = 100 }
+		custom_tooltip = rom_latin_war_begin.tooltip
+		hidden_effect = {
+			set_country_flag = etruscan_war_started_flag
+			every_country = {
+				limit = {
+					capital_scope = {
+						or = {
+							area = etruria_east
+							area = etruria_west
+							area = etruria_maritima_area
+							area = etruria_centralis_area
+						}
+					}
+					is_subject_of = ROM				
+					NOT = {
+						liberty_desire = 25
+					}
+				}
+				break_alliance = ETR
+			}
+			if = {
+				limit = {
+					exists = ETR
+					OR = {
+						ETR = {
+							liberty_desire = 25
+						}
+						NOT = { is_subject = yes }
+					}
+				}
+				ETR = {
+					declare_war_with_cb = {
+						casus_belli = cb_super_badboy
+						who = ROM
+					}
+					declare_war = ROM
+					set_country_flag = rom_etr_war
+				}
+			}
+		}
+	}
+	after = {
+		ETR = {
+			every_ally = {
+				join_all_offensive_wars_of = ETR
+			}
+		}
+	}
+}
+
+########################################################################################
+# Etruscan Wars - Roman win case
+########################################################################################
+
+country_event = {
+    id = rome.48
+	title = "rome.48.t"
+	desc = "rome.48.d"
+	picture = maniple
+	fire_only_once = yes
+	trigger = {
+		has_country_flag = etruscan_war_started_flag
+		OR = {
+			NOT = {
+				is_at_war = yes
+				ETR = {
+					has_won_war_against = {
+						who = ROM
+						max_years_since = 1
+					} 
+				}
+			}
+			has_won_war_against = {
+				who = ETR
+				max_years_since = 1
+			}
+		}
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+
+	option = {
+	    name = "rome.48.a"
+		ai_chance = { factor = 100 }
+		immediate = {
+			hidden_effect = { 
+			clr_country_flag = etruscan_war_started_flag 
+			set_country_flag = etruscan_war_won_flag
+			}		
+		}
+		custom_tooltip = rom_etruscan_war_won.tooltip
+		
+	}
+	after = {
+		every_country = {
+			limit = {
+				has_country_flag = rom_rebel_socii
+			}
+			break_alliance = ETR	
+			add_liberty_desire = -50
+			clr_country_flag = rom_rebel_socii
+			ROM = {
+				create_subject = {
+					subject_type = socii_subject
+					subject = PREV
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Etruscan Wars - Roman lose case
+########################################################################################
+
+country_event = {
+    id = rome.49
+	title = "rome.49.t"
+	desc = "rome.49.d"
+	picture = maniple
+	fire_only_once = yes
+	trigger = {
+		has_country_flag = etruscan_war_started_flag
+		OR = {
+			ETR = {
+				has_won_war_against = {
+					who = ROM
+					max_years_since = 1
+				} 
+			}
+		}
+	}
+	mean_time_to_happen = {
+	    days = 1
+	}
+
+	option = {
+	    name = "rome.49.a"
+		ai_chance = { factor = 100 }
+		immediate = {
+			hidden_effect = { clr_country_flag = etruscan_war_started_flag }		
+		}
+		custom_tooltip = rom_etruscan_war_lost.tooltip
+		hidden_effect = {
+			add_stability = -2
+			add_prestige = -50
+			add_legitimacy = -25
+			release_all_subjects = yes
+		}
+	}
+	after = {
+		every_country = {
+			limit = {
+				OR = {
+					AND = {
+						capital_scope = {
+							or = {
+								area = etruria_east
+								area = etruria_west
+								area = etruria_maritima_area
+								area = etruria_centralis_area
+							}
+						}
+						has_country_flag = rom_rebel_socii
+					}
+					has_country_flag = rom_etr_war
+				}
+			}	
+			add_stability = 1
+			add_prestige = 20
+			if = {
+				limit = { NOT = { tag = ETR } }
+				ETR = { inherit = PREV }
+			}
+		}
+	}
+}
