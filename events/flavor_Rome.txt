@@ -392,13 +392,41 @@ country_event = {
 		}
 		if = {
 			limit = {
-				exists = ZVL
-				ZVL = { is_subject = no }
+				OR = {
+					exists = ZVL
+					ZVL = { is_subject = no }
+				}
+				OR = {
+					exists = ETR
+					ETR = { is_subject = no }
+				}
 			}
 			hidden_effect = { set_country_flag = roman_king_goes_to_etruria_flag }
-			ZVL = {
-				country_event = {
-					id = rome.1601
+			if = {
+				limit = {
+					OR = {
+						exists = ZVL
+						ZVL = { is_subject = no }
+					}
+					NOT = { exists = ETR }
+				}
+				ZVL = {
+					country_event = {
+						id = rome.1601
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR = {
+						exists = ETR
+						ETR = { is_subject = no }
+					}
+				}
+				ETR = {
+					country_event = {
+						id = rome.1601
+					}
 				}
 			}
 		}
@@ -1701,14 +1729,17 @@ country_event = {
 	trigger = {
 	    tag = ROM
 		has_global_flag = etr_unified
-		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-			value = 2
-			or = {
-				area = etruria_east
-				area = etruria_west
-				area = etruria_maritima_area
-				area = etruria_centralis_area
+		OR = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 2
+				or = {
+					area = etruria_east
+					area = etruria_west
+					area = etruria_maritima_area
+					area = etruria_centralis_area
+				}
 			}
+			has_country_flag = force_repulica
 		}
 		NOT = { has_country_flag = etruscan_war_started_flag }
 	}
@@ -1751,6 +1782,10 @@ country_event = {
 					area = etruria_centralis_area
 				}
 			}
+		}
+		modifier = {
+			factor = 0.25
+			has_country_flag = force_repulica
 		}
 	}
 	immediate = {
