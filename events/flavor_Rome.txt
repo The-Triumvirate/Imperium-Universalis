@@ -965,7 +965,7 @@ country_event = {
 	title = "rome.30.t"
 	desc = "rome.30.d"
 	picture = "civilwar"
-	
+	fire_only_once = yes
 	trigger = {
 		tag = ROM
 		has_reform = citizens_republic_reform
@@ -980,7 +980,8 @@ country_event = {
 		change_government_reform_progress = -50
 		add_stability = -2
 		add_mil_power = -100
-		add_war_exhaustion = 2
+		add_adm_power = -100
+		add_war_exhaustion = 4
 		custom_tooltip = roman_kingdom.5.tt
 		hidden_effect = {
 		change_government = republic
@@ -1453,6 +1454,10 @@ country_event = {
 			add_liberty_desire = -50
 			clr_country_flag = rom_rebel_socii
 			ROM = {
+				change_variable = {
+					which = rom_socii_dissatisfaction_variable
+					value = 2
+				}
 				create_subject = {
 					subject_type = socii_subject
 					subject = PREV
@@ -1680,6 +1685,10 @@ country_event = {
 		add_prestige = -20
 		remove_historical_rival = ROM
 		ROM = {
+			change_variable = {
+				which = rom_socii_dissatisfaction_variable
+				value = 2
+			}
 			remove_historical_rival = PREV
 		}
 	}
@@ -1757,7 +1766,7 @@ country_event = {
 		has_global_flag = etr_unified
 		OR = {
 			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
-				value = 2
+				value = 3
 				or = {
 					area = etruria_east
 					area = etruria_west
@@ -2009,6 +2018,10 @@ country_event = {
 			add_liberty_desire = -50
 			clr_country_flag = rom_rebel_socii
 			ROM = {
+				change_variable = {
+					which = rom_socii_dissatisfaction_variable
+					value = 2
+				}
 				create_subject = {
 					subject_type = socii_subject
 					subject = PREV
@@ -2145,3 +2158,491 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Social Wars Start
+########################################################################################
+country_event = {
+    id = rome.51
+	title = "rome.51.t"
+	desc = "rome.51.d"
+	picture = maniple
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			every_country = {
+				limit = {
+					is_subject_of = ROM
+					liberty_desire = 20
+				}
+				add_country_modifier = {
+					name = latin_wars_unloyalty
+					duration = 718
+				}
+				country_event = {
+					id = rome.52
+					days = 40
+				}
+			}
+		}
+	}
+
+	option = {
+		custom_tooltip = rom_etruscan_war_info.tooltip
+	    name = "rome.51.a"
+		ai_chance = { factor = 100 }
+		country_event = {
+			id = rome.53
+			days = 240
+		}
+	}
+}
+
+########################################################################################
+# Social Wars - Socii get disloyalty
+########################################################################################
+country_event = {
+    id = rome.52
+	title = "rome.52.t"
+	desc = "rome.52.d"
+	picture = maniple
+	is_triggered_only = yes
+		
+	option = {
+	    name = "rome.52.a"
+		ai_chance = { factor = 100 }
+		add_liberty_desire = 100
+		if = {
+			limit = {
+				exists = SAB
+			}
+			SAB = { set_country_flag = social_war_starter }
+			create_alliance = SAB
+		}
+		else_if = {
+			limit = {
+				exists = IMS
+			}
+			IMS = { set_country_flag = social_war_starter }
+			create_alliance = IMS
+		}
+		else_if = {
+			limit = {
+				exists = PTR
+			}
+			PTR = { set_country_flag = social_war_starter }
+			create_alliance = PTR
+		}
+		else_if = {
+			limit = {
+				exists = PIC
+			}
+			PIC = { set_country_flag = social_war_starter }
+			create_alliance = PIC
+		}
+		else_if = {
+			limit = {
+				exists = VZV
+			}
+			VZV = { set_country_flag = social_war_starter }
+			create_alliance = VZV
+		}
+		else_if = {
+			limit = {
+				exists = ETR
+			}
+			ETR = { set_country_flag = social_war_starter }
+			create_alliance = ETR
+		}
+		else_if = {
+			limit = {
+				exists = ZAR
+			}
+			ZAR = { set_country_flag = social_war_starter }
+			create_alliance = ZAR
+		}
+		else_if = {
+			limit = {
+				exists = I05
+			}
+			I05 = { set_country_flag = social_war_starter }
+			create_alliance = I05
+		}
+		else_if = {
+			limit = {
+				exists = DAU
+			}
+			DAU = { set_country_flag = social_war_starter }
+			create_alliance = DAU
+		}
+		else_if = {
+			limit = {
+				exists = VOL
+			}
+			VOL = { set_country_flag = social_war_starter }
+			create_alliance = VOL
+		}
+		else_if = {
+			limit = {
+				exists = UMB
+			}
+			UMB = { set_country_flag = social_war_starter }
+			create_alliance = UMB
+		}
+	}
+}
+
+
+########################################################################################
+# Social Wars - Socii start a war
+########################################################################################
+country_event = {
+    id = rome.53
+	title = "rome.53.t"
+	desc = "rome.53.d"
+	picture = maniple
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					is_subject_of = ROM
+					liberty_desire = 20
+				}
+				set_country_flag = rom_rebel_socii
+				every_country = {
+					limit = {
+						has_country_flag = social_war_starter
+					}
+					PREV = { create_alliance = PREV }
+				}
+			}
+		}
+	}
+
+	option = {
+	    name = "rome.53.a"
+		ai_chance = { factor = 100 }
+		custom_tooltip = rome.53.tt
+		hidden_effect = {
+			set_country_flag = social_war_started_flag
+			every_known_country = {
+				limit = {
+					has_country_flag = social_war_starter
+				}
+				declare_war_with_cb = {
+					who = ROM 
+					casus_belli = cb_super_badboy
+				}
+			}
+		}
+	}
+	after = {
+		every_known_country = {
+			limit = {
+				has_country_flag = social_war_starter
+			}
+			every_ally = {
+				join_all_offensive_wars_of = PREV
+			}
+		}
+	}
+}
+
+########################################################################################
+# Social Wars - Roman win case
+########################################################################################
+
+country_event = {
+    id = rome.54
+	title = "rome.54.t"
+	desc = "rome.54.d"
+	picture = maniple
+	fire_only_once = yes
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = social_war_started_flag
+		NOT = {
+			OR = {
+				defensive_war_with = SAB
+				defensive_war_with = IMS
+				defensive_war_with = PTR
+				defensive_war_with = PIC
+				defensive_war_with = ZVZ
+				defensive_war_with = ETR
+				defensive_war_with = ZAR
+				defensive_war_with = I05
+				defensive_war_with = DAU
+				defensive_war_with = VOL
+				defensive_war_with = UMB
+			}
+		}
+	}
+	immediate = {
+		hidden_effect = {
+			remove_country_modifier = socii_dissatisfied_modifier
+			end_disaster = roman_social_war
+			clr_country_flag = social_war_started_flag 
+			set_country_flag = social_war_won_flag
+		}		
+	}
+	option = {
+	    name = "rome.54.a"
+		ai_chance = { factor = 100 }
+
+		custom_tooltip = rom_etruscan_war_won.tooltip
+		
+	}
+	after = {
+		every_known_country = {
+			limit = {
+				has_country_flag = rom_rebel_socii
+			}
+			every_ally = {
+				break_alliance = PREV
+			}
+			add_liberty_desire = -50
+			clr_country_flag = rom_rebel_socii
+			ROM = {
+				create_subject = {
+					subject_type = socii_subject
+					subject = PREV
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Social Wars - Roman lose case
+########################################################################################
+
+country_event = {
+    id = rome.55
+	title = "rome.55.t"
+	desc = "rome.55.d"
+	picture = maniple
+	fire_only_once = yes
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = social_war_started_flag
+		NOT = {
+			OR = {
+				defensive_war_with = SAB
+				defensive_war_with = IMS
+				defensive_war_with = PTR
+				defensive_war_with = PIC
+				defensive_war_with = ZVZ
+				defensive_war_with = ETR
+				defensive_war_with = ZAR
+				defensive_war_with = I05
+				defensive_war_with = DAU
+				defensive_war_with = VOL
+				defensive_war_with = UMB
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			end_disaster = roman_social_war
+			clr_country_flag = social_war_started_flag 
+			set_country_flag = social_war_lost_flag
+		}
+	}
+
+	option = {
+	    name = "rome.55.a"
+		ai_chance = { factor = 100 }
+		custom_tooltip = rom_etruscan_war_lost.tooltip
+		hidden_effect = {
+			add_stability = -2
+			remove_country_modifier = socii_dissatisfied_modifier
+			add_prestige = -50
+			add_legitimacy = -25
+			release_all_subjects = yes
+		}
+	}
+	after = {
+		every_country = {
+			limit = {
+				OR = {
+					has_country_flag = rom_rebel_socii
+					has_country_flag = social_war_starter
+				}
+			}	
+			add_stability = 1
+			add_prestige = 20
+		}
+	}
+}
+
+########################################################################################
+# Roman info events
+########################################################################################
+
+country_event = {
+    id = rome.56
+	title = "rome.56.t"
+	desc = "rome.56.d"
+	picture = maniple
+	is_triggered_only = yes
+	option = { #close info
+	    name = "rome.56.a"
+	}
+	option = { #socii info
+	    name = "rome.56.b"
+		hidden_effect = { country_event = { id = rome.57 } }
+	}
+	option = { #romanization info
+	    name = "rome.56.c"
+		hidden_effect = { country_event = { id = rome.58 } }
+	}
+	option = { #roman kingdom info
+	    name = "rome.56.e"
+		limit = { has_reform = roman_kingdom_reform }
+		hidden_effect = { country_event = { id = rome.59 } }
+	}
+	option = { #roman republic info
+	    name = "rome.56.f"
+		limit = { OR = { has_reform = roman_kingdom_reform has_reform = res_publica_reform has_reform = late_res_publica_reform } }
+		hidden_effect = { country_event = { id = rome.60 } }
+	}
+}
+
+country_event = {
+    id = rome.57
+	title = "rome.57.t"
+	desc = "rome.57.d"
+	picture = italicgfx_forum_picture
+	is_triggered_only = yes
+	option = { #close info
+	    name = "rome.57.a"
+	}
+	option = { #go back
+	    name = "rome.57.b"
+		hidden_effect = { country_event = { id = rome.56 } }
+	}
+}
+
+country_event = {
+    id = rome.58
+	title = "rome.58.t"
+	desc = "rome.58.d"
+	picture = italicgfx_romanization
+	is_triggered_only = yes
+	option = { #close info
+	    name = "rome.58.a"
+	}
+	option = { #go back
+	    name = "rome.58.b"
+		hidden_effect = { country_event = { id = rome.56 } }
+	}
+}
+
+country_event = {
+    id = rome.59
+	title = "rome.59.t"
+	desc = "rome.59.d"
+	picture = italicgfx_forum_picture
+	is_triggered_only = yes
+	option = { #close info
+	    name = "rome.59.a"
+	}
+	option = { #go back
+	    name = "rome.59.b"
+		hidden_effect = { country_event = { id = rome.56 } }
+	}
+}
+
+country_event = {
+    id = rome.60
+	title = "rome.60.t"
+	desc = "rome.60.d"
+	picture = italicgfx_forum_picture
+	is_triggered_only = yes
+	option = { #close info
+	    name = "rome.60.a"
+	}
+	option = { #go back
+	    name = "rome.60.b"
+		hidden_effect = { country_event = { id = rome.56 } }
+	}
+}
+
+########################################################################################
+# Roman socii generates dissasitsfaction
+########################################################################################
+
+country_event = {
+    id = rome.61
+	title = "rome.61.t"
+	desc = "rome.61.d"
+	picture = italicgfx_forum_picture
+	mean_time_to_happen = {
+		years = 10
+		modifier = {
+			factor = 0.6
+			liberty_desire = 40
+		}
+		modifier = {
+			factor = 0.6
+			liberty_desire = 60
+		}
+		modifier = {
+			factor = 0.6
+			liberty_desire = 80
+		}
+	}
+	trigger = {
+		is_subject_of_type_with_overlord = {
+			who = ROM
+			type = socii_subject
+		}
+		liberty_desire = 15
+	}
+	option = {
+	    name = "rome.61.a"
+		ROM = {
+			change_variable = {
+				which = rom_socii_dissatisfaction_variable
+				value = 1
+			}
+		}
+	}
+}
+
+########################################################################################
+# Roman socii stop being integrated 
+########################################################################################
+
+country_event = {
+    id = rome.62
+	title = "rome.62.t"
+	desc = "rome.62.d"
+	picture = italicgfx_forum_picture
+	fire_only_once = yes
+	mean_time_to_happen = {
+		years = 2
+	}
+	trigger = {
+		check_variable = {
+			which = rom_socii_dissatisfaction_variable
+			value = 80
+		}
+		NOT = {
+			OR = {
+				has_country_flag = social_war_started_flag
+				has_country_flag = social_war_won_flag
+				has_country_flag = social_war_lost_flag
+			}
+		}
+	}
+	option = { #close info
+	    name = "rome.62.a"
+		add_country_modifier = {
+			name = socii_dissatisfied_modifier
+			duration = -1
+		}
+	}
