@@ -1117,6 +1117,7 @@ country_event = {
 	}
 	immediate = {
 		hidden_effect = {
+			set_country_flag = latin_war_starting_flag
 			every_country = {
 				limit = {
 					is_subject_of = ROM
@@ -1230,6 +1231,7 @@ country_event = {
 		ai_chance = { factor = 100 }
 		custom_tooltip = rom_latin_war_begin.tooltip
 		hidden_effect = {
+			clr_country_flag = latin_war_starting_flag
 			every_country = {
 				limit = {
 					is_subject_of = ROM
@@ -1532,17 +1534,25 @@ country_event = {
 			has_country_flag = rebel_socii
 			has_global_flag = rebel_socii_happening
 			truce_with = ROM
+			ROM = {
+				OR = {
+					has_country_flag = etruscan_war_starting_flag
+					has_country_flag = latin_war_starting_flag
+					has_country_flag = social_war_starting_flag
+				}
+			}
 		}
 		ai = yes
 		or = {
+			liberty_desire = 85
 			historical_rival_with = ROM
 			historical_rival_with = ROI
 		}
 	}
 	mean_time_to_happen = {
-	    months = 24
+	    years = 8
 		modifier = {
-			factor = 0.25
+			factor = 0.125
 			is_at_war = yes
 		}
 	}
@@ -1581,7 +1591,7 @@ country_event = {
 				set_country_flag = rebel_socii
 				declare_war_with_cb = {
 					who = PREV
-					casus_belli = cb_liberation
+					casus_belli = cb_rome_socii_rebellion
 				}
 			}
 		}
@@ -1597,23 +1607,16 @@ country_event = {
 	title = "rome.42.t"
 	desc = "rome.42.d"
 	picture = battle_spoils
+	is_triggered_only = yes
 	trigger = {
 		has_country_flag = rebel_socii
 		ai = yes
-		is_subject = yes
 		NOT = {
 			has_won_war_against = { 
 				who = ROM 
 				max_years_since = 2
 			}
 		}
-		or = {
-			historical_rival_with = ROM
-			historical_rival_with = ROI
-		}
-	}
-	mean_time_to_happen = {
-	    days = 1
 	}
 	option = {
 	    name = "rome.42.a"
@@ -1627,7 +1630,12 @@ country_event = {
 				value = 2
 			}
 			remove_historical_rival = PREV
+			create_subject = {
+				subject_type = socii_subject
+				subject = PREV
+			}
 		}
+		add_liberty_desire = -25
 	}
 }
 
@@ -1640,17 +1648,14 @@ country_event = {
 	title = "rome.43.t"
 	desc = "rome.43.d"
 	picture = civilwar
+	is_triggered_only = yes
 	trigger = {
 		has_country_flag = rebel_socii
 		ai = yes
-		is_at_war = no
 		has_won_war_against = { 
 			who = ROM 
 			max_years_since = 2
 		}
-	}
-	mean_time_to_happen = {
-	    days = 1
 	}
 	option = {
 	    name = "rome.43.a"
@@ -1700,6 +1705,10 @@ country_event = {
 	fire_only_once = yes
 	trigger = {
 	    tag = ROM
+		NOT = {
+			defensive_war_with = ETR
+			offensive_war_with = ETR
+		}
 		has_global_flag = etr_unified
 		OR = {
 			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
@@ -1763,6 +1772,7 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			every_country = {
+				set_country_flag = etruscan_war_starting_flag
 				limit = {
 					is_subject_of = ROM
 					capital_scope = {
@@ -1834,6 +1844,7 @@ country_event = {
 		ai_chance = { factor = 100 }
 		custom_tooltip = rome.47.tt
 		hidden_effect = {
+			clr_country_flag = etruscan_war_starting_flag
 			every_country = {
 				limit = {
 					is_subject_of = ROM
@@ -2077,6 +2088,7 @@ country_event = {
 
 	immediate = {
 		hidden_effect = {
+			set_country_flag = social_war_starting_flag
 			every_country = {
 				limit = {
 					is_subject_of = ROM
@@ -2215,6 +2227,7 @@ country_event = {
 		ai_chance = { factor = 100 }
 		custom_tooltip = rome.53.tt
 		hidden_effect = {
+			clr_country_flag = social_war_starting_flag
 			every_known_country = {
 				limit = {
 					is_subject_of = ROM
@@ -2592,3 +2605,7 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Generic Roman Socii revolt
+########################################################################################
