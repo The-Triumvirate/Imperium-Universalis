@@ -722,14 +722,74 @@ chinese_religions = {
 			add_stability = -1
 		}
 		
-		
 		papacy = {
 			papal_tag = ZHO
 			election_cost = 5
 			seat_of_papacy = 4349 # Chengzhou
 			
-			zunfengwangshi_papacy = {
-				cost = 100
+			#Council of Trent Positions
+			harsh = {
+				relation_with_heretics = -10
+				global_religious_conversion_resistance = 0.25
+				global_institution_spread = -0.25
+				global_missionary_strength = 0.02
+			}
+			neutral = {
+				global_religious_conversion_resistance = -0.33
+			}
+			concilatory = {
+				relation_with_heretics = 5
+				global_religious_conversion_resistance = 0.25
+				global_heretic_missionary_strength = -0.05
+				improve_relation_modifier = 0.25
+			}
+			
+			#Council of Trent Concessions
+			concessions = {
+				first_concession = {
+					harsh = {
+						relation_with_heretics = -10
+						global_heretic_missionary_strength = 0.02
+					}	
+					concilatory = {
+						relation_with_heretics = 5
+						tolerance_heretic = 2
+					}
+				}
+				second_concession = {
+					harsh = {
+						relation_with_heretics = -10
+						institution_spread_from_true_faith = 0.30
+					}	
+					concilatory = {
+						relation_with_heretics = 5
+						global_institution_spread = 0.10
+					}
+				}
+				third_concession = {
+					harsh = {
+						relation_with_heretics = -10
+						manpower_in_true_faith_provinces = 0.1
+					}	
+					concilatory = {
+						relation_with_heretics = 5
+						global_manpower_modifier = 0.05
+					}
+				}
+				fourth_concession = {
+					harsh = {
+						relation_with_heretics = -10
+						warscore_cost_vs_other_religion = -0.10
+					}	
+					concilatory = {
+						relation_with_heretics = 5
+						curia_powers_cost = -0.10
+					}
+				}
+			}
+
+			levy_church_tax = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
@@ -743,19 +803,20 @@ chinese_religions = {
 						name = zunfengwangshi_papacy
 						duration = 7300
 					}
+					add_prestige = 10
 				}
 				ai_will_do = {
 					factor = 1
 				}				
 			}			
-			querenzuyuan_papacy = {
-				cost = 100
+			bless_monarch = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
 				allow = {
 					NOT = { war_with = ZHO }
-					NOT = { legitimacy = 100 }
+					NOT = { legitimacy_equivalent = 100 }
 					NOT = { has_country_modifier = querenzuyuan_papacy }
 				}
 				effect = {
@@ -763,13 +824,14 @@ chinese_religions = {
 						name = querenzuyuan_papacy
 						duration = 7300
 					}
+					add_legitimacy_equivalent_10_effect = yes
 				}
 				ai_will_do = {
 					factor = 1
 				}
 			}
-			rangyiqizhi_papacy = {
-				cost = 100
+			indulgence_for_sins = {
+				cost = 50
 				potential = {
 					government = monarchy
 					NOT = { tag = ZHO }
@@ -788,8 +850,8 @@ chinese_religions = {
 					factor = 1
 				}
 			}
-			shouliuyimin_papacy = {
-				cost = 100
+			local_saint = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
@@ -811,36 +873,42 @@ chinese_religions = {
 					}
 				}
 			}
-			nagongtianzi_papacy = {
-				cost = 100
+			forgiveness_for_usury = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
 				allow = {
 					NOT = { war_with = ZHO }
-					
+					NOT = {
+						ZHO = {
+							has_opinion_modifier = {
+								who = ROOT
+								modifier = opinion_nagongtianzi_papacy
+							}
+						}
+					}
 				}
 				effect = {
-				    add_years_of_income = -0.5
-						#add_opinion = {
-						#	who = ROOT 
-						#	modifier = opinion_nagongtianzi_papacy } TODO: fix opinion_nagongtianzi_papacy missing modifier
-						#
+					add_years_of_income = -0.5
 					ZHO = {
 						add_years_of_income = 0.1
+						add_opinion = {
+							who = ROOT 
+							modifier = opinion_nagongtianzi_papacy
+						}
 					}
-					
 				}	
 				ai_will_do = {
-					factor = 1
+					factor = 0
 					modifier = {
 						factor = 0
 						NOT = { monthly_income = 1 }
 					}
 				}
 			}	
-			qingqiuguanzhi_papacy = {
-				cost = 100
+			proclaim_holy_war = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
@@ -862,34 +930,47 @@ chinese_religions = {
 					}
 				}
 			}
-			qingqiufengyi_papacy = {
-				cost = 100
+			send_papal_legate = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
 				allow = {
 					NOT = { war_with = ZHO }
-					
-				}
-				effect = {
-					random_province = {
-						limit = {
+					any_owned_province = {
+						any_neighbor_province = {
+							NOT = { owned_by = ROOT }
 							OR = {
 								religion_group = chinese_religions
 								culture_group = chinese_group
 								is_part_of_hre = yes
 							}
+							NOT = { is_core = ROOT }
 							NOT = { is_claim = ROOT }
 						}
-						add_claim = ROOT
+					}
+				}
+				effect = {
+					random_province = {
+						limit = {
+							any_neighbor_province = { owned_by = ROOT }
+							OR = {
+								religion_group = chinese_religions
+								culture_group = chinese_group
+								is_part_of_hre = yes
+							}
+							NOT = { is_core = ROOT }
+						}
+						add_core = ROOT
+						area = { add_claim = ROOT }
 					}
 				}
 				ai_will_do = {
 					factor = 1
 				}
 			}	
-			zhuzhanggaizhi_papacy = {
-				cost = 100
+			sanction_commercial_monopoly = {
+				cost = 50
 				potential = {
 					NOT = { tag = ZHO }
 				}
@@ -898,21 +979,17 @@ chinese_religions = {
 				}
 				effect = {
 					random_list = {
-						10 = { 
-							change_government_reform_progress = 100 
-							add_reform_desire = 0.0025
-						}
 						20 = { 
+							change_government_reform_progress = 100 
+						}
+						30 = { 
 							change_government_reform_progress = 75 
-							add_reform_desire = 0.005
 						}
 						30 = { 
 							change_government_reform_progress = 50 
-							add_reform_desire = 0.0075
 						}
-						40 = { 
-							change_government_reform_progress = 25 
-							add_reform_desire = 0.01
+						20 = { 
+							change_government_reform_progress = 25
 						}
 					}
 				}
@@ -923,4 +1000,3 @@ chinese_religions = {
 		}
 	}
 }
-	
