@@ -1019,41 +1019,45 @@ PG_migrate_tribal_happy = {
 		add_province_modifier = { name = PG_migr_new_allsame duration = 730 }
 	}
 	else_if = {
-		limit = { culture_group = PREV	religion = PREV }
+		limit = { culture_group = PREV	religion = PREV }	# no primary culture, but same culture group AND religion
 		add_province_modifier = { name = PG_migr_new_cultgroup duration = 730 }
-		PG_change_culture_attempt = { strength = 3 }
-		# latent event
+		if = { limit = { NOT = { development = 10 } } PG_change_culture_attempt = { strength = 3 } }
+		
+		# latent event, pending
 	}
 	else_if = {
-		limit = { culture_group = PREV	NOT = { religion = PREV } }
+		limit = { culture_group = PREV	NOT = { religion = PREV } }	# culture group, but different religion
 		add_province_modifier = { name = PG_migr_new_otherrelg duration = 730 }
 		# latent event
 	}
 	else_if = {
 		limit = { 
-			owner = { culture_group = event_target:PG_origin_prov } 		# newcomers are the same culture group as the destination owner
+			owner = { culture_group = event_target:PG_origin_prov }  # newcomers are the same culture group as the destination owner
 			NOT = { culture_group = PREV }
 		}
-		PG_change_culture_attempt = { strength = 2 }
+		if = { limit = { NOT = { development = 10 } } PG_change_culture_attempt = { strength = 2 } }
+		
 		add_province_modifier = { name = PG_migr_new_rulercult duration = 730 }
 		# latent event
 	}
 	else_if = {
-		limit = { NOT = { culture_group = PREV } religion = PREV }
+		limit = { NOT = { culture_group = PREV } religion = PREV }	# No culture group, but same religion
+		
 		add_province_modifier = { name = PG_migr_new_othercult duration = 730 }
-		PG_change_culture_attempt = { strength = 2 }
+		if = { limit = { NOT = { development = 10 } } PG_change_culture_attempt = { strength = 2 } }
+		
 		# latent event
 	}
 	else_if = {
-		limit = { NOT = { culture_group = PREV } }
+		limit = { NOT = { culture_group = PREV } }	# totally alien: no culture group nor religion
 		random_list = {
 			70 = { 
 				add_province_modifier = { name = PG_migr_new_none_neutral duration = 730 } 
-				PG_change_culture_attempt = { strength = 1 }
+				if = { limit = { NOT = { development = 10 } } PG_change_culture_attempt = { strength = 1 } }
 			}
 			30 = { 
 				add_province_modifier = { name = PG_migr_new_none_tension duration = 730 } 
-				PG_change_culture_attempt = { strength = 0 }
+				if = { limit = { NOT = { development = 10 } } PG_change_culture_attempt = { strength = 0 } }
 			}
 			# latent event, tries to change culture
 		}
