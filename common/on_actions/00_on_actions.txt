@@ -107,19 +107,6 @@ on_war_won = {
 		rome.43
 		indian.7501 #Ahimsa modifier
 	}
-	#Ishkuza mission tree
-	if = {
-		limit = {
-			TAG = SX2
-			is_at_war = no
-			has_country_modifier = invasion_scythian_war_morale_buff
-		}
-		remove_country_modifier = invasion_scythian_war_morale_buff
-	}
-	if = {
-		limit = { has_government_attribute = wars_give_horde_unity }
-		add_horde_unity = 10
-	}
 	if = {
 		limit = { has_country_modifier = crusader_china }
 		remove_country_modifier = crusader_china
@@ -131,6 +118,10 @@ on_war_won = {
 on_main_war_won = {
 	events = {
 		indian.7501 #Ahimsa modifier
+	}
+	if = {
+		limit = { has_government_attribute = wars_give_horde_unity }
+		add_horde_unity = 8
 	}
 	#Ishkuza mission tree
 	if = {
@@ -169,10 +160,6 @@ on_war_lost = {
 		rome.42
 	}
 	if = {
-		limit = { has_government_attribute = wars_give_horde_unity }
-		add_horde_unity = -8
-	}
-	if = {
 		limit = { has_country_modifier = crusader_china }
 		remove_country_modifier = crusader_china
 	}
@@ -181,11 +168,19 @@ on_war_lost = {
 # country
 # root = winner country, from = loser country
 on_main_war_lost = {
+	if = {
+		limit = { has_government_attribute = wars_give_horde_unity }
+		add_horde_unity = -4
+	}
 }
 
 # country
 # root = loser country, from = winner country
 on_separate_war_lost = {
+	if = {
+		limit = { has_government_attribute = wars_give_horde_unity }
+		add_horde_unity = -4
+	}
 }
 
 # country
@@ -1453,8 +1448,15 @@ on_province_religion_converted = {
 	owner = { add_patriarch_authority = 0.01 }
 }
 
-# province
+# province, manually conversion
 on_province_culture_converted = {
+	province_event = { 
+		id = syncretized_culture.2
+	}
+}
+
+# province, general conversion through effects
+on_province_culture_changed = {
 	province_event = { 
 		id = syncretized_culture.2
 	}
@@ -1526,6 +1528,18 @@ on_province_owner_change = {
 			}
 		}
 	}
+}
+
+# country
+on_parliament_debate_reset = {
+}
+
+#province
+on_parliament_seat_given = {
+}
+
+#province
+on_parliament_seat_lost = {
 }
 
 # country
@@ -1624,6 +1638,54 @@ on_hussars_raised = {
 on_revolutionary_guard_raised = {
 }
 
+on_banner_raised = {
+}
+
+on_cossack_raised = {
+}
+
+on_marine_raised = {
+}
+
+on_rajput_raised = {
+}
+
+on_streltsy_raised = {
+}
+
+on_tercio_raised = {
+}
+
+on_musketeer_raised = {
+}
+
+on_samurai_raised = {
+}
+
+on_geobukseon_raised = {
+}
+
+on_man_of_war_raised = {
+}
+
+on_galleon_raised = {
+}
+
+on_galleass_raised = {
+}
+
+on_caravel_raised = {
+}
+
+on_voc_indiamen_raised = {
+}
+
+on_hre_reform_passed = {
+}
+
+on_mandate_reform_passed = {
+}
+
 on_reform_enacted = {
 }
 
@@ -1656,6 +1718,12 @@ on_center_of_trade_downgrade = {
 
 on_culture_promoted = {
 
+}
+
+on_culture_demoted = {
+}
+
+on_primary_culture_changed = {
 }
 
 # FROM = Previous Country, ROOT = Province
@@ -1806,6 +1874,8 @@ on_golden_bull_enacted = {
 # province:  spawned whenever a new owner takes over the province
 # FROM = The previous owner.
 on_conquest = {
+	remove_named_unrest = estate_land_seized
+	clr_province_flag = has_estate_unrest_flag
 	events = {
 		lucania.5
 		korean.10
@@ -1837,10 +1907,10 @@ on_federation_leader_change = {
 on_pillaged_capital = {
 }
 
-#FROM = country dev was transferred from, ROOT = country doing the transferring
+#FROM = country dev was transferred from, ROOT = country doing the transferring. It is triggered by normal concentrate too though FROM isn't set in that case
 on_transfer_development = {
 }
-
+#FROM = overlord, ROOT - colony
 on_colonial_type_change = {
 }
 
@@ -1854,6 +1924,14 @@ on_extended_regency = {
 }
 
 on_estate_removed = {
+}
+
+##scope = colony province, FROM = owner country or province if there's a minority expulsion source, fires when the colony is created
+on_colony_established = {
+}
+
+#scope = new country, FROM = parent country
+on_colonial_nation_established = {
 }
 
 on_colonist_boosting_colony = {
@@ -2001,3 +2079,85 @@ on_mil_exploited = {}
 on_raze = {}
 
 on_concentrate_development = {}
+
+on_slacken_start = {
+	add_country_modifier = {
+		name = slackening_modifier
+		duration = -1
+	}
+}
+on_slacken_stop = {
+	remove_country_modifier = slackening_modifier
+}
+
+on_colony_finished = { #ROOT - Province
+	on_colony_finished_effect = yes
+}
+
+on_advisor_hired = { #ROOT - Country
+
+}
+
+on_adm_advisor_hired = { #ROOT - Country, executed after on_advisor_hired!
+
+}
+
+on_dip_advisor_hired = { #ROOT - Country, executed after on_advisor_hired!
+
+}
+
+on_mil_advisor_hired = { #ROOT - Country, executed after on_advisor_hired!
+
+}
+
+on_core = { #ROOT - Province, #FROM - Country that gets the core
+
+}
+
+on_tech_taken = { #ROOT - Country
+
+}
+
+on_adm_tech_taken = { #ROOT - Country, executed after on_tech_taken!
+
+}
+
+on_dip_tech_taken = { #ROOT - Country, executed after on_tech_taken!
+
+}
+
+on_mil_tech_taken = { #ROOT - Country, executed after on_tech_taken!
+
+} 
+
+on_barrage = { #ROOT - barraging country, FROM - barraged province 
+
+}
+
+on_naval_barrage = { #ROOT - barraging country, FROM - barraged province 
+
+}
+
+on_scorch_earth = { #ROOT - scorching country, FROM - scorched province
+
+}
+
+on_war_ended = { #ROOT - Winer FROM - Loser
+	
+}
+
+on_alliance_broken = { #ROOT - Original alliance creator, FROM - Alliance accepter
+	#on_alliance_broken_effect = yes
+}
+
+on_royal_marriage_broken = { #ROOT - Original marriage creator, FROM - Marriage accepter
+
+}
+
+on_alliance_created = { #ROOT - Alliance sender, FROM - Alliance accepter
+
+}
+
+on_royal_marriage = { #ROOT - Marraige sender, FROM - marriage accepter
+
+}
