@@ -67,6 +67,14 @@ default = {
 	transfer_trade_power = no
 	transfer_trade_if_merchant_republic = no
 	joins_overlords_wars = yes
+	can_be_co_belligerented =  no    #Enemies can force this subject to join its overlord into the defense war. Only used when the subject has the "joins_overlords_wars = no". By default it's "no".
+	can_be_called_to_wars =  no    #Overlord can ask subject to join wars like it could ask allies to join. You would require favors  to call them to wars. Only used when the subject has the "joins_overlords_wars = no". By default it's "no"
+	favors_cost_to_join_offensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into an offensive war
+	favors_cost_to_join_defensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into a defensive war
+	opinion_cost_to_join_offensive_wars = 0   #Defines how much opinion the subject loses of the overlord to call the subject into an offensive war. Applied if you do not have Leviathan
+	opinion_cost_to_join_defensive_wars = 0   #Defines how much opinion the subject loses of the overlord to call the subject into a defensive war. Applied if you do not have Leviathan
+	opinion_cost_instead_of_favors_cost = no   #Determines if the subject requires favors or opinion to join a the war. If set "yes" then it requires the aforementioned opinion costs - regardless if Leviathan is active or not. "No" is the default setting
+	opinion_on_subject_integration = -30 #Determines how much opinion they actually lose when a fellow subject gets integrated.
 	joins_colonial_wars = no
 	can_be_integrated = no
 	can_release_and_play = no							# "Release Colony" in SubjectView
@@ -99,8 +107,11 @@ default = {
 	does_overlord_size_count_for_warscore_cost = yes
 	is_colony_subtype = no
 	is_march = no
-	forms_trade_companies = yes
+	forms_trade_companies = no
 	can_concentrate_development = no
+	can_have_great_projects_moved_by_overlord = yes
+	extend_trading_range = no
+	can_gain_favors = yes
 	
 	max_government_rank = 0								# 0 means no limit
 	cities_required_for_bonuses = 0						# How many cities the subject needs before giving bonuses to overlord
@@ -413,7 +424,6 @@ velir_subject = {
 	overlord_protects_external = yes
 	takes_diplo_slot = no
 	can_release_in_peace = yes
-	overlord_can_attack = yes
 	overlord_can_be_subject = no
 	can_have_subjects_of_other_types = yes
 	share_rebel_popup = yes
@@ -505,7 +515,6 @@ satrapy_vassal = {
 	joins_overlords_wars = yes
 	joins_colonial_wars = no
 	
-	overlord_can_attack = yes
 	overlord_can_be_subject = no
 	can_have_subjects_of_other_types = no
 	can_be_annexed = no
@@ -524,6 +533,7 @@ satrapy_vassal = {
 	can_set_mil_focus = yes
 	can_send_missionary_to_subject = no
 	can_concentrate_development = no
+	extend_trading_range = yes
 	
 	max_government_rank = 4
 	trust_on_start = 100
@@ -603,8 +613,9 @@ socii_subject = {
 	# Properties:
 	can_fight_independence_war = yes
 	is_voluntary = no
-	joins_overlords_wars = yes
-	joins_colonial_wars = yes
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	joins_colonial_wars = no
 	overlord_can_attack = no
 	overlord_can_be_subject = yes
 	can_have_subjects_of_other_types = yes
@@ -692,8 +703,10 @@ league_member_subject = {
 	# Properties:
 	transfer_trade_power = no
 	can_fight_independence_war = yes
-	joins_overlords_wars = yes
-	joins_colonial_wars = yes
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	opinion_cost_instead_of_favors_cost = yes
+	opinion_cost_to_join_offensive_wars = 40
 	is_voluntary = yes
 	overlord_can_attack = no
 	takes_diplo_slot = no
@@ -709,6 +722,7 @@ league_member_subject = {
 	max_government_rank = 2
 	can_be_annexed = no
 	can_concentrate_development = no
+	extend_trading_range = yes
 
 	liberty_desire_negative_prestige = 0.5
 	base_liberty_desire = 10.0
@@ -851,7 +865,6 @@ daimyo_vassal = {
 	can_fight_independence_war = yes
 	can_have_subjects_of_other_types = yes
 	can_release_in_peace = no
-	overlord_can_attack = yes
 
 	trust_on_start = 0
 
@@ -930,6 +943,10 @@ sukkal_vassal = {
 	diplomacy_subject_sprite = GFX_diplomacy_amvassal_sukkalvassal
 
 	# Properties:
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	favors_cost_to_join_offensive_wars = 10
+	overlord_can_attack = no
 	has_power_projection = yes
 	takes_diplo_slot = no
 	gets_help_with_rebels = yes
@@ -938,12 +955,13 @@ sukkal_vassal = {
 	can_use_claims = yes
 	forms_trade_companies = no
 	can_concentrate_development = no
+	extend_trading_range = yes
 
 	trust_on_start = 0
 
 	base_liberty_desire = 0.0
-	liberty_desire_development_ratio = 0.5
-	liberty_desire_negative_prestige = 0.5
+	liberty_desire_development_ratio = 0.4
+	liberty_desire_negative_prestige = 0.7
 	pays_overlord = 0.3
 	forcelimit_to_overlord = 0.1
 
@@ -1074,12 +1092,15 @@ phoenician_colony_subject = {
 	forms_trade_companies = no
 	can_concentrate_development = no
 	joins_overlords_wars = no
-	joins_colonial_wars = no
+	can_be_called_to_wars =  yes
+	favors_cost_to_join_offensive_wars = 20
+	favors_cost_to_join_defensive_wars = 10
 	can_have_subjects_of_other_types = yes
 	can_transfer_in_peace = no
 	can_use_claims = no
 	can_send_missionary_to_subject = no
 	overlord_can_be_subject = yes
+	extend_trading_range = yes
 
 	max_government_rank = 2
 
@@ -1155,7 +1176,6 @@ client_vassal = {
 	can_be_integrated = yes
 	can_release_and_play = no
 	uses_tariffs = no
-	overlord_can_attack = yes
 	overlord_can_be_subject = no
 	can_have_subjects_of_other_types = no
 	takes_diplo_slot = no
@@ -1446,7 +1466,6 @@ tributary_state = {
 	joins_overlords_wars = no
 	joins_colonial_wars = no
 	is_voluntary = yes
-	overlord_can_attack = yes
 	takes_diplo_slot = no
 	base_liberty_desire = 5
 	relative_power_class = 1
