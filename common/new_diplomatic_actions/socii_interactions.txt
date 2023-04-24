@@ -228,3 +228,132 @@ remove_socii_subject = {
 		}
 	}
 }
+
+# Call Socii into wars
+call_socii_into_wars = {
+	category = influence
+
+	require_acceptance = no
+
+	is_visible = {
+		FROM = {
+			is_subject_of = ROOT
+			is_subject_of_type = socii_subject
+		}
+	}
+	is_allowed = {
+		if = {
+			limit = {
+				FROM = { liberty_desire = 50 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_IS_REBELLIOUS_TT
+				FROM = { liberty_desire = 50 }
+			}
+		}
+		if = {
+			limit = {
+				is_at_war = no
+			}
+			custom_trigger_tooltip = {
+				tooltip = ROOT_IS_NOT_AT_WAR_TT
+				is_at_war = yes
+			}
+		}
+		if = {
+			limit = {
+				FROM = {
+					NOT = {
+						owes_favors = {
+							who = ROOT
+							value = 5
+						}
+					}
+				}
+				is_in_war = {
+					defender_leader = ROOT
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_MUST_OWE_5_FAVORS_DEFENSIVE_WAR_TT
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 5
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				FROM = {
+					NOT = {
+						owes_favors = {
+							who = ROOT
+							value = 30
+						}
+					}
+				}
+				NOT = {
+					is_in_war = {
+						defender_leader = ROOT
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_MUST_OWE_30_FAVORS_TT
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 30
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				FROM = { is_at_war = yes }
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_IS_AT_WAR_TT
+				FROM = { is_at_war = no }
+			}
+		}
+	}
+	on_accept = {
+		FROM = {
+			ROOT = {
+				add_favors = {
+					who = PREV
+					amount = -5
+				}
+			}
+			join_all_defensive_wars_of = ROOT
+		}
+		if = {
+			limit = {
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 30
+					}
+				}
+			}
+			FROM = {
+				ROOT = {
+					add_favors = {
+						who = PREV
+						amount = -30
+					}
+				}
+				join_all_offensive_wars_of = ROOT
+			}
+		}
+	}
+	on_decline = {
+	}
+
+	ai_will_do = { # this is a trigger
+		always = yes
+	}
+}
