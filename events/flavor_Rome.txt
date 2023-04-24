@@ -1404,7 +1404,7 @@ country_event = {
 			ROM = {
 				change_variable = {
 					which = rom_socii_dissatisfaction_variable
-					value = 2
+					value = 6
 				}
 				create_subject = {
 					subject_type = socii_subject
@@ -1607,7 +1607,7 @@ country_event = {
 		ROM = {
 			change_variable = {
 				which = rom_socii_dissatisfaction_variable
-				value = 2
+				value = 8
 			}
 			remove_historical_rival = PREV
 			create_subject = {
@@ -1924,7 +1924,7 @@ country_event = {
 			ROM = {
 				change_variable = {
 					which = rom_socii_dissatisfaction_variable
-					value = 2
+					value = 6
 				}
 				create_subject = {
 					subject_type = socii_subject
@@ -2204,6 +2204,7 @@ country_event = {
 	    name = "rome.53.a"
 		ai_chance = { factor = 100 }
 		custom_tooltip = rome.53.tt
+		custom_tooltip = rome.72.tt
 		hidden_effect = {
 			clr_country_flag = social_war_starting_flag
 			every_known_country = {
@@ -2275,10 +2276,11 @@ country_event = {
 	}
 	immediate = {
 		hidden_effect = {
+			remove_country_modifier = socii_minor_dissatisfied_modifier
 			remove_country_modifier = socii_dissatisfied_modifier
 			remove_country_modifier = socii_somewhat_dissatisfied_modifier
 			add_country_modifier = {
-				name = socii_somewhat_dissatisfied_modifier
+				name = socii_after_war_modifier
 				duration = 3650
 			}
 			end_disaster = roman_social_war
@@ -2481,7 +2483,7 @@ country_event = {
 	desc = "rome.61.d"
 	picture = deligation
 	mean_time_to_happen = {
-		years = 10
+		months = 36
 		modifier = {
 			factor = 0.8
 			liberty_desire = 20
@@ -2533,7 +2535,7 @@ country_event = {
 	trigger = {
 		check_variable = {
 			which = rom_socii_dissatisfaction_variable
-			value = 75
+			value = 300
 		}
 		NOT = {
 			OR = {
@@ -2565,6 +2567,38 @@ country_event = {
 	trigger = {
 		check_variable = {
 			which = rom_socii_dissatisfaction_variable
+			value = 150
+		}
+		NOT = {
+			OR = {
+				has_country_flag = social_war_started_flag
+				has_country_flag = social_war_won_flag
+				has_country_flag = social_war_lost_flag
+			}
+		}
+	}
+	option = { #close info
+	    name = "rome.62.a"
+		remove_country_modifier = socii_minor_dissatisfied_modifier
+		add_country_modifier = {
+			name = socii_somewhat_dissatisfied_modifier
+			duration = -1
+		}
+	}
+}
+
+country_event = {
+    id = rome.71
+	title = "rome.62.t"
+	desc = "rome.62.d"
+	picture = deligation
+	fire_only_once = yes
+	mean_time_to_happen = {
+		years = 2
+	}
+	trigger = {
+		check_variable = {
+			which = rom_socii_dissatisfaction_variable
 			value = 50
 		}
 		NOT = {
@@ -2578,8 +2612,48 @@ country_event = {
 	option = { #close info
 	    name = "rome.62.a"
 		add_country_modifier = {
-			name = socii_somewhat_dissatisfied_modifier
+			name = socii_minor_dissatisfied_modifier
 			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# Roman socii cancelled after all integrated
+########################################################################################
+
+country_event = {
+    id = rome.72
+	title = "rome.72.t"
+	desc = "rome.72.d"
+	picture = deligation
+	fire_only_once = yes
+	mean_time_to_happen = {
+		months = 1
+	}
+	trigger = {
+		NOT = { has_subject_of_type = socii_subject }
+		OR = {
+			has_country_modifier = socii_minor_dissatisfied_modifier
+			has_country_modifier = socii_somewhat_dissatisfied_modifier
+			has_country_modifier = socii_dissatisfied_modifier
+		}
+		NOT = {
+			OR = {
+				has_country_flag = social_war_started_flag
+				has_country_flag = social_war_won_flag
+				has_country_flag = social_war_lost_flag
+			}
+		}
+	}
+	option = { #close info
+	    name = "rome.72.a"
+		custom_tooltip = rome.72.tt
+		hidden_effect = {
+			set_country_flag = no_more_socii
+			remove_country_modifier = socii_minor_dissatisfied_modifier
+			remove_country_modifier = socii_somewhat_dissatisfied_modifier
+			remove_country_modifier = socii_dissatisfied_modifier
 		}
 	}
 }
@@ -3016,3 +3090,4 @@ country_event = {
 		convert_heir_to_general = 20
 	}
 }
+#start from 73
