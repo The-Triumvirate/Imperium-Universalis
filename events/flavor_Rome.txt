@@ -2116,77 +2116,66 @@ country_event = {
 				exists = SAB
 			}
 			SAB = { set_country_flag = social_war_starter }
-			create_alliance = SAB
 		}
 		else_if = {
 			limit = {
 				exists = IMS
 			}
 			IMS = { set_country_flag = social_war_starter }
-			create_alliance = IMS
 		}
 		else_if = {
 			limit = {
 				exists = PTR
 			}
 			PTR = { set_country_flag = social_war_starter }
-			create_alliance = PTR
 		}
 		else_if = {
 			limit = {
 				exists = PIC
 			}
 			PIC = { set_country_flag = social_war_starter }
-			create_alliance = PIC
 		}
 		else_if = {
 			limit = {
 				exists = ZVZ
 			}
 			ZVZ = { set_country_flag = social_war_starter }
-			create_alliance = ZVZ
 		}
 		else_if = {
 			limit = {
 				exists = ETR
 			}
 			ETR = { set_country_flag = social_war_starter }
-			create_alliance = ETR
 		}
 		else_if = {
 			limit = {
 				exists = ZAR
 			}
 			ZAR = { set_country_flag = social_war_starter }
-			create_alliance = ZAR
 		}
 		else_if = {
 			limit = {
 				exists = I05
 			}
 			I05 = { set_country_flag = social_war_starter }
-			create_alliance = I05
 		}
 		else_if = {
 			limit = {
 				exists = DAU
 			}
 			DAU = { set_country_flag = social_war_starter }
-			create_alliance = DAU
 		}
 		else_if = {
 			limit = {
 				exists = VOL
 			}
 			VOL = { set_country_flag = social_war_starter }
-			create_alliance = VOL
 		}
 		else_if = {
 			limit = {
 				exists = UMB
 			}
 			UMB = { set_country_flag = social_war_starter }
-			create_alliance = UMB
 		}
 	}
 }
@@ -2201,12 +2190,14 @@ country_event = {
 	desc = "rome.53.d"
 	picture = battle
 	is_triggered_only = yes
-
+	major = yes
 	option = {
 	    name = "rome.53.a"
 		ai_chance = { factor = 100 }
 		custom_tooltip = rome.53.tt
 		custom_tooltip = rome.72.tt
+		add_stability = -2
+		add_prestige = -25
 		hidden_effect = {
 			clr_country_flag = social_war_starting_flag
 			every_known_country = {
@@ -2215,33 +2206,23 @@ country_event = {
 					liberty_desire = 20
 				}
 				set_country_flag = rom_rebel_socii
-				every_country = {
-					limit = {
-						has_country_flag = social_war_starter
-					}
-					PREV = { create_alliance = PREV }
-				}
 			}
 			set_country_flag = no_more_socii
 			set_country_flag = social_war_started_flag
 			every_known_country = {
 				limit = {
-					has_country_flag = social_war_starter
+					OR = {
+						has_country_flag = social_war_starter
+						has_country_flag = rom_rebel_socii
+					}
 				}
+				add_manpower = 8
+				add_treasury = 200
+				add_country_modifier = { name = socii_war_buff duration = 730 }
 				declare_war_with_cb = {
 					who = ROM 
 					casus_belli = cb_rome_socii_rebellion
 				}
-			}
-		}
-	}
-	after = {
-		every_known_country = {
-			limit = {
-				has_country_flag = social_war_starter
-			}
-			every_ally = {
-				join_all_offensive_wars_of = PREV
 			}
 		}
 	}
@@ -2258,23 +2239,10 @@ country_event = {
 	picture = battle_spoils
 	fire_only_once = yes
 	is_triggered_only = yes
+	major = yes
 	trigger = {
 		has_country_flag = social_war_started_flag
-		NOT = {
-			OR = {
-				defensive_war_with = SAB
-				defensive_war_with = IMS
-				defensive_war_with = PTR
-				defensive_war_with = PIC
-				defensive_war_with = ZVZ
-				defensive_war_with = ETR
-				defensive_war_with = ZAR
-				defensive_war_with = I05
-				defensive_war_with = DAU
-				defensive_war_with = VOL
-				defensive_war_with = UMB
-			}
-		}
+		is_at_war = no
 	}
 	immediate = {
 		hidden_effect = {
@@ -2328,23 +2296,9 @@ country_event = {
 	picture = civilwar
 	fire_only_once = yes
 	is_triggered_only = yes
+	major = yes
 	trigger = {
 		has_country_flag = social_war_started_flag
-		NOT = {
-			OR = {
-				defensive_war_with = SAB
-				defensive_war_with = IMS
-				defensive_war_with = PTR
-				defensive_war_with = PIC
-				defensive_war_with = ZVZ
-				defensive_war_with = ETR
-				defensive_war_with = ZAR
-				defensive_war_with = I05
-				defensive_war_with = DAU
-				defensive_war_with = VOL
-				defensive_war_with = UMB
-			}
-		}
 	}
 
 	immediate = {
@@ -2378,6 +2332,7 @@ country_event = {
 			}	
 			add_stability = 1
 			add_prestige = 20
+			white_peace = ROM
 		}
 	}
 }
@@ -2634,6 +2589,11 @@ country_event = {
 		months = 1
 	}
 	trigger = {
+		OR = {
+			tag = ROM
+			tag = ROI
+		}
+		NOT = { has_country_flag = no_more_socii }
 		NOT = { has_subject_of_type = socii_subject }
 		OR = {
 			has_country_modifier = socii_minor_dissatisfied_modifier
