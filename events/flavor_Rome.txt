@@ -1042,18 +1042,8 @@ country_event = {
 	fire_only_once = yes
 	trigger = {
 	    tag = ROM
-		NOT = {
-			truce_with = LAT
-		}
-		OR = {
-			socii_subject = 4
-			num_of_owned_provinces_with = {
-				value = 5
-				area = latium_area
-			}
-		}
-		num_of_owned_provinces_with = {
-			value = 2
+		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+			value = 5
 			area = latium_area
 		}
 		NOT = {
@@ -1066,55 +1056,63 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 48
+		months = 92
 	   
 		modifier = {
 			factor = 0.80
-			5643 = { owned_by = ROM }
+			owns_or_subject_of = 5643
 		}
 		modifier = {
 			factor = 0.80
-			66 = { owned_by = ROM }
+			owns_or_subject_of = 66
 		}
 		modifier = {
 			factor = 0.80
-			5634 = { owned_by = ROM }
+			owns_or_subject_of = 5634
 		}
 		modifier = {
 			factor = 0.80
-			5635 = { owned_by = ROM }
+			owns_or_subject_of = 5635
 		}
 		modifier = {
 			factor = 0.80
-			5641 = { owned_by = ROM }
+			owns_or_subject_of = 5641
 		}
 		modifier = {
 			factor = 0.80
-			54 = { owned_by = ROM }
+			owns_or_subject_of = 54
 		}
 		modifier = {
 			factor = 0.80
-			5644 = { owned_by = ROM }
+			owns_or_subject_of = 5644
 		}
 		modifier = {
 			factor = 0.80
-			5636 = { owned_by = ROM }
+			owns_or_subject_of = 5636
 		}
 		modifier = {
 			factor = 0.80
-			5638 = { owned_by = ROM }
+			owns_or_subject_of = 5638
 		}
 		modifier = {
 			factor = 0.80
-			5640 = { owned_by = ROM }
+			owns_or_subject_of = 5640
 		}
 		modifier = {
 			factor = 0.80
-			5683 = { owned_by = ROM }
+			owns_or_subject_of = 5683
 		}
 		modifier = {
-			factor = 0.40
-			socii_subject = 6
+			factor = 0.6
+			socii_subject = 3
+		}
+		modifier = {
+			factor = 0.6
+			socii_subject = 4
+		}
+		modifier = {
+			factor = 0.6
+			socii_subject = 5
 		}
 	}
 	immediate = {
@@ -1164,6 +1162,8 @@ country_event = {
 			limit = { alliance_with = VOL }
 			break_alliance = VOL
 		}
+		add_historical_rival = VOL
+		VOL = { add_historical_rival = ROM }
 	}
 }
 
@@ -1181,29 +1181,6 @@ country_event = {
 	    name = "rome.33.a"
 		ai_chance = { factor = 100 }
 		add_liberty_desire = 100
-		if = {
-			limit = {
-				exists = LAT
-			}
-			create_alliance = LAT
-		}
-		else_if = {
-			limit = {
-				NOT = {
-					exists = LAT
-				}
-				exists = PRE
-			}
-			create_alliance = PRE
-		}
-		else_if = {
-			limit = {
-				NOT = { exists = LAT }
-				NOT = { exists = PRE }
-				exists = VEL
-			}
-			create_alliance = VEL
-		}
 	}
 }
 
@@ -1283,6 +1260,14 @@ country_event = {
 					create_alliance = LAT
 					set_country_flag = rom_vol_war
 				}
+				PRE = {
+					create_alliance = PRE
+					set_country_flag = rom_pre_war
+				}
+				VEL = {
+					create_alliance = VEL
+					set_country_flag = rom_vel_war
+				}
 				LAT = {
 					declare_war_with_cb = {
 						casus_belli = cb_super_badboy
@@ -1290,6 +1275,7 @@ country_event = {
 					}
 					declare_war = ROM
 					set_country_flag = rom_lat_war
+					set_country_flag = latin_war_starter
 				}
 			}
 			else_if = {
@@ -1303,12 +1289,17 @@ country_event = {
 					create_alliance = PRE
 					set_country_flag = rom_vol_war
 				}
+				VEL = {
+					create_alliance = VEL
+					set_country_flag = rom_vel_war
+				}
 				PRE = {
 					declare_war_with_cb = {
 						casus_belli = cb_super_badboy
 						who = ROM
 					}
 					set_country_flag = rom_pre_war
+					set_country_flag = latin_war_starter
 				}
 			}
 			else_if = {
@@ -1327,6 +1318,7 @@ country_event = {
 						who = ROM
 					}
 					set_country_flag = rom_vel_war
+					set_country_flag = latin_war_starter
 				}
 			}
 		}
@@ -1347,6 +1339,39 @@ country_event = {
 				join_all_offensive_wars_of = VEL
 			}
 		}
+		every_country = {
+			limit = {
+				is_subject_of = ROM
+				has_country_flag = rom_rebel_socii
+				truce_with = ROM
+			}
+			declare_war_with_cb = {
+				casus_belli = rom_socii_rebellion
+				who = ROM
+			}
+		}
+		if = {
+			limit = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 7
+					area = latium_area
+				}
+			}
+			every_country = {
+				limit = {
+					OR = {
+						is_rival = ROM
+						ROM = { is_rival = PREV }
+					}
+				}
+				every_country = {
+					limit = {
+						has_country_flag = latin_war_starter
+					}
+					PREV = { join_all_offensive_wars_of = PREV }
+				}
+			}
+		}
 	}
 }
 
@@ -1364,9 +1389,7 @@ country_event = {
 
 	trigger = {
 		has_country_flag = latin_war_started_flag
-		NOT = {
-			defensive_war_with = LAT
-		}
+		is_at_war = no
 	}
 
 	immediate = {
@@ -1379,18 +1402,15 @@ country_event = {
 	option = {
 	    name = "rome.37.a"
 		ai_chance = { factor = 100 }
+		add_prestige = 20
+		add_army_tradition = 5
 		custom_tooltip = rom_latin_war_won.tooltip
 	}
 	after = {
 		every_country = {
 			limit = {
 				OR = {
-					AND = {
-						capital_scope = {
-							area = latium_area
-						}
-						has_country_flag = rom_rebel_socii
-					}
+					has_country_flag = rom_rebel_socii
 					has_country_flag = rom_lat_war
 					has_country_flag = rom_pre_war
 					has_country_flag = rom_vel_war
@@ -1430,23 +1450,23 @@ country_event = {
 	fire_only_once = yes
 	trigger = {
 		has_country_flag = latin_war_started_flag
-		NOT = {
-			defensive_war_with = LAT
-		}
 	}
 
 	immediate = {
-		hidden_effect = { clr_country_flag = latin_war_started_flag }		
+		hidden_effect = { 
+			clr_country_flag = latin_war_started_flag 
+			set_country_flag = no_more_socii
+		}
 	}
 
 	option = {
 	    name = "rome.38.a"
 		ai_chance = { factor = 100 }
 		custom_tooltip = rom_latin_war_lost.tooltip
+		add_stability = -2
+		add_prestige = -50
+		add_legitimacy = -25
 		hidden_effect = {
-			add_stability = -2
-			add_prestige = -50
-			add_legitimacy = -25
 			release_all_subjects = yes
 		}
 	}
@@ -1469,6 +1489,7 @@ country_event = {
 			add_stability = 1
 			add_prestige = 20
 			add_historical_rival = ROM
+			white_peace = ROM
 		}
 	}
 }
@@ -1521,6 +1542,7 @@ country_event = {
 					has_country_flag = etruscan_war_starting_flag
 					has_country_flag = latin_war_starting_flag
 					has_country_flag = social_war_starting_flag
+					has_country_flag = social_war_won_flag`
 				}
 			}
 		}
@@ -1548,8 +1570,17 @@ country_event = {
 			}
 		}
 		set_global_flag = rebel_socii_happening
-		
-		add_army_tradition = 20
+		add_army_tradition = 10
+		add_prestige = 10
+		add_manpower = 4
+		add_treasury = 200
+		add_country_modifier = { name = socii_war_buff duration = 365 }
+		every_country = {
+			limit = { 
+				is_supporting_independence_of = PREV
+			}
+			join_all_offensive_wars_of = PREV
+		}
 	}
 }
 
@@ -1687,7 +1718,7 @@ country_event = {
 	fire_only_once = yes
 	trigger = {
 	    tag = ROM
-		NOT = { war_with = ETR }
+		NOT = { war_with = ETR ETR = { truce_with = ROM } }
 		has_global_flag = etr_unified
 		OR = {
 			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
@@ -1913,7 +1944,8 @@ country_event = {
 	    name = "rome.48.a"
 		ai_chance = { factor = 100 }
 		custom_tooltip = rom_etruscan_war_won.tooltip
-		
+		add_prestige = 25
+		add_army_tradition = 10
 	}
 	after = {
 		every_country = {
@@ -1922,6 +1954,7 @@ country_event = {
 			}
 			break_alliance = ETR	
 			add_liberty_desire = -50
+			add_prestige = -25
 			clr_country_flag = rom_rebel_socii
 			ROM = {
 				change_variable = {
@@ -2261,7 +2294,8 @@ country_event = {
 	option = {
 	    name = "rome.54.a"
 		ai_chance = { factor = 100 }
-
+		add_prestige = 25
+		add_army_tradition = 10
 		custom_tooltip = rom_etruscan_war_won.tooltip
 		
 	}
@@ -2274,6 +2308,7 @@ country_event = {
 				break_alliance = PREV
 			}
 			add_liberty_desire = -50
+			add_prestige = -25
 			clr_country_flag = rom_rebel_socii
 			ROM = {
 				create_subject = {
