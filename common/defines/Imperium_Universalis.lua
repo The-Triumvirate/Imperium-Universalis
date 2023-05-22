@@ -584,14 +584,14 @@ NDefines.NGraphics.CITY_SPRAWL_AMOUNT = 2.5
 
 NDefines.NEngine.EVENT_PROCESS_OFFSET = 30
 
-NDefines.NFrontend.CAMERA_LOOKAT_X = 1620.0
-NDefines.NFrontend.CAMERA_LOOKAT_Z = 1290.0
 NDefines.NFrontend.CAMERA_LOOKAT_SETTINGS_X = 1620.0
 NDefines.NFrontend.CAMERA_LOOKAT_SETTINGS_Z = 1290.0
 
-NDefines.NFrontend.CAMERA_START_X = 1970.0
-NDefines.NFrontend.CAMERA_START_Y = 600
-NDefines.NFrontend.CAMERA_START_Z = 844.0
+NDefines.NFrontend.CAMERA_START_X = 2795.0 -- Initial Position
+NDefines.NFrontend.CAMERA_START_Y = 229.0
+NDefines.NFrontend.CAMERA_START_Z = 1320.0
+NDefines.NFrontend.CAMERA_LOOKAT_X = 2795.0 -- Initial Look
+NDefines.NFrontend.CAMERA_LOOKAT_Z = 1340.0
 
 NDefines.NFrontend.CAMERA_END_X = 1824.0
 NDefines.NFrontend.CAMERA_END_Y = 265.0
@@ -600,11 +600,13 @@ NDefines.NFrontend.CAMERA_END_Z = 1044.0
 NDefines.NFrontend.CAMERA_MIN_DIST_FOR_ROTATE = 600.0
 NDefines.NFrontend.CAMERA_SPEED_START = 0.015
 NDefines.NFrontend.CAMERA_SPEED_ROTATE = 0.02
-NDefines.NFrontend.FRONTEND_POS_X = 1824.0
-NDefines.NFrontend.FRONTEND_POS_Y = 320.0
-NDefines.NFrontend.FRONTEND_POS_Z = 1044.0
-NDefines.NFrontend.FRONTEND_LOOK_X = 1620.0
-NDefines.NFrontend.FRONTEND_LOOK_Z = 1290.0
+
+NDefines.NFrontend.FRONTEND_POS_X = 1723.0 -- Final position
+NDefines.NFrontend.FRONTEND_POS_Y = 1828.0
+NDefines.NFrontend.FRONTEND_POS_Z = 1740.0
+NDefines.NFrontend.FRONTEND_LOOK_X = 1723.0 -- Final Look
+NDefines.NFrontend.FRONTEND_LOOK_Z = 1740.0
+
 NDefines.NFrontend.SETTINGS_POS_X = 1824.0
 NDefines.NFrontend.SETTINGS_POS_Y = 320.0
 NDefines.NFrontend.SETTINGS_POS_Z = 1044.0
