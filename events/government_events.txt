@@ -488,21 +488,49 @@ country_event = {
 		}
 	}
 ########################################################################################
-# reset to rank 1
+# rank upgrade
 ########################################################################################
 country_event = {
 	id = government.19
 	title = "government.19.t"
 	desc = "government.19.d"
 	picture = tradecity
+	hidden = yes
 	
 	trigger = {	
-			government_rank = 2
-			NOT = { num_of_cities = 2 }
-			OR = {	culture_group = italic_group 
-					culture_group = hellenic_group }
-			is_tribal = no
-		}
+		OR = {
+			AND = {
+			    NOT = { num_of_cities = 5 }
+				NOT = { government_rank = 1 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+			    total_development = 100
+				NOT = { total_development = 300 }
+                NOT = { government_rank = 2 }
+            }
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+			    total_development = 300
+				NOT = { total_development = 500 }
+				NOT = { tag = PNC }
+				NOT = { government_rank = 3 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 500
+				NOT = { total_development = 1100 }
+				NOT = { tag = PNC }
+				NOT = { government_rank = 4 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 1100
+				is_hegemon = yes
+				NOT = { government_rank = 5 }
+			}
+		}	
+	}
 	
 	
 	mean_time_to_happen = {
@@ -510,16 +538,55 @@ country_event = {
 	}
 	
 	immediate = { 
-			hidden_effect = { set_government_rank = 1 }
+		if = {
+            trigger = {			
+		        NOT = { num_of_cities = 5 }
+			    NOT = { government_rank = 1 }
+			}
+		    set_government_rank = 1
+		}
+		if = {
+		    trigger = {
+			    NOT = { has_dlc = "Common Sense" }
+			    total_development = 100
+                NOT = { government_rank = 2 }
+			}
+			set_government_rank = 2
+		}
+		if = {
+		    trigger = {
+			    NOT = { has_dlc = "Common Sense" }
+			    total_development = 300
+				NOT = { government_rank = 3 }
+			}
+			set_government_rank = 3
+		}
+		if = {
+		    trigger = {
+			    NOT = { has_dlc = "Common Sense" }
+				total_development = 500
+				NOT = { government_rank = 4 }
+			}
+			set_government_rank = 4
+		}
+		if = {
+		    trigger = {
+			    NOT = { has_dlc = "Common Sense" }
+				total_development = 1100
+				is_hegemon = yes
+				NOT = { government_rank = 5 }
+			}
+			set_government_rank = 5
+		}
 	}
 	
 	option = {		
-			name = "government.19.a"
-				tooltip = { set_government_rank = 1 }
-		}
+		name = "government.19.a"
+		tooltip = { set_government_rank = 1 }
 	}
+}
 ########################################################################################
-# reset to rank 3
+# Great Power downgrade
 ########################################################################################
 country_event = {
 	id = government.21
@@ -527,8 +594,9 @@ country_event = {
 	desc = "government.20.d"
 	picture = lostbattle
 	
-	trigger = {	
+	trigger = {
 		government_rank = 4
+		has_dlc = "Common Sense"
 		NOT = { total_development = 300 }
 		is_nomad = no
 		NOT = {
