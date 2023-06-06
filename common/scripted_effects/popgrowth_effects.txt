@@ -926,13 +926,166 @@ PG_find_target_province_2 = {
 	
 }
 
+
+
+PG_find_target_prov_active_tn = {
+	# Same as the number 2, but limited to provinces with an active merchant. And 75% chance, to spice things a bit
+	
+	# Destination priorities for those who want to leave:
+	# 1- High CoT (lv 5 or higher, or lv2 in old system)
+	# 2- Simple CoT (lv2 / lv1)
+	# 3- Same culture
+	# 4- Same culture group
+	# 5- Same religion
+	# 6- Owned by same country
+	# 7- Anything else, both tribal and commoner
+	
+	set_variable = { which = PS_travel_total value = $range$ }
+	
+	# Important note for those reading the code. Compared to the other two "province searchers", this has MANY IFs at once, not a single if/if_else long chain. Therefore, it will actually search in all those provinces, and it depends on whether it found something or not (the province flag you see as "target success"). Careful with that. 
+	# The main reason of that was to avoid having the scopes "any province" and "random province", since these are "global" and require lot of computing power. 
+	
+	# Scopes: origin province: THIS, ROOT (doesn't work), or nothing. Owner: event_target:PG_migr_start_owner
+	
+	# 1- high CoT
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = event_target:PG_migr_origin_prov distance = $range$ } }	
+						NOT = { PG_trigger_has_new_pop = yes }
+						check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 1
+						NOT = { has_province_flag = PG_trib_migr_target }				#has_merchant = event_target:PG_migr_start_owner
+					}
+					#random = {
+					#	chance = 75
+						PG_migr_target_fixed = yes
+						event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_highcot }
+					#}
+				}
+			}
+		}
+	}
+	# 2- "normal" CoT
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = PREV distance = $range$ } }	NOT = { PG_trigger_has_new_pop = yes }
+						check_variable = { PG_com_grow = 120 }							province_has_center_of_trade_of_level = 1
+						NOT = { has_province_flag = PG_trib_migr_target }				has_merchant = event_target:PG_migr_start_owner
+					}
+					random = {
+						chance = 40
+						PG_migr_target_fixed = yes
+						event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_lowcot }
+					}
+				}
+			}
+		}
+	}
+	# 3- Same culture
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }	
+						culture = PREV
+						NOT = { has_province_flag = PG_trib_migr_target }				has_merchant = event_target:PG_migr_start_owner
+					}
+					random = {
+						chance = 40
+						PG_migr_target_fixed = yes
+						event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_samecult }
+					}
+				}
+			}
+		}
+	}
+	# 4- Same culture group
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }			
+						culture_group = PREV
+						NOT = { has_province_flag = PG_trib_migr_target }				has_merchant = event_target:PG_migr_start_owner
+					}
+					random = {
+						chance = 40
+						PG_migr_target_fixed = yes
+						event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_samegroup }
+					}
+				}
+			}
+		}
+	}
+	# 5- Same religion
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }	
+						religion = PREV
+						NOT = { has_province_flag = PG_trib_migr_target }				has_merchant = event_target:PG_migr_start_owner
+					}
+					random = {
+						chance = 40
+						PG_migr_target_fixed = yes
+						event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_samerel }
+					}
+				}
+			}
+		}
+	}
+	# 6- any other place
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# will block future ifs with this
+		owner = {
+			random_active_trade_node = {	
+				random_trade_node_member_province = {
+					limit = {
+						NOT = { province_distance = { who = PREV distance = $range$ } } NOT = { PG_trigger_has_new_pop = yes }
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }			
+						NOT = { has_province_flag = PG_trib_migr_target }				has_merchant = event_target:PG_migr_start_owner
+					}
+					PG_migr_target_fixed = yes
+					event_target:PG_migr_origin_prov = { set_province_flag = PG_provtarget_other }
+				}
+			}
+		}
+	}
+	
+	if = {
+		limit = { NOT = { has_province_flag = PG_target_success } }		# still has not found a suitable place, and nowhere to go -> starvation! 
+		set_province_flag = PG_starvation_start
+	}
+	
+}
+
+
 PG_migr_target_fixed = {			# Must be scoped to the target province, and Prev is the origin province
 	set_variable = { which = prov_id which = prov_id_base }
+	save_event_target_as = PG_prov_targeted
 	set_province_flag = PG_trib_migr_target
-	PREV = {
+	event_target:PG_migr_origin_prov = {
 		set_variable = { which = prov_id which = PREV } 
 		set_variable = { which = PG_migration_to which = prov_id }
 		set_province_flag = PG_trib_migr_start
+		set_province_flag = PG_target_success
 	}
 	
 }
