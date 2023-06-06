@@ -2,8 +2,10 @@
 
 
 ##########
-#	MIGRATION EFFECTS, the cornerstone of these mechanics. Hard to understand, but does wonders
+#	POPGROWTH EFFECTS, where most of the code is stored. Hard to understand, but does wonders
 ##########
+
+
 
 PG_add_river_ports = {
 	134 = { set_province_flag = PG_river_port }  # Beticus
@@ -739,6 +741,17 @@ PG_update_inforange = {
 	
 }
 
+##########
+#	MIGRATION EFFECTS, prepare to get a headache!
+##########
+
+# the find target provinces. There are three versions:
+#	original version: only to be executed in "manual" events, it takes a lot to search
+#	second version: expanded version, only use manually as well
+#	third version: doesn't search everywhere, but only within your capital region OR that province's capital OR active trade nodes.
+#			this one is the automatic event-friendly, to avoid lag in the game. 
+
+
 PG_find_target_province = {
 	# very high CoT
 	if = {
@@ -841,7 +854,7 @@ PG_find_target_province_2 = {
 			PG_migr_target_fixed = yes
 		}
 	}
-	# 3- Same culture, same owner
+	# 3- Same culture
 	else_if = {
 		limit = {
 			any_province = {
@@ -1255,6 +1268,29 @@ PG_change_culture_def = {
 	change_culture = $new_culture$
 	
 }
+
+
+PG_migrate_freedmen = {
+	# Origin province
+	ROOT = {
+		subtract_variable = { freedmen_new = 10 }
+	}
+	# Destination province
+	if = {
+		limit = { check_variable = { PG_com_grow = 120 } }
+		add_base_production = 1
+		change_variable = { PS_urb_imig = 1 }
+	}
+	else = {
+		add_base_manpower = 1
+		change_variable = { PS_rur_imig = 1 }
+	}
+	
+	# Newcomer modifier
+	add_province_modifier = { name = PG_new_freedmen duration = 730 }
+	
+}
+
 	
 	# to be done later:
 # Migration from tribal, "poor" (voluntary, but without money/skills) -> only go for Tribal jobs, even if common jobs are available. 
