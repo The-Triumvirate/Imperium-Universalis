@@ -24,6 +24,9 @@ money_income = {
 }
 
 money_payment = {
+	# Needs input = variable that is the money. It will finally be set to zero. 
+	# Example: money_payment = { var = slave_income }
+	
 	while = { limit = { check_variable = { cash_payment = 65536 } } add_treasury = -65536 	subtract_variable = { cash_payment = 65536 } }
 	if = { limit = { check_variable = { cash_payment = 32768 } } 	add_treasury = -32768 	subtract_variable = { cash_payment = 32768 } }
 	if = { limit = { check_variable = { cash_payment = 16384 } } 	add_treasury = -16384 	subtract_variable = { cash_payment = 16384 } }
@@ -48,8 +51,39 @@ money_payment = {
 
 }
 
+money_pay_effect = {
+	# Needs input = variable that is the money. It will finally be set to zero. 
+	# Example: money_pay_effect = { var = slave_income }
+	
+	while = { limit = { check_variable = { $var$ = 65536 } } 	add_treasury = -65536 	subtract_variable = { $var$ = 65536 } }
+	if = { limit = { check_variable = { $var$ = 32768 } } 		add_treasury = -32768 	subtract_variable = { $var$ = 32768 } }
+	if = { limit = { check_variable = { $var$ = 16384 } } 		add_treasury = -16384 	subtract_variable = { $var$ = 16384 } }
+	if = { limit = { check_variable = { $var$ = 8192 } } 		add_treasury = -8192 	subtract_variable = { $var$ = 8192 } }
+	if = { limit = { check_variable = { $var$ = 4096 } } 		add_treasury = -4096 	subtract_variable = { $var$ = 4096 } }
+	if = { limit = { check_variable = { $var$ = 2048 } } 		add_treasury = -2048 	subtract_variable = { $var$ = 2048 } }
+	if = { limit = { check_variable = { $var$ = 1024 } } 		add_treasury = -1024 	subtract_variable = { $var$ = 1024 } }
+	if = { limit = { check_variable = { $var$ = 512 } } 		add_treasury = -512 	subtract_variable = { $var$ = 512 } }
+	if = { limit = { check_variable = { $var$ = 256 } } 		add_treasury = -256 	subtract_variable = { $var$ = 256 } }
+	if = { limit = { check_variable = { $var$ = 128 } } 		add_treasury = -128 	subtract_variable = { $var$ = 128 } }
+	if = { limit = { check_variable = { $var$ = 64 } } 			add_treasury = -64 		subtract_variable = { $var$ = 64 } }
+	if = { limit = { check_variable = { $var$ = 32 } } 			add_treasury = -32 		subtract_variable = { $var$ = 32 } }
+	if = { limit = { check_variable = { $var$ = 16 } } 			add_treasury = -16 		subtract_variable = { $var$ = 16 } }
+	if = { limit = { check_variable = { $var$ = 8 } } 			add_treasury = -8 		subtract_variable = { $var$ = 8 } }
+	if = { limit = { check_variable = { $var$ = 4 } } 			add_treasury = -4 		subtract_variable = { $var$ = 4 } }
+	if = { limit = { check_variable = { $var$ = 2 } } 			add_treasury = -2 		subtract_variable = { $var$ = 2 } }
+	if = { limit = { check_variable = { $var$ = 1 } } 			add_treasury = -1 		subtract_variable = { $var$ = 1 } }
+	if = { limit = { check_variable = { $var$ = 0.5 } } 		add_treasury = -0.5 	subtract_variable = { $var$ = 0.5 } }
+	if = { limit = { check_variable = { $var$ = 0.25 } } 		add_treasury = -0.25 	subtract_variable = { $var$ = 0.25 } }
+	if = { limit = { check_variable = { $var$ = 0.125 } } 		add_treasury = -0.125 	subtract_variable = { $var$ = 0.125 } }
+	set_variable = { which = $var$	value = 0 }
+
+}
+
 
 money_gain_effect = {
+	# Needs input = variable that is the money. It will finally be set to zero. 
+	# Example: money_gain_effect = { var = slave_income }
+	
 	while = { limit = { check_variable = { $var$ = 65536 } } add_treasury = 65536 subtract_variable = { $var$ = 65536 } }
 	if = { limit = { check_variable = { $var$ = 32768 } } add_treasury = 32768 	subtract_variable = { $var$ = 32768 } }
 	if = { limit = { check_variable = { $var$ = 16384 } } add_treasury = 16384 	subtract_variable = { $var$ = 16384 } }
@@ -74,7 +108,28 @@ money_gain_effect = {
 
 }
 
-inflation_gain_effect = {
+SD_inflation_prepare = {		
+	# Must be added in the Inmediate part. 
+	# Uses inputs: var = (variable that brings the money) strength = (x times harder than base inflation)
+	# Example: SD_inflation_prepare = { var = SD_loot strength = 8 }
+		
+	export_to_variable = { which = SD_income value = trigger_value:monthly_income who = ROOT }
+	set_variable = { which = SD_inflation value = 100 } 
+	if = { limit = { NOT = { check_variable = { $var$ = 1 } } } set_variable = { which = $var$ value = 1 } }
+	divide_variable = { which = SD_inflation which = SD_income }
+	
+	multiply_variable = { which = SD_inflation which = $var$ } 	
+	multiply_variable = { SD_inflation = 0.01 }		# 100 back
+	multiply_variable = { SD_inflation = 0.025 }	# main inflation value set in common/defines
+	multiply_variable = { SD_inflation = $strength$ }
+	
+}
+
+SD_inflation_effect = {
+	# Must have an input that is the inflation variable. Useful when inflation is not fixed (ie, calculated as function of something)
+	# variable should be SD_inflation by default,as it is used in the preparation effect above. 
+	# Example: SD_inflation_effect = { var = SD_inflation }
+	
 	while = { limit = { check_variable = { $var$ = 1 } }  add_inflation = 1 	subtract_variable = { $var$ = 1 } }
 	if = { limit = { check_variable = { $var$ = 0.5 } }   add_inflation = 0.5 	subtract_variable = { $var$ = 0.5 } }
 	if = { limit = { check_variable = { $var$ = 0.25 } }  add_inflation = 0.25 	subtract_variable = { $var$ = 0.25 } }
