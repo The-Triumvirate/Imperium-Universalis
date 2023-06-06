@@ -409,13 +409,25 @@ on_bankruptcy = {
 # country (country annexing, root = target)		# (mrkcosta comment): ROOT = surviving country, FROM = annexed country
 on_diplomatic_annex = {
 	# transfer money
-	export_to_variable = { which = cash_income value = treasury who = FROM }
-	money_income = yes
+		export_to_variable = { which = cash_income value = treasury who = FROM }
+		
+		# Inflation
+		SD_inflation_prepare = { var = cash_income strength = 1 }
+		SD_inflation_effect = { var = SD_inflation }
+	
+		# Money
+		money_income = yes
 	
 	# transfer slaves
-	FROM = { multiply_variable = { slaves = 0.75 } }
 	change_variable = { which = slaves which = FROM }	# transfer slaves to annexing country
-	if = { limit = { FROM = { tag = ROM is_subject_of_type = socii_subject } } change_variable = { which = rom_socii_dissatisfaction_variable value = 2 } }
+	change_variable = { which = slaves_in_province which = FROM }
+	change_variable = { which = SD_slaves_available which = FROM }
+	change_variable = { which = SD_captives which = FROM }
+	
+	if = {
+		limit = { FROM = { tag = ROM is_subject_of_type = socii_subject } }
+		change_variable = { which = rom_socii_dissatisfaction_variable value = 2 }
+	}
 	events = {
 		subject_event.10
 		subject_event.11
