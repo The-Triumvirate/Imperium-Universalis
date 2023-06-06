@@ -1,0 +1,465 @@
+namespace = trade_limits
+
+########################################################################################
+# TRADE LIMITATIONS, where centers of trade get decadent if there's low value
+########################################################################################
+country_event = {			# Event 1 is the "test" of the system; the real event is number 2
+	id = trade_limits.1
+	title = "trade_limits.1.t"
+	desc = "trade_limits.1.d"
+	picture = trade
+	
+	#fire_only_once = yes
+	is_triggered_only = yes
+	
+	
+	# First experiments: see if we can identify which trade node this province is at. 
+	# Then, do the calculation for the whole trade node area, and compare to center of trade levels
+	
+	#trigger = {
+	#	
+	#}
+	
+	#mean_time_to_happen = {
+	#	months = 80
+	#
+	#}
+	
+	immediate = {
+		
+		
+		random_active_trade_node = {
+			# First identify the "head province" of the trade node. Later it won't be there, it is set at startup
+			random_trade_node_member_province = {
+				limit = { province_has_center_of_trade_of_level = 1 }
+				set_variable = { which = DE_tvalue_own which = DE_value }
+				set_variable = { which = DE_prov value = 1 }
+				trigger_switch = {
+					on_trigger = province_has_center_of_trade_of_level
+					9 = { set_variable = { which = DE_cot_9 value = 1 } }
+					8 = { set_variable = { which = DE_cot_8 value = 1 } }
+					7 = { set_variable = { which = DE_cot_7 value = 1 } }
+					6 = { set_variable = { which = DE_cot_6 value = 1 } }
+					5 = { set_variable = { which = DE_cot_5 value = 1 } }
+					4 = { set_variable = { which = DE_cot_4 value = 1 } }
+					3 = { set_variable = { which = DE_cot_3 value = 1 } }
+					2 = { set_variable = { which = DE_cot_2 value = 1 } }
+					1 = { set_variable = { which = DE_cot_1 value = 1 } }
+					
+				}
+				set_province_flag = tn_capital
+				save_event_target_as = tn_capital_target
+			}
+			every_trade_node_member_province = {
+				limit = { NOT = { has_province_flag = tn_capital } }
+				set_variable = { which = DE_tvalue_own which = DE_value }
+				set_variable = { which = DE_prov value = 1 }
+				trigger_switch = {
+					on_trigger = province_has_center_of_trade_of_level
+					9 = { set_variable = { which = DE_cot_9 value = 1 } }
+					8 = { set_variable = { which = DE_cot_8 value = 1 } }
+					7 = { set_variable = { which = DE_cot_7 value = 1 } }
+					6 = { set_variable = { which = DE_cot_6 value = 1 } }
+					5 = { set_variable = { which = DE_cot_5 value = 1 } }
+					4 = { set_variable = { which = DE_cot_4 value = 1 } }
+					3 = { set_variable = { which = DE_cot_3 value = 1 } }
+					2 = { set_variable = { which = DE_cot_2 value = 1 } }
+					1 = { set_variable = { which = DE_cot_1 value = 1 } }
+					
+				}
+				event_target:tn_capital_target = {
+					change_variable = { which = DE_tvalue_own which = PREV }
+					change_variable = { which = DE_prov which = PREV }
+					change_variable = { which = DE_cot_9 which = PREV }
+					change_variable = { which = DE_cot_8 which = PREV }
+					change_variable = { which = DE_cot_7 which = PREV }
+					change_variable = { which = DE_cot_6 which = PREV }
+					change_variable = { which = DE_cot_5 which = PREV }
+					change_variable = { which = DE_cot_4 which = PREV }
+					change_variable = { which = DE_cot_3 which = PREV }
+					change_variable = { which = DE_cot_2 which = PREV }
+					change_variable = { which = DE_cot_1 which = PREV }
+				}
+			}
+			event_target:tn_capital_target = {
+				# now convert values into total CoT weight, as per the table
+				# it follows the formula weight = Level x 1,1^(level) - 1. 
+				# so level 1 is 1 x 1,1^1 -1 = 0,1. Level 2 is 2 x 1,1^2 -1 = 1,42. Level 5 is 5 x 1,1^5 -1 = 7,05. 
+			
+				set_variable = { which = DE_cot_weight value = 0 }
+				if = {
+					limit = { check_variable = { DE_cot_9 = 1 } }					multiply_variable = { DE_cot_9 = 20.22 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_9 }	divide_variable = { DE_cot_9 = 20.22 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_8 = 1 } }					multiply_variable = { DE_cot_8 = 16.15 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_8 }	divide_variable = { DE_cot_8 = 16.15 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_7 = 1 } }					multiply_variable = { DE_cot_7 = 12.64 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_7 }	divide_variable = { DE_cot_7 = 12.64 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_6 = 1 } }					multiply_variable = { DE_cot_6 = 9.63 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_6 }	divide_variable = { DE_cot_6 = 9.63 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_5 = 1 } }					multiply_variable = { DE_cot_5 = 7.05 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_5 }	divide_variable = { DE_cot_5 = 7.05 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_4 = 1 } }					multiply_variable = { DE_cot_4 = 4.86 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_4 }	divide_variable = { DE_cot_4 = 4.86 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_3 = 1 } }					multiply_variable = { DE_cot_3 = 2.99 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_3 }	divide_variable = { DE_cot_3 = 2.99 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_2 = 1 } }					multiply_variable = { DE_cot_2 = 1.42 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_2 }	divide_variable = { DE_cot_2 = 1.42 }
+				}
+				if = {
+					limit = { check_variable = { DE_cot_1 = 1 } }					multiply_variable = { DE_cot_1 = 0.1 } 
+					change_variable = { which = DE_cot_weight which = DE_cot_1 }	divide_variable = { DE_cot_1 = 0.1 }
+				}
+				# Create value from trade, and add both values
+				set_variable = { which = DE_tvalue_total which = DE_tvalue_own }
+				export_to_variable = { which = DE_tvalue_trade value = trigger_value:trade_node_value }	# from value coming from other TNs
+				change_variable = { which = DE_tvalue_total which = DE_tvalue_trade }
+			
+				# Prepare ratio
+				set_variable = { which = DE_tvratio which = DE_tvalue_total }
+				divide_variable = { which = DE_tvratio which = DE_cot_weight }
+				
+				# Decide whether this CoT is overweight, and add flag to be added to all others
+				if = { 
+					limit = { NOT = { check_variable = { DE_tvratio = 10 } } }
+					set_province_flag = DE_tndecadent
+					add_province_modifier = { name = experiment_prov_mod duration = 3600 }
+				}
+			}
+			every_trade_node_member_province = {
+				limit = { province_has_center_of_trade_of_level = 1 }
+				if = {
+					limit = { event_target:tn_capital_target = { has_province_flag = DE_tndecadent } }
+					set_province_flag = DE_tndecadent
+					add_province_modifier = { name = experiment_prov_mod duration = 3600 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "trade_limits.1.a"
+		
+		
+		
+	}
+	
+	after = {
+		event_target:tn_capital_target = { 
+			clr_province_flag = tn_capital 
+			add_permanent_province_modifier = { name = DE_tn_viewer duration = 30 }
+		}
+		
+	}
+}
+
+
+country_event = {			# Main event that fires the flags. Only done at the human player, for now. 
+	id = trade_limits.2
+	title = "trade_limits.2.t"
+	desc = "trade_limits.2.d"
+	picture = trade
+	hidden = yes
+	
+	is_triggered_only = yes
+	trigger = {
+		ai = no
+	}
+	
+	immediate = {
+		
+	}
+	
+	option = {
+		name = "trade_limits.2.a"
+		DE_TN_ratio = { tn_cap_prov = 3419  tn_prov_group = tn_northern_steppe_group }
+		DE_TN_ratio = { tn_cap_prov = 6629  tn_prov_group = tn_filipinas_node_group }
+		DE_TN_ratio = { tn_cap_prov = 7696  tn_prov_group = tn_dronakadesa_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4527  tn_prov_group = tn_yue_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4428  tn_prov_group = tn_wu_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4480  tn_prov_group = tn_chu_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4392  tn_prov_group = tn_upper_huai_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4295  tn_prov_group = tn_huaisi_node_group }
+		DE_TN_ratio = { tn_cap_prov = 6068  tn_prov_group = tn_buyeo_node_group }
+		DE_TN_ratio = { tn_cap_prov = 8331  tn_prov_group = tn_japan_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1712  tn_prov_group = tn_jinhan_node_group }
+		DE_TN_ratio = { tn_cap_prov = 5889  tn_prov_group = tn_pyeongyangseong_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1720  tn_prov_group = tn_gojoseon_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4015  tn_prov_group = tn_yan_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4263  tn_prov_group = tn_linzi_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4062  tn_prov_group = tn_jin_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4359  tn_prov_group = tn_huang_he_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4196  tn_prov_group = tn_qin_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4246  tn_prov_group = tn_bashu_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4563  tn_prov_group = tn_dian_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1664  tn_prov_group = tn_lacviet_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4576  tn_prov_group = tn_silkroad_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3287  tn_prov_group = tn_aethiopia_interior_node_group }
+		DE_TN_ratio = { tn_cap_prov = 8097  tn_prov_group = tn_nigritae_regio_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3269  tn_prov_group = tn_hesperia_aethiopia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 320  tn_prov_group = tn_britannia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1835  tn_prov_group = tn_suebian_sea_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1879  tn_prov_group = tn_suebia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1758  tn_prov_group = tn_germania_node_group }
+		DE_TN_ratio = { tn_cap_prov = 279  tn_prov_group = tn_britannic_sea_node_group }
+		DE_TN_ratio = { tn_cap_prov = 499  tn_prov_group = tn_belgica_node_group }
+		DE_TN_ratio = { tn_cap_prov = 435  tn_prov_group = tn_gallia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 408  tn_prov_group = tn_gallic_sea_group }
+		DE_TN_ratio = { tn_cap_prov = 3336  tn_prov_group = tn_jetisu_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2864  tn_prov_group = tn_sogdia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2876  tn_prov_group = tn_chorasamia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1971  tn_prov_group = tn_sarmatia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1952  tn_prov_group = tn_dacia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1203  tn_prov_group = tn_noricum_node_group }
+		DE_TN_ratio = { tn_cap_prov = 471  tn_prov_group = tn_raetia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 194  tn_prov_group = tn_lusitania_node_group }
+		DE_TN_ratio = { tn_cap_prov = 217  tn_prov_group = tn_hispania_node_group }
+		DE_TN_ratio = { tn_cap_prov = 424  tn_prov_group = tn_narbonensis_node_group }
+		DE_TN_ratio = { tn_cap_prov = 527  tn_prov_group = tn_mauretania_node_group }
+		DE_TN_ratio = { tn_cap_prov = 136  tn_prov_group = tn_atlantic_coast_group }
+		DE_TN_ratio = { tn_cap_prov = 151  tn_prov_group = tn_iberian_coast_group }
+		DE_TN_ratio = { tn_cap_prov = 72  tn_prov_group = tn_italia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 368  tn_prov_group = tn_ligurian_coast_group }
+		DE_TN_ratio = { tn_cap_prov = 1177  tn_prov_group = tn_illyria_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1119  tn_prov_group = tn_ister_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1060  tn_prov_group = tn_macedonia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1158  tn_prov_group = tn_adria_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2446  tn_prov_group = tn_caucassus_node_group }
+		DE_TN_ratio = { tn_cap_prov = 4689  tn_prov_group = tn_tibet_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2828  tn_prov_group = tn_bactria_node_group }
+		DE_TN_ratio = { tn_cap_prov = 7581  tn_prov_group = tn_champa_node_group }
+		DE_TN_ratio = { tn_cap_prov = 7638  tn_prov_group = tn_dvaravati_node_group }
+		DE_TN_ratio = { tn_cap_prov = 7851  tn_prov_group = tn_golden_peninsula_node_group }
+		DE_TN_ratio = { tn_cap_prov = 6756  tn_prov_group = tn_burma_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3542  tn_prov_group = tn_kamarupa_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3006  tn_prov_group = tn_ganges_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3027  tn_prov_group = tn_magadha_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3725  tn_prov_group = tn_vanga_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3069  tn_prov_group = tn_central_india_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3493  tn_prov_group = tn_kalinga_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3127  tn_prov_group = tn_deccan_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3134  tn_prov_group = tn_dravida_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3192  tn_prov_group = tn_chola_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3079  tn_prov_group = tn_kuru_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3082  tn_prov_group = tn_malava_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2930  tn_prov_group = tn_gandhara_node_group }
+		DE_TN_ratio = { tn_cap_prov = 3177  tn_prov_group = tn_konkana_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2795  tn_prov_group = tn_indos_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2769  tn_prov_group = tn_arachosia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2725  tn_prov_group = tn_parthia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2735  tn_prov_group = tn_iran_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2601  tn_prov_group = tn_erythraeum_sea_node_group }
+		DE_TN_ratio = { tn_cap_prov = 868  tn_prov_group = tn_aethiopia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2611  tn_prov_group = tn_arabia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2583  tn_prov_group = tn_persian_gulf_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2410  tn_prov_group = tn_armenia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2500  tn_prov_group = tn_babylonia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2476  tn_prov_group = tn_assyria_node_group }
+		DE_TN_ratio = { tn_cap_prov = 872  tn_prov_group = tn_red_sea_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2277  tn_prov_group = tn_canaan_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2349  tn_prov_group = tn_syria_node_group }
+		DE_TN_ratio = { tn_cap_prov = 821  tn_prov_group = tn_nubia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2244  tn_prov_group = tn_cappadocia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1996  tn_prov_group = tn_black_sea_group }
+		DE_TN_ratio = { tn_cap_prov = 1086  tn_prov_group = tn_propontis_node_group }
+		DE_TN_ratio = { tn_cap_prov = 2158  tn_prov_group = tn_asia_minor_node_group }
+		DE_TN_ratio = { tn_cap_prov = 661  tn_prov_group = tn_libya_node_group }
+		DE_TN_ratio = { tn_cap_prov = 745  tn_prov_group = tn_egypt_node_group }
+		DE_TN_ratio = { tn_cap_prov = 611  tn_prov_group = tn_numidia_node_group }
+		DE_TN_ratio = { tn_cap_prov = 707  tn_prov_group = tn_mare_lybicum_node_group }
+		DE_TN_ratio = { tn_cap_prov = 1067  tn_prov_group = tn_mare_macedonicum_node_group }
+		DE_TN_ratio = { tn_cap_prov = 959  tn_prov_group = tn_aegaean_sea_node_group }
+		DE_TN_ratio = { tn_cap_prov = 10  tn_prov_group = tn_ionian_sea_group }
+		DE_TN_ratio = { tn_cap_prov = 2299  tn_prov_group = tn_mare_phoenicium_node_group }
+		DE_TN_ratio = { tn_cap_prov = 612  tn_prov_group = tn_mare_internum_node_group }
+
+		
+	}
+	
+}
+
+province_event = {			# Main event that fires the flags. Only done at the human player, for now. 
+	id = trade_limits.3
+	title = "trade_limits.3.t"
+	desc = "trade_limits.3.d"
+	picture = trade
+	
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		DN_TN_update_only_this = yes
+	}
+	
+	option = {
+		name = "trade_limits.3.a"
+		
+		
+	}
+
+}
+
+
+country_event = {			# Event that the country gets, asking to lower the value
+	id = trade_limits.4
+	title = "trade_limits.4.t"
+	desc = "trade_limits.4.d"
+	picture = trade
+	#hidden = no
+	
+	trigger = {
+		any_owned_province = {
+			had_province_flag = { flag = DE_tndecadent days = 1 }	# always has 2 years of cooldown before getting event
+			
+		}
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 96			# remember, this is a country event. Won't fire that much anyway
+		modifier = {	
+			factor = 0.65	
+			calc_true_if = { any_owned_province = { has_province_flag = DE_tndecadent } amount = 5 }
+		}
+		modifier = {	
+			factor = 0.65	# added to the prior one	
+			calc_true_if = { any_owned_province = { has_province_flag = DE_tndecadent } amount = 10 }
+		}
+		modifier = {	
+			factor = 4.00
+			NOT = { num_of_owned_provinces_with = { value = 3 province_has_center_of_trade_of_level = 2 } }	# less if owns under 3 CoTs
+		}
+		
+	}
+	
+	immediate = {
+		# Find which trade node will count: 
+		random_owned_province = {
+			limit = { 
+				had_province_flag = { flag = DE_tndecadent days = 1 } 
+				province_has_center_of_trade_of_level = 2 					# otherwise it wouldn't reduce
+			}
+			save_event_target_as = DE_decadent_target
+			
+		}
+		
+	}
+	
+	
+	option = {
+		name = "trade_limits.4.a"		# Accept the downgrade
+		ai_chance = {
+			factor = 60
+			modifier = { factor = 2 NOT = { event_target:DE_decadent_target = { is_core = ROOT } } }
+			modifier = { factor = 0.2 is_great_power = yes }
+		}
+		event_target:DE_decadent_target = {
+			trigger_switch = {
+				on_trigger = province_has_center_of_trade_of_level
+				9 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -10 } }
+				8 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -10 } }
+				7 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -5 } }
+				6 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -5 } }
+				5 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -3 } }
+				4 = { add_center_of_trade_level = -1 ROOT = { add_prestige = -3 } }
+				3 = { add_center_of_trade_level = -1 }
+				2 = { add_center_of_trade_level = -1 }
+				
+			}
+		}
+		
+	}
+	
+	option = {
+		name = "trade_limits.4.a"		# Pay gold. 25% of CoT upgrade price
+		ai_chance = {
+			factor = 15
+			modifier = { factor = 3 years_of_income = 2 }
+			modifier = { factor = 0 NOT = { years_of_income = 0.25 } }
+		}
+		event_target:DE_decadent_target = {
+			trigger_switch = {
+				on_trigger = province_has_center_of_trade_of_level
+				9 = { ROOT = { add_treasury = -3000 } }
+				8 = { ROOT = { add_treasury = -1500 } }
+				7 = { ROOT = { add_treasury = -750 } }
+				6 = { ROOT = { add_treasury = -375 } }
+				5 = { ROOT = { add_treasury = -200 } }
+				4 = { ROOT = { add_treasury = -100 } }
+				3 = { ROOT = { add_treasury = -50 } }
+				2 = { ROOT = { add_treasury = -25 } }
+				
+			}
+		}
+		
+	}
+	
+	option = {
+		name = "trade_limits.4.a"		# Make new trade policies. Spend dip power, 10% of that CoT's gold cost
+		ai_chance = {
+			factor = 15
+			modifier = { factor = 3 dip_power = 300 }
+			modifier = { factor = 0 NOT = { dip_power = 100 } }
+		}
+		event_target:DE_decadent_target = {
+			trigger_switch = {
+				on_trigger = province_has_center_of_trade_of_level
+				9 = { ROOT = { dip_power_cost  = 300 } }
+				8 = { ROOT = { dip_power_cost  = 150 } }
+				7 = { ROOT = { dip_power_cost  = 75 } }
+				6 = { ROOT = { dip_power_cost  = 37 } }
+				5 = { ROOT = { dip_power_cost  = 20 } }
+				4 = { ROOT = { dip_power_cost  = 10 } }
+				3 = { ROOT = { dip_power_cost  = 5 } }
+				2 = { ROOT = { dip_power_cost  = 2 } }
+				
+			}
+		}
+		
+	}
+	
+	option = {
+		name = "trade_limits.4.a"		# Accept a setback in trade power. Relative, -50% of that CoT power
+		ai_chance = {
+			factor = 15
+			modifier = { factor = 3 NOT = { trade_income_percentage = 0.2 } }
+			modifier = { factor = 0 trade_income_percentage = 0.4 }
+		}
+		event_target:DE_decadent_target = {
+			trigger_switch = {
+				on_trigger = province_has_center_of_trade_of_level
+				9 = { add_trade_modifier = { who = ROOT duration = 1820 power = 27 key = DECADENCE } }
+				8 = { add_trade_modifier = { who = ROOT duration = 1820 power = 21 key = DECADENCE } }
+				7 = { add_trade_modifier = { who = ROOT duration = 1820 power = 18 key = DECADENCE } }
+				6 = { add_trade_modifier = { who = ROOT duration = 1820 power = 15 key = DECADENCE } }
+				5 = { add_trade_modifier = { who = ROOT duration = 1820 power = 12 key = DECADENCE } }
+				4 = { add_trade_modifier = { who = ROOT duration = 1820 power = 9 key = DECADENCE } }
+				3 = { add_trade_modifier = { who = ROOT duration = 1820 power = 6 key = DECADENCE } }
+				2 = { add_trade_modifier = { who = ROOT duration = 1820 power = 3 key = DECADENCE } }
+				
+			}
+		}
+		
+	}
+	
+	after = {
+		event_target:DE_decadent_target = {
+			DN_TN_update_only_this = yes
+		}
+	}
+}
+
+
