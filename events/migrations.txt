@@ -1,7 +1,7 @@
 namespace = migrations
 
 ########################################################################################
-# parade in capital
+# MIGRATIONS, what keeps the world moving
 ########################################################################################
 
 province_event = {
@@ -12,10 +12,10 @@ province_event = {
 	hidden = yes
 	
 	trigger = {
-		base_manpower = 2 												# does not let the last rural pop to leave, obviously
-		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
-		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00 (100%)
-		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+		base_manpower = 2 									# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running					# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { PG_trb_grow = 100 } }	# negative growth, anything under 1.00 (100%)
+		NOT = { has_province_modifier = rural_pause }		# condition that initial values are kept for 100 years
 		
 	}
 	
@@ -28,7 +28,7 @@ province_event = {
 		modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
 		modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
 		modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
-		modifier = { 	factor = 0.05 NOT = { check_variable = { PG_trb_grow = 40 } } } 	# they must be really miserable...
+		modifier = { 	factor = 0.05 	NOT = { check_variable = { PG_trb_grow = 40 } } } 	# they must be really miserable...
 		
 	}
 	
@@ -44,46 +44,73 @@ province_event = {
 			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
 			#	A high center of trade, then a lower one (lv2), then culture/religion, owned by same, then any other both tribal and common. 
 			# 	Affected by prosperity/devastation, meaning the wealth of the province (poor citizens can't afford to travel far)
+			#	Recent tweak: only within active trade nodes, to avoid traveling in a disorganized way
 			
 			set_variable = { which = PG_travel_range which = PG_info_range }
-			trigger_switch = {
-				on_trigger = devastation
-				50 = { multiply_variable = { PG_travel_range = 0.10 } }
-				30 = { multiply_variable = { PG_travel_range = 0.20 } }
-				20 = { multiply_variable = { PG_travel_range = 0.50 } }
-				10 = { multiply_variable = { PG_travel_range = 0.70 } }
+			if = {
+				limit = { devastation = 1 }
+				trigger_switch = {
+					on_trigger = devastation
+					50 = { multiply_variable = { PG_travel_range = 0.10 } }
+					30 = { multiply_variable = { PG_travel_range = 0.20 } }
+					20 = { multiply_variable = { PG_travel_range = 0.40 } }
+					10 = { multiply_variable = { PG_travel_range = 0.60 } }
+				}
 			}
-			trigger_switch = {
-				on_trigger = prosperity
-				99 = { multiply_variable = { PG_travel_range = 2.00 } }	# will be able to travel twice as far away
-				50 = { multiply_variable = { PG_travel_range = 1.40 } }
-				25 = { multiply_variable = { PG_travel_range = 1.20 } }
+			else = {
+				trigger_switch = {
+					on_trigger = prosperity
+					99 = { multiply_variable = { PG_travel_range = 1.50 } }	# will be able to travel further
+					50 = { multiply_variable = { PG_travel_range = 1.25 } }
+					25 = { multiply_variable = { PG_travel_range = 1.01 } }
+					0 = { multiply_variable = { PG_travel_range = 0.70 } }
+				}
 			}
-			if = { 		limit = { check_variable = { PG_travel_range = 100 } } PG_find_target_province_2 = { range = 1500 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 75 } } PG_find_target_province_2 = { range = 1000 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 50 } } PG_find_target_province_2 = { range = 700 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 30 } } PG_find_target_province_2 = { range = 500 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 20 } } PG_find_target_province_2 = { range = 350 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 10 } } PG_find_target_province_2 = { range = 200 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  PG_find_target_province_2 = { range = 100 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  PG_find_target_province_2 = { range = 50 } }
-			else = { 														  PG_find_target_province_2 = { range = 25 } }
 			
+			# Get an event target for the current owner, to check triggers "owned by" or "active merchant"
+			owner = { save_event_target_as = PG_migr_start_owner }
+			save_event_target_as = PG_migr_origin_prov 
 			
-			
+			# Find the provinces, with Travel Range = info range x %wealth (devastation or prosperity)
+			if = { 		limit = { check_variable = { PG_travel_range = 100 } } 	PG_find_target_province_2 = { range = 1500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 75 } } 	PG_find_target_province_2 = { range = 1000 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 50 } } 	PG_find_target_province_2 = { range = 700 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 30 } } 	PG_find_target_province_2 = { range = 500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 20 } } 	PG_find_target_province_2 = { range = 350 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 10 } } 	PG_find_target_province_2 = { range = 200 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  	PG_find_target_province_2 = { range = 100 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  	PG_find_target_province_2 = { range = 50 } }
+			else = { 														  	PG_find_target_province_2 = { range = 25 } }
 			
 		}
+		if = { 		limit = { has_province_flag = PG_starvation_start } custom_tooltip = PG_MIGR_STARVATION }
+		else_if = { limit = { has_province_flag = PG_target_success } 	custom_tooltip = PG_MIGR_TARGETINFO }
+		
+		if = { limit = { has_province_flag = PG_provtarget_highcot } 	custom_tooltip = PG_MIGR_REASON_HIGHCOT }
+		if = { limit = { has_province_flag = PG_provtarget_lowcot } 	custom_tooltip = PG_MIGR_REASON_LOWCOT }
+		if = { limit = { has_province_flag = PG_provtarget_samecult } 	custom_tooltip = PG_MIGR_REASON_CULTURE }
+		if = { limit = { has_province_flag = PG_provtarget_samegroup } 	custom_tooltip = PG_MIGR_REASON_GROUP }
+		if = { limit = { has_province_flag = PG_provtarget_samerel  } 	custom_tooltip = PG_MIGR_REASON_RELIGION }
+		if = { limit = { has_province_flag = PG_provtarget_other } 		custom_tooltip = PG_MIGR_REASON_OTHER }
+		
 	}
 	
 	option = {
 		name = "migrations.1.1"
 		# nothing, it's hidden
+		# will nonetheless show the variables in the text, to help in debug mode
 	}
 	after = {
-		every_province = {
-			limit = { has_province_flag = PG_trib_migr_target }
+		event_target:PG_prov_targeted = {
 			clr_province_flag = PG_trib_migr_target
 		}
+		clr_province_flag = PG_provtarget_highcot
+		clr_province_flag = PG_provtarget_lowcot
+		clr_province_flag = PG_provtarget_samecult
+		clr_province_flag = PG_provtarget_samegroup
+		clr_province_flag = PG_provtarget_samerel
+		clr_province_flag = PG_provtarget_other
+		clr_province_flag = PG_target_success
 	}
 	
 }
@@ -105,7 +132,7 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 	}
 	
 	mean_time_to_happen = {
-		months = 24				# remember, this is a country event. Won't fire that much anyway
+		months = 48				# remember, this is a country event. Won't fire that much anyway
 		modifier = {	
 			factor = 0.65	
 			calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
@@ -222,6 +249,10 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 		}
 	}
 	
+	###
+	#	REGULAR OPTIONS
+	###
+	
 	option = {
 		name = "migrations.2.1"		# This one if there is up to 10 provinces. If not, then move to the simplified version above
 		trigger = { NOT = { calc_true_if = {			
@@ -300,30 +331,18 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 			if = {
 				limit = { check_variable = { PG_trb_migsize = 3 } }
 				custom_tooltip = PG_MIGR_STAY
-				hidden_effect = {
-					owner = { add_dip_power = -9 }
-					add_province_modifier = { name = PG_enslaved_3 duration = 720 }
-				}
+				hidden_effect = { 	owner = { add_dip_power = -9 }	}
 			}
 			else_if = {
 				limit = { check_variable = { PG_trb_migsize = 2 } }
 				custom_tooltip = PG_MIGR_STAY
-				hidden_effect = {
-					owner = { add_dip_power = -6 }
-					add_province_modifier = { name = PG_enslaved_2 duration = 720 }
-				}
+				hidden_effect = {	owner = { add_dip_power = -6 }	}
 			}
 			else_if = {
 				limit = { check_variable = { PG_trb_migsize = 1 } }
 				custom_tooltip = PG_MIGR_STAY
-				hidden_effect = {
-					owner = { add_dip_power = -3 }
-					add_province_modifier = { name = PG_enslaved_1 duration = 720 }
-				}
+				hidden_effect = {	owner = { add_dip_power = -3 }	}
 			}
-			
-			
-			
 			hidden_effect = {
 				clr_province_flag = PG_trib_migr_start
 				#add_province_modifier = { name = popgrowth_debug_build duration = 100 }
@@ -334,7 +353,7 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 	}
 	
 	option = {		
-		name = "migrations.2.4"		# ENSLAVE! 4 unrest per pop, and risk of revolt if there's already unrest or stability -1
+		name = "migrations.2.4"		# ENSLAVE! 4 unrest per pop, and risk of revolt if there's already unrest
 		every_owned_province = {
 			limit = {
 				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
@@ -399,6 +418,10 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 		}
 		
 	}
+	
+	##
+	#	"INTERVENTIONIST" OPTIONS
+	##
 	
 	option = {
 		name = "migrations.2.5"		# Propose to move them within the same region. The best option for the ruler, both cheap and peaceful
