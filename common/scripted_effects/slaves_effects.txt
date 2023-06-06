@@ -231,4 +231,126 @@ slaves_ratio_create_low = {
 	
 }
 
+SD_purchase_slaves_active_tn = { 
+	# This effect is used to find, within a province in our active trade nodes, somewhere with available slaves, and purchase them up to the agreed price. 
+	# Inputs: num (number of province, 1 to 5), and price (20, 40 or 60 only). The prices must match! All other variables, such as how many slaves to buy and budget, are already set at the country level, so this effect does not need to know. 
+	# Scope: must be set at ROOT (buyer's country)
+	# example: SD_purchase_slaves_active_tn = { num = 1 price = 20 }
+	
+	random_active_trade_node = {
+		limit = {
+			any_trade_node_member_province = {
+				has_province_modifier = SD_market_open
+				check_variable = { SD_slaves_available = 1 } 
+				NOT = { has_province_flag = SD_taken }
+				is_variable_equal = { SD_trade_price = $price$ }
+			}
+		}
+		random_trade_node_member_province = {
+			limit = {
+				has_province_modifier = SD_market_open 
+				check_variable = { SD_slaves_available = 1 }
+				NOT = { has_province_flag = SD_taken }
+				is_variable_equal = { SD_trade_price = $price$ }
+			}
+			save_event_target_as = SD_purchase_province_$num$
+			set_province_flag = SD_taken
+			
+			# SLAVES (AMOUNT)
+				# define slave size: dependent on CoT level
+				export_to_variable = { which = SD_sell_size value = trigger_value:province_has_center_of_trade_of_level }
+				if = {
+					limit = { check_variable = { SD_sell_size = 1 } }	# at least a CoT
+					multiply_variable = { SD_sell_size = 10 }
+				}
+				else_if = {
+					limit = { is_capital = yes }	# if no CoT, then at least a capital
+					set_variable = { which = SD_sell_size value = 10 }
+				}
+				else = {
+					set_variable = { which = SD_sell_size value = 3 }	# residual value
+				}
+				
+				# Cap depending on total slaves being sold
+				if = {
+					limit = { check_variable = { which = SD_sell_size which = SD_slaves_available } }	
+					set_variable = { which = SD_sell_size which = SD_slaves_available }			# More slaves capable to sell than available = capped
+				}
+			
+				# Root (buyer): is this how many slaves you need? Maybe less? -> needs to be done before the price
+				ROOT = {
+					set_variable = { which = SD_sell_size which = PREV }
+					if = {
+						limit = { check_variable = { which = SD_sell_size which = SD_slave_demand } }	# more in offer than needed -> cut
+						set_variable = { which = SD_sell_size which = SD_slave_demand }
+						event_target:SD_purchase_province_$num$ = { set_variable = { which = SD_sell_size which = ROOT } }
+					}
+				
+				}
+			
+			# PRICE (MONEY)
+				# Transaction price will be: base (20, 40, 60) + seller's advantage - buyer's advantage (modifiers) +/- %20 random list
+				
+				set_variable = { which = SD_transaction value = 1 }
+				export_to_variable = { which = SD_pricemod value = modifier:trade_efficiency who = owner }
+				change_variable = { which = SD_transaction which = SD_pricemod }
+				export_to_variable = { which = SD_pricemod value = modifier:global_own_trade_power who = owner }
+				change_variable = { which = SD_transaction which = SD_pricemod }
+				
+				export_to_variable = { which = SD_pricemod value = modifier:trade_efficiency who = ROOT }
+				subtract_variable = { which = SD_transaction which = SD_pricemod }
+				export_to_variable = { which = SD_pricemod value = modifier:global_foreign_trade_power who = ROOT }
+				subtract_variable = { which = SD_transaction which = SD_pricemod }
+				
+				random_list = {
+					20 = { multiply_variable = { SD_transaction = 1.2 } }
+					20 = { multiply_variable = { SD_transaction = 1.1 } }
+					20 = {  }
+					20 = { multiply_variable = { SD_transaction = 0.9 } }
+					20 = { multiply_variable = { SD_transaction = 0.8 } }	# bargaining can still go wrong...
+				}
+				set_variable = { which = SD_pricemod which = SD_transaction } 
+				subtract_variable = { SD_pricemod = 1 } 
+				multiply_variable = { SD_pricemod = 0.1 } 
+				multiply_variable = { SD_pricemod = 1000 }					# to be displayed in the event
+				
+				# cap: max +50% and -50%
+				if = { limit = { 		 check_variable = { SD_transaction = 1.5 } } 	set_variable = { which = SD_transaction value = 1.5 } }
+				if = { limit = { NOT = { check_variable = { SD_transaction = 0.5 } } } 	set_variable = { which = SD_transaction value = 0.5 } }
+				
+				# Now, multiply by size. Remember we have slaves (thousand) but price (10k). Must be divided /10
+				multiply_variable = { SD_transaction = 0.1 }
+				multiply_variable = { which = SD_transaction which = SD_sell_size }
+				multiply_variable = { which = SD_transaction which = SD_trade_price }
+				
+				# Done! Now we have both money exchanged (SD_transaction) and amount of slaves (SD_sell_size)
+			
+			# Back to the buyer country. Remove money, add new slaves
+			ROOT = {
+				set_variable = { which = SD_transaction which = PREV }
+				change_variable = { which = SD_new_paid which = SD_transaction }
+				
+				set_variable = { which = SD_sell_size which = PREV }
+				change_variable = { which = SD_new_purchases which = SD_sell_size }
+				
+			}
+			
+			# money left at the province, slaves removed
+			change_variable = { which = SD_sale_collected which = SD_transaction }
+			subtract_variable = { which = SD_slaves_available which = SD_sell_size }
+			
+			
+			
+		}
+		
+	}
+	
+	
+
+
+
+
+
+}
+
 

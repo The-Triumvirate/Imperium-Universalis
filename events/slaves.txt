@@ -28,107 +28,141 @@ country_event = {
 				estate = estate_slaves
 				share = -100
 			}
-			# Find total income
-			export_to_variable = { which = slave_income value = monthly_income }
-			multiply_variable  = { slave_income = 60 }		# monthly to yearly x every 5 years = 12 x 5 = 60
 			
-			# Total population
-			export_to_variable = { which = var_total_pop value = total_development }
-			multiply_variable = { var_total_pop = 10 }									# population in thousands, now
+			# CURRENT VALUES
+				# Find total income
+				export_to_variable = { which = slave_income value = monthly_income }
+				multiply_variable  = { slave_income = 60 }		# monthly to yearly x every 5 years = 12 x 5 = 60
+				
+				# Total population
+				export_to_variable = { which = var_total_pop value = total_development }
+				multiply_variable = { var_total_pop = 10 }									# population in thousands, now
+				
+			
+				# Slave population (at country and manufactories)
+				set_variable = { which = slaves_in_province value = 0 }		# reset at country level
+				every_owned_province = {
+					limit = { check_variable = { slaves_in_province = 1 } }	# any province with slaves there
+					owner = { change_variable = { which = slaves_in_province which = PREV } }
+				}
+			
+			# START DEMOGRAPHY CALCULATION
+				# social (unrest, stability)
+				set_variable = { which = slave_pop_social which = slaves } 
+				change_variable = { which = slave_pop_social which = slaves_in_province }
+				
+				if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
+				divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
+				multiply_variable = { slave_pop_social = 100 }						 # to be in percentage (1 to 100), not units (0,x to 1,0)
+			
+				# economic (goods size)
+				export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
+				change_variable = { slave_pop_economic = 1 }
+				multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
+				divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
+				multiply_variable = { slave_pop_economic = 100 }						# to be in percentage (1 to 100)
+				
+				# cleanup of previous modifier
+				slaves_remove_basic_modifiers = yes
+				slaves_remove_complex_modifiers = yes
+				
+				# Let's find where we are (coordinates x and y, 15 x 7 = 105 possibilities)
+				slaves_find_coordinates = yes
+				
+			
+			# SLAVE INCOME	
+				multiply_variable = { which = slave_income which = slave_pop_economic }
+				multiply_variable = { slave_income = 0.01 }
+				
+				export_to_variable = { which = slave_autonomy value = trigger_value:average_autonomy }
+				subtract_variable = { slave_autonomy = 100 } 
+				multiply_variable = { slave_autonomy = -0.01 }	# imagine 25%. 25-100 = -75 x -0,01 = 0,75. Ok
+				multiply_variable = { which = slave_income which = slave_autonomy }
+				
+				export_to_variable = { which = slave_state_income value = modifier:slavesmod_state_income }
+				if = { limit = { NOT = { check_variable = { slave_state_income = 0 } } } set_variable = { which = slave_state_income value = 0 } }
+				multiply_variable = { which = slave_income which = slave_state_income }
+				
+				
+			# DEMOGRAPHICS (growth of slaves)
+			
+				export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
+				export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
+				export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
+				
+				if = {
+					limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
+					set_variable = { which = slave_net_growth which = slave_loss }	
+					change_variable = { which = slave_libratio which = slave_gain } 
+				}
+				else = {
+					set_variable = { which = slave_net_growth which = slave_gain }
+					subtract_variable = { which = slave_net_growth which = slave_loss }
+				}
+				
+				if = { 
+					limit = { NOT = { check_variable = { slave_libratio = 0 } } } 
+					set_variable = { which = slave_libratio value = 0 } 
+				}
+				
+				set_variable = { which = slaves_change which = slaves } change_variable = { which = slaves_change which = slaves_in_province }
+				set_variable = { which = slaves_libers which = slaves } change_variable = { which = slaves_libers which = slaves_in_province }
+				multiply_variable = { which = slaves_change which = slave_net_growth }
+				multiply_variable = { which = slaves_libers which = slave_libratio }
+				multiply_variable = { slaves_change = 5 } multiply_variable = { slaves_libers = 5 } 	# 5 years
 			
 			
-			# Slave population (at country and manufactories)
-			set_variable = { which = slaves_in_province value = 0 }		# reset at country level
-			every_owned_province = {
-				limit = { check_variable = { slaves_in_province = 1 } }	# any province with slaves there
-				owner = { change_variable = { which = slaves_in_province which = PREV } }
-			}
-			set_variable = { which = slave_pop_social which = slaves } 
-			change_variable = { which = slave_pop_social which = slaves_in_province }
-			
-			if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
-			divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
-			multiply_variable = { slave_pop_social = 100 }						 # to be in percentage (1 to 100), not units (0,x to 1,0)
-			
-			export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
-			change_variable = { slave_pop_economic = 1 }
-			multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
-			divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
-			multiply_variable = { slave_pop_economic = 100 }						# to be in percentage (1 to 100)
-			
-			# cleanup of previous modifier
-			slaves_remove_basic_modifiers = yes
-			slaves_remove_complex_modifiers = yes
-			
-			# Income
-			multiply_variable = { which = slave_income which = slave_pop_economic }
-			multiply_variable = { slave_income = 0.01 }
-			export_to_variable = { which = slave_autonomy value = trigger_value:average_autonomy }
-			subtract_variable = { slave_autonomy = 100 } 
-			multiply_variable = { slave_autonomy = -0.01 }	# imagine 25%. 25-100 = -75 x -0,01 = 0,75. Ok
-			multiply_variable = { which = slave_income which = slave_autonomy }
-			export_to_variable = { which = slave_state_income value = modifier:slavesmod_state_income }
-			if = { limit = { NOT = { check_variable = { slave_state_income = 0 } } } set_variable = { which = slave_state_income value = 0 } }
-			multiply_variable = { which = slave_income which = slave_state_income }
-			
-			# Let's find where we are (coordinates x and y)
-			slaves_find_coordinates = yes
-			
-			# Demographics
-			export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
-			export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
-			export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
-			
-			if = {
-				limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
-				set_variable = { which = slave_net_growth which = slave_loss }	
-				change_variable = { which = slave_libratio which = slave_gain } 
-			}
-			else = {
-				set_variable = { which = slave_net_growth which = slave_gain }
-				subtract_variable = { which = slave_net_growth which = slave_loss }
-			}
-			
-			if = { limit = { NOT = { check_variable = { slave_libratio = 0 } } } set_variable = { which = slave_libratio value = 0 } }
-			
-			set_variable = { which = slaves_change which = slaves } multiply_variable = { which = slaves_change which = slave_net_growth }
-			set_variable = { which = slaves_libers which = slaves } multiply_variable = { which = slaves_libers which = slave_libratio }
-			multiply_variable = { slaves_change = 5 } multiply_variable = { slaves_libers = 5 } 	# 5 years
+			# Collect money from slaves sold in provinces
+				set_variable = { which = SD_sale_collected value = 0 }
+				every_owned_province = {
+					limit = { check_variable = { SD_sale_collected = 1 } }	# any province with money
+					owner = { change_variable = { which = SD_sale_collected which = PREV } }
+					set_variable = { which = SD_sale_collected value = 0 }
+				}
+				
 			
 			# Show variables for display
-			set_variable = { which = slaves_tot_display which = slaves } 
-			change_variable = { which = slaves_tot_display which = slaves_in_province }
-			multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }	# rounding
-			
-			set_variable = { which = slaves_oth_disp which = slaves } 
-			multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
-			
-			set_variable = { which = slaves_mnf_display which = slaves_in_province } 
-			multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
-			export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
-			change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
-			
-			multiply_variable = { slaves_change = 0.001 }	multiply_variable = { slaves_change = 1000 }
-			multiply_variable = { slaves_libers = 0.001 }	multiply_variable = { slaves_libers = 1000 }
-			
-			multiply_variable = { slave_gain = 100 }		multiply_variable = { slave_net_growth = 100 }
-			multiply_variable = { slave_loss = 100 }		multiply_variable = { slave_libratio = 100 }
-			multiply_variable = { slave_state_income = 100 }
-			export_to_variable = { which = var_total_pop value = total_development }
+				set_variable = { which = slaves_tot_display which = slaves } 
+				change_variable = { which = slaves_tot_display which = slaves_in_province }
+				change_variable = { which = slaves_tot_display which = SD_new_slaves }
+				#change_variable = { which = slaves_tot_display which = SD_serfs }			# serfs not ready yet
+				change_variable = { which = slaves_tot_display which = SD_slaves_available }
+				change_variable = { which = slaves_tot_display which = SD_captives }
+				multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }	# rounding
+				
+				set_variable = { which = slaves_oth_disp which = slaves } 
+				multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
+				set_variable = { which = slaves_mnf_display which = slaves_in_province } 
+				multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
+				set_variable = { which = slaves_new_disp which = SD_new_slaves } 
+				multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_new_disp = 1000 }
+				
+				
+				export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
+				change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
+				
+				multiply_variable = { slaves_change = 0.001 }	multiply_variable = { slaves_change = 1000 }
+				multiply_variable = { slaves_libers = 0.001 }	multiply_variable = { slaves_libers = 1000 }
+				
+				multiply_variable = { slave_gain = 100 }		multiply_variable = { slave_net_growth = 100 }
+				multiply_variable = { slave_loss = 100 }		multiply_variable = { slave_libratio = 100 }
+				multiply_variable = { slave_state_income = 100 }
+				export_to_variable = { which = var_total_pop value = total_development }
 		}
 	}
 	
 	
 	option = {
-		name = "slaves.1.1"		
-		slaves_ratio_create_high = yes				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
-		
+		name = "slaves.1.1"				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
+		ai_chance = { factor = 100 }
 		hidden_effect = {
-			if = { 
-				limit = { check_variable = { slave_income = 0.1 } }
-				set_variable = { which = cash_income which = slave_income }
-				money_income = yes  
-			}
+			# Modifier
+			slaves_ratio_create_high = yes		
+		
+			# Earn the money
+			money_gain_effect = { var = slave_income }
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
 			
 			# Demographic effect
 			change_variable = { which = slaves which = slaves_change }
@@ -138,18 +172,43 @@ country_event = {
 			subtract_variable = { which = slaves which = slaves_libers }
 			
 		}
-		custom_tooltip = SLAVES_EVENT_INCOME
+		custom_tooltip = SLAVES_EVENT_1_INCOME
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
+		
 	}
 	option = {
-		name = "slaves.1.2"		
+		name = "slaves.1.2"				# Exactly same effect, just shows the tooltips
+		ai_chance = { factor = 0 }
+		hidden_effect = {	
+			# Modifier
+			slaves_ratio_create_high = yes
+			
+			# Earn the money
+			money_gain_effect = { var = slave_income }
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
+			
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+			
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+			
+		}
+		custom_tooltip = SLAVES_EVENT_1_NORMAL
+		custom_tooltip = SLAVES_EVENT_1_RATIOS
+		custom_tooltip = SLAVES_EVENT_1_FORMULA
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
+	}
+	option = {
+		name = "slaves.1.3"			# (same effect); open the event to order the purchase of slaves
+		ai_chance = { factor = 0 }	# for now
 		
 		hidden_effect = {
 			slaves_ratio_create_high = yes
-			if = { 
-				limit = { check_variable = { slave_income = 0.1 } }
-				set_variable = { which = cash_income which = slave_income }
-				money_income = yes  
-			}
 			
 			# Demographic effect
 			change_variable = { which = slaves which = slaves_change }
@@ -158,11 +217,15 @@ country_event = {
 			change_variable = { which = freedmen_new which = slaves_libers }
 			subtract_variable = { which = slaves which = slaves_libers }
 			
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
 		}
-		custom_tooltip = SLAVES_EVENT_NORMAL
-		custom_tooltip = SLAVES_EVENT_RATIOS
-		custom_tooltip = SLAVES_EVENT_FORMULA
+		country_event = { id = slaves.3 }
+		custom_tooltip = SLAVES_1_EVENT_EARNLATER		# Remember that the money will be earned AFTER this event
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
 	}
+	
 	
 	after = {
 		set_variable = { which = var_slave_income value = 0 }
@@ -170,25 +233,523 @@ country_event = {
 		set_variable = { which = slaves_change value = 0 }
 		set_variable = { which = slaves_libers value = 0 }
 		
+		if = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			clr_country_flag = slaves_freed_flag set_country_flag = slaves_freed_flag	# reset, allows distribution
+		}
+		
+		every_owned_province = {		# Remove slave markets already empty
+			limit = {
+				has_province_modifier = SD_market_open 
+				NOT = { check_variable = { SD_sale_collected = 1 } }
+				NOT = { check_variable = { SD_slaves_available = 1 } }
+			}
+			remove_province_modifier = SD_market_open 
+			set_variable = { which = SD_sale_collected value = 0 }
+			set_variable = { which = SD_slaves_available value = 0 }
+		}
+				
+		
 	}
 }
+
+country_event = {
+	id = slaves.2
+	title = "slaves.2.t"
+	desc = "slaves.2.d"
+	picture = slaves
+	
+	trigger = {
+		had_country_flag = { flag = slaves_freed_flag days = 365 }
+		check_variable = { freedmen_new = 10 }
+		has_global_flag = popgrowth_running
+	}
+	mean_time_to_happen = { months = 24 }
+	
+	immediate = {
+		# The event will just tell how many freedmen are distributed
+		
+	}
+	
+	
+	option = {
+		name = "slaves.2.1"		
+		ai_chance = { factor = 100 }
+		while = {
+			limit = {
+				check_variable = { freedmen_new = 10 } 
+				any_owned_province = {
+					OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				
+			}
+			random_owned_province = {
+				limit = {
+					OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				PG_migrate_freedmen = yes
+				province_event = { id = population_capacity.4 }		# update pop capacities
+			}
+			
+		}
+		# If after the while there are still slaves to distribute, they will be added anywhere, as tribals
+		while = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			random_owned_province = {
+				PG_migrate_freedmen = yes
+				province_event = { id = population_capacity.4 }		# update pop capacities
+			}
+			
+		}
+		
+	}
+	option = {
+		name = "slaves.2.2"		# Into "big" CoTs, starting level 4, then the others
+		ai_chance = { factor = 0 }
+		while = {
+			limit = {
+				check_variable = { freedmen_new = 10 } 
+				any_owned_province = {
+					check_variable = { PG_com_grow = 120 }
+					province_has_center_of_trade_of_level = 4
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				
+			}
+			random_owned_province = {
+				limit = {
+					check_variable = { PG_com_grow = 120 }
+					province_has_center_of_trade_of_level = 4
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				PG_migrate_freedmen = yes
+				province_event = { id = population_capacity.4 }		# update pop capacities
+			}
+			add_dip_power = -3
+		}
+		while = {
+			limit = {
+				check_variable = { freedmen_new = 10 } 
+				any_owned_province = {
+					check_variable = { PG_com_grow = 120 }
+					province_has_center_of_trade_of_level = 1
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				
+			}
+			random_owned_province = {
+				limit = {
+					check_variable = { PG_com_grow = 120 }
+					province_has_center_of_trade_of_level = 1
+					NOT = { has_province_modifier = PG_new_freedmen }
+				}
+				PG_migrate_freedmen = yes
+				province_event = { id = population_capacity.4 }		# update pop capacities
+			}
+			add_dip_power = -3
+		}
+		# If there are still freedmen to distribute, these will be moved to the next event. A tooltip shows that
+		if = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			custom_tooltip = FREEDMEN_PENDING
+		}
+		
+	}
+	#option = {
+	#	name = "slaves.2.3"		# To the capital and the same area (only if not a high kingdom, then will be whole region)
+	#	# needs some heavy thinking on targeting areas of the capital... will leave it for later
+	#	
+	#	# If there are still freedmen to distribute, these will be moved to the next event. A tooltip shows that
+	#	if = {
+	#		limit = { check_variable = { freedmen_new = 10 } }
+	#		custom_tooltip = FREEDMEN_PENDING
+	#	}
+	#	
+	#}
+	
+	option = {
+		ai_chance = { factor = 0 }
+		name = "slaves.2.99"		# Let me think it. Will save those for later
+		if = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			custom_tooltip = FREEDMEN_PENDING
+		}
+		
+	}
+	
+	
+}
+
+
+
+country_event = {	# Purchase slaves, decide budget
+	id = slaves.3
+	title = "slaves.3.t"
+	desc = "slaves.3.d"
+	picture = slaves
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		# Current variables: slave_income (available money)
+		
+		hidden_effect = {
+			# Must have ready the values for each option, to show at the tooltip
+			# 1: already there
+			# 2: yearly - extra money
+			export_to_variable = { which = float_1 value = monthly_income } multiply_variable = { float_1 = 12 }
+			set_variable = { which = float_2 which = float_1 } 	subtract_variable = { which = float_2 which = slave_income }	# could be negative
+			# 3: 100
+			set_variable = { which = float_3 value = 100 } 		subtract_variable = { which = float_3 which = slave_income }	
+			# 4: 250
+			set_variable = { which = float_4 value = 250 } 		subtract_variable = { which = float_4 which = slave_income }	
+			# 5: 500
+			set_variable = { which = float_5 value = 500 } 		subtract_variable = { which = float_5 which = slave_income }	
+			# 6: 1000
+			set_variable = { which = float_6 value = 1000 } 	subtract_variable = { which = float_6 which = slave_income }	
+			# 7: 2500
+			set_variable = { which = float_7 value = 2500 } 	subtract_variable = { which = float_7 which = slave_income }	
+			
+		}
+		
+	}
+	
+	option = {
+		name = "slaves.3.1"		# Dedicate the current slave income surplus
+		ai_chance = { factor = 0 }
+		hidden_effect = {
+			set_variable = { which = SD_slave_budget which = slave_income }
+		}
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.2"		# Dedicate yearly income (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget which = float_1 }
+			set_variable = { which = SD_budget_dif which = float_2 } 
+		}
+		if = { limit = { check_variable = { float_2 = 0 } } custom_tooltip = SLAVE_3_2_PAY } # budget is higher than slave income -> must pay
+		else = { custom_tooltip = SLAVE_3_2_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.3"		# Dedicate 100 (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget value = 100 }
+			set_variable = { which = SD_budget_dif which = float_3 } 
+		}
+		if = { limit = { check_variable = { float_3 = 0 } } custom_tooltip = SLAVE_3_3_PAY }
+		else = { custom_tooltip = SLAVE_3_3_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.4"		# Dedicate 250 (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget value = 250 }
+			set_variable = { which = SD_budget_dif which = float_4 } 
+		}
+		if = { limit = { check_variable = { float_4 = 0 } } custom_tooltip = SLAVE_3_4_PAY }
+		else = { custom_tooltip = SLAVE_3_4_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.5"		# Dedicate 500 (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget value = 500 }
+			set_variable = { which = SD_budget_dif which = float_5 } 
+		}
+		if = { limit = { check_variable = { float_5 = 0 } } custom_tooltip = SLAVE_3_5_PAY }
+		else = { custom_tooltip = SLAVE_3_5_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.6"		# Dedicate 1000 (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget value = 1000 }
+			set_variable = { which = SD_budget_dif which = float_6 } 
+		}
+		if = { limit = { check_variable = { float_6 = 0 } } custom_tooltip = SLAVE_3_6_PAY }
+		else = { custom_tooltip = SLAVE_3_6_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.7"		# Dedicate 2500 (slave income + difference)
+		ai_chance = { factor = 0 }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_budget value = 2500 }
+			set_variable = { which = SD_budget_dif which = float_7 } 
+		}
+		if = { limit = { check_variable = { float_7 = 0 } } custom_tooltip = SLAVE_3_7_PAY }
+		else = { custom_tooltip = SLAVE_3_7_COL }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.3.8"		# No, stop this, and give me my slave money
+		ai_chance = { factor = 100 }
+		hidden_effect = {
+			money_gain_effect = { var = slave_income }
+			set_variable = { which = SD_slave_demand value = 0 }
+			set_variable = { which = SD_slave_budget value = 0 }
+			set_variable = { which = SD_trade_price value = 0 }
+		}
+	}
+	
+	
+	
+}
+
+country_event = {	# How many slaves
+	id = slaves.4
+	title = "slaves.4.t"
+	desc = "slaves.4.d"
+	picture = slaves
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			# Now find what budget sould be, for each case. 
+			
+			set_variable = { which = float_1 which = var_total_pop }	multiply_variable = { float_1 = 2.5 }	# 0.25 x 10, to thousands
+			subtract_variable = { which = float_1 which = slaves_tot_display } 
+			
+			set_variable = { which = float_2 which = var_total_pop }	multiply_variable = { float_2 = 4.0 }
+			subtract_variable = { which = float_2 which = slaves_tot_display }
+			
+			set_variable = { which = float_3 which = var_total_pop }	multiply_variable = { float_3 = 6.0 }
+			subtract_variable = { which = float_3 which = slaves_tot_display }
+			
+			set_variable = { which = float_4 which = var_total_pop }	multiply_variable = { float_4 = 8.0 }
+			subtract_variable = { which = float_4 which = slaves_tot_display }
+		}
+	}
+	
+	option = {
+		name = "slaves.4.1"		# Up to 25%
+		ai_chance = { factor = 0 }
+		trigger = { check_variable = { float_1 = 0 } }
+		
+		hidden_effect = { 
+			set_variable = { which = SD_slave_demand which = float_1 } 
+		}
+		custom_tooltip = SLAVE_4_1
+		country_event = { id = slaves.5 }
+	}
+	option = {
+		name = "slaves.4.2"		# Up to 40%
+		ai_chance = { factor = 0 }
+		trigger = { check_variable = { float_2 = 0 } }
+		
+		hidden_effect = { 
+			set_variable = { which = SD_slave_demand which = float_2 } 
+		}
+		custom_tooltip = SLAVE_4_2
+		country_event = { id = slaves.5 }
+	}
+	option = {
+		name = "slaves.4.3"		# Up to 60%
+		ai_chance = { factor = 0 }
+		trigger = { check_variable = { float_3 = 0 } }
+		
+		hidden_effect = { 
+			set_variable = { which = SD_slave_demand which = float_3 } 
+		}
+		custom_tooltip = SLAVE_4_3
+		country_event = { id = slaves.5 }
+	}
+	option = {
+		name = "slaves.4.4"		# Up to 80% (and no more)
+		ai_chance = { factor = 0 }
+		trigger = { check_variable = { float_4 = 0 } }
+		
+		hidden_effect = { 
+			set_variable = { which = SD_slave_demand which = float_4 } 
+		}
+		custom_tooltip = SLAVE_4_4
+		country_event = { id = slaves.5 }
+	}
+	option = {
+		name = "slaves.4.5"		# 100.000 new (must have 500.000 already) -> max to purchase
+		ai_chance = { factor = 0 }
+		trigger = { check_variable = { slaves_tot_display = 500 } }
+		hidden_effect = { 
+			set_variable = { which = SD_slave_demand value = 100 } 
+		}
+		custom_tooltip = SLAVE_4_5
+		country_event = { id = slaves.5 }
+	}
+	option = {
+		name = "slaves.4.6"		# Let me choose budget again
+		ai_chance = { factor = 0 }
+		country_event = { id = slaves.3 }
+	}
+	option = {
+		name = "slaves.4.7"		# No, stop it
+		ai_chance = { factor = 100 }
+		hidden_effect = {
+			money_gain_effect = { var = slave_income }
+			set_variable = { which = SD_slave_demand value = 0 }
+			set_variable = { which = SD_slave_budget value = 0 }
+			set_variable = { which = SD_trade_price value = 0 }
+		}
+	}
+	
+	
+}
+
+country_event = {	# At what price
+	id = slaves.5
+	title = "slaves.5.t"
+	desc = "slaves.5.d"
+	picture = slaves
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			# Count how many province have slave at 20, and what amount
+			# Same for 40 and 60
+			# Find also total money that would be spent in each case
+			# use Float variables, it is a good example
+			
+			# Prepare the prices for 20, 40, 60 slaves
+			set_variable = { which = float_1 which = SD_slave_demand } multiply_variable = { float_1 = 20 }
+			set_variable = { which = float_2 which = SD_slave_demand } multiply_variable = { float_2 = 40 }
+			set_variable = { which = float_3 which = SD_slave_demand } multiply_variable = { float_3 = 60 }
+			
+			set_variable = { which = float_4 value = 0 } set_variable = { which = float_5 value = 0 } 
+			set_variable = { which = float_6 value = 0 } set_variable = { which = float_7 value = 0 } 
+			set_variable = { which = float_8 value = 0 } set_variable = { which = float_9 value = 0 } 
+			
+			set_variable = { which = float_10 which = SD_slave_budget } multiply_variable = { float_10 = 0.50 }	# 1/20 x 1/10 (to thousands)
+			set_variable = { which = float_11 which = SD_slave_budget } multiply_variable = { float_11 = 0.25 }	# 1/40
+			set_variable = { which = float_12 which = SD_slave_budget } multiply_variable = { float_12 = 0.16 }	# 1/60
+			
+			random_active_trade_node = { 
+				every_trade_node_member_province = {
+					limit = { check_variable = { SD_slaves_available = 1 } }
+					if = { 
+						limit = { is_variable_equal = { SD_trade_price = 20 } } 	# only 20
+						set_variable = { which = float_4 value = 1 } set_variable = { which = float_5 which = SD_slaves_available }
+					}
+					if = { 
+						limit = { check_variable = { SD_trade_price = 20 } NOT = { check_variable = { SD_trade_price = 60 } } }		# 20-40
+						set_variable = { which = float_6 value = 1 } set_variable = { which = float_7 which = SD_slaves_available }
+					}
+					if = { 
+						limit = { check_variable = { SD_trade_price = 20 } }		# any, 20-40-60
+						set_variable = { which = float_8 value = 1 } set_variable = { which = float_9 which = SD_slaves_available }
+					}
+					ROOT = {
+						change_variable = { which = float_4 which = PREV } change_variable = { which = float_5 which = PREV } 
+						change_variable = { which = float_6 which = PREV } change_variable = { which = float_7 which = PREV } 
+						change_variable = { which = float_8 which = PREV } change_variable = { which = float_9 which = PREV } 
+					
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "slaves.5.1"		# Only at 20
+		ai_chance = { factor = 0 }
+		hidden_effect = { set_variable = { which = SD_trade_price value = 20 } }
+		custom_tooltip = SLAVE_5_1_COST
+		custom_tooltip = SLAVE_5_1_MANY
+		# Pay or collect the money, at last
+		if = { 
+			limit = { check_variable = { SD_budget_dif = 0 } }		# positive, must pay
+			hidden_effect = { money_pay_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_PAYMENT
+		}
+		else = {
+			hidden_effect = { multiply_variable = { SD_budget_dif = -1 } money_gain_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_COLLECT
+		}
+	}
+	option = {
+		name = "slaves.5.2"		# Up to 40
+		ai_chance = { factor = 0 }
+		hidden_effect = { set_variable = { which = SD_trade_price value = 40 } }
+		custom_tooltip = SLAVE_5_2_COST
+		custom_tooltip = SLAVE_5_2_MANY
+		
+		# Pay or collect the money, at last
+		if = { 
+			limit = { check_variable = { SD_budget_dif = 0 } }		# positive, must pay
+			hidden_effect = { money_pay_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_PAYMENT
+		}
+		else = {
+			hidden_effect = { multiply_variable = { SD_budget_dif = -1 } money_gain_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_COLLECT
+		}
+	}
+	option = {
+		name = "slaves.5.3"		# Up to 60
+		ai_chance = { factor = 0 }
+		hidden_effect = { set_variable = { which = SD_trade_price value = 60 } }
+		custom_tooltip = SLAVE_5_3_COST
+		custom_tooltip = SLAVE_5_3_MANY
+		
+		# Pay or collect the money, at last
+		if = { 
+			limit = { check_variable = { SD_budget_dif = 0 } }		# positive, must pay
+			hidden_effect = { money_pay_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_PAYMENT
+		}
+		else = {
+			hidden_effect = { multiply_variable = { SD_budget_dif = -1 } money_gain_effect = { var = SD_budget_dif } }
+			custom_tooltip = SLAVES_5_COLLECT
+		}
+	}
+	option = {
+		name = "slaves.5.4"		# Let's choose the amount of slaves again
+		ai_chance = { factor = 10 }
+		country_event = { id = slaves.4 }
+	}
+	option = {
+		name = "slaves.5.5"		# Let's go back to the budget (will have to do amount again)
+		ai_chance = { factor = 0 }
+		country_event = { id = slaves.3 }
+	}
+	option = {
+		name = "slaves.5.6"		# No, stop it
+		ai_chance = { factor = 100 }
+		hidden_effect = {
+			money_gain_effect = { var = slave_income }
+			set_variable = { which = SD_slave_demand value = 0 }
+			set_variable = { which = SD_slave_budget value = 0 }
+			set_variable = { which = SD_trade_price value = 0 }
+		}
+	}
+	
+	
+}
+
+
+
 ########
 #	BELOW HERE, NOT INCLUDED IN THE MOD. SIEGE EVENTS HAVE BEEN MOVED TO "SIEGES" FILE
 #
 #
 #
 
-
-
-
-
 ########################################################################################
 # Sack of City
 ########################################################################################
 country_event = {
-	id = slaves.2
-	title = "slaves.2.t"
-	desc = "slaves.2.d"
+	id = slaves.52
+	title = "slaves.52.t"
+	desc = "slaves.52.d"
 	picture = looting
 	is_triggered_only = yes
 	
@@ -201,7 +762,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "slaves.2.a" # Enslave the City! 
+		name = "slaves.52.a" # Enslave the City! 
 		trigger = { NOT = { has_country_modifier = slavery_abolished } }
 		ai_chance = { 
 				factor = 50
@@ -303,7 +864,7 @@ country_event = {
 		########################################################################
 	}
 	option = {
-		name = "slaves.2.b" # Plunder! 
+		name = "slaves.52.b" # Plunder! 
 		ai_chance = { 
 				factor = 50
 				modifier = {
@@ -408,7 +969,7 @@ country_event = {
 		########################################################################
 	}
 	option = {
-		name = "slaves.2.c" # leave it be! 
+		name = "slaves.52.c" # leave it be! 
 		ai_chance = { 
 				factor = 25
 				modifier = {
@@ -470,9 +1031,9 @@ country_event = {
 # Sack of City - Owner Event
 ########################################################################################
 country_event = {
-	id = slaves.3
-	title = "slaves.3.t"
-	desc = "slaves.3.d"
+	id = slaves.53
+	title = "slaves.53.t"
+	desc = "slaves.53.d"
 	picture = looting
 	is_triggered_only = yes
 	major = yes
@@ -486,7 +1047,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "slaves.3.a"
+		name = "slaves.53.a"
 			add_war_exhaustion = 1 
 			add_opinion = {
 				who = FROM
@@ -499,9 +1060,9 @@ country_event = {
 # plundering of City
 ########################################################################################
 country_event = {
-	id = slaves.4
-	title = "slaves.4.t"
-	desc = "slaves.4.d"
+	id = slaves.54
+	title = "slaves.54.t"
+	desc = "slaves.54.d"
 	picture = plundering
 	is_triggered_only = yes
 	
@@ -514,7 +1075,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "slaves.4.a" # Enslave! 
+		name = "slaves.54.a" # Enslave! 
 		trigger = { NOT = { has_country_modifier = slavery_abolished } }
 		ai_chance = { 
 				factor = 50
@@ -617,7 +1178,7 @@ country_event = {
 		########################################################################
 	}
 	option = {
-		name = "slaves.4.b" # Plunder! 
+		name = "slaves.54.b" # Plunder! 
 		ai_chance = { 
 				factor = 50
 				modifier = {
@@ -706,7 +1267,7 @@ country_event = {
 		########################################################################
 	}
 	option = {
-		name = "slaves.4.c" # leave it be! 
+		name = "slaves.54.c" # leave it be! 
 		ai_chance = { 
 				factor = 25
 				modifier = {
@@ -769,9 +1330,9 @@ country_event = {
 # tribal slaveraid
 ########################################################################################
 country_event = {
-	id = slaves.5
-	title = "slaves.5.t"
-	desc = "slaves.5.d"
+	id = slaves.55
+	title = "slaves.55.t"
+	desc = "slaves.55.d"
 	picture = plundering
 	is_triggered_only = yes
 	
@@ -784,7 +1345,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "slaves.5.a" # Enslave! 
+		name = "slaves.55.a" # Enslave! 
 		ai_chance = { 
 				factor = 50
 				modifier = {
@@ -866,7 +1427,7 @@ country_event = {
 		########################################################################
 	}
 	option = {
-		name = "slaves.5.b" # leave it be! 
+		name = "slaves.55.b" # leave it be! 
 		ai_chance = { 
 				factor = 20
 				modifier = {
@@ -928,9 +1489,9 @@ country_event = {
 # slave uprising
 ########################################################################################
 country_event = {
-	id = slaves.6
-	title = "slaves.6.t"
-	desc = "slaves.6.d"
+	id = slaves.56
+	title = "slaves.56.t"
+	desc = "slaves.56.d"
 	picture = civilwar
 	is_triggered_only = yes
 	
@@ -992,9 +1553,9 @@ country_event = {
 # slaves run away
 ########################################################################################
 country_event = {
-	id = slaves.7
-	title = "slaves.7.t"
-	desc = "slaves.7.d"
+	id = slaves.57
+	title = "slaves.57.t"
+	desc = "slaves.57.d"
 	picture = slaves
 	is_triggered_only = yes
 	
@@ -1017,7 +1578,7 @@ country_event = {
 	}
 
 	option = {
-		name = "slaves.7.a"
+		name = "slaves.57.a"
 			if = {
 				limit = { 
 					check_variable = { which = slaves value = 40000 }
@@ -1094,6 +1655,8 @@ country_event = {
 		}
 		set_variable = { which = slave_total which = slaves }
 		change_variable = { which = slave_total which = slaves_in_province }
+		if = { limit = { NOT = { check_variable = { SD_serfs = 0.1 } } } set_variable = { which = SD_serfs value = 0 } }
+		if = { limit = { NOT = { check_variable = { SD_captives = 0.1 } } } set_variable = { which = SD_captives value = 0 } }
 		
 		# Population
 		export_to_variable = { which = var_total_pop value = total_development }
@@ -1162,7 +1725,13 @@ country_event = {
 		
 	}
 	option = {
-		name = "slaves.9.6" # Nothing
+		name = "slaves.9.6"	# Add +100% of slave population
+		change_variable = { SD_serfs = 20 }
+		change_variable = { SD_captives = 20 }
+			
+	}
+	option = {
+		name = "slaves.9.99" # Nothing
 		
 	}
 	
@@ -1184,6 +1753,10 @@ country_event = {
 		# Show variables for display
 		set_variable = { which = slaves_tot_display which = slaves } 
 		change_variable = { which = slaves_tot_display which = slaves_in_province }
+		change_variable = { which = slaves_tot_display which = SD_new_purchases }
+		change_variable = { which = slaves_tot_display which = SD_slaves_available }
+		change_variable = { which = slaves_tot_display which = SD_serfs }
+		change_variable = { which = slaves_tot_display which = SD_captives }
 		multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }
 		set_variable = { which = slaves_oth_disp which = slaves } 
 		multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
