@@ -502,7 +502,7 @@ province_event = {
 		# BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
 		PG_urban_buildings = yes
 		
-		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -50% reduction, but it stays in commoners, and the rural transfer still works. 
+		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -25% reduction, but it stays in commoners, and the rural transfer still works. 
 		if = {
 			limit = { owner = { has_reform = steppe_horde_reform } }	# Careful, conquered places's commoners will flee quickly!
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } multiply_variable = { PG_urb_to_trib = 0.5 }
@@ -510,7 +510,7 @@ province_event = {
 		}
 		else_if = {
 			limit = { owner = { government = tribal } } 
-			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.5 }
+			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.25 }
 			subtract_variable = { which = urban_capacity which = PG_urb_to_trib }
 		}
 		
@@ -557,7 +557,6 @@ province_event = {
 		multiply_variable = { which = PG_com_cap which = rural_capacity }
 		subtract_variable = { which = PG_trb_cap which = PG_com_cap }
 		subtract_variable = { which = PG_trb_cap which = PG_ruralupper }
-		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
 		
 		change_variable = { which = PG_com_cap which = urban_capacity }		# Now commoner cap (was only % rur to urban) adds urban itself
 		subtract_variable = { which = PG_com_cap which = PG_urbanupper }
@@ -565,16 +564,35 @@ province_event = {
 		set_variable = { which = PG_upp_cap which = PG_ruralupper }	
 		change_variable = { which = PG_upp_cap which = PG_urbanupper }
 		
+		# Done! The main part of capacities
 		
-		# Conditions: if there is not enough upper capacity to get one, or not enough commoner cap, these are given back to rurals. 
+		# Condition: having certain basic buildings will allow at least 1 commoner or 1 upper, if it's not there. Taken from tribal cap
+		if = {
+			limit = { NOT = { check_variable = { PG_com_cap = 1 } } PG_any_prod_port_trade = yes } 	# scripted trigger, several buildings exist
+			set_variable = { which = PG_com_now value = 1 }
+			subtract_variable = { which = PG_com_now which = PG_com_cap }	subtract_variable = { which = PG_trb_cap which = PG_com_now }
+			change_variable = { which = PG_com_cap which = PG_com_now }		set_variable = { which = PG_com_now value = 0 }
+		}
+		if = {
+			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } PG_any_gov_tax_temple = yes } 	# scripted trigger, several buildings exist
+			set_variable = { which = PG_upp_now value = 1 }
+			subtract_variable = { which = PG_upp_now which = PG_upp_cap }	subtract_variable = { which = PG_trb_cap which = PG_upp_now }
+			change_variable = { which = PG_upp_cap which = PG_upp_now }		set_variable = { which = PG_upp_now value = 0 }
+		}
+		
+		# Condition: avoid having less than 1 tribal
+		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
+		
+		
+		# Condition: if there is not enough upper capacity to get one, or not enough commoner cap, these are given back to other pops, like tribals. 
 		set_variable = { which = PG_new_cap which = PG_com_cap } change_variable = { which = PG_new_cap which = PG_upp_cap }
 		if = {
-			limit = { NOT = { check_variable = { PG_new_cap = 1 } } NOT = { base_tax = 1 } NOT = { base_production = 1 } }
+			limit = { NOT = { check_variable = { PG_new_cap = 1 } } }	# Sum of com + upp <1
 			set_province_flag = PG_move_all 
 		}
 		else_if = { 
-			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } check_variable = { PG_new_cap = 1 } NOT = { base_tax = 1 } }
-			set_province_flag = PG_move_upp_com
+			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } check_variable = { PG_new_cap = 1 } } 	# Com + upp =1, but upp <1
+			set_province_flag = PG_move_upp_com																# Will move upper into commoner
 		}
 		
 		if = {
@@ -586,7 +604,9 @@ province_event = {
 		}
 		else_if = {
 			limit = { has_province_flag = PG_move_upp_com }
-			set_variable = { which = PG_com_old which = PG_com_cap }	set_variable = { which = PG_upp_old which = PG_upp_cap }
+			set_variable = { which = PG_trb_old which = PG_trb_cap }
+			set_variable = { which = PG_com_old which = PG_com_cap }
+			set_variable = { which = PG_upp_old which = PG_upp_cap }
 			change_variable = { which = PG_com_cap which = PG_upp_cap } set_variable = { which = PG_upp_cap value = 0 }
 		}
 		
@@ -627,8 +647,8 @@ province_event = {
 			75 = { PG_growth_modify_all = { trb = 0.20 com = 0.10 upp = 0.10 } }
 			60 = { PG_growth_modify_all = { trb = 0.35 com = 0.25 upp = 0.25 } }
 			40 = { PG_growth_modify_all = { trb = 0.60 com = 0.50 upp = 0.40 } }
-			15 = { PG_growth_modify_all = { trb = 0.75 com = 0.70 upp = 0.60 } }
-			5 = {  multiply_variable = { PG_upp_grow = 0.80 } }
+			20 = { PG_growth_modify_all = { trb = 0.75 com = 0.70 upp = 0.60 } }
+			10 = {  multiply_variable = { PG_upp_grow = 0.80 } }					# Raised to 10, to avoid devastation from piracy
 		}
 		trigger_switch = {
 			on_trigger = prosperity
@@ -981,6 +1001,7 @@ province_event = {
 		# correct for autonomy: it can go as low as -50%, so this must be corrected back
 		export_to_variable = { which = urban_capacity value = local_autonomy }	multiply_variable = { urban_capacity = 0.5 }
 		subtract_variable = { urban_capacity = 100 }							multiply_variable = { urban_capacity = -0.01 }
+		
 		export_to_variable = { which = PG_urb_tp value = province_trade_power }
 		divide_variable = { which = PG_urb_tp which = urban_capacity }
 		set_variable = { which = urban_capacity value = 0 }	# Cleanup
@@ -1045,7 +1066,7 @@ province_event = {
 		
 		
 		
-		# 3. Maluses from primitive governments: Natives (HORDES, migrating ones) can't effectively use commoners, and HALF will be converted to tribals. The other half will not count, due to inefficiencies of this govenrment. TRIBALS will count 50% to tribal and 50% remains as commoners. 
+		# 3. Maluses from primitive governments: Natives (HORDES, migrating ones) can't effectively use commoners, and HALF will be converted to tribals. The other half will not count, due to inefficiencies of this govenrment. TRIBALS will count 25% to tribal and 75% remains as commoners. 
 		if = {
 			limit = { owner = { has_reform = steppe_horde_reform } }	# Careful, conquered places's commoners will flee quickly!
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } multiply_variable = { PG_urb_to_trib = 0.5 }
@@ -1053,7 +1074,7 @@ province_event = {
 		}
 		else_if = {
 			limit = { owner = { government = tribal } } 
-			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.5 }
+			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.25 }
 			subtract_variable = { which = urban_capacity which = PG_urb_to_trib }
 		}
 		set_variable = { which = PS_urb3 which = urban_capacity }
@@ -1117,7 +1138,6 @@ province_event = {
 		subtract_variable = { which = PG_trb_cap which = PG_ruralupper }
 		set_variable = { which = PS_trb_cap1 which = PG_trb_cap } subtract_variable = { which = PS_trb_cap1 which = PG_urb_to_trib }
 		
-		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
 		
 		change_variable = { which = PG_com_cap which = urban_capacity }		# Now commoner cap (was only % rur to urban) adds urban itself
 		subtract_variable = { which = PG_com_cap which = PG_urbanupper }
@@ -1127,20 +1147,26 @@ province_event = {
 		set_variable = { which = PG_upp_cap which = PG_ruralupper }
 		change_variable = { which = PG_upp_cap which = PG_urbanupper }
 		
-		# Conditions: if there is not enough upper cap to get one (not 1), or not enough commoner cap, these are given back to rurals. 
-		#if = { 
-		#	limit = { NOT = { check_variable = { PG_upp_cap = 1 } } 	check_variable = { PG_upp_cap = 0.01 } NOT = { base_tax = 1 } }
-		#	set_variable = { which = PG_com_old which = PG_com_cap }	change_variable = { which = PG_com_cap which = PG_upp_cap }
-		#}
-		#if = {		
-		#	# Still even with the uppers it doesn't reach 1. Move them all back to tribals, and restore old comm cap variable
-		#	limit = { NOT = { check_variable = { PG_com_cap = 1 } } 	check_variable = { PG_com_cap = 0.01 } NOT = { base_production = 1 } }
-		#	change_variable = { which = PG_trb_cap which = PG_com_cap } set_variable = { which = PG_com_cap which = PG_com_old }
-		#}
-		#if = {
-		#	limit = { check_variable = { which = PG_com_cap which = PG_com_old } } 
-		#	set_variable = { which = PG_com_cap which = PG_com_old }	set_variable = { which = PG_com_old value = 0 }
-		#}
+		# Condition: having certain basic buildings will allow at least 1 commoner or 1 upper, if it's not there. Taken from tribal cap
+		if = {
+			limit = { NOT = { check_variable = { PG_com_cap = 1 } } PG_any_prod_port_trade = yes } 	# scripted trigger, several buildings exist
+			set_variable = { which = PG_com_now value = 1 }
+			subtract_variable = { which = PG_com_now which = PG_com_cap }	subtract_variable = { which = PG_trb_cap which = PG_com_now }
+			change_variable = { which = PG_com_cap which = PG_com_now }		set_variable = { which = PS_com_cap4 which = PG_com_now }
+			set_variable = { which = PS_trb_cap2 which = PG_com_now }		multiply_variable = { which = PS_trb_cap2 value = -1 }
+		}
+		else = { set_variable = { which = PS_com_cap4 value = 0 } set_variable = { which = PS_trb_cap2 value = 0 } }	# to appear in the modifier
+		if = {
+			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } PG_any_gov_tax_temple = yes } 	# scripted trigger, several buildings exist
+			set_variable = { which = PG_upp_now value = 1 }
+			subtract_variable = { which = PG_upp_now which = PG_upp_cap }	subtract_variable = { which = PG_trb_cap which = PG_upp_now }
+			change_variable = { which = PG_upp_cap which = PG_upp_now }		set_variable = { which = PS_trb_upp which = PG_upp_now }
+			set_variable = { which = PS_trb_cap3 which = PG_upp_now }		multiply_variable = { which = PS_trb_cap3 value = -1 }
+		}
+		else = { set_variable = { which = PS_trb_upp value = 0 } set_variable = { which = PS_trb_cap3 value = 0 } }	# to appear in the modifier
+		
+		# Condition: avoid having less than 1 tribal
+		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
 		
 		
 		
@@ -1185,8 +1211,8 @@ province_event = {
 			75 = { PG_growth_modify_all = { trb = 0.20 com = 0.10 upp = 0.10 } }
 			60 = { PG_growth_modify_all = { trb = 0.35 com = 0.25 upp = 0.25 } }
 			40 = { PG_growth_modify_all = { trb = 0.60 com = 0.50 upp = 0.40 } }
-			15 = { PG_growth_modify_all = { trb = 0.75 com = 0.70 upp = 0.60 } }
-			5 = {  multiply_variable = { PG_upp_grow = 0.80 } }
+			20 = { PG_growth_modify_all = { trb = 0.75 com = 0.70 upp = 0.60 } }
+			10 = {  multiply_variable = { PG_upp_grow = 0.80 } }					# Raised to 10, to avoid devastation from piracy
 		}
 		trigger_switch = {
 			on_trigger = prosperity
