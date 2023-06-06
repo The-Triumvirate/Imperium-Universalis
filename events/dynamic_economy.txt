@@ -1,849 +1,134 @@
 namespace = dyneconomy
 
-########################################################################################
-# DYNAMIC ECONOMY
-# Several things will happen in the game:
-#  1. There is excess or shortage of a good, and prices will react accordingly
-#  2. Extractive resources (ores mostly) will eventually deplete
-#  3. Wildlife and other organic resources may deplete if overproduced, like exotic animals and pearls
-#  4. Provinces may change their produced goods
-########################################################################################
-country_event = {
-	id = dyneconomy.1
-	title = "dyneconomy.1.t"
-	desc = "dyneconomy.1.d"
-	picture = trade
-	#fire_only_once = yes
-	#major = yes
-	#is_triggered_only = yes
-	
-	trigger = {
-		had_global_flag = { flag = DE_recalc_prices days = 1800 } # a counter to last almost 5 years
-		ai = no
-	}
-	
-	mean_time_to_happen = {
-		months = 12
+
+province_event = {
+	id = dyneconomy.4
+	title = "dyneconomy.4.t"
+	desc = "dyneconomy.4.d"
+	picture = peasant_woman
 		
-	}
+	is_triggered_only = yes		# will fire only by province interaction, or random event (for AI countries)
+	
+	
 	
 	immediate = {
-		clr_global_flag = DE_recalc_prices		set_global_flag = DE_recalc_prices 		# Resets the timer
-		
-		DE_cleanup_prior_prices = yes
-		DE_cleanup_flags = yes 
-		
-		#every_country = {
-			#limit = { exists = yes }
-		every_province = {
-			limit = { is_city = yes }	# not uncolonized or nomad
-				owner = {
-					export_to_variable = { which = DE_goodsmod value = modifier:global_trade_goods_size_modifier }
-					change_variable = { DE_goodsmod = 1 }
-					PREV = { set_variable = { which = DE_goodsmod which = PREV } } 		# 1st prev: from owner to province. 2nd prev: owner
+		# Check how many CoTs are in this area
+		hidden_effect = {
+			if = {
+				limit = {
+					calc_true_if = {
+						area_for_scope_province = {		
+							type = all							# type = all forces into every province, otherwise doesn't get up of 1. 
+							province_has_center_of_trade_of_level = 1
+						}
+						amount = 4
+					}
 				}
-				export_to_variable = { which = DE_rur value = base_manpower }
-				export_to_variable = { which = DE_urb value = base_production }
-				export_to_variable = { which = DE_upp value = base_tax }
-				
-				export_to_variable = { which = DE_base_supply value = modifier:trade_goods_size }
-				#set_variable = { which = DE_goodsmod which = PREV }
-				#change_variable = { DE_goodsmod = 1 }		# +% goods size modifier
-				multiply_variable = { which = DE_base_supply which = DE_goodsmod } 			# applied % from country (mostly from Slaves)
-				
-				export_to_variable = { which = DE_goodsmod value = modifier:trade_goods_size_modifier } # provincial, re-use the variable
-				change_variable = { DE_goodsmod = 1 }		# +% goods size modifier
-				
-				multiply_variable = { which = DE_base_supply which = DE_goodsmod } 			# applied % from province (whatever it has)
-				
-				set_variable = { which = DE_goodsmod value = 0 }
-				
-				trigger_switch = {
-					on_trigger = trade_goods
-					grain = { 	DE_supply_effect = { good = grain } }
-					wine = { 	DE_supply_effect = { good = wine } }
-					wool = { 	DE_supply_effect = { good = wool } }
-					cloth = { 	DE_supply_effect = { good = cloth } }
-					fish = { 	DE_supply_effect = { good = fish } }
-					
-					fur = { 	DE_supply_effect = { good = fur } }
-					salt = { 	DE_supply_effect = { good = salt } }
-					naval_supplies = { DE_supply_effect = { good = naval } }
-					copper = { 	DE_supply_effect = { good = copper } }
-					gold = { 	DE_supply_effect = { good = gold } }	# Gold and silver count 50% towards supply (jewelery)
-					
-					iron = { 	DE_supply_effect = { good = iron } }
-					horses = { 	DE_supply_effect = { good = horses } }
-					spices = { 	DE_supply_effect = { good = spices } }
-					fruits = { 	DE_supply_effect = { good = fruits } }
-					amber = { 	DE_supply_effect = { good = amber } }
-					
-					silver = { 	DE_supply_effect = { good = silver } }	# Gold and silver count 50% towards supply (jewelery)
-					marble = { 	DE_supply_effect = { good = marble } }
-					olive = { 	DE_supply_effect = { good = olive } }
-					paper = { 	DE_supply_effect = { good = paper } }
-					ceramic = { DE_supply_effect = { good = ceramic } }
-					
-					meat_animals = { DE_supply_effect = { good = meatan } }
-					dyes = { 	DE_supply_effect = { good = dyes } }
-					honey = { 	DE_supply_effect = { good = honey } }
-					lead = { 	DE_supply_effect = { good = lead } }
-					glas = { 	DE_supply_effect = { good = glas } }
-					
-					silk = { 	DE_supply_effect = { good = silk } }
-					olibanum = { DE_supply_effect = { good = olibanum } }
-					pearls = { 	DE_supply_effect = { good = pearls } }
-					exotic_animals = { DE_supply_effect = { good = exotics } }
-					herbs = { 	DE_supply_effect = { good = herbs } }
-					
-					ivory = { 	DE_supply_effect = { good = ivory } }
-					jade = { 	DE_supply_effect = { good = jade } }
-					tin = { 	DE_supply_effect = { good = tin } }
-					rice = { 	DE_supply_effect = { good = rice } }
-					gems = { 	DE_supply_effect = { good = gems } }
-					
-					cotton = { 	DE_supply_effect = { good = cotton } }
-					tar_good = { DE_supply_effect = { good = targood } }
-					tea_good = { DE_supply_effect = { good = teagood } }
-					opium = { 	DE_supply_effect = { good = opium } }
-					metalware = { DE_supply_effect = { good = metalware } }
-					
-					sugar = { 	DE_supply_effect = { good = sugar } }
-					
-				}
-				ROOT = {
-					change_variable = { which = DE_rur which = PREV }
-					change_variable = { which = DE_urb which = PREV }
-					change_variable = { which = DE_upp which = PREV }
-				}
-				#set_variable = { which = DE_base_supply value = 0 }
-				set_variable = { which = DE_rur value = 0 }
-				set_variable = { which = DE_urb value = 0 }
-				set_variable = { which = DE_upp value = 0 }
+				set_variable = { which = DE_area_prov_cot value = 4 }
 			}
-		#}
-		
-		# Calculate supply for each good group
-		
-		change_variable = { which = DE_sup_basfood which = DE_sup_grain }
-		
-		multiply_variable = { DE_sup_wine = 0.5 } 
-		change_variable = { which = DE_sup_normfood which = DE_sup_wine } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_wine } 
-		multiply_variable = { DE_sup_wine = 2.0 } 
-				
-		multiply_variable = { DE_sup_wool = 0.5 } 
-		change_variable = { which = DE_sup_basfood which = DE_sup_wool } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_wool } 
-		multiply_variable = { DE_sup_wool = 2.0 } 
-				
-		change_variable = { which = DE_sup_normgood which = DE_sup_cloth }
-		change_variable = { which = DE_sup_basfood which = DE_sup_fish }
-		change_variable = { which = DE_sup_normgood which = DE_sup_fur }
-		
-		multiply_variable = { DE_sup_salt = 0.5 } 
-		change_variable = { which = DE_sup_normfood which = DE_sup_salt } 
-		change_variable = { which = DE_sup_miligood which = DE_sup_salt } 
-		multiply_variable = { DE_sup_salt = 2.0 } 
-		
-		multiply_variable = { DE_sup_naval = 0.5 } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_naval } 
-		change_variable = { which = DE_sup_miligood which = DE_sup_naval } 
-		multiply_variable = { DE_sup_naval = 2.0 } 
-		
-		# Copper, directly
-		
-		multiply_variable = { DE_sup_gold = 0.5 } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_gold } 
-		multiply_variable = { DE_sup_gold = 2.0 } 
-		
-		# Iron, directly
-		
-		multiply_variable = { DE_sup_horses = 0.33 } 
-		change_variable = { which = DE_sup_normfood which = DE_sup_horses } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_horses } 
-		change_variable = { which = DE_sup_miligood which = DE_sup_horses } 
-		multiply_variable = { DE_sup_horses = 3.0 } 
-		
-		multiply_variable = { DE_sup_spices = 0.5 } 
-		change_variable = { which = DE_sup_normfood which = DE_sup_spices } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_spices } 
-		multiply_variable = { DE_sup_spices = 2.0 } 
-		
-		change_variable = { which = DE_sup_normfood which = DE_sup_fruits } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_amber } 
-		
-		multiply_variable = { DE_sup_silver = 0.5 } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_silver } 
-		multiply_variable = { DE_sup_silver = 2.0 } 
-		
-		multiply_variable = { DE_sup_marble = 0.5 } 
-		change_variable = { which = DE_sup_civgood which = DE_sup_marble } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_marble } 
-		multiply_variable = { DE_sup_marble = 2.0 } 
-		
-		change_variable = { which = DE_sup_normfood which = DE_sup_olive } 
-		change_variable = { which = DE_sup_civgood which = DE_sup_paper } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_ceramic } 
-		
-		multiply_variable = { DE_sup_meatan = 0.5 } 
-		change_variable = { which = DE_sup_basfood which = DE_sup_meatan } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_meatan } 
-		multiply_variable = { DE_sup_meatan = 2.0 } 
-		
-		change_variable = { which = DE_sup_luxgood which = DE_sup_dyes } 
-		change_variable = { which = DE_sup_normfood which = DE_sup_honey } 
-		
-		# Lead directly
-		
-		change_variable = { which = DE_sup_normgood which = DE_sup_glas } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_silk } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_olibanum } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_pearls } 
-		
-		multiply_variable = { DE_sup_exotics = 0.5 } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_exotics } 
-		change_variable = { which = DE_sup_civgood which = DE_sup_exotics } 
-		multiply_variable = { DE_sup_exotics = 2.0 } 
-		
-		change_variable = { which = DE_sup_normgood which = DE_sup_herbs } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_ivory } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_jade } 
-		
-		# Tin directly
-		
-		change_variable = { which = DE_sup_basfood which = DE_sup_rice } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_gems } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_cotton } 
-		
-		multiply_variable = { DE_sup_targood = 0.5 } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_targood } 
-		change_variable = { which = DE_sup_miligood which = DE_sup_targood } 
-		multiply_variable = { DE_sup_targood = 2.0 } 
-		
-		change_variable = { which = DE_sup_normfood which = DE_sup_teagood } 
-		change_variable = { which = DE_sup_luxgood which = DE_sup_opium } 
-		
-		multiply_variable = { DE_sup_metalware = 0.5 } 
-		change_variable = { which = DE_sup_normgood which = DE_sup_metalware } 
-		change_variable = { which = DE_sup_miligood which = DE_sup_metalware } 
-		multiply_variable = { DE_sup_metalware = 2.0 } 
-		
-		change_variable = { which = DE_sup_luxgood which = DE_sup_sugar } 
-		
-		# Calculate demands. There is a fixed amount for each type of population - for now
-		
-		set_variable = { which = DE_dem_rurals which = DE_rur } multiply_variable = { DE_dem_rurals = 0.04 }
-		change_variable = { which = DE_dem_basfood which = DE_dem_rurals }
-		set_variable = { which = DE_dem_rurals which = DE_rur } multiply_variable = { DE_dem_rurals = 0.02 }
-		change_variable = { which = DE_dem_normfood which = DE_dem_rurals }
-		set_variable = { which = DE_dem_rurals which = DE_rur } multiply_variable = { DE_dem_rurals = 0.03 }
-		change_variable = { which = DE_dem_normgood which = DE_dem_rurals }
-		set_variable = { which = DE_dem_rurals which = DE_rur } multiply_variable = { DE_dem_rurals = 0.01 }
-		change_variable = { which = DE_dem_luxgood which = DE_dem_rurals }
-		set_variable = { which = DE_dem_rurals which = DE_rur } multiply_variable = { DE_dem_rurals = 0.01 }
-		change_variable = { which = DE_dem_miligood which = DE_dem_rurals }
-		
-		set_variable = { which = DE_dem_urbans which = DE_urb } multiply_variable = { DE_dem_urbans = 0.03 }
-		change_variable = { which = DE_dem_basfood which = DE_dem_urbans }
-		set_variable = { which = DE_dem_urbans which = DE_urb } multiply_variable = { DE_dem_urbans = 0.04 }
-		change_variable = { which = DE_dem_normfood which = DE_dem_urbans }
-		set_variable = { which = DE_dem_urbans which = DE_urb } multiply_variable = { DE_dem_urbans = 0.06 }
-		change_variable = { which = DE_dem_normgood which = DE_dem_urbans }
-		set_variable = { which = DE_dem_urbans which = DE_urb } multiply_variable = { DE_dem_urbans = 0.02 }
-		change_variable = { which = DE_dem_luxgood which = DE_dem_urbans }
-		set_variable = { which = DE_dem_urbans which = DE_urb } multiply_variable = { DE_dem_urbans = 0.01 }
-		change_variable = { which = DE_dem_miligood which = DE_dem_urbans }
-		
-		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.05 }
-		change_variable = { which = DE_dem_basfood which = DE_dem_uppers }
-		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.05 }
-		change_variable = { which = DE_dem_normfood which = DE_dem_uppers }
-		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.10 }
-		change_variable = { which = DE_dem_normgood which = DE_dem_uppers }
-		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.10 }
-		change_variable = { which = DE_dem_luxgood which = DE_dem_uppers }
-		set_variable = { which = DE_dem_uppers which = DE_upp } multiply_variable = { DE_dem_uppers = 0.01 }
-		change_variable = { which = DE_dem_miligood which = DE_dem_uppers }
-		
-			# for now, I will move all the civic amounts to 10% of total luxury demand. It can later be tied to "civilization", widespread use of marble for construction, hellenization, etc. Anyway, the basic is already done for now. 
-		set_variable = { which = DE_dem_civgood which = DE_dem_luxgood } multiply_variable = { DE_dem_civgood = 0.1 }
-		
-			# Demand for mineral ores: dependent on the current production of metalware (mixed) and mintage (50% of gold + silver production)
-		set_variable = { which = DE_dem_tin which = DE_sup_metalware }  multiply_variable = { DE_dem_tin = 0.1 }
-		set_variable = { which = DE_dem_iron which = DE_sup_metalware } set_variable = { which = DE_dem_copper which = DE_sup_metalware } 
-		if = {
-			limit = { has_global_flag = DE_iron_predominant }
-				 multiply_variable = { DE_dem_iron = 0.6 } multiply_variable = { DE_dem_copper = 0.3 }
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 3 } }
+				set_variable = { which = DE_area_prov_cot value = 3 }
+			}
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 2 } }
+				set_variable = { which = DE_area_prov_cot value = 2 }
+			}
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 1 } }
+				set_variable = { which = DE_area_prov_cot value = 1 }
+			}
+			else = { set_variable = { which = DE_area_prov_cot value = 0 } }
 		}
-		else = { multiply_variable = { DE_dem_iron = 0.2 } multiply_variable = { DE_dem_copper = 0.7 } }
-		
-		set_variable = { which = DE_dem_lead which = DE_sup_gold }
-		change_variable = { which = DE_dem_lead which = DE_sup_silver }
-		multiply_variable = { DE_dem_lead = 0.5 }
-		
-		######
-		# CALCULATE INTERSECTIONS OF DEMAND AND SUPPLY
-		######
-		
-		
-		# Let's go. In effects, to simplify things. Go to scripted effects / economic effects
-		DE_find_supdem_price = { type = basfood }
-		DE_find_supdem_price = { type = normfood }
-		DE_find_supdem_price = { type = normgood }
-		DE_find_supdem_price = { type = luxgood }
-		DE_find_supdem_price = { type = miligood }
-		
-		DE_find_supdem_price = { type = civgood }
-		DE_find_supdem_price = { type = lead }
-		DE_find_supdem_price = { type = iron }
-		DE_find_supdem_price = { type = tin }
-		DE_find_supdem_price = { type = copper }
+	}
+
+	option = {
+		name = "dyneconomy.4.1"		# First trade center
+		trigger = { NOT = { check_variable = { DE_area_prov_cot = 1 } } owner = { dip_power = 100 } }
+		owner = { add_dip_power = -100 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			province_event = { id = population_capacity.4 }
+		}
+	}
+	option = {
+		name = "dyneconomy.4.2"		# Second trade center
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 1 } owner = { dip_power = 200 } }
+		owner = { add_dip_power = -200 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			province_event = { id = population_capacity.4 }
+		}
+	}
+	option = {
+		name = "dyneconomy.4.3"		# Third trade center
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 2 } owner = { dip_power = 400 } }
+		owner = { add_dip_power = -400 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			province_event = { id = population_capacity.4 }
+		}
+	}
+	option = {
+		name = "dyneconomy.4.4"		# Fourth trade center (come on..)
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 3 } owner = { dip_power = 800 } }
+		owner = { add_dip_power = -800 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			province_event = { id = population_capacity.4 }
+		}
+	}
+	option = {
+		name = "dyneconomy.4.5"		# Fifth trade center (hah, you better use console commands)
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 4 } owner = { dip_power = 1500 } }
+		owner = { add_dip_power = -1500 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			province_event = { id = population_capacity.4 }
+		}
+	}
+	option = {
+		name = "dyneconomy.4.99"
+		if = {
+			limit = { NOT = { check_variable = { DE_area_prov_cot = 1 } } NOT = { owner = { dip_power = 100 } } }
+			custom_tooltip = DE_cot1_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 1 } NOT = { owner = { dip_power = 200 } } }
+			custom_tooltip = DE_cot2_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 2 } NOT = { owner = { dip_power = 400 } } }
+			custom_tooltip = DE_cot3_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 3 } NOT = { owner = { dip_power = 800 } } }
+			custom_tooltip = DE_cot4_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 4 } NOT = { owner = { dip_power = 1500 } } }
+			custom_tooltip = DE_cot5_lacks_dip
+		}
 		
 	}
 	
-	option = {
-		name = "dyneconomy.1.a"
-		country_event = { id = dyneconomy.2 days = 5 }
-	}
+	after = { set_variable = { which = DE_area_prov_cot value = 0 } }
+	
 }
 
-country_event = {
-	id = dyneconomy.2
-	title = "dyneconomy.2.t"
-	desc = "dyneconomy.2.d"
-	picture = trade
-	#fire_only_once = yes
-	major = yes
-	is_triggered_only = yes
-	
-	
-	immediate = {
-		
-	}
-	
-	option = {
-		name = "dyneconomy.2.a"
-		# Basic foods
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_basfood_verylow = {
-				change_price = { trade_goods = fish 	key = DE_BASF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_1	value = -0.33	duration = 1800	}	# 1/2
-			}
-			DE_basfood_low = {
-				change_price = { trade_goods = fish 	key = DE_BASF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_2	value = -0.25	duration = 1800	}	# 1/2
-			}
-			DE_basfood_stagnant = {
-				change_price = { trade_goods = fish 	key = DE_BASF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_3	value = -0.125	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_3	value = -0.125	duration = 1800	}	# 1/2
-			}
-			DE_basfood_normal = {
-				change_price = { trade_goods = fish 	key = DE_BASF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_4	value = 0.01	duration = 1800	}
-				change_price = { trade_goods = rice 	key = DE_BASF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_4	value = 0.01	duration = 1800	}
-			}
-			DE_basfood_rising = {
-				change_price = { trade_goods = fish 	key = DE_BASF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_5	value = 0.125	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_5	value = 0.125	duration = 1800	}	# 1/2
-			}
-			DE_basfood_high = {
-				change_price = { trade_goods = fish 	key = DE_BASF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_6	value = 0.25	duration = 1800	}	# 1/2
-			}
-			DE_basfood_veryhigh = {
-				change_price = { trade_goods = fish 	key = DE_BASF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = grain 	key = DE_BASF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = meat_animals 	key = DE_BASF_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = rice 	key = DE_BASF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_BASF_7	value = 0.50	duration = 1800	}	# 1/2
-			}
-		}
-		# Additional foods
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_normfood_verylow = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_1	value = -0.22	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_1	value = -0.33	duration = 1800	}	# 1/2
-			}
-			DE_normfood_low = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_2	value = -0.16	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_2	value = -0.25	duration = 1800	}	# 1/2
-			}
-			DE_normfood_stagnant = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_3	value = -0.08	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_3	value = -0.125	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_3	value = -0.125	duration = 1800	}	# 1/2
-			}
-			DE_normfood_normal = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_4	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = olive 	key = DE_ADDF_4	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_4	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = spices 	key = DE_ADDF_4	value = 0.01	duration = 1800	}
-				change_price = { trade_goods = tea_good key = DE_ADDF_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_4	value = 0.01	duration = 1800	}
-			}
-			DE_normfood_rising = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_5	value = 0.08	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_5	value = 0.125	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_5	value = 0.125	duration = 1800	}	# 1/2
-			}
-			DE_normfood_high = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_6	value = 0.16	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_6	value = 0.25	duration = 1800	}	# 1/2
-			}
-			DE_normfood_veryhigh = {
-				change_price = { trade_goods = fruits 	key = DE_ADDF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = honey 	key = DE_ADDF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_ADDF_7	value = 0.33	duration = 1800	}	# 1/3
-				change_price = { trade_goods = olive 	key = DE_ADDF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = salt 	key = DE_ADDF_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices 	key = DE_ADDF_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tea_good key = DE_ADDF_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_ADDF_7	value = 0.50	duration = 1800	}	# 1/2
-			}
-			
-		
-		}
-		# Normal goods (all that is not to be fed)
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_normgood_verylow = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_1	value = -0.33	duration = 1800	}	# 1/2
-			}
-			DE_normgood_low = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_2	value = -0.25	duration = 1800	}	# 1/2
-			}
-			DE_normgood_stagnant = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_3	value = -0.12	duration = 1800	}	# 1/2
-			}
-			DE_normgood_normal = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = meat_animals key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = metalware key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = naval_supplies 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = tar_good key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = wine 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = wool 	key = DE_NORMG_4	value = 0.01	duration = 1800	}	
-				
-			}
-			DE_normgood_rising = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_5	value = 0.12	duration = 1800	}	# 1/2
-			}
-			DE_normgood_high = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_6	value = 0.25	duration = 1800	}	# 1/2
-			}
-			DE_normgood_veryhigh = {
-				change_price = { trade_goods = ceramic 	key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = cloth 	key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = cotton 	key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = fur 		key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = glas 	key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = herbs 	key = DE_NORMG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = meat_animals	key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = metalware 	key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = naval_supplies key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = tar_good key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wine 	key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2
-				change_price = { trade_goods = wool 	key = DE_NORMG_7	value = 0.50	duration = 1800	}	# 1/2
-			}
-			
-			
-			
-		}
-		# Luxury Goods
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_luxgood_verylow = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_1	value = -0.22	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_1	value = -0.66	duration = 1800	}	
-			}
-			DE_luxgood_low = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_2	value = -0.16	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_2	value = -0.50	duration = 1800	}	
-			}
-			DE_luxgood_stagnant = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_3	value = -0.08	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_3	value = -0.25	duration = 1800	}	
-			}
-			DE_luxgood_normal = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = gems 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = gold 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = horses 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = ivory 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = lead 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = marble 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = olibanum key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = silver 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = spices 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = sugar 	key = DE_LUXG_4	value = 0.01	duration = 1800	}	
-				
-			}
-			DE_luxgood_rising = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_5	value = 0.08	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_5	value = 0.25	duration = 1800	}	
-			}
-			DE_luxgood_high = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_6	value = 0.16	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_6	value = 0.50	duration = 1800	}	
-			}
-			DE_luxgood_veryhigh = {
-				change_price = { trade_goods = amber 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = dyes 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = exotic_animals	key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = gems 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = gold		key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = horses	key = DE_LUXG_7	value = 0.33	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = ivory	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = jade 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = lead		key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble	key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = olibanum	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = opium 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = pearls 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = silk 	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-				change_price = { trade_goods = silver	key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = spices	key = DE_LUXG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = sugar	key = DE_LUXG_7	value = 1.00	duration = 1800	}	
-			}
-			
-		
-		}
-		# Military Goods
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_miligood_verylow = {
-				change_price = { trade_goods = horses		key = DE_MILG_1	value = -0.22	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_1	value = -0.33	duration = 1800	}	# 1/2	
-			}
-			DE_miligood_low = {
-				change_price = { trade_goods = horses		key = DE_MILG_2	value = -0.16	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_2	value = -0.25	duration = 1800	}	# 1/2	
-			}
-			DE_miligood_stagnant = {
-				change_price = { trade_goods = horses		key = DE_MILG_3	value = -0.08	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_3	value = -0.125	duration = 1800	}	# 1/2	
-			}
-			DE_miligood_normal = {
-				change_price = { trade_goods = horses 		key = DE_MILG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = metalware 	key = DE_MILG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = naval_supplies 	key = DE_MILG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = salt 		key = DE_MILG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = tar_good 	key = DE_MILG_4	value = 0.01	duration = 1800	}	
-				
-			}
-			DE_miligood_rising = {
-				change_price = { trade_goods = horses		key = DE_MILG_5	value = 0.08	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_5	value = 0.125	duration = 1800	}	# 1/2	
-			}
-			DE_miligood_high = {
-				change_price = { trade_goods = horses		key = DE_MILG_6	value = 0.16	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_6	value = 0.25	duration = 1800	}	# 1/2	
-			}
-			DE_miligood_veryhigh = {
-				change_price = { trade_goods = horses		key = DE_MILG_7	value = 0.33	duration = 1800	}	# 1/3	
-				change_price = { trade_goods = metalware	key = DE_MILG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = naval_supplies	key = DE_MILG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = salt			key = DE_MILG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = tar_good		key = DE_MILG_7	value = 0.50	duration = 1800	}	# 1/2	
-			}
-			
-		}
-		# "Civic" goods
-			# I don't like it how it is right now, so I may change it later on, to be affected by the amount of capitals, diplo slots, etc etc
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_civgood_verylow = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_1	value = -0.33	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_1	value = -0.66	duration = 1800	}	
-			}
-			DE_civgood_low = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_2	value = -0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_2	value = -0.50	duration = 1800	}	
-			}
-			DE_civgood_stagnant = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_3	value = -0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_3	value = -0.25	duration = 1800	}	
-			}
-			DE_civgood_normal = {
-				change_price = { trade_goods = exotic_animals 		key = DE_CIVG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = marble 		key = DE_CIVG_4	value = 0.01	duration = 1800	}	
-				change_price = { trade_goods = paper 		key = DE_CIVG_4	value = 0.01	duration = 1800	}	
-				
-			}
-			DE_civgood_rising = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_5	value = 0.125	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_5	value = 0.25	duration = 1800	}	
-			}
-			DE_civgood_high = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_6	value = 0.25	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_6	value = 0.50	duration = 1800	}	
-			}
-			DE_civgood_veryhigh = {
-				change_price = { trade_goods = exotic_animals key = DE_CIVG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = marble		key = DE_CIVG_7	value = 0.50	duration = 1800	}	# 1/2	
-				change_price = { trade_goods = paper		key = DE_CIVG_7	value = 1.00	duration = 1800	}	
-			}
-		}
-		# Raw minerals prices. All used to forge metalware or mint coins
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_copper_verylow = { 	change_price = { trade_goods = copper key = DE_COPP_1	value = -0.66	duration = 1800	} }
-			DE_copper_low = { 		change_price = { trade_goods = copper key = DE_COPP_2	value = -0.50	duration = 1800	} }
-			DE_copper_stagnant = { 	change_price = { trade_goods = copper key = DE_COPP_3	value = -0.25	duration = 1800	} }
-			DE_copper_normal = { 	change_price = { trade_goods = copper key = DE_COPP_4	value = 0.01	duration = 1800	} }
-			DE_copper_rising = { 	change_price = { trade_goods = copper key = DE_COPP_5	value = 0.25	duration = 1800	} }
-			DE_copper_high = { 		change_price = { trade_goods = copper key = DE_COPP_6	value = 0.50	duration = 1800	} }
-			DE_copper_veryhigh = { 	change_price = { trade_goods = copper key = DE_COPP_7	value = 1.00	duration = 1800	} }
-		}
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_iron_verylow = { 	change_price = { trade_goods = iron key = DE_IRON_1	value = -0.66	duration = 1800	} }
-			DE_iron_low = { 		change_price = { trade_goods = iron key = DE_IRON_2	value = -0.50	duration = 1800	} }
-			DE_iron_stagnant = { 	change_price = { trade_goods = iron key = DE_IRON_3	value = -0.25	duration = 1800	} }
-			DE_iron_normal = { 		change_price = { trade_goods = iron key = DE_IRON_4	value = 0.01	duration = 1800	} }
-			DE_iron_rising = { 		change_price = { trade_goods = iron key = DE_IRON_5	value = 0.25	duration = 1800	} }
-			DE_iron_high = { 		change_price = { trade_goods = iron key = DE_IRON_6	value = 0.50	duration = 1800	} }
-			DE_iron_veryhigh = { 	change_price = { trade_goods = iron key = DE_IRON_7	value = 1.00	duration = 1800	} }
-		}
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_tin_verylow = { 		change_price = { trade_goods = tin key = DE_TIN_1	value = -0.66	duration = 1800	} }
-			DE_tin_low = { 			change_price = { trade_goods = tin key = DE_TIN_2	value = -0.50	duration = 1800	} }
-			DE_tin_stagnant = { 	change_price = { trade_goods = tin key = DE_TIN_3	value = -0.25	duration = 1800	} }
-			DE_tin_normal = {  		change_price = { trade_goods = tin key = DE_TIN_4	value = 0.01	duration = 1800	} }
-			DE_tin_rising = { 		change_price = { trade_goods = tin key = DE_TIN_5	value = 0.25	duration = 1800	} }
-			DE_tin_high = { 		change_price = { trade_goods = tin key = DE_TIN_6	value = 0.50	duration = 1800	} }
-			DE_tin_veryhigh = { 	change_price = { trade_goods = tin key = DE_TIN_7	value = 1.00	duration = 1800	} }
-		}
-		trigger_switch = {
-			on_trigger = has_global_flag
-			DE_lead_verylow = { 	change_price = { trade_goods = lead key = DE_LEAD_1	value = -0.33	duration = 1800	} }
-			DE_lead_low = { 		change_price = { trade_goods = lead key = DE_LEAD_2	value = -0.25	duration = 1800	} }
-			DE_lead_stagnant = { 	change_price = { trade_goods = lead key = DE_LEAD_3	value = -0.125	duration = 1800	} }
-			DE_lead_normal = {  	change_price = { trade_goods = lead key = DE_LEAD_4	value = 0.01	duration = 1800	} }
-			DE_lead_rising = { 		change_price = { trade_goods = lead key = DE_LEAD_5	value = 0.125	duration = 1800	} }
-			DE_lead_high = { 		change_price = { trade_goods = lead key = DE_LEAD_6	value = 0.25	duration = 1800	} }
-			DE_lead_veryhigh = { 	change_price = { trade_goods = lead key = DE_LEAD_7	value = 0.50	duration = 1800	} }
-		}
-		
-	}
-	
-	after = {
-		DE_cleanup_prices_post = yes
-	
-	
-	}
-	
-}
+
+
+
+
+
 
