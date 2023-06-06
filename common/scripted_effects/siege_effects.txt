@@ -7,14 +7,14 @@
 
 SD_sack_devastation = {
 	# Loot and inflation
-	set_variable = { which = SD_looted value = $lootvalue$ }	divide_variable = { which = SD_looted value = 100 }
+	set_variable = { which = SD_looted value = $lootvalue$ }	multiply_variable = { SD_looted = 0.01 }
 	multiply_variable = { which = SD_inflation which = SD_looted }
 	multiply_variable = { which = SD_looted which = SD_loot }
 	
 	# Devastation
 	set_variable = { which = SD_devast value = $devst$ } 		multiply_variable = { which = SD_devast which = SD_destruction } # up to 200%/300%
 	set_variable = { which = SD_now_devst which = SD_devast }
-	set_variable = { which = SD_colat which = SD_devast }		divide_variable = { which = SD_colat value = 100 }
+	set_variable = { which = SD_colat which = SD_devast }		multiply_variable = { SD_colat = 0.01 }
 	multiply_variable = { which = SD_colat which = SD_loot }	# this SD colat is the BUDGET of all value that may be destroyed: a 5%
 	
 	while = {
@@ -31,9 +31,9 @@ SD_sack_devastation = {
 #	ENSLAVEMENT EFFECTS, happening in the Siege events
 ###
 
-	# SD_population_loss = { loss = 25 enslave = 100 }
+	# SD_population_loss = { loss = 25 enslave = 100 }		# an example of what is in the event
 
-SD_population_loss = {	# inputs: loss = 25 enslave = 0 . Done in %
+SD_population_loss = {	
 	# First: adapt the values to the parameters used in that option. If 0%, 25%, 50%, etc
 	multiply_variable = { SD_t_lost = $loss$ } 		multiply_variable = { SD_t_lost = 0.01 } 
 	multiply_variable = { SD_c_lost = $loss$ } 		multiply_variable = { SD_c_lost = 0.01 } 
@@ -42,44 +42,53 @@ SD_population_loss = {	# inputs: loss = 25 enslave = 0 . Done in %
 	multiply_variable = { SD_c_slave = $enslave$ } 	multiply_variable = { SD_c_slave = 0.01 } 
 	multiply_variable = { SD_u_slave = $enslave$ } 	multiply_variable = { SD_u_slave = 0.01 } 
 	
-	# Second: move slaves. Done in a while to not lose any of them
+	set_variable = { which = SD_total_lost which = SD_t_lost } 		
+	change_variable = { which = SD_total_lost which = SD_c_lost }	
+	change_variable = { which = SD_total_lost which = SD_u_lost }	# now saved for the province event
+	
+	set_variable = { which = SD_total_slaves which = SD_t_slave } 		
+	change_variable = { which = SD_total_slaves which = SD_c_slave }
+	change_variable = { which = SD_total_slaves which = SD_u_slave }
+	multiply_variable = { SD_total_slaves = 10 }					# now saved for the province event
+	
+	# Second: move slaves. Done in a while to not lose any of them. 3.1: NOW MOVED TO "CAPTIVES"!! Must be sold or integrated
 	while = { 
 		limit = { check_variable = { SD_t_slave = 1 } base_manpower = 2 }
 		subtract_variable = { SD_t_slave = 1 } add_base_manpower = -1 
-		ROOT = { change_variable = { slaves = 10 } }
+		ROOT = { change_variable = { SD_captives = 10 } }
 		change_variable = { PS_rur_slv = 1.0 } # statistics
 	}
 	if = { 
 		limit = { check_variable = { SD_t_slave = 0.01 } NOT = { check_variable = { SD_t_slave = 1.0 } } }	# fractional
-		set_variable = { which = slaves which = SD_t_slave } multiply_variable = { slaves = 10 } 
-		ROOT = { change_variable = { which = slaves which = PREV } }
-		set_variable = { which = SD_t_slave value = 0 } set_variable = { which = slaves value = 0 }
+		set_variable = { which = SD_captives which = SD_t_slave } multiply_variable = { SD_captives = 10 } 			# in province
+		ROOT = { change_variable = { which = SD_captives which = PREV } }										# in the attacker country
+		set_variable = { which = SD_t_slave value = 0 } set_variable = { which = SD_captives value = 0 }
 	}
 	else = { set_variable = { which = SD_t_slave value = 0 } }
 	while = { 
 		limit = { check_variable = { SD_c_slave = 1 } base_production = 2 }
 		subtract_variable = { SD_c_slave = 1 } add_base_production = -1 
-		ROOT = { change_variable = { slaves = 10 } }
+		ROOT = { change_variable = { SD_captives = 10 } }
 		change_variable = { PS_urb_slv = 1.0 } # statistics
 	}
 	if = { 
 		limit = { check_variable = { SD_c_slave = 0.01 } NOT = { check_variable = { SD_c_slave = 1.0 } } }	# fractional
-		set_variable = { which = slaves which = SD_c_slave } multiply_variable = { slaves = 10 } 
-		ROOT = { change_variable = { which = slaves which = PREV } }
-		set_variable = { which = SD_c_slave value = 0 } set_variable = { which = slaves value = 0 }
+		set_variable = { which = SD_captives which = SD_c_slave } multiply_variable = { SD_captives = 10 } 
+		ROOT = { change_variable = { which = SD_captives which = PREV } }
+		set_variable = { which = SD_c_slave value = 0 } set_variable = { which = SD_captives value = 0 }
 	}
 	else = { set_variable = { which = SD_c_slave value = 0 } }
 	while = { 
 		limit = { check_variable = { SD_u_slave = 1 } base_tax = 2 }
 		subtract_variable = { SD_u_slave = 1 } add_base_tax = -1 
-		ROOT = { change_variable = { slaves = 10 } }
+		ROOT = { change_variable = { SD_captives = 10 } }
 		change_variable = { PS_upp_slv = 1.0 } # statistics
 	}
 	if = { 
 		limit = { check_variable = { SD_u_slave = 0.01 } NOT = { check_variable = { SD_u_slave = 1.0 } } }	# fractional
-		set_variable = { which = slaves which = SD_u_slave } multiply_variable = { slaves = 10 } 
-		ROOT = { change_variable = { which = slaves which = PREV } }
-		set_variable = { which = SD_u_slave value = 0 } set_variable = { which = slaves value = 0 }
+		set_variable = { which = SD_captives which = SD_u_slave } multiply_variable = { SD_captives = 10 } 
+		ROOT = { change_variable = { which = SD_captives which = PREV } }
+		set_variable = { which = SD_u_slave value = 0 } set_variable = { which = SD_captives value = 0 }
 	}
 	else = { set_variable = { which = SD_u_slave value = 0 } }
 	
@@ -145,8 +154,8 @@ SD_refugees_effect = {
 	
 	# track the origin province
 	set_variable = { which = prov_id which = PREV } 		
-	set_variable = { which = SD_ref_origin which = prov_id }	
-	set_variable = { which = prov_id which = prov_id_base } 
+	set_variable = { which = SD_ref_origin which = prov_id }	# to let them back, if so
+	set_variable = { which = prov_id which = prov_id_base } 	# back to itself
 	
 	# flag for the event
 	set_province_flag = SD_new_refugees

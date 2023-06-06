@@ -3,9 +3,6 @@ namespace = sieges
 ##########
 #	SACK OF CITIES events
 #	Flowchart is as follows
-#		if: >X dev -> this event. Starting development can be chosen through a decision, it's 6, 8, 10, 15 or unrestricted
-#		else_if: >6 to X -> a hidden, automatic event (to be done)
-#		dev 1 to 5: nothing
 #
 #########
 
@@ -91,32 +88,25 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 					# As you can see, it will be difficult to have a 100% efficiency without a big army, so you won't be able to carpet-siege fast and expect to earn much. It should, at least for the human player, slow down their wartime expansion. 
 				##
 				# LOOT: Calculate lootable amount (buildings). Max amount: 33% of build cost. Affected by siege % ratio
-				# Inflation, first part
-				export_to_variable = { which = SD_loot value = trigger_value:monthly_income who = ROOT }
-				set_variable = { which = SD_inflation value = 100 } 
-				if = { limit = { NOT = { check_variable = { SD_loot = 1 } } } set_variable = { which = SD_loot value = 1 } }
-				divide_variable = { which = SD_inflation which = SD_loot } 
 				
 				# Loot itself
 				set_variable = { which = SD_loot value = 0 }
 				SD_find_total_loot = yes
 				multiply_variable = { which = SD_loot which = SD_siege_power }
 				
-				# Inflation, second part
-				multiply_variable = { which = SD_inflation which = SD_loot } 	multiply_variable = { SD_inflation = 0.01 }	# 100 back
-				multiply_variable = { SD_inflation = 0.12 }	# 4x the inflation gotten from peace deals (0,015 x 4), and x2 from the Inflation from Peace Gold formula. 
+				# Inflation, see common/scripted effects/inflation_effect. Has two parts, one in inmediate and another in the options. 
+				SD_inflation_prepare = { var = SD_loot strength = 8 }	# 4x inflation from peace deals, and x2 from the Inflation from Peace Gold formula. 
 				
 				##
 				# ENSLAVEMENT
 					# Find suitable population to be enslaved/killed (explanation)
 				export_to_variable = { which = SD_slave_eff value = modifier:native_assimilation who = ROOT}	# Enslaving efficiency
-				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80%. 
+				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
 				
 				export_to_variable = { which = SD_t_lost value = base_manpower }
 				export_to_variable = { which = SD_c_lost value = base_production }
 				export_to_variable = { which = SD_u_lost value = base_tax }
 				
-					# These losses will apply only in case of city destroyed. For Sacking and Enslavement, it's 1/4 lost, same amt if enslaved. 
 				if = {
 					limit = { has_global_flag = popgrowth_vanilla }		# "Vanilla" events: no Popgrowth Mechanics. Loss of 20%/40%/75% pops. 
 					multiply_variable = { SD_t_lost = 0.2 } multiply_variable = { SD_c_lost = 0.4 } multiply_variable = { SD_u_lost = 0.75 }
@@ -168,6 +158,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				change_variable = { which = SD_total_lost which = SD_c_lost }	change_variable = { which = SD_total_slaves which = SD_c_slave }
 				change_variable = { which = SD_total_lost which = SD_u_lost }	change_variable = { which = SD_total_slaves which = SD_u_slave }
 				multiply_variable = { SD_total_slaves = 10 }
+					# Careful, these Totals are just for the event and tooltips. The actual values, to show in the prov modifier, will be defined in the scripted eff. 
 				
 				set_variable = { which = SD_loot_25 which = SD_loot } 		multiply_variable = { SD_loot_25 = 0.25 }
 				set_variable = { which = SD_infl_25 which = SD_inflation } 	multiply_variable = { SD_infl_25 = 0.25 }
@@ -214,8 +205,9 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 		# nothing			   0
 		# Liberate (TBD)	
 	
+	# 1: TRIBUTE (25% loot value, 10% devastation, no pops lost or enslaved)
 	option = {
-		name = "sieges.1.1"		# TRIBUTE (25% loot value, 10% devastation, no pops lost or enslaved)
+		name = "sieges.1.1"		
 		
 		ai_chance = {			# AI chance: will do if lacks military power
 			factor = 30
@@ -230,19 +222,22 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			# Province effect
 			FROM = {
 				SD_sack_devastation = {	lootvalue = 25	devst = 10 }
+				SD_population_loss = { loss = 0 enslave = 0 }
 				collateral_damage_eff = { hd = 10 size = 100 }	# See Scripted Effects, very cool
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
 				add_province_modifier = { name = SD_was_tributed duration = 365 }	# Shows what happened in the siege
 				province_event = { id = population_capacity.4 }
 			}
 			# Country, besieger effect
-			money_gain_effect = { var = SD_looted } inflation_gain_effect = { var = SD_inflation }
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 			
 		}
 		add_mil_power = -5
 	}
+	
+	# 2: SACK (100% loot value, 40% devastation, 1/4 pops lost, no enslaved)
 	option = {
-		name = "sieges.1.2"		# SACK (100% loot value, 40% devastation, 1/4 pops lost, no enslaved)
+		name = "sieges.1.2"		
 		
 		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low siege power, to economize mil power
 			factor = 30
@@ -266,14 +261,16 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			}
 			
 			# Country, besieger effect
-			money_gain_effect = { var = SD_looted } inflation_gain_effect = { var = SD_inflation }
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 		}
 		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
 		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -20 }
 		else = { add_mil_power = -10 }
 	}
+	
+	# 3: ENSLAVE (25% value, 20% devastation, pops above 60/40/20% capacity will be lost or enslaved)
 	option = {
-		name = "sieges.1.3"		# ENSLAVE (25% value, 20% devastation, pops above 60/40/20% capacity will be lost or enslaved)
+		name = "sieges.1.3"		
 		
 		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low sack ratio, to economize mil power
 			factor = 40
@@ -298,15 +295,17 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				province_event = { id = population_capacity.4 }
 			}
 			# Country, besieger effect
-			money_gain_effect = { var = SD_looted } inflation_gain_effect = { var = SD_inflation }
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 			
 		}
 		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
 		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -20 }
 		else = { add_mil_power = -10 }
 	}
+	
+	# 4: DESTROY (100% loot value, 40% devastation with 2x loot size, same slaves as before)
 	option = {
-		name = "sieges.1.4"		# DESTROY (100% loot value, 40% devastation with 2x loot size, same slaves as before)
+		name = "sieges.1.4"		
 		
 		ai_chance = {			# AI chance: will do if has enough power, and the sack ratio is high. It will "aim to kill"
 			factor = 30
@@ -333,22 +332,22 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 			}
 			
 			# Country, besieger effect
-			money_gain_effect = { var = SD_looted } inflation_gain_effect = { var = SD_inflation }
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 		}
 		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
 		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -50 }
 		else = { add_mil_power = -25 }
 	}
 	
-	
+	# 5: DELENDA EST (100% value, 100% devastation, all pops lost but one tribal, 50% enslaved
 	option = {
-		name = "sieges.1.5"		# DELENDA EST (100% value, 100% devastation, all pops lost but one tribal, 50% enslaved
+		name = "sieges.1.5"		
 		ai_chance = {			# AI chance: ALWAYS
 			factor = 100
 			modifier = { factor = 5.0 FROM = { check_variable = { SD_siege_power = 0.6 } } }
 		}
 		trigger = { 
-			FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } 	# upped development to 20, only for real capitals
+			#FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } 	# upped development to 20, only for real capitals
 		}
 		custom_tooltip = SD_SIEGES_DELENDA
 		hidden_effect = {
@@ -372,12 +371,14 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				province_event = { id = population_capacity.4 }
 			}
 			# Country, besieger effect
-			money_gain_effect = { var = SD_looted } inflation_gain_effect = { var = SD_inflation }
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 		}
 		add_mil_power = -150	# not added to trigger, so you can go negative for this very deserving reason
 	}
+	
+	# Leave them be
 	option = {
-		name = "sieges.1.6"		# Leave them be
+		name = "sieges.1.6"	
 		ai_chance = {
 			factor = 10
 		}
@@ -419,26 +420,29 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 	
 }
 
-country_event = {		
+country_event = {			# Simplified event, when under X value. By on-action. FROM = province, ROOT = attacker country, owner = defender country
 	id = sieges.2
 	title = "sieges.2.t"
 	desc = "sieges.2.d"
 	picture = looting
 	hidden = yes				# Hidden! only one option
 	is_triggered_only = yes		
-								# Automatic event, for low-development provinces. Will have very small effects: (only 5% population enslaved, 5% value of buildings, no destruction, and 10% devastation). It will be seen as "Has been raided"
 	trigger = {
-		FROM = { development = 6 }
+		FROM = {
+			development = 3		# limited for btw 3 and X (6, 8, 10, etc)
+			NOT = { SD_trigger_recently_attacked = yes }
+			NOT = { owned_by = ROOT }		# Avoids sacking previously occupied owned provinces
+			OR = {
+				owner = { is_in_war = { attackers = ROOT } }	# checks the owner is at war with the besieger. 
+				owner = { is_in_war = { defenders = ROOT } }	# this way it only works for wars, not for rebels
+			}
+		}
 		OR = {
 			AND = { has_global_flag = siege_cities_15 	FROM = { NOT = { development = 15 } } }
 			AND = { has_global_flag = siege_cities_12 	FROM = { NOT = { development = 12 } } }
 			AND = { has_global_flag = siege_cities_10 	FROM = { NOT = { development = 10 } } }
 			AND = { has_global_flag = siege_cities_8 	FROM = { NOT = { development = 8 } } }
-			
-		}
-		NOT = {
-			OR = {  has_province_modifier = SS_was_raided 	 has_province_modifier = SS_was_delenda has_province_modifier = SS_was_enslaved
-					has_province_modifier = SS_was_destroyed has_province_modifier = SS_was_sacked 	has_province_modifier = SS_was_tributed } 
+			AND = { has_global_flag = siege_cities_6 	FROM = { NOT = { development = 6 } } }
 		}
 		
 	}
@@ -447,33 +451,96 @@ country_event = {
 	immediate = {
 		
 		hidden_effect = {
+			
+			
 			FROM = {
 				# Initial cleanup, to remove variables stored in the province modifiers
-				set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 } 
+				#set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 } 
 				
 				# Sack efficiency (army, ferocity, ratio)
-				export_to_variable = { which = prov_inf value = trigger_value:infantry_in_province }
-				export_to_variable = { which = prov_cav value = trigger_value:cavalry_in_province }
-				export_to_variable = { which = prov_arc value = trigger_value:artillery_in_province }
+				set_variable = { which = SD_siege_power value = 0 }
+				export_to_variable = { which = SD_ferocity value = trigger_value:infantry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:cavalry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:artillery_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				set_variable = { which = SD_looted which = SD_siege_power }
 				
-				set_variable = { which = SD_siege_power which = prov_inf }
-				change_variable = { which = SD_siege_power which = prov_cav } change_variable = { which = SD_siege_power which = prov_arc }
+				export_to_variable = { which = SD_ferocity value = modifier:max_revolutionary_zeal who = ROOT }	# repurposed modifier
+				multiply_variable = { which = SD_siege_power which = SD_ferocity }
 				
-				set_variable = { which = SD_ferocity value = 5 }
-				# and other modifiers that affect ferocity
+				export_to_variable = { which = SD_ferocity value = development } 	# repurposed variables, the least the better
+				multiply_variable = { SD_ferocity = 10 }	divide_variable = { which = SD_siege_power which = SD_ferocity } 
+				set_variable = { which = SD_destruction which = SD_siege_power }	# power = what is being taken. Destruction = collateral damage
+				if = { limit = { check_variable = { SD_siege_power = 1 } } 	set_variable = { which = SD_siege_power value = 1 } }	# max 100%
+				if = { limit = { check_variable = { SD_destruction = 3 } } 	set_variable = { which = SD_destruction value = 3 } }	# max 300% in limited
 				
-				set_variable = { which = sack_ratio which = SD_siege_power } 	multiply_variable = { which = sack_ratio which = SD_ferocity }
+				# Inflation, first part
+				export_to_variable = { which = SD_loot value = trigger_value:monthly_income who = ROOT }
+				set_variable = { which = SD_inflation value = 100 } 
+				if = { limit = { NOT = { check_variable = { SD_loot = 1 } } } set_variable = { which = SD_loot value = 1 } }
+				divide_variable = { which = SD_inflation which = SD_loot } 
 				
-				export_to_variable = { which = SD_tot_now value = development } 	multiply_variable = { SD_tot_now = 10 }	# pops in thousands
-				divide_variable = { which = sack_ratio which = SD_tot_now } 	set_variable = { which = sack_display which = sack_ratio }
-				if = { limit = { check_variable = { sack_ratio = 1 } } 		set_variable = { which = sack_ratio value = 1 } }		# max 100%
+				# Loot itself
+				set_variable = { which = SD_loot value = 0 }
+				SD_find_total_loot = yes
+				multiply_variable = { which = SD_loot which = SD_siege_power }
 				
-				# Calculate lootable amount (buildings). Always 75% of build cost
-				set_variable = { which = loot_value value = 0 }
-				find_total_loot_value = yes
+				# Inflation, second part
+				multiply_variable = { which = SD_inflation which = SD_loot } 	multiply_variable = { SD_inflation = 0.01 }	# 100 back
+				multiply_variable = { SD_inflation = 0.12 }	# 4x the inflation gotten from peace deals (0,015 x 4), and x2 from the Inflation from Peace Gold formula. 
 				
-				set_variable = { which = SS_simple_total which = SD_tot_now } 	multiply_variable = { SS_simple_total = 0.05 }
-				multiply_variable = { which = SS_simple_total which = sack_ratio }
+				##
+				# ENSLAVEMENT
+					# Find suitable population to be enslaved/killed (explanation)
+				export_to_variable = { which = SD_slave_eff value = modifier:native_assimilation who = ROOT}	# Enslaving efficiency
+				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
+				
+				export_to_variable = { which = SD_t_lost value = base_manpower }
+				export_to_variable = { which = SD_c_lost value = base_production }
+				export_to_variable = { which = SD_u_lost value = base_tax }
+				
+				if = {
+					limit = { has_global_flag = popgrowth_vanilla }		# "Vanilla" events: no Popgrowth Mechanics. Loss of 20%/40%/75% pops. 
+					multiply_variable = { SD_t_lost = 0.2 } multiply_variable = { SD_c_lost = 0.4 } multiply_variable = { SD_u_lost = 0.75 }
+				}
+				else = {
+					set_variable = { which = SD_t_slave which = PG_trb_cap } multiply_variable = { SD_t_slave = 0.6 }	# min 60% rural cap
+					set_variable = { which = SD_c_slave which = PG_com_cap } multiply_variable = { SD_c_slave = 0.4 }	# min 40% urban cap
+					set_variable = { which = SD_u_slave which = PG_upp_cap } multiply_variable = { SD_u_slave = 0.3 }	# min 30% upper cap
+					
+					# if to lose > min capacity, lose the excess. If not, minimum prize of 0.45 (x% enslaved), no pop will be lost
+					if = { 		limit = { check_variable = { which = SD_t_lost which = SD_t_slave } } 
+								subtract_variable = { which = SD_t_lost which = SD_t_slave } }
+					else = { 	set_variable = { which = SD_t_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_c_lost which = SD_c_slave } } 
+								subtract_variable = { which = SD_c_lost which = SD_c_slave } }
+					else = { 	set_variable = { which = SD_c_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_u_lost which = SD_u_slave } }
+								subtract_variable = { which = SD_u_lost which = SD_u_slave } }
+					else = { 	set_variable = { which = SD_u_lost value = 0.45 } }
+					
+				}
+				# First separation: enslavement % from total lost
+				set_variable = { which = SD_t_slave which = SD_t_lost } multiply_variable = { which = SD_t_slave which = SD_slave_eff }
+				set_variable = { which = SD_c_slave which = SD_c_lost } multiply_variable = { which = SD_c_slave which = SD_slave_eff }
+				set_variable = { which = SD_u_slave which = SD_u_lost } multiply_variable = { which = SD_u_slave which = SD_slave_eff }
+				
+				# Split enslave/lost, and 
+				subtract_variable = { which = SD_t_lost which = SD_t_slave }
+				subtract_variable = { which = SD_c_lost which = SD_c_slave }
+				subtract_variable = { which = SD_u_lost which = SD_u_slave }
+				
+				# Siege ratio % applied: up to 100% in enslavements and up to 300% in losses (loss = 50% killed, 50% escaped)
+				multiply_variable = { which = SD_t_lost which = SD_destruction } multiply_variable = { which = SD_t_slave which = SD_siege_power } 
+				multiply_variable = { which = SD_c_lost which = SD_destruction } multiply_variable = { which = SD_c_slave which = SD_siege_power } 
+				multiply_variable = { which = SD_u_lost which = SD_destruction } multiply_variable = { which = SD_u_slave which = SD_siege_power } 
+				
+				multiply_variable = { SD_t_lost = 0.001 } multiply_variable = { SD_t_lost = 1000 } 
+				multiply_variable = { SD_c_lost = 0.001 } multiply_variable = { SD_c_lost = 1000 } 
+				multiply_variable = { SD_u_lost = 0.001 } multiply_variable = { SD_u_lost = 1000 } 
+				
 				
 			}
 		}
@@ -488,25 +555,20 @@ country_event = {
 		}
 		
 		hidden_effect = {
-			# Province effect
+			# Province effect		
 			FROM = {
-				set_variable = { which = sack_lost value = 0.05 }
-				multiply_variable = { which = sack_lost which = loot_value } 	multiply_variable = { which = sack_lost which = sack_ratio }
-				set_variable = { which = prov_devst value = 10 } 				multiply_variable = { which = prov_devst which = sack_ratio }
-				
-				# Show variables in the province modifier, to see what happened
-				set_variable = { which = SS_looted_value which = sack_lost }	set_variable = { which = SS_devastation_done which = prov_devst }
-				while = { limit = { check_variable = { prov_devst = 1 } } 		subtract_variable = { prov_devst = 1 } add_devastation = 1 }
-				set_variable = { which = cash_income which = sack_lost }
-				add_province_modifier = { name = SS_was_raided duration = 720 }		# to avoid being hit again in X days
-				set_variable = { which = SS_slaves_taken which = SS_simple_total }	# slaves taken: to province modifier
+				SD_sack_devastation = {	lootvalue = 10	devst = 10 }		set_variable = { which = SD_colat value = 0 }
+				SD_population_loss = { loss = 10 enslave = 10 }				
+				ROOT = { 
+					set_variable = { which = SD_looted which = PREV } 	set_variable = { which = SD_inflation which = PREV } 
+					set_country_flag = SD_recent_captives
+				}
+				add_province_modifier = { name = SD_was_raided duration = 730 }	# Shows what happened in the siege
+				province_event = { id = population_capacity.4 }
 			}
-			
 			# Country, besieger effect
-			set_variable = { which = cash_income which = FROM } 	money_income = yes
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
 			
-			set_variable = { which = SS_simple_total which = FROM } change_variable = { which = slaves which = SS_simple_total }
-			set_variable = { which = SS_simple_total value = 0 }
 			
 		}
 	}
@@ -516,9 +578,8 @@ country_event = {
 		FROM = {
 			set_variable = { which = SD_t_slave value = 0 } 	set_variable = { which = SD_c_slave value = 0 } 
 			set_variable = { which = SD_u_slave value = 0 } 	set_variable = { which = SD_slave_eff value = 0 } 	
-			set_variable = { which = SD_inflation value = 0 } 	set_variable = { which = SD_loot value = 0 } 
 			set_variable = { which = SD_destruction value = 0 } set_variable = { which = SD_siege_power value = 0 } 
-			set_variable = { which = SD_ferocity value = 0 } 	
+			set_variable = { which = SD_ferocity value = 0 } 	set_variable = { which = SD_loot value = 0 } 
 			
 		}
 		
@@ -545,6 +606,7 @@ country_event = {
 	}
 	after = { hidden_effect = { country_event = { id = media.8 } } }
 }
+
 country_event = {	# EXPLANATION
 	id = sieges.4
 	title = "sieges.4.t"
