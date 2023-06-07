@@ -1,0 +1,90 @@
+#Ask for government advice to subject
+start_tribal_raid = {
+	category = covert
+	alert_index = 11
+	alert_tooltip = start_tribal_raid_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		always = no
+	}
+	is_allowed = {
+		is_at_war = no
+		has_spy_network_in = {
+			who = FROM
+			value = 10
+		}
+		custom_trigger_tooltip = {
+			tooltip = NEIGHBOR_NEUTRAL_COUNTRY
+			NOT = { overlord_of = FROM }
+			FROM = {
+				NOT = { alliance_with = ROOT }
+				NOT = { is_subject_of = ROOT }
+				NOT = { truce_with = ROOT }
+				NOT = { marriage_with = ROOT }
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = NOT_MADE_RECENT_RAID_CT
+			OR = {
+				NOT = { has_country_flag = made_recent_raid_flag }
+				had_country_flag = {
+					flag = made_recent_raid_flag
+					days = 1825
+				}
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = NOT_RECENTLY_RAIDED_CT
+			FROM = {
+				OR = {
+					NOT = { has_country_flag = recently_raided_flag }
+					had_country_flag = {
+						flag = recently_raided_flag
+						days = 1825
+					}
+				}
+			}
+		}
+	}
+	on_accept = {
+		add_spy_network_in = {
+			who = FROM
+			value = -10
+		}
+		country_event = { id = tribal_raid.1 }
+		hidden_effect = {
+			FROM = {
+				save_global_event_target_as = country_raid_target
+				if = {
+					limit = { NOT = { has_country_flag = recently_raided_flag } }
+					set_country_flag = recently_raided_flag
+				}
+				else = { clr_country_flag = recently_raided_flag }
+			}
+			if = {
+				limit = { NOT = { has_country_flag = made_recent_raid_flag } }
+				set_country_flag =  made_recent_raid_flag
+			}
+			else = { clr_country_flag = made_recent_raid_flag }
+		}
+	}
+
+	ai_will_do = {
+		manpower_percentage = 0.66
+		manpower = 8
+		army_size_percentage = 0.66
+		stability = 0
+		NOT = {
+			reverse_has_opinion = {
+				who = ROOT
+				value = 100
+			}
+		}
+		if = {
+			limit = { any_neighbor_country = { neither_tribal_nor_native_trigger = yes } }
+			FROM = { neither_tribal_nor_native_trigger = yes }
+		}
+		else = { FROM = { tribal_or_native_trigger = yes } }
+	}
+}

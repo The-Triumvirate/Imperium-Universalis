@@ -11,7 +11,22 @@ interaction = {
     }
     effect = {
         custom_tooltip = ESTATES_SALE_OF_TITLES_DESC
-        give_estate_land_share_gigantic = { estate = all }
+        change_estate_land_share = {
+            estate = estate_nobility
+            share = 5
+        }
+		change_estate_land_share = {
+            estate = estate_priesthood
+            share = 3
+        }
+		change_estate_land_share = {
+            estate = estate_merchants
+            share = 2
+        } 
+		change_estate_land_share = {
+            estate = estate_clans
+            share = 3
+        }
 		add_years_of_estate_land_income = 0.2
         add_estate_loyalty = {
             estate = all
@@ -134,7 +149,7 @@ interaction = {
     trigger = {
         NOT = { has_any_active_estate_agenda = yes }
 		hidden_trigger = { has_any_estates = yes }
-		
+		NOT = { crown_land_share = 75 }
     }
 
     effect = {
@@ -177,7 +192,7 @@ interaction = {
 
     trigger = {
 		hidden_trigger = { has_any_estates = yes }
-        NOT = { crown_land_share = 100 }
+        NOT = { crown_land_share = 75 }
         NOT = { num_of_rebel_armies = 1 }
 		NOT = { num_of_rebel_controlled_provinces = 1 }
 		#The following if/else_if-statements match those in estate_privileges_and_agendas_events.2.a. If those change, these should too.
@@ -188,64 +203,65 @@ interaction = {
 		custom_tooltip = SEPERATOR_TOOLTIP
 		if = {
 		  limit = {
-		    has_estate = estate_clans
+		    	has_estate = estate_clans
 		    }
-			 take_estate_land_share_large = {estate = estate_clans}
+			take_estate_land_share_large = {estate = estate_clans}
 			add_estate_loyalty = {
-            estate = estate_clans
-            loyalty = -20
-            short = yes
-			 }
+            	estate = estate_clans
+            	loyalty = -20
+            	short = yes
 			}
+		}
 		if = {
 		  limit = {
-		    has_estate = estate_nobility
-		    NOT = { has_estate_privilege = estate_nobility_statutory_rights }
-			NOT = { has_reform = aristocratic_land_reform }
+				has_estate = estate_nobility
+		    	NOT = { has_estate_privilege = estate_nobility_statutory_rights }
+				NOT = { has_reform = aristocratic_land_reform }
 		    }
-			 take_estate_land_share_large = {estate = estate_nobility}
+			take_estate_land_share_large = {estate = estate_nobility}
 			add_estate_loyalty = {
-            estate = estate_nobility
-            loyalty = -20
-            short = yes
-			 }
+            	estate = estate_nobility
+            	loyalty = -20
+            	short = yes
 			}
+		}
 		if = {
 		   limit = {
-		     has_estate = estate_priesthood
-		     NOT = { has_estate_privilege = estate_priesthood_statutory_rights }
-			 NOT = { has_reform = temple_land_reform }
-			 }
-			 take_estate_land_share_large = {estate = estate_priesthood}
-			 add_estate_loyalty = {
-			 estate = estate_priesthood
-			 loyalty = -20
-			 short = yes
-			 }
+		    	has_estate = estate_priesthood
+		    	NOT = { has_estate_privilege = estate_priesthood_statutory_rights }
+				NOT = { has_reform = temple_land_reform }
 			}
+			take_estate_land_share_large = {estate = estate_priesthood}
+			add_estate_loyalty = {
+				estate = estate_priesthood
+				loyalty = -20
+				short = yes
+			}
+		}
 		if = {
 		   limit = {
-		     has_estate = estate_merchants
-	         NOT = { has_estate_privilege = estate_merchants_statutory_rights }
-			 NOT = { has_reform = private_land_reform }
-			 }
-			 take_estate_land_share_large = {estate = estate_merchants}
-			 add_estate_loyalty = {
-			 estate = estate_merchants
-			 loyalty = -20
-			 short = yes
-			 }
+		    	has_estate = estate_slaves
 			}
-			 
+			take_estate_land_share_gigantic = {estate = estate_slaves}
+		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = recent_land_seizure }
-				
+		   limit = {
+		    	has_estate = estate_merchants
+	        	NOT = { has_estate_privilege = estate_merchants_statutory_rights }
+				NOT = { has_reform = private_land_reform }
 			}
+			take_estate_land_share_large = {estate = estate_merchants}
+			add_estate_loyalty = {
+				estate = estate_merchants
+				loyalty = -20
+				short = yes
+			}
+		}	 
+		if = {
+			limit = { NOT = { has_country_flag = recent_land_seizure } }
 			set_country_flag = recent_land_seizure
 		}
-		else = { clr_country_flag = recent_land_seizure  }
-		
+		else = { clr_country_flag = recent_land_seizure }
 		custom_tooltip = seize_land_rebels_tt
 		if = {
 			limit = {
@@ -279,7 +295,27 @@ interaction = {
 			factor = 0
 			crown_land_share = 30
 			has_any_disaster = yes
-			
+		}
+		modifier = {
+			factor = 0
+			NOT = { religious_unity = 0.5 }
+		}
+		modifier = {
+			factor = 0
+			NOT = { legitimacy_equivalent = 50 }
+		}
+		modifier = {
+			factor = 0
+			NOT = {
+				estate_loyalty = {
+					estate = all
+					loyalty = 35 # Estate is almost disloyal
+				}
+			}
+		}
+		modifier = {
+			factor = 0
+			NOT = { stability = 1 }
 		}
 		modifier = {
 			factor = 0
@@ -336,6 +372,10 @@ interaction = {
 		}
 		modifier = {
 			factor = 0.5
+			average_unrest = 1
+		}
+		modifier = {
+			factor = 0
 			average_unrest = 3
 		}
 		modifier = {
@@ -365,24 +405,6 @@ interaction = {
 				had_country_flag = {
 					flag = recent_land_distribution
 					days = 5475
-				}
-			}
-		}
-		modifier = {
-			factor = 0.8
-			NOT = {
-				estate_loyalty = {
-					estate = all
-					loyalty = 35 # Estate is almost disloyal
-				}
-			}
-		}
-		modifier = {
-			factor = 0
-			NOT = {
-				estate_loyalty = {
-					estate = all
-					loyalty = 30 # Estate is basically disloyal
 				}
 			}
 		}

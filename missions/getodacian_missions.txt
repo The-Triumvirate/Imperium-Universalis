@@ -1,0 +1,1180 @@
+###################
+### 	SLOT 1
+###################
+unification_missions = {
+	slot = 1 
+	generic = no 
+	ai = yes
+	potential = {
+		OR = {
+			tag = DAC
+			culture = dacian
+			culture = getean		
+		}
+	}
+	has_country_shield = yes
+##### ARMY
+	dac1_mission = {
+		#position = 1
+		icon = dac_army
+		required_missions = {  }
+		trigger = {
+			OR = {
+				AND = {
+					army_professionalism = 0.05
+					army_size = 10
+					has_leader_with = {
+						shock = 3
+					}
+				}
+				AND = {
+					calc_true_if = {
+						all_owned_province = {
+							region = dacia_region	
+						}
+						amount = 15
+					}
+				}
+			}
+		}
+		effect = {
+			dacia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_claim = ROOT
+			}
+		}
+	}
+	dac2_mission = {
+		#position = 1
+		icon = dac_unite
+		required_missions = { dac1_mission }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					region = dacia_region	
+				}
+				amount = 20
+			}
+		}
+		effect = {
+			dacia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_prestige = 20
+			add_adm_power = 250
+		}
+	}
+	dac3_mission = {
+		#position = 1
+		icon = dac_unite
+		required_missions = { dac2_mission }
+		trigger = {
+			AND = {
+				custom_trigger_tooltip = {
+					tooltip = conquer_new_territories_mission.tooltip
+							grown_by_states = 5
+				}
+				tag = DAC
+			}
+		}
+		effect = { 
+			add_prestige = 20
+			add_legitimacy = 100
+			add_splendor = 400
+			change_mil = 1
+			change_adm = 1
+			add_adm_power = 100
+			add_mil_power = 100
+			add_dip_power = 100
+			pannonia_transdanubia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac4_mission = {
+		#position = 1
+		icon = missions_china_alliance
+		required_missions = { dac3_mission  }
+		trigger = {
+			OR = {
+				AND = {
+					culture = dacian
+					accepted_culture = getean
+				}
+				AND = {
+					culture = getean
+					accepted_culture = dacian
+				}
+			}
+			dacia_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		
+		effect = {
+			every_province = {
+				if = {
+					limit = {
+						OR = {
+							culture = getean
+							culture = dacian
+						}
+					}
+					change_culture = getodacian
+				}
+			}
+			change_primary_culture = getodacian
+		}
+	}
+	dac5_mission = {
+		#position = 1
+		icon = dac_sarmigetuza
+		required_missions = {  }
+		trigger = {
+			owns = 1949
+			1949 = {
+				has_building = shrine
+				has_building = tax_collector
+				has_building = small_townhall
+				has_building = small_market
+				has_building = small_city_walls
+				has_building = small_conscription_center
+			}
+		}
+		effect = {
+			1949 = {
+				add_base_manpower = 1
+				add_base_production = 2
+				add_base_tax = 1
+			}
+			add_prestige = 10
+		}
+	}
+	dac6_mission = {
+		#position = 1
+		icon = dac_tradetown
+		required_missions = { }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+						base_production = 5
+				}
+				amount = 6
+			}
+		}
+		effect = {
+			add_stability = 1
+			add_splendor = 100
+		}
+	}
+}
+###################
+### 	SLOT 2
+###################
+civil_missions = {
+	slot = 2
+	generic = no 
+	ai = yes
+	potential = {
+		OR = {
+			tag = DAC
+			culture = dacian
+			culture = getean		
+		}
+	}
+	has_country_shield = yes
+ ##### government & culture
+		dac7_mission = {
+		#position = 1
+		icon = mission_advisors
+		required_missions = {  }
+		trigger = {
+			OR = {
+				estate_loyalty = { estate = estate_nobility loyalty = 55 }
+				estate_loyalty = { estate = estate_clans loyalty = 55 }
+			}			
+			legitimacy_equivalent = 95 
+		}
+		effect = {
+			add_adm_power = 25
+			add_country_modifier = {
+				name = "stabile_government_modifier"
+				duration = 7300 # 20 years
+			}
+		}
+	}
+	dac8_mission = {
+		#position = 1
+		icon = mission_advisors
+		required_missions = { dac7_mission }
+		trigger = {
+			absolutism = 20 
+		}
+		effect = {
+			add_adm_power = 25
+			add_country_modifier = {
+				name = "stabile_government_modifier"
+				duration = 7300 # 20 years
+			}
+		}
+	}
+	dac9_mission = {
+		#position = 1
+		icon = dac_mil_clergy
+		required_missions = { dac8_mission }
+		trigger = {
+			religion = dacian_religion
+			has_global_modifier_value = {
+				which = discipline
+				value = 0.1
+			}
+			estate_loyalty = { estate = estate_priesthood loyalty = 55 }
+		}
+		effect = {
+			add_army_tradition = 0.05
+			add_country_modifier = {
+				name = "dacian_militant_clergy"
+				duration = -1
+			}
+		}
+	}
+
+	dac10_mission = {
+		#position = 1
+		icon = mission_large_army
+		required_missions = { dac9_mission  }
+		trigger = {
+			has_country_modifier = "dacian_militant_clergy"
+			army_size = 60
+			mil = 4
+		}
+		effect = {
+			add_country_modifier = {
+				name = "dacian_great_army_established"
+				duration = -1
+			}
+			add_army_professionalism = 0.05
+		}
+	}
+	dac11_mission = {
+		#position = 1
+		icon = dac_great_king
+		required_missions = { dac10_mission }
+		trigger = {
+			has_country_modifier = "dacian_great_army_established"
+			army_professionalism = 0.25
+			army_size = 70
+			num_of_cities = 100
+			mil = 4
+		}
+		effect = {			
+			add_country_modifier = {
+				name = "legacy_of_greatest_king"
+				duration = -1
+			}			
+			change_mil = 1
+		}
+	}
+	dac12_mission = {
+		#position = 1
+		icon = mission_propontis
+		required_missions = { dac20_mission }
+		trigger = {
+			hellespont_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			rhodope_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			pontus_sinistrus_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			pelagonia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			macedonia_secunda = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			macedonia_prima = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			chalcidice_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			perrhaebia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			oldenoi_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			macedonia_interior_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			mygdonia_macedonia_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	dac13_mission = {
+		#position = 1
+		icon = akropolis2
+		required_missions = { dac12_mission }
+		trigger = {
+			pelagonia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			macedonia_secunda = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			macedonia_prima = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			chalcidice_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			perrhaebia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			oldenoi_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			macedonia_interior_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			mygdonia_macedonia_area = {
+					type = all
+					country_or_non_sovereign_subject_holds = ROOT
+			} 
+		}
+		effect = {
+			epirus_nova = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			chaonia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			mollosia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			thesprotia_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	dac14_mission = {
+		#position = 1
+		icon = mission_siege
+		required_missions = { dac13_mission }
+		trigger = {
+			mollosia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			thesprotia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			chaonia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+			epirus_nova = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			} 
+		}
+		effect = {
+			greek_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	dac15_mission = {
+		#position = 1
+		icon = akropolis
+		required_missions = { dac14_mission  }
+		trigger = {
+			greek_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 25
+		}
+	}
+}
+###################
+### 	SLOT 3
+###################
+conquest_missions = {
+	slot = 3
+	generic = no 
+	ai = yes
+	potential = {
+		OR = {
+			tag = DAC
+			culture = dacian
+			culture = getean		
+		}
+	}
+	has_country_shield = yes
+
+	dac16_mission = {
+		#position = 1
+		icon = dac_throw_celts
+		required_missions = {  }
+		trigger = {
+			pannonia_transdanubia = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			scythia_minor = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			peucinitis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			every_owned_province = {
+				limit = {
+					OR = { 
+						culture_group = gaulish_group
+						culture_group = eastern_celtic
+					}					
+				}
+				change_culture = getodacian
+				change_religion = dacian_religion
+			}
+		}
+	}
+	dac17_mission = {
+		#position = 1
+		icon = black_sea_map
+		required_missions = { dac16_mission }
+		trigger = {
+			scythia_minor = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			peucinitis_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_years_of_income = 0.8
+			define_advisor = {
+				type = merchant_adv
+				skill = 3
+				 discount = yes
+			}
+			getarum_solitudo_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			axiaces_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			tyras_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			pyretus_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			tagritis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			scythia_harpitis_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			catiaroia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac18_mission = {
+		#position = 1
+		icon = mission_end_of_scythians
+		required_missions = { dac17_mission }
+		trigger = {
+			getarum_solitudo_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			axiaces_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			catiaroia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			pyretus_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			tagritis_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			scythia_harpitis_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			tyras_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			germano_sarmatia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			rhodes_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			biessia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			suebia_transdanuvia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sarmatici_mons = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac19_mission = {
+		#position = 1
+		icon = dac_citadel
+		required_missions = { dac18_mission }
+		trigger = {
+			1951 = {
+				has_building = small_city_walls
+			}
+			1950 = {
+				has_building = small_city_walls
+			}
+			8102 = {
+				has_building = small_city_walls
+			}
+			8107 = {
+				has_building = small_city_walls
+			}
+			8108 = {
+				has_building = small_city_walls
+			}
+			1955 = {
+				has_building = small_city_walls
+			}
+			8101 = {
+				has_building = small_city_walls
+			}
+
+		}
+		effect = {
+			thracia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac20_mission = {
+		#position = 1
+		icon = mission_propontis
+		required_missions = { dac19_mission }
+		trigger = {
+			moesia_superior = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			dacia_ripensis = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			ister_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			scordiscia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			sarmates_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			praevalitana_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			praevalitana_interior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac21_mission = {
+		#position = 1
+		icon = mission_trade
+		required_missions = { dac20_mission }
+		trigger = {
+			scordiscia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			sarmates_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			praevalitana_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			praevalitana_interior = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			pannonia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			illyria_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	dac34_mission = {
+		#position = 1
+		icon = farmland
+		required_missions = { dac21_mission }
+		trigger = {
+			pannonia_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 20
+		}
+	}
+	
+	dac35_mission = {
+		#position = 1
+		icon = mission_boarding
+		required_missions = { dac34_mission }
+		trigger = {
+			illyria_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 20
+		}
+	}
+	dac22_mission = {
+		position = 10
+		icon = dac_great_king
+		required_missions = { dac35_mission 
+								dac15_mission }
+		trigger = {
+			government_rank = 4
+			legitimacy = 100
+		}
+		effect = {
+			set_government_rank = 5
+			add_country_modifier = {
+				name = "panbalkan_empire"
+				duration = -1
+			}
+		}
+	}
+}
+###################
+### 	SLOT 4
+###################
+state_missions = {
+	slot = 4
+	generic = no 
+	ai = yes
+	potential = {
+		OR = {
+			tag = DAC
+			culture = dacian
+			culture = getean		
+		}
+	}
+	has_country_shield = yes
+##### production_buildings
+	dac23_mission = {
+		#position = 1
+		icon = dac_birth_zamolxis
+		required_missions = {  }
+		trigger = {
+			tag = DAC
+			advisor = priest_adv
+		}
+		effect = {
+			remove_advisor = priest_adv
+			define_advisor = {
+				type = priest_adv
+				name = "Deceneus"
+				culture = getodacian
+				religion = dacian_religion
+				skill = 4
+				cost_multiplier = 0.25
+			}
+			country_event = { id = dacian.1 }
+		}
+	}
+	dac24_mission = {
+		#position = 1
+		icon = dac_wine_ban
+		required_missions = { dac23_mission }
+		trigger = {
+			advisor = priest_adv
+			calc_true_if = {
+				all_owned_province = {
+					trade_goods = wine	
+				}
+				amount = 1
+			}
+		}		
+		effect = {
+			random_owned_province = {
+				limit = {
+					trade_goods = wine
+				}
+				change_trade_goods = meat_animals				
+			}
+			add_country_modifier = {
+				name = "ban_of_wine"
+				duration = -1
+			}
+		}
+	}
+	dac25_mission = {
+		#position = 1
+		icon = dac_spread_religion
+		required_missions = { dac24_mission }
+		trigger = {			
+			AND = {
+				religion = dacian_religion
+				has_country_modifier = ban_of_wine
+				num_of_religion = {
+					religion = dacian_religion
+					value = 0.15
+				}
+			}
+		}
+		
+		effect = {
+			add_country_modifier = {
+				name = "spread_zalmoxis_religion"
+				duration = 7300 # 20 years
+			}
+		}
+	}
+	dac26_mission = {
+		#position = 1
+		icon = dac_train_disc
+		required_missions = { dac25_mission }
+		trigger = {
+			has_global_modifier_value = {
+				which = discipline
+				value = 0.1
+			}
+			religion = dacian_religion
+		}
+		effect = {
+			add_country_modifier = {
+				name = "zamolxis_discipline_cultivation"
+				duration = -1
+			}
+		}
+	}
+	dac27_mission = {
+		#position = 1
+		icon = dac_nodeath
+		required_missions = { dac26_mission }
+		trigger = {
+				has_global_modifier_value = {
+					which = discipline
+					value = 0.15
+				}
+				religion = dacian_religion
+			}
+		effect = {
+			add_country_modifier = {
+				name = "zamolxis_fear_no_death"
+				duration = -1
+			}
+		}
+	}
+	dac28_mission = {
+		#position = 1
+		icon = germanic_huts
+		required_missions = { dac20_mission }
+		trigger = {
+			sarmatici_mons = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			suebia_transdanuvia = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			calc_true_if = {
+				any_owned_province = {
+					OR = {
+						area = carrodumum_area
+						area = suebia_east
+					}	
+				}
+				amount = 6
+			}	
+		}
+		effect = {
+			add_years_of_income = 0.75
+		}
+	}
+	dac29_mission = {
+		#position = 1
+		icon = germanic_huts
+		required_missions = { dac28_mission }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = germanic_group
+						religion = germanic_religion
+					}					
+				}
+				amount = 5
+			}
+		}
+
+		effect = {
+			add_country_modifier = {
+				name = "germanic_mercenaries_dac"
+				duration = 73000
+			}
+		}
+	}
+}
+###################
+### 	SLOT 5
+###################
+warfare_learning_missions = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+			tag = DAC
+			culture = dacian
+			culture = getean		
+		}
+	}
+	has_country_shield = yes
+##### conquest
+	dac30_mission = {
+		#position = 1
+		icon = dac_celtic
+		required_missions = {  }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = gaulish_group
+						culture_group = eastern_celtic	
+						religion = celtic_religion
+					}					
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "celtic_warfare_adopted"
+				duration = -1
+			}
+		}
+	}
+	dac31_mission = {
+		#position = 1
+		icon = mission_scythian
+		required_missions = { }
+		provinces_to_highlight = {
+			region_for_scope_province = {
+				is_capital_of = ROOT
+			}
+			NOT = { owned_by = ROOT }
+		}
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = steppe_people
+					}					
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "scythosarmatian_warfare_adopted"
+				duration = -1
+			}
+		}
+	}
+	
+	dac32_mission = {
+		#position = 1
+		icon = dac_germanic
+		required_missions = { }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = germanic_group	
+						religion = germanic_religion
+					}					
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "germanic_warfare_adopted"
+				duration = -1
+			}
+		}
+	}
+
+	dac33_mission = {
+		#position = 1
+		icon = mission_hoplite_2
+		required_missions = { }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = hellenic_group	
+						religion = greek_religion
+					}					
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "hellenic_warfare_adopted"
+				duration = -1
+			}
+		}
+	}
+	
+	dac36_mission = {
+		#position = 1
+		icon = mission_training
+		required_missions = { }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					OR = {
+						culture_group = italic_group	
+						religion = roman_religion
+					}					
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "roman_warfare_adopted"
+				duration = -1
+			}
+		}
+	}
+	
+	dac37_mission = {
+		#position = 1
+		icon = mission_training
+		required_missions = { dac36_mission }
+		trigger = {
+			has_country_modifier = roman_warfare_adopted
+			mil = 4
+			mil_tech = 40
+		}
+		effect = {
+			add_country_modifier = {
+				name = "legio_comatae_established"
+				duration = -1
+			}
+		}
+	}
+}

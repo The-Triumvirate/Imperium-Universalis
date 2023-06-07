@@ -5,405 +5,436 @@
 #	If you have doubts or comments on that, contact us on Discord. Here's the wiki resources: https://eu4.paradoxwikis.com/Commands#Scripted_Effects 
 ####
 
-define_sack_and_devastation = {
-	set_variable = { which = sack_lost value = $sackvalue$ }		divide_variable = { which = sack_lost value = 100 }
-	multiply_variable = { which = sack_lost which = loot_value } 	multiply_variable = { which = sack_lost which = sack_ratio }
-	set_variable = { which = prov_devst value = $devst$ } 			multiply_variable = { which = prov_devst which = sack_ratio }
-	set_variable = { which = col_value which = prov_devst }			divide_variable = { which = col_value value = 100 }
-	multiply_variable = { which = col_value which = loot_value }
+SD_sack_devastation = {
+	# Loot and inflation
+	set_variable = { which = SD_looted value = $lootvalue$ }	multiply_variable = { SD_looted = 0.01 }
+	multiply_variable = { which = SD_inflation which = SD_looted }
+	multiply_variable = { which = SD_looted which = SD_loot }
+	
+	# Devastation
+	set_variable = { which = SD_devast value = $devst$ } 		multiply_variable = { which = SD_devast which = SD_destruction } # up to 200%/300%
+	set_variable = { which = SD_now_devst which = SD_devast }
+	set_variable = { which = SD_colat which = SD_devast }		multiply_variable = { SD_colat = 0.01 }
+	multiply_variable = { which = SD_colat which = SD_loot }	# this SD colat is the BUDGET of all value that may be destroyed: a 5%
+	
+	while = {
+		limit = { check_variable = { SD_devast = 1 } } 	
+		subtract_variable = { SD_devast = 1 } 	add_devastation = 1 
+	}
 	
 	# Show variables in the province modifier, to see what happened
-	set_variable = { which = SS_looted_value which = sack_lost }	
-	set_variable = { which = SS_devastation_done which = prov_devst }
-	change_variable = { which = PS_tot_loot which = SS_looted_value }	# this is historical, will accumulate always
+	change_variable = { which = PS_tot_loot which = SD_looted }		# this is the historical accumulated value
+	change_variable = { which = PS_tot_devst which = SD_now_devst }
 }
 
 ###
 #	ENSLAVEMENT EFFECTS, happening in the Siege events
 ###
 
-enslave_effect_soft = {
-	# Send slaves to besieger
-	set_variable = { which = SS_soft_total which = FROM } 
-	change_variable = { which = slaves which = SS_soft_total }
-	set_variable = { which = SS_soft_total value = 0 }
+	# SD_population_loss = { loss = 25 enslave = 100 }		# an example of what is in the event
+
+SD_population_loss = {	
+	# First: adapt the values to the parameters used in that option. If 0%, 25%, 50%, etc
+	multiply_variable = { SD_t_lost = $loss$ } 		multiply_variable = { SD_t_lost = 0.01 } 
+	multiply_variable = { SD_c_lost = $loss$ } 		multiply_variable = { SD_c_lost = 0.01 } 
+	multiply_variable = { SD_u_lost = $loss$ } 		multiply_variable = { SD_u_lost = 0.01 } 
+	multiply_variable = { SD_t_slave = $enslave$ } 	multiply_variable = { SD_t_slave = 0.01 } 
+	multiply_variable = { SD_c_slave = $enslave$ } 	multiply_variable = { SD_c_slave = 0.01 } 
+	multiply_variable = { SD_u_slave = $enslave$ } 	multiply_variable = { SD_u_slave = 0.01 } 
 	
-	# Lose pops. Uses the xx lost done in the event, immediate phase
-	FROM = {
-		set_variable = { which = SS_slaves_taken which = SS_soft_total }	# display in prov modifier
-		set_variable = { which = SS_tlost_display which = SS_t_lost }
-		set_variable = { which = SS_clost_display which = SS_c_lost }
-		set_variable = { which = SS_ulost_display which = SS_u_lost }
-		
-		while = { 
-			limit = { check_variable = { SS_t_lost = 1 } } 
-			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
-			change_variable = { PS_rur_slv = 0.4 } change_variable = { PS_rur_sieg = 0.6 }	# slv enslaved; sig perished in siege
-		}
-		while = { 
-			limit = { check_variable = { SS_c_lost = 1 } } 
-			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
-			change_variable = { PS_urb_slv = 0.4 } change_variable = { PS_urb_sieg = 0.6 }
-		}
-		while = { 
-			limit = { check_variable = { SS_u_lost = 1 } } 
-			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
-			change_variable = { PS_upp_slv = 0.4 } change_variable = { PS_upp_sieg = 0.6 }
-		}
+	set_variable = { which = SD_total_lost which = SD_t_lost } 		
+	change_variable = { which = SD_total_lost which = SD_c_lost }	
+	change_variable = { which = SD_total_lost which = SD_u_lost }	# now saved for the province event
 	
-		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
-		every_neighbor_province = {
-			limit = { controlled_by = event_target:SS_prov_owner }
-			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
-		}
-		every_neighbor_province = {
-			limit = { controlled_by = ROOT }
-			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
-		}
-		
+	set_variable = { which = SD_total_slaves which = SD_t_slave } 		
+	change_variable = { which = SD_total_slaves which = SD_c_slave }
+	change_variable = { which = SD_total_slaves which = SD_u_slave }
+	multiply_variable = { SD_total_slaves = 10 }					# now saved for the province event
+	
+	# Second: move slaves. Done in a while to not lose any of them. 3.1: NOW MOVED TO "CAPTIVES"!! Must be sold or integrated
+	while = { 
+		limit = { check_variable = { SD_t_slave = 1 } base_manpower = 2 }
+		subtract_variable = { SD_t_slave = 1 } add_base_manpower = -1 
+		ROOT = { change_variable = { SD_captives = 10 } }
+		change_variable = { PS_rur_slv = 1.0 } # statistics
 	}
+	if = { 
+		limit = { check_variable = { SD_t_slave = 0.01 } NOT = { check_variable = { SD_t_slave = 1.0 } } }	# fractional
+		set_variable = { which = SD_captives which = SD_t_slave } multiply_variable = { SD_captives = 10 } 			# in province
+		ROOT = { change_variable = { which = SD_captives which = PREV } }										# in the attacker country
+		set_variable = { which = SD_t_slave value = 0 } set_variable = { which = SD_captives value = 0 }
+	}
+	else = { set_variable = { which = SD_t_slave value = 0 } }
+	while = { 
+		limit = { check_variable = { SD_c_slave = 1 } base_production = 2 }
+		subtract_variable = { SD_c_slave = 1 } add_base_production = -1 
+		ROOT = { change_variable = { SD_captives = 10 } }
+		change_variable = { PS_urb_slv = 1.0 } # statistics
+	}
+	if = { 
+		limit = { check_variable = { SD_c_slave = 0.01 } NOT = { check_variable = { SD_c_slave = 1.0 } } }	# fractional
+		set_variable = { which = SD_captives which = SD_c_slave } multiply_variable = { SD_captives = 10 } 
+		ROOT = { change_variable = { which = SD_captives which = PREV } }
+		set_variable = { which = SD_c_slave value = 0 } set_variable = { which = SD_captives value = 0 }
+	}
+	else = { set_variable = { which = SD_c_slave value = 0 } }
+	while = { 
+		limit = { check_variable = { SD_u_slave = 1 } base_tax = 2 }
+		subtract_variable = { SD_u_slave = 1 } add_base_tax = -1 
+		ROOT = { change_variable = { SD_captives = 10 } }
+		change_variable = { PS_upp_slv = 1.0 } # statistics
+	}
+	if = { 
+		limit = { check_variable = { SD_u_slave = 0.01 } NOT = { check_variable = { SD_u_slave = 1.0 } } }	# fractional
+		set_variable = { which = SD_captives which = SD_u_slave } multiply_variable = { SD_captives = 10 } 
+		ROOT = { change_variable = { which = SD_captives which = PREV } }
+		set_variable = { which = SD_u_slave value = 0 } set_variable = { which = SD_captives value = 0 }
+	}
+	else = { set_variable = { which = SD_u_slave value = 0 } }
 	
+	# Third: Those lost and expelled
+	while = { 
+		limit = { check_variable = { SD_t_lost = 2 } base_manpower = 3 }
+		subtract_variable = { SD_t_lost = 2 } add_base_manpower = -2		# every 2. The first escapes, the second perishes. 50%/50%
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_rur_sieg = 1.0 } change_variable = { PS_rur_exp = 1.0 } # statistics
+	}
+	if = { 	# now if still base manpower = 2 -> same as before, escapes. There can't be a manpower 1, otherwise it would drop to zero
+		limit = { check_variable = { SD_t_lost = 1 } base_manpower = 2 }
+		subtract_variable = { SD_t_lost = 1 } add_base_manpower = -1
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_rur_exp = 1.0 }
+	}
+	set_variable = { which = SD_t_lost value = 0 }
+	
+	while = { 
+		limit = { check_variable = { SD_c_lost = 2 } base_production = 3 }
+		subtract_variable = { SD_c_lost = 2 } add_base_production = -2		# every 2. The first escapes, the second perishes. 50%/50%
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_urb_sieg = 1.0 } change_variable = { PS_urb_exp = 1.0 } # statistics
+	}
+	if = { 	# now if still has 2 -> escapes
+		limit = { check_variable = { SD_c_lost = 1 } base_production = 2 }
+		subtract_variable = { SD_c_lost = 1 } add_base_production = -1
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_urb_exp = 1.0 }
+	}
+	if = { 	# last one also is lost! back to zero
+		limit = { check_variable = { SD_c_lost = 1 } base_production = 1 }
+		subtract_variable = { SD_c_lost = 1 } set_base_production = 0
+		change_variable = { PS_urb_sieg = 1.0 }
+	}
+	set_variable = { which = SD_c_lost value = 0 }
+	
+	while = { 
+		limit = { check_variable = { SD_u_lost = 2 } base_tax = 3 }
+		subtract_variable = { SD_u_lost = 2 } add_base_tax = -2		# every 2. The first escapes, the second perishes. 50%/50%
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_upp_sieg = 1.0 } change_variable = { PS_upp_exp = 1.0 } # statistics
+	}
+	if = { 	# now if still has 2 -> escapes
+		limit = { check_variable = { SD_u_lost = 1 } base_tax = 2 }
+		subtract_variable = { SD_u_lost = 1 } add_base_tax = -1
+		random_neighbor_province = { SD_refugees_effect = { ref = 1 } }
+		change_variable = { PS_upp_exp = 1.0 }
+	}
+	if = { 	# last one also is lost! back to zero
+		limit = { check_variable = { SD_u_lost = 1 } base_tax = 1 }
+		subtract_variable = { SD_u_lost = 1 } set_base_tax = 0
+		change_variable = { PS_upp_sieg = 1.0 }
+	}
+	set_variable = { which = SD_u_lost value = 0 }
 	
 	
 }
 
-enslave_effect_hard = {
-	# Send slaves to besieger
-	set_variable = { which = SS_hard_total which = FROM } 
-	change_variable = { which = slaves which = SS_hard_total }
-	set_variable = { which = SS_hard_total value = 0 }
+SD_refugees_effect = {
+	# the people itself
+	change_variable = { SD_refugees = $ref$ }						
 	
-	# Lose pops. Uses the xx lost done in the event, immediate phase
-	FROM = {
-		set_variable = { which = SS_slaves_taken which = SS_hard_total }	# display in prov modifier
-		set_variable = { which = SS_tlost_display which = SS_t_lost }
-		set_variable = { which = SS_clost_display which = SS_c_lost }
-		set_variable = { which = SS_ulost_display which = SS_u_lost }
-		
-		while = { 
-			limit = { check_variable = { SS_t_lost = 1 } } 
-			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
-			change_variable = { PS_rur_slv = 0.8 } change_variable = { PS_rur_sieg = 0.2 }	# slv enslaved; sig perished in siege
-			change_variable = { PS_sieg_lost = 1 }
-		}
-		while = { 
-			limit = { check_variable = { SS_c_lost = 1 } } 
-			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
-			change_variable = { PS_urb_slv = 0.8 } change_variable = { PS_urb_sieg = 0.2 } change_variable = { PS_sieg_lost = 1 }
-		}
-		while = { 
-			limit = { check_variable = { SS_u_lost = 1 } } 
-			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
-			change_variable = { PS_upp_slv = 0.8 } change_variable = { PS_upp_sieg = 0.2 } change_variable = { PS_sieg_lost = 1 }
-		}
+	# track the origin province
+	set_variable = { which = prov_id which = PREV } 		
+	set_variable = { which = SD_ref_origin which = prov_id }	# to let them back, if so
+	set_variable = { which = prov_id which = prov_id_base } 	# back to itself
 	
-		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
-		every_neighbor_province = {
-			limit = { controlled_by = event_target:SS_prov_owner }
-			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
-		}
-		every_neighbor_province = {
-			limit = { controlled_by = ROOT }
-			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
-		}
-		
+	# flag for the event
+	set_province_flag = SD_new_refugees
+}
+SD_slave_prov_modifiers = {
+	# Province modifier effect
+	add_province_modifier = { name = SD_enslavement_here duration = $days$ }
+	every_neighbor_province = {
+		limit = { controlled_by = event_target:SD_besieged_owner }
+		add_province_modifier = { name = SD_enslv_there_hostile duration = $days$ }
 	}
-	
+	every_neighbor_province = {
+		limit = { controlled_by = ROOT }
+		add_province_modifier = { name = SD_enslv_there_friend duration = $days$ }
+	}
+	ROOT = { set_country_flag = SD_recent_captives }
 }
 
-enslave_delenda_effect = {
-	# Define everyone (all but the 1 pop left). Recalculates amount lost, the event desc will be different
-		
-	FROM = {
-		
-		set_variable = { which = SS_t_lost which = SS_t_base } subtract_variable = { SS_t_lost = 1 }
-		set_variable = { which = SS_c_lost which = SS_c_base } subtract_variable = { SS_c_lost = 1 }
-		set_variable = { which = SS_u_lost which = SS_u_base } subtract_variable = { SS_u_lost = 1 }
-		
-		set_variable = { which = SS_tlost_display which = SS_t_lost }
-		set_variable = { which = SS_clost_display which = SS_c_lost }
-		set_variable = { which = SS_ulost_display which = SS_u_lost }
+collateral_damage_eff = {	# repair value at risk: 75% of build value. Size is the increased budget: 2x means hitting twice as much buildings
+	
+	multiply_variable = { SD_colat = $size$ } multiply_variable = { SD_colat = 0.01 }
+	while = {
+		limit = { check_variable = { SD_colat = 10 } }
+	
+		random_list = {
+			10 = { trigger_switch = { on_trigger = has_building
+				mathematician_academy = { 	subtract_variable = { SD_colat = 1125 } 	col_1_$hd$ = { val = 1125 out = mathematician_academy } }
+				philosophers_academy = { 	subtract_variable = { SD_colat = 1125 } 	col_1_$hd$ = { val = 1125 out = philosophers_academy } }
+				military_academy = { 		subtract_variable = { SD_colat = 1125 } 	col_1_$hd$ = { val = 1125 out = military_academy } }
+				great_library = { subtract_variable = { SD_colat = 1125 } 	col_2_$hd$ = { val = 1125 out = great_library new = library } }
+					# He he, Library of Alexandria goes brrrr
+				library = { subtract_variable = { SD_colat = 375 } 	col_1_$hd$ = { val = 375 out = library } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_bath = { 	subtract_variable = { SD_colat = 150 } 	col_1_$hd$ = { val = 150 out = small_bath } }
+				big_bath = { 	subtract_variable = { SD_colat = 300 } 	col_2_$hd$ = { val = 300 out = big_bath new = small_bath } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				embassy = { 			subtract_variable = { SD_colat = 375 } col_1_$hd$ = { val = 375 out = embassy } }
+				diplomats_quarter = { 	subtract_variable = { SD_colat = 1125 } 
+										col_2_$hd$ = { val = 1125 out = diplomats_quarter new = embassy } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_townhall = { 		subtract_variable = { SD_colat = 300 } col_1_$hd$ = { val = 300 out = small_townhall } }
+				big_townhall = { 		subtract_variable = { SD_colat = 375 } 
+										col_2_$hd$ = { val = 375 out = big_townhall new = small_townhall } }
+				government_palace = { 	subtract_variable = { SD_colat = 600 } 
+										col_2_$hd$ = { val = 600 out = government_palace new = big_townhall } }
+				government_district = { subtract_variable = { SD_colat = 750 } 
+										col_2_$hd$ = { val = 750 out = government_district new = government_palace } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_grain_depot = { 	subtract_variable = { SD_colat = 225 } col_1_$hd$ = { val = 225 out = small_grain_depot } }
+				big_grain_depot = { 	subtract_variable = { SD_colat = 450 } 
+										col_2_$hd$ = { val = 450 out = big_grain_depot new = small_grain_depot } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_market = { 	subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = small_market } }
+				medium_market = { 	subtract_variable = { SD_colat = 225 } col_2_$hd$ = { val = 225 out = medium_market new = small_market } }
+				great_market = { 	subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = great_market new = medium_market } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_harbor = { 	subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = small_harbor } }
+				big_harbor = { 		subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = big_harbor new = small_harbor } }
+				harbor_district = { subtract_variable = { SD_colat = 450 } col_2_$hd$ = { val = 450 out = harbor_district new = big_harbor } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_army_camp = { 			subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = small_army_camp } }
+				small_military_settlement = { 	subtract_variable = { SD_colat = 260 } 
+												col_2_$hd$ = { val = 260 out = small_military_settlement new = small_army_camp } }
+				big_military_settlement = { 	subtract_variable = { SD_colat = 375 } 
+												col_2_$hd$ = { val = 375 out = big_military_settlement new = small_military_settlement } }
+			} }
+			10 = { 
+				if = { limit = { has_building = small_conscription_center } 
+				subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = small_conscription_center }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_water_irrigation = { 	subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = small_water_irrigation } }
+				big_water_irrigation = { 	subtract_variable = { SD_colat = 300 } 
+											col_2_$hd$ = { val = 300 out = big_water_irrigation new = small_water_irrigation } }
+				big_estate = { 				subtract_variable = { SD_colat = 412 } 
+											col_2_$hd$ = { val = 412 out = big_estate new = big_water_irrigation } }
 				
-		set_variable = { which = SS_delenda_total which = SS_t_lost } 		change_variable = { which = SS_delenda_total which = SS_c_lost }
-		change_variable = { which = SS_delenda_total which = SS_u_lost }	multiply_variable = { SS_delenda_total = 2 }			
-			# yes, only 20%. Carthago 146 bc had 450k killed and 50k enslaved, so 20% is even high... 
-		
-		set_variable = { which = SS_slaves_taken which = SS_delenda_total }	# display in prov modifier
-		
-		while = { 
-			limit = { check_variable = { SS_t_lost = 0.9 } } 
-			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
-			change_variable = { PS_rur_slv = 0.2 } change_variable = { PS_rur_sieg = 0.8 }	# slv enslaved; sig perished in siege
-		}
-		while = { 
-			limit = { check_variable = { SS_c_lost = 0.9 } } 
-			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
-			change_variable = { PS_urb_slv = 0.2 } change_variable = { PS_urb_sieg = 0.8 }	# slv enslaved; sig perished in siege
-		}
-		while = { 
-			limit = { check_variable = { SS_u_lost = 0.9 } } 
-			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
-			change_variable = { PS_upp_slv = 0.2 } change_variable = { PS_upp_sieg = 0.8 }	# slv enslaved; sig perished in siege
-		}
-	
-	
-	
-	
-		# Province modifier effect
-		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
-		every_neighbor_province = {
-			limit = { OR = { owned_by = event_target:SS_prov_owner controlled_by = event_target:SS_prov_owner } }
-			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
-		}
-		every_neighbor_province = {
-			limit = { OR = { owned_by = ROOT controlled_by = ROOT } }
-			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
-		}
-		
-	}
-	
-	set_variable = { which = SS_delenda_total which = FROM }
-	change_variable = { which = slaves which = SS_delenda_total }
-	set_variable = { which = SS_delenda_total value = 0 }
-	
-}
-
-
-collateral_damage_eff = {
-	random_list = {
-		10 = { trigger_switch = { on_trigger = has_building
-			small_bath = { 	subtract_variable = { col_value = 150 } 	col_1_$hd$ = { val = 150 target = small_bath } }
-			big_bath = { 	subtract_variable = { col_value = 300 } 	col_2_$hd$ = { val = 300 target = big_bath to_build = small_bath } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			mathematician_academy = { 	subtract_variable = { col_value = 1000 } 	col_1_$hd$ = { val = 1000 target = mathematician_academy } }
-			philosophers_academy = { 	subtract_variable = { col_value = 1000 } 	col_1_$hd$ = { val = 1000 target = philosophers_academy } }
-			military_academy = { 		subtract_variable = { col_value = 1000 } 	col_1_$hd$ = { val = 1000 target = military_academy } }
-			great_library = { subtract_variable = { col_value = 1000 } 	col_2_$hd$ = { tval = 1000 arget = great_library to_build = library } }
-				# He he, Library of Alexandria goes brrrr
-			library = { subtract_variable = { col_value = 250 } 	col_1_$hd$ = { val = 250 target = library } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			embassy = { 			subtract_variable = { col_value = 375 } col_1_$hd$ = { val = 375 target = embassy } }
-			diplomats_quarter = { 	subtract_variable = { col_value = 750 } 
-									col_2_$hd$ = { val = 750 target = diplomats_quarter to_build = embassy } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_townhall = { 		subtract_variable = { col_value = 300 } col_1_$hd$ = { val = 300 target = small_townhall } }
-			big_townhall = { 		subtract_variable = { col_value = 375 } 
-									col_2_$hd$ = { val = 375 target = big_townhall to_build = small_townhall } }
-			government_palace = { 	subtract_variable = { col_value = 600 } 
-									col_2_$hd$ = { val = 600 target = government_palace to_build = big_townhall } }
-			government_district = { subtract_variable = { col_value = 750 } 
-									col_2_$hd$ = { val = 750 target = government_district to_build = government_palace } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_grain_depot = { 	subtract_variable = { col_value = 225 } col_1_$hd$ = { val = 225 target = small_grain_depot } }
-			big_grain_depot = { 	subtract_variable = { col_value = 450 } 
-									col_2_$hd$ = { val = 450 target = big_grain_depot to_build = small_grain_depot } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_market = { 	subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = small_market } }
-			medium_market = { 	subtract_variable = { col_value = 225 } col_2_$hd$ = { val = 225 target = medium_market to_build = small_market } }
-			great_market = { 	subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = great_market to_build = medium_market } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_harbor = { 	subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = small_harbor } }
-			big_harbor = { 		subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = big_harbor to_build = small_harbor } }
-			harbor_district = { subtract_variable = { col_value = 450 } col_2_$hd$ = { val = 450 target = harbor_district to_build = big_harbor } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_army_camp = { 			subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = small_army_camp } }
-			small_military_settlement = { 	subtract_variable = { col_value = 260 } 
-											col_2_$hd$ = { val = 260 target = small_military_settlement to_build = small_army_camp } }
-			big_military_settlement = { 	subtract_variable = { col_value = 375 } 
-											col_2_$hd$ = { val = 375 target = big_military_settlement to_build = small_military_settlement } }
-		} }
-		10 = { 
-			if = { limit = { has_building = small_conscription_center } 
-			subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = small_conscription_center }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_water_irrigation = { 	subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = small_water_irrigation } }
-			big_water_irrigation = { 	subtract_variable = { col_value = 300 } 
-										col_2_$hd$ = { val = 300 target = big_water_irrigation to_build = small_water_irrigation } }
-			big_estate = { 				subtract_variable = { col_value = 412 } 
-										col_2_$hd$ = { val = 412 target = big_estate to_build = big_water_irrigation } }
+				craftsman = { 		subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = craftsman } }
+				small_workshop = { 	subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = small_workshop new = craftsman } }
+				artisan_district = { subtract_variable = { SD_colat = 412 } col_2_$hd$ = { val = 412 out = artisan_district new = small_workshop } }
+				
+				quarry = { 			subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = quarry } }
+				small_mine = { 		subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = small_mine new = quarry } }
+				big_mine = { 		subtract_variable = { SD_colat = 412 } col_2_$hd$ = { val = 412 out = big_mine new = small_mine } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_shipyard = { 	subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = small_shipyard } }
+				big_shipyard = { 	subtract_variable = { SD_colat = 375 } col_2_$hd$ = { val = 375 out = big_shipyard new = small_shipyard } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				military_monument = { subtract_variable = { SD_colat = 750 } col_1_$hd$ = { val = 750 out = military_monument } }
+				naval_monument = { 	subtract_variable = { SD_colat = 750 } col_1_$hd$ = { val = 750 out = naval_monument } }
+				imperial_palace = { subtract_variable = { SD_colat = 1500 } col_1_$hd$ = { val = 1500 out = imperial_palace } }
+				palace_garden = { 	subtract_variable = { SD_colat = 1500 } col_1_$hd$ = { val = 1500 out = palace_garden } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				taxman = { 			subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = taxman } }
+				tax_collector = { 	subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = tax_collector new = taxman } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				shrine = { 			subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = shrine } }
+				small_temple = { 	subtract_variable = { SD_colat = 225 } col_2_$hd$ = { val = 225 out = small_temple new = shrine } }
+				great_temple = { 	subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = great_temple new = small_temple } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				small_theater = { 	subtract_variable = { SD_colat = 225 } col_1_$hd$ = { val = 225 out = small_theater } }
+				big_theater = { 	subtract_variable = { SD_colat = 375 } col_2_$hd$ = { val = 375 out = big_theater new = small_theater } }
+				great_theater = { 	subtract_variable = { SD_colat = 525 } col_2_$hd$ = { val = 525 out = great_theater new = big_theater } }
+				huge_theater = { 	subtract_variable = { SD_colat = 750 } col_2_$hd$ = { val = 750 out = huge_theater new = great_theater } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building
+				gravel_road = { 	subtract_variable = { SD_colat = 187 } col_1_$hd$ = { val = 187 out = gravel_road } }
+				paved_road = { 		subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = paved_road new = gravel_road } }
+				imperial_road = { 	subtract_variable = { SD_colat = 375 } col_2_$hd$ = { val = 375 out = imperial_road new = paved_road } }
+			} }
+			10 = { trigger_switch = { on_trigger = has_building 			# Last building, should be the last to survive.  
+				herbalist = { 	subtract_variable = { SD_colat = 150 } col_1_$hd$ = { val = 150 out = herbalist } }
+				medicus = { 	subtract_variable = { SD_colat = 225 } col_2_$hd$ = { val = 225 out = medicus new = herbalist } }
+				hospital = { 	subtract_variable = { SD_colat = 300 } col_2_$hd$ = { val = 300 out = hospital new = medicus } }
+			} }
 			
-			craftsman = { 		subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = craftsman } }
-			small_workshop = { 	subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = small_workshop to_build = craftsman } }
-			artisan_district = { subtract_variable = { col_value = 412 } col_2_$hd$ = { val = 412 target = artisan_district to_build = small_workshop } }
-			
-			quarry = { 			subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = quarry } }
-			small_mine = { 		subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = small_mine to_build = quarry } }
-			big_mine = { 		subtract_variable = { col_value = 412 } col_2_$hd$ = { val = 412 target = big_mine to_build = small_mine } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_shipyard = { 	subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = small_shipyard } }
-			big_shipyard = { 	subtract_variable = { col_value = 375 } col_2_$hd$ = { val = 375 target = big_shipyard to_build = small_shipyard } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			military_monument = { subtract_variable = { col_value = 750 } col_1_$hd$ = { val = 750 target = military_monument } }
-			naval_monument = { 	subtract_variable = { col_value = 750 } col_1_$hd$ = { val = 750 target = naval_monument } }
-			imperial_palace = { subtract_variable = { col_value = 1500 } col_1_$hd$ = { val = 1500 target = imperial_palace } }
-			palace_garden = { 	subtract_variable = { col_value = 1500 } col_1_$hd$ = { val = 1500 target = palace_garden } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			taxman = { 			subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = taxman } }
-			tax_collector = { 	subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = tax_collector to_build = taxman } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			shrine = { 			subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = shrine } }
-			small_temple = { 	subtract_variable = { col_value = 225 } col_2_$hd$ = { val = 225 target = small_temple to_build = shrine } }
-			great_temple = { 	subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = great_temple to_build = small_temple } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			small_theater = { 	subtract_variable = { col_value = 225 } col_1_$hd$ = { val = 225 target = small_theater } }
-			big_theater = { 	subtract_variable = { col_value = 375 } col_2_$hd$ = { val = 375 target = big_theater to_build = small_theater } }
-			great_theater = { 	subtract_variable = { col_value = 525 } col_2_$hd$ = { val = 525 target = great_theater to_build = big_theater } }
-			huge_theater = { 	subtract_variable = { col_value = 750 } col_2_$hd$ = { val = 750 target = huge_theater to_build = great_theater } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building
-			gravel_road = { 	subtract_variable = { col_value = 187 } col_1_$hd$ = { val = 187 target = gravel_road } }
-			paved_road = { 		subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = paved_road to_build = gravel_road } }
-			imperial_road = { 	subtract_variable = { col_value = 375 } col_2_$hd$ = { val = 375 target = imperial_road to_build = paved_road } }
-		} }
-		10 = { trigger_switch = { on_trigger = has_building 			# Last building, should be the last to survive.  
-			herbalist = { 	subtract_variable = { col_value = 150 } col_1_$hd$ = { val = 150 target = herbalist } }
-			medicus = { 	subtract_variable = { col_value = 225 } col_2_$hd$ = { val = 225 target = medicus to_build = herbalist } }
-			hospital = { 	subtract_variable = { col_value = 300 } col_2_$hd$ = { val = 300 target = hospital to_build = medicus } }
-		} }
 		
+		
+		}
+	}
+}
+		
+col_1_10 = { random = { chance = 10	remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_2_10 = { random = { chance = 10	remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_1_20 = { random = { chance = 20	remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_2_20 = { random = { chance = 20	remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_1_40 = { random = { chance = 40	remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_2_40 = { random = { chance = 40	remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_1_60 = { random = { chance = 60	remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_2_60 = { random = { chance = 60	remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_1_80 = { random = { chance = 80	remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_2_80 = { random = { chance = 80	remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } } }
+col_1_100 = { remove_building = $out$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } }
+col_2_100 = { remove_building = $out$ add_building = $new$ set_province_flag = $out$_lost change_variable = { SD_blds = $val$ } }
+
+		
+SD_find_total_loot = {	# Possible loot: 33% of full building value. Repair value: 75% of full building value
+	# City walls are not destroyed
+	trigger_switch = {
+		on_trigger = has_building
+		mathematician_academy = { change_variable = { SD_loot = 500 } }
+		philosophers_academy = { change_variable = { SD_loot = 500 } }
+		military_academy = { 	change_variable = { SD_loot = 500 } }
+		great_library = { 		change_variable = { SD_loot = 500 } }
+		library = { 			change_variable = { SD_loot = 166 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_bath = { 		change_variable = { SD_loot = 66 } }
+		big_bath = { 		change_variable = { SD_loot = 133 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		embassy = { 			change_variable = { SD_loot = 166 } }
+		diplomats_quarter = { 	change_variable = { SD_loot = 500 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_townhall = { 		change_variable = { SD_loot = 133 } }
+		big_townhall = { 		change_variable = { SD_loot = 166 } }
+		government_palace = { 	change_variable = { SD_loot = 233 } }
+		government_district = { change_variable = { SD_loot = 333 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_grain_depot = { change_variable = { SD_loot = 100 } }
+		big_grain_depot = { change_variable = { SD_loot = 200 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_harbor = { 	change_variable = { SD_loot = 66 } }
+		big_harbor = { 		change_variable = { SD_loot = 133 } }
+		harbor_district = { change_variable = { SD_loot = 200 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_market = { 	change_variable = { SD_loot = 66 } }
+		medium_market = { 	change_variable = { SD_loot = 100 } }
+		great_market = { 	change_variable = { SD_loot = 133 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		herbalist = { 	change_variable = { SD_loot = 66 } }
+		medicus = { 	change_variable = { SD_loot = 100 } }
+		hospital = { 	change_variable = { SD_loot = 133 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_army_camp = { 			change_variable = { SD_loot = 66 } }
+		small_military_settlement = { 	change_variable = { SD_loot = 116 } }
+		big_military_settlement = { 	change_variable = { SD_loot = 166 } }
+	}
+	if = { limit = { has_building = small_conscription_center } change_variable = { SD_loot = 86 } }
+	trigger_switch = {
+		on_trigger = has_building
+		small_water_irrigation = { 	change_variable = { SD_loot = 83 } }
+		big_water_irrigation = { 	change_variable = { SD_loot = 133 } }
+		big_estate = { 				change_variable = { SD_loot = 183 } }
+		
+		craftsman = { 		change_variable = { SD_loot = 83 } }
+		small_workshop = { 	change_variable = { SD_loot = 133 } }
+		artisan_district = { change_variable = { SD_loot = 183 } }
+		
+		quarry = { 			change_variable = { SD_loot = 83 } }
+		small_mine = { 		change_variable = { SD_loot = 133 } }
+		big_mine = { 		change_variable = { SD_loot = 183 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		gravel_road = { 	change_variable = { SD_loot = 83 } }
+		paved_road = { 		change_variable = { SD_loot = 133 } }
+		imperial_road = { 	change_variable = { SD_loot = 166 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_shipyard = { 	change_variable = { SD_loot = 83 } }
+		big_shipyard = { 	change_variable = { SD_loot = 166 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		military_monument = { change_variable = { SD_loot = 500 } }
+		naval_monument = { 	change_variable = { SD_loot = 500 } }
+		imperial_palace = { change_variable = { SD_loot = 666 } }
+		palace_garden = { 	change_variable = { SD_loot = 666 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		taxman = { 			change_variable = { SD_loot = 66 } }
+		tax_collector = { 	change_variable = { SD_loot = 133 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		shrine = { 			change_variable = { SD_loot = 66 } }
+		small_temple = { 	change_variable = { SD_loot = 100 } }
+		great_temple = { 	change_variable = { SD_loot = 133 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		small_theater = { 	change_variable = { SD_loot = 100 } }
+		big_theater = { 	change_variable = { SD_loot = 166 } }
+		great_theater = { 	change_variable = { SD_loot = 233 } }
+		huge_theater = { 	change_variable = { SD_loot = 333 } }
+	}
+	trigger_switch = {
+		on_trigger = has_building
+		farming_settlement = { 	change_variable = { SD_loot = 200 } }
+		winery = { 				change_variable = { SD_loot = 200 } }
+		shepherds = { 			change_variable = { SD_loot = 200 } }
+		apiary = { 				change_variable = { SD_loot = 200 } }
+		weavers = { 			change_variable = { SD_loot = 200 } }
+		fishermen_huts = { 		change_variable = { SD_loot = 200 } }
+		tannery = { 			change_variable = { SD_loot = 200 } }
+		salt_gatherers = { 		change_variable = { SD_loot = 200 } }
+		miners_camp = { 		change_variable = { SD_loot = 200 } }
+		pottery = { 			change_variable = { SD_loot = 200 } }
+		glassmaker = { 			change_variable = { SD_loot = 200 } }
+		tar_pit = { 			change_variable = { SD_loot = 200 } }
+		blacksmith = { 			change_variable = { SD_loot = 200 } }
+		horsebreeder = { 		change_variable = { SD_loot = 200 } }
+		lumberjack = { 			change_variable = { SD_loot = 200 } }
+		dyer = { 				change_variable = { SD_loot = 200 } }
 		
 		
 	}
 }
-		
-col_1_05 = { random = { chance = 5	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_05 = { random = { chance = 5	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_1_10 = { random = { chance = 10	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_10 = { random = { chance = 10	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_1_25 = { random = { chance = 25	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_25 = { random = { chance = 25	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_1_30 = { random = { chance = 30	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_30 = { random = { chance = 30	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_1_60 = { random = { chance = 60	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_60 = { random = { chance = 60	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_1_90 = { random = { chance = 90	remove_building = $target$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
-col_2_90 = { random = { chance = 90	remove_building = $target$ add_building = $to_build$ set_province_flag = $target$_lost change_variable = { SS_blds = $val$ } } }
 
-		
-find_total_loot_value = {
-	trigger_switch = {
-		on_trigger = has_building
-		mathematician_academy = { change_variable = { loot_value = 750 } }
-		philosophers_academy = { change_variable = { loot_value = 750 } }
-		military_academy = { 	change_variable = { loot_value = 750 } }
-		great_library = { 		change_variable = { loot_value = 750 } }
-		library = { 			change_variable = { loot_value = 262 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_bath = { 		change_variable = { loot_value = 150 } }
-		big_bath = { 		change_variable = { loot_value = 300 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		embassy = { 			change_variable = { loot_value = 375 } }
-		diplomats_quarter = { 	change_variable = { loot_value = 750 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_townhall = { 		change_variable = { loot_value = 300 } }
-		big_townhall = { 		change_variable = { loot_value = 375 } }
-		government_palace = { 	change_variable = { loot_value = 600 } }
-		government_district = { change_variable = { loot_value = 750 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_grain_depot = { change_variable = { loot_value = 225 } }
-		big_grain_depot = { change_variable = { loot_value = 450 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_harbor = { 	change_variable = { loot_value = 150 } }
-		big_harbor = { 		change_variable = { loot_value = 300 } }
-		harbor_district = { change_variable = { loot_value = 450 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_market = { 	change_variable = { loot_value = 150 } }
-		medium_market = { 	change_variable = { loot_value = 225 } }
-		great_market = { 	change_variable = { loot_value = 300 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		herbalist = { 	change_variable = { loot_value = 150 } }
-		medicus = { 	change_variable = { loot_value = 225 } }
-		hospital = { 	change_variable = { loot_value = 300 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_army_camp = { 			change_variable = { loot_value = 150 } }
-		small_military_settlement = { 	change_variable = { loot_value = 260 } }
-		big_military_settlement = { 	change_variable = { loot_value = 375 } }
-	}
-	if = { limit = { has_building = small_conscription_center } change_variable = { loot_value = 187 } }
-	trigger_switch = {
-		on_trigger = has_building
-		small_water_irrigation = { 	change_variable = { loot_value = 187 } }
-		big_water_irrigation = { 	change_variable = { loot_value = 300 } }
-		big_estate = { 				change_variable = { loot_value = 412 } }
-		
-		craftsman = { change_variable = { loot_value = 187 } }
-		small_workshop = { 	change_variable = { loot_value = 300 } }
-		artisan_district = { change_variable = { loot_value = 412 } }
-		
-		quarry = { change_variable = { loot_value = 187 } }
-		small_mine = { 		change_variable = { loot_value = 300 } }
-		big_mine = { 		change_variable = { loot_value = 412 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		gravel_road = { 	change_variable = { loot_value = 187 } }
-		paved_road = { 		change_variable = { loot_value = 300 } }
-		imperial_road = { 	change_variable = { loot_value = 375 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_shipyard = { 	change_variable = { loot_value = 187 } }
-		big_shipyard = { 	change_variable = { loot_value = 375 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		military_monument = { change_variable = { loot_value = 750 } }
-		naval_monument = { 	change_variable = { loot_value = 750 } }
-		imperial_palace = { change_variable = { loot_value = 1500 } }
-		palace_garden = { 	change_variable = { loot_value = 1500 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		taxman = { 			change_variable = { loot_value = 150 } }
-		tax_collector = { 	change_variable = { loot_value = 300 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		shrine = { 			change_variable = { loot_value = 150 } }
-		small_temple = { 	change_variable = { loot_value = 225 } }
-		great_temple = { 	change_variable = { loot_value = 300 } }
-	}
-	trigger_switch = {
-		on_trigger = has_building
-		small_theater = { 	change_variable = { loot_value = 225 } }
-		big_theater = { 	change_variable = { loot_value = 375 } }
-		great_theater = { 	change_variable = { loot_value = 525 } }
-		huge_theater = { 	change_variable = { loot_value = 750 } }
-	}
-}
-
-SS_repair_trade_roads_harbor = {
+SS_repair_trade_roads_harbor = {	# Repair for 75% of their cost
 	trigger_switch = {
 		on_trigger = has_province_flag
 		small_market_lost = { 	clr_province_flag = small_market_lost 	add_building = small_market  ROOT = { add_treasury = -150 } }
@@ -438,28 +469,28 @@ SS_repair_temples = {
 SS_repair_health_industry = {
 	trigger_switch = {
 		on_trigger = has_province_flag
-		small_grain_depot_lost = { 	clr_province_flag = small_grain_depot_lost 	add_building = small_grain_depot ROOT = { add_treasury = -225 } }
-		big_grain_depot_lost = { 	clr_province_flag = big_grain_depot_lost 	add_building = big_grain_depot ROOT = { add_treasury = -450 } }
+		small_grain_depot_lost = { 	clr_province_flag = small_grain_depot_lost 	add_building = small_grain_depot 	ROOT = { add_treasury = -225 } }
+		big_grain_depot_lost = { 	clr_province_flag = big_grain_depot_lost 	add_building = big_grain_depot 		ROOT = { add_treasury = -450 } }
 		
 	}
 	trigger_switch = {
 		on_trigger = has_province_flag
 		small_water_irrigation_lost = { clr_province_flag = small_water_irrigation_lost add_building = small_water_irrigation ROOT = { add_treasury = -187 } }
 		big_water_irrigation_lost = { clr_province_flag = big_water_irrigation_lost 	add_building = big_water_irrigation ROOT = { add_treasury = -300 } }
-		big_estate_lost = { clr_province_flag = big_estate_lost 			add_building = big_estate ROOT = { add_treasury = -412 } }
-		craftsman_lost = { 	clr_province_flag = craftsman_lost 				add_building = craftsman ROOT = { add_treasury = -187 } }
-		small_workshop_lost = { clr_province_flag = small_workshop_lost 	add_building = small_workshop ROOT = { add_treasury = -300 } }
+		big_estate_lost = { clr_province_flag = big_estate_lost 			add_building = big_estate 		ROOT = { add_treasury = -412 } }
+		craftsman_lost = { 	clr_province_flag = craftsman_lost 				add_building = craftsman 		ROOT = { add_treasury = -187 } }
+		small_workshop_lost = { clr_province_flag = small_workshop_lost 	add_building = small_workshop 	ROOT = { add_treasury = -300 } }
 		artisan_district_lost = { clr_province_flag = artisan_district_lost add_building = artisan_district ROOT = { add_treasury = -412 } }
-		quarry_lost = { 	clr_province_flag = quarry_lost 				add_building = quarry ROOT = { add_treasury = -187 } }
-		small_mine_lost = { clr_province_flag = small_mine_lost 			add_building = small_mine ROOT = { add_treasury = -300 } }
-		big_mine_lost = { 	clr_province_flag = big_mine_lost 				add_building = big_mine ROOT = { add_treasury = -412 } }
+		quarry_lost = { 	clr_province_flag = quarry_lost 				add_building = quarry 			ROOT = { add_treasury = -187 } }
+		small_mine_lost = { clr_province_flag = small_mine_lost 			add_building = small_mine 		ROOT = { add_treasury = -300 } }
+		big_mine_lost = { 	clr_province_flag = big_mine_lost 				add_building = big_mine 		ROOT = { add_treasury = -412 } }
 
 	}
 	trigger_switch = {
 		on_trigger = has_province_flag
-		herbalist_lost = { 	clr_province_flag = herbalist_lost 	add_building = herbalist ROOT = { add_treasury = -150 } }
-		medicus_lost = { 	clr_province_flag = medicus_lost 	add_building = medicus ROOT = { add_treasury = -225 } }
-		hospital_lost = { 	clr_province_flag = hospital_lost 	add_building = hospital ROOT = { add_treasury = -300 } }
+		herbalist_lost = { 	clr_province_flag = herbalist_lost 	add_building = herbalist 	ROOT = { add_treasury = -150 } }
+		medicus_lost = { 	clr_province_flag = medicus_lost 	add_building = medicus 		ROOT = { add_treasury = -225 } }
+		hospital_lost = { 	clr_province_flag = hospital_lost 	add_building = hospital 	ROOT = { add_treasury = -300 } }
 
 	}
 	
@@ -489,20 +520,20 @@ SS_repair_military_shipyards = {
 SS_repair_government = {
 	trigger_switch = {
 		on_trigger = has_province_flag
-		small_townhall_lost = { 		clr_province_flag = small_townhall_lost 	add_building = small_townhall ROOT = { add_treasury = -300 } }
-		big_townhall_lost = { 			clr_province_flag = big_townhall_lost 		add_building = big_townhall ROOT = { add_treasury = -375 } }
-		government_palace_lost = { 		clr_province_flag = government_palace_lost 	add_building = government_palace ROOT = { add_treasury = -600 } }
+		small_townhall_lost = { 		clr_province_flag = small_townhall_lost 	add_building = small_townhall 		ROOT = { add_treasury = -300 } }
+		big_townhall_lost = { 			clr_province_flag = big_townhall_lost 		add_building = big_townhall 		ROOT = { add_treasury = -375 } }
+		government_palace_lost = { 		clr_province_flag = government_palace_lost 	add_building = government_palace 	ROOT = { add_treasury = -600 } }
 		government_district_lost = { 	clr_province_flag = government_district_lost add_building = government_district ROOT = { add_treasury = -750 } }
 	}
 	trigger_switch = {
 		on_trigger = has_province_flag
-		taxman_lost = { clr_province_flag = taxman_lost add_building = taxman ROOT = { add_treasury = -150 } }
-		tax_collector_lost = { clr_province_flag = tax_collector_lost add_building = tax_collector ROOT = { add_treasury = -300 } }
+		taxman_lost = { clr_province_flag = taxman_lost add_building = taxman 						ROOT = { add_treasury = -150 } }
+		tax_collector_lost = { clr_province_flag = tax_collector_lost add_building = tax_collector 	ROOT = { add_treasury = -300 } }
 	}
 	trigger_switch = {
 		on_trigger = has_province_flag
-		embassy_lost = { clr_province_flag = embassy_lost add_building = embassy ROOT = { add_treasury = -375 } }
-		diplomats_quarter_lost = { clr_province_flag = diplomats_quarter_lost add_building = diplomats_quarter ROOT = { add_treasury = -750 } }
+		embassy_lost = { clr_province_flag = embassy_lost add_building = embassy 								ROOT = { add_treasury = -375 } }
+		diplomats_quarter_lost = { clr_province_flag = diplomats_quarter_lost add_building = diplomats_quarter 	ROOT = { add_treasury = -750 } }
 	}
 }
 SS_repair_leisure_education = {
@@ -784,14 +815,167 @@ SS_store_building_to_flag = {
 	if = { limit = { has_building = herbalist } remove_building = herbalist  set_province_flag = herbalist_kept }
 	if = { limit = { has_building = medicus } remove_building = medicus  set_province_flag = medicus_kept }
 	if = { limit = { has_building = hospital } remove_building = hospital  set_province_flag = hospital_kept }
-	if = { limit = { has_building = cattle flock } remove_building = cattle flock  set_province_flag = cattle flock_kept }
-	if = { limit = { has_building = warrior tents } remove_building = warrior tents  set_province_flag = warrior tents_kept }
-	if = { limit = { has_building = horse breeder } remove_building = horse breeder  set_province_flag = horse breeder_kept }
-	if = { limit = { has_building = tribal gathering } remove_building = tribal gathering  set_province_flag = tribal gathering_kept }
-	if = { limit = { has_building = manufactory } remove_building = manufactory  set_province_flag = manufactory_kept }
-	if = { limit = { has_building = horse breeder } remove_building = horse breeder  set_province_flag = horse breeder_kept }
+	if = { limit = { has_building = cattle_flock } remove_building = cattle_flock set_province_flag = cattle_flock_kept }
+	if = { limit = { has_building = warrior_tents } remove_building = warrior_tents  set_province_flag = warrior_tents_kept }
+	if = { limit = { has_building = horse_breeder } remove_building = horse_breeder  set_province_flag = horse_breeder_kept }
+	if = { limit = { has_building = tribal_gathering } remove_building = tribal_gathering  set_province_flag = tribal_gathering_kept }
+	if = { limit = { has_building = horsebreeder } remove_building = horsebreeder  set_province_flag = horsebreeder_kept }
 	if = { limit = { has_building = goldsmith } remove_building = goldsmith  set_province_flag = goldsmith_kept }
 	if = { limit = { has_building = lumberjack } remove_building = lumberjack  set_province_flag = lumberjack_kept }
 
 	
 }
+
+
+
+
+enslave_effect_soft = {
+	# Send slaves to besieger
+	set_variable = { which = SS_soft_total which = FROM } 
+	change_variable = { which = slaves which = SS_soft_total }
+	set_variable = { which = SS_soft_total value = 0 }
+	
+	# Lose pops. Uses the xx lost done in the event, immediate phase
+	FROM = {
+		set_variable = { which = SS_slaves_taken which = SS_soft_total }	# display in prov modifier
+		set_variable = { which = SS_tlost_display which = SS_t_lost }
+		set_variable = { which = SS_clost_display which = SS_c_lost }
+		set_variable = { which = SS_ulost_display which = SS_u_lost }
+		
+		while = { 
+			limit = { check_variable = { SS_t_lost = 1 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PS_rur_slv = 0.4 } change_variable = { PS_rur_sieg = 0.6 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 1 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PS_urb_slv = 0.4 } change_variable = { PS_urb_sieg = 0.6 }
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 1 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PS_upp_slv = 0.4 } change_variable = { PS_upp_sieg = 0.6 }
+		}
+	
+		# Province modifier effect
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
+		every_neighbor_province = {
+			limit = { controlled_by = event_target:SD_besieged_owner }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
+		}
+		every_neighbor_province = {
+			limit = { controlled_by = ROOT }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
+		}
+		
+	}
+	
+	
+	
+}
+
+enslave_effect_hard = {
+	# Send slaves to besieger
+	set_variable = { which = SS_hard_total which = FROM } 
+	change_variable = { which = slaves which = SS_hard_total }
+	set_variable = { which = SS_hard_total value = 0 }
+	
+	# Lose pops. Uses the xx lost done in the event, immediate phase
+	FROM = {
+		set_variable = { which = SS_slaves_taken which = SS_hard_total }	# display in prov modifier
+		set_variable = { which = SS_tlost_display which = SS_t_lost }
+		set_variable = { which = SS_clost_display which = SS_c_lost }
+		set_variable = { which = SS_ulost_display which = SS_u_lost }
+		
+		while = { 
+			limit = { check_variable = { SS_t_lost = 1 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PS_rur_slv = 0.8 } change_variable = { PS_rur_sieg = 0.2 }	# slv enslaved; sig perished in siege
+			change_variable = { PS_sieg_lost = 1 }
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 1 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PS_urb_slv = 0.8 } change_variable = { PS_urb_sieg = 0.2 } change_variable = { PS_sieg_lost = 1 }
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 1 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PS_upp_slv = 0.8 } change_variable = { PS_upp_sieg = 0.2 } change_variable = { PS_sieg_lost = 1 }
+		}
+	
+		# Province modifier effect
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
+		every_neighbor_province = {
+			limit = { controlled_by = event_target:SD_besieged_owner }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
+		}
+		every_neighbor_province = {
+			limit = { controlled_by = ROOT }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
+		}
+		
+	}
+	
+}
+
+enslave_delenda_effect = {
+	# Define everyone (all but the 1 pop left). Recalculates amount lost, the event desc will be different
+		
+	FROM = {
+		
+		set_variable = { which = SS_t_lost which = SS_t_base } subtract_variable = { SS_t_lost = 1 }
+		set_variable = { which = SS_c_lost which = SS_c_base } subtract_variable = { SS_c_lost = 1 }
+		set_variable = { which = SS_u_lost which = SS_u_base } subtract_variable = { SS_u_lost = 1 }
+		
+		set_variable = { which = SS_tlost_display which = SS_t_lost }
+		set_variable = { which = SS_clost_display which = SS_c_lost }
+		set_variable = { which = SS_ulost_display which = SS_u_lost }
+				
+		set_variable = { which = SS_delenda_total which = SS_t_lost } 		change_variable = { which = SS_delenda_total which = SS_c_lost }
+		change_variable = { which = SS_delenda_total which = SS_u_lost }	multiply_variable = { SS_delenda_total = 2 }			
+			# yes, only 20%. Carthago 146 bc had 450k killed and 50k enslaved, so 20% is even high... 
+		
+		set_variable = { which = SS_slaves_taken which = SS_delenda_total }	# display in prov modifier
+		
+		while = { 
+			limit = { check_variable = { SS_t_lost = 0.9 } } 
+			subtract_variable = { SS_t_lost = 1 } add_base_manpower = -1 
+			change_variable = { PS_rur_slv = 0.2 } change_variable = { PS_rur_sieg = 0.8 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_c_lost = 0.9 } } 
+			subtract_variable = { SS_c_lost = 1 } add_base_production = -1 
+			change_variable = { PS_urb_slv = 0.2 } change_variable = { PS_urb_sieg = 0.8 }	# slv enslaved; sig perished in siege
+		}
+		while = { 
+			limit = { check_variable = { SS_u_lost = 0.9 } } 
+			subtract_variable = { SS_u_lost = 1 } add_base_tax = -1 
+			change_variable = { PS_upp_slv = 0.2 } change_variable = { PS_upp_sieg = 0.8 }	# slv enslaved; sig perished in siege
+		}
+	
+	
+	
+	
+		# Province modifier effect
+		add_province_modifier = { name = SS_enslavement_here duration = $days$ }
+		every_neighbor_province = {
+			limit = { OR = { owned_by = event_target:SD_besieged_owner controlled_by = event_target:SD_besieged_owner } }
+			add_province_modifier = { name = SS_enslv_there_hostile duration = $days$ }
+		}
+		every_neighbor_province = {
+			limit = { OR = { owned_by = ROOT controlled_by = ROOT } }
+			add_province_modifier = { name = SS_enslv_there_friend duration = $days$ }
+		}
+		
+	}
+	
+	set_variable = { which = SS_delenda_total which = FROM }
+	change_variable = { which = slaves which = SS_delenda_total }
+	set_variable = { which = SS_delenda_total value = 0 }
+	
+}
+
+
+

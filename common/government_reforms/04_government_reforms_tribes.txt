@@ -11,13 +11,14 @@ tribe_mechanic = {
 	queen = yes
 	
 	modifiers = {
-		max_absolutism = -5
-		culture_conversion_cost = 0.5
+		culture_conversion_cost = 0.33
 		min_autonomy = 25
-		global_institution_spread = -0.5
-		embracement_cost = 1
-		land_maintenance_modifier = -0.2
-		global_manpower_modifier = 0.2
+		state_maintenance_modifier = -0.2
+		interest = 4
+		inflation_reduction = 0.1
+		possible_policy = -1
+		free_policy = -1
+		expand_administration_cost = 0.25
 	}
 }
 
@@ -37,15 +38,18 @@ tribal_republic_reform = {
 	valid_for_nation_designer = yes
 	nation_designer_cost = 10
 	
-	royal_marriage = no
 	republic = yes
+	republican_name = yes
+	royal_marriage = no
+	queen = no
+	heir = no
 	duration = 10
 	has_term_election = yes
 	
 	modifiers = {
+		no_stability_loss_on_monarch_death = yes
 		embracement_cost = -0.1
-		leader_cost = -0.2
-		heir_chance = -10
+		leader_cost = -0.1
 		clans_influence_modifier = -0.05
 	}
 }
@@ -61,13 +65,15 @@ tribal_federation_reform = {
 	nation_designer_cost = 0
 	legacy_equivalent = tribal_federation
 	
-	heir = no
+	royal_marriage = no
 	queen = no
 
 	modifiers = {
+		no_stability_loss_on_monarch_death = yes
 		global_manpower_modifier = 0.1
 		global_regiment_cost = -0.1
 		clans_influence_modifier = 0.1
+		heir_chance = -100
 	}
 }
 
@@ -80,34 +86,37 @@ tribal_kingdom_reform = {
 	allow_normal_conversion = yes
 	valid_for_nation_designer = yes
 	nation_designer_cost = 0
+
 	modifiers = {
 		land_morale = 0.1
 	}
 	legacy_equivalent = tribal_kingdom
 }
 
-pastoral_tribe_reform = {
+client_state_tribe_reform = {
 	potential = {
-		OR = {
-			has_reform = pastoral_tribe_reform
-			have_had_reform = pastoral_tribe_reform
-		}
+		is_client_nation = yes
 	}
-	icon = "pastoral_tribes"
-	allow_normal_conversion = yes
-	valid_for_nation_designer = yes
-	nation_designer_cost = -25
+
+	trigger = {
+		is_client_nation = yes
+	}
+
+	icon = "satrapies_reform"
+	allow_normal_conversion = no
+	legacy_equivalent = tribal_kingdom
+	valid_for_nation_designer = no
+	nation_designer_cost = 0
 	lock_level_when_selected = yes
+	
+	queen = no
+
 	modifiers = {
-		naval_forcelimit_modifier = -1
-		land_attrition = -0.5
-		global_supply_limit_modifier = 0.33
-		min_autonomy = 10
+		num_accepted_cultures = 3
+		land_forcelimit_modifier = -0.33
+		tolerance_heretic = 2
+		tolerance_heathen = 2
 	}
-	custom_attributes = {
-		locked_government_type = yes
-	}
-	legacy_equivalent = pastoral_tribe
 }
 
 iberian_society_reform = {
@@ -120,7 +129,7 @@ iberian_society_reform = {
 	lock_level_when_selected = yes
 	legacy_equivalent = iberian_monarchy
 	
-	heir = no
+	royal_marriage = no
 	queen = no
 	
 	nation_designer_trigger = {
@@ -130,33 +139,10 @@ iberian_society_reform = {
 		locked_government_type = yes
 	}
 	modifiers = {
+		no_stability_loss_on_monarch_death = yes
 		discipline = 0.05
 		legitimacy = 0.5
-	}
-}
-
-germanic_tribal_kingdom_reform = {
-	icon = "germanic_king"
-	potential = {
-		culture_group = germanic_group
-	}
-	valid_for_nation_designer = yes
-	nation_designer_cost = 5
-	lock_level_when_selected = yes
-	legacy_equivalent = germanic_kingdom
-	
-	heir = yes
-	queen = yes
-	
-	nation_designer_trigger = {
-		culture_group = germanic_group
-	}
-	custom_attributes = {
-		locked_government_type = yes
-	}
-	modifiers = {
-		war_exhaustion = -0.1
-		land_morale = 0.1
+		heir_chance = -100
 	}
 }
 
@@ -164,14 +150,13 @@ slavic_tribe_reform = {
 	icon = "germanic_king"
 	potential = {
 		primary_culture = slavic
+		has_country_flag = slavic_state
 	}
 	valid_for_nation_designer = yes
 	nation_designer_cost = 5
+	allow_normal_conversion = no
 	lock_level_when_selected = yes
 	legacy_equivalent = tribal_kingdom
-	
-	heir = yes
-	queen = yes
 	
 	nation_designer_trigger = {
 		primary_culture = slavic
@@ -199,9 +184,6 @@ iranian_tribal_coalition_reform = {
 	nation_designer_cost = 5
 	lock_level_when_selected = yes
 	legacy_equivalent = tribal_federation
-	
-	heir = yes
-	queen = yes
 	
 	nation_designer_trigger = {
 		OR = {
@@ -231,7 +213,8 @@ anatolian_tribal_federation_reform = {
 	lock_level_when_selected = yes
 	legacy_equivalent = tribal_federation
 	
-	heir = no
+	royal_marriage = no
+	republican_name = yes
 	queen = no
 	
 	nation_designer_trigger = {
@@ -239,8 +222,10 @@ anatolian_tribal_federation_reform = {
 	}
 
 	modifiers = {
+		no_stability_loss_on_monarch_death = yes
 		discipline = 0.05
 		land_morale = 0.1
+		heir_chance = -100
 	}
 	
 	ai = {
@@ -253,7 +238,7 @@ anatolian_tribal_federation_reform = {
 }
 
 steppe_horde_reform = {
-	icon = "cavalry_focus_reform"
+	icon = "steppe_horde_reform"
 	allow_normal_conversion = no
 
 	nomad = yes
@@ -262,8 +247,6 @@ steppe_horde_reform = {
 	nation_designer_cost = 20
 	legacy_equivalent = tribal_horde
 	lock_level_when_selected = yes
-	heir = yes
-	queen = yes
 	royal_marriage = yes
 
 	potential = {
@@ -275,78 +258,20 @@ steppe_horde_reform = {
 
 	custom_attributes = {
 		locked_government_type = yes
+		wars_give_horde_unity = yes
 	}
 
 	modifiers = {
-		cavalry_power = 0.1
-		cav_to_inf_ratio = 0.5
-		cavalry_cost = -0.5
-		global_supply_limit_modifier = 0.5
+		cav_to_inf_ratio = 0.35
+		cavalry_cost = -0.35
+		cavalry_power = 0.15
+		movement_speed = 0.05
 		naval_forcelimit_modifier = -1
-		loot_amount = 0.5
 	}
-}
-
-tibetan_tribe_reform = {
-	icon = "tibetan_tribe_reform"
-	allow_normal_conversion = no
-
-	valid_for_nation_designer = yes
-	nation_designer_cost = 20
-	legacy_equivalent = tribal_horde
-	heir = no
-	queen = no
-	republican_name = yes
-	royal_marriage = no
-	monarchy = yes
-
-	potential = {
-		OR = {
-			primary_culture = zhangzhung
-			primary_culture = sumpa
-			primary_culture = tibetan
-			primary_culture = qiang
-		}
-	}
-
-	modifiers = {
-		land_attrition = -0.1
-		enemy_core_creation = 1
-		governing_capacity_modifier = -0.25
-	}
-}
-
-korean_tribal_statelet_reform = {
-	potential = {
-		must_not_have_any_indian_reform = yes
-		OR = {
-			culture_group = korean_group
-			culture_group = japonic_group
-		}
-	}
-	trigger = {
-		OR = {
-			has_reform = korean_tribal_statelet_reform
-			have_had_reform = korean_tribal_statelet_reform
-		}
-	}
-	icon = "ShuiLiZhiDu"
-	allow_normal_conversion = no
-	valid_for_nation_designer = yes
-	nation_designer_cost = 0
-	lock_level_when_selected = yes
-	modifiers = {
-		governing_capacity_modifier = -0.2
-		fort_maintenance_modifier = -0.1
-		diplomatic_upkeep = 1
-	}
-	custom_attributes = {
-		locked_government_type = yes
-	}
-	legacy_equivalent = tribal_kingdom
 }
 
 korean_samhan_confederation_reform = {
+	icon = "quantity_china_reform"
 	potential = {
 		must_not_have_any_indian_reform = yes
 		OR = {
@@ -360,16 +285,16 @@ korean_samhan_confederation_reform = {
 			have_had_reform = korean_samhan_confederation_reform
 		}
 	}
-	icon = "quantity_china_reform"
+	
 	allow_normal_conversion = no
 	valid_for_nation_designer = yes
 	nation_designer_cost = 0
 	lock_level_when_selected = yes
+	
 	modifiers = {
 		min_autonomy = 20
 		diplomatic_upkeep = 1
 		liberty_desire_from_subject_development = -0.1
-		state_governing_cost = -0.2
 	}
 	custom_attributes = {
 		locked_government_type = yes
@@ -390,14 +315,15 @@ mleccha_desa_tribal_reform = {
 	allow_normal_conversion = no
 	valid_for_nation_designer = no
 	lock_level_when_selected = yes
+	
 	custom_attributes = {
 		locked_government_type = yes
+		mleccha_special_religion = yes
 	}
 	modifiers = {
 		reform_progress_growth = 0.2
 		culture_conversion_cost = -0.33
 		tolerance_own = 3
-		diplomatic_reputation = 2
 		global_missionary_strength = 0.01
 	}
 	legacy_equivalent = tribal_kingdom
@@ -417,11 +343,13 @@ early_urban_tribe_reform = {
 				base_production = 3
 			}
 		}
+		NOT = { has_reform = steppe_horde_reform }
 	}
 	
 	modifiers = {
 		global_prov_trade_power_modifier = 0.1
 		reform_progress_growth = 0.1
+		state_maintenance_modifier = 0.1
 	}
 }
 
@@ -429,6 +357,10 @@ agriculturalist_tribe_reform = {
 	icon = "field_worker"
 	
 	allow_normal_conversion = yes
+	
+	trigger = {
+	    NOT = { has_reform = steppe_horde_reform }
+	}
 	
 	modifiers = {
 		production_efficiency = 0.1
@@ -457,13 +389,24 @@ pastoralist_tribe_reform = {
 	icon = "cavalry_focus_reform"
 	
 	allow_normal_conversion = no
+
+	potential = {
+		ai = no
+	}
 	
 	modifiers = {
 		global_manpower_modifier = 0.1
 		global_unrest = -1
 	}
 	effect = {
-		add_government_reform = pastoral_tribe_reform
+		if = {
+			limit = {
+				NOT = { has_reform = pastoral_tribe_reform }
+				NOT = { has_reform = steppe_horde_reform }
+			}
+			change_government = native
+			add_government_reform = pastoral_tribe_reform
+		}
 	}
 	
 	ai = {
@@ -505,17 +448,68 @@ nomadism_tribe_reform = {
 	icon = "regional_armies"
 	
 	allow_normal_conversion = yes
+
+	potential = {
+		capital_scope = {
+			OR = {
+				superregion = iran_superregion
+				superregion = turan_superregion
+				superregion = scythia_superregion
+				superregion = parthia_superregion
+				region = dacia_region
+				region = suebia_region
+			}
+			OR = {
+				has_terrain = steppe
+				has_terrain = forest_steppe
+				has_terrain = grasslands
+				has_terrain = desert
+				has_terrain = desert_river
+				has_terrain = salt_desert
+				has_terrain = desert_mountain
+				has_terrain = oasis
+			}
+		}
+		OR = {
+		    has_reform = pastoral_tribe_reform
+			has_reform = steppe_horde_reform
+		}
+	}
 	
 	trigger = {
-		NOT = { num_of_cities = 5 }
+		capital_scope = {
+			OR = {
+				superregion = iran_superregion
+				superregion = turan_superregion
+				superregion = scythia_superregion
+				superregion = parthia_superregion
+				region = dacia_region
+				region = suebia_region
+			}
+			OR = {
+				has_terrain = steppe
+				has_terrain = forest_steppe
+				has_terrain = grasslands
+				has_terrain = desert
+				has_terrain = desert_river
+				has_terrain = oasis
+			}
+		}
+		OR = {
+		    has_reform = pastoral_tribe_reform
+			has_reform = steppe_horde_reform
+		}
 	}
 	
 	modifiers = {
-		land_maintenance_modifier = -0.25
+		movement_speed = 0.05
 		reinforce_cost_modifier = -0.1
 	}
 	effect = {
-		add_government_reform = steppe_horde_reform
+	    if = {
+			limit = { NOT = { has_reform = steppe_horde_reform } }
+			add_government_reform = steppe_horde_reform
+		}
 	}
 	
 	ai = {
@@ -525,10 +519,12 @@ nomadism_tribe_reform = {
 			capital_scope = {
 				NOT = { superregion = scythia_superregion }
 				NOT = { superregion = turan_superregion }
+				NOT = { superregion = iran_superregion }
+				NOT = { superregion = parthia_superregion }
 			}
 		}
 		modifier = {
-			factor = 2
+			factor = 4
 			capital_scope = {
 				OR = {
 					has_terrain = steppe
@@ -536,6 +532,10 @@ nomadism_tribe_reform = {
 					has_terrain = grasslands
 				}
 			}
+		}
+		modifier = {
+			factor = 10
+			has_reform = steppe_horde_reform
 		}
 	}
 }
@@ -559,6 +559,7 @@ matriarchal_tribe_reform = {
 	allow_normal_conversion = yes
 	
 	modifiers = {
+	    advisor_cost = -0.1
 		may_recruit_female_generals = yes
 		female_advisor_chance = 0.5
 	}
@@ -581,7 +582,8 @@ egalitarian_tribe_reform = {
 	
 	modifiers = {
 		advisor_cost = -0.1
-		all_power_cost = -0.01
+		advisor_pool = 1
+		female_advisor_chance = 0.2
 	}
 	
 	ai = {
@@ -594,6 +596,10 @@ egalitarian_tribe_reform = {
 			NOT = { culture_group = etruscan_culture_group }
 			NOT = { culture_group = cushitic_group }
 		}
+		modifier = {
+			factor = 5
+			primary_culture = xiongnu
+		}
 	}
 }
 
@@ -605,8 +611,8 @@ multicultural_coalition_reform = {
 	allow_normal_conversion = yes
 	
 	modifiers = {
-		land_maintenance_modifier = 0.1
-		num_accepted_cultures = 2
+		manpower_in_accepted_culture_provinces = 0.35
+		num_accepted_cultures = 1
 	}
 	
 	ai = {
@@ -640,7 +646,7 @@ legendary_clans_reform = {
 	
 	modifiers = {
 		prestige = 0.5
-		army_tradition = 1
+		army_tradition = 0.25
 	}
 }
 
@@ -664,6 +670,7 @@ religious_origin_of_power_reform = {
 	modifiers = {
 		tolerance_own = 0.5
 		global_autonomy = -0.05
+		yearly_patriarch_authority = 0.003
 	}
 }
 
@@ -672,12 +679,12 @@ popular_origin_of_power_reform = {
 
 	allow_normal_conversion = yes
 	modifiers = {
-		legitimacy = 1
-		republican_tradition = 1
-		devotion = 1
-		horde_unity = 1
-		meritocracy = 1
-		yearly_corruption = -0.05
+		legitimacy = 0.5
+		republican_tradition = 0.25
+		devotion = 0.5
+		horde_unity = 0.25
+		meritocracy = 0.25
+		idea_cost = -0.05
 	}
 }
 
@@ -722,7 +729,7 @@ copy_foreign_custom_reform = {
 
 	allow_normal_conversion = yes
 	modifiers = {
-		global_institution_spread = 0.1
+		global_institution_spread = 0.15
 		embracement_cost = -0.1
 	}
 }
@@ -733,7 +740,7 @@ limit_foreign_influences_reform = {
 	allow_normal_conversion = yes
 	modifiers = {
 		improve_relation_modifier = 0.2
-		ae_impact = -0.1
+		yearly_corruption = -0.05
 	}
 }
 
@@ -744,15 +751,34 @@ traditionalist_tribe_reform = {
 	modifiers = {
 		land_morale = 0.05
 		shock_damage_received = 0.05
+		yearly_patriarch_authority = 0.003
 	}
 }
 
 isolationist_tribe_reform = {
 	icon = "transhumancy_tribe_reform"
 
+    trigger = {
+		NOT = {
+		    any_known_country = {
+			    is_tribal = no
+			    OR = {
+				    alliance_with = ROOT
+				    marriage_with = ROOT
+				    is_subject_of = ROOT
+				    has_opinion = {
+					    who = ROOT
+					    value = 100
+				    }
+			    }
+		    }
+		}
+	}
+
 	allow_normal_conversion = yes
 	modifiers = {
-		technology_cost = -0.05
+		idea_cost = -0.1
+		inflation_reduction = 0.1
 	}
 }
 
@@ -767,6 +793,7 @@ priesthood_reform = {
 	modifiers = {
 		tolerance_own = 0.5
 		legitimacy = 0.5
+		yearly_patriarch_authority = 0.004
 	}
 }
 yearly_clan_assembly = {
@@ -777,7 +804,7 @@ yearly_clan_assembly = {
 	allow_normal_conversion = yes
 	modifiers = {
 		free_mil_policy = 1 
-		yearly_absolutism = 0.25 
+		yearly_absolutism = 0.1
 	}
 }
 tribal_heralds = {
@@ -805,11 +832,12 @@ permanent_senate = {
 	}
 	allow_normal_conversion = yes
 	modifiers = {
-		years_of_nationalism = -5
+		years_of_nationalism = -2
 		advisor_cost = -0.1
 	}
 	effect = {
 		add_government_reform = tribal_republic_reform
+		add_republican_tradition = 80
 	}
 }
 
@@ -825,7 +853,7 @@ tribal_taxes = {
 	allow_normal_conversion = yes
 	modifiers = {
 		global_tax_modifier = 0.15
-		war_taxes_cost_modifier = -0.25
+		war_taxes_cost_modifier = -0.5
 	}
 }
 extra_military_service = {
@@ -875,7 +903,7 @@ promote_urbanization = {
 	allow_normal_conversion = yes
 	modifiers = {
 		embracement_cost = -0.1
-		max_absolutism = 5
+		innovativeness_gain = 0.15
 	}
 }
 fortify_the_villages = {
@@ -911,6 +939,7 @@ promote_religious_festivals = {
 	modifiers = {
 		global_missionary_strength = 0.005
 		culture_conversion_cost = -0.2 
+		yearly_patriarch_authority = 0.005
 	}
 }
 
@@ -923,6 +952,7 @@ reform_to_republic = {
 		NOT = { has_reform = mantain_status_quo }
 		NOT = { has_reform = empowerment_rajya_reform }
 		NOT = { has_reform = empowerment_sabha_reform }
+		NOT = { has_country_flag = reform_block_flag }
 		OR = { 
 			has_reform = tribal_federation_reform 
 			has_reform = iberian_society_reform 
@@ -941,6 +971,22 @@ reform_to_republic = {
 		change_government = republic
 		add_government_reform = citizens_republic_reform
 	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 0.2
+			capital_scope = {
+				OR = {
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = iran_superregion
+					superregion = parthia_superregion
+				}
+			}
+			has_reform = steppe_horde_reform
+		}
+	}
 }
 reform_to_league = {
 	icon = "league_icon"
@@ -953,12 +999,29 @@ reform_to_league = {
 			has_reform = tibetan_tribe_reform
 			has_reform = steppe_horde_reform
 		}
+		NOT = { has_country_flag = reform_block_flag }
 	}
 	allow_normal_conversion = yes
 	effect = {
 		lose_reforms = 4
 		change_government = republic
 		add_government_reform = league_reform
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 0.2
+			capital_scope = {
+				OR = {
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = iran_superregion
+					superregion = parthia_superregion
+				}
+			}
+			has_reform = steppe_horde_reform
+		}
 	}
 }
 reform_to_oligarchy = {
@@ -977,12 +1040,29 @@ reform_to_oligarchy = {
 		NOT = { has_reform = open_ministries_reform }
 		NOT = { has_reform = empowerment_rajya_reform }
 		NOT = { has_reform = mantain_status_quo }
+		NOT = { has_country_flag = reform_block_flag }
 	}
 	allow_normal_conversion = yes
 	effect = {
 		lose_reforms = 4
 		change_government = theocracy
 		add_government_reform = oligarchy_reform
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 0.2
+			capital_scope = {
+				OR = {
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = iran_superregion
+					superregion = parthia_superregion
+				}
+			}
+			has_reform = steppe_horde_reform
+		}
 	}
 }
 
@@ -992,6 +1072,7 @@ reform_to_monarchy = {
 		NOT = { has_reform = open_ministries_reform }
 		NOT = { has_reform = closed_ministries_reform }
 		NOT = { has_reform = empowerment_sabha_reform }
+		NOT = { has_country_flag = reform_block_flag }
 		OR = {  
 			has_reform = iberian_society_reform 
 			has_reform = tribal_kingdom_reform 
@@ -1016,6 +1097,22 @@ reform_to_monarchy = {
 		change_government = monarchy
 		add_government_reform = aristocratic_monarchy_reform
 	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 0.2
+			capital_scope = {
+				OR = {
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = iran_superregion
+					superregion = parthia_superregion
+				}
+			}
+			has_reform = steppe_horde_reform
+		}
+	}
 }
 
 mantain_tribal_structures_reform = {
@@ -1034,10 +1131,11 @@ mantain_tribal_structures_reform = {
 	allow_normal_conversion = yes
 	
 	modifiers = {
-		max_absolutism = 5
 		min_autonomy = -5
-		global_institution_spread = 0.25
-		embracement_cost = -0.5
+		state_maintenance_modifier = 0.1
+		possible_policy = 1
+		free_policy = 1
+		embracement_cost = -0.1
 	}
 
 	ai = {
@@ -1047,8 +1145,16 @@ mantain_tribal_structures_reform = {
 			OR = {
 				primary_culture = galatian
 				primary_culture = nabataean
-				culture_group = hellenic
+				primary_culture = meroitic
+				culture_group = hellenic_group
 				culture_group = macedon_group
+				AND = {
+					culture_group = arabic_group
+					NOT = { primary_culture = qedarite }
+					NOT = { primary_culture = mykians }
+					NOT = { primary_culture = qatabanian }
+					NOT = { primary_culture = saracenean }
+				}
 			}
 		}
 		modifier = {
@@ -1058,6 +1164,7 @@ mantain_tribal_structures_reform = {
 				culture_group = balto_slavic_group
 				culture_group = tibetan_group
 				culture_group = cushitic_group
+				culture_group = nubian_group
 				culture_group = central_african_group
 				culture_group = ibero_celtic_group
 				culture_group = gaulish_group
@@ -1080,7 +1187,6 @@ mantain_tribal_structures_reform = {
 			factor = 10
 			OR = {
 				has_reform = dravidian_tribe_reform
-				has_reform = tibetan_tribe_reform
 			}
 		}
 		modifier = {
@@ -1089,6 +1195,8 @@ mantain_tribal_structures_reform = {
 				OR = {
 					superregion = scythia_superregion
 					superregion = turan_superregion
+					superregion = iran_superregion
+					superregion = parthia_superregion
 				}
 			}
 			has_reform = steppe_horde_reform

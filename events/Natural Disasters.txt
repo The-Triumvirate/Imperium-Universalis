@@ -1,0 +1,997 @@
+namespace = natural_disaster
+
+########################################################################################
+# floodings
+########################################################################################
+country_event = {
+	id = natural_disaster.1
+	title = "natural_disaster.1.t"
+	desc = "natural_disaster.1.d"
+	picture = flooding
+	is_triggered_only = yes
+	goto = flooded_provinces
+	
+	trigger = {
+		any_owned_province = {
+			development = 2
+			NOT = { has_province_modifier = floodings_modifier_1 }
+			NOT = { has_province_modifier = floodings_modifier_2 }
+			OR = {
+				has_terrain = mesopotamian_plain
+				has_terrain = babil_t
+				has_terrain = uruk_t
+				has_terrain = nile_plain
+				has_terrain = memphis_t
+				has_terrain = waset_t
+				has_terrain = elephantine_t
+				has_terrain = floodplains
+				has_terrain = alluvial_plain
+				has_terrain = marsh
+				has_terrain = mangrove
+				has_terrain = wetlands
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					development = 2
+					NOT = { has_province_modifier = floodings_modifier_1 }
+					NOT = { has_province_modifier = floodings_modifier_2 }
+					OR = {
+						has_terrain = mesopotamian_plain
+						has_terrain = babil_t
+						has_terrain = uruk_t
+						has_terrain = nile_plain
+						has_terrain = memphis_t
+						has_terrain = waset_t
+						has_terrain = elephantine_t
+						has_terrain = floodplains
+						has_terrain = alluvial_plain
+						has_terrain = marsh
+						has_terrain = mangrove
+						has_terrain = wetlands
+					}
+				}
+				save_event_target_as = flooded_provinces
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+		modifier = {
+			factor = 2
+			event_target:flooded_provinces = {
+				OR = {
+					region = mesopotamia_region
+					region = lower_egypt_region
+					region = upper_egypt_region
+					region = sindhu_region
+					region = vanga_region
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.1.a"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.2 }
+			}
+			modifier = {
+				factor = 0
+				is_bankrupt = yes
+			}
+		}
+		add_prestige = -4
+		event_target:flooded_provinces = {
+			area = {
+				limit = {
+					OR = {
+						has_terrain = mesopotamian_plain
+						has_terrain = babil_t
+						has_terrain = uruk_t
+						has_terrain = nile_plain
+						has_terrain = memphis_t
+						has_terrain = waset_t
+						has_terrain = elephantine_t
+						has_terrain = floodplains
+						has_terrain = alluvial_plain
+						has_terrain = marsh
+						has_terrain = mangrove
+						has_terrain = wetlands
+					}
+				}
+				add_permanent_province_modifier = {
+					name = floodings_modifier_1
+					duration = 1825
+				}
+				if = {
+					limit = { base_manpower = 3 }
+					add_base_manpower = -2
+					change_variable = { PS_rur_evtd = 2 }
+					add_devastation = 60
+				}
+				else_if = {
+					limit = { base_manpower = 2 }
+					add_base_manpower = -1
+					change_variable = { PS_rur_evtd = 1 }
+					add_devastation = 60
+				}
+				else_if = {
+					limit = { base_manpower = 1 }
+					add_devastation = 60
+				}
+			}
+		}
+	}
+	option = {
+		name = "natural_disaster.1.b"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 3
+				years_of_income = 0.6
+			}
+		}
+		add_years_of_income = -0.2
+		add_prestige = -1
+		event_target:flooded_provinces = {
+			area = {
+				limit = {
+					OR = {
+						has_terrain = mesopotamian_plain
+						has_terrain = babil_t
+						has_terrain = uruk_t
+						has_terrain = nile_plain
+						has_terrain = memphis_t
+						has_terrain = waset_t
+						has_terrain = elephantine_t
+						has_terrain = floodplains
+						has_terrain = alluvial_plain
+						has_terrain = marsh
+						has_terrain = mangrove
+						has_terrain = wetlands
+					}
+				}
+				add_devastation = 50
+				add_permanent_province_modifier = {
+					name = floodings_modifier_2
+					duration = 1095
+				}
+				if = {
+					limit = { base_manpower = 2 }
+					add_base_manpower = -1
+					change_variable = { PS_rur_evtd = 1 }
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# wildfires
+########################################################################################
+country_event = {
+	id = natural_disaster.2
+	title = "natural_disaster.2.t"
+	desc = "natural_disaster.2.d"
+	picture = wildfire
+	is_triggered_only = yes
+	goto = wildfire_province
+	
+	trigger = {
+		is_month = 5
+		NOT = { is_month = 9 }
+		any_owned_province = {
+			NOT = { has_province_modifier = wildfires_modifier }
+			NOT = { has_monsoon = normal_monsoon }
+			NOT = { has_monsoon = severe_monsoon }
+			OR = {
+				has_terrain = woods
+				has_terrain = forest
+				has_terrain = forest_steppe
+				has_terrain = drylands
+				has_terrain = ninive_t
+				has_terrain = savannah
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = wildfires_modifier }
+					NOT = { has_monsoon = normal_monsoon }
+					NOT = { has_monsoon = severe_monsoon }
+					OR = {
+						has_terrain = woods
+						has_terrain = forest
+						has_terrain = forest_steppe
+						has_terrain = drylands
+						has_terrain = ninive_t
+						has_terrain = savannah
+					}
+				}
+				save_event_target_as = wildfire_province
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+		modifier = {
+			factor = 4
+			event_target:wildfire_province = {
+				OR = {
+					superregion = italia_superregion
+					superregion = hispania_superregion
+					superregion = western_africa_superregion
+					superregion = macedonia_superregion
+					superregion = asia_superregion
+					superregion = syria_superregion
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.2.a"
+		ai_chance = { factor = 80 }
+		event_target:wildfire_province = {
+			area = {
+				limit = {
+					NOT = { has_monsoon = normal_monsoon }
+					NOT = { has_monsoon = severe_monsoon }
+					OR = {
+						has_terrain = woods
+						has_terrain = forest
+						has_terrain = forest_steppe
+						has_terrain = drylands
+						has_terrain = ninive_t
+						has_terrain = savannah
+					}
+				}
+				add_devastation = 35
+				add_permanent_province_modifier = {
+					name = wildfires_modifier
+					duration = 730
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# landslides
+########################################################################################
+country_event = {
+	id = natural_disaster.3
+	title = "natural_disaster.3.t"
+	desc = "natural_disaster.3.d"
+	picture = landslide
+	is_triggered_only = yes
+	goto = landslide_province
+	
+	trigger = {
+		any_owned_province = {
+			NOT = { has_province_modifier = landslide_modifier }
+			OR = {
+				has_terrain = highlands
+				has_terrain = fertile_highlands
+				has_terrain = parsa_t
+				has_terrain = mountain
+				has_terrain = desert_mountain
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = landslide_modifier }
+					OR = {
+						has_terrain = highlands
+						has_terrain = fertile_highlands
+						has_terrain = parsa_t
+						has_terrain = mountain
+						has_terrain = desert_mountain
+					}
+				}
+				save_event_target_as = landslide_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.2.a"
+		ai_chance = { factor = 80 }
+		event_target:landslide_province = {
+			add_devastation = 20
+			add_permanent_province_modifier = {
+				name = landslide_modifier
+				duration = 365
+			}
+		}
+	}
+}
+
+########################################################################################
+# blizzards
+########################################################################################
+country_event = {
+	id = natural_disaster.4
+	title = "natural_disaster.4.t"
+	desc = "natural_disaster.4.d"
+	picture = soldiers_in_snow
+	is_triggered_only = yes
+	goto = blizzard_province
+	
+	trigger = {
+		OR = {
+			AND = {
+				is_month = 0
+				NOT = { is_month = 2 }
+			}
+			is_month = 10
+			any_owned_province = { has_climate = arctic }
+		}
+		NOT = { is_month = 1 }
+		any_owned_province = {
+			NOT = { has_province_modifier = blizzards_modifier }
+			OR = {
+				has_climate = arctic
+				has_winter = normal_winter
+				has_winter = severe_winter
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = blizzards_modifier }
+					OR = {
+						has_climate = arctic
+						has_winter = normal_winter
+						has_winter = severe_winter
+					}
+				}
+				save_event_target_as = blizzard_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.2.a"
+		ai_chance = { factor = 80 }
+		event_target:blizzard_province = {
+			add_devastation = 20
+			add_permanent_province_modifier = {
+				name = blizzards_modifier
+				duration = 30
+			}
+		}
+	}
+}
+
+########################################################################################
+# heat wave
+########################################################################################
+country_event = {
+	id = natural_disaster.5
+	title = "natural_disaster.5.t"
+	desc = "natural_disaster.5.d"
+	picture = heatwave
+	is_triggered_only = yes
+	goto = heatwave_province
+	
+	trigger = {
+		any_owned_province = {
+			NOT = { has_province_modifier = heatwave_modifier }
+			NOT = { superregion = tibet_superregion }
+			NOT = { superregion = germania_superregion }
+			NOT = { superregion = britannia_superregion }
+			NOT = { superregion = korea_superregion }
+			NOT = { has_winter = normal_winter }
+			NOT = { has_winter = severe_winter }
+		}
+		is_month = 4
+		NOT = { is_month = 9 }
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = heatwave_modifier }
+					NOT = { superregion = tibet_superregion }
+					NOT = { superregion = germania_superregion }
+					NOT = { superregion = britannia_superregion }
+					NOT = { superregion = korea_superregion }
+					NOT = { has_winter = normal_winter }
+					NOT = { has_winter = severe_winter }
+				}
+				save_event_target_as = heatwave_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.2.a"
+		ai_chance = { factor = 80 }
+		event_target:heatwave_province = {
+			area = {
+				add_devastation = 25
+				add_permanent_province_modifier = {
+					name = heatwave_modifier
+					duration = 60
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# crop failure
+########################################################################################
+country_event = {
+	id = natural_disaster.6
+	title = "natural_disaster.6.t"
+	desc = "natural_disaster.6.d"
+	picture = famine
+	is_triggered_only = yes
+	goto = crop_failure_provinces
+	
+	trigger = {
+		NOT = { is_month = 2 }
+		NOT = { is_month = 10 }
+		any_owned_province = {
+			development = 3
+			NOT = { has_province_modifier = crop_failure_modifier_1 }
+			NOT = { has_province_modifier = crop_failure_modifier_2 }
+			NOT = { has_province_modifier = crop_failure_modifier_3 }
+			OR = {
+				trade_goods = grain
+				trade_goods = rice
+				trade_goods = meat_animals
+				trade_goods = fruits
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					development = 3
+					NOT = { has_province_modifier = crop_failure_modifier_1 }
+					NOT = { has_province_modifier = crop_failure_modifier_2 }
+					NOT = { has_province_modifier = crop_failure_modifier_3 }
+					OR = {
+						trade_goods = grain
+						trade_goods = rice
+						trade_goods = meat_animals
+						trade_goods = fruits
+					}
+				}
+				save_event_target_as = crop_failure_provinces
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.1.a"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.33 }
+			}
+			modifier = {
+				factor = 0
+				is_bankrupt = yes
+			}
+		}
+		add_prestige = -8
+		event_target:crop_failure_provinces = {
+			area = {
+				if = {
+					limit = {
+						has_building = small_grain_depot
+						has_building = big_grain_depot
+					}
+					add_permanent_province_modifier = {
+						name = crop_failure_modifier_2
+						duration = 2555
+					}
+					if = {
+						limit = { base_manpower = 2 }
+						add_base_manpower = -1
+						add_base_production = -1
+						change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtd = 1 }
+						add_devastation = 50
+					}
+					else = {
+						add_devastation = 50
+						add_base_production = -1
+						change_variable = { PS_urb_evtd = 1 }
+					}
+				}
+				else = {
+					add_permanent_province_modifier = {
+						name = crop_failure_modifier_1
+						duration = 2920
+					}
+					if = {
+						limit = { base_manpower = 3 }
+						add_base_manpower = -2
+						add_base_production = -1
+						add_base_tax = -1
+						change_variable = { PS_rur_evtd = 2 }	change_variable = { PS_urb_evtd = 1 }	change_variable = { PS_upp_evtd = 1 }
+						add_devastation = 70
+					}
+					else_if = {
+						limit = { base_manpower = 2 }
+						add_base_manpower = -1
+						add_base_production = -1
+						add_base_tax = -1
+						change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtd = 1 }	change_variable = { PS_upp_evtd = 1 }
+						add_devastation = 70
+					}
+					else_if = {
+						limit = { base_manpower = 1 }
+						add_devastation = 70
+						add_base_production = -1
+						add_base_tax = -1
+						change_variable = { PS_urb_evtd = 1 }	change_variable = { PS_upp_evtd = 1 }
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "natural_disaster.1.b"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 3
+				years_of_income = 0.6
+			}
+		}
+		add_years_of_income = -0.3
+		add_prestige = -2
+		event_target:flooded_provinces = {
+			area = {
+				if = {
+					limit = {
+						has_building = small_grain_depot
+						has_building = big_grain_depot
+					}
+					add_permanent_province_modifier = {
+						name = crop_failure_modifier_3
+						duration = 2190
+					}
+					if = {
+						limit = { base_manpower = 2 }
+						add_devastation = 30
+						add_base_manpower = -1
+						add_base_production = -1
+						change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtd = 1 }
+					}
+					else = {
+						add_devastation = 30
+						add_base_production = -1
+						change_variable = { PS_urb_evtd = 1 }
+					}
+				}
+				else = {
+					add_permanent_province_modifier = {
+						name = crop_failure_modifier_2
+						duration = 2555
+					}
+					if = {
+						limit = { base_manpower = 2 }
+						add_devastation = 50
+						add_base_manpower = -1
+						add_base_production = -1
+						change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtd = 1 }
+					}
+					else = {
+						add_devastation = 50
+						add_base_production = -1
+						change_variable = { PS_urb_evtd = 1 }
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# tropical storm
+########################################################################################
+country_event = {
+	id = natural_disaster.7
+	title = "natural_disaster.7.t"
+	desc = "natural_disaster.7.d"
+	picture = tropical_storm
+	is_triggered_only = yes
+	goto = tropical_storm_province
+	
+	trigger = {
+		any_owned_province = {
+			development = 2
+			NOT = { has_province_modifier = tropical_storm_modifier }
+			has_port = yes
+			OR = {
+				has_monsoon = mild_monsoon
+				has_monsoon = normal_monsoon
+				has_monsoon = severe_monsoon
+				has_climate = tropical
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					development = 2
+					NOT = { has_province_modifier = tropical_storm_modifier }
+					has_port = yes
+					OR = {
+						has_monsoon = mild_monsoon
+						has_monsoon = normal_monsoon
+						has_monsoon = severe_monsoon
+						has_climate = tropical
+					}
+				}
+				save_event_target_as = tropical_storm_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.2.a"
+		ai_chance = { factor = 80 }
+		event_target:tropical_storm_province = {
+			area = {
+				add_devastation = 40
+				add_permanent_province_modifier = {
+					name = tropical_storm_modifier
+					duration = 30
+				}
+				if = {
+					limit = { base_manpower = 2 }
+					add_base_manpower = -1
+					change_variable = { PS_rur_evtd = 1 }
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# wild wolves
+########################################################################################
+country_event = {
+	id = natural_disaster.8
+	title = "natural_disaster.8.t"
+	desc = "natural_disaster.8.d"
+	picture = wolfs
+	is_triggered_only = yes
+    goto = wolf_province
+	
+	trigger = {
+		any_owned_province = {
+			NOT = { region = africa_region } 
+			NOT = { region = mauretania_region } 
+			NOT = { superregion = eastern_africa_superregion } 
+			NOT = { region = canaan_region } 
+			NOT = { region = mesopotamia_region } 
+			NOT = { region = southern_india_region }
+			NOT = { region = chola_region }
+			NOT = { region = eastern_india_region }
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { region = africa_region } 
+					NOT = { region = mauretania_region } 
+					NOT = { superregion = eastern_africa_superregion } 
+					NOT = { region = canaan_region } 
+					NOT = { region = mesopotamia_region } 
+					NOT = { region = southern_india_region }
+					NOT = { region = chola_region }
+					NOT = { region = eastern_india_region }
+				}
+				save_event_target_as = wolf_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.8.a"
+		event_target:wolf_province = {
+			add_permanent_province_modifier = {
+				name = "wild_wolfs"
+				duration = 730
+			}
+		}
+	}
+}
+
+########################################################################################
+# locusts plague 
+########################################################################################
+province_event = {
+	id = natural_disaster.9
+	title = "natural_disaster.9.t"
+	desc = "natural_disaster.9.d"
+	picture = harvest
+	goto = ROOT
+	
+	trigger = {
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}	
+		is_month = 4
+		NOT = { is_month = 10 }
+		OR = {
+			region = italian_region
+			region = gallia_cisalpina
+			region = sardinia_corsica_region
+			region = magna_graecia
+			region = gallia_narbonensis
+			region = aquitania_region
+			region = hispania_baetica
+			region = lusitania
+			region = cartaginensis_region
+			region = illyria_region
+			region = thracia_region
+			region = greek_region
+			region = macedonia_region
+			continent = china
+			continent = africa
+			continent = india
+			continent = asia
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1250			
+		modifier = {
+			factor = 1.2
+			NOT = { continent = africa }
+		}		
+	}
+	
+	immediate = {
+		every_province = {
+			limit = {
+				area = ROOT 
+				OR = {
+					trade_goods = grain
+					trade_goods = fruits
+				}	
+			}
+			add_permanent_province_modifier = {
+				name = "locust_plague"
+				duration = 365
+			}
+		}
+	}
+
+	option = {
+		name = "natural_disaster.9.a"
+	}
+}
+
+########################################################################################
+# earthquake
+########################################################################################
+province_event = {
+	id = natural_disaster.10
+	title = "natural_disaster.10.t"
+	desc = "natural_disaster.10.d"
+	picture = panic
+	goto = ROOT
+	
+	trigger = { 
+		OR = {
+			region = gallia_cisalpina
+			region = italian_region
+			region = magna_graecia
+			region = illyria_region
+			region = thracia_region
+			region = greek_region
+			region = macedonia_region
+			region = mare_aegaeum_islands_region
+			superregion = asia_superregion
+			superregion = syria_superregion
+			superregion = armenia_superregion
+			region = caucasia_region
+			region = sardinia_corsica_region
+			region = gandhara
+			region = kamarupa_region
+			region = northern_india_region
+			region = kuru_panchala
+		}
+		NOT = {
+			any_province = { has_province_modifier = earthquake }
+		}
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 4600000
+			modifier = {
+				factor = 1.4
+				region = gallia_cisalpina
+			}
+			modifier = {
+				factor = 0.85
+				area = apulia_area
+			}
+			modifier = {
+				factor = 0.85
+				area = campania_area
+			}
+			modifier = {
+				factor = 0.85
+				area = lucania_area
+			}
+			modifier = {
+				factor = 1.2
+				superregion = syria_superregion
+			}
+			modifier = {
+				factor = 0.8
+				region = mare_aegaeum_islands_region
+			}
+			modifier = {
+				factor = 0.9
+				superregion = asia_superregion
+			}
+			modifier = {
+				factor = 0.8
+				superregion = armenia_superregion
+			}
+			
+	}
+	
+	option = {
+		name = "natural_disaster.10.a"
+		ai_chance = { factor = 20 }
+		if = {
+			limit = {
+				base_tax = 1
+				base_production = 1
+			}
+			add_base_production = -1
+			add_base_tax = -1
+			change_variable = { PS_urb_evtd = 1 }	change_variable = { PS_upp_evtd = 1 }
+		}
+		hidden_effect = { destroy_building_50 = yes }
+		add_devastation = 100
+		add_permanent_province_modifier = {
+			name = "earthquake"
+			duration = 730
+		}
+		every_neighbor_province = {
+			hidden_effect = { add_devastation = 10 }
+			add_permanent_province_modifier = {
+				name = "earthquake"
+				duration = 730
+			}	
+		}
+	}
+}
+
+########################################################################################
+# soil degradation
+########################################################################################
+country_event = {
+	id = natural_disaster.11
+	title = "natural_disaster.11.t"
+	desc = "natural_disaster.11.d"
+	picture = landslide
+	is_triggered_only = yes
+	goto = land_degradation_province
+	
+	trigger = {
+		any_owned_province = {
+			NOT = { has_province_modifier = soil_degradation_modifier }
+			NOT = { has_province_modifier = reduced_land_exploitation_modifier }
+			OR = {
+				has_local_modifier_value = {
+					which = local_production_efficiency
+					value = 0.5
+				}
+				has_manufactory_trigger = yes
+			}
+			OR = {
+				water_irrigation_workshop_building_trigger = yes
+				trade_goods = meat_animals
+				trade_goods = wool
+			}
+			OR = {
+				has_terrain = grasslands
+				has_terrain = drylands
+				is_farmland_terrain = yes
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = soil_degradation_modifier }
+					NOT = { has_province_modifier = reduced_land_exploitation_modifier }
+					OR = {
+						has_local_modifier_value = {
+							which = local_production_efficiency
+							value = 1
+						}
+						has_manufactory_trigger = yes
+					}
+					OR = {
+						water_irrigation_workshop_building_trigger = yes
+						trade_goods = meat_animals
+						trade_goods = wool
+					}
+					OR = {
+						has_terrain = grasslands
+						has_terrain = drylands
+						is_farmland_terrain = yes
+					}
+				}
+				save_event_target_as = land_degradation_province
+			}
+		}
+	}
+	
+	option = {
+		name = "natural_disaster.11.a"
+		ai_chance = { factor = 50 }
+		event_target:land_degradation_province = {
+			add_devastation = 20
+			add_permanent_province_modifier = {
+				name = "reduced_land_exploitation_modifier"
+				duration = 3650
+			}
+		}
+	}
+	option = {
+		name = "natural_disaster.11.b"
+		ai_chance = { factor = 50 }
+		event_target:land_degradation_province = {
+			add_devastation = 20
+			add_permanent_province_modifier = {
+				name = "soil_degradation_modifier"
+				duration = 10950
+			}
+		}
+	}
+}

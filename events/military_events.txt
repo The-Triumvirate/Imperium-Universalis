@@ -464,29 +464,16 @@ country_event = {
 			NOT = { culture = ROOT }
 			is_core = ROOT
 			NOT = { has_province_modifier = multicultural_armies_buff_modifier }
-			NOT = { has_province_modifier = multicultural_armies_accepted_buff_modifier }
 		}
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 3
 	}
 	
 	option = {
 		name = "military.10.a"
 		every_owned_province = {
-			if = {
-				limit = {
-					is_core = ROOT
-					NOT = { culture = ROOT }
-					has_owner_accepted_culture = yes
-				}
-				add_province_modifier = {
-					name = multicultural_armies_accepted_buff_modifier
-					hidden = yes
-					duration = -1
-				}
-			}
 			if = {
 				limit = {
 					is_core = ROOT
@@ -503,7 +490,7 @@ country_event = {
 	}
 }
 
-#If province gets accepted culture the modifier should change
+#If province gets accepted culture the modifier is removed
 province_event = {
 	id = military.1101
 	title = "military.10.t"
@@ -531,16 +518,21 @@ province_event = {
 
 	option = {
 		name = "military.10.a"
-		remove_province_modifier = multicultural_armies_buff_modifier
-		add_province_modifier = {
-			name = multicultural_armies_accepted_buff_modifier
-			hidden = yes
-			duration = -1
+		owner = {
+			every_owned_province = {
+				if = {
+					limit = {
+						culture = ROOT
+						has_province_modifier = multicultural_armies_buff_modifier
+					}
+					remove_province_modifier = multicultural_armies_buff_modifier
+				}
+			}
 		}
 	}
 }
 
-#If province gets demoted culture the modifier should change
+#If province gets demoted culture the modifier should be added
 province_event = {
 	id = military.1102
 	title = "military.10.t"
@@ -559,7 +551,7 @@ province_event = {
 			NOT = { primary_culture = ROOT }
 		}
 		has_owner_accepted_culture = no
-		has_province_modifier = multicultural_armies_accepted_buff_modifier
+		NOT = { has_province_modifier = multicultural_armies_buff_modifier }
 	}
 
 	mean_time_to_happen = {
@@ -568,49 +560,58 @@ province_event = {
 
 	option = {
 		name = "military.10.a"
-		remove_province_modifier = multicultural_armies_accepted_buff_modifier
-		add_province_modifier = {
-			name = multicultural_armies_buff_modifier
-			hidden = yes
-			duration = -1
-		}
-	}
-}
-
-#If province changes to primary culture buffs are removed
-province_event = {
-	id = military.1103
-	title = "military.10.t"
-	desc = "military.10.d"
-	picture = training
-	hidden = yes
-
-	trigger = {
 		owner = {
-			OR = {
-				has_reform = multicultural_armies_reform
-				has_reform = multicultural_coalition_reform
+			every_owned_province = {
+				if = {
+					limit = {
+						culture = ROOT
+						NOT = { has_province_modifier = multicultural_armies_buff_modifier }
+					}
+					add_province_modifier = {
+						name = multicultural_armies_buff_modifier
+						hidden = yes
+						duration = -1
+					}
+				}
 			}
-			NOT = { has_reform = persian_achaemenid_monarchy_reform }
-			NOT = { has_reform = medes_monarchy_reform }
-			primary_culture = ROOT
 		}
-		OR = {
-			has_province_modifier = multicultural_armies_buff_modifier
-			has_province_modifier = multicultural_armies_accepted_buff_modifier
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 1
-	}
-
-	option = {
-		name = "military.10.a"
-		remove_province_modifier = multicultural_armies_accepted_buff_modifier
-		remove_province_modifier = multicultural_armies_buff_modifier
 	}
 }
+
+#No longer needed
+#province_event = {
+	#id = military.1103
+	#title = "military.10.t"
+	#desc = "military.10.d"
+	#picture = training
+	#hidden = yes
+
+	#trigger = {
+		#owner = {
+			#OR = {
+				#has_reform = multicultural_armies_reform
+				#has_reform = multicultural_coalition_reform
+			#}
+			#NOT = { has_reform = persian_achaemenid_monarchy_reform }
+			#NOT = { has_reform = medes_monarchy_reform }
+			#primary_culture = ROOT
+		#}
+		#OR = {
+			#has_province_modifier = multicultural_armies_buff_modifier
+			#has_province_modifier = multicultural_armies_accepted_buff_modifier
+		#}
+	#}
+
+	#mean_time_to_happen = {
+		#months = 1
+	#}
+
+	#option = {
+		#name = "military.10.a"
+		#remove_province_modifier = multicultural_armies_accepted_buff_modifier
+		#remove_province_modifier = multicultural_armies_buff_modifier
+	#}
+#}
 
 #removes buff
 country_event = {
@@ -641,5 +642,120 @@ country_event = {
 			remove_province_modifier = multicultural_armies_accepted_buff_modifier
 			remove_province_modifier = multicultural_armies_buff_modifier
 		}
+	}
+}
+
+#no manpower
+country_event = {
+    id = military.13
+	title = "military.13.t"
+	desc = "military.13.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+	    NOT = { has_country_modifier = no_manpower }
+		NOT = { manpower_percentage = 0.05 }
+	}
+	
+	mean_time_to_happen = {
+	    days = 1
+	}
+	
+	option = {
+	    name = "military.13.a"
+		remove_country_modifier = abundant_manpower
+		remove_country_modifier = depleted_manpower
+		add_country_modifier = { 
+            name = no_manpower
+            duration = -1  
+        }	
+	}
+}
+
+#low manpower = {
+country_event = {
+    id = military.14
+	title = "military.14.t"
+	desc = "military.14.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+	    NOT = { has_country_modifier = depleted_manpower }
+		NOT = { manpower_percentage = 0.15 }
+		manpower_percentage = 0.05
+	}
+	
+	mean_time_to_happen = {
+	    days = 1
+	}
+	
+	option = {
+	    name = "military.14.a"
+		remove_country_modifier = no_manpower
+		remove_country_modifier = abundant_manpower
+		add_country_modifier = { 
+            name = depleted_manpower
+            duration = -1  
+        }	
+	}
+}
+
+#medium manpower
+country_event = {
+    id = military.15
+	title = "military.15.t"
+	desc = "military.15.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+	    OR = {
+	        has_country_modifier = no_manpower
+			has_country_modifier = depleted_manpower
+			has_country_modifier = abundant_manpower
+		}
+		NOT = { manpower_percentage = 0.80 }
+		manpower_percentage = 0.15
+	}
+	
+	mean_time_to_happen = {
+	    days = 1
+	}
+	
+	option = {
+	    name = "military.15.a"
+		remove_country_modifier = no_manpower
+		remove_country_modifier = depleted_manpower
+		remove_country_modifier = abundant_manpower 
+	}
+}
+
+#abundant manpower
+country_event = {
+    id = military.16
+	title = "military.16.t"
+	desc = "military.16.d"
+	picture = training
+	hidden = yes
+	
+	trigger = {
+	    NOT = { has_country_modifier = abundant_manpower }
+		manpower_percentage = 0.85
+	}
+	
+	mean_time_to_happen = {
+	    days = 1
+	}
+	
+	option = {
+	    name = "military.14.a"
+		remove_country_modifier = no_manpower
+		remove_country_modifier = depleted_manpower
+		add_country_modifier = { 
+            name = abundant_manpower
+            duration = -1  
+        }	
 	}
 }

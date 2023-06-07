@@ -1,0 +1,1144 @@
+kition_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = { TAG = ZY2 }
+	has_country_shield = yes
+	
+	ZY2_harmonize_greeks = {
+		position = 1
+		icon = mission_harbor
+		required_missions = {}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 1
+				culture_group = hellenic_group
+				religion = greek_religion
+				region = cyprus_region
+			}
+		}
+		effect = {
+			add_accepted_culture = cypriot
+			add_country_modifier = {
+				name = kition_hellenic_friendship
+				duration = -1
+			}
+		}
+	}
+	ZY2_patronize_rhodians = {
+		position = 2
+		icon = mission_harbor
+		required_missions = { ZY2_harmonize_greeks }
+		provinces_to_highlight = { area = rhodiorum_area }
+		trigger = {
+			treasury = 1000
+		}
+		effect = {
+			rhodiorum_area = {
+				if = {
+					limit = { has_no_manufactory_trigger = yes }
+					add_manufactory_effect = yes
+				}
+				else = { add_base_production = 1 }
+			}
+			every_known_country = {
+				limit = { capital_scope = { area = rhodiorum_area } }
+				add_opinion = {
+					who = ROOT
+					modifier = kition_patronize_opinion
+				}
+			}
+		}
+	}
+	ZY2_gate_aegean = {
+		position = 3
+		icon = mission_harbor
+		required_missions = { ZY2_patronize_rhodians }
+		provinces_to_highlight = { area = rhodiorum_area }
+		trigger = {
+			all_country = {
+				capital_scope = { area = rhodiorum_area }
+				has_opinion = {
+					who = ROOT
+					value = 175
+				}
+				guaranteed_by = ROOT
+			}
+		}
+		effect = {
+			every_country = {
+				limit = { capital_scope = { area = rhodiorum_area } }
+				every_owned_province = { cede_province = RHO }
+			}
+			hidden_effect = {
+				RHO = {
+					set_government_rank = 2
+					change_government = republic
+					add_government_reform = league_reform
+					stabilize_country_effect = yes
+				}
+			}
+			create_subject = {
+				subject_type = league_member_subject
+				subject = RHO
+			}
+			random_province = {
+				limit = { area = rhodiorum_area }
+				add_permanent_province_modifier = {
+					name = kition_gate_aegean
+					duration = -1
+				}
+			}
+		}
+	}
+	ZY2_purchase_astypalaia = {
+		position = 4
+		icon = mission_harbor
+		required_missions = { ZY2_gate_aegean }
+		provinces_to_highlight = { province_id = 5508 }
+		trigger = {
+			treasury = 600
+			5508 = {
+				owner = {
+					has_opinion = {
+						who = ROOT
+						value = 150
+					}
+				}
+			}
+		}
+		effect = {
+			add_treasury = -600
+			5508 = {
+				owner = { add_treasury = 600 }
+				cede_province = ROOT
+				add_core = ROOT
+				change_religion = ROOT
+			}
+		}
+	}
+	ZY2_kos_matter = {
+		position = 5
+		icon = mission_harbor
+		required_missions = { ZY2_purchase_astypalaia }
+		provinces_to_highlight = { owned_by = KSS }
+		trigger = {
+			KSS = {
+				OR = {
+					has_opinion = {
+						who = ROOT
+						value = 175
+					}
+				}
+				ai_attitude = {
+					who = ROOT
+					attitude = attitude_threatened
+				}
+			}
+		}
+		effect = {
+			RHO = {
+				inherit = KSS
+				override_country_name = "RHODIAN_LEAGUE"
+			}
+			archipelagos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			cyclades_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	ZY2_mercantile_dominance = {
+		position = 6
+		icon = mission_harbor
+		provinces_to_highlight = { province_id = 1419 }
+		required_missions = {
+			ZY2_kos_matter
+			ZY2_found_cycladic_league
+		}
+		trigger = {
+			1419 = {
+				trade_share = {
+					country = ROOT
+					share = 25
+				}
+			}
+		}
+		effect = {
+			1419 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 50
+					key = KITION_MERCANTILE_PENETRATION
+				}
+			}
+			1423 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 50
+					key = KITION_MERCANTILE_PENETRATION
+				}
+			}
+			attica_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	ZY2_piraeus_colony = {
+		position = 7
+		icon = mission_harbor
+		required_missions = { ZY2_mercantile_dominance }
+		provinces_to_highlight = { area = attica_area }
+		trigger = {
+			OR = {
+				ATH = { is_subject_of = ROOT }
+				owns_all_provinces = { area = attica_area }
+			}
+		}
+		effect = {
+			958 = {
+				change_trade_goods = dyes
+				add_permanent_province_modifier = {
+					name = phoenikes_dye
+					duration = -1
+				}
+			}
+		}
+	}
+	ZY2_temple_astarte = {
+		position = 8
+		icon = mission_harbor
+		required_missions = { ZY2_piraeus_colony }
+		provinces_to_highlight = { province_id = 958 }
+		trigger = {
+			958 = {
+				owned_by = ROOT
+				OR = {
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = small_shipyard
+					has_building = big_shipyard
+				}
+				OR = {
+					has_building = small_harbor
+					has_building = big_harbor
+					has_building = harbor_district
+				}
+			}
+		}
+		effect = {
+			add_accepted_culture = attic
+			958 = {
+				add_permanent_province_modifier = {
+					name = kition_temple_astarte
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+kition_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = { TAG = ZY2 }
+	has_country_shield = yes
+	
+	ZY2_conquer_eastern_side = {
+		position = 2
+		icon = mission_harbor
+		required_missions = { ZY2_bronze_purple }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			area = cyprus_east
+		}
+		trigger = {
+			cyprus_east = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+		}
+		effect = {
+			cyprus_east = { add_base_production = 1 }
+		}
+	}
+
+	ZY2_found_cycladic_league = {
+		position = 5
+		icon = mission_harbor
+		required_missions = { ZY2_purchase_astypalaia }
+		provinces_to_highlight = {
+			OR = {
+				area = archipelagos_area
+				area = cyclades_area
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					all_country = {
+						capital_scope = {
+							OR = {
+								area = archipelagos_area
+								area = cyclades_area
+							}
+						}
+						is_subject = no
+						OR = {
+							alliance_with = ROOT
+							guaranteed_by = ROOT
+							has_opinion = {
+								who = ROOT
+								value = 175
+							}
+						}
+					}
+					if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 7
+							}
+						}
+						treasury = 3500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 6
+							}
+						}
+						treasury = 3000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 5
+							}
+						}
+						treasury = 2500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 4
+							}
+						}
+						treasury = 2000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 3
+							}
+						}
+						treasury = 1500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = archipelagos_area
+											area = cyclades_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 2
+							}
+						}
+						treasury = 1000
+					}
+					else = { treasury = 500 }
+				}
+				owns_all_provinces = { area = archipelagos_area }
+				owns_all_provinces = { area = cyclades_area }
+			}
+		}
+		effect = {
+			every_country = {
+				limit = {
+					is_subject = no
+					capital_scope = {
+						OR = {
+							area = archipelagos_area
+							area = cyclades_area
+						}
+					}
+				}
+				country_event = {
+					id = mission_events.20
+					days = 7
+				}
+			}
+			lesbos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			lesbos_et_chios = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			thasus_et_lemnus = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			kos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	ZY2_league_north = {
+		position = 7
+		icon = mission_harbor
+		required_missions = { ZY2_found_cycladic_league }
+		provinces_to_highlight = {
+			OR = {
+				area = lesbos_area
+				area = lesbos_et_chios
+				area = thasus_et_lemnus
+				area = kos_area
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					all_country = {
+						capital_scope = {
+							OR = {
+								area = lesbos_area
+								area = lesbos_et_chios
+								area = thasus_et_lemnus
+								area = kos_area
+							}
+						}
+						is_subject = no
+						OR = {
+							alliance_with = ROOT
+							guaranteed_by = ROOT
+							has_opinion = {
+								who = ROOT
+								value = 175
+							}
+						}
+					}
+					if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 10
+							}
+						}
+						treasury = 5000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 9
+							}
+						}
+						treasury = 4500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 8
+							}
+						}
+						treasury = 4000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 7
+							}
+						}
+						treasury = 3500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 6
+							}
+						}
+						treasury = 3000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 5
+							}
+						}
+						treasury = 2500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 4
+							}
+						}
+						treasury = 2000
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 3
+							}
+						}
+						treasury = 1500
+					}
+					else_if = {
+						limit = {
+							calc_true_if = {
+								all_country = {
+									capital_scope = {
+										OR = {
+											area = lesbos_area
+											area = lesbos_et_chios
+											area = thasus_et_lemnus
+											area = kos_area
+										}
+									}
+									is_subject = no
+								}
+								amount = 2
+							}
+						}
+						treasury = 1000
+					}
+					else = { treasury = 500 }
+				}
+				owns_all_provinces = { area = lesbos_area }
+				owns_all_provinces = { area = lesbos_et_chios }
+				owns_all_provinces = { area = thasus_et_lemnus }
+				owns_all_provinces = { area = kos_area }
+			}
+		}
+		effect = {
+			every_country = {
+				limit = {
+					is_subject = no
+					capital_scope = {
+						OR = {
+							area = lesbos_area
+							area = lesbos_et_chios
+							area = thasus_et_lemnus
+							area = kos_area
+						}
+					}
+				}
+				country_event = {
+					id = mission_events.21
+					days = 10
+				}
+			}
+			euboea_superior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			euboea_inferior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	ZY2_integrate_euboea = {
+		position = 8
+		icon = mission_harbor
+		required_missions = { ZY2_league_north }
+		provinces_to_highlight = {
+			OR = {
+				area = euboea_superior
+				area = euboea_inferior
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = euboea_superior }
+			owns_all_provinces = { area = euboea_inferior }
+		}
+		effect = { country_event = { id = mission_events.22 } }
+	}
+}
+
+kition_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = { TAG = ZY2 }
+	has_country_shield = yes
+	
+	ZY2_bronze_purple = {
+		position = 1
+		icon = mission_harbor
+		required_missions = {}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 3214
+				province_id = 4936
+			}
+		}
+		trigger = {
+			owns_core_province = 3214
+			owns_core_province = 4936
+			3214 = { has_temple_building = yes }
+			4936 = { has_temple_building = yes }
+		}
+		effect = {
+			cyprus_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			3214 = {
+				add_permanent_province_modifier = {
+					name = phoenikes_dye
+					duration = -1
+				}
+			}
+			4936 = {
+				add_permanent_province_modifier = {
+					name = kition_rich_copper
+					duration = -1
+				}
+			}
+		}
+	}
+	ZY2_subjugate_interior = {
+		position = 2
+		icon = mission_harbor
+		required_missions = { ZY2_bronze_purple }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			area = cyprus_center_area
+		}
+		trigger = {
+			cyprus_center_area = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+		}
+		effect = {
+			cyprus_center_area = { add_base_production = 1 }
+		}
+	}
+	ZY2_cyprus_united = {
+		position = 3
+		icon = mission_harbor
+		required_missions = {
+			ZY2_subjugate_interior
+			ZY2_conquer_eastern_side
+			ZY2_settle_west
+		}
+		provinces_to_highlight = { region = cyprus_region }
+		trigger = {}
+		effect = {
+			add_country_modifier = {
+				name = kition_cyprus_united
+				duration = -1
+			}
+		}
+	}
+	ZY2_connect_cities = {
+		position = 4
+		icon = mission_harbor
+		required_missions = { ZY2_cyprus_united }
+		provinces_to_highlight = { region = cyprus_region }
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = KITION_EVERY_CYPRUS_PROVINCE_ROAD_CT
+				num_of_owned_provinces_with = {
+					value = 13
+					region = cyprus_region
+					has_road_building = yes
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = kition_expanded_infrastructure
+				duration = 18250
+			}
+		}
+	}
+	ZY2_second_stage_economy = {
+		position = 5
+		icon = mission_harbor
+		required_missions = { ZY2_connect_cities }
+		provinces_to_highlight = { region = cyprus_region }
+		trigger = {
+			treasury = 2000
+			custom_trigger_tooltip = {
+				tooltip = KITION_EVERY_CYPRUS_PROVINCE_WORKSHOP_CT
+				num_of_owned_provinces_with = {
+					value = 13
+					region = cyprus_region
+					has_production_building = yes
+				}
+			}
+			num_of_owned_provinces_with = {
+				region = cyprus_region
+				has_manufactory_trigger = yes
+				value = 3
+			}
+		}
+		effect = {
+			add_treasury = -1000
+			add_country_modifier = {
+				name = kition_second_stage_economy
+				duration = -1
+			}
+			every_owned_province = {
+				if = {
+					limit = {
+						region = cyprus_region
+						has_no_manufactory_trigger = yes
+					}
+					add_manufactory_effect = yes
+				}
+			}
+		}
+	}
+	ZY2_naval_manufacturing = {
+		position = 6
+		icon = mission_harbor
+		required_missions = { ZY2_second_stage_economy }
+		provinces_to_highlight = { region = cyprus_region }
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = KITION_EVERY_COASTAL_PROVINCE_SHIPYARD_CT
+				num_of_owned_provinces_with = {
+					value = 10
+					region = cyprus_region
+					has_shipyard_building = yes
+				}
+			}
+		}
+		effect = {
+			every_owned_province = {
+				if = {
+					limit = {
+						region = cyprus_region
+						has_building = small_shipyard
+					}
+					remove_building = small_shipyard
+					add_building = big_shipyard
+				}
+				else_if = {
+					limit = {
+						region = cyprus_region
+						has_building = big_shipyard
+					}
+					add_base_production = 1
+					add_base_manpower = 1
+				}
+			}
+		}
+	}
+
+	ZY2_navy_carthage_tremble = {
+		position = 7
+		icon = mission_harbor
+		required_missions = { ZY2_naval_manufacturing }
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = KITION_NAVY_CARTHAGE_TREMBLE_CT
+				OR = {
+					EGY = { NOT = { navy_size = ROOT } }
+					CAR = { NOT = { navy_size = ROOT } }
+					navy_size = 200
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = kition_undisputed_sea
+				duration = -1
+			}
+		}
+	}
+}
+
+kition_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = { TAG = ZY2 }
+	has_country_shield = yes
+	
+	ZY2_settle_west = {
+		position = 2
+		icon = mission_harbor
+		required_missions = { ZY2_bronze_purple }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			area = cyprus_west
+		}
+		trigger = {
+			cyprus_west = {
+				type = all
+				owned_by = ROOT
+				is_core = ROOT
+			}
+		}
+		effect = {
+			cyprus_west = { add_base_production = 1 }
+		}
+	}
+	ZY2_troodos_mount_copper = {
+		position = 3
+		icon = mission_harbor
+		required_missions = { ZY2_settle_west }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 3212
+				province_id = 3209
+				province_id = 3210
+			}
+		}
+		trigger = {
+			3212 = { has_production_building = yes }
+			3209 = { has_production_building = yes }
+			3210 = { has_production_building = yes }
+		}
+		effect = {
+			3212 = {
+				add_base_manpower = 2
+				add_manufactory_effect = yes
+			}
+			3209 = {
+				add_base_manpower = 2
+				add_manufactory_effect = yes
+			}
+			3210 = { add_base_manpower = 2 }
+		}
+	}
+	ZY2_build_necropolis = {
+		position = 4
+		icon = mission_harbor
+		required_missions = { ZY2_cyprus_united }
+		provinces_to_highlight = { province_id = 3214 }
+		trigger = {
+			legitimacy_equivalent = 100
+			treasury = 250
+			prestige = 50
+			owns = 3214
+		}
+		effect = {
+			3214 = {
+				add_permanent_province_modifier = {
+					name = kition_necropolis
+					duration = -1
+				}
+			}
+		}
+	}
+	ZY2_acropolis_kition = {
+		position = 5
+		icon = mission_harbor
+		required_missions = { ZY2_build_necropolis }
+		provinces_to_highlight = { province_id = 3214 }
+		trigger = {
+			owns = 3214
+			3214 = { has_fort_trigger = yes }
+			treasury = 1700
+		}
+		effect = {
+			add_treasury = -1700
+			3214 = { add_building = imperial_palace }
+		}
+	}
+}
+
+kition_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = { TAG = ZY2 }
+	has_country_shield = yes
+	
+	ZY2_monopolize_phoenicia = {
+		position = 1
+		icon = mission_harbor
+		provinces_to_highlight = { province_id = 1455 }
+		required_missions = {}
+		trigger = {
+			1455 = {
+				trade_share = {
+					country = ROOT
+					share = 33
+				}
+			}
+			num_of_centers_of_trade = 2
+		}
+		effect = {
+			3214 = { add_center_of_trade_level = 3 }
+		}
+	}
+	ZY2_phoenician_phoenicia = {
+		position = 2
+		icon = mission_harbor
+		provinces_to_highlight = { province_id = 1455 }
+		required_missions = { ZY2_monopolize_phoenicia }
+		trigger = {
+			1455 = {
+				trade_share = {
+					country = ROOT
+					share = 66
+				}
+			}
+			num_of_centers_of_trade = 4
+		}
+		effect = {
+			add_country_modifier = {
+				name = kition_masters_trade
+				duration = -1
+			}
+		}
+	}
+	ZY2_eastern_copper = {
+		position = 3
+		icon = mission_harbor
+		provinces_to_highlight = { province_id = 5501 }
+		required_missions = { ZY2_settle_west }
+		trigger = {
+			5501 = { has_production_building = yes }
+		}
+		effect = {
+			5501 = {
+				add_base_manpower = 2
+				add_manufactory_effect = yes
+			}
+		}
+	}
+	ZY2_spears_wont_break = {
+		position = 4
+		icon = mission_harbor
+		provinces_to_highlight = { province_id = 3215 }
+		required_missions = {
+			ZY2_eastern_copper
+			ZY2_troodos_mount_copper
+		}
+		trigger = {
+			3215 = { has_manufactory_no_custom_tooltip_trigger = yes }
+		}
+		effect = {
+			3215 = {
+				add_permanent_province_modifier = {
+					name = kition_masters_weaponsmiths
+					duration = -1
+				}
+			}
+			add_country_modifier = {
+				name = kition_world_class_equipment
+				duration = -1
+			}
+		}
+	}
+	ZY2_zeno_citium = {
+		position = 5
+		icon = mission_harbor
+		required_missions = { ZY2_build_necropolis }
+		trigger = {
+			has_dip_advisor_2 = yes
+		}
+		effect = {
+			define_advisor = {
+				type = philosopher_adv
+				skill = 3
+				cost_multiplier = 0.75
+			}
+		}
+	}
+	ZY2_school_stoicism = {
+		position = 6
+		icon = mission_harbor
+		required_missions = { ZY2_zeno_citium }
+		trigger = {
+			any_owned_province = {
+				has_building = philosophers_academy
+				is_core = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = kition_school_stoicism
+				duration = 18250
+			}
+		}
+	}
+}

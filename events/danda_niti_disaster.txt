@@ -19,47 +19,87 @@ country_event = {
 		kill_ruler = yes
 		add_prestige = -50
 		every_owned_province = {
-			add_unrest = 5
+			add_local_autonomy = 10
+			add_named_unrest = {
+				name = danda_niti_unrest
+				value = 5
+			}
 		}
-		hidden_effect = {
-			set_country_flag = 	lost_danda_niti_flag
-		}
+		hidden_effect = { set_country_flag = lost_danda_niti_flag }
 	}
 
 	after = {
 		hidden_effect = {
-			every_owned_province = {
-				add_local_autonomy = 10
-				if = {
-					limit = {
-						can_spawn_rebels = nationalist_rebels
-						unrest = 10
-						local_autonomy = 20
-					}
-					nationalist_rebels = 1
-				}
-				if = {
-					limit = {
-						can_spawn_rebels = leadered_peasant_rebels
-						unrest = 10
-						local_autonomy = 20
-					}
-					leadered_peasant_rebels = 1
-				}
-			}
 			capital_scope = {
 				if = {
 					limit = { owner = { government = monarchy } }
 					spawn_rebels = {
 						type = pretender_rebels
-						size = 3
+						size = 4
 					}
 				}
 				else_if = {
 					limit = { owner = { government = republic } }
 					spawn_rebels = {
 						type = republican_rebels
-						size = 3
+						size = 4
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { num_of_cities = 100 } }
+				every_owned_province = {
+					if = {
+						limit = {
+							can_spawn_rebels = nationalist_rebels
+							unrest = 10
+							local_autonomy = 20
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+					}
+					if = {
+						limit = {
+							can_spawn_rebels = leadered_peasant_rebels
+							unrest = 10
+							local_autonomy = 20
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = leadered_peasant_rebels
+						}
+					}
+				}
+			}
+			else = {
+				every_owned_province = {
+					if = {
+						limit = {
+							can_spawn_rebels = nationalist_rebels
+							unrest = 10
+							local_autonomy = 35
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+					}
+					if = {
+						limit = {
+							can_spawn_rebels = leadered_peasant_rebels
+							unrest = 10
+							local_autonomy = 35
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = leadered_peasant_rebels
+						}
 					}
 				}
 			}
@@ -680,7 +720,7 @@ country_event = {
 			has_heir = yes
 		}
 		kill_ruler = yes
-		kill_heir = yes
+		kill_heir = {}
 	}
 }
 
@@ -705,7 +745,7 @@ country_event = {
 		release_all_subjects = yes
 		if = {
 			limit = { has_heir = yes }
-			kill_heir = yes
+			kill_heir = {}
 		}
 		hidden_effect = {
 			clr_country_flag = lost_danda_niti_flag

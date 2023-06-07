@@ -7,9 +7,9 @@ theocracy_mechanic = {
 	heir = yes
 	basic_reform = yes # = invisible/does not take up a slot
 	valid_for_nation_designer = no
+	republican_name = no
 
 	modifiers = {
-		yearly_absolutism = -0.25
 	}
 }
 
@@ -22,7 +22,8 @@ oligarchy_reform = {
 	heir = yes
 
 	modifiers = {
-		same_culture_advisor_cost = -0.2
+		same_culture_advisor_cost = -0.1
+		global_regiment_cost = -0.05
 		nobility_influence_modifier = 0.1
 	}
 }
@@ -33,12 +34,17 @@ phoenician_oligarchy_reform = {
 			primary_culture = phoenician
 			primary_culture = punic
 			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
 		}
 	}
 	allow_normal_conversion = yes
 	valid_for_nation_designer = yes
+	royal_marriage = yes
+	republican_name = no
+	queen = yes
 	nation_designer_cost = 0
 	legacy_equivalent = oligarchic_monarchy
+	lock_level_when_selected = yes
 	heir = yes
 
 	modifiers = {
@@ -56,6 +62,7 @@ carthaginian_republic_reform = {
 	valid_for_nation_designer = yes
 	nation_designer_cost = 25
 	legacy_equivalent = oligarchic_monarchy
+	lock_level_when_selected = yes
 	heir = yes
 
 	conditional = {
@@ -78,7 +85,7 @@ spartan_monarchy_reform = {
 		TAG = SP1
 	}
 	allow_normal_conversion = yes
-	valid_for_nation_designer = yes
+	valid_for_nation_designer = no
 	nation_designer_cost = 25
 	legacy_equivalent = spartan_monarchy
 	lock_level_when_selected = yes
@@ -89,8 +96,8 @@ spartan_monarchy_reform = {
 	modifiers = {
 		discipline = 0.05
 		monarch_military_power = 1
-		diplomatic_upkeep = 3
-		global_manpower_modifier = -0.25
+		diplomatic_upkeep = 2
+		global_manpower_modifier = -0.20
 		global_manpower = 3
 		merchants_influence_modifier = -0.05
 	}
@@ -120,6 +127,8 @@ philistian_pentapolis_reform = {
 	lock_level_when_selected = yes
 	legacy_equivalent = oligarchic_monarchy
 	lock_level_when_selected = yes
+	valid_for_nation_designer = no
+	nation_designer_cost = 25
 	royal_marriage = yes
 	queen = yes
 
@@ -150,10 +159,7 @@ philistian_pentapolis_reform = {
 
 roman_kingdom_reform = {
 	potential = {
-		OR = {
-			TAG = ROM
-			TAG = ROI
-		}
+		is_roman_country_trigger = yes
 		NOT = { has_country_flag = rome_has_established_the_principate }
 	}
 
@@ -163,6 +169,7 @@ roman_kingdom_reform = {
 	valid_for_nation_designer = no
 	nation_designer_cost = 0
 	lock_level_when_selected = yes
+	fixed_rank = 2
 
 	modifiers = {
 		max_absolutism = 5
@@ -180,16 +187,42 @@ roman_kingdom_reform = {
 		factor = 1
 		modifier = {
 			factor = 10
-			OR = {
-				TAG = ROM
-				TAG = ROI
-			}
+			is_roman_country_trigger = yes
 		}
 	}
 }
 
+ishkuzan_oligarchy_reform = {
+	potential = {
+		must_not_have_any_indian_reform = yes
+		OR = {
+			has_reform = ishkuzan_kingdom_reform
+			have_had_reform = ishkuzan_kingdom_reform
+		}
+	}
+	icon = "invasion_scythian_reform"
+	allow_normal_conversion = no
+	valid_for_nation_designer = no
+	lock_level_when_selected = yes
+
+	custom_attributes = {
+		locked_government_type = yes
+	}
+	modifiers = {
+		num_accepted_cultures = 1
+		years_of_nationalism = -2
+		global_unrest = -1
+		cav_to_inf_ratio = 0.5
+		cavalry_cost = -0.25
+		min_autonomy = 10
+	}
+	legacy_equivalent = oligarchic_monarchy
+}
+
 phoenician_thalassocracy_reform = {
 	icon = "thalassocracy_reform"
+	valid_for_nation_designer = no
+	nation_designer_cost = 25
 	potential = {
 		OR = {
 			primary_culture = phoenician
@@ -256,17 +289,181 @@ mleccha_desa_oligarchy_reform = {
 	heir = yes
 	custom_attributes = {
 		locked_government_type = yes
+		mleccha_special_religion = yes
 	}
 	modifiers = {
 		all_power_cost = -0.01
 		culture_conversion_cost = -0.33
 		tolerance_own = 3
-		diplomatic_reputation = 2
+		diplomatic_reputation = 1
 		global_missionary_strength = 0.01
 	}
 	legacy_equivalent = oligarchic_monarchy
 }
 
+#Sparta
+perioikoi_reform = {
+    icon = "artisan"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    must_not_have_any_indian_reform = yes
+		OR = {
+		    tag = SP1
+		    was_tag = SP1
+		}
+	}
+	trigger = {
+	    OR = {
+	        tag = SP1
+			was_tag = SP1
+        }
+	}
+	modifiers = {
+	    production_efficiency = 0.1
+		global_autonomy = -0.05
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			TAG = SP1
+		}
+	}
+}
+
+spartiates_reform = {
+    icon = "spartan_king"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    must_not_have_any_indian_reform = yes
+		OR = {
+		    tag = SP1
+		    was_tag = SP1
+		}
+	}
+	trigger = {
+	    OR = {
+	        tag = SP1
+			was_tag = SP1
+        }
+	}
+	modifiers = {
+	    discipline = 0.05
+		reinforce_speed = -0.20
+        yearly_army_professionalism = 0.005
+    }
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			TAG = SP1
+		}
+	}
+}
+
+spartiates_reformed_reform = {
+    icon = "spartan_king"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    must_not_have_any_indian_reform = yes
+		OR = {
+		    tag = SP1
+		    was_tag = SP1
+		}
+	}
+	trigger = {
+	    OR = {
+		    AND = {
+			    adm = 4
+				mil = 5
+				adm_tech = 35
+				mil_tech = 35
+			}
+		    have_had_reform = spartiates_reformed_reform
+	    }
+	}
+	modifiers = {
+	    discipline = 0.05
+        yearly_army_professionalism = 0.005
+    }
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 20
+			TAG = SP1
+		}
+	}
+}
+
+spartan_citizenship_reform = {
+    icon = "league_icon"
+    allow_normal_conversion = yes
+
+    potential = {
+	    must_not_have_any_indian_reform = yes
+		OR = {
+		    tag = SP1
+		    was_tag = SP1
+		}
+	}
+	trigger = {
+	    OR = {
+	        tag = SP1
+			was_tag = SP1
+        }
+	}
+	modifiers = {
+	    global_manpower_modifier = -0.10
+		stability_cost_modifier = 0.1
+		special_unit_forcelimit= 0.15        
+    }
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			TAG = SP1
+		}
+	}
+} 
+
+spartan_relaxed_citizenship_reform = {
+	icon = "league_icon"
+    allow_normal_conversion = yes
+
+    potential = {
+	    must_not_have_any_indian_reform = yes
+		OR = {
+		    tag = SP1
+		    was_tag = SP1
+		}
+	}
+	trigger = {
+	    OR = {
+		    AND = {
+			    adm = 4
+				mil = 5
+				adm_tech = 20
+				mil_tech = 20
+			}
+		    have_had_reform = spartan_relaxed_citizenship_reform
+	    }
+	}
+	modifiers = {
+	    global_manpower_modifier = 0.20
+		special_unit_forcelimit= 0.15        
+    }
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 20
+			TAG = SP1
+		}
+	}
+} 
+	
 #Tier 8
 
 oligarchy_become_republic_reform = {
@@ -284,7 +481,7 @@ oligarchy_become_republic_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	trigger = {
 		has_reform = customary_law_reform
@@ -319,7 +516,7 @@ oligarchy_become_kingdom_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	trigger = {
 		has_reform = bureaucracy_reform
@@ -346,9 +543,16 @@ mantain_oligarchical_traditions_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		free_policy = 1
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			TAG = SP1
+		}
 	}
 }

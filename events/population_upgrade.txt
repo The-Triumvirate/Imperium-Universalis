@@ -442,7 +442,7 @@ province_event = {
 	trigger = {
 		base_manpower = 2
 		has_global_flag = popgrowth_running
-		check_variable = { which = urban_growth value = 1.0 }
+		check_variable = { which = PG_com_grow value = 100 }
 	}
 	
 	
@@ -450,15 +450,15 @@ province_event = {
 		months = 180			# old event needed seven increments. Now reduced to three increments, to avoid a low mtth
 								# Values: about 2x the ones for growth seen in the other events
 		modifier = {
-			factor = 10		check_variable = { which = urban_growth which = rural_growth }
+			factor = 10		check_variable = { which = PG_com_grow which = rural_growth }
 			# as long as more demand in city than in the field. So if the field is depopulated due to everyone promoting, it will actually stop a bit. You don't want a city with just commoners and no tribals, then you may get a hard time controlling it or getting enough manpower. 
 		}
-		modifier = { factor = 0.50 check_variable = { urban_growth = 1.0 } NOT = { check_variable = { urban_growth = 1.5 } } }
-		modifier = { factor = 0.33 check_variable = { urban_growth = 1.5 } NOT = { check_variable = { urban_growth = 2.0 } } }
-		modifier = { factor = 0.25 check_variable = { urban_growth = 2.0 } NOT = { check_variable = { urban_growth = 3.0 } } }
-		modifier = { factor = 0.20 check_variable = { urban_growth = 3.0 } NOT = { check_variable = { urban_growth = 4.0 } } }
-		modifier = { factor = 0.10 check_variable = { urban_growth = 4.0 } NOT = { check_variable = { urban_growth = 5.0 } } }
-		modifier = { factor = 0.05 check_variable = { urban_growth = 5.0 } }
+		modifier = { factor = 0.50 check_variable = { PG_com_grow = 100 } NOT = { check_variable = { PG_com_grow = 150 } } }
+		modifier = { factor = 0.33 check_variable = { PG_com_grow = 150 } NOT = { check_variable = { PG_com_grow = 200 } } }
+		modifier = { factor = 0.25 check_variable = { PG_com_grow = 200 } NOT = { check_variable = { PG_com_grow = 300 } } }
+		modifier = { factor = 0.20 check_variable = { PG_com_grow = 300 } NOT = { check_variable = { PG_com_grow = 400 } } }
+		modifier = { factor = 0.10 check_variable = { PG_com_grow = 400 } NOT = { check_variable = { PG_com_grow = 500 } } }
+		modifier = { factor = 0.05 check_variable = { PG_com_grow = 500 } }
 		
 	}
 	
@@ -473,7 +473,7 @@ province_event = {
 				add_base_manpower = -1 add_base_production = 1	change_variable = { PS_urb_prom = 1 } change_variable = { PS_rur_goup = 1 }
 				owner = { if = { limit = { ai = no } change_variable = { which = tribal_to_commoner_var value = 1 } } }
 			}
-			province_event = { id = population_capacity.1 }
+			province_event = { id = population_capacity.4 }
 		}
 	}
 	#######################################################
@@ -494,8 +494,8 @@ province_event = {
 	
 	trigger = {
 		OR = {
-			AND = { NOT = { check_variable = { urban_growth = 1 } } base_production = 2 }
-			AND = { NOT = { check_variable = { upper_growth = 1 } } base_tax = 2 }
+			AND = { NOT = { check_variable = { PG_com_grow = 100 } } base_production = 2 }
+			AND = { NOT = { check_variable = { PG_upp_grow = 100 } } base_tax = 2 }
 		}
 		has_global_flag = popgrowth_running
 		NOT = { has_province_modifier = urban_pause }		# to avoid going lower than starting value
@@ -507,13 +507,13 @@ province_event = {
 		# Urban growth, basically. Remember that while this is active other events may fire as well, such as migration, etc
 		
 		# Until growth <85% no modifiers will start
-		modifier = { factor = 0.5 NOT = { check_variable = { urban_growth = 0.85 } } check_variable = { urban_growth = 0.65 } } 
+		modifier = { factor = 0.5 NOT = { check_variable = { PG_com_grow = 85 } } check_variable = { PG_com_grow = 70 } } 
 			# 240 x 0.5 x 3 = 360 months, 30 years, one generation	
 		
-		modifier = { factor = 0.2 NOT = { check_variable = { urban_growth = 0.50 } } check_variable = { urban_growth = 0.35 } }
+		modifier = { factor = 0.2 NOT = { check_variable = { PG_com_grow = 70 } } check_variable = { PG_com_grow = 50 } }
 			# Will leave you 240 x 0.1 x 3 = 72 months, 6 years to lose one pop. Enough time to correct it
 		
-		modifier = { factor = 0.05 NOT = { check_variable = { urban_growth = 0.50 } } }
+		modifier = { factor = 0.05 NOT = { check_variable = { PG_com_grow = 50 } } }
 			# (3 years) Run for your lifes you fools! Probably other events will strike first
 		
 	}
@@ -529,7 +529,7 @@ province_event = {
 			set_variable = { which = pop_upgrade_rate value = 0 }
 			
 			if = {
-				limit = { base_tax = 2 NOT = { check_variable = { upper_growth = 1 } } }
+				limit = { base_tax = 2 NOT = { check_variable = { PG_upp_grow = 1 } } }
 				add_base_production = 1 add_base_tax = -1			change_variable = { PS_urb_dem = 1 } change_variable = { PS_upp_down = 1 }
 				owner = { if = { limit = { ai = no } change_variable = { uppers_to_commoner_var = 1 } } }
 			}
@@ -538,7 +538,7 @@ province_event = {
 				add_base_manpower = 1	add_base_production = -1	change_variable = { PS_rur_dem = 1 } change_variable = { PS_urb_down = 1 }
 				owner = { if = { limit = { ai = no } change_variable = { commoner_to_tribal_var = 1 } } }
 			}
-			province_event = { id = population_capacity.1 }
+			province_event = { id = population_capacity.4 }
 		}
 	}
 	#######################################################
@@ -560,17 +560,18 @@ province_event = {
 	trigger = {
 		base_production = 2
 		has_global_flag = popgrowth_running
+		check_variable = { which = PG_upp_grow value = 100 }
 	}
 	
 	
 	mean_time_to_happen = {
 		months = 360
-		modifier = { factor = 0.75 check_variable = { upper_growth = 1.0 } NOT = { check_variable = { upper_growth = 1.5 } } }
-		modifier = { factor = 0.50 check_variable = { upper_growth = 1.5 } NOT = { check_variable = { upper_growth = 2.0 } } }
-		modifier = { factor = 0.33 check_variable = { upper_growth = 2.0 } NOT = { check_variable = { upper_growth = 3.0 } } }
-		modifier = { factor = 0.25 check_variable = { upper_growth = 3.0 } NOT = { check_variable = { upper_growth = 4.0 } } }
-		modifier = { factor = 0.15 check_variable = { upper_growth = 4.0 } NOT = { check_variable = { upper_growth = 5.0 } } }
-		modifier = { factor = 0.05 check_variable = { upper_growth = 5.0 } } # Will quickly appoint someone to the job
+		modifier = { factor = 0.75 check_variable = { PG_upp_grow = 100 } NOT = { check_variable = { PG_upp_grow = 150 } } }
+		modifier = { factor = 0.50 check_variable = { PG_upp_grow = 150 } NOT = { check_variable = { PG_upp_grow = 200 } } }
+		modifier = { factor = 0.33 check_variable = { PG_upp_grow = 200 } NOT = { check_variable = { PG_upp_grow = 300 } } }
+		modifier = { factor = 0.25 check_variable = { PG_upp_grow = 300 } NOT = { check_variable = { PG_upp_grow = 400 } } }
+		modifier = { factor = 0.15 check_variable = { PG_upp_grow = 400 } NOT = { check_variable = { PG_upp_grow = 500 } } }
+		modifier = { factor = 0.05 check_variable = { PG_upp_grow = 500 } } # Will quickly appoint someone to the job
 		
 	}
 	
@@ -582,7 +583,7 @@ province_event = {
 			set_variable = { which = c_pop_upgrade_rate value = 0 }
 			add_base_production = -1	add_base_tax = 1		change_variable = { PS_upp_prom = 1 } change_variable = { PS_urb_goup = 1 }
 			owner = { if = { limit = { ai = no } change_variable = { commoner_to_upper_var = 1 } } }
-			province_event = { id = population_capacity.1 }
+			province_event = { id = population_capacity.4 }
 		}
 	}
 	#######################################################

@@ -1,48 +1,574 @@
 
-bazhu_end_war =  {
+invite_to_zhuxia =  {
 	category = influence
 	require_acceptance = yes
-	alert_index = 2
-	alert_tooltip = ICON_PEACE
+	alert_index = 3
+	alert_tooltip = ICON_invite_to_zhuxia
 	is_visible = {
-		has_country_flag = china_bazhu
-		FROM = { religion = ROOT }
+		is_part_of_hre = yes
+		FROM = {
+		 is_part_of_hre = no
+		}
 	}
 	is_allowed = {
-		any_known_country = {
-		   religion = FROM
-		   defensive_war_with = FROM
-		   NOT = { tag = ROOT }
-		   NOT = { war_with = ROOT }
+		hre_reform_passed = emperor_rechenschaft
+		FROM = {
+			OR = {			
+				is_neighbor_of = ROOT
+					NOT = { border_distance = { who = ROOT distance = 70 } }
+			}
+			is_part_of_hre = no
+			NOT = { is_crusade_target = yes }
+			OR = {
+			
+			}
 		}
-		is_subject = no
-		prestige = 10
+		NOT = { active_imperial_incident = any }
 	}
 	on_accept = {
-		every_known_country = {
-		   limit = {
-		      religion = FROM
-		      defensive_war_with = FROM
-		      NOT = { tag = ROOT }
-		   }
-		   white_peace = FROM
-		   country_event = { id = ShiJian.25 }
-		}
 		FROM = {
-		   country_event = { id = ShiJian.25 }
+		 save_global_event_target_as = appeal_to_zhuxia_s
+		 if = {
+			 limit = {
+			  ai = no
+			 }
+			 country_event = { id = incidents_bur_join_empire.1 }
+		 }
 		}
+		emperor = {
+			set_imperial_incident = incident_barbrian_wants_to_join
+		 }
 	}
 	on_decline = {
-	    FROM = {
-		  set_ruler_flag = refuse_end_war
-		}
-		declare_war_with_cb = {
-		  who = FROM
-		  casus_belli = cb_insult
-        }
-		add_prestige = -10
+	    add_opinion = {
+		   who = FROM
+		   modifier = denied_aid
+          }
 	}
 	ai_will_do = {
 		is_at_war = no
+	}
+}
+
+
+#朝贡
+SC_ChaoGong_action = {
+	category = influence
+	
+	alert_index = 1
+	alert_tooltip = SC_ChaoGong_action_tooltip
+	
+	require_acceptance = yes # Whether the recipient gets an option to decline
+	
+	is_visible = {
+		ROOT = { 
+		is_part_of_hre = yes
+		}
+		FROM = {
+		is_emperor = yes
+		}
+	}
+	
+	is_allowed = {
+	    hre_reform_passed = emperor_hofgericht
+		NOT = { war_with = FROM }
+		or = {
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_1 
+		days = 365 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_2 
+		days = 730 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_3 
+		days = 1095 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_5
+		days = 1825 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_10
+		days = 3650 
+		}
+		}
+	}
+	
+	on_accept = {
+	    FROM = {
+		country_event = { id = ShiJian.35 }
+		}
+		add_years_of_income = -0.1
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_1 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_1
+		set_country_flag = SC_ChaoGong_ShiJian_1
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_2 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_2
+		set_country_flag = SC_ChaoGong_ShiJian_2
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_3 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_3
+		set_country_flag = SC_ChaoGong_ShiJian_3
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_5 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_5
+		set_country_flag = SC_ChaoGong_ShiJian_5
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_10 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_10
+		set_country_flag = SC_ChaoGong_ShiJian_10
+		}
+	}
+	on_decline =
+	{
+	    add_liberty_desire = 10
+		
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = THIS
+			}
+			subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 2 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = THIS
+			}
+			divide_variable = { which = ai_value value = 4 }
+		}
+	}
+	ai_will_do = { # this is a trigger
+		NOT = { liberty_desire = 50 }
+	}
+}
+
+#AI朝贡
+SC_ChaoGong_action_ai = {
+	category = influence
+	
+	alert_index = 1
+	alert_tooltip = SC_ChaoGong_action_tooltip
+	
+	require_acceptance = no # Whether the recipient gets an option to decline
+	
+	is_visible = {
+		ROOT = { 
+		is_part_of_hre = yes
+		ai = yes
+		}
+		FROM = {
+		is_emperor = yes
+		}
+	}
+	
+	is_allowed = {
+	    hre_reform_passed = emperor_hofgericht
+		NOT = { war_with = FROM }
+		or = {
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_1 
+		days = 365 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_2 
+		days = 730 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_3 
+		days = 1095 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_5
+		days = 1825 
+		}
+		had_country_flag = { 
+		flag = SC_ChaoGong_ShiJian_10
+		days = 3650 
+		}
+		}
+	}
+	
+	on_accept = {
+	    FROM = {
+		country_event = { id = ShiJian.34 }
+		}
+		add_years_of_income = -0.1
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_1 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_1
+		set_country_flag = SC_ChaoGong_ShiJian_1
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_2 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_2
+		set_country_flag = SC_ChaoGong_ShiJian_2
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_3 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_3
+		set_country_flag = SC_ChaoGong_ShiJian_3
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_5 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_5
+		set_country_flag = SC_ChaoGong_ShiJian_5
+		}
+		if = {
+		limit = {
+		has_country_flag = SC_ChaoGong_ShiJian_10 
+		}
+		clr_country_flag = SC_ChaoGong_ShiJian_10
+		set_country_flag = SC_ChaoGong_ShiJian_10
+		}
+	}
+	on_decline =
+	{
+	    add_liberty_desire = 10
+		
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = THIS
+			}
+			subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 2 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = THIS
+			}
+			divide_variable = { which = ai_value value = 4 }
+		}
+	}
+	ai_will_do = { # this is a trigger
+		NOT = { liberty_desire = 50 }
+	}
+}
+
+#主持封建
+change_dynasty_action = {
+	category = influence
+	
+	alert_index = 1
+	alert_tooltip = change_dynasty_action_tooltip
+	
+	require_acceptance = no # Whether the recipient gets an option to decline
+	
+	is_visible = {
+		ROOT = { 
+		is_emperor = yes
+		
+		}
+		FROM = {
+		is_part_of_hre = yes
+		NOT = { dynasty = ROOT }
+		}
+	}
+	
+	is_allowed = {
+	    hre_reform_passed = emperor_renovatio
+		NOT = { war_with = FROM }
+		imperial_influence = 10
+	}
+	
+	on_accept = {
+	    FROM = {
+		set_dynasty = ROOT
+		}
+		add_imperial_influence = -5
+	}
+	on_decline =
+	{
+		
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = THIS
+			}
+			subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 2 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = THIS
+			}
+			divide_variable = { which = ai_value value = 4 }
+		}
+	}
+	ai_will_do = { # this is a trigger
+		NOT = { liberty_desire = 50 }
+	}
+}
+
+#侵扰劫掠
+SC_QinRaoJieLue = {
+	category = influence
+	require_acceptance = no  
+	
+	is_visible = {
+		technology_group = nomad_group
+		FROM = { 
+			is_neighbor_of = ROOT 
+			NOT = { is_subject_of = ROOT }
+		}
+		always = no
+	}
+	
+	is_allowed = {
+		FROM = {
+			OR = {
+				AND = {
+					NOT = { alliance_with = ROOT }
+					NOT = { overlord_of = ROOT }
+				}
+				AND = {
+					overlord_of = ROOT
+					ROOT = { liberty_desire = 50 }
+				}
+				AND = {
+					NOT = { war_with = ROOT }
+				}
+			}
+		}
+		manpower_percentage = 0.25
+		adm_power = 100
+	}
+	on_accept = {
+		add_adm_power = -100
+		FROM = {
+			random_owned_province = {
+				limit = {
+					any_neighbor_province = {
+		    			OR = {
+							owned_by = ROOT
+							is_empty = yes
+						}
+					}
+				}
+				province_event = { id = nomad_plunder.0 }
+			}
+		}
+	}
+	ai_will_do = { 
+		always = yes
+	}
+}
+
+#撤销士卿特权
+revoke_Shiqing_right = {
+	category = influence
+	require_acceptance = no  
+	
+	is_visible = {
+		FROM = {
+		 is_subject_of_type_with_overlord = { 
+			who = ROOT
+			type = colony 
+		}
+		 is_subject_of = ROOT
+		}
+	}
+	
+	is_allowed = {
+		FROM = {
+		 NOT = { liberty_desire = 50 }
+		}
+		OR = {
+		 AND = {
+		  faction_in_power = GuoJun_PaiXi
+		  faction_influence = {
+				faction = GuoJun_PaiXi
+				influence = 75
+			}
+		 }
+		 AND = {
+		  NOT = { has_faction = GuoJun_PaiXi }
+		  adm_power = 250
+		  has_spy_network_in = {
+		   who = FROM
+		   value = 50
+		  }
+		 }
+		}
+	}
+	on_accept = {
+		if = {
+		 limit = {
+		  has_faction = GuoJun_PaiXi
+		 }
+		 add_faction_influence = {
+				faction = GuoJun_PaiXi
+				influence = -33
+			}
+		}
+		if = {
+		 limit = {
+		  NOT = { has_faction = GuoJun_PaiXi }
+		 }
+		 add_adm_power = -250
+		 add_spy_network_in = {
+		  who = FROM
+		  value = -50
+		 }
+		}
+		ROOT = {
+			create_subject = {
+				who = FROM
+				subject_type = non_autonomous_vassal
+			}
+		}
+	}
+	ai_will_do = { 
+		always = yes
+	}
+}
+
+#强化士卿权力
+enforce_Shiqing_right = {
+	category = influence
+	require_acceptance = no  
+	
+	is_visible = {
+		is_subject_of_type_with_overlord = { 
+			   who = FROM
+			   type = colony 
+			  }
+		FROM = {
+		 overlord_of = ROOT
+		 has_faction = ShiQing_PaiXi
+		}
+	}
+	
+	is_allowed = {
+		has_spy_network_in = {
+		   who = FROM
+		   value = 50
+		  }
+		dip = 3
+	}
+	on_accept = {
+		add_spy_network_in = {
+		  who = FROM
+		  value = -30
+		 }
+		if = {
+		 limit = {
+		  dip = 3
+		  NOT = { dip = 4 }
+		 }
+		 FROM = {
+		  add_faction_influence = {
+				faction = ShiQing_PaiXi
+				influence = 1
+			}
+		 }
+		}
+		if = {
+		 limit = {
+		  dip = 4
+		  NOT = { dip = 5 }
+		 }
+		 FROM = {
+		  add_faction_influence = {
+				faction = ShiQing_PaiXi
+				influence = 2
+			}
+		 }
+		}
+		if = {
+		 limit = {
+		  dip = 5
+		  NOT = { dip = 6 }
+		 }
+		 FROM = {
+		  add_faction_influence = {
+				faction = ShiQing_PaiXi
+				influence = 3
+			}
+		 }
+		}
+		if = {
+		 limit = {
+		  dip = 5
+		  NOT = { dip = 6 }
+		 }
+		 FROM = {
+		  add_faction_influence = {
+				faction = ShiQing_PaiXi
+				influence = 4
+			}
+		 }
+		}
+		if = {
+		 limit = {
+		  dip = 6
+		 }
+		 FROM = {
+		  add_faction_influence = {
+				faction = ShiQing_PaiXi
+				influence = 5
+			}
+		 }
+		}	
+	}
+	ai_will_do = { 
+		always = yes
 	}
 }

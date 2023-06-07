@@ -3,15 +3,20 @@ country_decisions = {
 	establish_the_principate_rome = {
 		major = yes
 		potential = {
-			has_reform = res_publica_reform
+			OR = {
+				has_reform = res_publica_reform
+				has_reform = late_res_publica_reform
+			}
 			TAG = ROM
-			total_development = 2000
+			total_development = 6000
 		}
 		allow = {
 			NOT = {
-				republican_tradition = 30
-				stability = 0
-				corruption = 2
+				AND = {
+					republican_tradition = 60
+					stability = 0
+					corruption = 2
+				}
 			}
 			OR = {
 				army_tradition = 75
@@ -27,6 +32,7 @@ country_decisions = {
 		effect = {
 			change_tag = ROI
 			remove_government_reform = res_publica_reform
+			remove_government_reform = late_res_publica_reform
 			set_government_rank = 5
 			change_government = monarchy
 			country_event = { 
@@ -41,7 +47,7 @@ country_decisions = {
 	}
 	
 	#Lex Hortensia
-	 lex_hortensia = {
+	lex_hortensia = {
 		potential = {
 			OR = {
 				TAG = ROM
@@ -66,7 +72,7 @@ country_decisions = {
 	
 	
 	#Twelve Tables
-	 twelve_tables_law = {
+	twelve_tables_law = {
 		potential = {
 			NOT = { has_dlc = "Dharma" }
 			OR = {
@@ -90,14 +96,290 @@ country_decisions = {
 			factor = 100
 		}
 	}
+	################################################
+	#Military reforms - Servian 		############
+	################################################
+	servian_reform_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = servius_tullius_adm
+			NOT = { 
+				has_country_modifier = servius_tullius_mil 
+				has_country_modifier = camillan_mil 
+				has_country_modifier = polybian_mil 
+				has_country_modifier = marian_mil
+				has_country_modifier = roman_empire_mil 
+				}
+		}
+		allow = {
+			if = {
+				limit = {
+					has_dlc = "Cradle of Civilization"
+				}
+				army_professionalism = 0.075
+			}
+			army_size = 8
+			army_tradition = 10
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.17
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	################################################
+	#Military reforms - Camillan 		############
+	################################################
+	camillan_reform_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = servius_tullius_mil
+		}
+		allow = {
+			if = {
+				limit = {
+					has_dlc = "Cradle of Civilization"
+				}
+				army_professionalism = 0.3
+			}
+			mil_tech = 16
+			army_size = 16
+			army_tradition = 25
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.19
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	################################################
+	#Military reforms - Polybian 		############
+	################################################
+	polybian_reform_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = camillan_mil
+		}
+		allow = {
+			if = {
+				limit = {
+					has_dlc = "Cradle of Civilization"
+				}
+				army_professionalism = 0.6
+			}
+			mil_tech = 26
+			army_size = 40
+			army_tradition = 35
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.20
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	################################################
+	#Military reforms - Marian 		    ############
+	################################################
+	marian_reform_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = polybian_mil
+			has_country_flag = capite_censi_happened
+		}
+		allow = {
+			if = {
+				limit = {
+					has_dlc = "Cradle of Civilization"
+				}
+				army_professionalism = 0.8
+			}
+			mil_tech = 35
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.35
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	################################################
+	#Military reforms - Imperial 		############
+	################################################
+	imperial_reform_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = marian_mil
+		}
+		allow = {
+			if = {
+				limit = {
+					has_dlc = "Cradle of Civilization"
+				}
+				army_professionalism = 1
+			}
+			mil_tech = 40
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.36
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	################################################
+	# Emergency Conscription 			############
+	################################################
 	
-	 form_italia_nation = {
+	expand_conscription_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			OR = {
+				has_country_modifier = rome_basic_mil
+				has_country_modifier = servius_tullius_mil 
+				has_country_modifier = camillan_mil 
+				has_country_modifier = polybian_mil
+			}
+			NOT = {
+				has_country_modifier = rom_conscript
+			}
+		}
+		allow = {
+			is_at_war = yes
+		}
+		effect = {
+			ROOT = {
+				country_event = {
+					id = rome.44
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				factor = 100
+				NOT = {
+					manpower_percentage = 0.25
+				}
+			}
+		}
+	}
+	
+	################################################
+	# Emergency Conscription - Cancel	############
+	################################################
+	
+	cancel_conscription_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+			has_country_modifier = rom_conscript
+		}
+		allow = { has_country_modifier = rom_conscript }
+		effect = {
+			remove_country_modifier = rom_conscript
+		}
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 100
+				OR = {
+					manpower_percentage = 0.5
+					NOT = {
+						is_at_war = yes
+					}
+				}
+			}
+		}
+	}
+	
+	################################################
+	# Rome Info Decision			 	############
+	################################################
+	
+	rome_info_decision = {
+		major = yes
+		potential = {
+			OR = {
+				TAG = ROM
+				TAG = ROI
+			}
+		}
+		allow = { ai = no }
+		effect = {
+			country_event = {
+				id = rome.56
+			}
+		}
+	}
+	
+	################################################
+	# Minor Formables 					############
+	################################################
+	
+	form_italia_nation = {
 		major = yes
 		potential = {
 			NOT = { exists = ITA }
-			culture_group = italic
+			OR = {
+				culture_group = italic_group
+				primary_culture = rutuli
+				primary_culture = oenotrian
+			}
 			NOT = { primary_culture = latin }
-			NOT = { primary_culture = etruscan }
+		}
+		provinces_to_highlight = {
+			region = italian_region
+			NOT = { owned_by = ROOT }
 		}
 		allow = {
 			is_at_war =  no
@@ -126,12 +408,21 @@ country_decisions = {
 		ai_importance = 25	
 	}
 	
-	 form_etruscan_nation = {
+	form_etruscan_nation = {
 		major = yes
 		potential = {
 			NOT = { exists = ETR }
 			NOT = { TAG = ITA }
 			primary_culture = etruscan
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = etruria_west
+				area = etruria_maritima_area
+				area = etruria_centralis_area
+				area = etruria_east
+			}
+			NOT = { owned_by = ROOT }
 		}
 		allow = {
 			is_at_war =  no
@@ -154,12 +445,16 @@ country_decisions = {
 			}
 		ai_importance = 25
 	}
-	 form_samnite_nation = {
+	form_samnite_nation = {
 		major = yes
 		potential = {
 			NOT = { exists = ISM }
 			NOT = { TAG = ITA }
 			primary_culture = samnitic
+		}
+		provinces_to_highlight = {
+			area = samnium_area
+			NOT = { owned_by = ROOT }
 		}
 		allow = {
 			is_at_war =  no

@@ -1,0 +1,823 @@
+
+slavic_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = { TAG = V4N }
+	has_country_shield = yes
+	
+	V4N_compromised_position = {
+		position = 1
+		icon = mission_lydia
+		required_missions = {}
+		trigger = {
+			army_size_percentage = 1
+		}
+		effect = {
+			add_manpower = 4
+			add_country_modifier = {
+				name = slavic_war_against_balts
+				duration = 3650
+			}
+			glaesum_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			hyperborea_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_conquer_baltic_tribes = {
+		position = 2
+		icon = mission_goths
+		required_missions = { V4N_compromised_position }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = glaesum_area
+				area = hyperborea_area
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					owns_all_provinces = { area = glaesum_area }
+					owns_all_provinces = { area = hyperborea_area }
+				}
+				AND = {
+					NOT = { exists = AES }
+					NOT = { exists = BOR }
+					NOT = { exists = FEN }
+					NOT = { exists = GAE }
+					NOT = { exists = SUD }
+				}
+			}
+		}
+		effect = {
+			add_accepted_culture = baltic
+			add_country_modifier = { 
+                name = slavic_baltic_settlers
+                duration = -1
+            }
+		}
+	}
+
+	V4N_expand_further = {
+		position = 6
+		icon = mission_large_army
+		required_missions = { V4N_slavic_germanics }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = rugia_area
+				area = suebia_west
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = rugia_area }
+			owns_all_provinces = { area = suebia_west }
+		}
+		effect = {
+			treva_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			cimbricus_chersonesus = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_cross_albis = {
+		position = 7
+		icon = mission_gaulish_army
+		required_missions = { V4N_expand_further }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			area = albis_area
+		}
+		trigger = {
+			owns_all_provinces = { area = albis_area }
+		}
+		effect = {
+			germania_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_rhine_river_border = {
+		position = 8
+		icon = mission_siege2
+		required_missions = { V4N_cross_albis }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = frisia_area
+				area = rhenus_area
+			}
+		}
+		trigger = {
+			1746 = { has_fort_trigger = yes }
+			1752 = { has_fort_trigger = yes }
+			owns_all_provinces = { area = frisia_area }
+			owns_all_provinces = { area = rhenus_area }
+		}
+		effect = {
+			batavorum_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			germania_inferior = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			belgica_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+}
+
+slavic_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = { TAG = V4N }
+	has_country_shield = yes
+	
+	V4N_build_basic_infrastructure = {
+		position = 1
+		icon = mission_tribal_farming
+		required_missions = {}
+		trigger = {
+			if = {
+				limit = { NOT = { government = native } }
+				gravel_road = 2
+				shrine = 1
+			}
+			else = {
+				capital_scope = {
+					has_building = cleared_farmland
+					has_building = supply_depots
+					has_building = cattle_flock
+				}
+			}
+		}
+		effect = {
+			change_government_reform_progress = 20
+			add_treasury = 200
+		}
+	}
+
+	V4N_basic_military_organization = {
+		position = 2
+		icon = mission_tribal_training
+		required_missions = { V4N_build_basic_infrastructure }
+		trigger = {
+			army_size_percentage = 0.6
+			num_of_generals_with_traits = 1
+		}
+		effect = {
+			add_army_tradition = 20
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.02
+			}
+			else = { add_mil_power = 60 }
+		}
+	}
+
+	V4N_question_differences = {
+		position = 3
+		icon = mission_celtic_people
+		required_missions = { V4N_conquer_baltic_tribes }
+		trigger = {
+			
+		}
+		effect = {
+			country_event = { id = slavic.6 }
+		}
+	}
+
+	V4N_slavic_germanics = {
+		position = 5
+		icon = mission_germanic_people
+		required_missions = { V4N_second_veche }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = gothiscandza
+				area = burgundica_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = gothiscandza }
+			owns_all_provinces = { area = burgundica_area }
+		}
+		effect = {
+			suebia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_writing_system = {
+		position = 7
+		icon = mission_alphabet
+		required_missions = { V4N_settle_novigrad }
+		trigger = {
+			has_institution = writing_system
+		}
+		effect = {
+			country_event = { id = slavic.43 }
+		}
+	}
+
+	V4N_question_coinage = {
+		position = 8
+		icon = mission_coinage
+		required_missions = { V4N_writing_system }
+		trigger = {
+			has_institution = coin_usage
+		}
+		effect = {
+			country_event = { id = slavic.45 }
+		}
+	}
+
+	V4N_new_law_system = {
+		position = 9
+		icon = mission_tax
+		required_missions = { V4N_question_coinage }
+		trigger = {
+			has_institution = civil_law_institution
+		}
+		effect = {
+			country_event = { id = slavic.46 }
+		}
+	}
+}
+
+slavic_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = { TAG = V4N }
+	has_country_shield = yes
+	
+	V4N_urbanization = {
+		position = 1
+		icon = germanic_huts
+		required_missions = {}
+		trigger = {
+			OR = {
+				has_reform = some_labor_division_reform
+				has_reform = specialization_labor_reform
+			}
+		}
+		effect = {
+			change_government_reform_progress = 30
+		}
+	}
+
+	V4N_establish_law = {
+		position = 2
+		icon = mission_peace
+		required_missions = { V4N_urbanization }
+		trigger = {
+			
+		}
+		effect = {
+			add_adm_power = 100
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_legitimacy_equivalent_10_effect = yes }
+			change_government_reform_progress = 20
+		}
+	}
+
+	V4N_organize_volkhvy = {
+		position = 3
+		icon = mission_advisors
+		required_missions = { V4N_establish_law }
+		trigger = {
+			has_country_modifier = high_priest_modifier
+			if = {
+				limit = { NOT = { government = native } }
+				OR = {
+					small_temple = 1
+					great_temple = 1
+				}
+			}
+			else = { capital_scope = { has_building = religious_grounds } }
+		}
+		effect = {
+			add_adm_power = 150
+			change_government_reform_progress = 20
+		}
+	}
+
+	V4N_second_veche = {
+		position = 4
+		icon = mission_slavic_nobles
+		required_missions = {
+			V4N_organize_volkhvy
+			V4N_question_differences
+			V4N_doom_preaching_volkhvy
+		}
+		trigger = {
+		    is_year = 260
+			if = {
+				limit = { government = native }
+				has_reform = start_sedentarization_reform
+			}
+			else = { 
+			    OR = {
+			        has_reform = copy_foreign_custom_reform
+                    has_reform = isolationist_tribe_reform		
+			    }
+			}
+		}
+		effect = {
+			country_event = { id = slavic.7 }
+		}
+	}
+
+	V4N_first_slavic_state = {
+		position = 5
+		icon = mission_celtic_king
+		required_missions = { V4N_second_veche }
+		trigger = {
+			neither_tribal_nor_native_trigger = yes
+			num_accepted_cultures = 1
+		}
+		effect = {
+			change_government_reform_progress = 100
+			change_government_reform_progress = 100
+			change_government_reform_progress = 50
+		}
+	}
+
+	V4N_settle_novigrad = {
+		position = 6
+		icon = mission_slav_town
+		required_missions = { V4N_first_slavic_state }
+		provinces_to_highlight = { province_id = 1894 }
+		trigger = {
+			owns_core_province = 1894
+		}
+		effect = {
+			country_event = { id = slavic.42 }
+		}
+	}
+
+	V4N_meet_romans = {
+		position = 7
+		icon = mission_legionary
+		required_missions = { V4N_settle_novigrad }
+		provinces_to_highlight = { superregion = italia_superregion }
+		trigger = {
+			OR = {
+				AND = {
+					exists = ROM
+					border_distance = {
+						who = ROM
+						distance = 1000
+					}
+				}
+				AND = {
+					exists = ROI
+					border_distance = {
+						who = ROI
+						distance = 1000
+					}
+				}
+				any_known_country = {
+					culture_group = italic_group
+					knows_country = ROOT
+					neither_tribal_nor_native_trigger = yes
+					has_opinion = {
+						who = ROOT
+						value = 100
+					}
+				}
+			}
+		}
+		effect = {
+			country_event = { id = slavic.44 }
+		}
+	}
+
+	V4N_allow_greek_settlements = {
+		position = 8
+		icon = mission_hoplite_1
+		required_missions = { V4N_meet_romans }
+		provinces_to_highlight = { region = cimmeria_region }
+		trigger = {
+			owns_all_provinces = { region = cimmeria_region }
+			NOT = { exists = PNK }
+		}
+		effect = {
+			chersonesus_zenonis = {
+				add_core = PNK
+				cede_province = PNK
+			}
+			chersonesus_taurica = {
+				add_core = PNK
+				cede_province = PNK
+			}
+			taurica_chersonesus_area = {
+				add_core = PNK
+				cede_province = PNK
+			}
+			chersonesus_heracle = {
+				add_core = PNK
+				cede_province = PNK
+			}
+			carcinites_area = {
+				add_core = PNK
+				cede_province = PNK
+			}
+			create_subject = {
+				subject_type = vassal
+				subject = PNK
+			}
+			add_country_modifier = { 
+                name = greek_influence
+                duration = 1825
+            }
+			hidden_effect = { PNK = { stabilize_country_effect = yes } }
+		}
+	}
+
+	V4N_meet_persians = {
+		position = 9
+		icon = mission_kyros
+		required_missions = { V4N_allow_greek_settlements }
+		provinces_to_highlight = { province_id = 2073 }
+		trigger = {
+			owns_core_province = 2073
+		}
+		effect = {
+			country_event = { id = slavic.47 }
+		}
+	}
+
+	V4N_silk_road = {
+		position = 10
+		icon = silk
+		required_missions = { V4N_meet_persians }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = extra_sarmatia_region
+		}
+		trigger = {
+			owns_all_provinces = { region = extra_sarmatia_region }
+		}
+		effect = {
+			country_event = { id = slavic.48 }
+		}
+	}
+
+	V4N_meet_indians = {
+		position = 11
+		icon = mission_india
+		required_missions = { V4N_silk_road }
+		provinces_to_highlight = { province_id = 5062 }
+		trigger = {
+			owns_core_province = 5062
+		}
+		effect = {
+			country_event = { id = slavic.49 }
+		}
+	}
+}
+
+slavic_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = { TAG = V4N }
+	has_country_shield = yes
+	
+	V4N_first_veche = {
+		position = 1
+		icon = mission_slavic_tribals
+		required_missions = {}
+		trigger = {
+			mission_completed = V4N_organize_volkhvy
+			is_year = 190
+			if = {
+				limit = { government = native }
+				has_reform = mixed_agriculturalism_reform
+			}
+			else = { has_reform = promote_urbanization }
+		}
+		effect = {
+			country_event = { id = slavic.5 }
+			change_government_reform_progress = 50
+		}
+	}
+
+	V4N_unrest_tribal_leaders = {
+		position = 2
+		icon = mission_eastern_soldiers
+		required_missions = { V4N_first_veche }
+		trigger = {
+			
+		}
+		effect = {
+			country_event = { id = slavic.8 }
+		}
+	}
+
+	V4N_doom_preaching_volkhvy = {
+		position = 3
+		icon = mission_chaos
+		required_missions = { V4N_unrest_tribal_leaders }
+		trigger = {
+			
+		}
+		effect = {
+			country_event = { id = slavic.3 }
+			custom_tooltip = slavic_missions_ct.1
+			hidden_effect = { set_country_flag = doom_preachers }
+			change_government_reform_progress = 20
+		}
+	}
+
+	V4N_kings_steppe = {
+		position = 5
+		icon = mission_scythian_king
+		required_missions = { V4N_second_veche }
+		provinces_to_highlight = { province_id = 7327 }
+		trigger = {
+			owns_core_province = 7327
+		}
+		effect = {
+			sarmatia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_philosophers_issue = {
+		position = 7
+		icon = mission_scholar
+		required_missions = { V4N_settle_novigrad }
+		trigger = {
+			has_institution = classical_philosophy_institution
+		}
+		effect = {
+			country_event = { id = slavic.50 }
+		}
+	}
+
+	V4N_monotheism = {
+		position = 8
+		icon = mission_slavic_god
+		required_missions = { V4N_philosophers_issue }
+		trigger = {
+			has_reform = proselytism_reform
+		}
+		effect = {
+			country_event = { id = slavic.51 }
+		}
+	}
+
+	V4N_build_own_wonder = {
+		position = 10
+		icon = mission_artist
+		required_missions = { V4N_meet_persians }
+		trigger = {
+			treasury = 2000
+			capital = 1894
+		}
+		effect = {
+			add_treasury = -2000
+			1894 = {
+				add_great_project = {
+					type = slavic_first_kremlin
+					instant = no 
+					tier = 0
+				}
+			}
+		}
+	}
+}
+
+slavic_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = { TAG = V4N }
+	has_country_shield = yes
+	
+	V4N_establish_regional_markets = {
+		position = 1
+		icon = mission_city
+		required_missions = {}
+		trigger = {
+			if = {
+				limit = { NOT = { government = native } }
+				small_market = 1
+			}
+			else = { capital_scope = { has_building = trading_grounds } }
+		}
+		effect = {
+			add_treasury = 250
+			change_government_reform_progress = 20
+		}
+	}
+
+	V4N_amber_road = {
+		position = 2
+		icon = mission_trade
+		required_missions = { V4N_establish_regional_markets }
+		trigger = {
+			treasury = 300
+		}
+		effect = {
+			add_treasury = -300
+			if = {
+				limit = { capital_scope = { NOT = { province_has_center_of_trade_of_level = 1 } } }
+				capital_scope = { center_of_trade = 1 }
+			}
+			else = { capital_scope = { add_center_of_trade_level = 2 } }
+			change_price = {
+                trade_goods = amber
+                key = amber_road
+                value = 0.2
+                duration = -1
+            }
+		}
+	}
+
+	V4N_baltic_fleet = {
+		position = 3
+		icon = mission_ship2
+		required_missions = { V4N_amber_road }
+		trigger = {
+			num_of_light_ship = 12
+		}
+		effect = {
+			add_sailors = 4000
+			add_country_modifier = {
+				name = slavic_maritime_trade
+				duration = -1
+			}
+			define_advisor = {
+				type = merchant_adv
+				discount = yes
+			}
+		}
+	}
+
+	V4N_consolidate_main_tribes = {
+		position = 6
+		icon = mission_scythian
+		required_missions = { V4N_kings_steppe }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				region = sarmatia_region
+				region = borysthenia_region
+			}
+		}
+		trigger = {
+			NOT = { exists = SCY }
+		}
+		effect = {
+			cimmeria_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			maeotis_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_black_sea_ports = {
+		position = 7
+		icon = mission_tradeport
+		required_missions = { V4N_consolidate_main_tribes }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 1996
+				province_id = 2000
+				province_id = 2004
+				province_id = 2070
+			}
+		}
+		trigger = {
+			owns_core_province = 1996
+			owns_core_province = 2000
+			owns_core_province = 2004
+			owns_core_province = 2070
+		}
+		effect = {
+			add_years_of_income = 1
+			caucasia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_caucasian_mountain = {
+		position = 8
+		icon = white_mountain
+		required_missions = { V4N_black_sea_ports }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = caucasia_region
+		}
+		trigger = {
+			owns_all_provinces = { region = caucasia_region }
+		}
+		effect = {
+			asian_sarmatia = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	V4N_avenge_steppe_raids = {
+		position = 9
+		icon = mission_cimmerians
+		required_missions = { V4N_caucasian_mountain }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = asian_sarmatia
+		}
+		trigger = {
+			owns_all_provinces = { region = asian_sarmatia }
+		}
+		effect = {
+			extra_sarmatia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			country_event = { id = slavic.52 }
+		}
+	}
+}

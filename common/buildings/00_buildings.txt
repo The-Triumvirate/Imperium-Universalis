@@ -48,8 +48,8 @@
 # - WATER IRRIGATION
 # - WONDERS
 # - WORKSHOP
-# - TRIBAL BUILDINGS
 # - LAND RECLAMATION
+# - MANUFACTORIES
 
 # End Table of Contents
 
@@ -66,6 +66,7 @@ small_city_walls = { #year 135
 	modifier = {
 		fort_level = 2
 		local_defensiveness = 0.1
+		blockade_force_required = 0.2
 	}
 	
 	onmap = yes
@@ -86,6 +87,7 @@ large_city_walls = { #year 295
 	modifier = {
 		fort_level = 4
 		local_defensiveness = 0.2
+		blockade_force_required = 0.4
 	}
 	
 	onmap = yes
@@ -93,6 +95,7 @@ large_city_walls = { #year 295
 	
 	ai_will_do = {
 		factor = 1.0
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
 	}
 }
 
@@ -102,10 +105,21 @@ fortress_building = { #year 430
 	cost = 1200
 	time = 48
 	make_obsolete = large_city_walls
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = fortress_ideas
+			}
+		}
+	}
 
 	modifier = {
 		fort_level = 6
 		local_defensiveness = 0.3
+		blockade_force_required = 0.6
 	}
 	
 	onmap = yes
@@ -113,6 +127,7 @@ fortress_building = { #year 430
 	
 	ai_will_do = {
 		factor = 1.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = fortress_ideas } government = tribal } } # no tribal AI
 	}
 }
 
@@ -125,19 +140,29 @@ border_garrison = { #year 130
 	modifier = {
 		fort_level = 1
 		local_unrest = -1
+		blockade_force_required = 0.4
 	}
 
 	build_trigger = { 
 		any_neighbor_province = {
 			NOT = { owned_by = ROOT }
 		}
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = fortress_ideas
+			}
+		}
 	}
-	
+
+	keep_trigger = { any_neighbor_province = { NOT = { owned_by = ROOT } } }
 	
 	influencing_fort = yes
 	
 	ai_will_do = {
 		factor = 1.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = fortress_ideas } government = tribal } } # no tribal AI
 	}
 }
 
@@ -148,259 +173,187 @@ border_garrison = { #year 130
 # Mathematician Academy
 
 mathematician_academy = { #year 415
-	cost = 1000
+	cost = 1500
 	time = 48
 
 	modifier = {
-		adm_tech_cost_modifier = -0.025
+		adm_tech_cost_modifier = -0.05
+		build_cost = -0.1
+		local_state_maintenance_modifier = 0.2
 	}
+	
+	build_trigger = { owner = { tribal_or_native_trigger = no } }
 
 	one_per_country = yes
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
 # Philosophers Academy
 
 philosophers_academy = { #year 415
-	cost = 1000
+	cost = 1500
 	time = 48
 
 	modifier = {
-		dip_tech_cost_modifier = -0.025
+		dip_tech_cost_modifier = -0.05
+		national_focus_years = -5
+		local_state_maintenance_modifier = 0.2
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				full_idea_group = academy_ideas
+			}
+		}
 	}
 
 	one_per_country = yes
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = academy_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Military Academy
 
 military_academy = { #year 415
-	cost = 1000
+	cost = 1500
 	time = 48	
 
 	modifier = {
-		mil_tech_cost_modifier = -0.025
+		mil_tech_cost_modifier = -0.05
+		general_cost = -0.1
+		local_state_maintenance_modifier = 0.2
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				full_idea_group = leadership_ideas
+			}
+		}
 	}
 
 	one_per_country = yes
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = leadership_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Library
 
 library = {	#year 235
-	cost = 350
+	cost = 500
 	time = 36
 	
 	build_trigger = {
-		owner = { NOT = { library = 51 } }
+		owner = {
+			NOT = { library = 51 }
+			OR = {
+				tribal_or_native_trigger = no
+				full_idea_group = academy_ideas
+			}
+		}
 	}
 	
 	modifier = {
-		innovativeness_gain = 0.025
-		yearly_absolutism = 0.025
+		local_build_time = -0.2
+		local_institution_spread = 0.33
+		local_culture_conversion_cost = -0.25
+		local_state_maintenance_modifier = 0.15
 	}
 
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = academy_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Great Library
 
 great_library = { #year 400
-	cost = 1000
+	cost = 1500
 	time = 48
 	make_obsolete = library
 
 	modifier = {
-		technology_cost = -0.025
-		prestige = 0.075
+		technology_cost = -0.05
+		prestige = 0.5
+		local_state_maintenance_modifier = 0.25
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				full_idea_group = academy_ideas
+			}
+		}
 	}
 
 	one_per_country = yes
 
 	ai_will_do = {
 		factor = 1.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = academy_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 		modifier = {
             factor = 400
             owner = { treasury = 3000 }
         }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		
 	}
 }
 
@@ -415,56 +368,25 @@ small_bath = { #year 445
 	time = 24
 	#make_obsolete = 
 	modifier = {
-		local_tax_modifier = 0.05
-		local_monthly_devastation = -0.05
+		local_tax_modifier = 0.1
+		local_prosperity_growth = 0.075
+		local_culture_conversion_cost = -0.1
 	}
 
 	ai_will_do = {
 		factor = 1.5
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -476,56 +398,36 @@ big_bath = { #year 700
 	make_obsolete = small_bath
 
 	modifier = {
-		local_tax_modifier = 0.1
-		local_monthly_devastation = -0.1
+		local_tax_modifier = 0.2
+		local_prosperity_growth = 0.15
+		local_culture_conversion_cost = -0.2
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 1.5
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -541,114 +443,73 @@ embassy = {	#year 295
 	one_per_country = yes
 	modifier = {
 		diplomatic_upkeep = 1
+		diplomatic_reputation = 0.5
+		local_state_maintenance_modifier = 0.2
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = diplomatic_ideas
+			}
+		}
 	}
 	
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = diplomatic_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Diplomats Quarter
 
 diplomats_quarter = { #year 400
-	cost = 1000
+	cost = 1500
 	time = 48
 	make_obsolete = embassy
 	one_per_country = yes
 	modifier = {
 		diplomatic_upkeep = 2
+		diplomatic_reputation = 1
+		local_state_maintenance_modifier = 0.25
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = diplomatic_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = diplomatic_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -663,121 +524,77 @@ small_townhall = { #year 135
 	time = 12
 
 	modifier = {
-		#yearly_absolutism = 0.01
-		local_state_maintenance_modifier = -0.05
-		local_autonomy = -0.005
-		local_governing_cost = -0.05
+		local_state_maintenance_modifier = -0.1
+		local_autonomy = -0.01
+		local_governing_cost = -0.1
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = domestic_government_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
 		factor = 2.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = domestic_government_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Big Townhall
 
 big_townhall = { #year 400
-	make_obsolete = small_townhall	
+	make_obsolete = small_townhall
 	cost = 500
 	time = 12
 
 	modifier = {
-		#yearly_absolutism = 0.02
-		local_state_maintenance_modifier = -0.1
-		local_autonomy = -0.01
-		local_governing_cost = -0.1
+		local_state_maintenance_modifier = -0.15
+		local_autonomy = -0.025
+		local_governing_cost = -0.15
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = domestic_government_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.5
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = domestic_government_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -788,76 +605,75 @@ government_palace = { #year 490
 	cost = 800
 	time = 24
 	modifier = {
-		#yearly_absolutism = 0.03
-		local_state_maintenance_modifier = -0.15
-		local_autonomy = -0.02
-		local_governing_cost = -0.15
+		local_state_maintenance_modifier = -0.2
+		local_autonomy = -0.05
+		local_governing_cost = -0.2
 	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = domestic_government_ideas
+			}
+		}
+	}
+	
 	ai_will_do = {
 		factor = 1.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = domestic_government_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Government District
 
-government_district = { #year 580
+government_district = { #year 625
 	make_obsolete = government_palace	
 	cost = 1000
 	time = 36
 
 	modifier = {
-		#yearly_absolutism = 0.05
-		local_state_maintenance_modifier = -0.2
-		local_autonomy = -0.03
-		local_governing_cost = -0.2
+		local_state_maintenance_modifier = -0.25
+		local_autonomy = -0.075
+		local_governing_cost = -0.25
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = domestic_government_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = domestic_government_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -870,66 +686,43 @@ government_district = { #year 580
 small_grain_depot = { #year 205
 	cost = 300
 	time = 24
-	#make_obsolete = small_townhall	
 
 	build_trigger = {
 		OR = {
-		trade_goods = grain
-		trade_goods = fruits
-		trade_goods = rice }
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
+	}
+
+	keep_trigger = {
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
 	}
 
 	modifier = {
-		land_forcelimit = 0.5
-		trade_goods_size_modifier = 0.05
+		land_forcelimit = 1
+		trade_goods_size_modifier = 0.2
+		supply_limit = 1.5
 	}
 	
 	ai_will_do = {
-		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 1
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -941,61 +734,33 @@ big_grain_depot = { #year 475
 	make_obsolete = small_grain_depot
 	build_trigger = {
 		OR = {
-		trade_goods = grain
-		trade_goods = fruits
-		trade_goods = rice }
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
 	}
 	modifier = {
-		land_forcelimit = 1
-		trade_goods_size_modifier = 0.1
+		land_forcelimit = 3
+		trade_goods_size_modifier = 0.4
+		supply_limit = 3
 	}
 	
+	
 	ai_will_do = {
-		factor = 2
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 1
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = agraculture_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1016,55 +781,24 @@ small_harbor = { #year 235
 	modifier = {
 		province_trade_power_value = 1
 		local_sailors_modifier = 0.1
-		naval_forcelimit = 2
+		naval_forcelimit = 1
+		local_state_maintenance_modifier = 0.075
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1080,56 +814,26 @@ big_harbor = { #year 430
 	}
 	modifier = {
 		province_trade_power_value = 2
-		local_sailors_modifier = 0.15
+		local_sailors_modifier = 0.25
 		naval_forcelimit = 3
+		local_state_maintenance_modifier = 0.15
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = shipbuilding_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1142,60 +846,37 @@ harbor_district = { #year 550
 
 	build_trigger = {
 		has_port = yes
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = shipbuilding_ideas
+			}
+		}
 	}
 
 	modifier = {
 		province_trade_power_value = 3
-		local_sailors_modifier = 0.2
-		naval_forcelimit = 4
+		local_sailors_modifier = 0.5
+		naval_forcelimit = 5
+		local_state_maintenance_modifier = 0.2
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = shipbuilding_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1210,56 +891,25 @@ small_market = { #year 160
 	time = 12
 
 	modifier = {
-		province_trade_power_modifier = 0.05
+		province_trade_power_modifier = 0.1
 		local_institution_spread = 0.05
+		local_state_maintenance_modifier = 0.05
 	}
 
 	ai_will_do = {
-		factor = 1.5
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 4.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1271,56 +921,36 @@ medium_market = { #year 325
 	time = 12
 
 	modifier = {
-		province_trade_power_modifier = 0.1
+		province_trade_power_modifier = 0.2
 		local_institution_spread = 0.1
+		local_state_maintenance_modifier = 0.1
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 4.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1332,56 +962,36 @@ great_market = { #year 445
 	time = 24
 
 	modifier = {
-		province_trade_power_modifier = 0.2
+		province_trade_power_modifier = 0.35
 		local_institution_spread = 0.2
+		local_state_maintenance_modifier = 0.15
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 4.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1394,59 +1004,27 @@ great_market = { #year 445
 herbalist = { #year 205
 	cost = 200
 	time = 12	
-	#make_obsolete = small_townhall	
 
 	modifier = {
 		local_monthly_devastation = -0.05
-		supply_limit_modifier = 0.1
+		supply_limit_modifier = 0.25
+		local_state_maintenance_modifier = 0.075
 	}
 	
 	ai_will_do = {
-		factor = 0.5
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 5.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1459,59 +1037,35 @@ medicus = {	#year 370
 
 	modifier = {
 		local_monthly_devastation = -0.1
-		supply_limit_modifier = 0.15
+		supply_limit_modifier = 0.5
+		local_state_maintenance_modifier = 0.15
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = administrative_ideas
+			}
+		}
 	}
 	
 	ai_will_do = {
-		factor = 50
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-		modifier = {
-			factor = 0.1
-			is_overseas = yes
-		}		
+		factor = 5
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = administrative_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		modifier = { factor = 0.1 is_overseas = yes }
 	}
 }
 
@@ -1524,55 +1078,35 @@ hospital = { #year 550
 
 	modifier = {
 		local_monthly_devastation = -0.15
-		supply_limit_modifier = 0.2
+		supply_limit_modifier = 1
+		local_state_maintenance_modifier = 0.3
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = administrative_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 5.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = administrative_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1585,59 +1119,27 @@ hospital = { #year 550
 small_army_camp = {	#year 160
 	cost = 200
 	time = 12
-	#make_obsolete = shrine
 
 	modifier = {
-		local_manpower_modifier = 0.1
+		local_manpower_modifier = 0.2
 		garrison_growth = 0.05
+		local_state_maintenance_modifier = 0.05
 	}
 
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1649,76 +1151,40 @@ small_military_settlement = { #year 295
 	make_obsolete = small_army_camp
 
 	modifier = {
-		local_manpower_modifier = 0.15
+		local_manpower_modifier = 0.4
 		garrison_growth = 0.1
+		local_state_maintenance_modifier = 0.075
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = logistic_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 100
-		modifier = {
-			factor = 0
-			NOT = { base_manpower = 2 }
-		}		
-		modifier = {
-			factor = 0.5
-			NOT = { base_manpower = 4 }
-		}
-		modifier = {
-			factor = 1.5
-			base_manpower = 6
-		}	
-		modifier = {
-			factor = 1.5
-			base_manpower = 8
-		}
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-		modifier = {
-			factor = 0.1
-			is_overseas = yes
-		}
+		factor = 1
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = logistic_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 0 NOT = { base_manpower = 2 } }		
+		modifier = { factor = 0.5 NOT = { base_manpower = 4 } }
+		modifier = { factor = 1.5 base_manpower = 6 }	
+		modifier = { factor = 1.5 base_manpower = 8 }
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		modifier = { factor = 0.1 is_overseas = yes }
 	}
 }
 
@@ -1730,56 +1196,36 @@ big_military_settlement = {	#year 370
 	make_obsolete = small_military_settlement
 
 	modifier = {
-		local_manpower_modifier = 0.2
+		local_manpower_modifier = 0.6
 		garrison_growth = 0.15
+		local_state_maintenance_modifier = 0.1
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = logistic_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
 		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = logistic_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1790,12 +1236,13 @@ small_conscription_center = { #year 250
 	time = 24
 
 	modifier = {
-		regiment_recruit_speed = -0.1
-		local_regiment_cost = -0.05
+		regiment_recruit_speed = -0.25
+		local_regiment_cost = -0.1
+		local_state_maintenance_modifier = 0.075
 	}
 
 	ai_will_do = {
-		factor = 50
+		factor = 1
 		modifier = {
 			factor = 0
 			NOT = { base_manpower = 2 }
@@ -1812,54 +1259,18 @@ small_conscription_center = { #year 250
 			factor = 1.5
 			base_manpower = 8
 		}
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-		modifier = {
-			factor = 0.1
-			is_overseas = yes
-		}
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		modifier = { factor = 0.1 is_overseas = yes }
 	}
 }
 
@@ -1872,62 +1283,39 @@ small_conscription_center = { #year 250
 quarry = { #year 160
 	cost = 250
 	time = 12	
-	#make_obsolete = small_townhall	
 	build_trigger = {
 		mines_workshop_building_trigger = yes
 	}
-
+	keep_trigger = { mines_workshop_building_trigger = yes }
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
 		local_production_efficiency = 0.1
 		local_defensiveness = 0.05
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -1941,58 +1329,37 @@ small_mine = { #year 340
 	build_trigger = {
 		mines_workshop_building_trigger = yes
 	}
-
+	keep_trigger = { mines_workshop_building_trigger = yes }
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
-		local_production_efficiency = 0.15
+		local_production_efficiency = 0.2
 		local_defensiveness = 0.1
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2005,59 +1372,44 @@ big_mine = { #year 490
 
 	build_trigger = {
 		mines_workshop_building_trigger = yes
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
-
+	keep_trigger = { mines_workshop_building_trigger = yes }
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
-		local_production_efficiency = 0.2
+		local_production_efficiency = 0.3
 		local_defensiveness = 0.15
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2073,59 +1425,28 @@ gravel_road = {	#year 130
 	time = 36
 
 	modifier = {
-		local_build_time = -0.025
+		local_build_time = -0.05
 		trade_value_modifier = 0.025
 		local_friendly_movement_speed = 0.1
 		local_hostile_movement_speed = 0.1
-		allowed_num_of_buildings = 2
+		allowed_num_of_buildings = 1
+		local_state_maintenance_modifier = 0.05
 	}
 	
 	ai_will_do = {
-		factor = 100
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 8
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2136,61 +1457,41 @@ paved_road = { #year 325
 	cost = 400
 	#indestructible = yes
 	time = 36
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
+	}
 
 	modifier = {
-		local_build_time = -0.05
+		local_build_time = -0.1
 		trade_value_modifier = 0.05
 		local_friendly_movement_speed = 0.15
 		local_hostile_movement_speed = 0.15
-		allowed_num_of_buildings = 3
+		allowed_num_of_buildings = 1
+		local_state_maintenance_modifier = 0.075
 	}
 	
 	ai_will_do = {
-		factor = 100
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 8
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2203,59 +1504,39 @@ imperial_road = { #year 565
 	time = 36
 
 	modifier = {
-		local_build_time = -0.1
+		local_build_time = -0.2
 		trade_value_modifier = 0.1
 		local_friendly_movement_speed = 0.2
 		local_hostile_movement_speed = 0.2
-		allowed_num_of_buildings = 3
+		allowed_num_of_buildings = 2
+		local_state_maintenance_modifier = 0.1
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 	
 	ai_will_do = {
-		factor = 100
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 8
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2276,55 +1557,24 @@ small_shipyard = { #year 175
 	modifier = {
 		local_ship_repair = 0.1
 		ship_recruit_speed = -0.05
-		local_ship_cost = -0.05
+		local_ship_cost = -0.1
+		local_state_maintenance_modifier = 0.1
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2342,55 +1592,25 @@ big_shipyard = { #year 385
 	modifier = {
 		local_ship_repair = 0.2
 		ship_recruit_speed = -0.1
-		local_ship_cost = -0.1
+		local_ship_cost = -0.25
+		local_state_maintenance_modifier = 0.2
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = shipbuilding_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2401,97 +1621,65 @@ big_shipyard = { #year 385
 # Military Monument
 
 military_monument = { #year 565
-	cost = 1000
+	cost = 1500
 	time = 48
-	#make_obsolete = small_townhall	
 	modifier = {
 		army_tradition = 0.5
+	}
+	
+    build_trigger = {
+		owner = {
+			army_tradition = 75
+			prestige = 75
+		}
 	}
 
 	one_per_country = yes
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 0.5
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
 # Naval Monument
 
 naval_monument = { #year 580
-	cost = 1000
+	cost = 1500
 	time = 48	
-	#make_obsolete = small_townhall	
 
 	modifier = {
 		navy_tradition = 0.5
 	}
+	
+	build_trigger = {
+		owner = {
+			navy_tradition = 75
+			prestige = 75
+		}
+	}
 
 	one_per_country = yes
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 0.5
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2500,48 +1688,37 @@ naval_monument = { #year 580
 imperial_palace = { #year 325
 	cost = 2000
 	time = 48
-	#make_obsolete = small_townhall	
 
 	modifier = {
 		max_absolutism = 10
+		governing_capacity_modifier = 0.15
+		local_state_maintenance_modifier = 0.5
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = imperial_ideas
+			}
+		}
 	}
 
 	one_per_country = yes
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 0.5
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = imperial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2550,47 +1727,36 @@ imperial_palace = { #year 325
 palace_garden = { #year 325	
 	cost = 2000
 	time = 48	
-	#make_obsolete = small_townhall	
 	modifier = {
 		monthly_splendor = 0.5
+		diplomats = 1
+		local_state_maintenance_modifier = 0.35
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = imperial_ideas
+			}
+		}
 	}
 
 	one_per_country = yes
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 0.5
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = imperial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2603,60 +1769,37 @@ palace_garden = { #year 325
 taxman = { #year 280
 	cost = 200
 	time = 24
-	#make_obsolete = shrine
 
 	modifier = {
-		local_tax_modifier = 0.1
-		tax_income = 3
+		tax_income = 2
         local_unrest = 1
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = financial_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = financial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2668,57 +1811,35 @@ tax_collector = { #year 460
 	make_obsolete = taxman
 
 	modifier = {
-		local_tax_modifier = 0.2
-		tax_income = 6
-        local_unrest = 2
+		tax_income = 5
+        local_unrest = 3
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = financial_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = financial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2729,11 +1850,12 @@ tax_collector = { #year 460
 # Shrine
 
 shrine = { #year 135
-	cost = 200
+	cost = 100
 	time = 12
 
 	modifier = {
-		tax_income = 1
+		local_missionary_maintenance_cost = -0.1
+		local_prosperity_growth = 0.025
 	}
 
     on_built = {
@@ -2741,54 +1863,31 @@ shrine = { #year 135
             limit = { owner = { uses_patriarch_authority = yes } }
             owner = { add_patriarch_authority = 0.005 }
         }
+		if = {
+			limit = {
+				owner = {
+					TAG = SX2
+					has_country_flag = ishkuza_missions_organize_priesthood_flag
+				}
+			}
+			add_prosperity = 3
+		}
     }
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 8.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2797,11 +1896,12 @@ shrine = { #year 135
 small_temple = { #year 190
 	make_obsolete = shrine
 
-	cost = 300
+	cost = 200
 	time = 12
 
 	modifier = {
-		tax_income = 2
+		local_missionary_maintenance_cost = -0.15
+		local_prosperity_growth = 0.05
 	}
 
     on_built = {
@@ -2809,54 +1909,31 @@ small_temple = { #year 190
             limit = { owner = { uses_patriarch_authority = yes } }
             owner = { add_patriarch_authority = 0.0075 }
         }
+		if = {
+			limit = {
+				owner = {
+					TAG = SX2
+					has_country_flag = ishkuza_missions_organize_priesthood_flag
+				}
+			}
+			add_prosperity = 3
+		}
     }
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 8.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2865,65 +1942,77 @@ small_temple = { #year 190
 great_temple = { #year 385
 	make_obsolete = small_temple
 
-	cost = 400
+	cost = 300
 	time = 24
 
 	modifier = {
-		tax_income = 3
+		local_missionary_strength = 0.01
+		local_prosperity_growth = 0.075
+		local_missionary_maintenance_cost = -0.25
 	}
     on_built = {
         if = {
             limit = { owner = { uses_patriarch_authority = yes } }
             owner = { add_patriarch_authority = 0.01 }
         }
+		if = {
+			limit = {
+				owner = {
+					TAG = SX2
+					has_country_flag = ishkuza_missions_organize_priesthood_flag
+				}
+			}
+			add_prosperity = 3
+		}
     }
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
+		factor = 8.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
+	}
+}
+
+# Oracle
+
+oracle = { #year 280
+	cost = 500
+	time = 36
+
+	modifier = {
+		local_missionary_strength = 0.01
+	}
+    on_built = {
+        if = {
+            limit = { owner = { uses_patriarch_authority = yes } }
+            owner = { add_patriarch_authority = 0.025 }
         }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+    }
+
+	ai_will_do = {
+		factor = 8.0
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -2939,56 +2028,35 @@ small_theater = { #year 280
 	#make_obsolete =
 
 	modifier = {
-		local_tax_modifier = 0.1
-		local_unrest = -0.5
+		local_tax_modifier = 0.15
+		local_unrest = -1
+	}
+	
+    build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = engineering_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3000,56 +2068,35 @@ big_theater = { #year 460
 	make_obsolete = small_theater
 
 	modifier = {
-		local_tax_modifier = 0.15
-		local_unrest = -1
+		local_tax_modifier = 0.25
+		local_unrest = -1.5
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3061,56 +2108,35 @@ great_theater = { #year 595
 	make_obsolete = big_theater
 
 	modifier = {
-		local_tax_modifier = 0.2
+		local_tax_modifier = 0.4
 		local_unrest = -2
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3122,56 +2148,34 @@ huge_theater = { #year 685
 	make_obsolete = great_theater
 
 	modifier = {
-		local_tax_modifier = 0.25
+		local_tax_modifier = 0.55
 		local_unrest = -3
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
 	}
 
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 3.0
+		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3185,11 +2189,11 @@ small_water_irrigation = { #year 160
 	cost = 250
 	time = 12	
 	onmap = yes
-	#make_obsolete = small_townhall	
 
 	build_trigger = {
 		water_irrigation_workshop_building_trigger = yes
 	}
+	keep_trigger = { water_irrigation_workshop_building_trigger = yes }
 
 	on_built = {
 		if = {
@@ -3197,59 +2201,34 @@ small_water_irrigation = { #year 160
 			owner = { add_absolutism = 1 }
 			add_local_autonomy = -2
 		}
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
 	}
 
 	modifier = {
 		local_production_efficiency = 0.1
 		supply_limit_modifier = 0.05
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3264,6 +2243,7 @@ big_water_irrigation = { #year 340
 	build_trigger = {
 		water_irrigation_workshop_building_trigger = yes
 	}
+	keep_trigger = { water_irrigation_workshop_building_trigger = yes }
 
 	on_built = {
 		if = {
@@ -3271,59 +2251,35 @@ big_water_irrigation = { #year 340
 			owner = { add_absolutism = 1 }
 			add_local_autonomy = -4
 		}
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
 	}
 
 	modifier = {
-		local_production_efficiency = 0.15
+		local_production_efficiency = 0.2
 		supply_limit_modifier = 0.1
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = agraculture_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3337,7 +2293,15 @@ big_estate = { #year 490
 
 	build_trigger = {
 		water_irrigation_workshop_building_trigger = yes
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = agraculture_ideas
+			}
+		}
 	}
+	keep_trigger = { water_irrigation_workshop_building_trigger = yes }
 
 	on_built = {
 		if = {
@@ -3345,59 +2309,35 @@ big_estate = { #year 490
 			owner = { add_absolutism = 1 }
 			add_local_autonomy = -6
 		}
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
 	}
 
 	modifier = {
-		local_production_efficiency = 0.2
+		local_production_efficiency = 0.3
 		supply_limit_modifier = 0.15
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = agraculture_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3416,63 +2356,41 @@ big_estate = { #year 490
 craftsman = { #year 160
 	cost = 250
 	time = 12	
-	#make_obsolete = small_townhall
 
 	build_trigger = {
 		craftsman_workshop_building_trigger = yes
-	}	
+	}
+	keep_trigger = { craftsman_workshop_building_trigger = yes }
 
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
 		local_production_efficiency = 0.1
 		trade_goods_size_modifier = 0.05
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3486,58 +2404,36 @@ small_workshop = { #year 340
 	build_trigger = {
 		craftsman_workshop_building_trigger = yes
 	}	
-
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
-		local_production_efficiency = 0.15
+		local_production_efficiency = 0.2
 		trade_goods_size_modifier = 0.1
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = financial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
 	}
 }
 
@@ -3549,440 +2445,47 @@ artisan_district = { #year 490
 	make_obsolete = small_workshop
 	build_trigger = {
 		craftsman_workshop_building_trigger = yes
+		owner = {
+			OR = {
+				tribal_or_native_trigger = no
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = financial_ideas
+			}
+		}
 	}	
-
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+	}
+	
 	modifier = {
-		local_production_efficiency = 0.2
+		local_production_efficiency = 0.3
 		trade_goods_size_modifier = 0.15
 	}
-
-	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-	}
-}
-
-############################
-# TRIBAL BUILDINGS RELATED #
-############################
-
-# Cattle Flock
-
-cattle_flock = { #year 125
-	cost = 50
-	time = 24
-
-	build_trigger = {
-		owner = { government = native }
-	}
-	keep_trigger = {
-		owner = { government = native }
-	}
-	
-	modifier = {
-		local_manpower = 0.5
-	}
-
-	government_specific = yes
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-	}
-}
-
-# Warrior Tents
-
-warrior_tents = { #year 125
-	cost = 100
-	time = 24
-	
-	build_trigger = {
-		owner = { government = native }
-	}
-	keep_trigger = {
-		owner = { government = native }
-	}
-
-	modifier = {
-		land_forcelimit = 2
-	}
-
-	government_specific = yes
-	
-	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-	}
-}
-
-# Horse Breeder
-
-horse_breeder = { #year 125
-	cost = 120
-	time = 24
-	
-	build_trigger = {
-		owner = { government = native }
-	}
-	keep_trigger = {
-		owner = { government = native }
-	}
-
-	modifier = {
-		cavalry_cost = -0.1
-		cavalry_power = 0.1
-	}
-
-	government_specific = yes
-	one_per_country = yes
-	
-	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-	}
-}
-
-# Tribal Gathering
-
-tribal_gathering = { #year 125
-	cost = 100
-	time = 24
-	
-	build_trigger = {
-		owner = { government = native }
-	}
-	keep_trigger = {
-		owner = { government = native }
-	}
-
-	modifier = {
-		global_tax_income = 8
-	}
-
-	government_specific = yes
-	one_per_country = yes
-	
-	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
-	}
-}
-
-# Fortified Mound
-
-fortified_mound = { #year 125
-	cost = 200
-	time = 24
-	
-	build_trigger = {
-		owner = { government = native }
-	}
-	keep_trigger = {
-		owner = { government = native }
-	}
-
-	modifier = {
-		fort_level = 1
-		defensiveness = 0.05
-	}
-
-	onmap = yes
-	influencing_fort = yes
-
-	government_specific = yes
-	
-	ai_will_do = {
-		factor = 1.0
-	}
-}
-
-manpower_infrastructure_horde_building = { #year 125
-	cost = 250
-	time = 12
-	
-	one_per_country = yes
-	
-	build_trigger = {
-		owner = {
-			government = native
-			mil_power = 300
-		}
-		base_manpower = 1
-		OR = {	
-			AND = { 
-				has_global_flag = popgrowth_vanilla
-				if = {
-					limit = {
-						has_terrain = desert
-						has_terrain = salt_desert
-						has_terrain = coastal_desert
-						has_terrain = desert_mountain
-					}
-					NOT = { base_manpower = 5 }
-				}
-				else = {
-					NOT = { base_manpower = 10 }
-				}
-			}
-			AND = {
-				has_global_flag = popgrowth_running
-				check_variable = { rural_growth = 1.1 }
-			}
-		}
-	}
-
-	modifier = {
+		factor = 6
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = financial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 		
 	}
-	
-	on_built = {
-		ROOT = {
-			hidden_effect = {
-				remove_building = manpower_infrastructure_horde_building
-				increase_manpower_dev_effect = yes
-				province_event = { id = population_capacity.1 }
-			}
-		}
-	}
-	
-	government_specific = yes
-	
-	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 60      
-            owner = { treasury = 300 }
-        }
-		modifier = {
-            factor = 60      
-            owner = { mil_power = 300 }
-        }
-		modifier = {
-            factor = 0      
-            owner = { NOT = { treasury = 300 } }
-        }
-		modifier = {
-            factor = 0
-            owner = { NOT = { mil_power = 300 } }
-        }
-	}
 }
+
 # Sieges buildings
 
 building_ruins = { #always
@@ -4014,7 +2517,7 @@ repairs_planned = { #always
 		has_building = building_ruins
 		
 	}
-
+	
 	modifier = {
 		allowed_num_of_buildings = 1
 	}
@@ -4036,12 +2539,23 @@ repairs_planned = { #always
 ############################
 
 land_reclamation = { #year 125
-	cost = 600
-	time = 36
-	#make_obsolete = small_townhall
+	cost = 550
+	time = 48
+	
 	build_trigger = {
 		NOT = { ROOT = { has_province_modifier = land_reclamation_5 } }
-	}	
+			if = {
+			limit = {
+				owner = {
+					tribal_or_native_trigger = yes
+					NOT = { has_reform = mantain_tribal_structures_reform }
+				}
+			}
+			NOT = { ROOT = { has_province_modifier = land_reclamation_5 } }
+			NOT = { ROOT = { has_province_modifier = land_reclamation_4 } }
+			NOT = { ROOT = { has_province_modifier = land_reclamation_3 } }
+		}
+	}
 
 	modifier = {
 		allowed_num_of_buildings = 15
@@ -4077,7 +2591,16 @@ land_reclamation = { #year 125
 	}
 	
 	ai_will_do = {
-		factor = 10.0
+		factor = 8.0
+		modifier = {
+			factor = 1000
+			NOT = { num_free_building_slots = 1 }
+			owner = {
+				NOT = { is_in_large_debt = yes }
+				is_in_deficit = no
+				is_bankrupt = no
+			}
+		}
 		modifier = { factor = 100 	owner = { treasury = 1000 } }
 		modifier = { factor = 200 	owner = { treasury = 2000 } }
 		modifier = { factor = 300 	owner = { treasury = 2500 } }
@@ -4142,23 +2665,11 @@ manpower_infrastructure_building = { #year 125
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 10
-            owner = { treasury = 900 }
-        }
-		modifier = {
-            factor = 10
-            owner = { mil_power = 900 }
-        }
-		modifier = {
-            factor = 0      
-            owner = { NOT = { treasury = 500 } }
-        }
-		modifier = {
-            factor = 0
-            owner = { NOT = { mil_power = 500 } }
-        }
+		factor = 0.5
+		modifier = { factor = 10 	owner = { treasury = 900 } }
+		modifier = { factor = 10 	owner = { mil_power = 900 } }
+		modifier = { factor = 0 	owner = { NOT = { treasury = 500 } } }
+		modifier = { factor = 0 	owner = { NOT = { mil_power = 500 } } }
 	}
 }
 
@@ -4214,23 +2725,11 @@ production_infrastructure_building = { #year 125
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 10
-            owner = { treasury = 900 }
-        }
-		modifier = {
-            factor = 10
-            owner = { dip_power = 900 }
-        }
-		modifier = {
-            factor = 0      
-            owner = { NOT = { treasury = 500 } }
-        }
-		modifier = {
-            factor = 0
-            owner = { NOT = { dip_power = 500 } }
-        }
+		factor = 0.5
+		modifier = { factor = 10 	owner = { treasury = 900 } }
+		modifier = { factor = 10 	owner = { dip_power = 900 } }
+		modifier = { factor = 0		owner = { NOT = { treasury = 500 } } }
+		modifier = { factor = 0 	owner = { NOT = { dip_power = 500 } } }
 	}
 }
 
@@ -4285,159 +2784,594 @@ taxes_infrastructure_building = { #year 125
 	}
 	
 	ai_will_do = {
-		factor = 1.0
-		modifier = {
-            factor = 10
-            owner = { treasury = 900 }
-        }
-		modifier = {
-            factor = 10
-            owner = { adm_power = 900 }
-        }
-		modifier = {
-            factor = 0      
-            owner = { NOT = { treasury = 500 } }
-        }
-		modifier = {
-            factor = 0
-            owner = { NOT = { adm_power = 500 } }
-        }
+		factor = 0.5
+		modifier = { factor = 10 	owner = { treasury = 900 } }
+		modifier = { factor = 10 	owner = { adm_power = 900 } }
+		modifier = { factor = 0     owner = { NOT = { treasury = 500 } } }
+		modifier = { factor = 0 	owner = { NOT = { adm_power = 500 } } }
 	}
 }
 
-# MANUFACTORIES
+#########################
+# MANUFACTORIES RELATED #
+#########################
 
 manufactory = {
 	cost = 600
 	time = 60
 	
 	modifier = {
-		trade_goods_size = 1.0
+		trade_goods_size = 0.5
+	}
+	
+}
+
+manufactory_slave_up = {
+	cost = 10
+	time = 1
+	build_trigger = {
+		#has_building = manufactory				# it needs each of the manufactory buildings. Removed, to allow other sources of slaves
+		check_variable = { SD_slot_free = 1 }
+		owner = { check_variable = { slaves = 10 } }
+	}
+	
+	modifier = {
+		allowed_num_of_buildings = 15	# for itself
+	}
+
+	on_built = {
+		hidden_effect = {
+			# owner: 
+			owner = { subtract_variable = { slaves = 10 } change_variable = { slaves_in_province = 10 } }	# Allocated to separate list
+			# province:
+			change_variable = { slaves_in_province = 10 }
+			#subtract_variable = { SS_slot_free = 1 } change_variable = { SS_slot_taken = 1 }	# slot will be either slaves or civilians
+			SD_update_provslots = yes
+			SD_update_prov_output = yes
+			remove_building = manufactory_slave_up
+		}
+	}
+	
+	ai_will_do = { factor = 0 }
+}
+manufactory_slave_out = {
+	cost = 10
+	time = 1
+	build_trigger = {
+		#has_building = manufactory	# Technically it could happen without manufactory, so it's better to just limit it by variable
+		check_variable = { slaves_in_province = 0.1 }	# as long as there is any slave around
+		
+	}
+	
+	modifier = {
+		allowed_num_of_buildings = 15 # for itself
+	}
+
+	on_built = {
+		hidden_effect = {
+			SD_slaves_return_all = yes
+			SD_update_provslots = yes
+			SD_update_prov_output = yes
+			remove_building = manufactory_slave_out
+		}
+	}
+	
+	ai_will_do = { factor = 0 }
+}
+
+# Farming Settlement
+
+farming_settlement = {	# comments = base price
+    manufactory = {
+	    grain		# 0.75
+		spices		# 3.50
+		fruits		# 2.00
+		olive		# 2.50
+		paper		# 5.00
+		olibanum	# 4.00
+		herbs		# 2.00
+		rice		# 1.00 (0.50 x 2)
+		tea_good	# 2.50
+		opium		# 3.00
+		sugar		# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
+
+# Winery
+
+winery = {			# specialized, as per slave jobs
+    manufactory = {
+	    wine		# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Shepherds
+
+shepherds = {
+    manufactory = {
+	    wool			# 1.00
+		meat_animals	# 1.50
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Apiary
+
+apiary = {
+    manufactory = {
+	    honey		# 2.50
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Weavers
+
+weavers = {
+    manufactory = {
+	    cloth	# 3.00
+		silk	# 4.50
+		cotton	# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Fishermen Huts
+
+fishermen_huts = {
+    manufactory = {
+	    fish	# 1.50
+		amber	# 4.00
+		pearls	# 4.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Hunting Lodge
+
+tannery = {
+    manufactory = {
+	    fur				# 2.50
+		exotic_animals	# 3.50
+		ivory			# 3.50
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+#Salt Gatherers	
+
+salt_gatherers = {
+    manufactory = {
+	    salt		# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Miners Camp
+
+miners_camp = {
+    manufactory = {
+	    copper		# 4.00
+		iron		# 3.50
+		marble		# 4.00
+		lead		# 2.00
+		jade		# 5.00
+		tin			# 4.00
+		gems		# 5.00
+		silver #can be used but only in macro
+		gold   #can be used but only in macro
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	allow_in_gold_provinces = yes
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+# Pottery
+
+pottery = {
+    manufactory = {
+	    ceramic		# 2.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+#Glassmaker
+
+glassmaker = {
+    manufactory = {
+	    glas	# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+#Tar Pits
+tar_pit = {
+    manufactory = {
+	    tar_good	# 3.00
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+#Blacksmith
+
+blacksmith = {
+    manufactory = {
+	    metalware	# 5.75
+	}
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
+	ai_will_do = {
+		factor = 5			# more, it is an expensive trade good
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+	}
+}
+
+####################
+#Old manufactories #
+####################
 
 # Horsebreeder
 
 horsebreeder = { #year 265
 	manufactory = {
-		horses
-	}	
-
-	modifier = {
-		cavalry_cost = -0.01
-		cav_to_inf_ratio = 0.005
+		horses		# 2.50
 	}
 
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
+	}
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
 # Goldsmith
 
-goldsmith = { #year 280
+goldsmith = { #year 280	
 	manufactory = {
-		amber
-		pearls
-		jade
-		gems
-	}
-
-	modifier = {
-		global_tax_income = 5
-		inflation_reduction = -0.01
+			# nope, not used
 	}
 
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4445,59 +3379,33 @@ goldsmith = { #year 280
 
 lumberjack = { #year 250
 	manufactory = {
-		naval_supplies
+		naval_supplies		# 2.00
 	}
 
-	modifier = {
-		naval_forcelimit = 3
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }
 
@@ -4505,58 +3413,31 @@ lumberjack = { #year 250
 
 dyer = { #year 310
 	manufactory = {
-		dyes
+		dyes		# 4.00
 	}
-
-	modifier = {
-		trade_value = 4
+	on_built = {
+		hidden_effect = { 
+			SD_update_provslots = yes 	SD_update_prov_output = yes 
+			if = { limit = { owner = { has_country_flag = SD_auto_assign_slaves } } SD_autoassign_slaves = yes }
+		}
+		
 	}
-
+	on_destroyed = {
+		hidden_effect = { SD_remove_manuf_modifiers = yes SD_slaves_return_all = yes }
+    }
+	
 	ai_will_do = {
-		factor = 10
-		modifier = {
-            factor = 100
-            owner = { treasury = 1000 }
-        }
-		modifier = {
-            factor = 200
-            owner = { treasury = 2000 }
-        }
-		modifier = {
-            factor = 300
-            owner = { treasury = 2500 }
-        }
-		modifier = {
-            factor = 400
-            owner = { treasury = 3000 }
-        }
-		modifier = {
-            factor = 500
-            owner = { treasury = 3500 }
-        }
-		modifier = {
-            factor = 600
-            owner = { treasury = 4000 }
-        }
-		modifier = {
-            factor = 700
-            owner = { treasury = 4500 }
-        }
-		modifier = {
-            factor = 800
-            owner = { treasury = 5000 }
-        }
-		modifier = {
-            factor = 900
-            owner = { treasury = 5500 }
-        }
-		modifier = {
-            factor = 1000
-            owner = { treasury = 6000 }
-        }
-		modifier = {
-            factor = 10000
-            owner = { treasury = 10000 }
-        }
+		factor = 2
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
 	}
 }

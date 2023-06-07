@@ -12,6 +12,7 @@ ask_for_socii_subject = {
 			has_reform = res_publica_reform
 			has_reform = roman_kingdom_reform
 		}
+		NOT = { has_country_flag = no_more_socii }
 		government_rank = 2
 		FROM = {
 			capital_scope = {
@@ -21,13 +22,34 @@ ask_for_socii_subject = {
 					area = apulia_area
 					area = salento_area
 					area = samnium_area
+					area = bruttium_area
+					area = calabria_area
 				}
-				
 			}
 			is_subject = no
 		}
 	}
 	is_allowed = {
+		hidden_trigger = {
+			is_subject = no
+			OR = {
+				has_reform = res_publica_reform
+				has_reform = roman_kingdom_reform
+			}
+			government_rank = 2
+			FROM = {
+				capital_scope = {
+					OR = {
+						region = italian_region
+						area = lucania_area
+						area = apulia_area
+						area = salento_area
+						area = samnium_area
+					}
+			}
+			is_subject = no
+			}
+		}
 		alliance_with = FROM
 		reverse_has_opinion = {
 			who = FROM
@@ -36,6 +58,7 @@ ask_for_socii_subject = {
 		FROM = {
 			is_at_war = no
 			NOT = { war_with = ROOT }
+			NOT = { has_country_modifier = recently_removed_socii }
 		}
 		is_bankrupt = no
 		NOT = { war_with = FROM }
@@ -45,6 +68,10 @@ ask_for_socii_subject = {
 		create_subject = {
 			subject_type = socii_subject
 			subject = FROM
+		}
+		change_variable = {
+			which = rom_socii_dissatisfaction_variable
+			value = 2
 		}
 	}
 	
@@ -100,7 +127,7 @@ ask_for_socii_subject = {
 			export_to_variable = {
 				variable_name = ai_value
 				value = modifier:diplomatic_reputation
-				with = ROOT
+				who = ROOT
 			}
 			multiply_variable = { which = ai_value value = 6 }
 		}
@@ -145,5 +172,193 @@ ask_for_socii_subject = {
 		army_size = 10
 		is_at_war = no
 		NOT = { average_unrest = 1 }
+	}
+}
+
+#Frees Socii
+remove_socii_subject = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = remove_socii_subject_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of_type = socii_subject
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+		hidden_trigger = {
+			FROM = {
+				is_subject_of_type = socii_subject
+				is_subject_of = ROOT
+			}
+		}
+		is_at_war = no
+		has_any_disaster = no
+		FROM = {
+			is_subject_of_type = socii_subject
+			is_subject_of = ROOT
+		}
+	}
+	on_accept = {
+		FROM = {
+			grant_independence = yes
+			add_truce_with = ROOT
+			add_country_modifier = {
+				name = recently_removed_socii
+				duration = 7300
+			}
+		}
+		change_variable = {
+			which = rom_socii_dissatisfaction_variable
+			value = -2
+		}
+		add_prestige = -5
+		add_mil_power = -20
+	}
+	
+	ai_will_do = {
+		FROM = {
+			OR = {
+				total_development = ROOT
+				liberty_desire = 80
+			}
+		}
+	}
+}
+
+# Call Socii into wars
+call_socii_into_wars = {
+	category = influence
+
+	require_acceptance = no
+
+	is_visible = {
+		FROM = {
+			is_subject_of = ROOT
+			is_subject_of_type = socii_subject
+		}
+	}
+	is_allowed = {
+		if = {
+			limit = {
+				FROM = { liberty_desire = 50 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_IS_REBELLIOUS_TT
+				FROM = { liberty_desire = 50 }
+			}
+		}
+		if = {
+			limit = {
+				is_at_war = no
+			}
+			custom_trigger_tooltip = {
+				tooltip = ROOT_IS_NOT_AT_WAR_TT
+				is_at_war = yes
+			}
+		}
+		if = {
+			limit = {
+				FROM = {
+					NOT = {
+						owes_favors = {
+							who = ROOT
+							value = 5
+						}
+					}
+				}
+				is_in_war = {
+					defender_leader = ROOT
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_MUST_OWE_5_FAVORS_DEFENSIVE_WAR_TT
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 5
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				FROM = {
+					NOT = {
+						owes_favors = {
+							who = ROOT
+							value = 20
+						}
+					}
+				}
+				NOT = {
+					is_in_war = {
+						defender_leader = ROOT
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_MUST_OWE_20_FAVORS_TT
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 20
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				FROM = { is_at_war = yes }
+			}
+			custom_trigger_tooltip = {
+				tooltip = FROM_IS_AT_WAR_TT
+				FROM = { is_at_war = no }
+			}
+		}
+	}
+	on_accept = {
+		FROM = {
+			ROOT = {
+				add_favors = {
+					who = PREV
+					amount = -5
+				}
+			}
+			join_all_defensive_wars_of = ROOT
+		}
+		if = {
+			limit = {
+				FROM = {
+					owes_favors = {
+						who = ROOT
+						value = 20
+					}
+				}
+			}
+			FROM = {
+				ROOT = {
+					change_variable = {
+						which = rom_socii_dissatisfaction_variable
+						value = 1
+					}
+					add_favors = {
+						who = PREV
+						amount = -20
+					}
+				}
+				add_liberty_desire = 5
+				join_all_offensive_wars_of = ROOT
+			}
+		}
+	}
+	on_decline = {
+	}
+
+	ai_will_do = { # this is a trigger
+		always = yes
 	}
 }

@@ -1,0 +1,2424 @@
+invasion_scythian_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = { TAG = SX2 }
+	has_country_shield = yes
+	
+	SX2_mercenaries_east = {
+		position = 1
+		icon = dac_train_disc
+		required_missions = {}
+		trigger = {
+			manpower = 20
+			army_tradition = 10
+			treasury = 100
+		}
+		effect = {
+			add_treasury = -100
+			add_army_tradition = 5
+			add_manpower = -5
+			custom_tooltip = invasion_scythian_missions_ct.1
+			hidden_effect = { set_global_flag = ishkuzan_mercenary_company_flag }
+		}
+	}
+
+	SX2_new_siege_equipment = {
+		position = 2
+		icon = mission_siege
+		required_missions = { SX2_mercenaries_east }
+		trigger = {
+			has_institution = siege_engineering_institution
+			advisor = engineer
+		}
+		effect = {
+			add_mil_tech = 1
+			every_owned_province = {
+				limit = {
+					is_core = ROOT
+					NOT = { siege_engineering_institution = 100 }
+				}
+				add_institution_embracement = {
+					which = siege_engineering_institution
+					value = 100
+				}
+			}
+		}
+	}
+
+	SX2_cities_burn = {
+		position = 3
+		icon = city_sack_mission
+		required_missions = { SX2_new_siege_equipment }
+		trigger = {
+			has_global_modifier_value = {
+				which = siege_ability
+				value = 0.3
+			}
+			has_leader_with = {
+				general = yes
+				siege = 1
+			}
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				army_professionalism = 0.4
+			}
+			else = { army_tradition = 40 }
+		}
+		effect = {
+			add_country_modifier = {
+				name = invasion_scythian_famous_plunderers
+				duration = -1
+			}
+			custom_tooltip = invasion_scythian_missions_ct.2
+			hidden_effect = { set_country_flag = ishkuzan_siege_mercenary_company_flag }
+		}
+	}
+
+	SX2_subjugate_non_aryans = {
+		position = 4
+		icon = steppe_lancer_mission
+		required_missions = { SX2_antagonize_media }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = ardabilitis_area
+				area = phaitakarene_area
+				area = utia_armenia_area
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					overlord_of = CAS
+					CAS = { NOT = { is_subject_of_type = tributary_state } }
+				}
+				owns_all_provinces = { area = phaitakarene_area }
+			}
+			OR = {
+				AND = {
+					overlord_of = ANA
+					ANA = { NOT = { is_subject_of_type = tributary_state } }
+				}
+				owns_all_provinces = { area = ardabilitis_area }
+				owns_all_provinces = { area = utia_armenia_area }
+			}
+		}
+		effect = {
+			add_army_tradition = 10
+			albania_west = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			albania_east = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			caucasus_east = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_destroy_mountain_resistance = {
+		position = 5
+		icon = white_mountain
+		required_missions = { SX2_subjugate_non_aryans }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = albania_west
+				area = albania_east
+				area = caucasus_east
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = albania_west }
+			owns_all_provinces = { area = albania_east }
+			owns_all_provinces = { area = caucasus_east }
+			NOT = { exists = ALB }
+		}
+		effect = {
+			every_owned_province = {
+				limit = { is_core = ALB }
+				add_province_modifier = {
+					name = invasion_scythian_subdue_albanians
+					duration = 9125
+				}
+			}
+			sapiri_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			iberia_east = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			cambysene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			iberia_west = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			gogarene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			triarene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			every_known_country = {
+				limit = { primary_culture = kartvelian }
+				reverse_add_casus_belli = {
+					type = cb_vassalize_mission
+					target = ROOT
+					months = 600
+				}
+			}
+		}
+	}
+
+	SX2_subdue_kartvelians = {
+		position = 6
+		icon = mission_siege2
+		required_missions = { SX2_destroy_mountain_resistance }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = sapiri_area
+				area = iberia_east
+				area = cambysene_area
+				area = iberia_west
+				area = gogarene_area
+				area = triarene_area
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					owns_all_provinces = { area = sapiri_area }
+					owns_all_provinces = { area = iberia_east }
+					owns_all_provinces = { area = cambysene_area }
+					owns_all_provinces = { area = iberia_west }
+					owns_all_provinces = { area = gogarene_area }
+					owns_all_provinces = { area = triarene_area }
+				}
+				all_country = {
+					primary_culture = kartvelian
+					is_subject_of = ROOT
+				}
+			}
+		}
+		effect = {
+			add_army_tradition = 10
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.1
+			}
+			else = { add_mil_power = 150 }
+			add_country_modifier = {
+				name = invasion_scythian_new_subjects
+				duration = 18250
+			}
+			colchis_inferior = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			colchis_superior = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			phasis_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			ecrecticene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_conquer_colchis = {
+		position = 7
+		icon = map_colchis
+		required_missions = { SX2_subdue_kartvelians }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = colchis_inferior
+				area = colchis_superior
+				area = phasis_area
+				area = ecrecticene_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = colchis_inferior }
+			owns_all_provinces = { area = colchis_superior }
+			owns_all_provinces = { area = phasis_area }
+			owns_all_provinces = { area = ecrecticene_area }
+		}
+		effect = {
+			add_army_tradition = 5
+			add_prestige = 10
+			add_splendor = 100
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+			else = { add_mil_power = 75 }
+			caucasia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_reaching_homeland = {
+		position = 8
+		icon = river_forest
+		required_missions = { SX2_conquer_colchis }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = caucasia_region
+		}
+		trigger = {
+			owns_all_provinces = { area = pityous_area }
+			owns_all_provinces = { area = achaeia_area }
+			num_of_owned_provinces_with = {
+				region = caucasia_region
+				NOT = { area = pityous_area }
+				NOT = { area = achaeia_area }
+				value = 12
+			}
+		}
+		effect = {
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 200 }
+			add_yearly_manpower = 5
+			asian_sarmatia = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			maeotis_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_transcaucasian_empire = {
+		position = 9
+		icon = mission_legionary
+		required_missions = { SX2_reaching_homeland }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				region = caucasia_region
+				region = maeotis_region
+				region = asian_sarmatia
+			}
+		}
+		trigger = {
+			owns_all_provinces = { region = caucasia_region }
+			num_of_owned_provinces_with = {
+				region = maeotis_region
+				value = 22
+			}
+			num_of_owned_provinces_with = {
+				region = asian_sarmatia
+				value = 11
+			}
+		}
+		effect = {
+			add_yearly_manpower = 10
+			add_years_of_income = 3
+			add_prestige = 25
+			add_army_tradition = 10
+			cimmeria_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			gerrhae_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			panticapes_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			if = {
+				limit = { exists = SCY }
+				add_casus_belli = {
+					type = cb_mission_invasion
+					target = SCY
+					months = 600
+				}
+			}
+		}
+	}
+
+	SX2_true_scythian_kings = {
+		position = 10
+		icon = mission_scythian_king
+		required_missions = { SX2_transcaucasian_empire }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				region = cimmeria_region
+				area = gerrhae_area
+				area = panticapes_area
+				area = pasyris_area
+				owned_by = SCY
+			}
+		}
+		trigger = {
+			NOT = { exists = SCY }
+			owns_all_provinces = { area = gerrhae_area }
+			owns_all_provinces = { area = panticapes_area }
+			owns_all_provinces = { area = hylaea_area }
+			owns_all_provinces = { area = sangarius_area }
+			owns_all_provinces = { area = pasyris_area }
+			owns_all_provinces = { area = cimmero_scythia }
+		}
+		effect = {
+			borysthenia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			tanaica_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			if = {
+				limit = { NOT = { government_rank = 5 } }
+				set_government_rank = 5
+			}
+			add_prestige = 50
+			override_country_name = "SCYTHIA_ISHKUZA"
+			custom_tooltip = invasion_scythian_missions_ct.3
+			hidden_effect = { set_country_flag = ishkuzan_special_cb_flag }
+		}
+	}
+
+	SX2_kings_four_winds = {
+		position = 11
+		icon = mission_kyros
+		required_missions = {
+			SX2_true_scythian_kings
+			SX2_none_equal_us
+		}
+		trigger = {
+			total_development = 5000
+			num_of_cities = 300
+		}
+		effect = {
+			add_prestige = 100
+			add_splendor = 1000
+			custom_tooltip = invasion_scythian_missions_ct.5
+			hidden_effect = { set_country_flag = ishkuzan_ruler_universe_flag }
+		}
+	}
+}
+
+invasion_scythian_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = { TAG = SX2 }
+	has_country_shield = yes
+	
+	SX2_doom_assyria = {
+		position = 1
+		icon = mission_lostbattle
+		required_missions = {}
+		provinces_to_highlight = { owned_by = ASY }
+		trigger = {
+			total_development = 140
+			NOT = { exists = ASY }
+		}
+		effect = {
+			add_mil_power = 50
+			add_country_modifier = {
+				name = invasion_scythian_reviving_rivalries
+				duration = 9125
+			}
+		}
+	}
+
+	SX2_extort_babylonia = {
+		position = 2
+		icon = mission_babylon
+		required_missions = { SX2_doom_assyria }
+		provinces_to_highlight = {
+			owned_by = BAB
+		}
+		trigger = {
+			NOT = {
+				reverse_has_opinion = {
+					who = BAB
+					value = 0
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.6
+				reverse_has_opinion_modifier = {
+					who = BAB
+					modifier = scornfully_insulted
+				}
+			}
+			army_strength = {
+				who = BAB
+				value = 0.5
+			}
+		}
+		effect = {
+			add_treasury = 150
+			add_historical_rival = BAB
+			BAB = { add_historical_rival = ROOT }
+			reverse_add_opinion = {
+				who = BAB
+				modifier = invasion_scythian_extorted_babylonia
+			}
+		}
+	}
+
+	SX2_antagonize_media = {
+		position = 3
+		icon = mission_hagmatana
+		required_missions = { SX2_extort_babylonia }
+		provinces_to_highlight = {
+			owned_by = MDI
+		}
+		trigger = {
+			is_rival = MDI
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.7
+				reverse_has_opinion_modifier = {
+					who = MDI
+					modifier = scornfully_insulted
+				}
+			}
+			has_spy_network_in = {
+				who = MDI
+				value = 75
+			}
+		}
+		effect = {
+			add_historical_rival = MDI
+			MDI = {
+				add_historical_rival = ROOT
+				add_prestige = -10
+				add_splendor = -100
+				add_stability = -1
+				add_country_modifier = {
+					name = invasion_scythian_median_antagonizing
+					duration = 7300
+				}
+			}
+		}
+	}
+
+	SX2_reconquer_mannea = {
+		position = 5
+		icon = mission_end_of_scythians
+		required_missions = {
+			SX2_raid_mannea
+			SX2_antagonize_media
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = otene_area
+				area = parskahayk_area
+				area = lower_atropatene
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = otene_area }
+			owns_all_provinces = { area = parskahayk_area }
+			owns_all_provinces = { area = lower_atropatene }
+		}
+		effect = {
+			add_prestige = 10
+			add_army_tradition = 5
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+			else = { add_mil_power = 40 }
+			otene_area = {
+				add_core = ROOT
+				remove_core = MDI
+				add_nationalism = -20
+			}
+			parskahayk_area = {
+				add_core = ROOT
+				remove_core = MDI
+				add_nationalism = -20
+			}
+			lower_atropatene = {
+				add_core = ROOT
+				remove_core = MDI
+				add_nationalism = -20
+			}
+			media_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			custom_tooltip = invasion_scythian_missions_ct.26
+			hidden_effect = { country_event = { id = media.102 } }
+		}
+	}
+
+	SX2_clear_land = {
+		position = 6
+		icon = scythian_grazing
+		required_missions = { SX2_reconquer_mannea }
+		provinces_to_highlight = {
+			OR = {
+				area = otene_area
+				area = parskahayk_area
+				area = lower_atropatene
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 12
+				OR = {
+					area = otene_area
+					area = parskahayk_area
+					area = lower_atropatene
+				}
+				has_land_reclamation_modifier_trigger = yes
+			}
+		}
+		effect = {
+			add_yearly_manpower = 3
+			every_owned_province = {
+				if = {
+					limit = {
+						OR = {
+							area = otene_area
+							area = parskahayk_area
+							area = lower_atropatene
+						}
+						has_land_reclamation_modifier_trigger = yes
+					}
+					add_province_modifier = {
+						name = invasion_scythian_clear_grazing_field
+						duration = 21900
+					}
+					add_base_manpower = 1
+				}
+			}
+		}
+	}
+
+	SX2_restore_rule_media = {
+		position = 7
+		icon = mission_eastern_soldiers
+		required_missions = { SX2_clear_land }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = media_region
+		}
+		trigger = {
+			OR = {
+				AND = {
+					overlord_of = MDI
+					MDI = { NOT = { is_subject_of_type = tributary_state } }
+				}
+				AND = {
+					owns_all_provinces = { area = upper_atropatene }
+					owns_all_provinces = { area = choromithrene_area }
+					owns_all_provinces = { area = media_magna }
+					owns_all_provinces = { area = kossiane_area }
+					owns_all_provinces = { area = siggrane_area }
+				}
+				NOT = { exists = MDI }
+			}
+		}
+		effect = {
+			add_prestige = 20
+			add_splendor = 200
+			add_army_tradition = 10
+			country_event = { id = mission_events.26 }
+		}
+	}
+
+	SX2_none_equal_us = {
+		position = 10
+		icon = mission_alexander
+		required_missions = { SX2_invasion_assyria }
+		trigger = {
+			prestige = 90
+			stability = 3
+			has_any_disaster = no
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.4
+				all_country = {
+					NOT = { TAG = ROOT }
+					NOT = { army_size = ROOT }
+				}
+			}
+			has_global_modifier_value = {
+				which = cavalry_power
+				value = 0.5
+			}
+		}
+		effect = {
+			add_adm_tech = 1
+			add_dip_tech = 1
+			add_mil_tech = 2
+			every_owned_province = {
+				limit = {
+					is_core = ROOT
+					culture_group = ROOT
+					is_capital = no
+				}
+				add_prosperity = 100
+				add_base_tax = 1
+			}
+			capital_scope = { add_base_tax = 4 }
+		}
+	}
+
+	SX2_tabitis_people = {
+		position = 11
+		icon = mission_conquest_elam
+		required_missions = { SX2_fire_rises_east }
+		trigger = {
+			religion = scythian_religion
+			OR = {
+				priest_adv = 2
+				full_idea_group = cerimonial_ideas
+			}
+			if = {
+				limit = { uses_patriarch_authority = yes }
+				patriarch_authority = 0.9
+			}
+			else = { stability = 1 }
+			adm_power = 100
+			dip_power = 100
+			has_country_modifier = high_priest_modifier
+			num_of_owned_provinces_with = {
+				religion = scythian_religion
+				has_temple_building = yes
+				value = 18
+			}
+			hidden_trigger = { NOT = { has_country_flag = ishkuza_missions_religious_zealotry_flag } }
+		}
+		effect = {
+			add_adm_power = -100
+			add_dip_power = -100
+			custom_tooltip = invasion_scythian_missions_ct.22
+			hidden_effect = { set_country_flag = ishkuza_missions_tabitis_people_flag }
+		}
+	}
+
+	SX2_organize_priesthood = {
+		position = 12
+		icon = akropolis
+		required_missions = { SX2_tabitis_people }
+		trigger = {
+			absolutism = 40
+			religious_unity = 0.8
+			legitimacy_equivalent = 90
+			OR = {
+				priest_adv = 2
+				philosopher_adv = 2
+				scholar_advisor = 2
+				full_idea_group = cerimonial_ideas
+			}
+		}
+		effect = {
+			custom_tooltip = invasion_scythian_missions_ct.23
+			hidden_effect = { set_country_flag = ishkuza_missions_organize_priesthood_flag }
+		}
+	}
+}
+
+invasion_scythian_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = { TAG = SX2 }
+	has_country_shield = yes
+	
+	SX2_rebuild_forces = {
+		position = 1
+		icon = eastern_expansion
+		required_missions = {}
+		trigger = {
+			army_size = 12
+			horde_unity = 90
+			num_of_generals = 1
+			cavalry_fraction = 0.5
+			is_in_deficit = no
+		}
+		effect = {
+			add_mil_power = 50
+			add_country_modifier = {
+				name = invasion_scythian_military_revival
+				duration = 18250
+			}
+		}
+	}
+
+	SX2_raid_urartu = {
+		position = 2
+		icon = mission_hoplite_2
+		required_missions = { SX2_rebuild_forces }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2392
+				province_id = 2412
+				province_id = 4920
+				province_id = 4921
+				province_id = 6174
+			}
+		}
+		trigger = {
+			OR = {
+				if = {
+					limit = { exists = URT }
+					war_with = URT
+				}
+				else_if = {
+					limit = { exists = ARM }
+					war_with = ARM
+				}
+				if = {
+					limit = { exists = URT }
+					has_won_war_against = {
+						who = URT
+						max_years_since = 10
+					}
+				}
+				else_if = {
+					limit = { exists = ARM }
+					has_won_war_against = {
+						who = ARM
+						max_years_since = 10
+					}
+				}
+			}
+			OR = {
+				AND = {
+					owns = 2392
+					2392 = { units_in_province = ROOT }
+					owns = 2412
+					2412 = { units_in_province = ROOT }
+					owns = 4920
+					4920 = { units_in_province = ROOT }
+					owns = 4921
+					4921 = { units_in_province = ROOT }
+					owns = 6174
+					6174 = { units_in_province = ROOT }
+				}
+				AND = {
+					
+					controls = 2392
+					2392 = { units_in_province = ROOT }
+					controls = 2412
+					2412 = { units_in_province = ROOT }
+					controls = 4920
+					4920 = { units_in_province = ROOT }
+					controls = 4921
+					4921 = { units_in_province = ROOT }
+					controls = 6174
+					6174 = { units_in_province = ROOT }
+				}
+			}
+		}
+		effect = {
+			add_mil_power = 100
+			add_treasury = 250
+			add_army_tradition = 7
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+			2392 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			2412 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			4920 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			6174 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			lynitis_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			soducene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			araxene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			armenia_maior = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			syracene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			custom_tooltip = invasion_scythian_missions_ct.11
+			hidden_effect = { set_country_flag = ishkuza_missions_urartu_war_buff_flag }
+		}
+	}
+
+	SX2_araxes_valley = {
+		position = 3
+		icon = farmland
+		required_missions = { SX2_raid_urartu }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = lynitis_area
+				area = soducene_area
+				area = araxene_area
+				area = armenia_maior
+				area = syracene_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = lynitis_area }
+			owns_all_provinces = { area = soducene_area }
+			owns_all_provinces = { area = araxene_area }
+			owns_all_provinces = { area = armenia_maior }
+			owns_all_provinces = { area = syracene_area }
+		}
+		effect = {
+			add_treasury = 100
+			add_adm_power = 30
+			add_dip_power = 30
+			add_mil_power = 60
+			basoropeda_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			arrhene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			tospites_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			corduene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			moxoene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			catarzene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			astianene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_raid_mannea = {
+		position = 4
+		icon = mission_macedons
+		required_missions = { SX2_araxes_valley }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2396
+				province_id = 2397
+				province_id = 2398
+				province_id = 2694
+				province_id = 2695
+				province_id = 4917
+			}
+		}
+		trigger = {
+			OR = {
+				war_with = MDI
+				has_won_war_against = {
+					who = MDI
+					max_years_since = 10
+				}
+			}
+			OR = {
+				AND = {
+					owns = 2396
+					2396 = { units_in_province = ROOT }
+					owns = 2397
+					2397 = { units_in_province = ROOT }
+					owns = 2398
+					2398 = { units_in_province = ROOT }
+					owns = 2694
+					2694 = { units_in_province = ROOT }
+					owns = 2695
+					2695 = { units_in_province = ROOT }
+					owns = 4917
+					4917 = { units_in_province = ROOT }
+				}
+				AND = {
+					controls = 2396
+					2396 = { units_in_province = ROOT }
+					controls = 2397
+					2397 = { units_in_province = ROOT }
+					controls = 2398
+					2398 = { units_in_province = ROOT }
+					controls = 2694
+					2694 = { units_in_province = ROOT }
+					controls = 2695
+					2695 = { units_in_province = ROOT }
+					controls = 4917
+					4917 = { units_in_province = ROOT }
+				}
+			}
+		}
+		effect = {
+			add_treasury = 300
+			add_mil_power = 120
+			add_army_tradition = 8
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.06
+			}
+			2396 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			2397 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			2398 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			2694 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			2695 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			4917 = {
+				add_devastation = 100
+				destroy_all_buildings_effect = yes
+			}
+			otene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			parskahayk_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			lower_atropatene = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			custom_tooltip = invasion_scythian_missions_ct.10
+			hidden_effect = { set_country_flag = ishkuza_missions_media_war_buff_flag }
+		}
+	}
+
+	SX2_push_lake_van = {
+		position = 5
+		icon = mission_cavalry
+		required_missions = { SX2_raid_mannea }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = basoropeda_area
+				area = tospites_area
+				area = corduene_area
+				area = arrhene_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = basoropeda_area }
+			owns_all_provinces = { area = tospites_area }
+			owns_all_provinces = { area = corduene_area }
+			owns_all_provinces = { area = arrhene_area }
+		}
+		effect = {
+			add_prestige = 40
+			country_event = { id = mission_events.27 }
+			sophene_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_death_urartu = {
+		position = 6
+		icon = mission_large_army
+		required_missions = { SX2_push_lake_van }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				owned_by = URT
+				owned_by = ARM
+				culture = urartian
+				culture = alarodian
+			}
+		}
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.12
+				NOT = { exists = URT }
+				NOT = { exists = ARM }
+			}
+		}
+		effect = {
+			every_owned_province = {
+				limit = {
+					OR = {
+						is_core = URT
+						is_core = ARM
+					}
+				}
+			}
+			custom_tooltip = invasion_scythian_missions_ct.13
+			hidden_effect = { set_global_flag = ishkuza_missions_death_urartu_flag }
+		}
+	}
+
+	SX2_enslave_armenians = {
+		position = 7
+		icon = mission_scythian
+		required_missions = { SX2_death_urartu }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = sophene_region
+		}
+		trigger = {
+			NOT = { has_country_modifier = slavery_abolished }
+			num_of_owned_provinces_with = {
+				region = sophene_region
+				value = 20
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = invasion_scythian_armenian_slaves
+				duration = -1
+			}
+			multiply_variable = { which = slaves value = 2 }
+			every_owned_province = {
+				limit = { culture_group = armenian_group }
+				add_base_manpower = -1
+				add_named_unrest = {
+					name = ishkuza_enslave_armenians
+					value = 10
+				}
+			}
+		}
+	}
+
+	SX2_test_mesopotamians = {
+		position = 8
+		icon = mission_assyrians
+		required_missions = {
+			SX2_enslave_armenians
+			SX2_restore_rule_media
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			superregion = mesopotamia_superregion
+		}
+		trigger = {
+			any_owned_province = { superregion = mesopotamia_superregion }
+			any_country = {
+				is_neighbor_of = ROOT
+				total_development = 200
+				capital_scope = { superregion = mesopotamia_superregion }
+				ROOT = {
+					has_won_war_against = {
+						who = PREV
+						max_years_since = 10
+					}
+				}
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			add_mil_power = 100
+			add_army_tradition = 5
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+			define_advisor = {
+				type = engineer
+				skill = 3
+				discount = yes
+			}
+			assyria_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			ciseuphratia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			every_known_country = {
+				limit = {
+					capital_scope = {
+						superregion = mesopotamia_superregion
+						NOT = { region = haltamti_region }
+					}
+				}
+				reverse_add_casus_belli = {
+					type = cb_mission_invasion
+					target = ROOT
+					months = 240
+				}
+			}
+			custom_tooltip = invasion_scythian_missions_ct.14
+			hidden_effect = { set_country_flag = ishkuza_missions_mesopotamian_war_buff_flag }
+		}
+	}
+
+	SX2_invasion_assyria = {
+		position = 9
+		icon = mission_bab_king
+		required_missions = { SX2_test_mesopotamians }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				region = assyria_region
+				region = ciseuphratia_region
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				region = assyria_region
+				value = 17
+			}
+			num_of_owned_provinces_with = {
+				region = ciseuphratia_region
+				value = 16
+			}
+		}
+		effect = {
+			add_prestige = 25
+			add_treasury = 200
+			add_country_modifier = {
+				name = invasion_scythian_mesopotamian_technologies
+				duration = 7300
+			}
+			syria_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			mesopotamia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_fire_rises_east = {
+		position = 10
+		icon = mission_zoroastrian
+		required_missions = {}
+		trigger = {
+			religion_years = { zoroastrianism = 10 }
+		}
+		effect = {
+			country_event = { id = mission_events.31 }
+		}
+	}
+
+	SX2_fire_enlightens_world = {
+		position = 11
+		icon = mission_jewish
+		required_missions = { SX2_fire_rises_east }
+		trigger = {
+			religious_unity = 0.8
+			is_defender_of_faith = yes
+			army_tradition = 30
+			manpower = 14
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.19
+				calc_true_if = {
+					all_country = { religion = zoroastrianism }
+					amount = 5
+				}
+			}
+			num_of_owned_provinces_with = {
+				is_core = ROOT
+				religion = zoroastrianism
+				value = 30
+			}
+			hidden_trigger = { NOT = { has_country_flag = ishkuza_missions_tabitis_people_flag } }
+		}
+		effect = {
+			add_manpower = -4
+			custom_tooltip = invasion_scythian_missions_ct.20
+			add_country_modifier = {
+				name = invasion_scythian_holy_war_modifier
+				duration = -1
+			}
+			hidden_effect = { set_country_flag = ishkuza_missions_religious_zealotry_flag }
+		}
+	}
+
+	SX2_faith_divided = {
+		position = 12
+		icon = mission_raider
+		required_missions = { SX2_fire_enlightens_world }
+		trigger = {
+			religion_years = { zurvanism = 10 }
+		}
+		effect = {
+			country_event = { id = mission_events.32 }
+		}
+	}
+}
+
+invasion_scythian_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = { TAG = SX2 }
+	has_country_shield = yes
+
+	SX2_kurgans_sky = {
+		position = 2
+		icon = mission_temple
+		required_missions = { SX2_rebuild_forces }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2406
+				province_id = 2407
+				province_id = 2410
+				province_id = 2452
+				province_id = 2458
+			}
+		}
+		trigger = {
+			owns_core_province = 2406
+			2406 = { has_temple_building = yes }
+			owns_core_province = 2407
+			2407 = { has_temple_building = yes }
+			owns_core_province = 2410
+			2410 = { has_temple_building = yes }
+			owns_core_province = 2452
+			2452 = { has_temple_building = yes }
+			owns_core_province = 2458
+			2458 = { has_temple_building = yes }
+		}
+		effect = {
+			add_prestige = 5
+			add_horde_unity = 20
+			add_splendor = 100
+			2406 = { add_base_tax = 1 }
+			2407 = {
+				add_base_tax = 1
+				set_global_flag = allowed_great_white_kurgan_flag
+				add_great_project = {
+					type = great_white_kurgan
+					tier = 0
+				}
+			}
+			2410 = { add_base_tax = 1 }
+			2452 = { add_base_tax = 1 }
+			2458 = { add_base_tax = 1 }
+		}
+	}
+
+	SX2_open_caucasian_trade = {
+		position = 3
+		icon = missions_china_commercial
+		required_missions = {  }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2410
+				province_id = 2446
+			}
+		}
+		trigger = {
+			any_owned_province = { province_has_center_of_trade_of_level = 3 }
+			treasury = 100
+			2410 = {
+				has_trader = ROOT
+				trade_share = {
+					country = ROOT
+					share = 50
+				}
+			}
+			owns = 2446
+			2446 = {
+				has_trader = ROOT
+				is_strongest_trade_power = ROOT
+			}
+		}
+		effect = {
+			add_treasury = -100
+			add_dip_power = 50
+			add_mercantilism = 2
+			2446 = {
+				if = {
+					limit = { NOT = { has_building = small_market } }
+					add_building = small_market
+				}
+				else = { add_base_production = 1 }
+			}
+			random_owned_province = {
+				limit = { province_has_center_of_trade_of_level = 3 }
+				add_center_of_trade_level = 1
+			}
+		}
+	}
+
+	SX2_unite_steppe_mountain = {
+		position = 4
+		icon = river_plains
+		required_missions = { SX2_open_caucasian_trade }
+		provinces_to_highlight = { province_id = 1434 }
+		trigger = {
+			1434 = {
+				has_trader = ROOT
+				trade_share = {
+					country = ROOT
+					share = 60
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.15
+				calc_true_if = {
+					all_country = {
+						primary_culture = scythian
+						capital_scope = { superregion = scythia_superregion }
+						has_opinion = {
+							who = ROOT
+							value = 100
+						}
+					}
+					amount = 5
+				}
+			}
+		}
+		effect = {
+			2410 = { add_trade_node_income = 7 }
+			2446 = { add_trade_node_income = 7 }
+			1434 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 40
+					key = ISHKUZAN_PERMANENT_MERCHANTS
+				}
+			}
+			add_country_modifier = {
+				name = invasion_scythian_steppe_trading
+				duration = -1
+			}
+		}
+	}
+
+	SX2_refine_art = {
+		position = 5
+		icon = pottery
+		required_missions = { SX2_unite_steppe_mountain }
+		trigger = {
+			num_of_owned_provinces_with = {
+				trade_goods = ceramic
+				is_core = ROOT
+				has_production_building = yes
+				value = 3
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = cloth
+				is_core = ROOT
+				has_production_building = yes
+				value = 2
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = metalware
+				is_core = ROOT
+				has_production_building = yes
+				value = 1
+			}
+		}
+		effect = {
+			2410 = { add_trade_node_income = 3 }
+			2446 = { add_trade_node_income = 3 }
+			add_mercantilism = 4
+			add_splendor = 50
+			add_prestige = 5
+			every_owned_province = {
+				if = {
+					limit = {
+						trade_goods = ceramic
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_base_production = 1
+					add_prosperity = 10
+				}
+				else_if = {
+					limit = {
+						trade_goods = cloth
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_base_production = 1
+					add_prosperity = 10
+				}
+				else_if = {
+					limit = {
+						trade_goods = metalware
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_base_production = 1
+					add_prosperity = 10
+				}
+			}
+		}
+	}
+
+	SX2_new_trading_partners = {
+		position = 7
+		icon = mission_ship2
+		required_missions = {
+			SX2_refine_art
+			SX2_phrygian_gold
+		}
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = invasion_scythian_missions_ct.16
+				calc_true_if = {
+					all_country = {
+						culture_group = hellenic_group
+						neither_tribal_nor_native_trigger = yes
+						capital_scope = {
+							OR = {
+								superregion = asia_superregion
+								superregion = haemusia_superregion
+								superregion = macedonia_superregion
+							}
+						}
+						has_opinion = {
+							who = ROOT
+							value = 100
+						}
+					}
+					amount = 12
+				}
+			}
+			1429 = {
+				trade_share = {
+					country = ROOT
+					share = 2
+				}
+			}
+			2158 = {
+				trade_share = {
+					country = ROOT
+					share = 5
+				}
+			}
+			2244 = {
+				trade_share = {
+					country = ROOT
+					share = 10
+				}
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = grain
+				is_core = ROOT
+				has_production_building = yes
+				value = 10
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = naval_supplies
+				is_core = ROOT
+				has_production_building = yes
+				value = 10
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = meat_animals
+				is_core = ROOT
+				has_production_building = yes
+				value = 6
+			}
+			num_of_owned_provinces_with = {
+				trade_goods = wool
+				is_core = ROOT
+				has_production_building = yes
+				value = 6
+			}
+		}
+		effect = {
+			add_mercantilism = 6
+			add_dip_power = 140
+			1419 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 5
+					key = ISHKUZAN_PERMANENT_MERCHANTS
+				}
+			}
+			1423 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 5
+					key = ISHKUZAN_PERMANENT_MERCHANTS
+				}
+			}
+			1429 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 10
+					key = ISHKUZAN_PERMANENT_MERCHANTS
+				}
+			}
+			2158 = {
+				add_trade_modifier = {
+					who = ROOT
+					duration = -1
+					power = 20
+					key = ISHKUZAN_PERMANENT_MERCHANTS
+				}
+			}
+			every_owned_province = {
+				if = {
+					limit = {
+						trade_goods = grain
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_province_modifier = {
+						name = invasion_scythian_demand_resources
+						duration = 36500
+					}
+					add_prosperity = 5
+				}
+				else_if = {
+					limit = {
+						trade_goods = naval_supplies
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_province_modifier = {
+						name = invasion_scythian_demand_resources
+						duration = 36500
+					}
+					add_prosperity = 5
+				}
+				else_if = {
+					limit = {
+						trade_goods = meat_animals
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_province_modifier = {
+						name = invasion_scythian_demand_resources
+						duration = 36500
+					}
+					add_prosperity = 5
+				}
+				else_if = {
+					limit = {
+						trade_goods = wool
+						is_core = ROOT
+						has_production_building = yes
+					}
+					add_province_modifier = {
+						name = invasion_scythian_demand_resources
+						duration = 36500
+					}
+					add_prosperity = 5
+				}
+			}
+		}
+	}
+
+	SX2_social_transformation = {
+		position = 9
+		icon = mission_advisors
+		required_missions = {}
+		trigger = {
+			neither_tribal_nor_native_trigger = yes
+			hidden_trigger = { NOT = { has_country_flag = ishkuza_missions_chose_horde_flag } }
+		}
+		effect = {
+			change_government_reform_progress = 100
+			if = {
+				limit = { government = monarchy }
+				add_government_reform = ishkuzan_kingdom_reform
+			}
+			else_if = {
+				limit = { government = republic }
+				add_government_reform = ishkuzan_republic_reform
+			}
+			else_if = {
+				limit = { government = theocracy }
+				add_government_reform = ishkuzan_oligarchy_reform
+			}
+			hidden_effect = { set_country_flag = ishkuza_missions_chose_civilize_flag }
+		}
+	}
+
+	SX2_form_bureaucracy = {
+		position = 10
+		icon = mission_scholar
+		required_missions = { SX2_social_transformation }
+		trigger = {
+			absolutism = 20
+			treasury = 200
+			has_institution = writing_system
+			OR = {
+				statesman_adv = 2
+				taxman_advisor = 2
+			}
+			num_of_owned_provinces_with = {
+				has_townhall_building = yes
+				is_core = ROOT
+				value = 10
+			}
+			num_of_owned_provinces_with = {
+				has_road_building = yes
+				is_core = ROOT
+				value = 20
+			}
+		}
+		effect = {
+			add_adm_tech = 1
+			change_adm = 2
+			add_treasury = -200
+			if = {
+				limit = { NOT = { stability = 3 } }
+				add_stability = 1
+			}
+			else = { add_adm_power = 200 }
+			every_owned_province = {
+				limit = { is_core = ROOT }
+				add_local_autonomy = -60
+			}
+			capital_scope = { add_building = imperial_palace }
+		}
+	}
+
+	SX2_adaptable_warfare = {
+		position = 11
+		icon = mission_training
+		required_missions = { SX2_form_bureaucracy }
+		trigger = {
+			OR = {
+				army_reformer_adv = 2
+				engineer = 2
+			}
+			infantry_fraction = 0.4
+			artillery_fraction = 0.2
+			has_global_modifier_value = {
+				which = discipline
+				value = 1.05
+			}
+			num_of_owned_provinces_with = {
+				has_fort_trigger = yes
+				is_core = ROOT
+				value = 4
+			}
+		}
+		effect = {
+			add_mil_tech = 1
+			add_absolutism = 20
+			add_army_tradition = 10
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.05
+			}
+		}
+	}
+
+	SX2_place_natives = {
+		position = 12
+		icon = mission_harvest
+		required_missions = { SX2_adaptable_warfare }
+		trigger = {
+			num_accepted_cultures = 2
+			absolutism = 40
+			stability = 0
+			has_any_disaster = no
+			NOT = { num_of_revolts = 1 }
+		}
+		effect = {
+			add_legitimacy_equivalent_10_effect = yes
+			country_event = { id = mission_events.30 }
+		}
+	}
+}
+
+invasion_scythian_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = { TAG = SX2 }
+	has_country_shield = yes
+
+	SX2_rekindle_west = {
+		position = 1
+		icon = missions_china_alliance
+		required_missions = {}
+		provinces_to_highlight = {
+			owned_by = SX1
+		}
+		trigger = {
+			reverse_has_opinion = {
+				who = SX1
+				value = 200
+			}
+			alliance_with = SX1
+			marriage_with = SX1
+		}
+		effect = {
+			add_dip_power = 100
+			add_historical_friend = SX1
+			SX1 = { add_historical_friend = ROOT }
+			every_province = {
+				limit = {
+					owned_by = SX1
+					is_core = SX1
+				}
+				add_permanent_claim = ROOT
+			}
+			syspiritis_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			moschi_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_unite_people = {
+		position = 2
+		icon = mission_great_leader
+		required_missions = { SX2_rekindle_west }
+		provinces_to_highlight = {
+			OR = {
+				owned_by = SX1
+				is_core = SX1
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					overlord_of = SX1
+					NOT = { SX1 = { is_subject_of_type = tributary_state } }
+				}
+				AND = {
+					SX1 = {
+						trust = { who = ROOT value = 100 }
+						owes_favors = { who = ROOT value = 100 }
+						alliance_with = ROOT
+					}
+				}
+				owns_all_provinces = { is_core = SX1 }
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					OR = {
+						overlord_of = SX1
+						alliance_with = SX1
+					}
+				}
+				inherit = SX1
+			}
+			every_owned_province = {
+				if = {
+					limit = {
+						is_core = SX1
+						NOT = { is_core = ROOT }
+					}
+					add_core = ROOT
+					add_base_manpower = 1
+				}
+				else_if = {
+					limit = { is_core = SX1 }
+					add_base_manpower = 1
+				}
+			}
+			orbalisene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			west_sacasene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			bolbene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			acilisene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_rival_cimmerians = {
+		position = 3
+		icon = mission_cimmerians
+		required_missions = { SX2_unite_people }
+		provinces_to_highlight = {
+			owned_by = CYM
+		}
+		trigger = {
+			OR = {
+				NOT = { exists = CYM }
+				AND = {
+					is_rival = CYM
+					army_strength = {
+						who = CYM
+						value = 1.2
+					}
+					NOT = {
+						reverse_has_opinion = {
+							who = CYM
+							value = -50
+						}
+					}
+				}
+			}
+		}
+		effect = {
+			add_army_tradition = 5
+			add_mil_power = 100
+			add_historical_rival = ROOT
+			CYM = { add_historical_rival = ROOT }
+			lyeus_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			chorzene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			armenia_minor = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			melitene_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			cataonia_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_penetrate_west = {
+		position = 4
+		icon = mission_lydia
+		required_missions = { SX2_rival_cimmerians }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = lyeus_area
+				area = chorzene_area
+				area = armenia_minor
+				area = melitene_area
+				area = cataonia_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = lyeus_area }
+			owns_all_provinces = { area = chorzene_area }
+			owns_all_provinces = { area = armenia_minor }
+			owns_all_provinces = { area = melitene_area }
+			owns_all_provinces = { area = cataonia_area }
+		}
+		effect = {
+			add_mil_power = 50
+			every_province = {
+				limit = { owned_by = CYM }
+				add_permanent_claim = ROOT
+			}
+			cappadocia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			add_casus_belli = {
+				type = cb_mission_invasion
+				target = CYM
+				months = 240
+			}
+		}
+	}
+
+	SX2_end_cimmerians = {
+		position = 5
+		icon = missions_chariot_attack
+		required_missions = { SX2_penetrate_west }
+		provinces_to_highlight = {
+			OR = {
+				owned_by = CYM
+				region = cappadocia_region
+			}
+		}
+		trigger = {
+			NOT = { exists = CYM }
+			owns_all_provinces = { area = cappadocia_area }
+			owns_all_provinces = { area = cappadocia_inferior_area }
+			owns_all_provinces = { area = saravene_superior_area }
+		}
+		effect = {
+			add_prestige = 7
+			every_province = {
+				limit = { is_core = CYM }
+				remove_core = CYM
+				add_core = ROOT
+			}
+			galatia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			bithynia_et_pontus = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_phrygian_gold = {
+		position = 6
+		icon = mission_mines
+		required_missions = { SX2_end_cimmerians }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = galatia_region
+		}
+		trigger = {
+			owns = 5748
+			num_of_owned_provinces_with = {
+				region = galatia_region
+				value = 20
+			}
+		}
+		effect = {
+			add_treasury = 150
+			add_legitimacy_equivalent_10_effect = yes
+			asia_minor = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_extend_raids_lydia = {
+		position = 7
+		icon = mission_hoplite_1
+		required_missions = { SX2_phrygian_gold }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2158
+				province_id = 2159
+				province_id = 2179
+				province_id = 5714
+				province_id = 5730
+			}
+		}
+		trigger = {
+			OR = {
+				AND = {
+					owns = 2158
+					2158 = { units_in_province = ROOT }
+					owns = 2159
+					2159 = { units_in_province = ROOT }
+					owns = 2179
+					2179 = { units_in_province = ROOT }
+					owns = 5714
+					5714 = { units_in_province = ROOT }
+					owns = 5730
+					5730 = { units_in_province = ROOT }
+				}
+			}
+		}
+		effect = {
+			add_treasury = 250
+			add_mil_power = 75
+			2159 = {
+				add_devastation = 100
+				add_base_tax = -1
+				add_base_production = -1
+				add_base_manpower = -1
+				destroy_all_buildings_effect = yes
+			}
+			2179 = {
+				add_devastation = 100
+				add_base_tax = -1
+				add_base_production = -1
+				add_base_manpower = -1
+				destroy_all_buildings_effect = yes
+			}
+			5714 = {
+				add_devastation = 100
+				add_base_tax = -1
+				add_base_production = -1
+				add_base_manpower = -1
+				destroy_all_buildings_effect = yes
+			}
+			5730 = {
+				add_devastation = 100
+				add_base_tax = -1
+				add_base_production = -1
+				add_base_manpower = -1
+				destroy_all_buildings_effect = yes
+			}
+		}
+	}
+
+	SX2_subdue_pontic_coast = {
+		position = 8
+		icon = mission_big_fleet
+		required_missions = {
+			SX2_extend_raids_lydia
+			SX2_new_trading_partners
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			region = bithynia_et_pontus
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				region = bithynia_et_pontus
+				value = 17
+			}
+		}
+		effect = {
+			add_prestige = 8
+			add_mil_power = 100
+			bithynia_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	SX2_keep_old_ways = {
+		position = 9
+		icon = mde_median_spear
+		required_missions = {}
+		trigger = {
+			has_reform = mantain_tribal_structures_reform
+			hidden_trigger = { NOT = { has_country_flag = ishkuza_missions_chose_civilize_flag } }
+		}
+		effect = {
+			add_horde_unity = 20
+			add_adm_power = 300
+			add_dip_power = 150
+			add_mil_power = 150
+			hidden_effect = { set_country_flag = ishkuza_missions_chose_horde_flag }
+		}
+	}
+
+	SX2_expand_grazing_fields = {
+		position = 10
+		icon = mission_tribal_construction
+		required_missions = { SX2_keep_old_ways }
+		trigger = {
+			num_of_owned_provinces_with = {
+				culture = ROOT
+				is_core = ROOT
+				has_land_reclamation_modifier_trigger = yes
+				value = 20
+			}
+		}
+		effect = {
+			add_yearly_manpower = 10
+			add_horde_unity = 10
+			custom_tooltip = invasion_scythian_missions_ct.25
+			hidden_effect = {
+				set_country_flag = ishkuza_missions_expanded_grazing_fields_flag
+				every_owned_province = {
+					limit = {
+						is_core = ROOT
+						culture_group = ROOT
+					}
+					add_province_modifier = {
+						name = invasion_scythian_new_grazing_fields
+						duration = -1
+						hidden = yes
+					}
+				}
+			}
+		}
+	}
+
+	SX2_warrior_elite = {
+		position = 11
+		icon = mission_pse_inf_go_east
+		required_missions = { SX2_expand_grazing_fields }
+		trigger = {
+			OR = {
+				army_leader_adv = 2
+				army_veteran = 2
+				cavalry_leader = 2
+			}
+			army_tradition = 75
+			mil_power = 200
+			num_of_generals_with_traits = 2
+			estate_loyalty = {
+				estate = estate_clans
+				loyalty = 60
+			}
+			estate_influence = {
+				estate = estate_clans
+				influence = 20
+			}
+		}
+		effect = {
+			add_mil_power = -200
+			every_owned_province = { add_unrest = -6 }
+			if = {
+				limit = { NOT = { army_size_percentage = 1 } }
+				capital_scope = { build_to_forcelimit = { cavalry = 1 } }
+			}
+			add_country_modifier = {
+				name = invasion_scythian_warrior_elite
+				duration = -1
+			}
+		}
+	}
+
+	SX2_protect_cities = {
+		position = 12
+		icon = mission_city
+		required_missions = { SX2_warrior_elite }
+		trigger = {
+			stability = 1
+			NOT = { num_of_revolts = 1 }
+			army_size = 30
+			absolutism = 30
+			num_of_owned_provinces_with = {
+				has_fort_trigger = yes
+				base_production = 1
+				value = 8
+			}
+			num_of_owned_provinces_with = {
+				has_road_building = yes
+				value = 30
+			}
+		}
+		effect = {
+			custom_tooltip = invasion_scythian_missions_ct.24
+			hidden_effect = { set_country_flag = tribal_can_use_all_buildings_flag }
+		}
+	}
+}

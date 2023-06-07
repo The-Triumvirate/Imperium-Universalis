@@ -17,7 +17,10 @@ country_event = {
 		capital_scope = {
 			region = northern_india_region
 		}
-		culture_group = indian_group
+		OR = {
+			culture_group = indian_group
+			primary_culture = asura
+		}
 		NOT = { started_in = 254.1.1 }
 		OR = {
 			has_reform = vedic_kingdom_reform
@@ -44,7 +47,10 @@ country_event = {
 			if = {
 				limit = {
 					continent = india
-					culture_group = indian_group
+					OR = {
+						culture_group = indian_group
+						culture = asura
+					}
 					base_manpower = 4
 				}
 				add_base_manpower = -3		
@@ -70,10 +76,11 @@ country_event = {
 	trigger = {
 		has_global_flag = second_indian_urbanization
 		NOT = { has_country_flag = second_urbanization_janapada }
-		capital_scope = {
-			continent = india
+		capital_scope = { continent = india }
+		OR = {
+			culture_group = indian_group
+			primary_culture = asura
 		}
-		culture_group = indian_group
 		absolutism = 5
 		NOT = { started_in = 254.1.1 }
 		OR = {
@@ -98,7 +105,10 @@ country_event = {
 		every_owned_province = {
 			if = {
 				limit = {
-					culture_group = indian_group
+					OR = {
+						culture_group = indian_group
+						culture = asura
+					}
 					continent = india
 					base_manpower = 4
 				}
@@ -180,7 +190,7 @@ country_event = {
 
 	after = {
 		define_ruler_to_general = {
-		    name = "Pradyota"
+		    name = "Pradyota of Avanti"
 			fire = 6
 			shock = 8
 			manuever = 4
@@ -566,35 +576,6 @@ country_event = {
 }
 
 ########################################################################################
-# ruler dies in hunting
-########################################################################################
-
-country_event = {
-	id = indian.11
-	title = "indian.11.t"
-	desc = "indian.11.d"
-	picture = death
-	is_triggered_only = yes
-
-	trigger = {
-		culture_group = indian_group
-		has_regency = no
-		mil = 4
-		mil_power = 300
-		NOT = { mil = 6 }
-		NOT = { army_tradition = 40 }
-		NOT = { stability = 1 }
-	}
-
-	option = {
-		name = "indian.11.a"
-		ai_chance = { factor = 60 }
-		kill_ruler = yes
-		add_stability = -1
-	}
-}
-
-########################################################################################
 # illuminated ruler
 ########################################################################################
 
@@ -640,143 +621,6 @@ country_event = {
 		add_stability = 1
 		add_ruler_modifier = {
 			name = illuminated_ruler
-		}
-	}
-}
-
-########################################################################################
-# expansion of new brahmanic orthodoxy
-########################################################################################
-
-country_event  = {
-	id = indian.13
-	title = "indian.13.t"
-	desc = "indian.13.d"
-	picture = ritual_feast
-	is_triggered_only = yes
-
-	trigger = {
-		OR = {
-			religion = brahmin
-			religion = hinduism
-		}
-		is_religion_enabled = hinduism
-		neither_tribal_nor_native_trigger = yes
-		NOT = { religion_years = { hinduism = 150 } }
-		any_owned_province = {
-			any_neighbor_province = { religion = hinduism }
-			religion = brahmin
-		}
-	}
-
-	immediate = {
-		hidden_effect = {
-			random_owned_province = {
-				limit = {
-					any_neighbor_province = { religion = hinduism }
-					religion = brahmin
-				}
-				save_event_target_as = province_to_convert_to_hinduism
-			}
-		}
-	}
-
-	option = {
-		name = "indian.13.a"
-		ai_chance = { factor = 60 }
-		goto = province_to_convert_to_hinduism
-		event_target:province_to_convert_to_hinduism = {
-			change_religion = hinduism
-		}
-	}
-}
-
-country_event  = {
-	id = indian.1301
-	title = "indian.13.t"
-	desc = "indian.13.d"
-	picture = ritual_feast
-	is_triggered_only = yes
-
-	trigger = {
-		OR = {
-			religion = brahmin
-			religion = hinduism
-		}
-		is_religion_enabled = hinduism
-		religion_years = { hinduism = 150 }
-		neither_tribal_nor_native_trigger = yes
-		any_owned_province = {
-			any_neighbor_province = { religion = hinduism }
-			religion = brahmin
-		}
-	}
-
-	immediate = {
-		hidden_effect = {
-			random_owned_province = {
-				limit = {
-					any_neighbor_province = { religion = hinduism }
-					religion = brahmin
-				}
-				save_event_target_as = province_to_convert_to_hinduism
-			}
-		}
-	}
-
-	option = {
-		name = "indian.13.a"
-		ai_chance = { factor = 60 }
-		goto = province_to_convert_to_hinduism
-		event_target:province_to_convert_to_hinduism = {
-			change_religion = hinduism
-		}
-	}
-}
-
-#Independent spread
-country_event  = {
-	id = indian.1302
-	title = "indian.13.t"
-	desc = "indian.13.d"
-	picture = ritual_feast
-	is_triggered_only = yes
-
-	trigger = {
-		is_orthodox_trigger = yes
-		is_religion_enabled = hinduism
-		religion_years = { hinduism = 50 }
-		neither_tribal_nor_native_trigger = yes
-		has_institution = writing_system
-		has_institution = bureaucracy_institution
-		any_owned_province = {
-			religion = brahmin
-			base_tax = 1
-		}
-	}
-
-	immediate = {
-		hidden_effect = {
-			random_owned_province = {
-				limit = {
-					religion = brahmin
-					base_tax = 1
-					OR = {
-						writing_system = 100
-						bureaucracy_institution = 100
-					}
-				}
-				save_event_target_as = province_to_convert_to_hinduism
-			}
-		}
-	}
-
-	option = {
-		name = "indian.13.a"
-		ai_chance = { factor = 60 }
-		goto = province_to_convert_to_hinduism
-		event_target:province_to_convert_to_hinduism = {
-			change_religion = hinduism
 		}
 	}
 }
@@ -864,648 +708,6 @@ country_event  = {
 		add_casus_belli = {
 			type = cb_insult
 			target = FROM
-		}
-	}
-}
-
-########################################################################################
-# brahmanas in council
-########################################################################################
-
-country_event  = {
-	id = indian.16
-	title = "indian.16.t"
-	desc = "indian.16.d"
-	picture = ritual_feast
-	is_triggered_only = yes
-
-	trigger = {
-		religion = hinduism
-		NOT = { culture_group = mleccha_group }
-		tolerance_to_this = 2
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = "indian.16.a"
-		ai_chance = { factor = 60 }
-		define_advisor = {
-    		type = scholar_advisor
-    		skill = 3
-    		discount = yes
-		}
-		add_adm_power = 30
-	}
-	option = {
-		name = "indian.16.b"
-		ai_chance = { factor = 40 }
-
-		define_advisor = {
-    		type = philosopher_adv
-    		skill = 3
-    		discount = yes
-		}
-		add_dip_power = 30
-	}
-}
-
-########################################################################################
-# prominent mathematician
-########################################################################################
-
-country_event = {
-	id = indian.17
-	title = "indian.17.t"
-	desc = "indian.17.d"
-	picture = ritual_feast
-	is_triggered_only = yes
-
-	trigger = {
-		religion = hinduism
-		NOT = { culture_group = mleccha_group }
-		stability = 1
-		prestige = 25
-		any_owned_province = {
-			base_tax = 5
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-
-	option = {
-		name = "indian.17.a"
-		ai_chance = { factor = 50 }
-
-			define_advisor = {
-    			type = mathematician
-    			skill = 3
-    			discount = yes
-			}
-		add_adm_power = 100
-	}
-}
-
-########################################################################################
-# birth of buddha
-########################################################################################
-
-province_event  = {
-	id = indian.18
-	title = "indian.18.t"
-	desc = "indian.18.d"
-	picture = family
-	fire_only_once = yes
-	hidden = yes
-
-	trigger = {
-		OR = {
-			3643 = {
-				religion = sramana
-			}
-			3645 = {
-				religion = sramana
-			}
-		}
-		is_year = 188
-		NOT = { is_religion_enabled = buddhism }
-	}
-	
-	mean_time_to_happen = {
-		days = 150
-	}
-
-	option = {
-		name = "indian.18.a"
-		ai_chance = { factor = 50 }
-		set_global_flag = buddha_is_born
-	}
-}
-
-########################################################################################
-# buddha achieves nirvana
-########################################################################################
-
-country_event  = {
-	id = indian.19
-	title = "indian.19.t"
-	desc = "indian.19.d"
-	picture = religious
-	fire_only_once = yes
-	major = yes
-
-	trigger = {	
-		is_year = 223
-		owns = 3029
-		has_global_flag = buddha_is_born
-	}
-	
-	mean_time_to_happen = {
-		days = 190
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = buddha_achieves_illumination
-			clr_global_flag = buddha_is_born
-		}
-	}
-	
-	option = {
-		name = "indian.19.a"
-		ai_chance = { factor = 50 }
-		add_prestige = 5
-	}
-}
-
-########################################################################################
-# the sangha is formed
-########################################################################################
-
-country_event  = {
-	id = indian.20
-	title = "indian.20.t"
-	desc = "indian.20.d"
-	picture = religious
-	fire_only_once = yes
-	major = yes
-
-	trigger = {	
-		is_year = 224
-		owns = 3617
-		has_global_flag = buddha_achieves_illumination
-	}
-	
-	mean_time_to_happen = {
-		days = 30
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = the_sangha_is_formed
-			clr_global_flag = buddha_achieves_illumination
-		}
-	}
-	
-	option = {
-		name = "indian.20.a"
-		ai_chance = { factor = 50 }
-		3617 = {
-			change_religion = buddhism
-		}
-		enable_religion = buddhism
-		3617 = { add_reform_center = buddhism }
-	}
-}
-
-########################################################################################
-# Buddha preaches in province
-########################################################################################
-
-country_event = {
-	id = indian.21
-	title = "indian.21.t"
-	desc = "indian.21.d"
-	picture = religious
-	is_triggered_only = yes
-
-	trigger = {	
-		religion = sramana
-		OR = {
-			AND = {
-				is_month = 1
-				NOT = { is_month = 7 }
-			}
-			is_month = 11
-		}
-		capital_scope = {
-			region = northern_india_region
-		}
-		has_global_flag = the_sangha_is_formed
-		any_owned_province = {
-			religion = sramana
-		}
-	}
-	
-	option = {
-		name = "indian.21.a"
-		ai_chance = { factor = 50 }
-		random_owned_province = {
-			limit = {
-				religion = sramana
-				region = northern_india_region
-			}
-			change_religion = buddhism
-		}
-	}
-}
-
-########################################################################################
-# Anathapindika's charity
-########################################################################################
-
-province_event = {
-	id = indian.22
-	title = "indian.22.t"
-	desc = "indian.22.d"
-	picture = forum_picture
-	fire_only_once = yes
-
-	trigger = {	
-		province_id = 3642
-		3642 = { religion = sramana }
-		has_global_flag = the_sangha_is_formed
-		is_year = 234
-	}
-	
-	mean_time_to_happen = {
-		days = 40
-	}
-	
-	option = {
-		name = "indian.22.a"
-		ai_chance = { factor = 50 }
-		3642 = {
-			change_religion = buddhism
-			add_reform_center = buddhism
-		}
-	}
-}
-
-########################################################################################
-# Death of Buddha
-########################################################################################
-
-country_event = {
-	id = indian.23
-	title = "indian.23.t"
-	desc = "indian.23.d"
-	picture = priest
-	fire_only_once = yes
-	major = yes
-
-	trigger = {
-		owns = 3644
-		has_global_flag = the_sangha_is_formed
-		is_year = 268
-		is_month = 2
-	}
-	
-	mean_time_to_happen = {
-		days = 15
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = buddha_parinirvana
-			clr_global_flag = the_sangha_is_formed
-		}
-	}
-	
-	option = {
-		name = "indian.23.a"
-		ai_chance = { factor = 50 }
-		3644 = {
-			change_religion = buddhism
-			add_reform_center = buddhism
-		}
-		2990 = {
-			change_religion = buddhism
-			add_reform_center = buddhism
-		}
-		3029 = {
-			change_religion = buddhism
-			add_reform_center = buddhism
-		}
-	}
-}
-
-########################################################################################
-# first buddhist council
-########################################################################################
-
-country_event = {
-	id = indian.2301
-	title = "indian.2301.t"
-	desc = "indian.2301.d"
-	picture = archemedis
-	fire_only_once = yes
-	major = yes
-
-	trigger = {
-		owns = 3028
-		has_global_flag = buddha_parinirvana
-	}
-	
-	mean_time_to_happen = {
-		days = 60
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = first_buddhist_council
-			clr_global_flag = buddha_parinirvana
-		}
-	}
-	
-	option = {
-		name = "indian.2301.a"
-		ai_chance = { factor = 50 }
-		add_prestige = 5
-	}
-}
-
-########################################################################################
-# second buddhist council
-########################################################################################
-
-country_event = {
-	id = indian.2302
-	title = "indian.2302.t"
-	desc = "indian.2302.d"
-	picture = archemedis
-	fire_only_once = yes
-	major = yes
-
-	trigger = {
-		owns = 3000
-		has_global_flag = first_buddhist_council
-		is_year = 371
-		NOT = { started_in = 371.1.1 }
-	}
-	
-	mean_time_to_happen = {
-		days = 60
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = second_buddhist_council
-		}
-	}
-	
-	option = {
-		name = "indian.2302.a"
-		ai_chance = { factor = 50 }
-		custom_tooltip = first_buddhist_schism_tooltip
-		add_prestige = 5
-		hidden_effect = {
-			every_country = {
-				limit = { religion = buddhism }
-				country_event = {
-					id = indian.2303
-				}
-			}
-		}
-	}
-}
-
-#Aftermath of Second Council
-country_event = {
-	id = indian.2303
-	title = "indian.2303.t"
-	desc = "indian.2303.d"
-	picture = religious
-	is_triggered_only = yes
-	
-	option = {
-		name = "indian.2303.a"
-		ai_chance = {
-			factor = 60 #Mahasamghika was more popular
-			modifier = {
-				factor = 2
-				NOT = { prestige = 50 }
-			}
-			modifier = {
-				factor = 2
-				NOT = { ruler_age = 30 }
-			}
-		}
-		set_religious_school = {
-			group = brahmin_group
-			school = mahasamghika_school
-		}
-	}
-
-	option = {
-		name = "indian.2303.b"
-		ai_chance = {
-			factor = 40
-			modifier = {
-				factor = 2
-				prestige = 50
-			}
-			modifier = {
-				factor = 2
-				ruler_age = 50
-			}
-		}
-		set_religious_school = {
-			group = brahmin_group
-			school = sthavira_school
-		}
-	}
-}
-
-########################################################################################
-# Birth of Mahavira
-########################################################################################
-
-country_event = {
-	id = indian.24
-	title = "indian.24.t"
-	desc = "indian.24.d"
-	picture = family
-	fire_only_once = yes
-	hidden = yes
-
-	trigger = {
-	owns = 3000
-		3000 = {
-			OR = {
-				religion = sramana
-				religion = buddhism
-				religion = ajivika
-			}
-		}
-		is_year = 254
-		NOT = { is_religion_enabled = jain }
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = "indian.24.a"
-		ai_chance = { factor = 50 }
-		set_global_flag = birth_of_mahavira
-	}
-}
-
-########################################################################################
-# Mahavira gains omniscience
-########################################################################################
-
-country_event = {
-	id = indian.25
-	title = "indian.25.t"
-	desc = "indian.25.d"
-	picture = priest
-	fire_only_once = yes
-
-	trigger = {
-		has_global_flag = birth_of_mahavira
-		is_year = 297
-		owns = 3522
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = mahaviras_omniscience
-			clr_global_flag = birth_of_mahavira
-		}
-	}
-
-	option = {
-		name = "indian.25.a"
-		ai_chance = { factor = 50 }
-		enable_religion = jain
-		3522 = { add_reform_center = jain }
-		3522 = { change_religion = jain }
-	}
-}
-
-########################################################################################
-# Mahavira teaches in Girivraja
-########################################################################################
-
-country_event = {
-	id = indian.26
-	title = "indian.26.t"
-	desc = "indian.26.d"
-	picture = religious
-	fire_only_once = yes
-	major = yes
-
-	trigger = {
-		has_global_flag = mahaviras_omniscience
-		is_year = 298
-		owns = 3028
-	}
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = mahavira_first_sermon
-			clr_global_flag = mahaviras_omniscience
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 60
-	}
-
-	option = {
-		name = "indian.26.a"
-		ai_chance = { factor = 50 }
-		3028 = { add_reform_center = jain }
-		3028 = { change_religion = jain }
-	}
-}
-
-########################################################################################
-# Mahavira teaches in province
-########################################################################################
-
-country_event = {
-	id = indian.27
-	title = "indian.27.t"
-	desc = "indian.27.d"
-	picture = religious
-	is_triggered_only = yes
-
-	trigger = {
-		is_heterodox_trigger = yes
-		capital_scope = {
-			region = northern_india_region
-		}
-		has_global_flag = mahavira_first_sermon
-		any_owned_province = {
-			is_heterodox_trigger = yes
-		}
-		has_global_flag = mahavira_first_sermon
-		NOT = { is_month = 7 }
-		OR = {
-			is_month = 11
-			is_month = 1
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-
-	option = {
-		name = "indian.27.a"
-		ai_chance = { factor = 50 }
-		random_owned_province = {
-			limit = {
-				is_heterodox_trigger = yes
-				region = northern_india_region
-			}
-			change_religion = jain
-		}
-	}
-}
-
-########################################################################################
-# Death of Mahavira
-########################################################################################
-
-country_event  = {
-	id = indian.28
-	title = "indian.28.t"
-	desc = "indian.28.d"
-	picture = priest
-	fire_only_once = yes
-	major = yes
-
-	trigger = {
-		has_global_flag = mahavira_first_sermon
-		owns = 3817
-		is_year = 326
-		is_month = 10
-	}
-	
-	mean_time_to_happen = {
-		days = 18
-	}
-
-	immediate = {
-		hidden_effect = {
-			set_global_flag = mahavira_gains_nirvana
-			clr_global_flag = mahavira_first_sermon
-		}
-	}
-
-	option = {
-		name = "indian.28.a"
-		ai_chance = { factor = 50 }
-		3817 = {
-			change_religion = jain
-			add_reform_center = jain
-		}
-		3000 = {
-			change_religion = jain
-			add_reform_center = jain
 		}
 	}
 }
@@ -1640,9 +842,7 @@ country_event  = {
 	immediate = {
 		hidden_effect = {
 			uttarapatha_superregion = {
-				limit = {
-					is_core	= MLV
-				}
+				limit = { is_core	= MLV }
 				remove_core = MLV
 				add_base_manpower = -1	change_variable = { PS_rur_evtd = 1 }	
 			}
@@ -2790,194 +1990,6 @@ country_event  = {
 }
 
 ########################################################################################
-# Third Buddhist Council
-########################################################################################
-
-country_event  = {
-	id = indian.45
-	title = "indian.45.t"
-	desc = "indian.45.d"
-	picture = religious
-	is_triggered_only = yes
-	major = yes
-
-	trigger = {
-		has_global_flag = second_buddhist_council
-		religion = buddhism
-	}
-
-	immediate = {
-		hidden_effect = {
-			set_global_flag = third_buddhist_council_flag
-		}
-	}
-	
-	option = {
-		name = "indian.45.a"
-		custom_tooltip = second_buddhist_schism_tooltip
-		set_religious_school = {
-			group = brahmin_group
-			school = svetambara_school
-		}
-		every_country = {
-			limit = { religion = buddhism }
-			add_country_modifier = {
-				name = buddhist_missionary_work_modifier
-				duration = 10950
-			}
-		}
-	}
-}
-
-#Buddhist missionary work in Kashmir
-province_event  = {
-	id = indian.46
-	title = "indian.46.t"
-	desc = "indian.46.d"
-	picture = religious
-	major = yes
-	fire_only_once = yes
-
-	trigger = {
-		area = kasmira_area
-		has_global_flag = third_buddhist_council_flag
-		calc_true_if = {
-			all_country = {
-				religion = buddhism
-			}
-			amount = 1
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 12
-	}
-	
-	option = {
-		name = "indian.46.a"
-		kasmira_area = { change_religion = buddhism }
-		darada_area = { change_religion = buddhism }
-		ladakh_area = { change_religion = buddhism }
-	}
-}
-
-#Buddhist missionary work in Lanka
-province_event  = {
-	id = indian.47
-	title = "indian.47.t"
-	desc = "indian.47.d"
-	picture = religious
-	major = yes
-	fire_only_once = yes
-
-	trigger = {
-		region = lanka_region
-		has_global_flag = third_buddhist_council_flag
-		calc_true_if = {
-			all_country = {
-				religion = buddhism
-			}
-			amount = 1
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 32
-	}
-	
-	option = {
-		name = "indian.46.a"
-		lanka_region = { change_religion = buddhism }
-	}
-}
-
-#Buddhist missionary work in Burma
-province_event  = {
-	id = indian.48
-	title = "indian.48.t"
-	desc = "indian.48.d"
-	picture = religious
-	major = yes
-	fire_only_once = yes
-
-	trigger = {
-		OR = {
-			region = burma_region
-			region = upper_burma_region
-		}
-		has_global_flag = third_buddhist_council_flag
-		calc_true_if = {
-			all_country = {
-				religion = buddhism
-			}
-			amount = 1
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 60
-	}
-	
-	option = {
-		name = "indian.46.a"
-		burma_region = { change_religion = buddhism }
-		upper_burma_region = { change_religion = buddhism }
-	}
-}
-
-########################################################################################
-# Jain missionaries
-########################################################################################
-
-#Jain missionary work in Karanataka
-province_event  = {
-	id = indian.49
-	title = "indian.49.t"
-	desc = "indian.49.d"
-	picture = religious
-	major = yes
-	fire_only_once = yes
-
-	trigger = {
-		OR = {
-			area = konkana_area
-			area = gomanta_area
-			area = karanataka_area
-			area = kadamba_nadu_area
-			area = idaichehura_nadu_area
-			area = kishkindha_area
-			area = kolhapuri_area
-			area = asika_area
-		}
-		is_religion_enabled = jain
-		is_year = 404
-		NOT = { started_in = 455.1.1 }
-		calc_true_if = {
-			all_country = {
-				religion = jain
-			}
-			amount = 1
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 24
-	}
-	
-	option = {
-		name = "indian.46.a"
-		konkana_area = { change_religion = jain }
-		gomanta_area = { change_religion = jain }
-		karanataka_area = { change_religion = jain }
-		kadamba_nadu_area = { change_religion = jain }
-		idaichehura_nadu_area = { change_religion = jain }
-		kishkindha_area = { change_religion = jain }
-		kolhapuri_area = { change_religion = jain }
-		asika_area = { change_religion = jain }
-	}
-}
-
-########################################################################################
 # Sets religious school in case of an incorrect one or having none
 ########################################################################################
 country_event  = {
@@ -2991,6 +2003,7 @@ country_event  = {
 
 	trigger = {
 		religion_group = brahmin_group
+		NOT = { religion = mleccha_religion }
 		if = {
 			limit = { religion = buddhism }
 			has_global_flag = second_buddhist_council
@@ -3231,7 +2244,6 @@ country_event = {
 		num_of_cities = 5
 		is_year = 424
 		NOT = { is_year = 453 }
-		culture_group = indian_group
 	}
 
 	mean_time_to_happen = {
@@ -3531,7 +2543,10 @@ country_event = {
 		capital_scope = {
 			region = chola_region
 		}
-		primary_culture = tamil
+		OR = {
+			primary_culture = tamil
+			primary_culture = tuluva
+		}
 		NOT = { started_in = 254.1.1 }
 		OR = {
 			has_reform = tamil_crowned_king_reform
@@ -3572,7 +2587,10 @@ country_event = {
 		hidden_effect = {
 			every_province = {
 				limit = {
-					culture = tamil
+					OR = {
+						culture = tamil
+						culture = tuluva
+					}
 					continent = india
 					base_manpower = 3
 				}
@@ -3587,7 +2605,10 @@ country_event = {
 				limit = {
 					NOT = { owns = 3158 }
 					capital_scope = { continent = india }
-					primary_culture = tamil
+					OR = {
+						primary_culture = tamil
+						primary_culture = tuluva
+					}
 				}
 				add_country_modifier = {
 					name = india_urban_explosion
@@ -3844,7 +2865,7 @@ country_event = {
 		culture_group = indian_group
 		neither_tribal_nor_native_trigger = yes
 		OR = {
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 			has_reform = allow_intercaste_marriage
 		}
 		any_owned_province = {
@@ -4137,6 +3158,7 @@ country_event = {
 			factor = 60
 		}
 		pacina_desa_area = {
+			limit = { has_port = yes }
 			change_culture = tamil
 			change_religion = buddhism
 			add_core = ILA
@@ -4203,6 +3225,7 @@ country_event = {
 			factor = 60
 		}
 		ruhunu_area = {
+			limit = { has_port = yes }
 			change_culture = tamil
 			change_religion = buddhism
 			add_core = ILA
@@ -4498,66 +3521,7 @@ country_event = {
 }
 
 ########################################################################################
-# Choosing a Vedanga
-########################################################################################
-
-country_event = {
-	id = indian.68
-	title = "indian.68.t"
-	desc = "indian.68.d"
-	picture = sacrifice
-	is_triggered_only = yes
-	
-	trigger = {
-		is_orthodox_trigger = yes
-	}
-	
-	option = {
-		name = "indian.68.a"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = shiksha_modifier
-		}
-	}
-	option = {
-		name = "indian.68.b"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = chandas_modifier
-		}
-	}
-	option = {
-		name = "indian.68.c"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = vyakarana_modifier
-		}
-	}
-	option = {
-		name = "indian.68.e"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = nirukta_modifier
-		}
-	}
-	option = {
-		name = "indian.68.f"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = kalpa_modifier
-		}
-	}
-	option = {
-		name = "indian.68.g"
-		ai_chance = { factor = 16 }
-		add_ruler_modifier = {
-			name = jyotisha_modifier
-		}
-	}
-}
-
-########################################################################################
-# Choosing a Vedanga
+# Choosing a Sangha Specialization
 ########################################################################################
 
 country_event = {
@@ -4778,44 +3742,89 @@ country_event = {
 }
 
 ########################################################################################
-# Converts Telugu to Hinduism
+# Ahimsa
 ########################################################################################
 
-province_event = {
-	id = indian.74
-	title = "indian.74.t"
-	desc = "indian.74.d"
+country_event = {
+	id = indian.75
+	title = "indian.75.t"
+	desc = "indian.75.d"
 	picture = harvest
-	fire_only_once = yes
 
 	trigger = {
-		NOT = { started_in = 514.1.1 }
-		is_year = 300
-		is_religion_enabled = hinduism
-		culture = tamil
-		owner = { neither_tribal_nor_native_trigger = yes }
+		NOT = {
+			OR = {
+				has_country_modifier = amhisa_orthodox_modifier
+				has_country_modifier = amhisa_modifier
+			}
+		}
+		OR = {
+			is_orthodox_trigger = yes
+			is_heterodox_trigger = yes
+		}
+		NOT = { has_ruler_modifier = disregarding_ahimsa_modifier }
+		dominant_religion = ROOT
+		is_in_war = { attackers = THIS }
+		NOT = {
+			OR = {
+				is_in_war = { defenders = THIS }
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_moral_sanction
+				}
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_restore_order
+				}
+			}	
+		}
 	}
 
 	mean_time_to_happen = {
-		months = 24
-		modifier = {
-			factor = 0.5
-			owner = { religion = hinduism }
-		}
-	}
-
-	immediate = {
-		owner = {
-			change_government_reform_progress = 50
-			add_adm_power = 50
-		}
+		months = 1
 	}
 
 	option = {
-		name = "indian.74.a"
-		dakshinapatha_superregion = {
-			limit = { culture = tamil }
-			change_religion = hinduism
+		name = "indian.75.a"
+		if = {
+			limit = { is_heterodox_trigger = yes }
+			add_country_modifier = {
+				name = amhisa_orthodox_modifier
+				duration = -1
+			}
 		}
+		else = {
+			add_country_modifier = {
+				name = amhisa_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+#Clears modifiers after war
+country_event = {
+	id = indian.7501
+	title = "indian.75.t"
+	desc = "indian.75.d"
+	picture = harvest
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		OR = {
+			has_country_modifier = amhisa_orthodox_modifier
+			has_country_modifier = amhisa_modifier
+		}
+		OR = {
+			is_at_war = no
+			is_in_war = { defenders = THIS }
+		}
+	}
+	
+	option = {
+		name = "indian.75.a"
+		remove_country_modifier = amhisa_orthodox_modifier
+		remove_country_modifier = amhisa_modifier
 	}
 }

@@ -48,20 +48,17 @@ country_event = {
 	
 	major = yes
 	trigger = { 
-		capital_scope = { 
-				continent = china
-			}
-		NOT = { 
-			has_global_flag = liyuebenghuai0
-		}
-		NOT = { 
-			has_country_modifier = chengwang
-		}
+		capital_scope = { continent = china }
+		NOT = { has_global_flag = liyuebenghuai0 }
+		NOT = { has_country_modifier = chengwang }
 		religion_group = chinese_religions
 		num_of_cities = 35
 		total_development = 350
 		army_size = 70 
-		have_had_reform = chinese_reform_monarchy_reform
+		OR = {
+			have_had_reform = chinese_reform_monarchy_reform
+			has_reform = heaven_republic_reform
+	    }
 	}
 	mean_time_to_happen = { 
 		months = 12
@@ -230,16 +227,10 @@ country_event = {
 	fire_only_once = yes
 	trigger = { 
 	    has_global_flag = zhanguokaishi
-		capital_scope = { 
-				continent = china
-			}
+		capital_scope = { continent = china }
 		has_global_flag = liyuebenghuai3
-		NOT = { 
-			has_global_flag = liyuebenghuai4
-		}
-		NOT = { 
-			has_country_modifier = chengwang
-		}
+		NOT = { has_global_flag = liyuebenghuai4 }
+		NOT = { has_country_modifier = chengwang }
 		OR = { 
 			religion_group = chinese_religions
 			has_global_flag = zhanguokaishi
@@ -283,9 +274,106 @@ country_event = {
 	}
 }
 
-#弭兵之盟 ShiJian.9
-#霸道胜利 ShiJian.11
-#礼乐胜利 ShiJian.12
+#??????? ShiJian.9
+country_event = { 
+	id = ShiJian.9
+	title = ShiJian.9.t
+	desc = ShiJian.9.d
+	picture = ruler
+	#fire_only_once = yes
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_dlc = "Art of War"
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_hre_religion_treaty = yes
+		}
+		clr_global_flag = wendingzhongyuan_union_happened
+	}
+
+	option = {
+		name = "ShiJian.9.a"
+		tooltip = { 
+			set_hre_religion_treaty = yes
+		}
+	}
+}
+#?????? ShiJian.11
+country_event = { 
+	id = ShiJian.11
+	title = ShiJian.11.t
+	desc = ShiJian.11.d
+	picture = ruler
+	#fire_only_once = yes
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_dlc = "Art of War"
+		hre_religion = chinese_religion
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_hre_heretic_religion = chinese_religion
+			set_hre_religion = liyuebadao	
+			set_hre_religion_locked = yes
+		}
+		clr_global_flag = wendingzhongyuan_union_happened
+	}
+
+	option = {
+		name = "ShiJian.11.a"
+		tooltip = { 
+			set_hre_heretic_religion = chinese_religion
+			set_hre_religion = liyuebadao	
+			set_hre_religion_locked = yes
+		}
+	}
+}
+#??????? ShiJian.12
+country_event = { 
+	id = ShiJian.12
+	title = ShiJian.12.t
+	desc = ShiJian.12.d
+	picture = ruler
+	#fire_only_once = yes
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_dlc = "Art of War"
+		hre_religion = liyuebadao
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_hre_heretic_religion = liyuebadao
+			set_hre_religion = chinese_religion	
+			set_hre_religion_locked = yes
+		}
+		clr_global_flag = wendingzhongyuan_union_happened
+	}
+
+	option = {
+		name = "ShiJian.12.a"
+		tooltip = { 
+			set_hre_heretic_religion = liyuebadao
+			set_hre_religion = chinese_religion	
+			set_hre_religion_locked = yes
+		}
+	}
+}
 
 #统一中国
 country_event = { 
@@ -313,9 +401,10 @@ country_event = {
 #AI自动改革
 country_event = { 
 	id = ShiJian.15
-	title = ShiJian.15.t
-	desc = ShiJian.15.d	
+	title = ShiJian.13.t
+	desc = ShiJian.13.t
 	picture = ruler
+	hidden = yes
 	
 	trigger = {
 	ai = yes
@@ -334,16 +423,20 @@ country_event = {
 	immediate = { change_government_reform_progress = -35 }
 	
     option = { 
-	    name = "ShiJian.15.a"
+	    name = "ShiJian.13.t"
 		trigger = {
-			NOT = { has_reform = ShiQing_feudalism_reform }
-			NOT = { has_reform = zongfazhidu  }
-			NOT = { has_reform = falvzhidu }
-			NOT = { has_reform = dubizhidu }
-			NOT = { has_reform = junxianzhidu }
-			NOT = { has_reform = hujizhidu }
-			NOT = { has_reform = guanliaozhidu }
-			NOT = { has_reform = qianghuajunquan }
+		    NOT = { has_reform = ShiQing_feudalism_reform }
+			NOT = { has_country_flag = zongfazhidu }
+			    OR = {
+				    NOT = { has_reform = zongfazhidu }
+					has_reform = zongfazhidu
+			        has_reform = falvzhidu 
+			        has_reform = dubizhidu 
+			        has_reform = junxianzhidu 
+			        has_reform = hujizhidu
+			        has_reform = guanliaozhidu 
+			        has_reform = qianghuajunquan 
+		        }
 		}
 		clr_country_flag = zongfazhidu
         clr_country_flag = falvzhidu
@@ -357,7 +450,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = zongfazhidu
 		has_reform = zongfazhidu
@@ -367,7 +460,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = falvzhidu
 		has_reform = falvzhidu
@@ -377,7 +470,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = dubizhidu
 		has_reform = dubizhidu
@@ -387,7 +480,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = junxianzhidu
 		has_reform = ShiQing_feudalism_reform
@@ -398,7 +491,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = hujizhidu
 		has_reform = ShiQing_feudalism_reform
@@ -409,7 +502,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.a"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = guanliaozhidu
 		has_reform = ShiQing_feudalism_reform
@@ -420,16 +513,20 @@ country_event = {
 	}
 	
 	option = { 
-	    name = "ShiJian.15.b"
+	    name = "ShiJian.13.t"
 		trigger = {
 			NOT = { has_reform = ShiQing_feudalism_reform }
-			NOT = { has_reform = tianfuzhidu }
-			NOT = { has_reform = sitianzhidu }
-			NOT = { has_reform = zhubizhidu }
-			NOT = { has_reform = shuilizhidu }
-			NOT = { has_reform = nongyegexin }
-			NOT = { has_reform = gongyegexin }
-			NOT = { has_reform = shangyegexin }
+			NOT = { has_country_flag = tianfuzhidu }
+			    OR = { 
+				    NOT = { has_reform = tianfuzhidu }
+					has_reform = tianfuzhidu
+				    has_reform = sitianzhidu 
+			        has_reform = zhubizhidu 
+			        has_reform = shuilizhidu 
+			        has_reform = nongyegexin 
+		            has_reform = gongyegexin
+			        has_reform = shangyegexin 
+				}
 		}
 		clr_country_flag = tianfuzhidu
 		clr_country_flag = sitianzhidu
@@ -443,7 +540,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = tianfuzhidu
 		has_reform = tianfuzhidu
@@ -453,7 +550,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = sitianzhidu
 		has_reform = sitianzhidu
@@ -463,7 +560,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = zhubizhidu
 		has_reform = zhubizhidu
@@ -473,7 +570,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = shuilizhidu
 		has_reform = ShiQing_feudalism_reform
@@ -484,7 +581,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = nongyegexin
 		has_reform = ShiQing_feudalism_reform
@@ -495,7 +592,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = gongyegexin
 		has_reform = ShiQing_feudalism_reform
@@ -506,16 +603,20 @@ country_event = {
 	}
 	
 	option = { 
-	    name = "ShiJian.15.c"
+	    name = "ShiJian.13.t"
 		trigger = {
 			NOT = { has_reform = ShiQing_feudalism_reform }
-			NOT = { has_reform = tuposanjunguizhi }
-			NOT = { has_reform = guoyeyitibingfu }
-			NOT = { has_reform = junqishuzuizhidu }
-			NOT = { has_reform = zhongbuzhan }
-			NOT = { has_reform = zuoqiujia }
-			NOT = { has_reform = wenwufenzhi }
-			NOT = { has_reform = chongbianjunzhi }
+			NOT = { has_country_flag = tuposanjunguizhi }
+			    OR = { 
+				    NOT = { has_reform = tuposanjunguizhi }
+					has_reform = tuposanjunguizhi
+				    has_reform = guoyeyitibingfu 
+			        has_reform = junqishuzuizhidu 
+			        has_reform = zhongbuzhan 
+			        has_reform = zuoqiujia 
+			        has_reform = wenwufenzhi
+			        has_reform = chongbianjunzhi 
+				}
 		}
 		clr_country_flag = tuposanjunguizhi
 		clr_country_flag = guoyeyitibingfu
@@ -529,7 +630,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = tuposanjunguizhi
 		has_reform = tuposanjunguizhi
@@ -539,7 +640,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = guoyeyitibingfu
 		has_reform = guoyeyitibingfu
@@ -549,7 +650,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = junqishuzuizhidu
 		has_reform = junqishuzuizhidu
@@ -559,7 +660,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = zhongbuzhan
 		has_reform = ShiQing_feudalism_reform
@@ -570,7 +671,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = zuoqiujia
         has_reform = ShiQing_feudalism_reform		
@@ -581,7 +682,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.c"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_country_flag = wenwufenzhi
 		has_reform = ShiQing_feudalism_reform
@@ -592,26 +693,28 @@ country_event = {
 	}
 
     option = {
-	    name = "ShiJian.15.d"
+	    name = "ShiJian.13.t"
 		trigger = {
-		has_reform = ShiQing_feudalism_reform
-		NOT = { 
-		has_reform = junxianzhidu
-		has_reform = hujizhidu
-		has_reform = guanliaozhidu
-		has_reform = qianghuajunquan
-		#admin
-		has_reform = shuilizhidu
-		has_reform = nongyegexin
-		has_reform = gongyegexin
-		has_reform = shangyegexin
-		#diplo
-		has_reform = zhongbuzhan	
-        has_reform = zuoqiujia
-        has_reform = wenwufenzhi
-        has_reform = chongbianjunzhi
-        #mil		
-		 }
+			has_reform = ShiQing_feudalism_reform
+			NOT = {
+				AND = {
+					has_reform = junxianzhidu
+					has_reform = hujizhidu
+					has_reform = guanliaozhidu
+					has_reform = qianghuajunquan
+					#admin
+					has_reform = shuilizhidu
+					has_reform = nongyegexin
+					has_reform = gongyegexin
+					has_reform = shangyegexin
+					#diplo
+					has_reform = zhongbuzhan	
+    	    		has_reform = zuoqiujia
+    	   			has_reform = wenwufenzhi
+    	   			has_reform = chongbianjunzhi
+    	    		#mil
+				}
+			}
 		}
 		set_country_flag = zongfazhidu
         set_country_flag = falvzhidu
@@ -643,7 +746,7 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.15.d"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_reform = chinese_feudalism_reform
 		has_reform = junxianzhidu
@@ -656,7 +759,7 @@ country_event = {
 	
 	
 	option = { #-
-		name = "ShiJian.15.d"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_reform = ShiQing_feudalism_reform
 		has_reform = qianghuajunquan
@@ -669,28 +772,34 @@ country_event = {
 }
 
 #AI自动改革-蛮夷汉化
-country_event = { 
+country_event = {
 	id = ShiJian.16
-	title = ShiJian.16.t
-	desc = ShiJian.16.d	
+	title = ShiJian.13.t
+	desc = ShiJian.13.t
 	picture = ruler
+	hidden = yes
 	
 	trigger = {
-	ai = yes
-	government_reform_progress = 100
-	stability = 3
-	is_tribal = yes
-	OR = {
-	any_neighbor_country = {
-	OR = {
-	has_reform = chinese_feudalism_reform
-	has_reform = ShiQing_feudalism_reform
-	has_reform = chinese_reform_monarchy_reform
-	has_reform = bureaucratic_monarchy_reform
-	}
-	}
-	capital_scope = { continent = china }
-	}
+		ai = yes
+		government_reform_progress = 100
+		stability = 3
+		is_tribal = yes
+		OR = {
+			any_neighbor_country = {
+				OR = {
+					has_reform = chinese_feudalism_reform
+					has_reform = ShiQing_feudalism_reform
+					has_reform = chinese_reform_monarchy_reform
+					has_reform = celestial_empire
+				}
+			}
+			capital_scope = {
+	  			OR = {
+	    	 		superregion = china_superregion
+	    	    	superregion = korea_superregion
+	    		}
+			}
+		}
 	}
 	
 	mean_time_to_happen = { 
@@ -700,69 +809,69 @@ country_event = {
 	immediate = { change_government_reform_progress = -100 }
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		NOT = { has_reform = sinofication_technolgy_1 }
-		NOT = { has_reform = sinofication_technolgy_2 }
-		NOT = { has_reform = sinofication_technolgy_3 }
+			NOT = { has_reform = sinofication_technolgy_1 }
+			NOT = { has_reform = sinofication_technolgy_2 }
+			NOT = { has_reform = sinofication_technolgy_3 }
 		}
 		add_government_reform = sinofication_technolgy_1
 	}
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_technolgy_1
+			has_reform = sinofication_technolgy_1
 		}
 		add_government_reform = sinofication_technolgy_2
 	}
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_technolgy_2
+			has_reform = sinofication_technolgy_2
 		}
 		add_government_reform = sinofication_technolgy_3
 	}
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		NOT = { has_reform = sinofication_government_1 }
-		NOT = { has_reform = sinofication_government_2 }
-		NOT = { has_reform = sinofication_government_3 }
+			NOT = { has_reform = sinofication_government_1 }
+			NOT = { has_reform = sinofication_government_2 }
+			NOT = { has_reform = sinofication_government_3 }
 		}
 		add_government_reform = sinofication_government_1
 	}
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_government_1
+			has_reform = sinofication_government_1
 		}
 		add_government_reform = sinofication_government_2
 	}
 	
 	option = { #-
-		name = "ShiJian.16.a"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_government_2
+			has_reform = sinofication_government_2
 		}
 		add_government_reform = sinofication_government_3
 	}
 	
 	option = { #-
-		name = "ShiJian.16.b"
+		name = "ShiJian.13.t"
 		trigger = {
-		NOT = { has_reform = sinofication_culture_1 }
-		NOT = { has_reform = sinofication_culture_2 }
-		NOT = { has_reform = sinofication_culture_3 }
+			NOT = { has_reform = sinofication_culture_1 }
+			NOT = { has_reform = sinofication_culture_2 }
+			NOT = { has_reform = sinofication_culture_3 }
 		}
 		add_government_reform = sinofication_culture_1
 	}
 	
 	option = { #-
-		name = "ShiJian.16.b"
+		name = "ShiJian.13.t"
 		trigger = {
 		has_reform = sinofication_culture_1
 		}
@@ -770,55 +879,55 @@ country_event = {
 	}
 	
 	option = { #-
-		name = "ShiJian.16.b"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_culture_2
+			has_reform = sinofication_culture_2
 		}
 		add_government_reform = sinofication_culture_3
 	}
 	
 	option = { #-
-		name = "ShiJian.16.b"
+		name = "ShiJian.13.t"
 		trigger = {
-		has_reform = sinofication_technolgy_3
-		has_reform = sinofication_government_3
-		has_reform = sinofication_culture_3
+			has_reform = sinofication_technolgy_3
+			has_reform = sinofication_government_3
+			has_reform = sinofication_culture_3
 		}
 		add_government_reform = sinofication_monarchy
 	}
 	
 }
 
-country_event = { 
-	id = ShiJian.17
-	title = ShiJian.17.t
-	desc = ShiJian.17.d
-	picture = religious
-	picture = ruler
+#country_event = { ?????????
+	#id = ShiJian.17
+	#title = ShiJian.17.t
+	#desc = ShiJian.17.d
+	#picture = religious
+	#picture = ruler
 	
-	is_triggered_only = yes
+	#is_triggered_only = yes
 	
-	option = { 
-		name = "ShiJian.17.1"
-		custom_tooltip = start_tooltip.1
-	}
-	option = { 
-		name = "ShiJian.17.2"
-		custom_tooltip = start_tooltip.2
-	}
-	option = { 
-		name = "ShiJian.17.3"
-		custom_tooltip = start_tooltip.3
-	}
-	option = { 
-		name = "ShiJian.17.4"
-		custom_tooltip = start_tooltip.4
-	}
-	option = { 
-		name = "ShiJian.17.5"
-		custom_tooltip = start_tooltip.5
-	}
-}
+	#option = { 
+		#name = "ShiJian.17.1"
+		#custom_tooltip = start_tooltip.1
+	#}
+	#option = { 
+		#name = "ShiJian.17.2"
+		#custom_tooltip = start_tooltip.2
+	#}
+	#option = { 
+		#name = "ShiJian.17.3"
+		#custom_tooltip = start_tooltip.3
+	#}
+	#option = { 
+		#name = "ShiJian.17.4"
+		#custom_tooltip = start_tooltip.4
+	#}
+	#option = { 
+		#name = "ShiJian.17.5"
+		#custom_tooltip = start_tooltip.5
+	#}
+#}
 #军屯
 province_event = { 
 	id = ShiJian.18
@@ -1061,51 +1170,107 @@ province_event = {
 }
 
 
-#霸道胜利 ShiJian.19
-#礼乐胜利 ShiJian.20
-
-#地方决议
-province_event = { 
-	id = ShiJian.21
-	title = ShiJian.21.t
-	desc = ShiJian.21.d	
-	picture = construction
+#?????????? ShiJian.19
+country_event = {
+	id = ShiJian.19
+	title = "ShiJian.19.t"
+	desc = "ShiJian.19.d"
+	picture = RELIGIOUS_WARS_eventPicture
+	major = yes
 
 	is_triggered_only = yes
-
+	
 	trigger = {
-		always = no
+		has_dlc = "Art of War"
+		hre_religion = liyuebadao
 	}
 	
 	immediate = {
 		hidden_effect = {
-			set_province_flag = open_prov_event_flag
-			add_base_tax = -1
+			set_hre_religion_locked = yes
+		}
+		clr_global_flag = wendingzhongyuan_union_happened
+	}
+
+	option = {
+		name = "ShiJian.19.a"
+		tooltip = { 
+			set_hre_religion_locked = yes 
 		}
 	}
+}
+#?????????? ShiJian.20
+country_event = {
+	id = ShiJian.20
+	title = "ShiJian.20.t"
+	desc = "ShiJian.20.d"
+	picture = RELIGIOUS_WARS_eventPicture
+	major = yes
+
+	is_triggered_only = yes
 	
-	
-	option = { #特权城镇
-		name = "prov_preveliges.1.t"
-		custom_tooltip = HAS_CITY_RIGHTS
-		custom_tooltip = NOT_HAS_OPEN_EVENT
+	trigger = {
+		has_dlc = "Art of War"
+		hre_religion = chinese_religion
 	}
 	
-	option = { #特权殖民地
-		name = "prov_preveliges.2.t"
-		custom_tooltip = HAS_CITY_RIGHTS
-		custom_tooltip = NOT_HAS_OPEN_EVENT
+	immediate = {
+		hidden_effect = {
+			set_hre_religion_locked = yes
+		}
+		clr_global_flag = wendingzhongyuan_union_happened
 	}
-	
-	option = { #军屯
-		name = "ShiJian.21.a"
-        custom_tooltip = UNITS_IN_PROVINCE_MOD
-	}
-	
-	after = {
-		clr_province_flag = open_prov_event_flag
+
+	option = {
+		name = "ShiJian.20.a"
+		tooltip = { 
+			set_hre_religion_locked = yes 
+		}
 	}
 }
+
+#地方决议
+#province_event = { 
+	#id = ShiJian.21
+	#title = ShiJian.21.t
+	#desc = ShiJian.21.d	
+	#picture = construction
+
+	#is_triggered_only = yes
+
+	#trigger = {
+		#always = no
+	#}
+	
+	#immediate = {
+		#hidden_effect = {
+			#set_province_flag = open_prov_event_flag
+			#add_base_tax = -1
+		#}
+	#}
+	
+	
+	#option = { #特权城镇
+		#name = "prov_preveliges.1.t"
+		#custom_tooltip = HAS_CITY_RIGHTS
+		#custom_tooltip = NOT_HAS_OPEN_EVENT
+	#}
+	
+	#option = { #特权殖民地
+		#name = "prov_preveliges.2.t"
+		#custom_tooltip = HAS_CITY_RIGHTS
+		#custom_tooltip = NOT_HAS_OPEN_EVENT
+	#}
+	
+	#option = { #军屯
+		#name = "ShiJian.21.a"
+        #custom_tooltip = UNITS_IN_PROVINCE_MOD
+	#}
+	
+	#after = {
+		#clr_province_flag = open_prov_event_flag
+	#}
+#}
 
 
 #周王要求勤王
@@ -1267,23 +1432,22 @@ country_event = {
 }
 
 #遏制战争
-country_event = { 
-	id = ShiJian.25
-	title = ShiJian.25.t
-	desc = ShiJian.25.d
-	picture = ruler
+#country_event = {
+	#id = ShiJian.25
+	#title = ShiJian.25.t
+	#desc = ShiJian.25.d
+	#picture = ruler
 
-	is_triggered_only = yes
+	#is_triggered_only = yes
 	
-	option = { 
-		name = "EVTOPTAShiJian.25.a"
+	#option = { 
+		#name = "EVTOPTAShiJian.25.a"
 		
-		ai_chance = { 
-		 factor = 1
-	   }
-	}
-	
-}
+		#ai_chance = { 
+			#factor = 1
+	   #}
+	#}
+#}
 
 #遏制战争
 province_event = { 
@@ -1309,11 +1473,13 @@ province_event = {
 #Prevent Death of Qin from no allies
 country_event = {
     id = ShiJian.27
-	title = "ShiJian.27.t"
-	desc = "ShiJian.27.d"
+	title = "ShiJian.13.t"
+	desc = "ShiJian.13.t"
 	picture = ruler
+	hidden = yes
 	
 	trigger = {
+	    religion = wuism
 	    is_year = 143
 		tag = QIN
 		ai = yes
@@ -1324,7 +1490,1205 @@ country_event = {
 	}
 	
 	option = {
-	    name = "ShiJian.27.a"
+	    name = "ShiJian.13.t"
 		change_religion = liyuebadao
 	}
+}
+#TEST???
+country_event = {
+    id = ShiJian.28
+	title = "ShiJian.27.t"
+	desc = "ShiJian.27.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	option = {
+	    name = "ShiJian.27.a"
+		random_owned_province = {
+			limit = { any_neighbor_province = { NOT = { owned_by = ROOT } } }
+			cede_province = JIA
+			change_controller = JIA
+		}
+		create_subject = {
+			who = JIA
+			subject_type = vassal
+		}
+	}
+}
+
+#??????:???????????????????????????????????????????????????????????????????????????????????,??????????????????????????
+country_event = {
+    id = ShiJian.29
+	title = "ShiJian.29.t"
+	desc = "ShiJian.29.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+	    name = "ShiJian.29.a"
+		WUU = { add_historical_rival = YUE }
+		YUE = { add_historical_rival = WUU }
+	}
+}
+#???????:?????????????????????????????????????????????????????????????
+country_event = {
+    id = ShiJian.30
+	title = "ShiJian.30.t"
+	desc = "ShiJian.30.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+	    name = "ShiJian.30.a"
+	}
+}
+#??????? ???????????????????????????????????????
+
+country_event = {
+    id = ShiJian.31
+	title = "ShiJian.31.t"
+	desc = "ShiJian.31.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+	    name = "ShiJian.31.a"
+		FROM = {
+		 add_prestige = 10
+		}
+	}
+}
+#??????? Ψ?ж?????????????????????????????ν???????????????
+country_event = {
+    id = ShiJian.32
+	title = "ShiJian.32.t"
+	desc = "ShiJian.32.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	option = {
+	    name = "ShiJian.32.a"#????
+		set_capital = 4322
+	}
+	option = {
+	    name = "ShiJian.32.b"#????
+		set_capital = 4349
+	}
+	option = {
+	    name = "ShiJian.32.c"#????
+		set_capital = 4356
+	}
+}
+#????? ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????е??????????????????????????????????????????й?????????γ??????????????????????????????????????????????????????
+country_event = {
+    id = ShiJian.33
+	title = "ShiJian.33.t"
+	desc = "ShiJian.33.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+	    name = "ShiJian.33.a"#???????
+		
+	}
+}
+#?????????涨
+country_event = {
+	id = ShiJian.34
+	title = ChaoGong_events.8.t
+	desc = ChaoGong_events.8.d
+	picture = MERCHANTS_TALKING_eventPicture
+	
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = { #???
+		name = ChaoGong_events.8.a
+		set_country_flag = SC_ChaoGong_ShiJian_1
+		#country_event = { id = ChaoGong_events.7 }
+	}
+	
+	option = { #????
+		name = ChaoGong_events.8.b
+		set_country_flag = SC_ChaoGong_ShiJian_2
+		#country_event = { id = ChaoGong_events.7 }
+	}
+	
+	option = { #????
+		name = ChaoGong_events.8.c
+		set_country_flag = SC_ChaoGong_ShiJian_3
+		#country_event = { id = ChaoGong_events.7 }
+	}
+	
+	option = { #????
+		name = ChaoGong_events.8.e
+		set_country_flag = SC_ChaoGong_ShiJian_5
+		#country_event = { id = ChaoGong_events.7 }
+	}
+	
+	option = { #???
+		name = ChaoGong_events.8.f
+		set_country_flag = SC_ChaoGong_ShiJian_10
+		#country_event = { id = ChaoGong_events.7 }
+	}
+}
+
+#?????????????
+country_event = {
+	id = ShiJian.35
+	title = ChaoGong_events.1.t
+	desc = ChaoGong_events.1.d
+	picture = PAINTER_ARTIST_eventPicture
+
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = { 
+	
+	if = {
+	limit = {
+	is_emperor = yes
+	}
+	custom_tooltip = ChaoGong_events.tt.1
+	hidden_effect = { 
+		random_list = {
+			40 = { add_imperial_influence = 1 }
+			30 = { add_imperial_influence = 2 }
+			20 = { add_imperial_influence = 4 }
+			10 = { add_imperial_influence = 8 }
+		}	
+	}
+	}
+	if = {
+	limit = {
+	NOT = { is_emperor = yes }
+	}
+	custom_tooltip = ChaoGong_events.tt.2
+	hidden_effect = { 
+	add_prestige = 0.05
+	}
+	}
+	}
+	
+	option = { #??????
+		name = ChaoGong_events.1.a
+		trigger = {
+		NOT = {
+		corruption = 96
+		}
+		}
+		random_list = {
+		40 = { add_corruption = 0.05 }
+		30 = { add_corruption = 0.1 }
+		20 = { add_corruption = 0.15 }
+		10 = { add_corruption = 0.2 }
+		}
+		
+		FROM = { 
+		country_event = { id = ShiJian.36 }
+		}
+	}
+	
+	option = { #????鼮
+		name = ChaoGong_events.1.b
+		trigger = {
+		adm_power = 0
+		dip_power = 0
+		mil_power = 0
+		}
+		random_owned_province = {
+		limit = {
+		is_capital = yes
+		}
+		add_scaled_local_adm_power = -5
+		add_scaled_local_dip_power = -5
+		add_scaled_local_mil_power = -5
+		}
+		FROM = { 
+		country_event = { id = ShiJian.37 }
+		}
+	}
+	
+	option = { #??????
+		name = ChaoGong_events.1.c
+		trigger = {
+		manpower = 1
+		}
+		random_list = {
+		40 = { add_yearly_manpower = -0.05 }
+		30 = { add_yearly_manpower = -0.10 }
+		20 = { add_yearly_manpower = -0.15 }
+		10 = { add_yearly_manpower = -0.20 }
+		}
+		FROM = { 
+		country_event = { id = ShiJian.38 }
+		}
+	}
+	
+	option = { #?????
+		name = ChaoGong_events.1.e
+		trigger = {
+		treasury = 1
+		}
+		random_list = {
+		40 = { add_years_of_income = -0.01 }
+		30 = { add_years_of_income = -0.02 }
+		20 = { add_years_of_income = -0.04 }
+		10 = { add_years_of_income = -0.08 }
+		}
+		
+		FROM = { 
+		country_event = { id = ShiJian.39 }
+		}
+	}
+	
+	option = { #?????
+		name = ChaoGong_events.1.f
+		FROM = { 
+		country_event = { id = ShiJian.40 }
+		}
+	}
+	
+}
+
+#???????
+country_event = {
+	id = ShiJian.36
+	title = ChaoGong_events.2.t
+	desc = ChaoGong_events.2.d
+	picture = PAINTER_ARTIST_eventPicture
+
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = ChaoGong_events.2.a
+		add_years_of_income = 0.25
+		add_opinion = {
+		  who = FROM
+		  modifier = sent_gift
+		}
+	}
+}
+
+#?????鼮
+country_event = {
+	id = ShiJian.37
+	title = ChaoGong_events.3.t
+	desc = ChaoGong_events.3.d
+	picture = MERCHANTS_TALKING_eventPicture
+
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = ChaoGong_events.3.a
+		random_list = {
+		33 = { add_adm_power = 100 }
+		33 = { add_dip_power = 100 }
+		33 = { add_mil_power = 100 }
+		}
+		random_list = {
+		50 = { add_liberty_desire = -10 }
+		50 = { add_liberty_desire = -5 }
+		}
+		
+		add_opinion = {
+		  who = FROM
+		  modifier = sent_gift
+		}
+	}
+}
+
+#???????
+country_event = {
+	id = ShiJian.38
+	title = ChaoGong_events.4.t
+	picture = EXPLORERS_eventPicture
+	desc = ChaoGong_events.4.d
+	
+	is_triggered_only = yes
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = ChaoGong_events.4.a
+		if = {
+		limit = {
+		FROM = {
+		NOT = { is_emperor = yes }
+		}
+		}
+		add_yearly_manpower = 0.5
+		}
+        if = {
+		limit = {
+		FROM = {
+		is_emperor = yes
+		}
+		}
+		random_owned_province = {
+		limit = {
+		is_in_capital_area = yes
+		}
+		change_variable = { which = upper_pop value = 0.05 }
+		change_variable = { which = commoner_pop value = 0.1 }
+		change_variable = { which = tribal_pop value = 0.2 }
+		
+		}
+		}
+		
+		 add_opinion = {
+		  who = FROM
+		  modifier = sent_gift
+		 }
+	}
+}
+#??????
+country_event = {
+	id = ShiJian.39
+	title = ChaoGong_events.5.t
+	desc = ChaoGong_events.5.d
+	picture = EXPLORERS_eventPicture
+
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = ChaoGong_events.5.a
+		random_list = {
+		15 = { add_prestige = 5 }
+		30 = { add_prestige = 10 }
+		45 = { add_prestige = 15 }
+		}
+		 add_opinion = {
+		  who = FROM
+		  modifier = sent_gift
+		 }
+	}
+}
+
+#??л??
+country_event = {
+	id = ShiJian.40
+	title = ChaoGong_events.6.t
+	desc = ChaoGong_events.6.d
+	picture = MERCHANTS_TALKING_eventPicture
+
+	is_triggered_only = yes
+	
+
+	trigger = {
+		always = yes			#
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = ChaoGong_events.6.a
+		add_opinion = {
+		  who = FROM
+		  modifier = dishonoured_alliance
+		 }
+	}
+}
+
+#?????????????
+country_event = {
+	id = ShiJian.41
+	title = ChaoGong_events.1.t
+	desc = ChaoGong_events.1.d
+	picture = PAINTER_ARTIST_eventPicture
+
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { is_emperor = yes }
+				random_list = {
+					40 = { add_imperial_influence = 1 }
+					30 = { add_imperial_influence = 2 }
+					20 = { add_imperial_influence = 4 }
+					10 = { add_imperial_influence = 8 }
+				}
+			}
+			else = { add_prestige = 1 }
+		}
+	}
+	
+	option = { #??????
+		name = ChaoGong_events.1.a
+		trigger = {
+		NOT = {
+		corruption = 10
+		}
+		}
+		random_list = {
+		40 = { add_corruption = 0.05 }
+		30 = { add_corruption = 0.1 }
+		20 = { add_corruption = 0.15 }
+		10 = { add_corruption = 0.2 }
+		}
+		
+		FROM = { 
+		country_event = { id = ShiJian.36 }
+		}
+	}
+	
+	option = { #????鼮
+		name = ChaoGong_events.1.b
+		trigger = {
+		adm_power = 100
+		dip_power = 100
+		mil_power = 100
+		}
+		random_owned_province = {
+		limit = {
+		is_capital = yes
+		}
+		add_scaled_local_adm_power = -5
+		add_scaled_local_dip_power = -5
+		add_scaled_local_mil_power = -5
+		}
+		FROM = { 
+		country_event = { id = ShiJian.37 }
+		}
+	}
+	
+	option = { #??????
+		name = ChaoGong_events.1.c
+		trigger = {
+		manpower = 5
+		}
+		random_list = {
+		40 = { add_yearly_manpower = -0.05 }
+		30 = { add_yearly_manpower = -0.10 }
+		20 = { add_yearly_manpower = -0.15 }
+		10 = { add_yearly_manpower = -0.20 }
+		}
+		FROM = { 
+		country_event = { id = ShiJian.38 }
+		}
+	}
+	
+	option = { #?????
+		name = ChaoGong_events.1.e
+		trigger = {
+		treasury = 500
+		}
+		random_list = {
+		40 = { add_years_of_income = -0.01 }
+		30 = { add_years_of_income = -0.02 }
+		20 = { add_years_of_income = -0.04 }
+		10 = { add_years_of_income = -0.08 }
+		}
+		
+		FROM = { 
+		country_event = { id = ShiJian.39 }
+		}
+	}
+	
+	option = { #?????
+		name = ChaoGong_events.1.f
+		FROM = { 
+		country_event = { id = ShiJian.40 }
+		}
+	}
+}
+
+#???????
+country_event = {
+    id = ShiJian.42
+	title = "ShiJian.42.t"
+	desc = "ShiJian.42.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	option = {
+	    name = "ShiJian.42.a"
+		add_government_reform = zhuxiaxuanwang_reform
+	}
+}
+#??????????
+country_event = {
+    id = ShiJian.43
+	title = "ShiJian.43.t"
+	desc = {
+		trigger = {
+			is_emperor = no
+		}
+		desc = ShiJian.43.d.1
+	}
+	desc = {
+		trigger = {
+			is_emperor = yes
+		}
+		desc = ShiJian.43.d.2
+	}
+	picture = ruler
+	trigger = {
+		has_country_modifier = bazhu_in_name
+	}
+	
+	mean_time_to_happen = {
+	  months = 120
+	  modifier = {
+		  factor = 0.00001
+		  is_emperor = no
+	  }
+	  modifier = {
+		  factor = 0.9
+		  reverse_has_opinion = {
+		   who = ZHO
+		   value = 50
+		  }
+	  }
+	  modifier = {
+		  factor = 0.7
+		  reverse_has_opinion = {
+		   who = ZHO
+		   value = 100
+		  }
+	  }
+	  modifier = {
+		  factor = 0.5
+		  reverse_has_opinion = {
+		   who = ZHO
+		   value = 150
+		  }
+	  }
+	  modifier = {
+		  factor = 0.1
+		  has_ruler_flag = bazhu_in_name_succ
+	  }
+	}
+	
+	option = {
+	    name = "ShiJian.43.a"
+		remove_country_modifier = bazhu_in_name
+	}
+}
+#??????
+country_event = {
+    id = ShiJian.44
+	title = "ShiJian.44.t"
+	desc = "ShiJian.44.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.44.a" #???????????????????
+		ai_chance = {
+		  factor = 30
+		  modifier = {
+		   factor = 100
+		   OR = {
+		    has_opinion = { who = FROM value = 50 }
+			marriage_with = FROM
+		   }
+		  }
+		}
+		capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		join_all_offensive_wars_of = FROM
+	}
+	
+	option = {
+	    name = "ShiJian.44.b" #??????
+		ai_chance = {
+		  factor = 50
+		}
+		join_all_offensive_wars_of = FROM
+		FROM = { country_event = { id = ShiJian.45 } }
+	}
+	
+	option = {
+	    name = "ShiJian.44.c" #
+		ai_chance = {
+		  factor = 1
+		  modifier = {
+		   factor = 100
+		   OR = {
+		    NOT = { has_opinion = { who = FROM value = -25 } }
+			OR = {
+			 AND = {
+			  FROM = {
+			   has_won_war_against = {
+			    who = ROOT
+			    max_years_since = 3
+			   }
+			  }
+			 }
+			  has_won_war_against = {
+			   who = FROM
+			   max_years_since = 3
+			  }
+			}
+		   }
+		  }
+		 
+		}
+	}
+	
+}
+
+#????
+country_event = {
+    id = ShiJian.45
+	title = "ShiJian.45.t"
+	desc = "ShiJian.45.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.45.a" #??????
+		add_years_of_income = -0.5
+		FROM = { 
+		 add_years_of_income = 0.75
+			capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		join_all_offensive_wars_of = ROOT
+		}
+	}
+	
+	option = {
+	    name = "ShiJian.45.b" #???????
+		add_yearly_manpower = -0.5
+		FROM = { 
+		 add_yearly_manpower = 0.75
+			capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		join_all_offensive_wars_of = ROOT
+		}
+	}
+	
+	option = {
+	    name = "ShiJian.45.c" #????λ
+		add_prestige = -2.5
+		FROM = { 
+		 add_prestige = 5
+			capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		join_all_offensive_wars_of = ROOT
+		}
+	}
+	
+	option = {
+	    name = "ShiJian.45.f" #??????
+		trigger = {
+		 FROM = { liberty_desire = 20 }
+		}
+		add_liberty_desire = -5
+		FROM = { 
+		 add_liberty_desire = 10
+			capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		 join_all_offensive_wars_of = ROOT
+		}
+	}
+	option = {
+	    name = "ShiJian.45.e" #???????
+		FROM = {
+		 add_favors = {
+		  who = ROOT
+		  amount = 10
+		 }
+		}
+		FROM = { 
+			capital_scope = {
+			 build_to_forcelimit = {
+			  infantry = 0.6
+			  cavalry = 0.1
+			 artillery = 0.3
+		   }
+		  }
+		 join_all_offensive_wars_of = ROOT
+		}
+	}
+	option = {
+	    name = "ShiJian.45.g" #????
+		
+	}
+}
+#???Я????????????
+country_event = {
+    id = ShiJian.46
+	title = "ShiJian.46.t"
+	desc = "ShiJian.46.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.46.a" #???????????????????????????????????
+        add_stability = -1 
+		add_country_modifier = {
+		 name = zhou_zhengtongcunyi #????????ɡ?????????-1
+		 duration = 3650
+		}
+		JIN = {
+		 add_opinion = {
+		  who = ROOT
+		  modifier = insulted
+		 }
+		}
+	}
+	
+	option = {
+	    name = "ShiJian.46.b" #????????????????????????? ??AI????
+        add_stability = 1
+		add_country_modifier = {
+		 name = zhou_zhengtongzhouwang #?????????????????+1??????10??
+		 duration = 3650
+		}
+		JIN = {
+		 add_country_modifier = {
+		  name = jin_chongshendongqiangonglao_modifier #????????+5????????20??
+		  duration = 7300
+		 } 
+		 add_historical_friend = ZHO
+		}
+		every_province = {
+		 limit = {
+		  NOT = {
+		   owned_by = ROOT
+		  }
+		  is_core = ROOT
+		  OR = {
+		   owned_by = JIN
+		   region = sili_china
+		  }
+		 }
+		 remove_core = ROOT
+		}
+	}
+	
+}
+#??????????????
+country_event = {
+    id = ShiJian.47
+	title = "ShiJian.47.t"
+	desc = "ShiJian.47.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.47.a" #?????????????????
+        add_stability = -1 
+		add_country_modifier = {
+		 name = zhou_zhengtongweiji #?????Σ????????????-2
+		 duration = 7300
+		}
+		JIN = {
+		 add_opinion = {
+		  who = ROOT
+		  modifier = insulted
+		 }
+		}
+		#??????????debuff??????70?????????????????????????????????????????????±??????
+
+	}
+	
+	option = {
+	    name = "ShiJian.47.b" #????????
+        add_stability = 1
+		add_country_modifier = {
+		 name = zhou_zhengtongzhouwang #?????????
+		 duration = 3650
+		}
+		JIN = {
+		 create_march = ZHO
+		}
+	}
+	
+}
+#???????????
+country_event = {
+    id = ShiJian.48
+	title = "ShiJian.48.t"
+	desc = "ShiJian.48.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.48.a" #??????????????????????
+        declare_war_with_cb = {
+				who = JIN
+				casus_belli = cb_insult
+			}
+	  remove_government_reform = free_city
+      add_government_reform = chinese_feudalism_reform
+      set_country_flag = Zhou_LiNian
+      country_event = {
+        id = new_ideas.1
+      }
+	}
+	
+	option = {
+	    name = "ShiJian.48.b" #?????????
+        add_stability = 3
+	    every_owned_province = {
+		 clear_rebels = yes
+		}
+		if = {
+		 limit = {
+		  war_with = ZHG
+		 }
+		 JIN = {
+		  join_all_offensive_wars_of = ZHO
+		 }
+		}
+		add_country_modifier = {
+		 name = zhou_zhengtongzhouwang #?????????????????+2??????10??
+		 duration = 3650
+		}
+	}
+	
+}
+#X??????????
+country_event = {
+    id = ShiJian.49
+	title = "ShiJian.49.t"
+	desc = "ShiJian.49.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = "ShiJian.49.a" #?????????
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 100
+        change_government_reform_progress = 99
+		add_country_modifier = {
+			 name = "zhongyuanyuanzhu_modifier"# 
+			 duration = 3650 #25 ??
+			}
+		if = {
+		 limit = {
+		  FROM = { tag = JIN }
+		 }
+		 add_opinion = {
+		  who = CHU
+		  modifier = threatening_punishment
+		 }
+		}	
+	}
+	
+	
+}
+#TEST
+country_event = {
+    id = ShiJian.95
+	title = "ShiJian.27.t"
+	desc = "ShiJian.27.d"
+	picture = ruler
+	hidden = yes
+	
+	trigger = {
+	 has_country_modifier = army_native_de_modifier
+	 is_at_war = no
+	}
+	
+	mean_time_to_happen = { 
+		days = 1
+	}
+	
+	immediate = {
+	 remove_country_modifier = army_native_de_modifier
+	 every_province = {
+	  limit = {
+	    num_of_units_in_province = {
+			who = root
+			amount = 1
+		}
+	  }
+	  kill_units = {
+	   who = root
+	  }
+	 }
+	 root = {
+	  capital_scope = {
+		build_to_forcelimit = {
+			infantry = 0.3
+			cavalry = 0.6
+			artillery = 0.1
+		 }
+		}
+	 }
+	}
+	
+	option = {
+	    name = "ShiJian.27.a"
+	}
+}
+#TEST
+country_event = {
+    id = ShiJian.99
+	title = "ShiJian.27.t"
+	desc = "ShiJian.27.d"
+	picture = ruler
+	
+	is_triggered_only = yes
+	
+	option = {
+	    name = "ShiJian.27.a"
+		set_emperor = yes
+	}
+}
+
+#Converted triggered modifiers
+#Chinese marriage tradition
+country_event = {
+	id = ShiJian.50
+	title = "ShiJian.49.t"
+	desc = "ShiJian.49.d"
+	picture = ruler
+	hidden = yes
+	
+	trigger = {
+		religion = chinese_religion
+		government = monarchy	
+		NOT = { has_ruler_modifier = chinese_marriage_tradition }
+		any_country = {
+			marriage_with = ROOT
+			dynasty = ROOT
+			religion = chinese_religion
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "ShiJian.49.a"
+		add_ruler_modifier = {
+			name = chinese_marriage_tradition
+		}
+	}	
+}
+#Crusader China
+country_event = {
+	id = ShiJian.5001
+	title = "ShiJian.49.t"
+	desc = "ShiJian.49.d"
+	picture = ruler
+	hidden = yes
+	
+	trigger = {
+		NOT = { has_country_modifier = crusader_china }
+		religion = chinese_religion
+		crusade_target = { exists = yes }
+		crusade_target = {
+			war_with = ROOT
+			any_owned_province = { controlled_by = root }
+		}
+		land_maintenance = 1.0
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "ShiJian.49.a"
+		add_country_modifier = {
+			name = crusader_china
+			duration = -1
+		}
+	}	
+}
+#Shiqing Paixi
+country_event = {
+	id = ShiJian.5002
+	title = "ShiJian.49.t"
+	desc = "ShiJian.49.d"
+	picture = ruler
+	hidden = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		is_subject = yes
+		overlord = { has_faction = ShiQing_PaiXi }
+	}
+
+	immediate = {
+		remove_country_modifier = china_faction_shiqing_5
+		remove_country_modifier = china_faction_shiqing_4
+		remove_country_modifier = china_faction_shiqing_3
+		remove_country_modifier = china_faction_shiqing_2
+		remove_country_modifier = china_faction_shiqing_1
+	}
+
+	option = {
+		name = "ShiJian.49.a"
+		if = {
+			limit = {
+				overlord = {
+					faction_in_power = ShiQing_PaiXi
+					faction_influence = {
+						faction = ShiQing_PaiXi
+						influence = 70
+					}
+				}
+			}
+			add_country_modifier = {
+				name = china_faction_shiqing_5
+				duration = -1
+			}
+		}
+		else_if = {
+			limit = {
+				overlord = {
+					faction_in_power = ShiQing_PaiXi
+					faction_influence = {
+						faction = ShiQing_PaiXi
+						influence = 60
+					}
+				}
+			}
+			add_country_modifier = {
+				name = china_faction_shiqing_4
+				duration = -1
+			}
+		}
+		else_if = {
+			limit = {
+				overlord = {
+					faction_in_power = ShiQing_PaiXi
+					faction_influence = {
+						faction = ShiQing_PaiXi
+						influence = 50
+					}
+				}
+			}
+			add_country_modifier = {
+				name = china_faction_shiqing_3
+				duration = -1
+			}
+		}
+		else_if = {
+			limit = {
+				overlord = {
+					faction_in_power = ShiQing_PaiXi
+					faction_influence = {
+						faction = ShiQing_PaiXi
+						influence = 40
+					}
+				}
+			}
+			add_country_modifier = {
+				name = china_faction_shiqing_2
+				duration = -1
+			}
+		}
+		else = {
+			add_country_modifier = {
+				name = china_faction_shiqing_1
+				duration = -1
+			}
+		}
+	}	
 }

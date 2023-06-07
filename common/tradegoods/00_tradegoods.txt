@@ -198,7 +198,7 @@ cloth = {
 		merc_maintenance_modifier = -0.15
 	}
 	province = {
-		 attrition = -0.25
+		attrition = -0.25
 	}
 	chance = {
 		factor = 10
@@ -216,7 +216,7 @@ cloth = {
 fish = {
 	color = { 42 1 200 }
 	modifier = {
-		culture_conversion_cost = -0.1
+		culture_conversion_cost = -0.15
 	}
 	province = {
 		local_sailors_modifier = 0.15
@@ -338,7 +338,7 @@ naval_supplies = {
 		naval_forcelimit_modifier = 0.10
 	}
 	province = {
-		naval_forcelimit = 2
+		allowed_num_of_buildings = 1
 	}
 	chance = {
 		factor = 15
@@ -436,13 +436,21 @@ copper = {
 
 gold = {
 	color = { 1.0 0.84 0.19 }
+	province = {
+		trade_goods_size_modifier = 0.5
+	}
 	chance = {
 		factor = 2
+		modifier = {
+			factor = 10000
+			has_province_modifier = nubian_gold_mines
+		}
 		modifier = {
 			factor = 2
 			OR = {
 				has_terrain = mountain
 				has_terrain = highlands
+				has_terrain = desert_mountain
 				has_terrain = hills
 			}
 		}
@@ -451,7 +459,7 @@ gold = {
 			OR = {
 				region = dacia_region
 				region = thracia_region
-				region = hispania_baetica
+				superregion = hispania_superregion
 			}
 		}
 		modifier = {
@@ -485,7 +493,6 @@ iron = {
 	}
 }
 
-
 horses = {
 	color = { 170 76 72 }
 	modifier = {
@@ -510,10 +517,12 @@ horses = {
 		modifier = {
 			factor = 1.5
 			OR = {
-				region = sarmatia_region
+				superregion = scythia_superregion
+				superregion = turan_superregion
 				region = pannonia_region
 				region = macedonia_region
 				region = buyeo_region
+				region = sushen_region
 			}
 		}
 	}
@@ -522,10 +531,10 @@ horses = {
 spices = {
 	color = { 252 29 65 }
 	modifier = {
-		diplomatic_reputation = 2
+		diplomatic_reputation = 1
 	}
 	province = {	
-		local_tax_modifier = 0.1
+		province_trade_power_value = 1
 	}
 	chance = {
 		factor = 5
@@ -603,32 +612,42 @@ amber = {
 	color = { 217 167 26 }
 	modifier = {
 		legitimacy = 0.5
+		devotion = 0.5
+		republican_tradition = 0.25
+		horde_unity = 0.25
 	}
 	province = {
 		trade_value_modifier = 0.15
 	}
 	chance = {
-		factor = 10
+		factor = 20
 		modifier = {
 			factor = 0
+			NOT = { region = germania_region }
+			NOT = { region = suebia_region }
+			NOT = { region = upper_burma_region }
+			NOT = { region = airavati_region }
+		}
+		modifier = {
+			factor = 4
 			OR = {
-				NOT = { region = germania_region }
-				NOT = { region = suebia_region }
+				region = burma_region
+				region = upper_burma_region
 			}
 		}
 		modifier = {
-			factor = 2
+			factor = 6
 			region = suebia_region
-		}
-		modifier = {
-			factor = 0
-			has_port = no
+			has_port = yes
 		}
 	}
 }
 
 silver = {
 	color = { 1.0 0.84 0.19 }
+	province = {
+		trade_goods_size_modifier = -0.5
+	}
 	chance = {
 		factor = 5
 		modifier = {
@@ -638,8 +657,11 @@ silver = {
 		modifier = {
 			factor = 1.1
 			OR = {
-			has_terrain = mountain
-			has_terrain = hills	}
+				has_terrain = mountain
+				has_terrain = highlands
+				has_terrain = desert_mountain
+				has_terrain = hills
+			}
 		}
 		modifier = {
 			factor = 3.0
@@ -661,7 +683,7 @@ marble = {
 		build_cost = -0.1
 	}
 	province = {
-		local_build_cost = -0.05
+		local_build_cost = -0.2
 	}
 	chance = {
 		factor = 2
@@ -763,11 +785,11 @@ ceramic = {
 		}
 		modifier = {
 			factor = 2.0
-			 base_production = 4
+			base_production = 4
 		}
 		modifier = {
 			factor = 2.0
-			 base_production = 8
+			base_production = 8
 		}
 		modifier = {
 			factor = 2.0
@@ -808,7 +830,7 @@ dyes = {
 		prestige = 0.5
 	}
 	province = {
-		prestige = 0.05
+		local_prosperity_growth = 0.1
 	}
 	chance = {
 		factor = 5
@@ -852,7 +874,7 @@ honey = {
 		diplomatic_reputation = 1
 	}
 	province = {
-		local_tax_modifier = 0.1
+		supply_limit_modifier = 0.25
 	}
 	chance = {
 		factor = 15
@@ -884,17 +906,33 @@ lead = {
 		production_efficiency = 0.1
 	}
 	province = {
-		local_monthly_devastation = -0.15
+		local_monthly_devastation = -0.1
 	}
 	chance = {
 		factor = 5
 		modifier = {
+			factor = 2
+			OR = {
+				superregion = celtica_superregion
+				superregion = italia_superregion
+				superregion = hispania_superregion
+			}
+		}
+		modifier = {
 			factor = 0
-			NOT = { has_terrain = mountain }
-			NOT = { has_terrain = desert_mountain }
-			NOT = { has_terrain = jungle }
-			NOT = { has_terrain = hills }
-			NOT = { has_terrain = highlands }
+			OR = {
+				is_farmland_terrain = yes
+				has_terrain = grasslands
+				has_terrain = drylands
+				has_terrain = oasis
+			}
+		}
+		modifier = {
+			factor = 0
+			OR = {
+				region = malayadvipa_region
+				region = suvarnadvipa_region
+			}
 		}
 	}
 }
@@ -905,7 +943,7 @@ glas = {
 		advisor_pool = 1
 	}
 	province = {
-		local_state_maintenance_modifier = -0.1
+		local_governing_cost = -0.15
 	}
 	chance = {
 		factor = 5
@@ -948,7 +986,7 @@ silk = {
 		global_tax_modifier = 0.1
 	}
 	province = {
-		improve_relation_modifier = 0.025
+		local_prosperity_growth = 0.1
 	}
 	chance = {
 		factor = 10
@@ -973,7 +1011,7 @@ olibanum = {
 		global_tax_modifier = 0.1
 	}
 	province = {
-		advisor_cost = -0.01
+		local_missionary_maintenance_cost = -0.2
 	}
 	chance = {
 		factor = 10
@@ -1048,7 +1086,7 @@ exotic_animals = {
 herbs = {
 	color = { 76 149 2 }
 	modifier = {
-		 war_taxes_cost_modifier = -0.2
+		war_taxes_cost_modifier = -0.5
 	}
 	province = {
 		garrison_growth = 0.2
@@ -1075,7 +1113,7 @@ herbs = {
 ivory = {
 	color = { 242 245 236 }
 	modifier = {
-		free_leader_pool = 1
+		free_land_leader_pool = 1
 	}
 	province = {
 		local_build_time = -0.1
@@ -1084,7 +1122,6 @@ ivory = {
 		factor = 20
 		modifier = {
 			factor = 0
-			continent = europe
 			continent = asia
 		}
 		modifier = {
@@ -1093,11 +1130,13 @@ ivory = {
 			NOT = { has_province_modifier = elp_2 }
 			NOT = { has_province_modifier = elp_3 }
 			NOT = { has_province_modifier = elp_4 }
+			NOT = { has_province_modifier = elp_5 }
 		}
 		modifier = {
 			factor = 20
 			OR = {
 				continent = india
+				superregion = suvarnabhumi_superregion
 				region = lacviet_region
 				region = jiaozhou_china
 			}
@@ -1157,6 +1196,22 @@ tin = {
 				NOT = { region = gallaecia }
 			}
 		}
+		modifier = {
+			factor = 1.5
+			OR = {
+				region = britannia_superior
+				region = britannia_inferior
+				region = malayadvipa_region
+				region = suvarnadvipa_region
+			}
+		}
+		modifier = {
+			factor = 10000
+			OR = {
+				has_province_modifier = orang_tin_mines
+				has_province_modifier = tin_mines
+			}
+		}
 	}
 }
 
@@ -1174,33 +1229,26 @@ rice = {
 			factor = 0
 			OR = {
 				has_terrain = desert
-				has_terrain = coastline
+				has_terrain = coastal_desert
 				has_terrain = desert_mountain
 				has_terrain = salt_desert
-				has_terrain = drylands
 				has_climate = arctic
+				has_winter = severe_winter
 			}
 		}
 		modifier = {
 			factor = 0
-			OR = {
-				continent = europe
-				continent = africa
-				continent = asia
-			}
+			NOT = { continent = china }
+			NOT = { continent = india }
+			NOT = { superregion = aethiopia_superregion }
+			NOT = { superregion = mesopotamia_superregion }
+			NOT = { superregion = syria_superregion }
+			NOT = { superregion = western_africa_superregion }
 		}
 		modifier = {
-			factor = 1.5
-			OR = {
-				continent = china
-				continent = india
-			}
-		}
-		modifier = {
-			factor = 0.25
+			factor = 0.5
 			OR = {
 				has_terrain = mountain
-				has_terrain = coastal_desert
 				has_terrain = forest
 				has_terrain = woods
 				has_terrain = jungle
@@ -1214,15 +1262,14 @@ rice = {
 			}
 		}
 		modifier = {
-			factor = 0.85
+			factor = 0.5
 			OR = {
+				has_winter = mild_winter
 				has_climate = arid
-				has_climate = tropical
-				
 			}
 		}
 		modifier = {
-			factor = 0.85
+			factor = 0.75
 			OR = {
 				has_terrain = drylands
 				has_terrain = savannah
@@ -1231,11 +1278,24 @@ rice = {
 		}
 		modifier = {
 			factor = 0.35
-			has_winter = severe_winter
+			has_winter = normal_winter
 		}
 		modifier = {
-			factor = 0.35
-			has_winter = normal_winter
+			factor = 1.1
+			has_climate = tropical
+		}
+		modifier = {
+			factor = 1.6
+			OR = {
+				has_monsoon = mild_monsoon
+				has_monsoon = normal_monsoon
+				has_monsoon = severe_monsoon
+			}
+		}
+		modifier = {
+			factor = 1.5
+			has_terrain = wetlands
+			has_terrain = marsh
 		}
 		modifier = {
 			factor = 2
@@ -1286,7 +1346,7 @@ cotton = {
 		naval_maintenance_modifier = -0.1
 	}
 	province = {
-		supply_limit_modifier = 0.15
+		supply_limit_modifier = 0.25
 	}
 
 	chance = {
@@ -1306,22 +1366,34 @@ cotton = {
 		modifier = {
 			factor = 0
 			OR = {
-				continent = europe
 				continent = africa
-				continent = asia
+				superregion = britannia_superregion
+				superregion = hispania_superregion
+				superregion = celtica_superregion
+				superregion = germania_superregion
+				superregion = haemusia_superregion
+				superregion = macedonia_superregion
+				superregion = italia_superregion
+				superregion = asia_superregion
+				superregion = armenia_superregion
 			}
 		}
 		modifier = {
-			factor = 1.5
+			factor = 4
 			OR = {
 				continent = india
 				NOT = { superregion = tibet_superregion }
 			}
 		}
 		modifier = {
-			factor = 1.1
-			superregion = chryse_insula_superregion
-			superregion = suvarnabhumi_superregion
+			factor = 2
+			OR = {
+				superregion = chryse_insula_superregion
+				superregion = parthia_superregion
+				superregion = sakastan_superregion
+				superregion = scythia_superregion
+				superregion = iran_superregion
+			}
 		}
 		modifier = {
 			factor = 0.25
@@ -1378,7 +1450,8 @@ tar_good = {
 		global_ship_repair = 0.2
 	}
 	province = {
-		naval_forcelimit = 3
+		local_build_cost = -0.1
+		local_ship_cost = -0.1
 	}
 	chance = {
 		factor = 10
@@ -1391,8 +1464,20 @@ tar_good = {
 			region = haltamti_region
 		}
 		modifier = {
+			factor = 3
+			OR = {
+				region = malayadvipa_region
+				region = suvarnadvipa_region
+				region = naggadipa_region
+			}
+		}
+		modifier = {
 			factor = 1.25
 			base_production = 3
+		}
+		modifier = {
+			factor = 10000
+			has_province_modifier = orang_tar
 		}
 	}
 }
@@ -1420,7 +1505,6 @@ tea_good = {
 		modifier = {
 			factor = 0
 			OR = {
-				continent = europe
 				continent = africa
 				continent = asia
 			}
@@ -1593,7 +1677,7 @@ sugar = {
 		trade_steering = 0.2
 	}
 	province = {
-		trade_value_modifier = 0.1
+		local_state_maintenance_modifier = -0.1
 	}
 	chance = {
 		factor = 10

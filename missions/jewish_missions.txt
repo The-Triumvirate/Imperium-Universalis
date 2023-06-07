@@ -46,9 +46,15 @@ jewish_missions_1 = {
 		trigger = { 
 			tolerance_to_this = 3
 			legitimacy_equivalent = 95
-			estate_loyalty = {
-				estate = estate_priesthood
-				loyalty = 60
+			OR = {
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 60
+				}
+				faction_influence = {
+         	       faction = fac_priests
+         	       influence = 60
+         	   }
 			}
 		}
 		effect = {
@@ -329,31 +335,10 @@ jewish_missions_2 = {
 	} 
 	has_country_shield = yes
 
-#	JUD_phoenician_allies = {
-#		position = 1
-#		icon = mission_peace
-#		required_missions = {
-#			
-#		}
-#		
-#		trigger = { 
-#			any_known_country = {
-#				primary_culture = phoenician
-#				capital_scope = { region = phoenicia_region }
-#				alliance_with = ROOT
-#			}
-#		}
-#		effect = {
-#			add_dip_power = 30
-#			change_dip = 1
-#		}
-#	}
-
 	JUD_restablish_phoenician_subjects = {
 		position = 1
 		icon = mission_kyros
 		required_missions = {
-			JUD_phoenician_allies
 		}
 		
 		trigger = { 
@@ -547,8 +532,6 @@ jewish_missions_2 = {
 				name = jud_reignating_old_rivalries
 				duration = 9125
 			}
-			4883 = { add_permanent_claim = ROOT }
-			4882 = { add_permanent_claim = ROOT }
 			philistaeia_area = {
 				limit = {
 					NOT = { is_core = ROOT }
@@ -758,34 +741,22 @@ jewish_missions_3 = {
 		}	
 
 		trigger = { 
+			owns_core_province = 2277
 			2277 = {
-				owned_by = ROOT
 				OR = {
 					has_building = small_temple
 					has_building = great_temple
 				}
-				OR = {
-					has_building = gravel_road
-					has_building = paved_road
-					has_building = imperial_road
-				}
+				has_road_building = yes
 			}
 		}
 		effect = {
 			add_prestige = 5
-			if = {
-				limit = { NOT = { legitimacy = 100 } }
-				add_legitimacy = 10
-			}
-			else = { add_dip_power = 50 }
-			if = {
-				limit = { NOT = { stability = 3 } }
-				add_stability = 1
-			}
-			else = { add_adm_power = 50 }
 			2277 = {
-				add_base_tax = 1
-				add_base_production = 1
+				add_great_project_tier = {
+					type = jerusalem_temple
+					tier = 1
+				}
 			}
 		}
 	}
@@ -1042,6 +1013,13 @@ jewish_missions_3 = {
 				}
 				add_permanent_claim = ROOT
 			}
+			old_edom_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
 		}
 	}
 
@@ -1054,14 +1032,19 @@ jewish_missions_3 = {
 		}
 
 		provinces_to_highlight = {
-			NOT = {
-				country_or_non_sovereign_subject_holds = ROOT
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+			OR = {
+				area = idumaea_area
+				area = old_edom_area
 			}
-			area = idumaea_area
 		}
 
 		trigger = {
 			idumaea_area = {
+				type = all
+				owned_by = ROOT
+			}
+			old_edom_area = {
 				type = all
 				owned_by = ROOT
 			}

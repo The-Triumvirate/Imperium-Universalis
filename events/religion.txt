@@ -111,7 +111,6 @@ country_event = {
 		capital_scope = {
 			OR = {
 				continent = asia
-				continent = europe
 			}
 		}
 		OR = {
@@ -152,11 +151,14 @@ country_event = {
     picture = religious
             
 	is_triggered_only = yes
+
+	goto = random_prov_add_shrine
 	
     trigger = {
         uses_patriarch_authority = yes
 		treasury = 100
 		NOT = { government = native }
+		adm_tech = 2
         any_owned_province = {
             num_free_building_slots = 1
             NOT = { has_building = shrine }
@@ -164,26 +166,41 @@ country_event = {
             NOT = { has_building = great_temple }
         }
     }
-    
-    mean_time_to_happen = {
-        days = 1
-    }
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_building = shrine }
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+					num_free_building_slots = 1
+				}
+				save_event_target_as = random_prov_add_shrine
+			}
+		}
+	}
     
     option = {
         name = "religion.8.a"
-        random_owned_province = {
-            limit = {
-                NOT = {    has_building = shrine }
-				NOT = { has_building = small_temple }
-				NOT = { has_building = great_temple }
-                num_free_building_slots = 1
-            }
-            add_building = shrine
-        }
-            add_treasury = -100
-            add_patriarch_authority = 0.05
-			add_adm_power = 75
-    }
+        event_target:random_prov_add_shrine = {
+			if = {
+				limit = { adm_tech = 2 }
+				add_building = shrine
+			}
+			else_if = {
+				limit = { adm_tech = 6 }
+				add_building = small_temple
+			}
+			else_if = {
+				limit = { adm_tech = 19 }
+				add_building = great_temple
+			}
+		}
+        add_treasury = -100
+        add_patriarch_authority = 0.05
+		add_adm_power = 75
+   	}
     
     option = {
         name = "religion.8.b"
@@ -252,18 +269,17 @@ country_event = {
 		capital_scope = {
 			OR = {
 				continent = asia
-				continent = europe
 			}
 		}
 		OR = {
 			any_neighbor_country = { 
-				religion = mitraism
+				religion = iranian_religion
 			}
 			any_owned_province = { 
-				religion = mitraism
+				religion = iranian_religion
 			}
 		}
-		NOT = { religion = mitraism }
+		NOT = { religion = iranian_religion }
 		num_of_cities = 10
 		
 	}
@@ -277,9 +293,9 @@ country_event = {
 		name = "religion.10.a"
 		random_province = {
 				limit = { 
-					NOT = { religion = mitraism }
+					NOT = { religion = iranian_religion }
 				}
-				change_religion = mitraism
+				change_religion = iranian_religion
 			}
 			
 	}
@@ -348,7 +364,7 @@ province_event = {
 			}
 		modifier = {
 				factor = 1.25
-				owner = { full_idea_group = syncrenism_ideas }
+				owner = { full_idea_group = syncretism_ideas }
 			}
 	}
 
@@ -387,14 +403,37 @@ province_event = {
 	title = "religion.13.t"
 	desc = "religion.13.d"
 	picture = religious
-	is_triggered_only = yes
+	is_mtth_scaled_to_size = 2
 	
 	trigger = {
-			 is_reformation_center = yes 
-			 NOT = { has_province_modifier = religious_center_modifier }
+		is_reformation_center = yes 
+		had_province_flag = {
+			flag = reform_center_ticking_flag
+			days = 36500
+		}
+		if = {
+			limit = { has_province_flag = reform_center_one_time_flag }
+			had_province_flag = {
+				flag = reform_center_one_time_flag
+				days = 18250
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
 	}
 	
-	immediate = {
+	option = {
+		name = "religion.13.a"
+		ai_chance = { factor = 99 }
+		tooltip = {
+			remove_reform_center = zoroastrianism 
+			remove_reform_center = zurvanism 
+			remove_reform_center = buddhism 
+			remove_reform_center = jain 
+			remove_reform_center = ajivika 
+		}
 		hidden_effect = {
 			remove_reform_center = zoroastrianism 
 			remove_reform_center = zurvanism 
@@ -403,15 +442,23 @@ province_event = {
 			remove_reform_center = ajivika 
 		}
 	}
-	
+
 	option = {
-		name = "religion.13.a"
-			tooltip = {
-			remove_reform_center = zoroastrianism 
-			remove_reform_center = zurvanism 
-			remove_reform_center = buddhism 
-			remove_reform_center = jain 
-			remove_reform_center = ajivika  }
+		name = "religion.13.b"
+		ai_chance = { factor = 1 }
+		trigger = {
+			NOT = { has_province_flag = reform_center_one_time_flag }
+			owner = {
+				religion = ROOT
+				has_friendly_reformation_center = yes
+			}
+		}
+		owner =	{
+			add_years_of_income = -0.35
+			add_dip_power = -250
+			add_adm_power = -250
+		}
+		hidden_effect = { set_province_flag = reform_center_one_time_flag }	
 	}
 }
 ########################################################################################
@@ -422,14 +469,12 @@ country_event = {
 	title = "religion.14.t"
 	desc = "religion.14.d"
 	picture = religious
+	
+	is_triggered_only = yes
 
 	trigger = {
 		uses_patriarch_authority = yes
 		NOT = { patriarch_authority = 0.4 }
-	}
-	
-	mean_time_to_happen = {
-		months = 120
 	}
 	
 	option = {
@@ -445,14 +490,12 @@ country_event = {
 	title = "religion.15.t"
 	desc = "religion.15.d"
 	picture = religious
+	
+	is_triggered_only = yes
 
 	trigger = {
 		uses_patriarch_authority = yes
 		patriarch_authority = 0.4
-	}
-	
-	mean_time_to_happen = {
-		months = 120
 	}
 	
 	option = {
@@ -469,18 +512,16 @@ country_event = {
 	title = "religion.16.t"
 	desc = "religion.16.d"
 	picture = religious
+	
+	is_triggered_only = yes
 
 	trigger = {
 		uses_patriarch_authority = yes
 		patriarch_authority = 0.8
 	}
 	
-	mean_time_to_happen = {
-		months = 240
-	}
-	
 	option = {
 		name = "religion.16.a"
-		add_patriarch_authority = -0.02
+		add_patriarch_authority = -0.1
 	}
 }

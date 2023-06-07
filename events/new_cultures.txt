@@ -23,7 +23,7 @@ province_event = {
 			}
 		}
 		owner = {
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 			num_of_cities = 10
 			culture_group = steppe_people
 			neither_tribal_nor_native_trigger = yes
@@ -103,7 +103,7 @@ province_event = {
 			}
 		}
 		owner = {
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 			num_of_cities = 10
 			neither_tribal_nor_native_trigger = yes
 			OR = {
@@ -176,15 +176,15 @@ province_event = {
 		culture_group = indian_group
 		any_neighbor_province = {
 			OR = {
-				culture_group = hellenic
+				culture_group = hellenic_group
 				culture_group = mleccha_group
 			}
 		}
 		owner = {
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 			num_of_cities = 10
 			neither_tribal_nor_native_trigger = yes
-			culture_group = hellenic
+			culture_group = hellenic_group
 			OR = {
 				is_heterodox_trigger = yes
 				is_orthodox_trigger = yes
@@ -306,9 +306,9 @@ province_event = {
 		}
 		else_if = {
 			limit = { is_religion_enabled = zoroastrianism }
-			change_religion = zurvanism
+			change_religion = zoroastrianism
 		}
-		else = { change_religion = mitraism }
+		else = { change_religion = iranian_religion }
 	}
 }
 
@@ -376,9 +376,9 @@ province_event = {
 		}
 		else_if = {
 			limit = { is_religion_enabled = zoroastrianism }
-			change_religion = zurvanism
+			change_religion = zoroastrianism
 		}
-		else = { change_religion = mitraism }
+		else = { change_religion = iranian_religion }
 	}
 }
 
@@ -406,10 +406,12 @@ province_event = {
 			superregion = iran_superregion
 		}
 		NOT = { exists = URT }
-		exists = ARM
-		any_neighbor_province = {
-			culture_group = armenian_group
+		NOT = { has_global_flag = ishkuza_missions_death_urartu_flag }
+		OR = {
+			exists = ARM
+			exists = SPH
 		}
+		any_neighbor_province = { culture_group = armenian_group }
 		owner = {
 			NOT = { culture_group = urarto_hurrian_group }
 			NOT = { primary_culture = mushki }
@@ -431,27 +433,22 @@ province_event = {
 			factor = 0.75
 			owner = {
 				culture_group = western_iranian
-			}			
-		}			
+			}
+		}
 	}
 	option = {
 		name = "culture_provinces.12.a"
 		ai_chance = { factor = 30 }
 		if = {
-			limit = { region = sophene_region }
-			change_culture = sophene
-			add_core = SPH
-		}
-		else_if = {
 			limit = {
 				OR = {
-					area = commagene_area
-					area = amanus_mons_area
-					area = cataonia_area
+					region = sophene_region
+					region = cappadocia_region
+					region = bithynia_et_pontus
 				}
 			}
-			change_culture = commagene
-			add_core = CMM
+			change_culture = sophene
+			add_core = SPH
 		}
 		else = {
 			change_culture = armenian
@@ -477,7 +474,7 @@ country_event = {
 		owns_core_province = 989
 		OR = {
 			any_owned_province = {
-				culture_group = hellenic
+				culture_group = hellenic_group
 			}
 			alliance_with = ATH
 		}
@@ -493,8 +490,8 @@ country_event = {
 	option = {
 		name = "culture_provinces.11.a"
 		ai_chance = { factor = 99 }
-		change_primary_culture = ionic
-		989 = { change_culture = ionic }
+		change_primary_culture = attic
+		989 = { change_culture = attic }
 	}
 	option = {
 		name = "culture_provinces.11.b"
@@ -515,7 +512,7 @@ country_event = {
 	picture = tradecity
 	
 	trigger = {
-		culture_group = hellenic
+		culture_group = hellenic_group
 		owns_core_province = 989
 		989 = { culture = lemnian }
 	}
@@ -827,47 +824,87 @@ province_event = {
 	picture = city
 	
 	trigger = {
+		culture = syro_hittite
 		OR = {
 			region = syria_region
-			region = asia_minor
+			region = assyria_region
+			region = ciseuphratia_region
+			region = sophene_region
+			region = cappadocia_region
+			region = cilicia_region
 		}
-		culture = syro_hittite
-		NOT = {
-			owner = { primary_culture = syro_hittite }
-		}
-		any_neighbor_province = {
-			culture = syriac
-		}
+		NOT = { owner = { primary_culture = syro_hittite } }
+		any_neighbor_province = { culture = syriac }
 	}
 	
 	mean_time_to_happen = {
 		months = 1200
 		modifier = {
-				factor = 0.6
-				owner = {
-					culture = syriac
-				}
+			factor = 0.6
+			owner = { culture = syriac }
 		}			
 	}
 	
 	option = {
 		name = "culture_provinces.4.a"
 		ai_chance = { factor = 30 }
-			change_culture = syriac
-			IF = {
-				limit = {
-					province_id = 2322
-					LUH = { NOT = { primary_culture = syriac } }
-				}
-				LUH = { change_primary_culture = syriac }
+		change_culture = syriac
+		if = {
+			limit = {
+				NOT = { exists = QAR }
+				province_id = 2347
+				QAR = { NOT = { primary_culture = syriac } }
 			}
-			IF = {
-				limit = {
-					province_id = 2347
-					QAR = { NOT = { primary_culture = syriac } }
-				}
-				QAR = { change_primary_culture = syriac }
+			QAR = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = SI2 }
+				province_id = 2342
+				SI2 = { NOT = { primary_culture = syriac } }
 			}
+			SI2 = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = SI3 }
+				province_id = 4898
+				SI3 = { NOT = { primary_culture = syriac } }
+			}
+			SI3 = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = SI4 }
+				province_id = 4935
+				SI4 = { NOT = { primary_culture = syriac } }
+			}
+			SI4 = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = SI5 }
+				province_id = 2322
+				SI5 = { NOT = { primary_culture = syriac } }
+			}
+			SI5 = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = U21 }
+				province_id = 2339
+				U21 = { NOT = { primary_culture = syriac } }
+			}
+			U21 = { change_primary_culture = syriac }
+		}
+		if = {
+			limit = {
+				NOT = { exists = CMM }
+				province_id = 2344
+				CMM = { NOT = { primary_culture = sophene } }
+			}
+			CMM = { change_primary_culture = sophene }
+		}
 	}
 }
 
@@ -884,27 +921,22 @@ province_event = {
 	trigger = {
 		OR = {
 			region = syria_region
+			region = ciseuphratia_region
 			region = assyria_region
 		}
 		culture = hurrian
 		owner = {
 			TAG = MIT
-			NOT = {
-				has_country_modifier = hanigalbat_identity
-			}
+			NOT = { has_country_modifier = hanigalbat_identity }
 		}
-		any_neighbor_province = {
-			culture = syriac
-		}
+		any_neighbor_province = { culture = syriac }
 	}
 	
 	mean_time_to_happen = {
 		months = 1440
 		modifier = {
 			factor = 0.9
-			owner = {
-				TAG = BAB
-			}			
+			owner = { TAG = BAB }			
 		}
 		modifier = {
 			factor = 1.75
@@ -916,42 +948,32 @@ province_event = {
 		}
 		modifier = {
 			factor = 1.25
-			province_id = 2372		
+			province_id = 2372
 		}
 		modifier = {
 			factor = 0.85
-			owner = {
-				TAG = ASY
-			}			
+			owner = { TAG = ASY }			
 		}
 		modifier = {
 			factor = 0.5
-			owner = {
-				TAG = PSE
-			}			
+			owner = { TAG = PSE }			
 		}
 		modifier = {
 			factor = 0.4
-			owner = {
-				culture_group = semitic
-			}
+			owner = { culture_group = semitic }
 		}
 		modifier = {
 			factor = 0.2
-			owner = {
-				culture = syriac
-			}
+			owner = { culture = syriac }
 		}					
 	}
 	option = {
 		name = "culture_provinces.3.a"
 		ai_chance = { factor = 30 }
-			change_culture = syriac
-			if = {
-				limit = {
-					NOT = { owned_by = MIT }
-				}
-				remove_core = MIT
-			}
+		change_culture = syriac
+		if = {
+			limit = { NOT = { owned_by = MIT } }
+			remove_core = MIT
+		}
 	}
 }

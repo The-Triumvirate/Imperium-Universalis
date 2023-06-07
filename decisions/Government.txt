@@ -1,8 +1,8 @@
 country_decisions = {
 	############################################
-	 abolish_slavers_dec = {
+	abolish_slavers_dec = {
 		potential = {
-			NOT = { has_country_modifier = slavery_abolished }
+			always = no
 			
 		}
 		allow = {
@@ -20,6 +20,7 @@ country_decisions = {
 			}
 			add_stability = -1	
 			set_variable = { which = slaves value = 0 }
+			country_event = { id = slaves.1 days = 2 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -35,7 +36,7 @@ country_decisions = {
 				}
 		}
 	}
-	 introduce_slavers_dec = {
+	introduce_slavers_dec = {
 		potential = {
 			always = no
 		}
@@ -54,7 +55,7 @@ country_decisions = {
 		}
 	}
 	#verbot von schuldsklaverei
-	 ban_debt_slavery = {
+	ban_debt_slavery = {
 		potential = {
 			NOT = { has_country_modifier = slavery_abolished }
 			NOT = { has_country_modifier = debt_bondage_banned }
@@ -78,20 +79,26 @@ country_decisions = {
 	
 	heir_as_coruler = {
 		potential = {
-			OR = {
-				has_reform = despotism_reform
-				has_reform = epirote_monarchy_reform
-			}
+			has_heir = yes
+			NOT = { government = republic }
 			NOT = { has_ruler_modifier = heir_is_coruler }
+			ai = no
+			is_tribal_federation_trigger = no
 		}
 		allow = {
-			has_female_heir = no
 			heir_age = 15
 		}
 		effect = {
 			add_ruler_modifier = { name = heir_is_coruler }
 			add_heir_claim = 20
 			add_legitimacy = -10
+			add_republican_tradition = -3
+			#hidden_effect = {
+			#	country_event = {
+			#		id = government.38
+			#		days = 35
+			#	}
+			#}
 		}
 		ai_will_do = {
 			factor = 1
@@ -109,15 +116,21 @@ country_decisions = {
 	dismiss_heir_as_corruler = {
 		potential = {
 			has_ruler_modifier = heir_is_coruler
+			ai = no
 		}
 		allow = {
 			stability = 1
 		}
 		effect = {
 			remove_country_modifier = heir_is_coruler
-			add_prestige = -25
+			add_prestige = -20
 			add_stability = -1
-			
+			#hidden_effect = {
+			#	country_event = {
+			#		id = government.39
+			#		days = 0
+			#	}
+			#}
 			random_owned_province = {
 				limit = { is_in_capital_area = yes }
 				spawn_rebels = {
@@ -142,27 +155,54 @@ country_decisions = {
 	
 	coronation_decision = {
 		potential = {
-			NOT = { has_ruler_modifier = ruler_coronation }
+			NOT = { has_ruler_flag = ruler_coronation }
 			government = monarchy
-			NOT = { government = tribal }
-			NOT = { government = native }
+			neither_tribal_nor_native_trigger = yes
 			has_consort_regency = no
 			has_regency = no
 		}
 		allow = {
-			years_of_income = 0.5
 			NOT = { has_disaster = succession_crisis_disaster }
-		}
-		effect = {
-			add_years_of_income = -0.5
-			add_prestige = 10
-			add_legitimacy = 10
-			add_ruler_modifier = {
-				name = ruler_coronation
+			if = {
+				limit = { ai = yes }
+				treasury = 50
 			}
 		}
+		effect = {
+			country_event = {  id = monarchy.12 }
+        }
+		
 		ai_will_do = {
 			factor = 1
+			modifier = {
+			    factor = 0
+			    OR = {
+					is_bankrupt = yes
+					is_in_large_debt = yes
+					NOT = { treasury = 60 }
+				}
+			}
+			modifier = {
+			    factor = 4
+				NOT = { legitimacy = 50 }
+			}
+			modifier = {
+			    factor = 2
+				NOT = { legitimacy = 80 }
+				legitimacy = 50
+			}
+			modifier = {
+			    factor = 2
+				treasury = 200
+			}
+			modifier = {
+			    factor = 3
+				treasury = 400
+			}
+			modifier = {
+			    factor = 4
+				treasury = 1000
+			}
 		}
 	}
 	
@@ -234,39 +274,14 @@ country_decisions = {
 			factor = 1
 		}
 	}
-	
-	harvest_festivals_decision = {
-		potential = {
-			NOT = {	government = native }
-			NOT = { has_country_modifier = harvest_festivals_hold_modifier }
-			ai = no
-		}
-		allow = {
-			is_month = 8
-			NOT = { is_month = 11 }
-			is_at_war = no
-			has_any_disaster = no
-			years_of_income = 0.2
-			absolutism = 10
-		}
-		effect = {
-			add_years_of_income = -0.2
-			add_absolutism = -2
-			add_country_modifier = {
-				name = harvest_festivals_hold_modifier
-				duration = 90
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-	}
 
 	advance_government_reforms_decision = {
+	    major = yes
 		potential = {
 			adm_tech = 8
 			neither_tribal_nor_native_trigger = yes
 			NOT = { has_country_modifier = faster_government_reforms_modifier }
+			NOT = { is_year = 400 }
 			has_any_disaster = no
 			legitimacy_equivalent = 60
 		}
@@ -280,7 +295,6 @@ country_decisions = {
 			add_stability = -1
 			add_absolutism = -10
 			add_adm_power = -100
-			change_government_reform_progress = 100
 			add_country_modifier = {
 				name = faster_government_reforms_modifier
 				duration = 5475
@@ -373,9 +387,106 @@ country_decisions = {
 			}
 			modifier = {
 				factor = 0
-				culture_group = hellenic
+				culture_group = hellenic_group
 			}
 		}
 	}
-}
+	
+#low crownland, seize_crownland
+	seize_crownland = {
+	    potential = {
+		    NOT = { crown_land_share = 20 }
+		}
+		allow = {
+		    is_at_war = no
+			NOT = { corruption = 20 }
+			absolutism = 20
+		}
+		effect = {
+		    add_stability = -2
+			add_absolutism = -15
+			add_legitimacy = -20
+			add_republican_tradition = -15
+			add_devotion = -15
+			add_meritocracy = -10
+			
+		    change_estate_land_share = {
+                estate = estate_nobility
+                share = -5
+			}
+			change_estate_land_share = {
+                estate = estate_priesthood
+                share = -5
+			}
+			change_estate_land_share = {
+                estate = estate_merchants
+                share = -5
+			}
+			change_estate_land_share = {
+                estate = estate_clans
+                share = -5
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
 
+#bank interaction
+    banking = {
+	    potential = {
+		    NOT = { government = tribal }
+			full_idea_group = financial_ideas
+		}
+	    allow = {
+			has_institution = coin_usage
+		}
+		effect = {
+		    country_event = { id = government.33 }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+				    has_country_modifier = private_banking
+		            has_country_modifier = central_banking
+		            has_country_modifier = independent_central_banking
+		            has_country_modifier = noble_banking
+		            has_country_modifier = merchant_banking
+		            has_country_modifier = clergy_banking
+		            has_country_modifier = jewish_banking
+			    }
+		    }
+		}
+	}
+
+#inflation fight
+    inflation_fight_decision = {
+	    major = yes
+	    potential = {
+		    NOT = { has_country_modifier = inflation_fight }
+		}
+		allow = {
+		    always = yes
+		}
+		effect = {
+		    add_war_exhaustion = 2
+			add_mercantilism = -2
+			add_stability = -2
+			add_absolutism = -4
+			add_inflation = -5
+		    add_country_modifier = {
+				name = inflation_fight
+				duration = 1826
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { inflation = 2 }
+		    }
+		}
+	}
+}

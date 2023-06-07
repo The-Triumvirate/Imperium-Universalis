@@ -270,38 +270,55 @@ province_event = {
 	goto = ROOT
 
 	trigger = {
-		OR = {
-			culture = byeonhan_culture
-			culture = mumun
-		}
-		any_neighbor_province = {
-			culture_group = korean_group
-		}
-		superregion = korea_superregion
 		is_island = no
-		if = {
-			limit = {
-				owner = { culture_group = japonic_group }
+		OR = {
+			culture = byeonhan
+			culture = tamna
+		}
+		any_neighbor_province = { culture_group = korean_group }
+		NOT = {
+			owner = {
+				OR = {
+					TAG = GYA
+					TAG = KO9
+				}
 			}
+		}
+		has_global_flag = korean_culture_spread_south_flag
+		OR = {
+			region = mahan_region
+			region = dongye_region
+			region = lelang_zhenfan_region
+			region = yemaek_region
+			#Byeonhan
+			area = sollim_paek_area
+			area = hyesong_area
+			area = buan_area
+			#Jinhan
+			area = kamme_baeki_area
+			area = jinhan_area
+			area = nannan_area
+			area = saro_area
+			area = soyabol_area
+			area = silla_area
+		}
+		if = {
+			limit = { owner = { culture_group = japonic_group } }
 			owner = {
 				government = tribal
 				government = native
 			}
 		}
 		if = {
-			limit = {
-				owner = { culture_group = korean_group }
-			}
-			owner = {
-				has_any_disaster = no
-			}
+			limit = { owner = { culture_group = korean_group } }
+			owner = { has_any_disaster = no }
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 1200
+		months = 600
 		modifier = {
-			factor = 1.1
+			factor = 1.25
 			owner = {
 				culture_group = japonic_group
 				absolutism = 20
@@ -357,11 +374,11 @@ province_event = {
 	option = {
 		name = "korean.3.a"
 		if = {
-			limit = { culture = mumun }
+			limit = { culture = tamna }
 			change_culture = mahan
 		}
 		if = {
-			limit = { culture = byeonhan_culture }
+			limit = { culture = byeonhan }
 			change_culture = jinhan
 		}
 		if = {
@@ -382,9 +399,10 @@ country_event = {
 
 	trigger = {
 		OR = {
-			primary_culture = byeonhan_culture
-			primary_culture = mumun
+			primary_culture = byeonhan
+			primary_culture = tamna
 		}
+		has_global_flag = korean_culture_spread_south_flag
 		capital_scope = {
 			is_island = no
 			culture_group = korean_group
@@ -406,13 +424,7 @@ country_event = {
 		name = "korean.301.a"
 		ai_chance = { factor = 90 }
 		if = {
-			limit = {
-				capital_scope = {
-					OR = {
-						region = mahan_region
-					}
-				}
-			}
+			limit = { capital_scope = { region = mahan_region } }
 			change_primary_culture = mahan
 		}
 		if = {
@@ -432,6 +444,51 @@ country_event = {
 		name = "korean.301.b"
 		ai_chance = { factor = 10 }
 		add_adm_power = -100
+	}
+}
+
+########################################################################################
+# Start of korean culture in the south
+########################################################################################
+country_event = {
+	id = korean.302
+	title = "korean.302.t"
+	desc = "korean.302.d"
+	picture = ritual_feast
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		culture_group = japonic_group
+		is_year = 454
+		NOT = { started_in = 454.1.1 }
+		any_country = {
+			culture_group = korean_group
+			prestige = 1
+			total_development = 40
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			exists = GOJ
+		}
+		modifier = {
+			factor = 0.5
+			any_country = {
+				culture_group = korean_group
+				is_rival = YAN
+			}
+		}
+	}
+
+	option = {
+		name = "korean.302.a"
+		ai_chance = { factor = 90 }
+		custom_tooltip = korean.ct.5
+		hidden_effect = { set_global_flag = korean_culture_spread_south_flag }
 	}
 }
 
@@ -512,9 +569,7 @@ country_event = {
 		ai_chance = { factor = 90 }
 		hidden_effect = {
 			kill_ruler = yes
-			kill_leader = {
-				type = "Wiman"
-			}
+			kill_leader = { type = "Wiman" }
 		}
 		define_ruler = {
 			name = "Wiman"
@@ -533,18 +588,12 @@ country_event = {
 		ai_chance = { factor = 10 }
 		kill_ruler = yes
 		add_legitimacy = -40
-		hidden_effect = {
-			set_saved_name = {
-				key = wiman_rebel
-				type = simple
-				name = "Wiman Wiman Joseon"
-			}
-		}
 		random_owned_province = {
 			spawn_rebels = {
 				type = pretender_rebels
 				size = 3
-				leader = wiman_rebel
+				leader = "Wiman"
+				leader_dynasty = "Wiman Joseon"
 				win = yes
 			}
 		}
@@ -562,11 +611,12 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
+		owns = 5934
 		capital_scope = {
 			OR = {
 				region = mahan_region
-				region = byeonhan_region
 				region = jinhan_region
+				region = byeonhan_region
 			}
 		}
 		has_global_flag = jun_goes_south_flag
@@ -576,25 +626,17 @@ country_event = {
 		months = 2
 	}
 
-	immediate = {
-		clr_global_flag = jun_goes_south_flag
-	}
+	immediate = { clr_global_flag = jun_goes_south_flag }
 
 	option = {
 		name = "korean.6.a"
 		ai_chance = { factor = 90 }
-		hidden_effect = {
-			set_saved_name = {
-				key = jun_joseon_rebel
-				type = simple
-				name = "Jun Gija Joseon"
-			}
-		}
 		5934 = {
 			spawn_rebels = {
 				type = pretender_rebels
 				size = 3
-				leader = jun_joseon_rebel
+				leader = "Jun"
+				leader_dynasty = "Gija Joseon"
 				win = yes
 			}
 		}
@@ -635,10 +677,12 @@ country_event = {
 	}
 
 	immediate = {
-		set_saved_name = {
-			key = gojoseon_refugee_pretender
-			type = advisor
-			scope = FROM
+		hidden_effect = {
+			set_saved_name = {
+				key = gojoseon_refugee_pretender
+				type = advisor
+				scope = FROM
+			}
 		}
 	}
 
@@ -648,10 +692,7 @@ country_event = {
 		custom_tooltip = korean.ct.1
 		hidden_effect = {
 			if = {
-				limit = {
-					CIN = { ai = yes }
-					exists = CIN
-				}
+				limit = { exists = CIN }
 				CIN = { country_event = { id = korean.701 } }
 			}
 			else = {
@@ -708,20 +749,26 @@ country_event = {
 #Jin collapses
 country_event = {
 	id = korean.701
-	title = "korean.7.t"
-	desc = "korean.7.d"
+	title = "korean.701.t"
+	desc = "korean.701.d"
 	picture = plundering
 	fire_only_once = yes
 	is_triggered_only = yes
-	hidden = yes
 
 	trigger = {
 		TAG = CIN
 		NOT = { started_in = 646.1.1 }
+		any_owned_province = {
+			OR = {
+				region = mahan_region
+				region = byeonhan_region
+				region = jinhan_region
+			}
+		}
 	}
 
 	option = {
-		name = "korean.7.a"
+		name = "korean.701.a"
 		ai_chance = { factor = 90 }
 		CIN = {
 			add_stability = -6
@@ -731,85 +778,264 @@ country_event = {
 			add_dip_power = -999
 			add_mil_power = -999
 			release_all_subjects = yes
-			collapse_nation = yes
-			every_owned_province = {
-				limit = { can_spawn_rebels = nationalist_rebels }
-				spawn_rebels = {
-					size = 3
-					type = nationalist_rebels
-					win = yes
+		}
+		hidden_effect = {
+			mahan_region = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO6
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO6
+					cede_province = KO6
+				}
+			}
+			sollim_paek_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO6
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO6
+					cede_province = KO6
+				}
+			}
+			buan_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO6
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO6
+					cede_province = KO6
+				}
+			}
+			hyesong_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO6
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO6
+					cede_province = KO6
+				}
+			}
+			silla_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			soyabol_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			nannan_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			jinhan_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			saro_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			sinwolson_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO7
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO7
+					cede_province = KO7
+				}
+			}
+			wonji_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO9
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO9
+					cede_province = KO9
+				}
+			}
+			byeonhan_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO9
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO9
+					cede_province = KO9
+				}
+			}
+			tai_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO9
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO9
+					cede_province = KO9
+				}
+			}
+			yecheon_area = {
+				if = {
+					limit = {
+						owner = {
+							TAG = CIN
+							ai = no
+						}
+					}
+					add_core = KO9
+				}
+				else_if = {
+					limit = { owner = { TAG = CIN } }
+					add_core = KO9
+					cede_province = KO9
 				}
 			}
 		}
-		mahan_region = {
-			limit = { owner = { ai = no } }
-			cede_province = KO6
-			add_core = KO6
-		}
-		sollim_paek_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO6
-			add_core = KO6
-		}
-		buan_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO6
-			add_core = KO6
-		}
-		hyesong_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO6
-			add_core = KO6
-		}
-		silla_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		soyabol_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		nannan_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		jinhan_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		saro_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		sinwolson_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO7
-			add_core = KO7
-		}
-		wonji_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO9
-			add_core = KO9
-		}
-		byeonhan_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO9
-			add_core = KO9
-		}
-		tai_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO9
-			add_core = KO9
-		}
-		yecheon_area = {
-			limit = { owner = { ai = no } }
-			cede_province = KO9
-			add_core = KO9
+	}
+
+	after = {
+		hidden_effect = {
+			if = { 
+				limit = { ai = no }
+				every_owned_province = {
+					limit = {
+						OR = {
+							is_core = KO9
+							is_core = KO7
+							is_core = KO6
+						}
+					}
+					add_nationalism = 20
+					add_unrest = 5
+					spawn_rebels = {
+						size = 2
+						type = nationalist_rebels
+					}
+				}
+			}
+			else = {
+				every_province = {
+					limit = {
+						NOT = { owned_by = CIN }
+						is_core = CIN
+					}
+					remove_core = CIN
+				}
+			}
 		}
 	}
 }
@@ -827,10 +1053,12 @@ country_event = {
 		NOT = { TAG = GOJ }
 		OR = {
 			primary_culture = jinhan
+			primary_culture = byeonhan
 			primary_culture = mahan
 			primary_culture = puyo_culture
-			primary_culture = gojoseon
 			primary_culture = yemaek
+			primary_culture = ye
+			primary_culture = maek
 			primary_culture = okjeo
 			primary_culture = dongye
 		}
@@ -867,78 +1095,30 @@ country_event = {
 	option = {
 		name = "korean.8.a"
 		ai_chance = { factor = 90 }
-		if = {
-			limit = {
-				OR = {
-					primary_culture = gojoseon
-					primary_culture = puyo_culture
-					primary_culture = yemaek
-					primary_culture = okjeo
-					primary_culture = dongye
-				}
-			}
-			change_primary_culture = goguryeo
-		}
-		if = {
-			limit = {
-				primary_culture = jinhan
-				capital_scope = { region = jinhan_region }
-			}
-			change_primary_culture = sillan
-		}
-		if = {
-			limit = {
-				primary_culture = jinhan
-				OR = {
-					capital_scope = { region = byeonhan_region }
-					TAG = KO9
-					TAG = GYA
-				}
-			}
-			change_primary_culture = gaya
-		}
-		if = {
-			limit = {
-				primary_culture = mahan
-			}
-			change_primary_culture = baekje
+		trigger_switch = {
+			on_trigger = primary_culture
+			puyo_culture = { change_primary_culture = goguryeo }
+			yemaek = { change_primary_culture = goguryeo }
+			ye = { change_primary_culture = goguryeo }
+			maek = { change_primary_culture = goguryeo }
+			okjeo = { change_primary_culture = goguryeo }
+			dongye = { change_primary_culture = goguryeo }
+			jinhan = { change_primary_culture = sillan }
+			byeonhan = { change_primary_culture = gaya }
+			mahan = { change_primary_culture = baekje }
 		}
 		every_owned_province = {
-			if = {
-				limit = {
-					OR = {
-						culture = gojoseon
-						culture = puyo_culture
-						culture = yemaek
-						culture = okjeo
-						culture = dongye
-					}
-				}
-				change_culture = goguryeo
-			}
-			if = {
-				limit = {
-					culture = jinhan
-					region = jinhan_region
-				}
-				change_culture = sillan
-			}
-			if = {
-				limit = {
-					culture = jinhan
-					OR = {
-						region = byeonhan_region
-						owned_by = KO9
-						owned_by = GYA
-					}
-				}
-				change_culture = gaya
-			}
-			if = {
-				limit = {
-					culture = mahan
-				}
-				change_culture = baekje
+			trigger_switch = {
+				on_trigger = culture
+				puyo_culture = { change_culture = goguryeo }
+				yemaek = { change_culture = goguryeo }
+				ye = { change_culture = goguryeo }
+				maek = { change_culture = goguryeo }
+				okjeo = { change_culture = goguryeo }
+				dongye = { change_culture = goguryeo }
+				jinhan = { change_culture = sillan }
+				byeonhan = { change_culture = gaya }
+				mahan = { change_culture = baekje }
 			}
 		}
 		add_adm_tech = 1
@@ -960,6 +1140,7 @@ country_event = {
 
 	trigger = {
 		ai = yes
+		is_subject = no
 		NOT = { exists = CIN }
 		NOT = { is_year = 646 }
 		NOT = { started_in = 254.1.1 }
@@ -976,9 +1157,10 @@ country_event = {
 		}
 		any_known_country = {
 			technology_group = korean
+			is_subject = no
 			capital_scope = {
 				OR = {
-					region = gojoseon_region
+					region = yemaek_region
 					region = dangun_gojoseon_region
 					region = lelang_zhenfan_region
 					region = dongye_region
@@ -1006,11 +1188,12 @@ country_event = {
 						region = mahan_region
 					}
 				}
+				is_subject = no
 			}
 			country_event = { id = korean.2 }
 		}
 		add_country_modifier = {
-			name = abandoned_kingdom_modifier
+			name = ai_jin_handicap
 			duration = 7300
 		}
 		add_manpower = 10
@@ -1051,12 +1234,12 @@ province_event = {
 	option = {
 		name = "korean.10.a"
 		ai_chance = { factor = 90 }
-		pyeongyangseong_area = {
+		lelang_area = {
+			limit = { owner = { ai = yes } }
 			cede_province = GOJ
 			add_core = GOJ
 		}
 		GOJ = {
-			set_capital = 5889
 			if = {
 				limit = {
 					LEL = {
@@ -1084,6 +1267,7 @@ province_event = {
 				}
 				inherit = KO3
 			}
+			set_capital = 5889
 		}
 	}
 }
@@ -1188,7 +1372,7 @@ country_event = {
 			max_random_adm = 2
 			max_random_mil = 2
 			dip = 4
-			culture = byeonhan_culture
+			culture = byeonhan
 		}
 		custom_tooltip = korean.ct.4
 		hidden_effect = {
@@ -1222,12 +1406,17 @@ country_event = {
 		change_adm = 1
 		change_dip = 1
 		change_mil = 1
-		add_republican_tradition = -5
+		add_scaled_republican_tradition = -8
 		random_list = {
 			60 = {
-				add_absolutism = 5
+				add_adm_power = 25
+				add_dip_power = 25
+				add_mil_power = 25
 			}
 			30 = {
+				add_absolutism = 5
+			}
+			10 = {
 				add_stability = 1
 			}
 		}
@@ -1332,7 +1521,7 @@ country_event = {
 			max_random_adm = 2
 			max_random_mil = 2
 			dip = 4
-			culture = byeonhan_culture
+			culture = byeonhan
 		}
 		custom_tooltip = korean.ct.4
 		hidden_effect = {
@@ -1382,7 +1571,7 @@ country_event = {
 		capital_scope = {
 			OR = {
 				region = dangun_gojoseon_region
-				region = gojoseon_region
+				region = yemaek_region
 				region = lelang_zhenfan_region
 			}
 		}
@@ -1406,7 +1595,7 @@ country_event = {
 			limit = {
 				OR = {
 					region = dangun_gojoseon_region
-					region = gojoseon_region
+					region = yemaek_region
 					region = lelang_zhenfan_region
 				}
 			}
@@ -1423,7 +1612,7 @@ country_event = {
 			limit = {
 				OR = {
 					region = dangun_gojoseon_region
-					region = gojoseon_region
+					region = yemaek_region
 					region = lelang_zhenfan_region
 				}
 			}
@@ -1447,9 +1636,7 @@ country_event = {
 			religion = muism
 		}
 		is_religion_reformed = no
-		capital_scope = {
-			region = mahan_region
-		}
+		capital_scope = { region = mahan_region }
 		is_year = 500
 		NOT = { started_in = 646.1.1 }
 	}
@@ -1546,6 +1733,7 @@ country_event = {
 	title = "korean.13.t"
 	desc = "korean.13.d"
 	picture = religious
+	is_triggered_only = yes
 	
 	trigger = {
 		ai = no
@@ -1554,6 +1742,8 @@ country_event = {
 			religion = shinto
 			religion = legalism
 			religion = taoism
+			religion = confucianism
+			religion = mohism
 			religion = liyuebadao
 			religion = chinese_religion
 		}
@@ -1564,18 +1754,241 @@ country_event = {
 	
 	option = {
 	    name = "korean.13.a"
-		add_stability = 1
+		add_adm_power = 100
 		every_owned_province = {
 			if = {
 				limit = {
 					OR = {
-						culture = jinhan
-						culture = mahan
-						culture = dongye
+						has_owner_accepted_culture = yes
+						has_owner_culture = yes
 					}
 				}
 				change_culture = chaoxian
 			}
 		}
 	}
+	option = {
+	    name = "korean.13.b"
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# Old capital of Gojoseon is captured!											   #
+########################################################################################
+
+province_event = {
+	id = korean.14
+	title = "korean.14.t"
+	desc = "korean.14.d"
+	picture = military_parade
+	is_triggered_only = yes
+	
+	trigger = {
+		owned_by = GOJ
+		province_id = 4001
+	}
+	
+	option = {
+		name = "korean.14.a"
+		ai_chance = {
+			factor = 25
+		}
+		GOJ = {
+			add_prestige = 4
+			add_legitimacy = 8
+			add_adm_power = 25
+			add_mil_power = 25
+			add_dip_power = 25
+		}
+		4001 = {
+			change_province_name = "Jangdanggyeong"
+			rename_capital = "Jangdanggyeong"
+			add_core = GOJ
+			change_religion = muism
+			add_base_tax = 1
+			add_base_production = 2
+			add_base_manpower = -2
+		}
+	}
+}
+
+#Recognition by China
+country_event = {
+	id = korean.15
+	title = "korean.15.t"
+	desc = "korean.15.d"
+	picture = religious
+
+    trigger = {
+        NOT = { tag = NHN }
+		religion = shinto
+        owns_all_provinces = { region = saikaido_region }
+    }
+	
+	mean_time_to_happen = {
+	    months = 1
+	}
+	
+	option = {
+	    name = korean.15.a
+		restore_country_name = yes
+		change_tag = NHN
+		add_prestige = -20
+    }
+}
+
+#Chaoxian
+country_event = {
+    id = korean.16
+	title = "korean.16.t"
+	desc = "korean.16.d"
+	picture = religious
+	
+	trigger = { 
+	    OR = {
+		    culture_group = korean_group
+			culture_group = japonic_group
+		}
+		is_religion_reformed = yes
+		has_reform = chinese_feudalism_reform
+		OR = {
+		    has_country_flag = accepted_zhuxia_help
+			had_country_flag = {
+				flag = denied_zhuxia_help
+				days = 1
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+	    months = 200
+	}
+	
+	option = { #accept fully
+	    name = korean.16.a
+	    add_stability = 1
+		change_government_reform_progress = 150
+		add_prestige = 25
+		if = {
+		    limit = { culture_group = korean_group }
+			change_primary_culture = chaoxian
+		}
+		if = {
+		    limit = { culture_group = japonic_group }
+			change_primary_culture = yayoi
+		}
+		change_religion = chinese_religion
+		set_country_flag = accepted_zhuxia_help
+	}
+	
+	option = { #only culture
+	    name = korean.16.b
+	    add_prestige = 15
+		change_government_reform_progress = 100
+		if = {
+		    limit = { culture_group = korean_group }
+			change_primary_culture = chaoxian
+		}
+		if = {
+		    limit = { culture_group = japonic_group }
+			change_primary_culture = yayoi
+		}
+		set_country_flag = accepted_zhuxia_help
+    }
+	
+	option = { #only religion
+	    name = korean.16.c
+		add_prestige = 10
+		change_government_reform_progress = 50
+		change_religion = chinese_religion
+		set_country_flag = accepted_zhuxia_help
+	}
+
+    option = { #refuse
+	    name = korean.16.e
+	    add_prestige = -20
+		set_country_flag = denied_zhuxia_help
+	}
+}
+
+#Buyeo
+country_event = {
+	id = korean.17
+	title = "korean.17.t"
+	desc = "korean.17.d"
+	picture = construction
+	major = yes
+	fire_only_once = yes
+
+    trigger = {
+		has_discovered = 6080
+		6080 = { is_empty = yes }
+		NOT = { has_global_flag = buyeo_appeared_flag }
+		OR = {
+			is_year = 454
+			AND = {
+				culture_group = korean_group
+				has_institution = iron_age
+			}
+			AND = {
+				culture_group = korean_group
+				neither_tribal_nor_native_trigger = yes
+			}
+			AND = {
+				exists = GOJ
+				GOJ = { mission_completed = GOJ_continue_colonize }
+			}
+		}
+    }
+	
+	mean_time_to_happen = {
+	    months = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_global_flag = buyeo_appeared_flag }
+	}
+	
+	option = {
+	    name = korean.17.a
+		buyeo_area = {
+			limit = { is_empty = yes }
+			add_core = BUY
+			cede_province = BUY
+		}
+		6080 = {
+			if = {
+				limit = { owned_by = BUY }
+				change_trade_goods = metalware
+				add_building = small_city_walls
+			}
+		}
+		seobuyeo_area = {
+			limit = { is_empty = yes }
+			add_core = BUY
+			cede_province = BUY
+		}
+		6068 = {
+			if = {
+				limit = { owned_by = BUY }
+				change_trade_goods = horses
+				add_building = small_city_walls
+			}
+		}
+		bukbuyeo_area = {
+			limit = { is_empty = yes }
+			add_core = BUY
+			cede_province = BUY
+		}
+		BUY = {
+			change_government = tribal
+			add_government_reform = tribal_kingdom_reform
+			if = {
+				limit = { owns = 6080 }
+				set_capital = 6080
+			}
+			stabilize_country_effect = yes
+		}
+    }
 }

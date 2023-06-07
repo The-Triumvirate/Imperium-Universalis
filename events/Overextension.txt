@@ -1,0 +1,311 @@
+namespace = overextension
+
+# Troops Deserting
+country_event = {
+	id = overextension.1
+	title = "EVTNAME748"
+	desc = "EVTDESC748"
+	picture = germanics_2
+	
+	trigger = {
+		is_at_war = yes
+	}
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA748"
+		add_war_exhaustion = 3
+		add_yearly_manpower = -0.5
+	}
+}
+
+# Widespread Opposition
+country_event = {
+	id = overextension.2
+	title = "EVTNAME749"
+	desc = "EVTDESC749"
+	picture = civilwar
+	
+	trigger = {
+		if = {
+			limit = { ai = yes }
+			stability = 1
+		}
+		else = { stability = -2 }
+	}
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA749"
+		add_stability = -1
+	}
+}
+
+# Bad Reputation!
+country_event = {
+	id = overextension.3
+	title = "EVTNAME750"
+	desc = "EVTDESC750"
+	picture = execution
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		prestige = 0
+	}
+
+	option = {
+		name = "EVTOPTA750"
+		add_prestige = -25
+	}
+}
+
+# Inflation
+country_event = {
+	id = overextension.4
+	title = "EVTNAME751"
+	desc = "EVTDESC751"
+	picture = trade
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { inflation = 50 }
+	}
+
+	option = {
+		name = "EVTOPTA751"
+		add_inflation = 1
+	}
+}
+
+# Officers Deserting
+country_event = {
+	id = overextension.5
+	title = "EVTNAME752"
+	desc = "EVTDESC752"
+	picture = lostbattle
+
+	is_triggered_only = yes
+	
+	trigger = {
+		army_tradition = 10
+	}
+
+	option = {
+		name = "EVTOPTA752"
+		add_army_tradition = -10
+	}
+}
+
+# Merchants Resented
+country_event = {
+	id = overextension.6
+	title = "EVTNAME753"
+	desc = "EVTDESC753"
+	picture = tradecity
+
+	is_triggered_only = yes
+	
+	trigger = {
+		num_of_merchants = 1
+		any_active_trade_node = {
+			has_merchant = PREV
+			NOT = { 
+				has_trade_modifier = {
+					who = ROOT
+					name = merchant_recalled
+				}
+			}	
+		}
+	}
+
+	option = {
+		name = "EVTOPTA753"
+		random_active_trade_node = {
+			limit = {
+				NOT = { 
+					has_trade_modifier = {
+						who = ROOT
+						name = merchant_recalled
+					}
+				}				
+				has_merchant = PREV
+			}
+			if = {
+				limit = {
+					trade_share = {
+						country = ROOT
+						share = 5
+					}
+				}
+				add_trade_node_income = -10
+			}
+			add_trade_modifier = {
+				who = root
+				duration = 3650
+				power = -20
+				key = merchant_recalled
+			}
+		}
+	}
+}
+
+# Merchants Assassinated!
+country_event = {
+	id = overextension.7
+	title = "EVTNAME773"
+	desc = "EVTDESC773"
+	picture = oracle_suicide
+
+	is_triggered_only = yes
+	
+	trigger = {
+		num_of_merchants = 1
+		any_active_trade_node = {
+			has_merchant = PREV
+			NOT = { 
+				has_trade_modifier = {
+					who = ROOT
+					name = merchant_recalled
+				}
+			}
+		}	
+	}
+
+	option = {
+		name = "EVTOPTA773"
+		random_active_trade_node = {
+			limit = {
+				has_merchant = PREV
+				NOT = { 
+					has_trade_modifier = {
+						who = ROOT
+						name = merchant_recalled
+					}
+				}				
+			}
+			add_trade_modifier = {
+				who = root
+				duration = 3650
+				power = -30
+				key = merchant_recalled
+			}	
+		}		
+	}
+}
+
+# Legitimacy Questioned
+country_event = {
+	id = overextension.8
+	title = "EVTNAME754"
+	desc = "EVTDESC754"
+	picture = senat_conflict
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		legitimacy_equivalent = 40
+		NOT = { has_reform = celestial_empire }
+	}
+	
+	option = {
+		name = "EVTOPTA754"
+		if = {
+			limit = { has_reform = celestial_empire }
+			add_meritocracy = -15
+		}
+		else_if = {
+			limit = { has_reform = steppe_horde_reform }
+			add_horde_unity = -10
+		}
+		else_if = {
+			limit = {
+				OR = {
+					government = monarchy
+					is_monarchical_tribe = yes
+				}
+			}
+			add_legitimacy = -15
+		}
+		else_if = {
+			limit = {
+				OR = {
+					government = republic
+					is_republican_tribe = yes
+				}
+			}
+			add_republican_tradition = -10
+		}
+		else = { add_devotion = -15 }
+	}
+}
+
+# Magistrates Resigns
+country_event = {
+	id = overextension.9
+	title = "EVTNAME755"
+	desc = "EVTDESC755"
+	picture = ruler
+
+	is_triggered_only = yes
+	
+	trigger = {
+		dip_power = 10
+	}
+
+	option = {
+		name = "EVTOPTA755"
+		add_dip_power = -50
+	}
+}
+
+# Advisor Resigns
+country_event = {
+	id = overextension.10
+	title = "EVTNAME756"
+	desc = "EVTDESC756"
+	picture = young_student
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			advisor = philosopher_adv
+			advisor = mathematician
+			advisor = patrician
+			advisor = statesman_adv
+		}
+	}
+
+	option = {
+		name = "EVTOPTA756"
+		add_meritocracy = -20
+		if = {
+			limit = {
+				advisor = philosopher_adv
+			}
+			remove_advisor = philosopher_adv
+		}
+		if = {
+			limit = {
+				advisor = mathematician
+			}
+			remove_advisor = mathematician
+		}
+		if = {
+			limit = {
+				advisor = patrician
+			}
+			remove_advisor = patrician
+		}
+		if = {
+			limit = {
+				advisor = statesman_adv
+			}
+			remove_advisor = statesman_adv
+		}
+	}
+}

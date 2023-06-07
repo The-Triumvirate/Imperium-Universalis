@@ -9,181 +9,147 @@ country_event = {
 	desc = "media.1.d"
 	picture = battle
 	major = yes
+	fire_only_once = yes
 	
 	trigger = {
 		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
 		ai = yes
-		is_year = 160
-		NOT = { is_year = 180 }
-		NOT = { started_in = 165.1.1 }
-		NOT = { exists = ASY }
-		mil = 3
-		is_at_war = no
-		any_neighbor_country = {
-			NOT = {
-				OR = {
-					TAG = PSE
-					TAG = PRS
-					TAG = ANH
-					TAG = SAG
-					TAG = ARM
-				}
-			}
-			capital_scope = {
-				OR = {
-					superregion = sakastan_superregion
-					superregion = iran_superregion
-					superregion = parthia_superregion
-				}
-			}
-			OR = {
-				TAG = DH3
-				primary_culture = parni
-				technology_group = iranian
-			}
+		OR = {
+			has_ruler = "Uvakhkshatra I"
+			has_ruler = "Rshtivaiga I"
 		}
+		dynasty = "Khsharitha"
+		NOT = { started_in = 195.1.1 }
+		NOT = { is_year = 180 }
+		is_year = 160
+		mil = 4
+		stability = 1
+		legitimacy_equivalent = 90
+		NOT = { total_development = 1500 }
+		is_at_war = no
 	}
 	
 	mean_time_to_happen = {
-		months = 6
+		months = 12
 	}
 
 	option = {
 		name = "media.1.a"
-		custom_tooltip = media.ct.1
-		iran_superregion = {
-			limit = {
-				NOT = { owned_by = MDI }
-				NOT = { is_core = MDI }
-			}
-			add_permanent_claim = MDI
-		}
+		custom_tooltip = media_ct.1
 		hidden_effect = {
+			set_country_flag = historical_expansion_ai_flag
+			set_country_flag = block_triburary_creation_flag
+			set_ai_personality = {
+				personality = ai_militarist
+				locked = yes
+			}
+			iran_superregion = {
+				limit = {
+					NOT = { owned_by = MDI }
+					NOT = { is_core = MDI }
+				}
+				add_permanent_claim = MDI
+			}
+			baktria_region = {
+				limit = {
+					NOT = { owned_by = MDI }
+					NOT = { is_core = MDI }
+				}
+				add_permanent_claim = MDI
+			}
+			transoxiana_region = {
+				limit = {
+					NOT = { owned_by = MDI }
+					NOT = { is_core = MDI }
+				}
+				add_permanent_claim = MDI
+			}
+			parthia_superregion = {
+				limit = {
+					NOT = { owned_by = MDI }
+					NOT = { is_core = MDI }
+				}
+				add_permanent_claim = MDI
+			}
 			every_subject_country = {
 				limit = {
-					ai = yes
-					NOT = {
-						OR = {
-							TAG = PSE
-							TAG = PRS
-							TAG = ANH
-							TAG = SAG
-							TAG = ARM
-						}
-					}
+					NOT = { TAG = ANH }
+					NOT = { TAG = PSE }
 				}
-				ROOT = { inherit = PREV }
-			}
-			every_neighbor_country = {
-				if = {
-					limit = {
-						NOT = {
-							OR = {
-								TAG = PSE
-								TAG = PRS
-								TAG = ANH
-								TAG = SAG
-								TAG = ARM
-							}
-						}
-						is_subject = no
-						capital_scope = {
-							OR = {
-								superregion = sakastan_superregion
-								superregion = iran_superregion
-								superregion = parthia_superregion
-							}
-						}
-						OR = {
-							TAG = DH3
-							primary_culture = parni
-							technology_group = iranian
-						}
-					}
-					country_event = {
-						id = media.101
-						days = 10
-					}
-				}
-				else_if = {
-					limit = {
-						NOT = { is_subject_of = MDI }
-						overlord = { NOT = { is_neighbor_of = MDI } }
-						NOT = {
-							OR = {
-								TAG = PSE
-								TAG = PRS
-								TAG = ANH
-								TAG = SAG
-								TAG = ARM
-							}
-						}
-						capital_scope = {
-							OR = {
-								superregion = sakastan_superregion
-								superregion = iran_superregion
-								superregion = parthia_superregion
-							}
-						}
-						OR = {
-							TAG = DH3
-							primary_culture = parni
-							technology_group = iranian
-						}
-					}
-					overlord = {
-						country_event = {
-							id = media.101
-							days = 14
-						}
-					}
-				}
+				disband_all_units = yes
+				MDI = { inherit = PREV }
 			}
 		}
 	}
 }
 
-#Decision
+#Clears the conquest flag
 country_event = {
 	id = media.101
 	title = "media.101.t"
 	desc = "media.101.d"
-	picture = battle
-	is_triggered_only = yes
+	picture = mad_emperor
+	fire_only_once = yes
+	hidden = yes
 	
 	trigger = {
-		is_subject = no
-		NOT = {
-			OR = {
-				TAG = PSE
-				TAG = PRS
-				TAG = ANH
-				TAG = SAG
-				TAG = ARM
-			}
-		}
+		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
+		has_country_flag = historical_expansion_ai_flag
+		is_year = 180
 	}
-
-	immediate = {
-		hidden_effect = { every_subject_country = { save_event_target_as = not_mede_subjects_annex_media } }
+	
+	mean_time_to_happen = {
+		months = 1
 	}
 
 	option = {
 		name = "media.101.a"
-		ai_chance = { factor = 90 }
-		MDI = {
-			inherit = ROOT
-			inherit = event_target:not_mede_subjects_annex_media
-		}
+		clr_country_flag = historical_expansion_ai_flag
+		clr_country_flag = block_triburary_creation_flag
 	}
+}
+
+#Ishkuza mission removes the railroad
+country_event = {
+	id = media.102
+	title = "media.101.t"
+	desc = "media.101.d"
+	picture = mad_emperor
+	is_triggered_only = yes
+	fire_only_once = yes
+	hidden = yes
 
 	option = {
-		name = "media.101.b"
-		ai_chance = { factor = 10 }
+		name = "media.101.a"
+		clr_global_flag = allowed_rise_media_persia_flag
 		MDI = {
-			declare_war_with_cb = {
-				casus_belli = cb_mission_invasion
-				who = ROOT
+			remove_country_modifier = rise_media_modifier
+			remove_country_modifier = media_army_buff_modifier
+			clr_country_flag = historical_expansion_ai_flag
+			clr_country_flag = block_triburary_creation_flag
+		}
+		if = {
+			limit = {
+				exists = ANH
+				NOT = { exists = PSE }
+			}
+			ANH = {
+				remove_country_modifier = rise_persia_modifier
+				remove_country_modifier = media_army_buff_modifier
+				clr_country_flag = historical_expansion_ai_flag
+				clr_country_flag = block_triburary_creation_flag
+				clr_country_flag = persian_empire_flag
+			}
+		}
+		else = {
+			PSE = {
+				remove_country_modifier = rise_persia_modifier
+				remove_country_modifier = media_army_buff_modifier
+				clr_country_flag = historical_expansion_ai_flag
+				clr_country_flag = block_triburary_creation_flag
+				clr_country_flag = persian_empire_flag
 			}
 		}
 	}
@@ -202,24 +168,27 @@ country_event = {
 	
 	trigger = {
 		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
 		ai = yes
-		is_year = 160
-		NOT = { started_in = 165.1.1 }
-		commagene_area = {
-			type = all
-			owned_by = MDI
-		}
-		NOT = { exists = ASY }
 		OR = {
-			exists = CYM
-			exists = SX1
-			exists = SX2
+			has_ruler = "Uvakhkshatra I"
+			has_ruler = "Rshtivaiga I"
 		}
+		dynasty = "Khsharitha"
+		NOT = { started_in = 195.1.1 }
+		NOT = { is_year = 180 }
+		is_year = 165
+		mil = 4
+		has_any_disaster = no
+		is_at_war = no
+		stability = 0
+		NOT = { war_exhaustion = 10 }
+		is_neighbor_of = SX2
+		exists = SX2
 		OR = {
 			NOT = { exists = URT }
 			ARM = { is_subject_of = MDI }
 		}
-		mil = 3
 	}
 	
 	mean_time_to_happen = {
@@ -228,7 +197,6 @@ country_event = {
 
 	option = {
 		name = "media.2.a"
-		custom_tooltip = media.ct.1
 		cappadocia_region = {
 			limit = {
 				NOT = { owned_by = MDI }
@@ -250,70 +218,9 @@ country_event = {
 			}
 			add_permanent_claim = MDI
 		}
-		hidden_effect = {
-			if = {
-				limit = {
-					SI2 = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = SI2
-			}
-			if = {
-				limit = {
-					GC5 = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = GC5
-			}
-			if = {
-				limit = {
-					CLB = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = CLB
-			}
-			if = {
-				limit = {
-					SX1 = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = SX1
-			}
-			if = {
-				limit = {
-					SX2 = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = SX2
-			}
-			if = {
-				limit = {
-					CYM = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = CYM
-			}
-			if = {
-				limit = {
-					KPP = {
-						exists = yes
-						ai = yes
-					}
-				}
-				inherit = KPP
-			}
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = SX2
 		}
 	}
 }
@@ -335,7 +242,7 @@ country_event = {
 		NOT = { exists = ASY }
 		any_owned_province = { culture = assyrian }
 		adm = 3
-		is_tribal = yes
+		tribal_or_native_trigger = yes
 	}
 	
 	mean_time_to_happen = {
@@ -393,17 +300,21 @@ country_event = {
 	
 	trigger = {
 		TAG = MDI
-		is_year = 165
+		OR = {
+			has_ruler = "Uvakhkshatra I"
+			has_ruler = "Rshtivaiga I"
+		}
+		dynasty = "Khsharitha"
 		NOT = { started_in = 169.1.1 }
-		NOT = { exists = ASY }
-		NOT = { exists = CYM }
+		NOT = { is_year = 180 }
+		is_year = 170
 		NOT = { alliance_with = LYD }
+		is_at_war = no
 		LYD = {
 			exists = yes
 			is_neighbor_of = MDI
 			total_development = 120
 		}
-		is_at_war = no
 	}
 	
 	mean_time_to_happen = {
@@ -421,15 +332,69 @@ country_event = {
 			casus_belli = cb_mission_invasion
 			who = LYD
 		}
+		hidden_effect = { set_country_flag = mede_invasion_lydia_flag }
 	}
 	option = {
 		name = "media.4.b"
 		ai_chance = {
-			factor = 99
+			factor = 1
 		}
 		add_prestige = -10
 		add_dip_power = 75
 		add_war_exhaustion = -2
+	}
+}
+
+##Lydian-Mede marriage
+country_event = {
+	id = media.401
+	title = "media.401.t"
+	desc = "media.401.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = MDI
+		has_country_flag = mede_invasion_lydia_flag
+		is_in_war = {
+			attacker_leader = MDI
+			defender_leader = LYD
+		}
+	}
+
+	immediate = {
+		hidden_effect = { clr_country_flag = mede_invasion_lydia_flag }
+	}
+
+	option = {
+		name = "media.401.a"
+		ai_chance = {
+			factor = 99
+		}
+		white_peace = LYD
+		create_marriage = LYD
+		if = {
+			limit = { has_consort = yes }
+			kill_consort = yes
+		}
+		define_consort = {
+			country_of_origin = LYD
+			name = "Ariennis"
+			dynasty = "Mermnadid"
+			female = yes
+			adm = 3
+			dip = 3
+			mil = 3
+		}
+	}
+	option = {
+		name = "media.401.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_war_exhaustion = 7
+		LYD = { add_war_exhaustion = 5 }
 	}
 }
 
@@ -498,24 +463,21 @@ country_event = {
 			TAG = ANH
 			TAG = PSE
 		}
+		has_global_flag = allowed_rise_media_persia_flag
 		ai = yes
+		NOT = { started_in = 195.1.1 }
+		is_year = 204
+		NOT = { is_year = 224 }
+		adm = 5
+		dip = 5
+		mil = 5
+		dynasty = "Haxamanishiya"
 		exists = MDI
 		MDI = { ai = yes }
-		is_year = 204
-		NOT = { started_in = 195.1.1 }
-		NOT = { is_year = 224 }
-		OR = {
-			AND = {
-				mil = 5
-				adm = 5
-				dip = 5
-			}
-			dynasty = "Haxamanishiya"
-		}
 	}
 	
 	mean_time_to_happen = {
-		months = 12
+		months = 2
 		modifier = {
 			factor = 0.25
 			mil = 6
@@ -527,20 +489,10 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			if = {
-				limit = {
-					is_subject_of = MDI
-				}
+				limit = { is_subject = yes }
 				grant_independence = yes
 			}
-			MDI = {
-				every_subject_country = {
-					limit = {
-						NOT = { TAG = ROOT }
-						is_subject_of = MDI
-					}
-					set_country_flag = mede_vassal_to_annex_flag
-				}
-			}
+			set_country_flag = persian_empire_flag
 		}
 	}
 
@@ -549,18 +501,181 @@ country_event = {
 		ai_chance = {
 			factor = 99
 		}
-		inherit = MDI
-		add_prestige = 50
 		hidden_effect = {
-			add_legitimacy = 100
-			add_stability = 1
-			add_treasury = 2000
-			add_yearly_manpower = 10
-			every_country = {
-				limit = { has_country_flag = mede_vassal_to_annex_flag }
-				clr_country_flag = mede_vassal_to_annex_flag
+			change_tag = PSE
+			MDI = {
+				every_subject_country = {
+					disband_all_units = yes
+					ROOT = { inherit = PREV }
+				}
+				disband_all_units = yes
 				ROOT = { inherit = PREV }
 			}
+			add_legitimacy = 100
+			add_stability = 2
+			add_treasury = 10000
+			add_yearly_manpower = 20
 		}
+		add_prestige = 50
+	}
+}
+
+########################################################################################
+# Rise of Persia
+########################################################################################
+country_event = {
+	id = media.7
+	title = "media.6.t"
+	desc = "media.6.d"
+	picture = city
+	hidden = yes
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			TAG = ANH
+			TAG = PSE
+		}
+		has_global_flag = allowed_rise_media_persia_flag
+		is_year = 195
+		NOT = { started_in = 195.1.1 }
+		adm = 5
+		dip = 5
+		mil = 5
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "media.6.a"
+		add_ruler_modifier = { name = rise_persia_modifier }
+		add_legitimacy = 100
+		set_country_flag = historical_expansion_ai_flag
+		set_country_flag = block_triburary_creation_flag
+		add_country_modifier = {
+			name = media_army_buff_modifier
+			duration = 14600
+		}
+		set_ai_personality = {
+			personality = ai_militarist
+			locked = yes
+		}
+	}
+}
+
+#Clears railroad conquest flag for persia
+country_event = {
+	id = media.701
+	title = "media.6.t"
+	desc = "media.6.d"
+	picture = city
+	hidden = yes
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			TAG = ANH
+			TAG = PSE
+		}
+		has_global_flag = allowed_rise_media_persia_flag
+		has_country_flag = historical_expansion_ai_flag
+		is_year = 289
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "media.6.a"
+		clr_country_flag = historical_expansion_ai_flag
+		clr_country_flag = block_triburary_creation_flag
+	}
+}
+
+########################################################################################
+# Allow railroad or not
+########################################################################################
+country_event = {
+	id = media.8
+	title = "media.8.t"
+	desc = "media.8.d"
+	picture = city
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			AND = {
+				ai = no
+				NOT = { TAG = MDI }
+			}
+			AND = {
+				ai = yes
+				TAG = MDI
+			}
+		}
+		NOT = { started_in = 195.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+		modifier = {
+			factor = 0.5
+			ai = no
+		}
+	}
+
+	option = {
+		name = "media.8.a"
+		hidden_effect = { set_global_flag = allowed_rise_media_persia_flag }
+	}
+
+	option = {
+		name = "media.8.b"
+		
+	}
+}
+
+########################################################################################
+# Rise of Media
+########################################################################################
+country_event = {
+	id = media.9
+	title = "media.9.t"
+	desc = "media.9.d"
+	picture = city
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
+		ai = yes
+		OR = {
+			has_ruler = "Uvakhkshatra I"
+			has_ruler = "Rshtivaiga I"
+			dynasty = "Khsharitha"
+		}
+		NOT = { started_in = 195.1.1 }
+		is_year = 150
+		NOT = { is_year = 180 }
+		ASY = { exists = no }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "media.9.a"
+		add_ruler_modifier = { name = rise_media_modifier }
+		add_country_modifier = {
+			name = media_army_buff_modifier
+			duration = 10950
+		}
+		add_stability = 3
+		add_legitimacy = 100
+		add_treasury = 2000
 	}
 }

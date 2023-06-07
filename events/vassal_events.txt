@@ -359,20 +359,38 @@ country_event = {
 	trigger = {
 		had_country_flag = {
 			flag = vassal_autonomy_reduced_to_half_flag
-			days = 3650
+			days = 7300
 		}
 	}
 	
 	mean_time_to_happen = {
-		days = 1
-	}
-	
-	immediate = {
-		clr_country_flag = vassal_autonomy_reduced_to_half_flag
+		months = 1
 	}
 	
 	option = {
 		name = "subject_event.8.a"
+		clr_country_flag = vassal_autonomy_reduced_to_half_flag
+		overlord = { country_event = { id = subject_event.8 } }
+	}
+}
+
+########################################################################################
+# Overlord Notification
+########################################################################################
+country_event = {
+	id = subject_event.801
+	title = "subject_event.8.t"
+	desc = "subject_event.8.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	immediate = {
+		FROM = { capital_scope = { save_event_target_as = capital_subject_autonomy_notification } }
+	}
+	
+	option = {
+		name = "subject_event.8.a"
+		goto = capital_subject_autonomy_notification
 	}
 }
 
@@ -381,23 +399,89 @@ country_event = {
 ########################################################################################
 country_event = {
 	id = subject_event.10
-	title = "subject_event.1.t"
-	desc = "subject_event.1.d"
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
 	picture = deligation
 	hidden = yes
 	is_triggered_only = yes
 	
 	trigger = {
+		NOT = { has_country_flag = historical_expansion_ai_flag }
+		FROM = { is_subject_of = ROOT }
 	}
 	
 	option = {
-		name = "subject_event.1.a"
+		name = "subject_event.6.a"
 		every_owned_province = {
 			limit = { previous_owner = FROM }
 			add_local_autonomy = 20
 			add_named_unrest = {
 				name = recently_annexed_subject
 				value = 4
+			}
+		}
+	}
+}
+
+########################################################################################
+# removes phoenician colony subjects
+########################################################################################
+country_event = {
+	id = subject_event.11
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
+	picture = deligation
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+		NOT = { primary_culture = phoenician }
+		NOT = { primary_culture = punic }
+		NOT = { primary_culture = ibero_phoenician }
+		NOT = { primary_culture = sardo_phoenician }
+		any_subject_country = { is_subject_of_type = phoenician_colony_subject }
+	}
+	
+	option = {
+		name = "subject_event.6.a"
+		every_subject_country = {
+			if = {
+				limit = { is_subject_of_type = phoenician_colony_subject }
+				grant_independence = yes
+			}
+		}
+	}
+}
+
+########################################################################################
+# removes satrapy subjects
+########################################################################################
+country_event = {
+	id = subject_event.12
+	title = "subject_event.6.t"
+	desc = "subject_event.6.d"
+	picture = deligation
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+		NOT = { has_government_attribute = has_satrapy_vassals }
+		any_subject_country = { is_subject_of_type = satrapy_vassal }
+	}
+	
+	option = {
+		name = "subject_event.6.a"
+		every_subject_country = {
+			if = {
+				limit = { is_subject_of_type = satrapy_vassal }
+				remove_government_reform = satrapal_dynast_reform
+				remove_government_reform = satrapy_reform
+				ROOT = {
+					create_subject = {
+						subject_type = vassal
+						who = PREV
+					}
+				}
 			}
 		}
 	}

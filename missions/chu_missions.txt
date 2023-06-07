@@ -1,0 +1,3079 @@
+
+
+chu_shizhuxiamen_1 = {
+    slot = 1
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_mibinghuimeng
+	}
+	
+	#筚路蓝缕-中原的争夺罕有成效，或许该效仿先祖开辟蛮荒积蓄国力
+	chu_bilulanlv = {
+	    #position = 1
+		icon = missions_china_reclaim
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			NOT = { had_recent_war = 10 }
+			manpower = 50
+			full_idea_group = expansion_ideas
+		}
+		effect = {
+			
+			add_country_modifier = {
+			   name = chu_bilulanlv_modifier #移民10、殖民队、军队补给
+			   duration = 7300
+			}
+		}
+	}
+	
+	#南平百越-南边的土地被一群蛮夷占据，征服他们
+	chu_nanpingbaiyue = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_bilulanlv }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			OR = {
+			 any_owned_province = {
+			  region = jiaozhou_china
+			 }
+			 any_neighbor_country = {
+			   capital_scope = {
+			    region = jiaozhou_china
+			   }
+			 }
+			}
+		}
+		effect = {
+			jiaozhou_china = {
+			  add_claim = ROOT
+			}
+			add_prestige = 10
+		}
+	}
+	#进军巴蜀-巴国，曾是我们的仇敌，向这个方向夺取土地，似乎能征服一个富饶的文明……
+	chu_jinjunbashu = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_nanpingbaiyue }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_reform = chinese_reform_monarchy_reform
+			crown_land_share = 40
+			NOT = { war_exhaustion = 0}
+		}
+		effect = {
+			ba_area = {
+			  add_claim = ROOT
+			}
+			baxi_area = {
+			  add_claim = ROOT
+			}
+			badong_area = {
+			  add_claim = ROOT
+			}
+			add_army_tradition = 5
+		}
+	}
+	
+	#开拓西南-一名勇敢的公孙有意为国家继续开拓西南
+	chu_kaituoxinan = {
+	    #position = 1
+		icon = missions_china_vicyory
+		#completed_by = 190.1.1
+		required_missions = { chu_jinjunbashu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			ba_area = {
+			  type = all
+			  is_core = ROOT
+			  owned_by = ROOT
+			}
+			treasury = 500
+		}
+		effect = {
+			define_conquistador = {
+			shock = 3
+			fire = 3
+			manuever = 3
+			siege = 3
+			}
+			every_country = {
+			  limit = {
+			  capital_scope = {
+			    region = yizhou_china
+			  }
+			  }
+			  save_event_target_as = xinanguojia
+			}
+			add_casus_belli = {
+			  target = event_target:xinanguojia
+			  type = cb_vassalize_mission
+			}
+		}
+	}
+	
+    #吴戈犀甲-优秀的工匠、上好的材料源源不断支援着军队，我们的军士装备精良
+	chu_wugexijia = {
+	    #position = 1
+		icon = missions_china_manufacturer
+		#completed_by = 190.1.1
+		required_missions = { chu_kaituoxinan }
+		provinces_to_highlight = {
+			region = yangzhou_china
+		}
+		trigger = {
+			yangzhou_china = {
+			  is_core = ROOT
+			  owned_by = ROOT
+			}
+			calc_true_if = {
+			owns_all_provinces = {
+			  trade_goods = ivory
+			}
+			amount = 8
+		  }
+		}
+		effect = {
+			add_country_modifier = {
+			  name = chu_wugexijia_modifier #訓練度+10、陆军传统衰退-1%
+			  duration = 182500
+			}
+		}
+	}
+}
+
+chu_shizhuxiamen_2 = {
+    slot = 2
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_mibinghuimeng
+	}
+	
+	#中原之争-中原地区，是华夏的中心，寸土必争
+	chu_zhongyuanzhizheng = {
+	    #position = 1
+		icon = missions_china_prosperous
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			OR = {
+			    region = sili_china
+				region = yanzhou_china
+				region = yuzhou_china
+			  }
+		}
+		trigger = {
+			any_owned_province = {
+			  OR = {
+			    region = sili_china
+				region = yanzhou_china
+				region = yuzhou_china
+			  }
+			}
+		}
+		effect = {
+			custom_tooltip = chu_zhongyuanzhizheng.tt
+			hidden_effect = {	
+			every_owned_province = {
+			  limit = {
+			  OR = {
+			    region = sili_china
+				region = yanzhou_china
+				region = yuzhou_china
+			  }
+			  }
+			add_province_modifier = {
+			   name = chu_zhongyuanzhizheng_modifier #建筑成本与花费-10%
+			   duration = 3650
+			}
+			}
+			}
+			define_advisor = {
+			type = architect
+			skill = 3
+			discount = yes
+			}
+		}
+	}
+	#变法图强-过往的一些东西已经不合时宜，也许我们需要改革国家
+	chu_bianfatuqiang = {
+	    #position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_zhongyuanzhizheng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_reform = chinese_reform_monarchy_reform
+			OR = {
+			  advisor = army_reformer_adv
+			  advisor = architect
+			  advisor = statesman_adv
+			}
+			is_religion_enabled = legalism
+		}
+		effect = {
+			custom_tooltip = chu_bianfatuqiang.tt
+			hidden_effect = {
+			every_owned_province = {
+			  limit = {
+			  religion = owner
+			  }
+			  change_religion = legalism
+			}
+			}
+			change_religion = legalism
+			change_government_reform_progress = 100
+			change_government_reform_progress = 100
+			change_government_reform_progress = 100
+		}
+	}
+	#重生复兴-我国已从庄王后的衰颓中恢复过来，是时候再次争夺九鼎了
+	chu_chongshengfuxing = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_zhongyuanzhizheng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			NOT = {
+			  any_country = { is_emperor = yes }
+			}
+			land_morale = 3.7
+			manpower = 80
+			treasury = 1000
+		}
+		effect = {
+			add_army_tradition = 10
+			add_navy_tradition = 10
+			add_stability = 1
+		}
+	}
+	
+	#合纵连横-当今中华，无岁不战，强国并立，外交为重
+	chu_hezonglianheng = {
+	    #position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = { chu_chongshengfuxing }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_global_flag = zhanguokaishi
+			OR = {
+			religious_school = {
+				group = chinese_religions
+				school = zongheng_school
+			}
+			advisor = diplomat_adv
+			full_idea_group = diplomatic_ideas
+			}
+		}
+		effect = {
+			add_dip_power = 200
+		}
+	}
+	
+	#百二秦关-百二秦关终属楚，夺下商之地，意味着我们掌握了西进的主动权
+	chu_baierqinguan = {
+	    #position = 1
+		icon = missions_china_vicyory
+		#completed_by = 190.1.1
+		required_missions = { chu_hezonglianheng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			hongnong_area_south = {
+			   type = all
+			   owned_by = ROOT
+			   controlled_by = ROOT
+			}
+			west_nanyang_area = {
+			   type = all
+			   owned_by = ROOT
+			   controlled_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 10
+			sili_china = {
+			  add_claim = ROOT
+			}
+		}
+	}
+	
+	#追击穷寇-宜将剩勇追穷寇，一鼓作气
+	chu_zhuijiqiongkou = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_lusishuishou }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			calc_true_if = {
+			  owns_all_provinces = {
+			    superregion = china_superregion
+			  }
+			  amount = 250
+			}
+			prestige = 90
+		}
+		effect = {
+			every_country = {
+			  limit = {
+			    OR = {
+				culture_group = chinese_group
+				religion_group = chinese_religions
+				}
+			  }
+				save_event_target_as = huaxiaguojia
+			}
+			add_casus_belli = {
+			  target = event_target:huaxiaguojia
+			  type = cb_invasion
+			}
+		}
+	}
+}
+
+chu_shizhuxiamen_3 = {
+    slot = 3
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_mibinghuimeng
+	}
+	
+	#盟军退吴-东南方向的敌人已对我们形成威胁，联合姻亲对付他们
+	chu_mengjuntuiwu = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			OR = {
+			any_known_country = {
+			  war_with = ROOT
+			  OR = {
+			  culture_group = malay_group
+			  primary_culture = yue_chinese
+			  }
+			}
+			NOT = {
+			any_country = {
+			  OR = {
+			  culture_group = malay_group
+			  primary_culture = yue_chinese
+			  }
+			}
+			}
+			}
+			
+		}
+		effect = {
+			every_ally = {
+			 add_opinion = {
+			 who = ROOT
+			 modifier = in_war_together
+			 }
+			}
+		}
+	}
+	#收复失地-重建失地的统治比夺取新土地的性价比更高，而且或许我们能帮助友邦并索取失地？
+	chu_mengjuntuiwu = {
+	    #position = 1
+		icon = missions_china_vicyory
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			any_province = {
+			  is_core = ROOT
+			  NOT = { owned_by = ROOT }
+			  owner = { is_rival = ROOT}
+			}
+		}
+		effect = {
+			add_war_exhaustion = -3
+			custom_tooltip = chu_mengjuntuiwu.tt
+			hidden_effect = {
+			every_province = {
+			  limit = {
+			   is_core = ROOT
+			   NOT = { owned_by = ROOT }
+			   owner = { 
+			   has_opinion = {
+			   who = ROOT
+			   value = 100
+			   }
+			   }
+			  }
+			  cede_province = ROOT
+			}
+			}
+		}
+	}
+	#尽取江南-东方邻国已经衰败，正是我们奔向大海的好机会
+	chu_jinqujiangnan = {
+	    #position = 1
+		icon = missions_china_ship
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			num_of_ports = 33
+		}
+		effect = {
+			every_known_country = {
+			  limit = { 
+			    capital_scope = {
+			      region = yangzhou_china
+			    } 
+			   }
+			   reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			    }
+			}
+		}
+	}
+	#百家争鸣-大争之世，百家争鸣
+	chu_baijiazhengming = {
+	    #position = 1
+		icon = missions_china_learning
+		#completed_by = 190.1.1
+		required_missions = { chu_chongshengfuxing }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_global_flag = zhanguokaishi
+			OR = {
+			dominant_religion = legalism
+			dominant_religion = confucianism
+			dominant_religion = mohism
+			dominant_religion = taoism
+			}
+		}
+		effect = {
+			add_splendor = 200
+		}
+	}
+	#天问九歌-春秋战国的特殊环境造就了楚地新思潮
+	chu_tianwenjiuge = {
+	    #position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_baijiazhengming }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_global_flag = zhanguokaishi
+			primary_culture = nanchu
+			dip_tech = 20
+			OR = {
+			 advisor = philosopher_adv
+			 advisor = scholar_advisor
+			}
+		}
+		effect = {
+			add_splendor = 200
+		}
+	}
+	#鹿死谁手-是时候决定谁才能统一诸夏了
+	chu_lusishuishou = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_wugexijia chu_qipanzhishi chu_jiangdongzidi }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			army_size = 100
+			army_tradition = 80
+		}
+		effect = {
+			binzhou_china = {
+			  add_claim = ROOT
+			}
+			jizhou_china = {
+			  add_claim = ROOT
+			}
+			qingzhou_china = {
+			  add_claim = ROOT
+			}
+			youzhou_china = {
+			  add_claim = ROOT
+			}
+		}
+	}
+	#北却胡戎-在诸夏战争之时，周边的蛮夷也有所发展，卧榻之侧哪容他人酣睡
+	chu_beiquehurong = {
+	    #position = 1
+		icon = missions_china_nomad
+		#completed_by = 190.1.1
+		required_missions = { chu_lusishuishou }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			any_neighbor_country = {
+			  culture_group = beidixirong_group
+			 }
+			 NOT = {
+			 war_exhaustion = 5
+			 }
+		}
+		effect = {
+			liangzhou_china = {
+			  add_claim = ROOT
+			}
+			shuofang_china = {
+			  add_claim = ROOT
+			}
+		}
+	}
+}
+
+chu_shizhuxiamen_4 = {
+    slot = 4
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_mibinghuimeng
+	}
+	
+	#席卷泗水-泗水诸国国力弱小，正是一块肥肉，当然，这可能会小小得罪一些邻国
+	chu_xijuansishui = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_chongshengfuxing }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   is_at_war = no
+		   runan_area = {
+		     type = all
+			 is_core = ROOT
+		   }
+		   linhuai_area = {
+		     type = all
+			 is_core = ROOT
+		   }
+		}
+		effect = {
+			xuzhou_china = {
+			  add_claim = ROOT
+			}
+			yanzhou_china = {
+			  add_claim = ROOT
+			}
+		}
+	}
+	#弃叛之世-当今诸夏，背信弃义乃寻常之举
+	chu_qipanzhishi = {
+	    #position = 1
+		icon = missions_china_diplomacy
+		#completed_by = 190.1.1
+		required_missions = { chu_chongshengfuxing }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   has_global_flag = zhanguokaishi
+		   num_of_allies = 1
+		   has_truce = yes
+		}
+		effect = {
+			add_country_modifier = {
+			  name = qipanzhishi_modifier #外交官+1、更改宿敌花费降低50%
+			  duration = 3650
+			}
+		}
+	}
+	#受命于天-受命于天，既寿永昌
+	chu_shoumingyutian = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_lusishuishou }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   is_emperor_of_china = yes
+		   government_rank = 5
+		   adm_tech = 25
+		}
+		effect = {
+			add_mandate = 100
+		}
+	}
+	#荆楚帝国-我们创造了一个繁荣强大的帝国！
+	chu_jingchudiguo = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_zhuijiqiongkou chu_beiquehurong chu_shoumingyutian }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   government_rank = 5
+		   primary_culture = nanchu
+		}
+		effect = {
+			add_splendor = 300
+			add_adm_power = 300
+			add_dip_power = 300
+			add_mil_power = 300
+		}
+	}
+}
+
+chu_shizhuxiamen_5 = {
+    slot = 5
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_mibinghuimeng
+	}
+	
+	#充实江淮-江淮沃土，可作为我国核心之地
+	chu_chongshijianghuai = {
+	    #position = 1
+		icon = missions_china_agriculture
+		#completed_by = 190.1.1
+		required_missions = { chu_jinqujiangnan }
+		provinces_to_highlight = {
+			province_id = 4418
+		}
+		trigger = {
+		   owns = 4418
+		   calc_true_if = {
+		     owns_all_provinces = {
+			    region = xuzhou_china
+			 }
+			 amount = 15
+		   }
+		}
+		effect = {
+			capital_scope = {
+			  add_base_tax = -1
+			  add_base_production = -1
+			  add_base_manpower = -1
+			}
+			custom_tooltip = chu_chongshijianghuai.tt
+			hidden_effect = {
+			every_owned_province = {
+			 limit = { region = xuzhou_china }
+			  add_base_tax = 1
+			  add_base_production = 1
+			  add_base_manpower = 1
+			}
+			}
+		}
+	}
+	#江东子弟-骁勇善战的江东子弟已经认可了我们的统治，他们的参军将会让我们更强大
+	chu_jiangdongzidi = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_chongshijianghuai }
+		provinces_to_highlight = {
+			region = xuzhou_china
+		}
+		trigger = {
+		   calc_true_if = {
+		     owns_all_provinces = {
+			    region = xuzhou_china
+			 }
+			 amount = 20
+		   }
+		   xuzhou_china = {
+		     development = 100
+		   }
+		}
+		effect = {
+			add_army_tradition = 10
+			
+		}
+	}
+	#修养民力-长年的战乱后，民众急需休养生息
+	chu_xiuyangminli = {
+	    #position = 1
+		icon = missions_china_prosperous
+		#completed_by = 190.1.1
+		required_missions = { chu_lusishuishou }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   army_size = 50
+		   NOT = { had_recent_war = 5 }
+		   stability = 1
+		   is_at_war = no
+		   manpower_percentage = 0.9
+		}
+		effect = {
+			
+			custom_tooltip = chu_xiuyangminli.tt
+			hidden_effect = {
+			
+			every_owned_province = {
+			  limit = {
+			    superregion = china_superregion
+			  }
+			  add_prosperity = 30
+			}
+			}
+			add_stability = 1
+		}
+	}
+	#时代终结-战国时代结束了，我们获得了很多经验，人心思定
+	chu_shidaizhongjie = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_jingchudiguo }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   is_emperor_of_china = yes
+		}
+		effect = {
+		   add_stability = 3
+		   add_war_exhaustion = 10
+		}
+	}
+}
+
+chu_daxingfengjun_1 = {
+    slot = 1
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_daxingfengjun
+	}
+	
+	#我蛮夷也-我们没有必要忍受礼乐约束，顺从本地习俗更有利我们的扩张
+	chu_womanyiye = {
+	    #position = 1
+		icon = missions_china_vicyory
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   stability = 1
+		   prestige = 20
+		}
+		effect = {
+			add_stability = -1
+			custom_tooltip = chu_womanyiye.tt
+			hidden_effect = {
+			every_owned_province = {
+			  limit = {
+			    religion = ROOT
+			  }
+			  change_religion = wuism
+			}
+			}
+			change_religion = wuism
+		}
+	}
+	#华夷之辨-我们实行宽松的自治政策，但一系列改革引发了诸夏的不满
+	chu_huayizhibian = {
+	    #position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = { chu_womanyiye }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   full_idea_group = assimilation_ideas
+		   manpower = 50
+		   has_reform = chinese_feudalism_reform
+		}
+		effect = {
+			custom_tooltip = chu_huayizhibian.tt
+			hidden_effect = {
+			every_owned_province = {
+			  limit = {
+			    NOT = { culture = ROOT }
+				has_owner_accepted_culture = no
+			  }
+			  add_nationalism = -8
+			  add_unrest = -2
+			}
+			}
+			add_government_reform = aristocratic_monarchy_reform
+			custom_tooltip = chu_huayizhibian1.tt
+			hidden_effect = {
+			every_known_country = {
+			  limit = {
+			    religion_group = chinese_religions
+			  }
+			  add_opinion = {
+			   who = ROOT
+			   modifier = enemy
+			  }
+			}
+			}
+		}
+	}
+	#周昭故事-传说，周昭王南征返程时溺死于水，现在……
+	chu_zhouzhaogushi = {
+	    #position = 1
+		icon = missions_china_shipyard
+		#completed_by = 190.1.1
+		required_missions = { chu_huayizhibian }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   OR = {
+		    truce_with = ZHO
+			NOT = { exists = ZHO }
+		   }
+		   OR = {
+		    full_idea_group = raider_ideas
+			full_idea_group = maritime_ideas
+		   }
+		}
+		effect = {
+			add_country_modifier = {
+			  name = naval_enthusiasm_mission
+			  duration = 7300
+			}
+			add_sailors = 10
+		}
+	}
+	
+	#龙凤呈祥-楚地有着独特的凤凰崇拜图腾
+	chu_longfengchengxian = {
+		#position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = {   }
+		trigger = {
+			OR = {
+			  accepted_culture = guanzhong
+			  accepted_culture = zhongyuan
+			  accepted_culture = dongtu
+			  accepted_culture = jianghan
+			  accepted_culture = hebei
+			  accepted_culture = shanxi
+			  accepted_culture = qilu
+			  accepted_culture = yinyi
+			}
+			dip_tech = 5
+		}
+		effect = {
+		    add_splendor = 50
+			if = {
+		     limit = {
+			   religion = liyuebadao
+			   NOT = { has_unlocked_cult = qinglong_worship }
+			 }
+			 country_event = { id = fetishist_flavor.1 }
+			}
+			if = {
+		     limit = {
+			   religion = liyuebadao
+			   NOT = { has_unlocked_cult = zhuque_worship }
+			 }
+			 country_event = { id = fetishist_flavor.2 }
+			}
+		}
+	}	
+	#泗上诸侯-泗上还有些前朝留下的小国，是时候让他们臣服了
+	chu_sishangzhuhou = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_xiashangzhouchu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   yuzhou_china = {
+		   type = all
+		   country_or_subject_holds = ROOT
+		   }
+		   xuzhou_china = {
+		   type = all
+		   country_or_subject_holds = ROOT
+		   }
+		   yangzhou_china = {
+		   type = all
+		   country_or_subject_holds = ROOT
+		   }
+		   imperial_mandate = 100
+		}
+		effect = {
+			yangzhou_china = {
+			 add_claim = ROOT
+			}
+			every_known_country = {
+			  limit = {
+			    capital_scope = {
+				  region = yangzhou_china
+				}
+				NOT = { total_development = ROOT }
+			  }
+			  save_event_target_as = sishangzhuhou
+			}
+			create_subject = {
+					who = event_target:sishangzhuhou
+					subject_type = half_autonomous_vassal
+				}
+		}
+	}
+	#马牛相及-过去齐国曾无理进犯遥远的我们，现在我们已然相邻
+	chu_maniuxiangji = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_sishangzhuhou }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   yanzhou_china = {
+		   type = all
+		   country_or_subject_holds = ROOT
+		   }
+		   num_of_heavy_ship = 10
+		}
+		effect = {
+			every_known_country = {
+			  limit = {
+			    any_owned_province = {
+				   region = qingzhou_china
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+		 }
+		}
+}
+
+chu_daxingfengjun_2 = {
+    slot = 2
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_daxingfengjun
+	}
+	
+	#开辟蛮荒-我国被诸夏敌视应开辟蛮荒积蓄国力再去征服他们
+	chu_kaipimanhuang = {
+	    #position = 1
+		icon = missions_china_reclaim
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   NOT = { had_recent_war = 10 }
+		   manpower = 50
+		}
+		effect = {
+			add_country_modifier = {
+			  #name = new_settlements
+			  name = chu_kaipimanhuang
+			  duration = 7300
+			}
+		}
+	}
+	#深入不毛-我们的军队有吃苦耐劳的精神，从而更易吞并蛮越
+	chu_shenrubumao = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_kaipimanhuang }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   prestige = 30
+		   manpower = 10
+		   num_of_conquistadors = 3
+		}
+		effect = {
+			ba_area = {
+			  add_claim = ROOT
+			}
+			badong_area = {
+			  add_claim = ROOT
+			}
+			baxi_area = {
+			  add_claim = ROOT
+			}
+		}
+	}
+	#百越共主-组织会盟，我们成了百越盟主
+	chu_baiyuegongzhu = {
+	    #position = 1
+		icon = missions_china_diplomacy
+		#completed_by = 190.1.1
+		required_missions = { chu_shenrubumao }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   religion_group = eastern_religions
+		   prestige = 100
+		   total_development = 500
+		   calc_true_if = {
+		     owns_all_provinces = {
+			   OR = {
+			   region = yangzhou_china
+			   region = jiaozhou_china
+			   }
+			 }
+			 amount = 5
+		   }
+		}
+		effect = {
+		
+			custom_tooltip = chu_baiyuegongzhu.tt
+			hidden_effect = {
+			every_known_country = { 
+			 limit = {
+			  culture_group = malay_group
+			  has_opinion = {
+			   who = ROOT
+			   value = 0
+			  }
+			 }
+			 add_opinion = {
+			   who = ROOT
+			   modifier = alliance
+			 }
+			}
+			}
+		}
+	}
+	#夏商周楚-我们取代了周的位置，正如商代夏、周代商
+	chu_xiashangzhouchu = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_zhouzhaogushi chu_baiyuegongzhu chu_yanyoujianghuai }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   is_emperor_of_china = yes
+		   OR = {
+		    ZHO = { is_subject_of = ROOT}
+			NOT = { exists = ZHO }
+		   }
+		}
+		effect = {
+			add_prestige = 50
+			add_years_of_income = 1
+			add_splendor = 100
+		}
+	}
+	#威服河东-河东的国家曾是大敌，不能放任他们继续存在
+	chu_weifuhedong = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_xiashangzhouchu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   OR = {
+		   full_idea_group = maritime_ideas
+		   full_idea_group = raider_ideas
+		   }
+		   num_of_ports = 5
+		   num_of_galley = 5
+		}
+		effect = {
+		
+			every_known_country = {
+			  limit = {
+			    any_owned_province = {
+				  region = binzhou_china
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+		}
+	}
+	#传诏河北-河北之地不太适合我们统治，但是也有必要处理
+	chu_chuanzhaohebei = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_weifuhedong }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   prestige = 80
+		}
+		effect = {
+			every_known_country = {
+			  limit = {
+			    any_owned_province = {
+				  region = youzhou_china
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+		}
+	}
+	#荆楚帝国-我们创造了一个繁荣强大的帝国！
+	chu_jingchudiguo = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_maniuxiangji chu_chuanzhaohebei }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   government_rank = 5
+		   primary_culture = nanchu
+		}
+		effect = {
+			add_splendor = 300
+			add_adm_power = 300
+			add_dip_power = 300
+			add_mil_power = 300
+		}
+	}
+}
+
+chu_daxingfengjun_3 = {
+    slot = 3
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_daxingfengjun
+	}
+	#大启群蛮-只要群蛮乐于接受我们的统治，我们不很在乎他们的宗教问题
+	chu_daqiqunman = {
+	    #position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   primary_culture = nanchu
+		   any_owned_province = {
+		    culture = jingman
+		   }
+		   any_owned_province = {
+		    culture = huaiyi
+		   }
+		}
+		effect = {
+			add_accepted_culture = jingman
+			add_accepted_culture = huaiyi
+		}
+	}	
+	#江汉诸芈-江汉地区是我们的统治核心，我们依靠亲族统治大量的蛮族
+	chu_jianghanzhumi = {
+	    #position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_daqiqunman }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   all_province = {
+			  culture = jianghan
+			  country_or_subject_holds = ROOT
+		   }
+		   accepted_culture = jianghan
+		}
+		effect = {
+			add_years_of_income = 0.5
+			
+			custom_tooltip = chu_jianghanzhumi.tt
+			hidden_effect = {
+			
+			every_owned_province = {
+			 limit = {
+			  OR = {
+			   culture = jianghan
+			   culture = nanchu
+			  }
+			 }
+			 add_prosperity = 30
+			}
+			}
+		}
+	}	
+	#奄有江淮-我们已经积蓄了不少力量，可以大举吞并诸夏相对薄弱的江淮地区了
+	chu_yanyoujianghuai = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_jianghanzhumi }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   manpower = 80
+		   navy_size = 50
+		   
+		}
+		effect = {
+			yuzhou_china = {
+			 add_claim= ROOT
+			}
+			xuzhou_china = {
+			 add_claim= ROOT
+			}
+		}
+	}	
+	#征服天府-沿着巴地向西，有个值得征服的富饶文明
+	chu_zhengfutianfu = {
+	    #position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_yanyoujianghuai }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   baxi_area = {
+		    type = all
+			is_core = ROOT
+		   }
+		   num_of_conquistadors = 1
+		}
+		effect = {
+			shu_area = {
+			 add_claim= ROOT
+			}
+			guanghan_area = {
+			 add_claim= ROOT
+			}
+			guanghan_area_west = {
+			 add_claim= ROOT
+			}
+		}
+	}	
+	#彩云之南-巩固巴蜀统治后，继续南行发现了其他原始国家
+	chu_caiyunzhinan = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_zhengfutianfu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   shu_area = {
+			 is_core = ROOT
+			 NOT = { devastation = 0 } 
+			}
+			guanghan_area = {
+			 is_core = ROOT
+			 NOT = { devastation = 0 } 
+			}
+			guanghan_area_west = {
+			 is_core = ROOT
+			 NOT = { devastation = 0 } 
+			}
+		}
+		effect = {
+			yizhou_china = {
+			 add_claim = ROOT
+			}
+		}
+	}
+}	
+
+chu_daxingfengjun_4 = {
+    slot = 4
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_daxingfengjun
+	}
+	#收取关中-宗周故地值得收取
+	chu_shouquguanzhong = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   has_commanding_three_star = yes
+		   mil = 4
+		}
+		effect = {
+			add_mil_power = 100
+			every_known_country = {
+			  limit = {
+			    any_owned_province = {
+				  region = sili_china
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+		}
+	}	
+	#西游通道-继续向西移民可以让我们民众有更多地方居住
+	chu_xiyoutongdao = {
+	    #position = 1
+		icon = missions_china_nomad
+		#completed_by = 190.1.1
+		required_missions = { chu_shouquguanzhong }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   sili_china = {
+		    country_or_subject_holds = ROOT
+		   }
+		   any_owned_province = {
+		    development = 30
+		   }
+		}
+		effect = {
+			liangzhou_china = {
+			 add_claim= ROOT
+			}
+			add_country_modifier = {
+			  #name = new_settlements
+			  name = chu_xiyoutongdao
+			  duration = 7300
+			}
+		}
+	}		
+	#越过高原-我们西南方向的边疆是一片荒芜的高原，但是传说高原对面是富饶的土地
+	chu_yueguogaoyuan = {
+	    #position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_shouquguanzhong }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   total_development = 1500
+		   full_idea_group = expansion_ideas
+		}
+		effect = {
+			sumpa_region = {
+	           discover_country = ROOT		
+			}
+		}
+	}	
+}
+
+chu_daxingfengjun_5 = {
+    slot = 5
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		has_country_flag = chu_daxingfengjun
+	}
+	#两广之卒-楚军编制，亲兵分左右两部称广，以十五乘为一偏，两偏为一卒，即一广,两广之卒一向是楚王直属精兵
+	chu_liangguangzhizu = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 0
+			crown_land_share = 50
+		}
+		effect = {
+		    add_mil_power = 100
+			capital_scope = {
+			   ROOT = {
+			   infantry = PREV
+			   infantry = PREV
+			   artillery = PREV
+			   artillery = PREV
+			   cavalry = PREV
+			   cavalry = PREV
+			   }
+			}
+		}
+	}
+	#征召民兵-为了应用广袤国土的统治需求，我们应征召成本低廉的大军
+	chu_zhengzhaominbing = {
+	    #position = 1
+		icon = missions_china_camp
+		#completed_by = 190.1.1
+		required_missions = { chu_liangguangzhizu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   num_of_provinces_in_states = 60
+		}
+		effect = {
+			add_country_modifier = {
+			  name = chu_zhengzhaominbing_modifier #军队成本、补给需求减20%，规模上限提升30%，训练度和士气降低10%；
+			  duration = 7300
+			}
+		}
+	}
+	
+    #云梦大泽-云梦泽中似乎有着无限的财富
+	chu_yunmengdaze = {
+	    #position = 1
+		icon = missions_china_reclaim
+		#completed_by = 190.1.1
+		required_missions = {   }
+		provinces_to_highlight = {
+			OR = {
+			  area = nan_area_east
+			  area = changsha_area
+			  area = jiangxia_area_south
+			}
+		}
+		trigger = {
+		
+			nan_area_east = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+			changsha_area = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+			jiangxia_area_south = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+		}
+		effect = {
+			add_years_of_income = 0.33
+			random_owned_province = {
+			   limit = { has_port = yes }
+			   ROOT = {
+			     light_ship = PREV
+			     light_ship = PREV
+			   }
+			}
+			nan_area_east = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			  }
+			}
+			changsha_area = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			}
+			jiangxia_area_south = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			}
+		   }
+	    }
+	  }
+	}
+	#江淮水网-依照发展云梦泽的经验，我们从江淮地区的水网中获利良多
+	chu_jianghuaishuiwang = {
+	    #position = 1
+		icon = missions_china_agriculture
+		#completed_by = 190.1.1
+		required_missions = { chu_liangguangzhizu chu_yunmengdaze }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   OR = {
+		   full_idea_group = maritime_trade_ideas
+		   full_idea_group = caravan_trade_ideas
+		   }
+		}
+		effect = {
+			add_country_modifier = {
+			  name = economic_boost 
+			  duration = 7300
+			}
+			add_years_of_income = 0.25
+			add_navy_tradition = 10
+		}
+	}
+	#通航海外-依照发展江淮的经验，我们继续向海外进发，一边贸易一边……
+	chu_tonghanghaiwai = {
+	    #position = 1
+		icon = missions_china_ship
+		#completed_by = 190.1.1
+		required_missions = { chu_jianghuaishuiwang }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   OR = {
+		   full_idea_group = maritime_ideas
+		   full_idea_group = raider_ideas
+		   }
+		   num_of_ports = 20
+		}
+		effect = {
+		
+			custom_tooltip = chu_tonghanghaiwai.tt
+			hidden_effect = {
+			
+			every_province = {
+		     limit = {
+			   has_port = yes
+			   OR = {
+				 superregion = korea_superregion
+				 superregion = suvarnabhumi_superregion
+			   }
+			 }
+			 discover_country = ROOT
+		  }
+		  }
+		}
+	}
+	#天涯海角-南边发现了盛产香料等宝物的原始国家，值得征服，但也难以统治。听说，继续向西有更强盛的文明。
+	chu_tianyahaijiao = {
+	    #position = 1
+		icon = missions_china_shipyard
+		#completed_by = 190.1.1
+		required_missions = { chu_jianghuaishuiwang }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   suvarnabhumi_superregion = {
+			 has_discovered = ROOT
+		   }
+		   dip_tech = 15
+		}
+		effect = {
+			suvarnabhumi_superregion = {
+		     limit = {
+				 has_discovered = ROOT
+			 }
+			 add_claim = ROOT
+		  }
+		}
+	}
+	#巫鬼征服-翻过高原，我们发现了一个古老富有的文明，应该想办法从这获取无限的财富
+	chu_wuguizhengfu = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_yueguogaoyuan chu_tianyahaijiao  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   uttarapatha_superregion = {
+		    has_discovered = ROOT
+		   }
+		   religion = wuism
+		}
+		effect = {
+			custom_tooltip = chu_wuguizhengfu.tt
+			hidden_effect = {
+			
+			every_country = {
+			  limit = {
+			    capital_scope = {
+				 OR = {
+					region = jingzhou_china
+					region = yangzhou_china
+					region = yuzhou_china
+				 }
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+			}
+		}
+	}
+	#印太霸业-我们的足迹遍布两大洋，周边国家均是我们的猎场
+	chu_yindutaye = {
+	    #position = 1
+		icon = missions_china_ship
+		#completed_by = 190.1.1
+		required_missions = { chu_jingchudiguo chu_wuguizhengfu  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+		   total_development = 2000
+		}
+		effect = {
+		
+			custom_tooltip = chu_yindutaye.tt
+			hidden_effect = {
+			
+			every_country = {
+			  limit = {
+			    capital_scope = {
+				 superregion = dakshinapatha_superregion
+				}
+				NOT =  { is_subject_of = ROOT }
+			  }
+			  reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			  }
+			}
+			}
+		}
+	}
+}
+#共通线
+chu_common_1 = {
+    slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		NOT = { has_country_flag = chu_daxingfengjun }
+		NOT = { has_country_flag = chu_mibinghuimeng }
+	}
+	has_country_shield = yes
+    #政通人和-治理卓有成效，国力大有改善
+	chu_zhengtongrenhe = {
+		position = 2
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = { chu_xuanxianrenneng  }
+		trigger = {
+			stability = 2
+			NOT = { num_of_revolts = 1 }
+			owns_all_provinces = {
+			  NOT = { devastation = 0 }
+			}
+		}
+		effect = {
+			add_country_modifier = {
+			  name = prospering_country_modifier
+			  duration = 7300
+			}
+			add_country_modifier = {
+			  name = military_infrastructure_modifier
+			  duration = 7300
+			}
+			add_country_modifier = {
+			  name = improved_infrastructure
+			  duration = 7300
+			}
+		}
+	}
+    #云梦大泽-云梦泽中似乎有着无限的财富
+	chu_yunmengdaze = {
+	    #position = 1
+		icon = missions_china_commercial
+		#completed_by = 190.1.1
+		required_missions = {   }
+		provinces_to_highlight = {
+			OR = {
+			  area = nan_area_east
+			  area = changsha_area
+			  area = jiangxia_area_south
+			}
+		}
+		trigger = {
+		
+			nan_area_east = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+			changsha_area = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+			jiangxia_area_south = {
+			  owned_by = ROOT
+			  type = all
+			  development = 30
+			}
+		}
+		effect = {
+			add_years_of_income = 0.33
+			random_owned_province = {
+			   limit = { has_port = yes }
+			   ROOT = {
+			     light_ship = PREV
+			     light_ship = PREV
+			   }
+			}
+			nan_area_east = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			  }
+			}
+			changsha_area = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			}
+			jiangxia_area_south = {
+			  add_province_modifier = {
+			    name = economic_boost
+				duration = 3650
+			}
+		   }
+	    }
+	  }
+	}
+    #开发两湖-荆州核心区域是我们的根本
+	chu_kaifalianghu = {
+	    #position = 1
+		icon = missions_china_agriculture
+		#completed_by = 190.1.1
+		required_missions = { chu_yunmengdaze chu_bingguokaidi }
+		provinces_to_highlight = {
+			region = jingzhou_china
+		}
+		trigger = {
+			calc_true_if = {
+			    all_province = {
+				   region = jingzhou_china
+				   NOT = { devastation = 0 }
+				}
+			  amount = 30
+			}
+		}
+		effect = {
+			add_years_of_income = 1
+			
+			custom_tooltip = chu_kaifalianghu.tt
+			hidden_effect = {
+			
+			every_owned_province = { 
+			  limit = { region = jingzhou_china }
+			  add_prosperity = 10
+			}
+			}
+		}
+	}
+    #于斯为盛-惟楚有才，于斯为盛
+	chu_yusiweisheng = {
+	    #position = 1
+		icon = missions_china_learning
+		#completed_by = 190.1.1
+		required_missions = { chu_kaifalianghu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_idea = songs_of_chu
+			NOT = { corruption = 0.01 }
+		}
+		effect = {
+			add_mil_power = 50
+			add_adm_power = 50
+			add_dip_power = 50
+			add_splendor = 50
+			add_country_modifier = {
+			  name = chu_yusiweisheng_modifier # advisor_pool = 1
+			  duration = -1
+			}
+		}
+	}
+
+    
+
+    #丝绸之路-西北方向，开辟了条通往远方的商路
+	chu_silk_road = {
+	    position = 7
+		icon = missions_china_commercial
+		#completed_by = 190.1.1
+		required_missions = { chu_zhuxiatongqu }
+		provinces_to_highlight = {
+			region = tarim_basin_region
+		}
+		trigger = {
+			all_country = {
+			   capital_scope = {
+			    region = tarim_basin_region
+			   }
+			   has_opinion = {
+			    who = ROOT
+			    value = 100
+			   }
+			}
+			 production_efficiency = 0.33
+			 has_idea_group = caravan_trade_ideas
+		}
+		effect = {
+			add_mercantilism = 10
+			#启用触发修正丝绸之路，贸易范围、引导、竞争力提升20%
+		}
+	}
+
+    #保卫财产-我们在西域的贸易日益重要，或许我们应更好地保障自己的财产
+	chu_protect_beings = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_silk_road }
+		provinces_to_highlight = {
+			province_id = 4576
+		}
+		trigger = {
+			4576 = {
+			is_strongest_trade_power = ROOT
+			}
+			mercantilism = 20
+			trade_income_percentage = 0.33
+		}
+		effect = {
+		
+			custom_tooltip = chu_protect_beings.tt
+			hidden_effect = {
+			
+			every_province = {
+			  limit = {
+			   OR = {
+			    region = transoxiana_region
+				superregion = uttarapatha_superregion
+ 			   }
+			   NOT = { has_discovered = ROOT}
+			  }
+			  discover_country = ROOT
+			}
+			}
+			every_country = {
+			  limit = { 
+			  capital_scope = {
+			    region = tarim_basin_region
+			   } }
+			   reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_trade_war_triggered
+			    }
+			}
+		}
+	}
+
+}
+
+chu_common_2 = {
+    slot = 2
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		NOT = { has_country_flag = chu_daxingfengjun }
+		NOT = { has_country_flag = chu_mibinghuimeng }
+	}
+	#选贤任能-任用贤臣，强固国本
+	chu_xuanxianrenneng = {
+		#position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_yimingjingren  }
+		trigger = {
+			stability = 1
+			adm = 5
+		}
+		effect = {
+		  define_advisor = {
+			type = statesman_adv
+			skill = 3
+			discount = yes
+		  }
+		}
+	}
+	
+	#鼎之轻重-观兵于周疆，示欲显强而取天下
+	chu_dingzhiqingzhong = {
+		#position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_yimingjingren  }
+		trigger = {
+			OR = {
+			  NOT = { exists = ZHO }
+			  is_neighbor_of =ZHO
+			}
+			Not= { great_power_rank = 8 }
+			religion = liyuebadao
+		}
+		effect = {
+		    ZHO = {
+			   add_opinion = {
+			      who = ROOT
+				  modifier = want_your_provinces
+			   }
+			}
+			add_prestige = 15
+			add_splendor = 20
+			add_adm_power = 25
+			add_mil_power = 25
+			add_dip_power = 25
+			every_country = {
+			  limit = { 
+			    capital_scope = {
+			      OR = {
+				    area = henan_area
+					area = dang_area
+				  }
+			    } 
+			   }
+			   reverse_add_casus_belli = {
+			    target = CHU
+			    type = cb_vassalize_mission
+			    }
+			}
+		}
+	}
+	#并国开地-鲸吞淮南，灭国二十六，拓地三千里
+	chu_bingguokaidi = {
+		#position = 1
+		icon = missions_china_dashing
+		#completed_by = 190.1.1
+		required_missions = { chu_dingzhiqingzhong  }
+		trigger = {
+			diplomatic_reputation = 2
+			prestige = 50
+		}
+		effect = {
+		
+			custom_tooltip = chu_bingguokaidi.tt
+			hidden_effect = {
+			
+		    every_province = {
+			   limit = {
+			     NOT = { owned_by = ROOT }
+				 culture = huaiyi
+			   }
+			   add_claim = ROOT
+			}
+			}
+			#淮夷地被楚国所有时会获得本地转文化速度-20%修正
+		}
+	}
+	#龙凤呈祥-楚地有着独特的凤凰崇拜图腾
+	chu_longfengchengxian = {
+		#position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = {   }
+		trigger = {
+			OR = {
+			  accepted_culture = guanzhong
+			  accepted_culture = zhongyuan
+			  accepted_culture = dongtu
+			  accepted_culture = jianghan
+			  accepted_culture = hebei
+			  accepted_culture = shanxi
+			  accepted_culture = qilu
+			  accepted_culture = yinyi
+			}
+			dip_tech = 5
+		}
+		effect = {
+		    add_splendor = 50
+			if = {
+		     limit = {
+			   religion = liyuebadao
+			   NOT = { has_unlocked_cult = qinglong_worship }
+			 }
+			 country_event = { id = fetishist_flavor.1 }
+			}
+			if = {
+		     limit = {
+			   religion = liyuebadao
+			   NOT = { has_unlocked_cult = zhuque_worship }
+			 }
+			 country_event = { id = fetishist_flavor.2 }
+			}
+		}
+	}
+	#弭兵会盟-长年的争霸战争使我们疲惫，是时候和谈共享霸权了
+	chu_mibinghuimeng = {
+	    #position = 1
+		icon = missions_china_camp
+		#completed_by = 190.1.1
+		required_missions = { chu_chunqiubazhu }
+		trigger = {
+			is_league_leader = yes
+			is_in_league_war = yes
+			great_power_rank = 8
+		}
+		effect = {
+			custom_tooltip = chu_mibinghuimeng.tt
+			set_hre_religion_treaty = yes
+			set_country_flag = chu_mibinghuimeng
+			swap_non_generic_missions = yes
+		}
+	}
+	#诸夏通衢-长久维持的诸夏秩序使得中华交通便利
+	chu_zhuxiatongqu = {
+	    #position = 1
+		icon = missions_china_road
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		trigger = {
+			owns_all_provinces = {
+			  OR = {
+			    has_building = gravel_road
+				has_building = paved_road
+				has_building = imperial_road
+			  }
+			}
+			light_ship_fraction = 0.5
+			any_active_trade_node = {
+			has_merchant = PREV
+		   }
+		}
+		effect = {
+		  every_active_trade_node = {
+			limit = {
+				has_merchant = PREV
+			}
+			add_trade_modifier = {
+				who = root
+				duration = 10950
+				power = 10
+				key = chu_zhuxiatongqu
+			}
+		  }
+		}
+	}
+	#治理江河-水利工程，是政府重中之重
+	chu_zhilijianghe = {
+	    #position = 1
+		icon = missions_china_ship
+		#completed_by = 190.1.1
+		required_missions = { chu_zhuxiatongqu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 2
+			is_at_war = no
+			manpower = 100
+			prestige = 80
+		}
+		effect = {
+		
+			custom_tooltip = chu_zhilijianghe.tt
+			hidden_effect = {
+			
+		  every_owned_province = {
+		     limit = {
+			   OR = {
+			     has_terrain = wetlands
+				 has_terrain = alluvial_plain
+				 has_terrain = farmlands
+			   }
+			 }
+			 add_province_modifier = {
+	            name = 	chu_zhilijianghe_modifier #降低荒芜度、增加人口速度、提升税率 
+				duration = 10950
+			 }
+			 }
+		  }
+		  add_yearly_manpower = -3
+		}
+	}
+	#海外贸易-我们的水师在海上发现了一些其他国家，或许能开辟贸易航线
+	chu_haiwaimaoyi = {
+	    #position = 1
+		icon = missions_china_ship
+		#completed_by = 190.1.1
+		required_missions = { chu_zhilijianghe }
+		provinces_to_highlight = {
+			OR = {
+			  area = kuaiji_area
+			  area = linhai_area
+			}
+		}
+		trigger = {
+			kuaiji_area = {
+			  owned_by = ROOT
+			  is_core = ROOT
+			  type = all
+			}
+			linhai_area = {
+			  owned_by = ROOT
+			  is_core = ROOT
+			  type = all
+			}
+			OR = {
+			 light_ship_fraction = 0.75
+			 full_idea_group = maritime_trade_ideas
+			}
+		}
+		effect = {
+		
+			custom_tooltip = chu_haiwaimaoyi.tt
+			hidden_effect = {
+			
+		  every_province = {
+		     limit = {
+			   has_port = yes
+			   OR = {
+			     region = jiaozhou_china
+				 region = yangzhou_china
+				 region = lacviet_region
+				 superregion = suvarnabhumi_superregion
+			   }
+			 }
+			 discover_country = ROOT
+		  }
+		  }
+		  add_mercantilism = 5
+		}
+	}
+	#世界渴望之城-经过漫长的海陆旅行，世界的贸易品集中在我们的城市
+	chu_eager_city_of_world = {
+	    position = 10
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_haiwaimaoyi chu_protect_beings }
+		provinces_to_highlight = {
+			OR = {
+			  province_id = 3006
+			  province_id = 2735
+			  province_id = 661
+			  province_id = 1367
+			  province_id = 1386
+			}
+		}
+		trigger = {
+			has_discovered = 3006
+			has_discovered = 2735
+			has_discovered = 661
+			has_discovered = 1367
+			has_discovered = 1386
+		}
+		effect = {
+			capital_scope = {
+				if = {
+					limit = { NOT = { province_has_center_of_trade_of_level = 1 } }
+					center_of_trade = 3
+				}
+				else = { add_center_of_trade_level = 3 }
+			}
+		  	add_country_modifier = {
+				name = trade_mission_mod
+				duration = -1
+			}
+		}
+	}
+}
+chu_common_3 = {
+    slot = 3
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		NOT = { has_country_flag = chu_daxingfengjun }
+		NOT = { has_country_flag = chu_mibinghuimeng }
+	}
+	#一鸣惊人-明主临朝，扫灭敌国，士民纷纷归附
+	chu_yimingjingren = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			OR = {
+			  area = hanzhong_area
+			  area = hanzhong_area_north
+			}
+		}
+		trigger = {
+			hanzhong_area = {
+			   owned_by = ROOT
+			   type = all
+			   is_city = yes
+			}
+			hanzhong_area_north = {
+			   owned_by = ROOT
+			   type = all
+			   is_city = yes
+			}
+			NOT = { exists = YON }
+		}
+		effect = {
+		  add_country_modifier = {
+		    name = stabile_government_modifier
+			duration = 7300
+		  }
+		  add_prestige = 10
+		  add_legitimacy = 25
+		  if = {
+		   limit = {
+		     NOT = { religion_group = chinese_religions } 
+		   }
+		   
+			custom_tooltip = chu_yimingjingren.tt
+		   hidden_effect = {
+		   every_owned_province = {
+		   limit = {
+		   religion = owner
+		   }
+		   change_religion = liyuebadao
+		   }
+		   }
+		   change_religion = liyuebadao
+		   country_event = { id = chinese_school_events.1 }
+		   if = {
+		    limit = {
+			 NOT = {
+			    has_country_flag = wendingzhongyuan
+				has_global_flag = wendingzhongyuan_union_happened
+				hre_religion = liyuebadao
+				
+			 }
+			 hre_religion_treaty = no
+			}
+			country_event = { id = chinese_school_events.4 }
+			}
+		  }
+		}
+	}
+	#盟国抗霸-霸主强大，需要联合对抗
+	chu_mengguokangjin = {
+	    #position = 1
+		icon = missions_china_alliance
+		#completed_by = 190.1.1
+		required_missions = { chu_yimingjingren }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			OR = {
+			  any_rival_country = {
+			     is_emperor = yes
+			  }
+			  is_emperor = yes
+			}
+		}
+		effect = {
+		
+			custom_tooltip = chu_mengguokangjin.tt
+			hidden_effect = {
+			every_known_country = {
+			   limit = {
+			      is_subject = no
+				  NOT = { alliance_with = ROOT }
+				  NOT = {
+				  has_opinion = {
+				   who = emperor
+				   value = -10
+				   }
+				  }
+			   }
+			   form_coalition_against = emperor
+			}
+			}
+			form_coalition_against = emperor
+		}
+	}
+	#威服中原-通往北方的道路已被打开
+	chu_weifuzhongyuan = {
+	    #position = 1
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_mengguokangjin }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			OR = {
+			 all_country = {
+			    capital_scope = {
+				  or = {
+				    area = henan_area
+					area = runan_area
+				  }
+				}
+				is_subject_of = ROOT
+			 }
+			AND = {
+			 henan_area = {
+			  owned_by = ROOT
+			  type = all
+			 }
+			 runan_area = {
+			  owned_by = ROOT
+			  type = all
+			 }
+			 }
+			}
+		}
+		effect = {
+		    add_prestige = 20
+			add_years_of_income = 0.1
+			add_ruler_modifier = {
+			  name = tough_army
+			}
+		}
+	}
+	#新霸主
+	chu_chunqiubazhu = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_bingguokaidi chu_weifuzhongyuan chu_yinmahuanghe }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			is_emperor = yes
+			adm = 4
+			dip = 4
+			mil = 4
+			calc_true_if = {
+			all_country = {
+			 religion_group = chinese_religions
+			 total_development = ROOT
+			 }
+			 amount = 0
+			}
+			is_at_war = no
+		}
+		effect = {
+		    add_splendor = 100
+			add_adm_power = 100
+			add_dip_power = 100
+			add_mil_power = 100
+			change_government_reform_progress = 100
+			
+		}
+	}
+	#世主夏盟-我国世主夏盟，诸夏已经习惯了我们的霸主地位
+	chu_shizhuxiameng = {
+	    #position = 1
+		icon = missions_china_learning
+		#completed_by = 190.1.1
+		required_missions = { chu_chunqiubazhu }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			is_emperor = yes
+			hre_reform_passed = emperor_erbkaisertum
+		}
+		effect = {
+		    add_splendor = 100
+			change_government_reform_progress = 100
+		}
+	}
+	#昭昭天命-长久的统治，意味着我们得天命所钟
+	chu_zhaozhaotianming = {
+	    #position = 1
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			full_idea_group = imperial_ideas
+			stability = 2
+			adm_tech = 20
+		}
+		effect = {
+		    add_stability = 1
+			
+			custom_tooltip = chu_zhaozhaotianming.tt
+			hidden_effect = {
+			
+			every_known_country = {
+			   limit = {
+			     is_subject_of = ROOT
+			   }
+			   add_liberty_desire = -10
+			}
+			}
+		}
+	}
+	#尧舜之事-时机已经成熟，可以主持禅让了
+	chu_yaoshunzhishi = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_zhaozhaotianming }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			OR = {
+			  NOT = { exists = ZHO }
+			  AND = {
+			    ZHO = {
+				  NOT = { total_development = 50 }
+				  has_opinion =  {
+				    who = ROOT
+					value = 100
+				  }
+				}
+			  }
+			}
+			is_at_war = no
+			prestige = 100
+		}
+		effect = {
+		    set_emperor_of_china = ROOT
+			custom_tooltip = chu_yaoshunzhishi.tt
+			hidden_effect = {
+			every_known_country = {
+			   limit = {
+			     is_subject_of = ROOT
+			   }
+			   add_liberty_desire = -10
+			   add_opinion = {
+			     who = ROOT
+				 modifier = opinion_united_empire
+			   }
+			}
+			}
+		}
+	}
+	#三呼万岁-诸夏的民众集结了起来，他们高呼大楚万岁，从此我们一个民族、一个信仰、一个国家！
+	chu_sanhuwansui = {
+	    position = 10
+		icon = missions_china_employ
+		#completed_by = 190.1.1
+		required_missions = { chu_yaoshunzhishi chu_bachubaijia }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			is_emperor_of_china = yes
+			empire_of_china_reform_passed = become_shi_huang
+			empire_of_china_reform_passed = standardized_currency
+			empire_of_china_reform_passed = abolish_feudalism
+			religion_group = chinese_religions
+			religious_unity = 1
+			imperial_mandate = 100
+			stability = 3
+			calc_true_if = {
+			all_country = {
+			 religion_group = chinese_religions
+			 total_development = ROOT
+			 }
+			 amount = 0
+			}
+			full_idea_group = assimilation_ideas
+		}
+		effect = {
+			custom_tooltip = chu_sanhuwansui.tt
+			hidden_effect = {
+			every_known_country = {
+			  limit = {
+			    religion_group = chinese_religions
+				culture_group = chinese_group
+				NOT = { tag = ROOT }
+			  }
+			  save_event_target_as = sanhuwansui
+			}
+			inherit = event_target:sanhuwansui
+			}
+		}
+	}
+	#征服四海-我们是四海局势的掌握者，以保证我国的繁荣安定
+	chu_zhengfusihai = {
+	    position = 11
+		icon = missions_china_vicyory
+		#completed_by = 190.1.1
+		required_missions = { chu_sanhuwansui chu_eager_city_of_world }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			is_hegemon = yes
+			full_idea_group = naval_ideas
+		}
+		effect = {
+		    every_country = {
+			  limit = {
+			    NOT = { tag = ROOT }
+				is_great_power = yes
+			  }
+			  reverse_add_casus_belli = {
+			    target = ROOT
+			    type = cb_vassalize_mission
+			    }
+			}
+		}
+	}
+}
+
+chu_common_4 = {
+    slot = 4
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		NOT = { has_country_flag = chu_daxingfengjun }
+		NOT = { has_country_flag = chu_mibinghuimeng }
+	}
+	#清洗公族-公族尾大不掉，或许……
+	chu_ruoaozhiluan = {
+	    #position = 1
+		icon = missions_china_diplomacy
+		#completed_by = 190.1.1
+		required_missions = { chu_yimingjingren }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 2
+			manpower = 10
+			estate_territory = {
+			   estate = estate_nobility
+			   territory = 50
+			}
+		}
+		effect = {
+		    every_owned_province = {
+			   limit = {
+			     base_tax = 3
+			   }
+			   spawn_rebels = {
+			     type = noble_rebels
+			     size = 2
+			     }
+			}
+			change_estate_land_share = {
+				   estate = estate_nobility
+				   share = -50
+			}
+		}
+	}
+	#饮马黄河-欲称霸天下，必须准备与霸主的正面交锋
+	chu_yinmahuanghe = {
+	    position = 3
+		icon = missions_china_army
+		#completed_by = 190.1.1
+		required_missions = { chu_ruoaozhiluan }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 2
+			manpower = 30
+			is_at_war = no
+			NOT = { is_emperor = yes }
+			is_league_leader = yes
+		}
+		effect = {
+		    add_country_modifier = {
+			   name = glorious_army_modifier
+			   duration = 7300
+			}
+			declare_war_with_cb = {
+			      who = emperor
+			      casus_belli = cb_religious_league
+			}
+		}
+	}
+	
+	#禁绝淫祀-禁绝淫祀，必须让子民接受正确的信仰
+	chu_jinjueyinsi = {
+	    position = 7
+		icon = missions_china_bureaucrat
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			religion_group = chinese_religions
+			stability = 3
+			full_idea_group = cerimonial_ideas
+		}
+		effect = {
+			custom_tooltip = chu_jinjueyinsi.tt
+			hidden_effect = {
+			every_known_country = {
+			  limit = {
+			    religion_group = chinese_religions
+				any_owned_province = {
+				  religion_group = eastern_religions
+				}
+			  }
+			  every_owned_province = {
+			    limit = { 
+				religion_group = eastern_religions 
+				}
+				spawn_rebels = {
+				  size = 1
+				  type = religious_rebels
+				}
+				change_religion = owner
+			  }
+			}
+			}
+			add_stability = -1
+		}
+	}
+	
+	#罢黜百家-统一思想，更能巩固我们的霸权
+	chu_bachubaijia = {
+	    position = 9
+		icon = missions_china_learning
+		#completed_by = 190.1.1
+		required_missions = { chu_jinjueyinsi chu_bianyiweixia  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			religion_group = chinese_religions
+			religious_unity = 0.8
+			NOT = { average_autonomy = 10 }
+		}
+		effect = {
+			add_stability = 3
+			change_innovativeness = -100
+		}
+	}
+}
+
+
+chu_common_5 = {
+    slot = 5
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = CHU
+		NOT = {
+			map_setup = map_setup_random
+		}
+		NOT = { has_country_flag = chu_daxingfengjun }
+		NOT = { has_country_flag = chu_mibinghuimeng }
+	}
+	
+	#力行封君-公卿是国家的基石，或许该适当给他们分权
+	chu_daxingfengjun = {
+	    #position = 1
+		icon = missions_china_diplomacy
+		#completed_by = 190.1.1
+		required_missions = {  }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			has_reform = chinese_feudalism_reform
+			crown_land_share = 30
+			estate_influence = {
+			  estate = estate_nobility
+			  influence = 50
+		    }
+		}
+		effect = {
+			custom_tooltip = chu_daxingfengjun.tt
+			add_stability = 1
+			hidden_effect = {   
+			every_owned_province = {
+	          limit = {
+			    base_tax = 1
+			  }
+			  add_unrest = -5
+			  add_nationalism = -10
+			 }
+			}
+			change_estate_land_share = {
+				estate = all
+				share = 10
+			}
+			add_country_modifier = {
+			   name = chu_daxingfengjun_modifier
+			   duration = -1
+			}
+			set_country_flag = chu_daxingfengjun
+			swap_non_generic_missions = yes
+		}
+	}
+	
+	#代有名王-楚国代有名王，从而维持了霸主地位
+	chu_daiyoumingwang = {
+	    #position = 1
+		icon = missions_china_great
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			legitimacy = 100
+			crown_land_share = 80
+			has_heir = yes
+		}
+		effect = {
+		    change_heir_adm = 2
+		    change_heir_dip = 2
+		    change_heir_mil = 2
+		}
+	}
+	#两广之卒-楚军编制，亲兵分左右两部称广，以十五乘为一偏，两偏为一卒，即一广,两广之卒一向是楚王直属精兵
+	chu_liangguangzhizu = {
+	    position = 4
+		icon = missions_china_camp
+		#completed_by = 190.1.1
+		required_missions = { chu_yinmahuanghe }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			stability = 0
+			crown_land_share = 50
+		}
+		effect = {
+		    add_mil_power = 100
+			capital_scope = {
+			   ROOT = {
+			   infantry = PREV
+			   infantry = PREV
+			   artillery = PREV
+			   artillery = PREV
+			   cavalry = PREV
+			   cavalry = PREV
+			   }
+			}
+		}
+	}
+	
+	#推恩削藩-作为霸主，我们可名正言顺地拆解有矛盾的强国
+	chu_tuienxuefan = {
+	    position = 6
+		icon = missions_china_diplomacy
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			full_idea_group = royal_court_ideas
+			full_idea_group = propaganda_ideas
+		}
+		effect = {
+			custom_tooltip = chu_tuienxuefan.tt
+			hidden_effect = {
+		    every_known_country = {
+			  limit = {
+			    religion_group = chinese_religions
+				NOT = { tag = ROOT}
+			  }
+			  release_all_subjects = yes
+			}
+			}
+		}
+	}
+	#尊王攘夷-戎狄豺狼，不可厌也；诸夏亲昵，不可弃也
+	chu_zunwangrangyi = {
+	    position = 7
+		icon = missions_china_nomad
+		#completed_by = 190.1.1
+		required_missions = { chu_shizhuxiameng }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			NOT = { is_emperor_of_china = yes }
+			exists = ZHO
+			NOT = { 
+			  any_known_country = {
+			     religion_group = chinese_religions
+				 NOT = {
+				 has_opinion = {
+				   who = ROOT
+				   value = 0
+				 }
+				 }
+			  }
+			}
+		}
+		effect = {
+			custom_tooltip = chu_zunwangrangyi.tt
+			hidden_effect = {
+			every_known_country = {
+			  limit = {
+			    capital_scope = { continent = china }
+				NOT = { religion_group = chinese_religions }
+			  }
+			  save_event_target_as = manyi_country
+			}
+			declare_war_with_cb = {
+			      who = event_target:manyi_country
+			      casus_belli = cb_crusade_china
+			   }   
+			every_known_country = {
+			  limit = {
+			    religion_group = chinese_religions
+			  }
+			  join_all_offensive_wars_of = ROOT
+			}
+			}
+			}
+		  }
+
+	
+	#变夷为夏-教化夷民是我们的使命
+	chu_bianyiweixia = {
+	    position = 8
+		icon = missions_china_learning
+		#completed_by = 190.1.1
+		required_missions = { chu_jinjueyinsi }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			any_owned_province = {
+			   NOT = { culture_group = chinese_group }
+			}
+			culture_group = chinese_group
+			OR = {
+			 has_had_golden_age = yes
+			 splendor = 500
+			}
+			full_idea_group = assimilation_ideas
+		}
+		effect = {
+			custom_tooltip = chu_bianyiweixia.tt
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+						is_state = yes
+					}
+					if = {
+						limit = {
+							culture_group = malay_group
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+						change_culture = yue_chinese
+					}		
+					if = {
+						limit = {
+							culture_group = baipu_group
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+						change_culture = xinan_chinese
+					}
+					if = {
+						limit = {
+							or = {
+								culture = changdi
+								culture_group = dongyi_group
+							}
+						}
+						spawn_rebels = {
+				  			size = 1
+				  			type = nationalist_rebels
+						}
+						change_culture = qilu
+					}
+					if = {
+						limit = {
+							OR = {
+								culture = chidi
+								culture = baidi
+							}
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+						change_culture = shanxi
+					}
+					if = {
+						limit = {
+		 					OR = {
+								culture = beidi
+								culture = shanrong
+		 					}
+						}
+						change_culture = hebei
+					}
+					if = {
+						limit = {
+							culture = xirong
+						}
+						spawn_rebels = {
+							size = 1
+				  			type = nationalist_rebels
+						}
+						change_culture = guanzhong
+					}
+					if = {
+						limit = {
+							culture_group = jingman_group
+						}
+						spawn_rebels = {
+				 			size = 1
+							type = nationalist_rebels
+						}
+						change_culture = nanchu
+					}
+					if = {
+						limit = {
+		 					NOT = { culture_group = dongyi_group }
+		  					NOT = { culture_group = beidixirong_group }
+		  					NOT = { culture_group = baipu_group }
+		  					NOT = { culture_group = malay_group }
+		  					NOT = { culture_group = jingman_group }
+		  					NOT = { culture_group = chinese_group }
+						}
+						spawn_rebels = {
+				 			size = 1
+				  			type = nationalist_rebels
+						}
+						change_culture = zhongyuan
+					}	
+				}
+			}
+		}
+	}
+}

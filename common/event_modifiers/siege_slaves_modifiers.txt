@@ -2,42 +2,42 @@
 
 # SIEGE MODIFIERS
 
-SS_enslavement_here = {		
+SD_enslavement_here = {		
 	picture = "ongoing_plundering"
 	local_friendly_movement_speed = -1
 }
-SS_enslv_there_hostile = {		# still controlled by the enemy (you won't move there
+SD_enslv_there_hostile = {		# still controlled by the enemy (you won't move there
 	picture = "ongoing_plundering"
 	local_hostile_movement_speed = -1
 }
-SS_enslv_there_friend = {		# controlled or owned by you, the besieger
+SD_enslv_there_friend = {		# controlled or owned by you, the besieger
 	picture = "ongoing_plundering"
 	local_friendly_movement_speed = -1
 }
-SS_was_tributed = {
+SD_was_tributed = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.05		# to "counter" the increase in dev, that would make it go lower this amount
 }
-SS_was_sacked = {
+SD_was_sacked = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.30		
 }
 
-SS_was_destroyed = {
+SD_was_destroyed = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.50		
 }
 
-SS_was_enslaved = {
+SD_was_enslaved = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.20		
 }
 
-SS_was_delenda = {
+SD_was_delenda = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.80		
 }
-SS_was_raided = {
+SD_was_raided = {
 	picture = "raided_for_slaves"
 	local_monthly_devastation = 0.10		
 }
@@ -51,7 +51,15 @@ SS_cleaning_2 = {
 	local_monthly_devastation = -0.30		
 }
 
-# SLAVE RATIOS
+SD_market_open = {
+	picture = "raided_for_slaves"
+	province_trade_power_value = 3
+	local_unrest = 2
+}
+
+
+# SLAVE RATIOS. Old ones, in case someone is using the old version (save compatible)
+
 slaves_ratio_00 = {
 	picture = "slaves_ratio_00"
 	# Linear effect: goods size
@@ -101,8 +109,8 @@ slaves_ratio_60 = {
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	light_ship_cost = -0.05
 	transport_cost = -0.05
-	build_cost = -0.10
-	build_time = -0.10
+	build_cost = -0.025
+	build_time = -0.05
 	global_ship_repair = 0.075
 	defensiveness = -0.10
 	
@@ -122,8 +130,8 @@ slaves_ratio_80 = {
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	light_ship_cost = -0.075
 	transport_cost = -0.075
-	build_cost = -0.15
-	build_time = -0.15
+	build_cost = -0.05
+	build_time = -0.075
 	global_ship_repair = 0.10
 	defensiveness = -0.125
 	global_manpower_modifier = -0.10		# less people prepared to fight
@@ -142,8 +150,8 @@ slaves_ratio_100 = {
 	
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	global_ship_cost = -0.125
-	build_cost = -0.20
-	build_time = -0.25
+	build_cost = -0.075
+	build_time = -0.1
 	global_ship_repair = 0.10
 	defensiveness = -0.175
 	global_manpower_modifier = -0.15		# less people prepared to fight
@@ -162,8 +170,8 @@ slaves_ratio_120 = {
 	
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	global_ship_cost = -0.125
-	build_cost = -0.20
-	build_time = -0.25
+	build_cost = -0.075
+	build_time = -0.1
 	global_ship_repair = 0.10
 	defensiveness = -0.20
 	global_manpower_modifier = -0.225		# less people prepared to fight
@@ -182,8 +190,8 @@ slaves_ratio_150 = {
 	
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	global_ship_cost = -0.15
-	build_cost = -0.25
-	build_time = -0.25
+	build_cost = -0.1
+	build_time = -0.125
 	global_ship_repair = 0.10
 	defensiveness = -0.30
 	global_manpower_modifier = -0.30		# less people prepared to fight
@@ -203,8 +211,8 @@ slaves_ratio_200 = {
 	
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	global_ship_cost = -0.15
-	build_cost = -0.25
-	build_time = -0.25
+	build_cost = -0.1
+	build_time = -0.125
 	global_ship_repair = 0.10
 	defensiveness = -0.40
 	global_manpower_modifier = -0.35		# less people prepared to fight
@@ -224,8 +232,8 @@ slaves_ratio_250 = {
 	
 	# Other effects: nothing before 40, will be both positive and negative the higher it goes
 	global_ship_cost = -0.15
-	build_cost = -0.25
-	build_time = -0.25
+	build_cost = -0.1
+	build_time = -0.125
 	global_ship_repair = 0.10
 	defensiveness = -0.50
 	global_manpower_modifier = -0.50		# less people prepared to fight
@@ -234,3 +242,1930 @@ slaves_ratio_250 = {
 	picture = "slaves_ratio_250"
 	
 }
+
+####
+# SLAVERY PERCENTAGE NEW MODIFIERS
+####
+#
+# Now the modifiers are done in a "table" of A) Slave population % -> Society effects, and B) Slave % pop adjusted -> Economic effects
+# Society effects will only become worse the bigger it goes, while economic effects are positive. 
+# The thing is that you will not have good productivity, without social unrest. 
+#
+#	SLAVE PRODUCTION %, Y axis:
+#	1:0-10  2:10-20	 3: 20-30  4:30-40	 5:40-50  6:50-60  7:60-80 8:80-100
+#	9:100-120  10:120-140  11:140-160  12:160-200  13:200-250  14:250-300  15:>300
+#
+# 	SLAVE POPULATION %, X axis: 
+#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+#	
+#	This means we have 7 for population, and 15 for productivity. 7 x 15 = 105 potential modifiers. Let's go
+
+
+# BLOCK X1
+	slaves_share_x1y1 = {	# Population 0-10%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		# Population
+		
+		
+	}
+	slaves_share_x1y2 = {	# Population 0-10%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		# Population
+		
+		
+	}
+	slaves_share_x1y3 = {	# Population 0-10%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		# Population
+		
+		
+	}
+	slaves_share_x1y4 = {	# Population 0-10%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		# Population
+		
+		
+	}
+	slaves_share_x1y5 = {	# Population 0-10%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		# Population
+		
+		
+	}
+	slaves_share_x1y6 = {	# Population 0-10%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.025
+		build_time = -0.05
+		global_ship_repair = 0.075
+		# Population
+		
+		
+	}
+	slaves_share_x1y7 = {	# Population 0-10%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.05
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y8 = {	# Population 0-10%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.075
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		# Population
+		
+		
+	}
+	slaves_share_x1y9 = {	# Population 0-10%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.1
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y10 = {	# Population 0-10%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y11 = {	# Population 0-10%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+				
+	}
+	slaves_share_x1y12 = {	# Population 0-10%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y13 = {	# Population 0-10%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y14 = {	# Population 0-10%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		
+		
+	}
+	slaves_share_x1y15 = {	# Population 0-10%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		
+		
+	}
+	
+# BLOCK X2: 10-25%
+	slaves_share_x2y1 = {	# Population 10-25%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y2 = {	# Population 10-25%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y3 = {	# Population 10-25%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y4 = {	# Population 10-25%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y5 = {	# Population 10-25%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y6 = {	# Population 10-25%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+		
+	}
+	slaves_share_x2y7 = {	# Population 10-25%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+		
+	}
+	slaves_share_x2y8 = {	# Population 10-25%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y9 = {	# Population 10-25%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y10 = {	# Population 10-25%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y11 = {	# Population 10-25%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y12 = {	# Population 10-25%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y13 = {	# Population 10-25%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y14 = {	# Population 10-25%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+	slaves_share_x2y15 = {	# Population 10-25%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 0.50
+		stability_cost_modifier = 0.10
+		
+		
+	}
+
+# BLOCK X3
+	slaves_share_x3y1 = {	# Population 25-50%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y2 = {	# Population 25-50%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y3 = {	# Population 25-50%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y4 = {	# Population 25-50%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y5 = {	# Population 25-50%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y6 = {	# Population 25-50%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+		
+	}
+	slaves_share_x3y7 = {	# Population 25-50%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+		
+	}
+	slaves_share_x3y8 = {	# Population 25-50%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y9 = {	# Population 25-50%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y10 = {	# Population 25-50%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y11 = {	# Population 25-50%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y12 = {	# Population 25-50%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y13 = {	# Population 25-50%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y14 = {	# Population 25-50%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+	slaves_share_x3y15 = {	# Population 25-50%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 1.00
+		stability_cost_modifier = 0.25
+		
+		
+	}
+
+# BLOCK X1
+	slaves_share_x4y1 = {	# Population 50-80%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y2 = {	# Population 50-80%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y3 = {	# Population 50-80%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y4 = {	# Population 50-80%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y5 = {	# Population 50-80%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y6 = {	# Population 50-80%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+		
+	}
+	slaves_share_x4y7 = {	# Population 50-80%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+		
+	}
+	slaves_share_x4y8 = {	# Population 50-80%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y9 = {	# Population 50-80%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y10 = {	# Population 50-80%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y11 = {	# Population 50-80%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y12 = {	# Population 50-80%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y13 = {	# Population 50-80%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y14 = {	# Population 50-80%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+	slaves_share_x4y15 = {	# Population 50-80%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 2.00
+		global_spy_defence = -0.10
+		stability_cost_modifier = 0.40
+		
+		
+	}
+
+	
+# BLOCK X5
+	slaves_share_x5y1 = {	# Population 80-120%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y2 = {	# Population 80-120%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y3 = {	# Population 80-120%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y4 = {	# Population 80-120%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y5 = {	# Population 80-120%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y6 = {	# Population 80-120%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+		
+	}
+	slaves_share_x5y7 = {	# Population 80-120%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+		
+	}
+	slaves_share_x5y8 = {	# Population 80-120%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y9 = {	# Population 80-120%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y10 = {	# Population 80-120%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y11 = {	# Population 80-120%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y12 = {	# Population 80-120%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y13 = {	# Population 80-120%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y14 = {	# Population 80-120%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	slaves_share_x5y15 = {	# Population 80-120%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 3.00
+		global_spy_defence = -0.25
+		stability_cost_modifier = 0.60
+		defensiveness = -0.15
+		
+		
+	}
+	
+	# The two last ones are really WTF, I wouldn't suppose nobody reaches these limits.. but anyway, prepare to suffer
+	
+# BLOCK X6
+	slaves_share_x6y1 = {	# Population 120-200%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y2 = {	# Population 120-200%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y3 = {	# Population 120-200%, Productivity 20-30%
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+	}
+	slaves_share_x6y4 = {	# Population 120-200%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y5 = {	# Population 120-200%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y6 = {	# Population 120-200%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+		
+	}
+	slaves_share_x6y7 = {	# Population 120-200%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+		
+	}
+	slaves_share_x6y8 = {	# Population 120-200%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y9 = {	# Population 120-200%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y10 = {	# Population 120-200%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y11 = {	# Population 120-200%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y12 = {	# Population 120-200%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y13 = {	# Population 120-200%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y14 = {	# Population 120-200%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+	slaves_share_x6y15 = {	# Population 120-200%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 5.00
+		global_spy_defence = -0.35
+		stability_cost_modifier = 0.80
+		defensiveness = -0.25
+		global_garrison_growth = -0.20
+		land_morale = -0.10
+		army_tradition_decay = 0.10
+		manpower_recovery_speed = -0.15
+		movement_speed = -0.10
+		naval_morale = -0.10
+		navy_tradition_decay = 0.10
+		sailors_recovery_speed = -0.15
+		
+		
+	}
+
+# BLOCK X7
+	slaves_share_x7y1 = {	# Population >200%, Productivity 0-10%
+		# Productivity
+		global_trade_goods_size_modifier = 0.01
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y2 = {	# Population >200%, Productivity 10-20%
+		# Productivity
+		global_trade_goods_size_modifier = 0.10
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y3 = {	# Population >200%, Productivity 20-30%
+		# Productivity
+		global_trade_goods_size_modifier = 0.20
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y4 = {	# Population >200%, Productivity 30-40%
+		# Productivity
+		global_trade_goods_size_modifier = 0.30
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y5 = {	# Population >200%, Productivity 40-50%
+		# Productivity
+		global_trade_goods_size_modifier = 0.40
+		light_ship_cost = -0.025
+		transport_cost = -0.025
+		global_ship_repair = 0.05
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y6 = {	# Population >200%, Productivity 50-60%
+		# Productivity
+		global_trade_goods_size_modifier = 0.50
+		light_ship_cost = -0.05
+		transport_cost = -0.05
+		build_cost = -0.05
+		build_time = -0.05
+		global_ship_repair = 0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+		
+	}
+	slaves_share_x7y7 = {	# Population >200%, Productivity 60-80%
+		# Productivity
+		global_trade_goods_size_modifier = 0.60
+		light_ship_cost = -0.075
+		transport_cost = -0.075
+		build_cost = -0.075
+		build_time = -0.075
+		global_ship_repair = 0.10
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+		
+	}
+	slaves_share_x7y8 = {	# Population >200%, Productivity 80-120%
+		# Productivity
+		global_trade_goods_size_modifier = 0.80
+		global_ship_cost = -0.10
+		global_ship_repair = 0.15
+		build_cost = -0.10
+		build_time = -0.10
+		infantry_cost = -0.025
+		cavalry_cost = -0.025
+		artillery_cost = -0.025
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y9 = {	# Population >200%, Productivity 100-120%
+		# Productivity
+		global_trade_goods_size_modifier = 1.00
+		global_ship_cost = -0.10
+		global_ship_repair = 0.20
+		build_cost = -0.125
+		build_time = -0.10
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y10 = {	# Population >200%, Productivity 120-140%
+		# Productivity
+		global_trade_goods_size_modifier = 1.20
+		global_ship_cost = -0.125
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.125
+		infantry_cost = -0.050
+		cavalry_cost = -0.050
+		artillery_cost = -0.050
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y11 = {	# Population >200%, Productivity 140-160%
+		# Productivity
+		global_trade_goods_size_modifier = 1.40
+		global_ship_cost = -0.15				# Other modifiers stop rising
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y12 = {	# Population >200%, Productivity 160-200%
+		# Productivity
+		global_trade_goods_size_modifier = 1.60
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y13 = {	# Population >200%, Productivity 200-250%
+		# Productivity
+		global_trade_goods_size_modifier = 2.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y14 = {	# Population >200%, Productivity 250-300%
+		# Productivity
+		global_trade_goods_size_modifier = 2.50
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+	slaves_share_x7y15 = {	# Population >200%, Productivity >300%
+		# Productivity
+		global_trade_goods_size_modifier = 3.00
+		global_ship_cost = -0.15
+		global_ship_repair = 0.20
+		build_cost = -0.15
+		build_time = -0.15
+		infantry_cost = -0.075
+		cavalry_cost = -0.075
+		artillery_cost = -0.075
+		
+		# Population
+		global_unrest = 7.50
+		global_spy_defence = -0.60
+		stability_cost_modifier = 1.00
+		defensiveness = -0.40
+		global_garrison_growth = -0.40
+		land_morale = -0.175
+		army_tradition_decay = 0.25
+		manpower_recovery_speed = -0.30
+		movement_speed = -0.15
+		naval_morale = -0.175
+		navy_tradition_decay = 0.25
+		sailors_recovery_speed = -0.30
+		
+		
+	}
+
+
+
+manf_slave_00 = {
+	picture = "raided_for_slaves"
+	#trade_goods_size = 0
+}
+manf_slave_01 = { picture = "raided_for_slaves" trade_goods_size = 0.1 }
+manf_slave_02 = { picture = "raided_for_slaves" trade_goods_size = 0.2 }
+manf_slave_03 = { picture = "raided_for_slaves" trade_goods_size = 0.3 }
+manf_slave_04 = { picture = "raided_for_slaves" trade_goods_size = 0.4 }
+manf_slave_05 = { picture = "raided_for_slaves" trade_goods_size = 0.5 }
+manf_slave_06 = { picture = "raided_for_slaves" trade_goods_size = 0.6 }
+manf_slave_07 = { picture = "raided_for_slaves" trade_goods_size = 0.7 }
+manf_slave_08 = { picture = "raided_for_slaves" trade_goods_size = 0.8 }
+manf_slave_09 = { picture = "raided_for_slaves" trade_goods_size = 0.9 }
+manf_slave_10 = { picture = "raided_for_slaves" trade_goods_size = 1.0 }
+manf_slave_11 = { picture = "raided_for_slaves" trade_goods_size = 1.1 }
+manf_slave_12 = { picture = "raided_for_slaves" trade_goods_size = 1.2 }
+manf_slave_13 = { picture = "raided_for_slaves" trade_goods_size = 1.3 }
+manf_slave_14 = { picture = "raided_for_slaves" trade_goods_size = 1.4 }
+manf_slave_15 = { picture = "raided_for_slaves" trade_goods_size = 1.5 }
+manf_slave_16 = { picture = "raided_for_slaves" trade_goods_size = 1.6 }
+manf_slave_17 = { picture = "raided_for_slaves" trade_goods_size = 1.7 }
+manf_slave_18 = { picture = "raided_for_slaves" trade_goods_size = 1.8 }
+manf_slave_19 = { picture = "raided_for_slaves" trade_goods_size = 1.9 }
+manf_slave_20 = { picture = "raided_for_slaves" trade_goods_size = 2.0 }
+manf_slave_21 = { picture = "raided_for_slaves" trade_goods_size = 2.25 }
+manf_slave_22 = { picture = "raided_for_slaves" trade_goods_size = 2.50 }
+manf_slave_23 = { picture = "raided_for_slaves" trade_goods_size = 2.75 }
+manf_slave_24 = { picture = "raided_for_slaves" trade_goods_size = 3.00 }
+manf_slave_25 = { picture = "raided_for_slaves" trade_goods_size = 3.25 }
+manf_slave_26 = { picture = "raided_for_slaves" trade_goods_size = 3.50 }
+manf_slave_27 = { picture = "raided_for_slaves" trade_goods_size = 3.75 }
+manf_slave_28 = { picture = "raided_for_slaves" trade_goods_size = 4.00 }
+manf_slave_29 = { picture = "raided_for_slaves" trade_goods_size = 4.50 }
+manf_slave_30 = { picture = "raided_for_slaves" trade_goods_size = 5.00 }
+manf_slave_31 = { picture = "raided_for_slaves" trade_goods_size = 5.50 }
+manf_slave_32 = { picture = "raided_for_slaves" trade_goods_size = 6.00 }
+manf_slave_33 = { picture = "raided_for_slaves" trade_goods_size = 6.50 }
+manf_slave_34 = { picture = "raided_for_slaves" trade_goods_size = 7.00 }
+manf_slave_35 = { picture = "raided_for_slaves" trade_goods_size = 7.50 }

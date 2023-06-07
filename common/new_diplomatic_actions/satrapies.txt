@@ -7,14 +7,14 @@ convert_to_satrapy = {
 	is_visible = {
 		is_subject = no
 		FROM = {
-			is_subject_of_type = non_autonomous_vassal
+			OR = {
+				is_subject_of_type = half_autonomous_vassal
+				is_subject_of_type = non_autonomous_vassal
+				is_subject_of_type = client_vassal
+			}
 			is_subject_of = ROOT
 		}
-		OR = {
-			has_reform = medes_monarchy_reform
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	is_allowed = {			
 		adm_power = 500
@@ -78,11 +78,9 @@ convert_to_satrapy = {
 			add_adm_power = -225
 		}
 		hidden_effect = {
-			ROOT = {
-				create_subject = {
-					who = FROM
-					subject_type = satrapy_vassal
-				}
+			create_subject = {
+				who = FROM
+				subject_type = satrapy_vassal
 			}
 			FROM = {
 				add_opinion = {
@@ -114,11 +112,7 @@ remove_satrap_diplo_action = {
 			is_subject_of_type = satrapy_vassal
 			is_subject_of = ROOT
 		}
-		OR = {
-			has_reform = medes_monarchy_reform
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	is_allowed = {			
 		absolutism = 10
@@ -173,11 +167,7 @@ grant_dynast_diplo_action = {
 			has_reform = satrapy_reform
 			NOT = { has_reform = satrapal_dynast_reform }
 		}
-		OR = {
-			has_reform = medes_monarchy_reform
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	is_allowed = {			
 		is_at_war = no
@@ -194,6 +184,7 @@ grant_dynast_diplo_action = {
 		}
 		hidden_effect = {
 			FROM = {
+				remove_government_reform = satrapy_reform
 				add_government_reform = satrapal_dynast_reform
 				add_opinion = {
 					who = ROOT
@@ -219,13 +210,8 @@ revoke_dynast_diplo_action = {
 			is_subject_of_type = satrapy_vassal
 			is_subject_of = ROOT
 			has_reform = satrapal_dynast_reform
-			NOT = { has_reform = satrapy_reform }
 		}
-		OR = {
-			has_reform = medes_monarchy_reform
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	is_allowed = {			
 		is_at_war = no
@@ -242,6 +228,7 @@ revoke_dynast_diplo_action = {
 		}
 		hidden_effect = {
 			FROM = {
+				remove_government_reform = satrapal_dynast_reform
 				add_government_reform = satrapy_reform
 				add_opinion = {
 					who = ROOT
@@ -267,11 +254,7 @@ annex_satrapy_diplo_action = {
 			is_subject_of_type = satrapy_vassal
 			is_subject_of = ROOT
 		}
-		OR = {
-			has_reform = medes_monarchy_reform
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	is_allowed = {			
 		is_at_war = no
@@ -279,8 +262,10 @@ annex_satrapy_diplo_action = {
 			is_at_war = no
 			has_any_disaster = no
 			NOT = {
-				num_of_revolts = 1
-				liberty_desire = 50
+				OR = {
+					num_of_revolts = 1
+					liberty_desire = 50
+				}
 			}
 		}
 		reverse_has_opinion = {
@@ -346,10 +331,6 @@ annex_satrapy_diplo_action = {
 	}
 
 	ai_will_do = {
-		NOT = { num_of_territories = 2 }
-		adm_power = 500
-		FROM = {
-			NOT = { liberty_desire = 25 }
-		}
+		always = no
 	}
 }

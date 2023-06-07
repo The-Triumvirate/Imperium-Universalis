@@ -1,0 +1,195 @@
+
+#Reconciliate Sukkal
+reconciliate_sukkal = {
+	category = influence
+	alert_index = 30
+	alert_tooltip = reconciliate_sukkal_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = no
+		has_reform = elamite_kingdom
+		FROM = {
+			OR = {
+				TAG = SUS
+				TAG = SU1
+				TAG = SU2
+				TAG = SU3
+				TAG = SU4
+				TAG = SU5
+				TAG = SU6
+				TAG = SU7
+				TAG = SU8
+			}
+			culture_group = elamite_group
+			is_subject = no
+		}
+	}
+
+	is_allowed = {
+		hidden_trigger = {
+			is_subject = no
+			has_reform = elamite_kingdom
+			FROM = {
+				OR = {
+					TAG = SUS
+					TAG = SU1
+					TAG = SU2
+					TAG = SU3
+					TAG = SU4
+					TAG = SU5
+					TAG = SU6
+					TAG = SU7
+					TAG = SU8
+				}
+				culture_group = elamite_group
+				is_subject = no
+			}
+		}
+		is_at_war =  no
+		NOT = { war_with = FROM }
+		NOT = { truce_with = FROM }
+		reverse_has_opinion = {
+			who = FROM
+			value = 100
+		}
+		FROM = { is_at_war = no }
+		is_bankrupt = no
+		has_any_disaster = no
+		diplomatic_reputation = 0
+		stability = 0
+		legitimacy = 100
+	}
+
+	on_accept = {
+		add_prestige = 10
+		add_absolutism = 5
+		create_subject = {
+			subject_type = sukkal_vassal
+			subject = FROM
+		}
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -2 }
+		}
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 70 }
+		}
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = ROOT
+			}
+			change_variable = { which = ai_value value = 1 }
+		}
+		add_entry = {
+			name = STABILITY
+			export_to_variable = {
+				variable_name = ai_value
+				value = stability
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = ROOT
+			}
+			divide_variable = { which = ai_value value = 10 }
+		}
+		add_entry = {
+			name = DIPLOMATIC_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 6 }
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			limit = { FROM = { ai = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+	}
+	
+	ai_will_do = {
+		has_any_disaster = no
+		FROM = {
+			is_neighbor_of = ROOT
+			NOT = { army_size = ROOT }
+			NOT = { total_development = ROOT }
+		}
+		reverse_has_opinion = {
+			who = FROM
+			value = 100
+		}
+		stability = 1
+		army_size = 10
+		is_at_war = no
+		NOT = { average_unrest = 1 }
+	}
+}
+
+#Frees Sukkal
+remove_sukkal_subject = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = remove_sukkal_subject_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of_type = sukkal_vassal
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+		hidden_trigger = {
+			FROM = {
+				is_subject_of_type = sukkal_vassal
+				is_subject_of = ROOT
+			}
+		}
+		is_at_war = no
+		has_any_disaster = no
+		FROM = {
+			is_subject_of_type = sukkal_vassal
+			is_subject_of = ROOT
+		}
+	}
+	on_accept = {
+		FROM = {
+			grant_independence = yes
+			add_truce_with = ROOT
+		}
+		add_stability = -1
+	}
+	
+	ai_will_do = {
+		always = no
+	}
+}

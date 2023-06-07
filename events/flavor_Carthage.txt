@@ -18,24 +18,27 @@ country_event = {
 	
 	mean_time_to_happen = {
 		months = 120
-		
 		modifier = {
-				factor = 0.5
-				is_at_war = yes
-			}	
+			factor = 0.5
+			war_with = ROM
+		}
+		modifier = {
+			factor = 0.85
+			is_at_war = yes
+		}
 	}
 	
 	option = {
 		name = "carthage.1.a"
 		ai_chance = { factor = 60 }
-			set_global_flag = hannibal_happened
-			define_general = {
-					name = "Hannibal Barca"
-					fire = 9
-					shock = 9
-					manuever = 4
-					siege = 2
-				}
+		set_global_flag = hannibal_happened
+		define_general = {
+			name = "Hannibal Barca"
+			fire = 9
+			shock = 9
+			manuever = 4
+			siege = 2
+		}
 	}
 }
 
@@ -56,11 +59,7 @@ country_event = {
 			government = theocracy
 		}
 	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-	}
+
 	option = {
 		name = "carthage.6.a"
 		ai_chance = { factor = 60 }
@@ -88,6 +87,8 @@ country_event = {
 		OR = {
 			primary_culture = phoenician
 			primary_culture = punic
+			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
 		}
 		num_of_ports = 1
 		any_country = {
@@ -101,23 +102,13 @@ country_event = {
 					superregion = italia_superregion
 					superregion = western_africa_superregion
 					superregion = celtica_superregion
+					superregion = macedonia_superregion
+					superregion = asia_superregion
 					region = thracia_region
 					region = sarmatia_region
-					}
+					region = gallia_narbonensis
 				}
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-		
-		modifier = {
-			factor = 2.0
-			dip = 4
-		}
-		modifier = {
-			factor = 2.0
-			ruler_has_personality = entrepreneur_personality
+			}
 		}
 	}
 	
@@ -134,11 +125,14 @@ country_event = {
 						superregion = italia_superregion
 						superregion = western_africa_superregion
 						superregion = celtica_superregion
+						superregion = macedonia_superregion
+						superregion = asia_superregion
 						region = thracia_region
 						region = sarmatia_region
-						}
+						region = gallia_narbonensis
 					}
 				}
+			}
 			save_event_target_as = trade_parter_target
 		}
 	}
@@ -182,6 +176,7 @@ country_event = {
 		add_mercantilism = -1
 	}
 }
+
 ########################################################################################
 # trade outpost
 ########################################################################################
@@ -193,13 +188,11 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		
 	}
 	
 	option = {
 		name = "greek.13.a"
 		trigger = { any_owned_province = { NOT = { has_province_modifier = phoenician_trade_outpost } } }
-		
 		ai_chance = {
 			factor = 30
 			modifier = {
@@ -220,27 +213,26 @@ country_event = {
 			}
 		}
 		
-		
 		random_owned_province = {
-				limit = {
-					NOT = { has_province_modifier = phoenician_trade_outpost }
-					has_port = yes
-				}
-				add_province_modifier = {
+			limit = {
+				NOT = { has_province_modifier = phoenician_trade_outpost }
+				has_port = yes
+			}
+			add_province_modifier = {
 				name = "phoenician_trade_outpost"
 				duration = 3650
-				}
 			}
-			add_years_of_income = 0.25
-			add_mercantilism = -1
-			hidden_effect = {
-				FROM = {
-					country_event = {
+		}
+		add_years_of_income = 0.25
+		add_mercantilism = -1
+		hidden_effect = {
+			FROM = {
+				country_event = {
 					id = greek.14
 					days = 30
-					}
 				}
 			}
+		}
 	}
 	option = {
 		ai_chance = {
@@ -250,18 +242,18 @@ country_event = {
 				NOT = { num_of_ports = 2 }
 			}
 		}
-		
 		name = "greek.13.b"
-			add_years_of_income = 0.1
-			hidden_effect = {
-				FROM = {
-					country_event = {
+		add_years_of_income = 0.1
+		hidden_effect = {
+			FROM = {
+				country_event = {
 					id = greek.15
 					days = 30
-					}
 				}
 			}
+		}
 	}
+
 	option = {
 		name = "greek.13.c"
 		ai_chance = {
@@ -275,17 +267,15 @@ country_event = {
 				ruler_has_personality = entrepreneur_personality
 			}
 		}
-		
-			add_prestige = 5
-			hidden_effect = {
-				FROM = {
-					country_event = {
-					id = greek.16
-					days = 30
-					}
+		add_prestige = 5
+		hidden_effect = {
+			FROM = {
+				country_event = {
+				id = greek.16
+				days = 30
 				}
 			}
-		
+		}
 	}
 }
 
@@ -299,6 +289,8 @@ country_event = {
 	picture = senat_conflict
 	fire_only_once = yes
 	
+	is_triggered_only = yes
+	
 	trigger = {
 		TAG = CAR
 		NOT = { has_reform = carthaginian_republic_reform }
@@ -306,29 +298,9 @@ country_event = {
 			government = monarchy
 			government = theocracy
 		}
-		NOT = { started_in = 274.1.1 }
 		owns_core_province = 612
-		is_year = 250
 		NOT = { mil = 4 }
-		NOT = { prestige = 20 }
-		NOT = { army_tradition = 50 }
 		NOT = { absolutism = 30 }
-	}
-	
-	mean_time_to_happen = {
-		months = 60
-		modifier = {
-			factor = 0.9
-			war_exhaustion = 4
-		}
-		modifier = {
-			factor = 0.75
-			NOT = { stability = 2 }
-		}
-		modifier = {
-			factor = 0.5
-			NOT = { legitimacy_equivalent = 80 }
-		}
 	}
 	
 	option = {
@@ -345,13 +317,11 @@ country_event = {
 		add_government_reform = carthaginian_republic_reform
 	}
 	option = {
-		name = "carthage.11.a"
+		name = "carthage.11.b"
 		ai_chance = { factor = 1 }
 		add_stability = -1
 		add_mil_power = 300
 		capital_scope = {
-			add_base_tax = -2
-			add_base_production = -2
 			spawn_rebels = {
 				size = 3
 				type = republican_rebels
@@ -359,3 +329,142 @@ country_event = {
 		}
 	}
 }
+
+
+########################################################################################
+# AI Carthage annex punic minor event
+########################################################################################
+
+country_event = {
+	id = carthage.12
+	title = "carthage.12.t"
+	desc = "carthage.12.d"
+	picture = senat_conflict	
+	trigger = {
+		CAR = {
+			ai = yes
+			exists = yes
+			is_subject = no
+		}
+		OR = {
+			is_year = 216
+			AND = {
+				ROM = {
+					development_in_provinces = { value = 200 }
+					ai = no
+				}
+			}
+			AND = {
+				ROM = {
+					socii_subject = 10
+					ai = no
+				}
+			}
+		}
+		NOT = {
+			development_in_provinces = { 
+				value = 45
+			}
+		}
+		ai = yes
+		is_subject = no
+		or = {
+			tag = JA9 #sardinia
+			tag = HD5 #sardinia
+			tag = ROD #sardinia
+			tag = DV1 #sardinia
+			tag = LYL #sicily
+			tag = MLE #malta
+			AND = {
+				is_neighbor_of = CAR
+				OR = {
+					tag = HAD #tunis
+					tag = THA #tunis
+					tag = UTI #tunis
+					tag = UBO #tunis
+					tag = CRT #tunis
+					tag = CAK #tunis
+					tag = IDY #tunis
+					tag = AST #north africa
+					tag = TRP #north africa
+					tag = SKY #north africa
+					tag = EMC #north africa
+					tag = ISC #north africa
+				}
+			}
+			AND = {
+				CAR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 1
+						is_city = yes
+						region = sardinia_corsica_region
+					}
+				}
+				OR = {
+					tag = EBS #balearics
+					tag = GYM #balearics
+				}
+			}
+			AND = {
+				CAR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 1
+						is_city = yes
+						area = baleares_area
+					}
+				}
+				OR = {
+					tag = GDR #hispania
+					tag = MLA #hispania
+					tag = HN1 #hispania
+					tag = JD1 #hispania
+					tag = DM7 #morocco
+					tag = DU6 #morocco
+					tag = PAL #morocco
+					tag = NUR #morocco
+				}
+			}
+			AND = {
+				CAR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 1
+						is_city = yes
+						region = magna_graecia
+					}
+				}
+				OR = {
+					tag = KPR #sicily
+					tag = ZIZ #sicily
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		years = 38
+		modifier = {
+			factor = 0.7
+			is_neighbor_of = CAR
+		}
+		modifier = {
+			factor = 0.20
+			OR = {
+				tag = LYL
+				tag = THA
+				tag = HAD
+			}
+		}
+		modifier = {
+			factor = 0.75
+			alliance_with = CAR
+		}
+	}
+	
+	option = {
+		CAR = {
+		inherit = from
+		}
+	}
+}
+
+

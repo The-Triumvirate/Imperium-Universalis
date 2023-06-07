@@ -19,7 +19,7 @@ syncretism_reform = {
 					religion = samaritan
 				}
 			}
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 		}
 	}
 
@@ -50,7 +50,7 @@ syncretism_reform = {
 		}
 		modifier = {
 			factor = 3
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 		}
 		modifier = {
 			factor = 1.25
@@ -58,7 +58,7 @@ syncretism_reform = {
 		}
 		modifier = {
 			factor = 3
-			culture_group = hellenic
+			culture_group = hellenic_group
 			any_owned_province = { NOT = { religion_group = ROOT } }
 		}
 		modifier = {
@@ -83,23 +83,18 @@ puritanism_reform = {
 	allow_normal_conversion = yes
 
 	potential = {
+        unreformed_pagan_religious_group_trigger = no
+	}
+
+	trigger = {
+		NOT = { has_idea_group = syncretism_ideas }
 		OR = {
-			unreformed_pagan_religious_group_trigger = no
+			has_reform = religious_origin_of_power_reform
+			has_reform = common_ethnic_origin_reform
 			has_reform = theocratic_kingdom
 			religion = jewish
 			religion = samaritan
 		}
-	}
-
-	trigger = {
-		if = {
-			limit = { government = tribal }
-			OR = {
-				has_reform = religious_origin_of_power_reform
-				has_reform = common_ethnic_origin_reform
-			}
-		}
-		NOT = { has_idea_group = syncrenism_ideas }
 	}
 
 	modifiers = {
@@ -173,9 +168,10 @@ cosmopolitanism_reform = {
 
 	modifiers = {
 		tolerance_heretic = 3
-		tolerance_heathen = 3
-		global_missionary_strength = -1
+		tolerance_heathen = 4
+		can_not_build_missionaries = yes
 		num_accepted_cultures = 1
+		global_unrest = -2
 	}
 
 	ai = {
@@ -200,7 +196,7 @@ cosmopolitanism_reform = {
 		}
 		modifier = {
 			factor = 2
-			has_idea_group = syncrenism_ideas
+			has_idea_group = syncretism_ideas
 			NOT = { stability = 1 }
 		}
 		modifier = {
@@ -231,9 +227,19 @@ proselytism_reform = {
 	icon = "proselytism_reform"
 	allow_normal_conversion = yes
 
-	potential = {
+	potential = {}
+	trigger = {
+	    NOT = { has_reform = isolationist_tribe_reform }
+		if = {
+			limit = {
+				OR = {
+					religion_group = pagan_group
+					religion_group = eastern_religions
+				}
+			}
+			has_country_modifier = high_priest_modifier
+		}
 		OR = {
-			unreformed_pagan_religious_group_trigger = no
 			has_reform = theocratic_kingdom
 			religion_group = brahmin_group
 			religion = christian
@@ -241,16 +247,11 @@ proselytism_reform = {
 			has_idea_group = cerimonial_ideas
 		}
 	}
-	trigger = {
-		if = {
-			limit = { government = tribal }
-			NOT = { has_reform = isolationist_tribe_reform }
-		}
-	}
 
 	modifiers = {
 		global_missionary_strength = 0.01
 		missionaries = 1
+		yearly_patriarch_authority = 0.003
 	}
 
 	ai = {
@@ -292,6 +293,52 @@ proselytism_reform = {
 	}
 }
 
+slavic_syncretism_reform = {
+    icon = "priesthood_reform"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    OR = {
+		    primary_culture = slavic
+			accepted_culture = slavic
+		    tag = V4N
+		}
+	}
+	trigger = {
+	    religion = slavic_religion
+		NOT = { has_reform = slavic_kingdom_reform }
+		NOT = { has_reform = theocratic_kingdom }
+	}
+	modifiers = {
+        yearly_harmony = 0.50
+		religious_unity = 0.2
+        missionaries = -2
+    }
+}
+
+slavic_state_religion_reform = {
+    icon = "promote_urbanization"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    OR = {
+		    primary_culture = slavic
+			tag = V4N
+		}
+	}
+	trigger = {
+	    OR = {
+		    has_reform = slavic_kingdom_reform
+			has_reform = theocratic_kingdom
+		}
+	}
+	modifiers = {
+	    tolerance_own = 0.5
+		global_missionary_strength = 0.01
+		global_tax_modifier = 0.1
+	}
+}
+
 #####################
 #	Land Tenancy    #
 #####################
@@ -308,7 +355,7 @@ kings_land_reform = {
 	}
 
 	modifiers = {
-		governing_capacity_modifier = 0.1
+		governing_capacity_modifier = 0.15
 		state_maintenance_modifier = -0.1
 	}
 
@@ -345,12 +392,14 @@ aristocratic_land_reform = {
 		
 	}
 	trigger = {
-		
+		NOT = { has_reform = assyrian_administration_reform }
 	}
-
 	modifiers = {
 		state_governing_cost = -0.1
 		global_tax_modifier = 0.1
+	}
+	custom_attributes = {
+		extra_gov_capacity_nobility = yes
 	}
 
 	ai = {
@@ -381,7 +430,7 @@ aristocratic_land_reform = {
 			factor = 2.0
 			OR = {
 				culture_group = etruscan_culture_group
-				culture_group = italic
+				culture_group = italic_group
 				culture_group = western_iranian
 				culture_group = eastern_iranian_group
 				culture_group = armenian_group
@@ -405,6 +454,9 @@ temple_land_reform = {
 	modifiers = {
 		state_governing_cost = -0.1
 		global_missionary_strength = 0.01
+	}
+	custom_attributes = {
+		extra_gov_capacity_priesthood = yes
 	}
 
 	ai = {
@@ -451,7 +503,7 @@ private_land_reform = {
 		
 	}
 	trigger = {
-		
+		NOT = { has_reform = assyrian_administration_reform }
 	}
 
 	modifiers = {
@@ -477,10 +529,31 @@ private_land_reform = {
 				culture_group = indian_group
 				culture_group = mleccha_group
 				culture_group = dravidian_group
-				culture_group = hellenic
+				culture_group = hellenic_group
 			}
 		}
 	}
+}
+
+slavic_votchina_reform = {
+    icon = "limited_conscription_reform"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    primary_culture = slavic
+	}
+	trigger = {
+	    OR = {
+		    has_reform = slavic_kingdom_reform
+			has_reform = slavic_state_reform
+		}
+	}
+	modifiers = {
+	    state_governing_cost = -0.10
+		all_estate_loyalty_equilibrium = 0.1
+		nobility_influence_modifier = 0.1
+		priesthood_influence_modifier = 0.05
+    }
 }
 
 #####################
@@ -496,7 +569,7 @@ trade_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		 	global_trade_power = 0.1
@@ -528,7 +601,7 @@ artisans_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		 	production_efficiency = 0.1
@@ -556,22 +629,22 @@ taxation_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-		 	global_tax_modifier = 0.15
-			vassal_income = 0.25
+		global_tax_modifier = 0.1
+		vassal_income = 0.25
 	}
 	ai = {
 		factor = 1
-			modifier = {
-				factor = 2
-						 tax_income_percentage = 0.2 
-				}
-			modifier = {
-				factor = 2
-						 num_of_subjects = 2 
-				}
+		modifier = {
+			factor = 2
+			tax_income_percentage = 0.2 
+		}
+		modifier = {
+			factor = 2
+			num_of_subjects = 2 
+		}
 	}
 }
 
@@ -585,7 +658,7 @@ agraculture_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		 	production_efficiency = 0.1
@@ -617,7 +690,7 @@ pirate_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 		NOT = { num_of_cities = 6 }
 		capital_scope = {
 			OR = {
@@ -673,7 +746,7 @@ noble_council_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	
 	modifiers = {
@@ -691,7 +764,7 @@ royal_inspectors_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 			fac_monarch_influence = 0.05
@@ -709,7 +782,7 @@ institutionalized_democracy_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 			fac_democrats_influence = 0.1
@@ -727,10 +800,27 @@ bureaucracy_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			max_absolutism = 10
+		max_absolutism = 15
+	}
+}
+
+boyars_reform = {
+    icon = "noble_ministers_reform"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    primary_culture = slavic
+	}
+	trigger = {
+	    has_reform = slavic_kingdom_reform
+	}
+	modifiers = {
+	    harsh_treatment_cost = -0.1
+		prestige_decay = -0.01
+        stability_cost_modifier = 0.1
 	}
 }
 
@@ -744,7 +834,7 @@ apella_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 			devotion = 0.5
@@ -761,7 +851,7 @@ elamite_bureaucracy = {
 		NOT = { has_reform = chinese_feudalism_reform }									
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }				  
+		NOT = { has_reform = celestial_empire }				  
 		OR = {
 			culture_group = elamite_group
 			owns_core_province = 2666
@@ -770,7 +860,7 @@ elamite_bureaucracy = {
 	
 	modifiers = {
 		governing_capacity_modifier = 0.15
-		state_maintenance_modifier = -0.1
+		global_tax_modifier = 0.05
 	}
 }
 
@@ -791,7 +881,7 @@ written_law_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	
 	modifiers = {
@@ -805,15 +895,8 @@ twelve_tables_reform = {
 
 	potential = {
 		OR = {
-			tag = ROM 
-			tag = R1C 
-			tag = R1L 
-			tag = R1O 
-			tag = R1R 
-			tag = R1A 
-			tag = RRS 
-			tag = RRO 
-			tag = ROI 
+			is_roman_country_trigger = yes
+			has_country_flag = res_publica
 		}
 	}
 	
@@ -825,17 +908,7 @@ twelve_tables_reform = {
 		factor = 1
 		modifier = {
 			factor = 6
-			OR = {
-				tag = ROM 
-				tag = R1C
-				tag = R1L
-				tag = R1O
-				tag = R1R
-				tag = R1A
-				tag = RRS
-				tag = RRO
-				tag = ROI
-			}
+			is_roman_country_trigger = yes
 		}
 	}
 }
@@ -850,7 +923,7 @@ customary_law_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 			global_unrest = -1
@@ -866,7 +939,7 @@ religious_law_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 
 	trigger = {
@@ -881,6 +954,27 @@ religious_law_reform = {
 		tolerance_heathen = -1
 	}
 }
+
+slavic_pravda_reform = {
+    icon = "twelve_tables"
+	allow_normal_conversion = yes
+	
+	potential = {
+	    primary_culture = slavic
+	}
+	trigger = {
+	    OR = {
+		    has_reform = slavic_kingdom_reform
+			has_reform = slavic_state_reform
+			has_reform = veche_republic_reform
+            has_reform = theocratic_kingdom			
+		}
+	}
+	modifiers = {
+	    global_unrest = -1
+		tolerance_own = 0.5
+	}
+}	
 
 ##################
 #
@@ -897,18 +991,18 @@ increased_centralization = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			global_autonomy = -0.05
-			max_absolutism = 5
+		global_autonomy = -0.025
+		max_absolutism = 10
 	}
 	ai = {
 		factor = 1
-			modifier = {
-				factor = 2
-						NOT = { num_of_states = 3 }
-				}
+		modifier = {
+			factor = 2
+			NOT = { num_of_states = 3 }
+		}
 	}
 }
 
@@ -921,11 +1015,11 @@ local_administrations = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		promote_culture_cost = -0.25 
-		state_governing_cost = -0.15	
+		state_governing_cost = -0.1
 	}
 	ai = {
 		factor = 1
@@ -951,7 +1045,7 @@ levy_army_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		global_manpower_modifier = 0.2
@@ -970,13 +1064,33 @@ standing_army_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		recover_army_morale_speed = 0.15
 		discipline = 0.05
 	}
+}
+
+druzhina_reform = {
+    icon = "mercs_armies"
+	allow_normal_conversion = yes
 	
+	potential = {
+	    primary_culture = slavic
+	}
+	trigger = {
+	    OR = {
+		    has_reform = slavic_kingdom_reform
+			has_reform = slavic_state_reform
+		}
+	}
+	modifiers = {
+	    land_morale = 0.075
+	    discipline = 0.025
+	    global_manpower_modifier = -0.1
+	    druzhina_faction_influence = 0.02
+    }
 }
 
 ##################
@@ -995,8 +1109,13 @@ multicultural_armies_reform = {
 	}
 
 	modifiers = {
-		num_accepted_cultures = 2
+		num_accepted_cultures = 1
 		land_forcelimit_modifier = 0.1
+		manpower_in_culture_group_provinces = 0.25
+	}
+
+	effect = {
+		hidden_effect = { country_event = { id = military.11 } }
 	}
 
 	custom_attributes = {
@@ -1023,12 +1142,18 @@ citizens_armies_reform = {
 	}
 	
 	trigger = {
-		num_of_banners = 1
+		NOT = { has_reform = persian_achaemenid_monarchy_reform }
+		NOT = { has_reform = medes_monarchy_reform }
 	}
 	
 	modifiers = {
+		has_banners = yes
 		amount_of_banners = 0.25
 		land_morale = 0.1
+	}
+
+	custom_attributes = {
+		can_recruit_citizen_units = yes
 	}
 }
 
@@ -1042,8 +1167,9 @@ limited_conscription_reform = {
 	}
 	
 	modifiers = {
-		harsh_treatment_cost = -0.25
-		shock_damage = 0.1
+		global_rebel_suppression_efficiency = 0.25
+		harsh_treatment_cost = -0.2
+		manpower_in_own_culture_provinces = 0.5
 	}
 }
 
@@ -1261,7 +1387,6 @@ district_divisions_reform = {
 	}
 
 	modifiers = {
-		global_unrest = -1
 		years_of_nationalism = -5
 	}
 }
@@ -1276,7 +1401,7 @@ provincial_divisions_reform = {
 	}
 
 	modifiers = {
-		yearly_absolutism = 0.1
+		yearly_absolutism = 0.05
 		autonomy_change_time = -0.25
 	}
 }
@@ -1291,8 +1416,8 @@ viceroyalties_divisions_reform = {
 	}
 
 	modifiers = {
+		governing_capacity_modifier = 0.25
 		min_autonomy = 10
-		governing_capacity_modifier = 0.5
 	}
 }
 
@@ -1306,9 +1431,27 @@ feudal_divisions_reform = {
 	}
 
 	modifiers = {
-		global_tax_modifier = 0.1
-		state_maintenance_modifier = -0.1
-		state_governing_cost = -0.05
+		fort_maintenance_modifier = -0.15
+		state_maintenance_modifier = -0.05
+	}
+}
+
+kormleniye_reform = {
+	icon = "slavic_state"
+	allow_normal_conversion = yes
+
+	potential = {
+		government = monarchy
+		primary_culture = slavic
+	}
+	trigger = {
+		has_reform = slavic_kingdom_reform
+	}
+
+	modifiers = {
+		global_tax_modifier = -0.2
+		governing_capacity_modifier = 0.15
+		state_maintenance_modifier = -0.15
 	}
 }
 
@@ -1327,13 +1470,13 @@ early_feudalism_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			land_maintenance_modifier = -0.1
-			state_maintenance_modifier = -0.25
-			fac_nobles_influence = 0.05
-			
+		land_maintenance_modifier = -0.1
+		state_maintenance_modifier = -0.15
+		fac_nobles_influence = 0.05
+	
 	}
 }
 
@@ -1346,12 +1489,34 @@ empowered_monarch_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			legitimacy = 0.5
-			global_tax_modifier = 0.1 
-			fac_monarch_influence = 0.05
+		legitimacy = 0.5
+		global_tax_modifier = 0.1 
+		fac_monarch_influence = 0.05
+	}
+}
+
+knyaz_duma_reform = {
+    icon = "elected_judges" 
+	allow_normal_conversion = yes
+	
+	potential = {
+	    primary_culture = slavic
+	}
+	trigger = {
+	    OR = {
+		    has_reform = slavic_state_reform
+			has_reform = slavic_kingdom_reform
+		}
+	}
+	modifiers = {
+	    state_governing_cost = -0.1
+		advisor_pool = 1
+		advisor_cost = -0.1
+		nobility_influence_modifier = -0.05
+		gospodari_faction_influence = 0.02
 	}
 }
 
@@ -1369,11 +1534,11 @@ limited_citizens_right = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			same_culture_advisor_cost = -0.15 
-			land_morale = 0.1 
+		same_culture_advisor_cost = -0.1
+		land_morale = 0.1 
 	}
 }
 
@@ -1385,11 +1550,11 @@ obtainable_citizenship = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			global_manpower_modifier = 0.2
-			promote_culture_cost = -0.4
+		global_manpower_modifier = 0.1
+		promote_culture_cost = -0.25
 	}
 }
 
@@ -1401,11 +1566,11 @@ citizenship_for_all = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			num_accepted_cultures = 2
-			religious_unity = 0.25
+		num_accepted_cultures = 1
+		religious_unity = 0.25
 	}
 }
 
@@ -1424,11 +1589,19 @@ centralized_bureaucracy = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
+	}
+	conditional = {
+		allow = {
+			has_dlc = "Leviathan"
+		}
+		custom_attributes = {
+			centralize_state_half_refund = yes
+		}
 	}
 	modifiers = {
-			yearly_absolutism = 0.5
-			free_policy = 1 
+		yearly_absolutism = 0.25
+		free_policy = 1
 	}
 }
 
@@ -1441,11 +1614,11 @@ decentralized_bureaucracy = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-		global_unrest = -1
-		governing_capacity = 400
+		min_autonomy = 10
+		governing_capacity = 500
 	}
 }
 
@@ -1458,10 +1631,10 @@ organized_trade_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-			merchants = 2
-			global_trade_power = 0.1
+		merchants = 2
+		global_trade_power = 0.15
 	}
 }

@@ -66,7 +66,11 @@ country_event = {
 	option = {
 		name = "roman_kingdom.1.f"
 		ai_chance = { factor = 25 }
-		trigger = { has_country_flag = accepted_etruscans_comitia_curiata_flag }
+		trigger = { 
+			AND = {
+				has_country_flag = accepted_etruscans_comitia_curiata_flag
+			}
+		}
 		define_heir = {
 			claim = 100
 			culture = etruscan
@@ -122,5 +126,250 @@ country_event = {
 		hidden_effect = { set_country_flag = accepted_etruscans_comitia_curiata_flag }
 		custom_tooltip = roman_kingdom_ct.1
 		add_yearly_manpower = 0.5
+	}
+}
+
+########################################################################################
+# historical kings of rome must be immortal
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.3
+	title = "roman_kingdom.3.t"
+	desc = "roman_kingdom.3.d"
+	picture = forum_picture
+	trigger = {
+		TAG = ROM
+		has_reform = roman_kingdom_reform
+		OR = {
+			AND = {
+				NOT = { has_ruler = "Tarquinius Priscus" }
+				has_country_flag = tarquinius_priscus
+			}
+			AND = {
+				NOT = { has_ruler = "Servius Tullius" }
+				has_country_flag = servius_tullius
+			}
+			AND = {
+				NOT = { has_ruler = "Tarquinius Superbus" }
+				has_country_flag = tarquinius_superbus
+			}
+		}
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "roman_kingdom.3.a"
+		ai_chance = { factor = 1 }
+		if = {
+			limit = {
+			has_country_flag = tarquinius_priscus
+			}
+			define_ruler = {
+				dynasty = "ex Etruria"
+				name = "Tarquinius Priscus"
+				claim = 100
+				culture = etruscan
+				age = 22
+				adm = 3
+				dip = 3
+				mil = 3
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = aggressive_personality
+		}
+		if = {
+			limit = {
+			has_country_flag = servius_tullius
+			}
+			define_ruler = {
+				dynasty = "ex Etruria"
+				name = "Servius Tullius"
+				claim = 100
+				culture = etruscan
+				age = 22
+				adm = 4
+				dip = 4
+				mil = 4
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = strict_personality
+			add_ruler_personality = reformist_personality
+		}
+		if = {
+			limit = {
+			has_country_flag = tarquinius_superbus
+			}
+			define_ruler = {
+				dynasty = "ex Etruria"
+				name = "Tarquinius Superbus"
+				claim = 100
+				culture = etruscan
+				age = 22
+				adm = 2
+				dip = 2
+				mil = 2
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = cruel_personality
+			add_ruler_personality = malevolent_personality
+		}
+	}
+}
+
+########################################################################################
+# start event to explain roman kingdom mechanics and initiate placeholder heir
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.4
+	title = "roman_kingdom.4.t"
+	desc = "roman_kingdom.4.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	fire_only_once = yes
+	trigger = {
+		TAG = ROM
+		has_reform = roman_kingdom_reform
+		NOT = { has_ruler = place }
+		OR = {
+			has_country_flag = tarquinius_priscus
+			has_country_flag = servius_tullius
+			has_country_flag = tarquinius_superbus
+		}
+	}
+
+	option = {
+		name = "roman_kingdom.4.a"
+		ai_chance = { factor = 1 }
+		custom_tooltip = roman_kingdom.4.tt
+		hidden_effect = {
+			set_variable = {
+				which = rom_socii_dissatisfaction_variable
+				value = 0
+			}
+		}
+	}
+}
+
+########################################################################################
+# servius tullius happens
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.5
+	title = "roman_kingdom.5.t"
+	desc = "roman_kingdom.5.d"
+	picture = forum_picture
+	fire_only_once = yes
+	trigger = {
+		TAG = ROM
+		has_reform = roman_kingdom_reform
+		has_country_flag = tarquinius_priscus
+		is_year = 179
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+	immediate = {
+		hidden_effect = { add_stability = -1 }
+	}
+	option = {
+		name = "roman_kingdom.5.a"
+		ai_chance = { factor = 1 }
+		define_ruler = {
+			dynasty = "ex Etruria"
+			name = "Servius Tullius"
+			claim = 100
+			culture = etruscan
+			age = 22
+			adm = 4
+			dip = 4
+			mil = 4
+		}
+		clr_country_flag = tarquinius_priscus
+		set_country_flag = servius_tullius
+		set_country_flag = servius_tullius_had
+		add_ruler_personality = roman_king_immortal_personality
+		add_ruler_personality = strict_personality
+		add_ruler_personality = reformist_personality
+		kill_heir = {}
+	}
+	
+	option = {
+		name = "roman_kingdom.5.b"
+		ai_chance = { factor = 0 }
+		define_ruler = {
+			dynasty = "ex Etruria"
+			name = "Servius Tullius"
+			claim = 75
+			culture = etruscan
+			age = 22
+			adm = 4
+			dip = 4
+			mil = 4
+		}
+		add_stability = -2
+		add_war_exhaustion = 2
+		add_adm_power = -100
+		change_government_reform_progress = -50
+		custom_tooltip = roman_kingdom.5.tt
+		add_country_modifier = { name = governmental_restructuring duration = 9125 }
+		hidden_effect = {
+			clr_country_flag = tarquinius_priscus
+			set_country_flag = servius_tullius_had
+			set_country_flag = force_publica
+			change_government = republic
+			add_government_reform = res_publica_reform
+			add_republican_tradition = 75
+			set_country_flag = last_king_of_rome 
+			add_ruler_personality = strict_personality
+			add_ruler_personality = reformist_personality 
+		}
+	}
+}
+
+########################################################################################
+# tarquinius superbus happens
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.6
+	title = "roman_kingdom.6.t"
+	desc = "roman_kingdom.6.d"
+	picture = forum_picture
+	fire_only_once = yes
+	trigger = {
+		TAG = ROM
+		has_reform = roman_kingdom_reform
+		has_country_flag = servius_tullius
+		is_year = 219
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+	immediate = {
+		add_stability = -1
+	}
+	option = {
+		name = "roman_kingdom.6.a"
+		ai_chance = { factor = 1 }
+		define_ruler = {
+			dynasty = "ex Etruria"
+			name = "Tarquinius Superbus"
+			claim = 50
+			culture = etruscan
+			age = 22
+			adm = 2
+			dip = 2
+			mil = 2
+		}
+		clr_country_flag = servius_tullius
+		set_country_flag = tarquinius_superbus
+		add_ruler_personality = roman_king_immortal_personality
+		add_ruler_personality = cruel_personality
+		add_ruler_personality = malevolent_personality
+		kill_heir = {}
 	}
 }

@@ -1,0 +1,2573 @@
+
+namespace = popcap_oldevents
+
+
+province_event = {
+	id = popcap_oldevents.1		# This is the OLD version (october'21). NEW version (march'22) is number 23. Will be moved later
+	title = "popcap_oldevents.1.t"
+	desc = "popcap_oldevents.1.d"
+	picture = peasant_woman
+	hidden = yes
+	
+	is_triggered_only = yes
+	# will fire after what may have changed population, every two years
+	
+	
+	immediate = {
+		# HARD BASE, province size. Basically the natural limit to sustain people in this province
+		set_variable = { which = rural_capacity which = prov_size }
+		multiply_variable = { which = rural_capacity value = 2 } # aprox will be 20.000 farmers for a plot of 1.500 sqkm (40x40km, two days travel by foot)
+		
+		##### MODIFIERS
+		## Weather, winters, etc. Winters will have the option to be "avoidable" if enough Institutions / technology is used in this province. 
+		# 	- siege_engineering_institution / cast_iron_institution: mitigates Mild Winter
+		# 	- blast_furnace_institution / advanced_hydraulics_institution: mitigates Normal Winter
+		#	- engineering_architecture_institution: mitigates most of Several
+		
+		# Winters
+		trigger_switch = {
+			on_trigger = has_winter
+			mild_winter = {
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					# nothing, mitigated
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { rural_capacity = 0.9 } 
+				}
+				else = { multiply_variable = { rural_capacity = 0.6 } }
+			}
+			normal_winter = { 
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					# nothing, mitigated
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { rural_capacity = 0.7 }
+				}
+				else = { multiply_variable = { rural_capacity = 0.35 } }
+			}
+			severe_winter = { 
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					multiply_variable = { rural_capacity = 0.8 }
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { rural_capacity = 0.5 } 
+				}
+				else = { multiply_variable = { rural_capacity = 0.25 } }
+			}
+		}
+		
+		
+		# arid
+		if = { limit = { has_climate = arid } 		multiply_variable = { rural_capacity = 0.6 } }
+		# tropical
+		if = { limit = { has_climate = tropical } 	multiply_variable = { rural_capacity = 0.8 } }
+		# Monsoons: reduces total capacity (less places to securely farm), but provides extra growth (more humidity). 
+		trigger_switch = {
+			on_trigger = has_province_flag
+			flag_mild_monsoon = { multiply_variable = { rural_capacity = 0.80 } }	# but +10% growth
+			flag_normal_monsoon = { multiply_variable = { rural_capacity = 0.60 } }	# 20% growth
+			flag_severe_monsoon = { multiply_variable = { rural_capacity = 0.40 } }	# 30% growth
+		}
+		
+		## TERRAINS
+		# As in climates, there will be an "improvement" be it either with buildings, or technology. This way some province that may not be fully exploited until an initial investment has been done to it
+		
+		trigger_switch = {
+			on_trigger = has_terrain
+			# Farmlands
+			farmlands = {
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { 											multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			rome_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			carthage_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			athen_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			neapel_t = {
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			byzantion_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			syracuse_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			milet_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			ephesus_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			corinth_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			sardis_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			tyros_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			halicarnassus_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			argos_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			# Grasslands
+			grasslands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.25 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.20 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.10 } }
+				# else, 1.00
+			}
+			steppe = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			savannah = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			# Drier lands
+			mediterranean = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			drylands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.1 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			ninive_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.1 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			# Coastals
+			coastline = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			naxos_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			steep_coast = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			patara_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			coastal_desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.65 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.40 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			
+			# Forests
+			woods = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.65 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			forest = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.55 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			forest_steppe = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.40 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			mangrove = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			jungle = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			
+			# Mountains
+			hills = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			jerusalem_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.25 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.15 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.75 } }
+			}
+			mountain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.55 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			highlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			fertile_highlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			parsa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			
+			# Rivers and oasis
+			oasis = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.30 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			siwa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.30 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			wetlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			marsh = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			floodplains = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			alluvial_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.6 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.3 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			susa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.6 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.3 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			mesopotamian_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			babil_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			uruk_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			nile_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			memphis_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.4 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 2.1 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.5 } }
+			}
+			waset_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			elephantine_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			desert_river = {
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.20 } }
+				# else 1.00
+			}
+			assur_t = {
+			
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.20 } }
+				# else 1.00
+			}
+			# Deserts
+			desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			salt_desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			desert_mountain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			arctic = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			
+			
+		}
+		
+		
+		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
+		#	New for 3.0.2: land reclamation % effect is now read through the modifier local_development_cost, as is any other modifier. Easier!
+		
+		if = {		limit = { has_province_modifier = land_reclamation_5 } change_variable = { rural_capacity = 2.50 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_4 } change_variable = { rural_capacity = 2.50 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_3 } change_variable = { rural_capacity = 2.25 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_2 } change_variable = { rural_capacity = 1.75 } }
+		else_if = { limit = { has_province_modifier = land_reclamation_1 } change_variable = { rural_capacity = 1.00 } }
+		
+		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost }		# as 0.2 for +20%
+		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
+		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural pop raised
+		
+		# FISHING BLOCK - depending on province size (and coastal), and coastal buildings
+		# Fishing done after land reclamation, as land reclamation should affect only agricultural activities, not fishing
+		if = {		
+			limit = { has_port = yes check_variable = { prov_size = 7 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 3 } 
+		}
+		else_if = {	
+			limit = { has_port = yes check_variable = { prov_size = 4 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 2 } 
+		}
+		else_if = {	
+			limit = { has_port = yes check_variable = { prov_size = 1 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 1 } 
+		}
+		if = {
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			change_variable = { rural_fishermen = 1.5 }
+		}
+		trigger_switch = {	
+			on_trigger = has_building
+			harbor_district = { change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } }
+			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
+			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
+		}
+		if = { limit = { has_province_flag = PG_river_port } multiply_variable = { rural_fishermen = 0.50 }	}	# River ports, -50% effect
+		
+		change_variable = { which = rural_capacity which = rural_fishermen }
+		set_variable = { which = rural_fishermen value = 0 }
+		
+		
+		# TRANSFER TO "URBAN" POPULATION - where Urban means "connected" enough to the normal markets, like exports, cash-crops, etc
+		set_variable = { which = rural_transfer value = 0 }	# reset, in case no buildings available
+		trigger_switch = {
+			on_trigger = has_building
+			small_bath = { 	set_variable = { which = rural_transfer value = 0.1 } }
+			big_bath = { 	set_variable = { which = rural_transfer value = 0.3 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building		
+			small_water_irrigation = { 	change_variable = { rural_transfer = 0.1 } }
+			big_water_irrigation = { 	change_variable = { rural_transfer = 0.2 } }
+			big_estate = { 		change_variable = { rural_transfer = 0.5 } }
+			
+			craftsman = { 		change_variable = { rural_transfer = 0.1 } }
+			small_workshop = { 	change_variable = { rural_transfer = 0.2 } }
+			artisan_district = { change_variable = { rural_transfer = 0.5 } }
+			
+			quarry = { 			change_variable = { rural_transfer = 0.1 } }
+			small_mine = { 		change_variable = { rural_transfer = 0.2 } }
+			big_mine = { 		change_variable = { rural_transfer = 0.5 } }
+		}
+		# Transfer rural population to "urbanized" pops, that work in export-oriented products, and counted as commoners
+		set_variable = { which = rural_exports which = rural_capacity }
+		multiply_variable = { which = rural_exports which = rural_transfer }	# moved initial population to urban
+		set_variable = { which = rural_transfer which = rural_capacity }		# rural transfer will be used later, based on the pre-transfer rural pop
+		subtract_variable = { which = rural_capacity which = rural_exports }	# aaand they are gone from the fields
+		
+		
+		
+		# Special province modifiers
+			# Nothing added so far
+		
+		# In case a province does not count at least 1; usually deserts and such
+		if = { limit = { NOT = { check_variable = { rural_capacity = 1 } } } 		set_variable = { which = rural_capacity value = 1 } }
+		
+		######
+		# 	RURAL GROWTH RATIO
+		######
+		export_to_variable = { which = rural_pop value = base_manpower }
+		set_variable = { which = rural_growth which = rural_capacity }
+		divide_variable = { which = rural_growth which = rural_pop }
+		
+		# MODIFIERS that apply at the end
+		
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { which = rural_growth value = 0.20 } }	# this will (probably) offset the growth ++ due to pop loss
+			60 = { multiply_variable = { which = rural_growth value = 0.35 } }
+			40 = { multiply_variable = { which = rural_growth value = 0.50 } }
+			15 = { multiply_variable = { which = rural_growth value = 0.75 } }
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { which = rural_growth value = 1.15 } }
+			50 = { multiply_variable = { which = rural_growth value = 1.10 } }
+			25 = { multiply_variable = { which = rural_growth value = 1.05 } }
+		}
+		# Stability increases total growth, flat bonus
+		if = { 		limit = { owner = { stability = 3 } } change_variable = { which = rural_growth value = 0.20 } }
+		else_if = { limit = { owner = { stability = 2 } } change_variable = { which = rural_growth value = 0.15 } }
+		else_if = { limit = { owner = { stability = 1 } } change_variable = { which = rural_growth value = 0.10 } }
+		
+		# Monsoons both reduces capacity but increases growth
+		trigger_switch = {
+			on_trigger = has_province_flag
+			flag_severe_monsoon = { multiply_variable = { rural_growth = 1.2 } }
+			flag_normal_monsoon = { multiply_variable = { rural_growth = 1.175 } }
+			flag_mild_monsoon = { multiply_variable = { rural_growth = 1.15 } }
+		}
+		
+		# Weather effects
+		if = { 		limit = { has_province_modifier = pg_food_surplus } multiply_variable = { rural_growth = 1.30 } }
+		else_if = { limit = { has_province_modifier = pg_food_shortage } multiply_variable = { rural_growth = 0.80 } }
+		
+		
+	######################
+	## URBAN CAPACITY
+	######################
+	
+			set_variable = { which = urban_capacity value = 0 }	# Cleanup
+			# Remember: we already have the urban capacity from the transferred ones, before. Stored as "rural exports"
+		
+		## BUILDINGS
+		# A "basic" flat bonus is granted, and then certain prov_types are better (to be added later on).
+		
+		trigger_switch = {
+			on_trigger = has_building
+			small_harbor = { 	change_variable = { which = urban_capacity value = 0.1 } }
+			big_harbor = { 		change_variable = { which = urban_capacity value = 0.3 } }
+			harbor_district = { change_variable = { which = urban_capacity value = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_shipyard = { change_variable = { which = urban_capacity value = 0.3 } }
+			big_shipyard = { change_variable = { which = urban_capacity value = 0.7 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_market = { 	change_variable = { which = urban_capacity value = 0.1 } }
+			medium_market = { 	change_variable = { which = urban_capacity value = 0.3 } }
+			great_market = { 	change_variable = { which = urban_capacity value = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_army_camp = { 			change_variable = { which = urban_capacity value = 0.2 } }
+			small_military_settlement = { 	change_variable = { which = urban_capacity value = 0.5 } }
+			big_military_settlement = { 	change_variable = { which = urban_capacity value = 1.2 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			gravel_road = { 	change_variable = { which = urban_capacity value = 0.1 } }
+			paved_road = { 		change_variable = { which = urban_capacity value = 0.3 } }
+			imperial_road = { 	change_variable = { which = urban_capacity value = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			shrine = { 			change_variable = { which = urban_capacity value = 0.2 } }
+			small_temple = { 	change_variable = { which = urban_capacity value = 0.5 } }
+			great_temple = { 	change_variable = { which = urban_capacity value = 1.2 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			big_theater = { 	change_variable = { which = urban_capacity value = 0.3 } }
+			great_theater = { 	change_variable = { which = urban_capacity value = 0.6 } }
+			huge_theater = { 	change_variable = { which = urban_capacity value = 1.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			taxman = { 			change_variable = { which = urban_capacity value = 0.2 } }
+			tax_collector = { 	change_variable = { which = urban_capacity value = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			big_townhall = { 		change_variable = { which = urban_capacity value = 0.2 } }
+			government_palace = { 	change_variable = { which = urban_capacity value = 0.4 } }
+			government_district = { change_variable = { which = urban_capacity value = 0.6 } }
+		}
+		trigger_switch = {						# Soldiers live somewhere, don't you think?
+			on_trigger = has_building
+			small_city_walls = { change_variable = { which = urban_capacity value = 0.4 } }
+			large_city_walls = { change_variable = { which = urban_capacity value = 1.0 } }
+			fortress_building = { change_variable = { which = urban_capacity value = 1.8 } }
+			border_garrison = { change_variable = { which = urban_capacity value = 0.2 } }
+		}
+		
+		trigger_switch = {
+			on_trigger = has_building
+			great_library = { 		change_variable = { which = urban_capacity value = 1.5 } }
+			imperial_palace = { 	change_variable = { which = urban_capacity value = 1.0 } }
+			mathematician_academy = { change_variable = { which = urban_capacity value = 1.0 } }
+			philosophers_academy = { change_variable = { which = urban_capacity value = 1.0 } }
+			military_academy = { 	change_variable = { which = urban_capacity value = 1.0 } }
+			palace_garden = { 		change_variable = { which = urban_capacity value = 0.5 } }
+			library = { 			change_variable = { which = urban_capacity value = 0.3 } }
+			
+		}
+		
+		# CAPITAL PALACE (small city, capital of the country)
+		if = { 
+			limit = { is_capital = yes } 
+			change_variable = { which = urban_capacity value = 1 } # +1 urban and +1 upper, for all capitals
+		}
+		
+		
+		# END OF BUILDINGS and other "flat" capacity increases
+		
+		################################
+		## THE TRADE POWER MULTIPLIER ##
+		################################
+		
+		# We will have a multiplier depending on how profitable trade is, depending the prov_type
+		export_to_variable = { which = urban_trade_power value = province_trade_power }
+		
+		# correction: remove Mercantilism effect
+		
+		# Trade power points are less effective later on. A quick chart looks like this:
+			# 1-10 	: 3.3 each (up to 3 pops)
+			# 10-22 : 4 each (+3 pops)
+			# 22-42 : 5 each (+4 pops)
+			# 42-60 : 6 each (+3 pops)
+			# >60 	: 10 each
+			# So a trade power of 30 will be: 10/3.3 + 12/4 + 6/5 = 3 + 3 + 1.2 = 7.2
+			# Trade 120: 10/3.3 + 12/4 + 20/5 + 18/6 + (120-10-12-20-18)/10 = 3 + 3 + 4 + 3 + 60/10 = 19
+		if = {
+			limit = { check_variable = { urban_trade_power = 60 } }
+			change_variable = { urban_capacity = 13 }
+			subtract_variable = { urban_trade_power = 60 } 
+			divide_variable = { urban_trade_power = 10 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 42 } }
+			change_variable = { urban_capacity = 10 } 
+			subtract_variable = { urban_trade_power = 42 } 
+			divide_variable = { urban_trade_power = 6 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 22 } }
+			change_variable = { urban_capacity = 6 } 
+			subtract_variable = { urban_trade_power = 22 } 
+			divide_variable = { urban_trade_power = 5 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 10 } }
+			change_variable = { urban_capacity = 3 } 
+			subtract_variable = { urban_trade_power = 10 } 
+			divide_variable = { urban_trade_power = 4 } 
+		}
+		else_if = { limit = { NOT = { check_variable = { urban_trade_power = 0.1 } } } set_variable = { which = urban_trade_power value = 0.1 } }
+		else = { divide_variable = { urban_trade_power = 3.3 } }
+		
+		change_variable = { which = urban_capacity which = urban_trade_power }	# add the remaining trade power (applies to all)
+		set_variable = { which = urban_trade_power value = 0 }
+		
+		#####
+		#	RELATIVE % MODIFIERS
+		#####
+		
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }			# urban pop raised. Done before coming values from rural
+		
+		
+		# COMMONER POPULATION COMING FROM RURAL
+		
+		# The formula that will link BASE rural population (prior to the transfer to urban. So, everyone living off the fields). Basically a proportion of rural to urban, depending of the available farming technology. The more food the rural population create, the more "surplus" population that can dedicate to do anything else and is less dragged to the land - the mod definition of commoner or urban population. 
+		
+		if = { 	
+			limit = { engineering_architecture_institution = 100 }
+			divide_variable = { which = rural_transfer 	value = 3 } 	# +33% food surplus
+		}
+		else_if = { 	
+			limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+			divide_variable = { which = rural_transfer 	value = 4 } 	# +25% food surplus
+		}
+		else_if = {
+			limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+			divide_variable = { which = rural_transfer 	value = 5 } 	# +20% food surplus
+		}
+		else = { divide_variable = { which = rural_transfer 	value = 10 } }	# +10% food surplus (very low)
+		change_variable = { which = urban_capacity which = rural_transfer } set_variable = { which = rural_transfer value = 0 }
+		
+		# Rural Exports (that % of rural population working as if they were commoners, in export-oriented goods. Think of villas, latifundiae, etc). 
+		change_variable = { which = urban_capacity which = rural_exports } set_variable = { which = rural_exports value = 0 }
+		
+		
+		
+		# Other province modifiers
+			# (nothing)
+		
+		# 	URBAN GROWTH RATIO
+		export_to_variable = { which = urban_pop value = base_production }
+			# if no pop. It will grow very fast, unless there is not enough room for the first one. 
+		if = {
+			limit = { NOT = { check_variable = { urban_capacity = 1 } } }	
+			set_variable = { which = urban_pop value = 1.0 } 
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { urban_pop = 1 } } }	
+			set_variable = { which = urban_pop value = 0.25 }
+		}
+		set_variable = { which = urban_growth which = urban_capacity } divide_variable = { which = urban_growth which = urban_pop }
+		
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { which = urban_growth value = 0.10 } }
+			60 = { multiply_variable = { which = urban_growth value = 0.25 } }
+			40 = { multiply_variable = { which = urban_growth value = 0.50 } }
+			15 = { multiply_variable = { which = urban_growth value = 0.70 } }
+			
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { which = urban_growth value = 1.15 } }
+			50 = { multiply_variable = { which = urban_growth value = 1.10 } }
+			25 = { multiply_variable = { which = urban_growth value = 1.05 } }
+		}
+		
+		# Stability increases total growth
+		if = { 		limit = { owner = { stability = 3 } } change_variable = { which = urban_growth value = 0.20 } }
+		else_if = { limit = { owner = { stability = 2 } } change_variable = { which = urban_growth value = 0.15 } }
+		else_if = { limit = { owner = { stability = 1 } } change_variable = { which = urban_growth value = 0.10 } }
+		
+		#########
+		# 	UPPER CAPACITY
+		#########
+		
+		# Add the 10% of previous population. Basically the exported rural and urban pops. 
+		
+		set_variable = { which = upper_capacity which = rural_pop } change_variable = { which = upper_capacity which = urban_pop }
+		set_variable = { which = rural_pop value = 0 } 				set_variable = { which = urban_pop value = 0 }
+		divide_variable = { which = upper_capacity value = 10 }
+			# This block will create at least a 10% uppers out of the total CURRENT population (so that it never gets much higher than the underlying population). Remember that high amount of upper pops without commoners will not sustain by itself, as uppers consume trade power generated by commoners, and the same for rural populations. Without enough support, they may hinder a province severily, despite the increased trade %. 
+		
+		trigger_switch = {
+			on_trigger = has_building
+			big_townhall = { 		change_variable = { which = upper_capacity value = 0.2 } }
+			government_palace = { 	change_variable = { which = upper_capacity value = 0.4 } }
+			government_district = { change_variable = { which = upper_capacity value = 1.0 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			library = { 				change_variable = { which = upper_capacity value = 0.2 } }
+			great_library = { 			change_variable = { which = upper_capacity value = 1.0 } }
+			mathematician_academy = { 	change_variable = { which = upper_capacity value = 1.0 } }
+			philosophers_academy = { 	change_variable = { which = upper_capacity value = 1.0 } }
+			military_academy = { 		change_variable = { which = upper_capacity value = 1.0 } }
+			palace_garden = { 			change_variable = { which = upper_capacity value = 0.5 } }
+			imperial_palace = { 		change_variable = { which = upper_capacity value = 1.5 } }
+		}
+		
+		trigger_switch = {
+			on_trigger = has_building
+			shrine = { 			change_variable = { which = upper_capacity value = 0.2 } }
+			small_temple = { 	change_variable = { which = upper_capacity value = 0.4 } }
+			great_temple = { 	change_variable = { which = upper_capacity value = 1.0 } }
+		}
+		
+		# IMPERIAL CAPITAL
+		# CAPITAL PALACE (small city, capital of the country)
+		if = { 
+			limit = { is_capital = yes } 
+			change_variable = { which = upper_capacity value = 1 } # +1 urban and +1 upper, for all capitals
+		}
+		
+		# IMPERIAL CAPITAL
+		# Will be affected by 1) rank, 2) total development
+		# % by rank are added here as well, as they are needed to be done AFTER the other flat bonuses. May be too high, could be changed in the future
+		if = { 		limit = { is_capital = yes owner = { total_development = 5000 } } change_variable = { upper_capacity = 7 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 3500 } } change_variable = { upper_capacity = 6 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 2500 } } change_variable = { upper_capacity = 5 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 2000 } } change_variable = { upper_capacity = 4 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 1500 } } change_variable = { upper_capacity = 3 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 1000 } } change_variable = { upper_capacity = 2 } }
+		else_if = { limit = { is_capital = yes owner = { total_development = 500 } }  change_variable = { upper_capacity = 1.5 } }
+		
+		
+		#########################
+		#	MODIFIERS			#
+		#########################
+		# The effect that affect ALL capacity, added at the bottom
+		
+		# Urban amenities (small flat bonus to urban, but quite big effect on upper population)
+		trigger_switch = {
+			on_trigger = has_building
+			small_bath = { 	multiply_variable = { which = upper_capacity value = 1.10 } }
+			big_bath = { 	multiply_variable = { which = upper_capacity value = 1.25 } }
+		}
+		
+		# Devastation, will reduce as a simple scale 1 to 99% malus. Prosperity increases up to 15%
+		
+		# 	UPPER GROWTH RATIO
+		export_to_variable = { which = upper_pop value = base_tax }
+		if = { 
+			limit = { NOT = { check_variable = { which = upper_pop value = 1 } } }
+			set_variable = { which = upper_pop value = 0.2 } 
+			# bigger maximum ratio than urban pop. Also notice that most events of employment or upper promotion will need a modifier of 5, which means at least a 1 "healthy" upper pop capacity is needed to have a place here
+		}
+		set_variable = { which = upper_growth which = upper_capacity } divide_variable = { which = upper_growth which = upper_pop }
+		set_variable = { which = upper_pop value = 0 }
+		
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { which = upper_growth value = 0.10 } }
+			60 = { multiply_variable = { which = upper_growth value = 0.25 } }
+			40 = { multiply_variable = { which = upper_growth value = 0.50 } }
+			15 = { multiply_variable = { which = upper_growth value = 0.70 } }
+			5 = {  multiply_variable = { which = upper_growth value = 0.80 } }
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { which = upper_growth value = 1.15 } }
+			50 = { multiply_variable = { which = upper_growth value = 1.10 } }
+			25 = { multiply_variable = { which = upper_growth value = 1.05 } }
+		}
+		
+		# Stability increases total growth
+		if = { 		limit = { owner = { stability = 3 } } change_variable = { upper_growth = 0.20 } }
+		else_if = { limit = { owner = { stability = 2 } } change_variable = { upper_growth = 0.15 } }
+		else_if = { limit = { owner = { stability = 1 } } change_variable = { upper_growth = 0.10 } }
+		
+		###
+		#	OTHER EFFECTS, outside upper capacity
+		###
+		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
+		if = { limit = { check_variable = { which = rural_capacity which = initial_rural } } remove_province_modifier = rural_pause }
+		if = { limit = { check_variable = { which = urban_capacity which = initial_urban } } remove_province_modifier = urban_pause }
+		
+		# Find how much information is flowing to this province. Will allow for long-range migration
+		PG_update_inforange = yes		
+		
+		# Clean variables and leave only one decimal place
+		divide_variable = { rural_capacity = 100 } multiply_variable = { rural_capacity = 100 }		# 4.567 / 100 = 4.5 x 100 = 4.500. Max 3 decimals
+		divide_variable = { urban_capacity = 100 } multiply_variable = { urban_capacity = 100 }
+		divide_variable = { upper_capacity = 100 } multiply_variable = { upper_capacity = 100 }
+		divide_variable = { rural_growth = 100 } multiply_variable = { rural_growth = 100 }
+		divide_variable = { urban_growth = 100 } multiply_variable = { urban_growth = 100 }
+		divide_variable = { upper_growth = 100 } multiply_variable = { upper_growth = 100 }
+		export_to_variable = { which = PS_rur_now value = base_manpower }
+		export_to_variable = { which = PS_urb_now value = base_production }
+		export_to_variable = { which = PS_upp_now value = base_tax }
+		
+		
+		
+	}
+	
+	
+	option = {
+		name = "popcap_oldevents.1.a"
+			# ok, all done inside the immediate
+	}
+	
+}
+
+# Old version. See event 24 for the updated version
+province_event = {			
+	id = popcap_oldevents.6
+	title = "popcap_oldevents.6.t"
+	desc = "popcap_oldevents.6.d"
+	picture = peasant_woman
+	hidden = yes
+	
+	is_triggered_only = yes
+	# will fire after what may have changed the rural population, every two years
+	
+	
+	immediate = { 
+		# Hard base, province size
+		set_variable = { which = rural_capacity which = prov_size }
+		multiply_variable = { which = rural_capacity value = 2 } 
+			set_variable = { which = PGD_rur_base which = rural_capacity }							# Size 4 x 2 = 8 rurals
+		
+		##### MODIFIERS
+		# Winters
+		trigger_switch = {
+			on_trigger = has_winter
+			mild_winter = {
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					# nothing, mitigated
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { which = rural_capacity value = 0.9 } 		set_variable = { which = PGD_rur_winter value = -0.1 } 
+				}
+				else = { multiply_variable = { which = rural_capacity value = 0.6 } set_variable = { which = PGD_rur_winter value = -0.4 } }
+			}
+			normal_winter = { 
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					# nothing, mitigated
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { which = rural_capacity value = 0.7 } 		set_variable = { which = PGD_rur_winter value = -0.3 } 
+				}
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } set_variable = { which = PGD_rur_winter value = -0.65 } }
+			}
+			severe_winter = { 
+				if = { 
+					limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+					multiply_variable = { which = rural_capacity value = 0.8 } 		set_variable = { which = PGD_rur_winter value = -0.2 } 
+				}
+				else_if = { 
+					limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+					multiply_variable = { which = rural_capacity value = 0.5 } 		set_variable = { which = PGD_rur_winter value = -0.5 } 
+				}
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } set_variable = { which = PGD_rur_winter value = -0.75 } }
+			}
+		}
+			
+			multiply_variable = { which = PGD_rur_winter which = rural_capacity }			# assume mild winter, -40%. 8 x 0,6 = 4.8, -3.2 loss
+		
+		# arid
+		if = { 
+			limit = { has_climate = arid } 
+			multiply_variable = { which = rural_capacity value = 0.6 }
+			set_variable = { which = PGD_rur_arid value = -0.4 } 
+			multiply_variable = { which = PGD_rur_arid which = PGD_rur_base }			# If happens, -40%. 8 x 0,6 = 4.8, -3.2 loss
+		}
+		# tropical
+		if = { 
+			limit = { has_climate = tropical } 
+			multiply_variable = { which = rural_capacity value = 0.8 }
+			set_variable = { which = PGD_rur_tropical value = -0.2 } 
+			multiply_variable = { which = PGD_rur_tropical which = PGD_rur_base }			# If happens, -20%. 8 x 0,8 = 6.4, -1.6 loss
+		}
+		# Monsoons. If it does not work (may only work once the monsoon is there), it will be done through province flat
+		trigger_switch = {
+			on_trigger = has_province_flag
+			flag_mild_monsoon = { multiply_variable = { rural_capacity = 0.80 } set_variable = { which = PGD_rur_monsoon value = -0.2 } }
+			flag_normal_monsoon = { multiply_variable = { rural_capacity = 0.60 } set_variable = { which = PGD_rur_monsoon value = -0.4 } }
+			flag_severe_monsoon = { multiply_variable = { rural_capacity = 0.40 } set_variable = { which = PGD_rur_monsoon value = -0.6 } }
+		}
+		multiply_variable = { which = PGD_rur_monsoon which = PGD_rur_base }
+		
+		## TERRAINS
+		
+		set_variable = { which = PGD_rur_preterrain which = rural_capacity }			# Stick it again. 4.8 (8 - 3.2 winter)
+		set_variable = { which = PGD_rur_terr_clean which = PGD_rur_base }				# In case no winter/arid effect is applied
+		trigger_switch = {
+			on_trigger = has_terrain
+			# Farmlands
+			farmlands = {
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = 1.2 } }
+				else = { 											multiply_variable = { rural_capacity = 1.1 } }
+			}
+			rome_t = { 
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = 1.2 } }
+				else = { 											multiply_variable = { rural_capacity = 1.1 } }
+				
+			}
+			carthage_t = { 
+				if = { 		limit = { has_building = hospital } 	multiply_variable = { rural_capacity = 1.5 } }
+				else_if = { limit = { has_building = medicus } 		multiply_variable = { rural_capacity = 1.4 } }
+				else_if = { limit = { has_building = herbalist } 	multiply_variable = { rural_capacity = 1.2 } }
+				else = { 											multiply_variable = { rural_capacity = 1.1 } }
+			}
+			athen_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			neapel_t = {
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			byzantion_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			syracuse_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			milet_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			ephesus_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			corinth_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			sardis_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			tyros_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			halicarnassus_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			argos_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			# Grasslands
+			grasslands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.25 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.20 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.10 } }
+				# else, 1.00
+			}
+			steppe = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			savannah = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			# Drier lands
+			mediterranean = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			drylands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.1 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			ninive_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.1 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			# Coastals
+			coastline = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			naxos_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			steep_coast = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			patara_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			coastal_desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.65 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.40 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			
+			# Forests
+			woods = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.65 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			forest = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.55 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			forest_steppe = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.40 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			mangrove = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.85 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			jungle = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.50 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.40 } }
+			}
+			
+			# Mountains
+			hills = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			jerusalem_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.25 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.15 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.75 } }
+			}
+			mountain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.70 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.55 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			highlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.10 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.60 } }
+			}
+			fertile_highlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			parsa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			
+			# Rivers and oasis
+			oasis = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.30 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			siwa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.30 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.80 } }
+			}
+			wetlands = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.95 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.90 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.50 } }
+			}
+			marsh = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.05 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.80 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.35 } }
+			}
+			floodplains = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.2 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			alluvial_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.6 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.3 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			susa_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.6 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.3 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.1 } }
+			}
+			mesopotamian_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			babil_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			uruk_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.7 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.4 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			nile_plain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			memphis_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.4 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 2.1 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.8 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.5 } }
+			}
+			waset_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			elephantine_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 2.0 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.9 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.5 } }
+				else = { multiply_variable = { which = rural_capacity value = 1.2 } }
+			}
+			desert_river = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.20 } }
+				# else 1.00
+			}
+			assur_t = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 1.40 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 1.35 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 1.20 } }
+				# else 1.00
+			}
+			# Deserts
+			desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			salt_desert = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			desert_mountain = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			arctic = { 
+				if = { limit = { has_building = hospital } multiply_variable = { which = rural_capacity value = 0.60 } }
+				else_if = { limit = { has_building = medicus } multiply_variable = { which = rural_capacity value = 0.45 } }
+				else_if = { limit = { has_building = herbalist } multiply_variable = { which = rural_capacity value = 0.30 } }
+				else = { multiply_variable = { which = rural_capacity value = 0.25 } }
+			}
+			
+			
+		}
+			
+			# for the example, imagine effect = -20%. Current capacity: 4.8 x 0.8 = 3.84. (pre-winter = 8)
+			
+			set_variable = { which = PGD_rur_terrain which = rural_capacity }			# 3.84
+			subtract_variable = { which = PGD_rur_terrain which = PGD_rur_preterrain }	# 3.84 - 4.8 = 0.96 due to terrain
+			
+			# effect of having the hospital (top building for irrigation/health, which improves capacity a lot)
+			
+			trigger_switch = {
+				on_trigger = has_terrain
+				farmlands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				rome_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				carthage_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				athen_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				neapel_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				byzantion_t = { 		set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				syracuse_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				milet_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				ephesus_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				corinth_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				sardis_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				tyros_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				halicarnassus_t = { 	set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				argos_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				grasslands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
+				steppe = { 				set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				savannah = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				mediterranean = { 		set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				drylands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
+				ninive_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.1 } }
+				coastline = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				naxos_t = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				steep_coast = { 		set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				patara_t = { 			set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				coastal_desert = { 		set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				woods = { 				set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				forest = { 				set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				forest_steppe = { 		set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				mangrove = { 			set_variable = { which = PGD_hosp_multiplier value = 0.90 } }
+				jungle = { 				set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				hills = { 				set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				jerusalem_t = { 		set_variable = { which = PGD_hosp_multiplier value = 1.25 } }
+				mountain = { 			set_variable = { which = PGD_hosp_multiplier value = 0.80 } }
+				highlands = { 			set_variable = { which = PGD_hosp_multiplier value = 1.10 } }
+				fertile_highlands = { 	set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				parsa_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				oasis = { 				set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				siwa_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				wetlands = { 			set_variable = { which = PGD_hosp_multiplier value = 0.95 } }
+				marsh = { 				set_variable = { which = PGD_hosp_multiplier value = 1.05 } }
+				floodplains = { 		set_variable = { which = PGD_hosp_multiplier value = 1.5 } }
+				alluvial_plain = { 		set_variable = { which = PGD_hosp_multiplier value = 1.6 } }
+				susa_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.6 } }
+				mesopotamian_plain = { 	set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				babil_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				uruk_t = { 				set_variable = { which = PGD_hosp_multiplier value = 1.8 } }
+				nile_plain = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				memphis_t = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				waset_t = { 			set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				elephantine_t = { 		set_variable = { which = PGD_hosp_multiplier value = 2.0 } }
+				desert_river = { 		set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				assur_t = { 			set_variable = { which = PGD_hosp_multiplier value = 1.40 } }
+				desert = { 				set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				salt_desert = { 		set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				desert_mountain = { 	set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+				arctic = { 				set_variable = { which = PGD_hosp_multiplier value = 0.60 } }
+			}
+			set_variable = { which = PGD_rur_terr_max which = PGD_rur_base }
+			multiply_variable = { which = PGD_rur_terr_max which = PGD_hosp_multiplier }
+			subtract_variable = { which = PGD_rur_terr_max which = PGD_rur_base }			# The effect of maximum terrain building
+		
+		
+			
+		# BUILDINGS - now the only buildings that can increase "by itself" is agri infastructure (terrain) and land development
+		
+		if = {		
+			limit = { has_province_modifier = land_reclamation_5 } 
+			change_variable = { rural_capacity = 2.50 } 
+			set_variable = { which = PGD_reclam_abs value = 2.50 } set_variable = { which = PGD_reclam_perc value = 0.20 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamation_4 } 
+			change_variable = { rural_capacity = 2.50 } 
+			set_variable = { which = PGD_reclam_abs value = 2.50 } set_variable = { which = PGD_reclam_perc value = 0.10 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamation_3 } 
+			change_variable = { rural_capacity = 2.25 } 
+			set_variable = { which = PGD_reclam_abs value = 2.25 } set_variable = { which = PGD_reclam_perc value = 0.05 }
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamation_2 } 
+			change_variable = { rural_capacity = 1.75 } 
+			set_variable = { which = PGD_reclam_abs value = 1.75 } 
+		}
+		else_if = { 
+			limit = { has_province_modifier = land_reclamation_1 } 
+			change_variable = { rural_capacity = 1 } 
+			set_variable = { which = PGD_reclam_abs value = 1 } 
+		}
+			# Prepare amount to be multiplied with total modifier
+			set_variable = { which = PGD_rurmod_before which = rural_capacity }	
+			
+		export_to_variable = { which = PG_dev_extra value = modifier:local_development_cost } change_variable = { PG_dev_extra = 1 }
+		multiply_variable = { which = rural_capacity which = PG_dev_extra }
+			
+			# Effect on population
+			set_variable = { which = PGD_rurmod_after which = rural_capacity }
+			subtract_variable = { which = PGD_rurmod_after which = PGD_rurmod_before }
+			
+			# Find the components of the percentage
+			set_variable = { which = PGD_dev_other which = PG_dev_extra } 	subtract_variable = { PGD_dev_other = 1 }
+			subtract_variable = { which = PGD_dev_other which = PGD_reclam_perc }
+			multiply_variable = { PGD_dev_other = 100 } multiply_variable = { PGD_reclam_perc = 100 }
+			
+			
+		# FISHING BLOCK - depending on province size (and coastal), and coastal buildings
+		if = {		
+			limit = { has_port = yes check_variable = { prov_size = 7 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 3 } 
+		}
+		else_if = {	
+			limit = { has_port = yes check_variable = { prov_size = 4 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 2 } 
+		}
+		else_if = {	
+			limit = { has_port = yes check_variable = { prov_size = 1 } NOT = { has_province_flag = coastal_river } } 
+			set_variable = { which = rural_fishermen value = 1 } 
+		}
+			set_variable = { which = PGD_fishing_base which = rural_fishermen }
+		
+		if = {
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			change_variable = { rural_fishermen = 1.5 }		set_variable = { which = PGD_fishing_terrain value = 1.5 }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			harbor_district = { change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.35 } }
+			big_harbor = { 		change_variable = { rural_fishermen = 2 } multiply_variable = { rural_fishermen = 1.15 } }
+			small_harbor = { 	change_variable = { rural_fishermen = 1 } }
+		}
+		if = { 
+			limit = { has_province_flag = PG_river_port } 
+			multiply_variable = { rural_fishermen = 0.50 }		# River ports, -50% effect
+			multiply_variable = { PGD_fishing_base = 0.50 }	
+			multiply_variable = { PGD_fishing_terrain = 0.50 }
+		}
+		change_variable = { which = rural_capacity which = rural_fishermen }					# if size 4, terrain coastal and big harbor:
+			set_variable = { which = PGD_fishing_buildings which = rural_fishermen }			# (2 + 1.5 + 2) x 1.35 = 7.425
+			subtract_variable = { which = PGD_fishing_buildings which = PGD_fishing_terrain }	# of which, 2 due to base, 1.5 coastal, 3.9 buildings
+			subtract_variable = { which = PGD_fishing_buildings which = PGD_fishing_base }	
+		set_variable = { which = rural_fishermen value = 0 } 
+		
+			set_variable = { which = PGD_rural_subtotal which = rural_capacity }		
+			
+		# TRANSFER TO "URBAN" POPULATION - where Urban means "connected" enough to the normal markets, like exports, cash-crops, etc
+		set_variable = { which = rural_transfer value = 0 }	# reset, in case no buildings available
+		trigger_switch = {
+			on_trigger = has_building
+			small_bath = { 	set_variable = { which = rural_transfer value = 0.1 } }
+			big_bath = { 	set_variable = { which = rural_transfer value = 0.3 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building		
+			small_water_irrigation = { 	change_variable = { rural_transfer = 0.1 } }
+			big_water_irrigation = { 	change_variable = { rural_transfer = 0.2 } }
+			big_estate = { 		change_variable = { rural_transfer = 0.5 } }
+			
+			craftsman = { 		change_variable = { rural_transfer = 0.1 } }
+			small_workshop = { 	change_variable = { rural_transfer = 0.2 } }
+			artisan_district = { change_variable = { rural_transfer = 0.5 } }
+			
+			quarry = { 			change_variable = { rural_transfer = 0.1 } }
+			small_mine = { 		change_variable = { rural_transfer = 0.2 } }
+			big_mine = { 		change_variable = { rural_transfer = 0.5 } }
+		}
+		
+			set_variable = { which = PGD_rural_transfer which = rural_transfer } multiply_variable = { PGD_rural_transfer = 100 }
+		
+		# Transfer rural population to "urbanized" pops
+		set_variable = { which = rural_exports which = rural_capacity }
+		multiply_variable = { which = rural_exports which = rural_transfer }	# moved initial population to urban
+		set_variable = { which = rural_transfer which = rural_capacity }		# rural transfer will be used later, based on the pre-transfer rural pop
+		subtract_variable = { which = rural_capacity which = rural_exports }	# aaand they are gone from the fields
+			
+			set_variable = { which = PGD_rural_total which = rural_capacity }	# if 50% -> 14.076 x 0.5 = 7.04
+			set_variable = { which = PGD_urban_trans which = rural_exports }	# 7.04
+		
+		
+		# In case a province does not count at least 1; usually deserts and such
+		if = { limit = { NOT = { check_variable = { rural_capacity = 1 } } } 		set_variable = { which = rural_capacity value = 1 } }
+		
+		######
+		# 	RURAL GROWTH RATIO
+		######
+		export_to_variable = { which = rural_pop value = base_manpower }
+		set_variable = { which = rural_growth which = rural_capacity }
+		divide_variable = { which = rural_growth which = rural_pop }		
+		
+			set_variable = { which = PGD_rur_growth_base which = rural_growth }
+			
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { rural_growth = 0.20 } }	# this will (probably) offset the growth ++ due to pop loss
+			60 = { multiply_variable = { rural_growth = 0.35 } }
+			40 = { multiply_variable = { rural_growth = 0.50 } }
+			15 = { multiply_variable = { rural_growth = 0.75 } }
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { rural_growth = 1.15 } }
+			50 = { multiply_variable = { rural_growth = 1.10 } }
+			25 = { multiply_variable = { rural_growth = 1.05 } }
+		}
+			set_variable = { which = PGD_rur_growth_devastation which = rural_growth }
+			subtract_variable = { which = PGD_rur_growth_devastation which = PGD_rur_growth_base }
+			
+		# Added to the mod as a mitigating option: Stability increased total growth
+		if = { 		limit = { owner = { stability = 3 } } change_variable = { rural_growth = 0.20 } }
+		else_if = { limit = { owner = { stability = 2 } } change_variable = { rural_growth = 0.15 } }
+		else_if = { limit = { owner = { stability = 1 } } change_variable = { rural_growth = 0.10 } }
+		
+			set_variable = { which = PGD_rur_growth_stability which = rural_growth }
+			subtract_variable = { which = PGD_rur_growth_stability which = PGD_rur_growth_base }
+			subtract_variable = { which = PGD_rur_growth_stability which = PGD_rur_growth_devastation }
+		
+		trigger_switch = {
+			on_trigger = has_province_flag
+			flag_severe_monsoon = { multiply_variable = { rural_growth = 1.2 } }
+			flag_normal_monsoon = { multiply_variable = { rural_growth = 1.175 } }
+			flag_mild_monsoon = { 	multiply_variable = { rural_growth = 1.15 } }
+		}
+			set_variable = { which = PGD_rur_growth_monsoon which = rural_growth }
+			subtract_variable = { which = PGD_rur_growth_monsoon which = PGD_rur_growth_base }
+			subtract_variable = { which = PGD_rur_growth_monsoon which = PGD_rur_growth_devastation }
+			subtract_variable = { which = PGD_rur_growth_monsoon which = PGD_rur_growth_stability }
+		
+		
+		######################
+		## URBAN CAPACITY
+		######################
+			set_variable = { which = urban_capacity value = 0 }
+			
+		## PRODUCTION BUILDINGS
+		# Production buildings provice mostly % increase to production, and a quite good flat bonus. Usually this building will be one of the firsts to be built in a good prospective place. 
+		# A "basic" flat bonus is granted, and then certain prov_types are better (productive agriculture, latifundiae, mining) and will provide a bigger flat bonus. Also these prov_types have got less powerful trade-to-urban multiplier (4 or 3.5 instead of 3)
+		
+		
+		trigger_switch = {
+			on_trigger = has_building
+			small_harbor = { 	change_variable = { which = urban_capacity value = 0.1 } set_variable = { PGD_build_harbor = 0.1 } }
+			big_harbor = { 		change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_harbor = 0.3 } }
+			harbor_district = { change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_harbor = 0.5 } }
+		}
+			
+			
+		trigger_switch = {
+			on_trigger = has_building
+			small_shipyard = { change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_shipy = 0.3 } }
+			big_shipyard = { change_variable = { which = urban_capacity value = 0.7 } set_variable = { PGD_build_shipy = 0.7 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_market = { 	change_variable = { which = urban_capacity value = 0.1 } set_variable = { PGD_build_market = 0.1 } }
+			medium_market = { 	change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_market = 0.3 } }
+			great_market = { 	change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_market = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_army_camp = { 			change_variable = { which = urban_capacity value = 0.2 } set_variable = { PGD_build_army = 0.2 } }
+			small_military_settlement = { 	change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_army = 0.5 } }
+			big_military_settlement = { 	change_variable = { which = urban_capacity value = 1.2 } set_variable = { PGD_build_army = 1.2 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			gravel_road = { 	change_variable = { which = urban_capacity value = 0.1 } set_variable = { PGD_build_roads = 0.1 } }
+			paved_road = { 		change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_roads = 0.3 } }
+			imperial_road = { 	change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_roads = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			shrine = { 			change_variable = { which = urban_capacity value = 0.2 } set_variable = { PGD_build_temple = 0.2 } }
+			small_temple = { 	change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_temple = 0.5 } }
+			great_temple = { 	change_variable = { which = urban_capacity value = 1.2 } set_variable = { PGD_build_temple = 1.2 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			big_theater = { 	change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_theater = 0.3 } }
+			great_theater = { 	change_variable = { which = urban_capacity value = 0.6 } set_variable = { PGD_build_theater = 0.6 } }
+			huge_theater = { 	change_variable = { which = urban_capacity value = 1.5 } set_variable = { PGD_build_theater = 1.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			taxman = { 			change_variable = { which = urban_capacity value = 0.2 } set_variable = { PGD_build_tax = 0.2 } }
+			tax_collector = { 	change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_tax = 0.5 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			big_townhall = { 		change_variable = { which = urban_capacity value = 0.2 } set_variable = { PGD_build_hall = 0.2 } }
+			government_palace = { 	change_variable = { which = urban_capacity value = 0.4 } set_variable = { PGD_build_hall = 0.4 } }
+			government_district = { change_variable = { which = urban_capacity value = 0.6 } set_variable = { PGD_build_hall = 0.6 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			small_city_walls = { change_variable = { which = urban_capacity value = 0.4 } set_variable = { PGD_build_walls = 0.4 } }
+			large_city_walls = { change_variable = { which = urban_capacity value = 1.0 } set_variable = { PGD_build_walls = 1.0 } }
+			fortress_building = { change_variable = { which = urban_capacity value = 1.8 } set_variable = { PGD_build_walls = 1.8 } }
+			border_garrison = { change_variable = { which = urban_capacity value = 0.2 } set_variable = { PGD_build_walls = 0.2 } }
+		}
+		
+		trigger_switch = {
+			on_trigger = has_building
+			great_library = { 		change_variable = { which = urban_capacity value = 1.5 } set_variable = { PGD_build_monum = 1.5 } }
+			imperial_palace = { 	change_variable = { which = urban_capacity value = 1.0 } set_variable = { PGD_build_monum = 1.0 } }
+			mathematician_academy = { change_variable = { which = urban_capacity value = 1.0 } set_variable = { PGD_build_monum = 1.0 } }
+			philosophers_academy = { change_variable = { which = urban_capacity value = 1.0 } set_variable = { PGD_build_monum = 1.0 } }
+			military_academy = { 	change_variable = { which = urban_capacity value = 1.0 } set_variable = { PGD_build_monum = 1.0 } }
+			palace_garden = { 		change_variable = { which = urban_capacity value = 0.5 } set_variable = { PGD_build_monum = 0.5 } }
+			library = { 			change_variable = { which = urban_capacity value = 0.3 } set_variable = { PGD_build_monum = 0.3 } }
+			
+		}
+			set_variable = { which = PGD_buildings_total which = 0 }
+			change_variable = { which = PGD_buildings_total which = PGD_build_harbor }
+			change_variable = { which = PGD_buildings_total which = PGD_build_shipy }
+			change_variable = { which = PGD_buildings_total which = PGD_build_market }
+			change_variable = { which = PGD_buildings_total which = PGD_build_army }
+			change_variable = { which = PGD_buildings_total which = PGD_build_roads }
+			change_variable = { which = PGD_buildings_total which = PGD_build_temple }
+			change_variable = { which = PGD_buildings_total which = PGD_build_theater }
+			change_variable = { which = PGD_buildings_total which = PGD_build_tax }
+			change_variable = { which = PGD_buildings_total which = PGD_build_hall }
+			change_variable = { which = PGD_buildings_total which = PGD_build_walls }
+			change_variable = { which = PGD_buildings_total which = PGD_build_monum }
+			
+			
+		
+		# CAPITAL PALACE (small city, capital of the country)
+		if = { 
+			limit = { is_capital = yes } 
+			change_variable = { which = urban_capacity value = 1 } set_variable = { PGD_urb_capital = 1 } 
+		}
+		
+		
+		# END OF BUILDINGS and other "flat" capacity increases
+		
+		################################
+		## THE TRADE POWER MULTIPLIER ##
+		################################
+		
+		# We will have a multiplier depending on how profitable trade is, depending the prov_type
+		export_to_variable = { which = urban_trade_power value = province_trade_power }
+			set_variable = { which = PGD_eff_trade_power which = urban_trade_power }
+			
+		# correction: remove Mercantilism effect
+			set_variable = { which = PGD_urb_trade value = 0 }
+		
+		if = {
+			limit = { check_variable = { urban_trade_power = 60 } } # 3 more
+			change_variable = { urban_capacity = 13 } 		change_variable = { PGD_urb_trade = 13 }
+			subtract_variable = { urban_trade_power = 60 } 
+			divide_variable = { urban_trade_power = 10 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 42 } } # 4 more
+			change_variable = { urban_capacity = 10 } 		change_variable = { PGD_urb_trade = 10 }
+			subtract_variable = { urban_trade_power = 42 } 
+			divide_variable = { urban_trade_power = 6 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 22 } }	# 3 more
+			change_variable = { urban_capacity = 6 } 		change_variable = { PGD_urb_trade = 6 }
+			subtract_variable = { urban_trade_power = 22 } 
+			divide_variable = { urban_trade_power = 5 } 
+		}
+		else_if = {
+			limit = { check_variable = { urban_trade_power = 10 } }	# base 3
+			change_variable = { urban_capacity = 3 } 		change_variable = { PGD_urb_trade = 3 }
+			subtract_variable = { urban_trade_power = 10 } 
+			divide_variable = { urban_trade_power = 4 } 
+		}
+		else_if = { 
+			limit = { NOT = { check_variable = { urban_trade_power = 0.1 } } } 
+			set_variable = { which = urban_trade_power value = 0.1 } 
+		}
+		else = { divide_variable = { urban_trade_power = 3.3 } }
+		
+			change_variable = { which = PGD_urb_trade which = urban_trade_power }
+		
+		change_variable = { which = urban_capacity which = urban_trade_power }
+		set_variable = { which = urban_trade_power value = 0 }
+		
+		#####
+		#	RELATIVE % MODIFIERS
+		#####
+		
+			set_variable = { which = PGD_urbmod_pre which = urban_capacity }
+			
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }
+			
+			# Effect on population
+			set_variable = { which = PGD_urbmod_after which = urban_capacity }
+			subtract_variable = { which = PGD_urbmod_after which = PGD_urbmod_pre }
+			
+			
+		
+		# COMMONER POPULATION COMING FROM RURAL
+		
+		# The formula that will link BASE rural population (prior to the transfer to urban. So, everyone living off the fields). Basically a proportion of rural to urban, depending of the available farming technology. The more food the rural population create, the more "surplus" population that can dedicate to do anything else and is less dragged to the land - the mod definition of commoner or urban population. 
+		
+		if = { 	
+			limit = { engineering_architecture_institution = 100 }
+			divide_variable = { which = rural_transfer 	value = 3 } 	# +33% food surplus
+		}
+		else_if = { 	
+			limit = { OR = { blast_furnace_institution = 100 advanced_hydraulics_institution = 100 } }
+			divide_variable = { which = rural_transfer 	value = 4 } 	# +25% food surplus
+		}
+		else_if = {
+			limit = { OR = { siege_engineering_institution = 100 cast_iron_institution = 100 } }
+			divide_variable = { which = rural_transfer 	value = 5 } 	# +20% food surplus
+		}
+		else = { divide_variable = { which = rural_transfer 	value = 10 } }	# +10% food surplus (very low)
+		
+			set_variable = { which = PGD_urb_rursurplus which = rural_transfer }
+		change_variable = { which = urban_capacity which = rural_transfer } set_variable = { which = rural_transfer value = 0 }
+		
+		# Rural Exports (that % of rural population working as if they were commoners, in export-oriented goods. Think of villas, latifundiae, etc). 
+			set_variable = { which = PGD_urban_initial which = rural_exports }
+		change_variable = { which = urban_capacity which = rural_exports } set_variable = { which = rural_exports value = 0 }
+			
+			
+		# 	URBAN GROWTH RATIO
+		export_to_variable = { which = urban_pop value = base_production }
+		if = {
+			limit = { NOT = { check_variable = { which = urban_pop value = 1 } } }
+			set_variable = { which = urban_pop value = 0.25 }
+		}
+		set_variable = { which = urban_growth which = urban_capacity } divide_variable = { which = urban_growth which = urban_pop }
+		
+			set_variable = { which = PGD_urb_growth_base which = urban_growth }
+			
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { which = urban_growth value = 0.10 } }
+			60 = { multiply_variable = { which = urban_growth value = 0.25 } }
+			40 = { multiply_variable = { which = urban_growth value = 0.50 } }
+			15 = { multiply_variable = { which = urban_growth value = 0.70 } }
+			
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { which = urban_growth value = 1.15 } }
+			50 = { multiply_variable = { which = urban_growth value = 1.10 } }
+			25 = { multiply_variable = { which = urban_growth value = 1.05 } }
+		}
+		
+			set_variable = { which = PGD_urb_growth_devastation which = urban_growth }
+			subtract_variable = { which = PGD_urb_growth_devastation which = PGD_urb_growth_base }
+			
+			
+		# Stability increases total growth
+		if = { 		limit = { owner = { stability = 3 } } change_variable = { which = urban_growth value = 0.20 } }
+		else_if = { limit = { owner = { stability = 2 } } change_variable = { which = urban_growth value = 0.15 } }
+		else_if = { limit = { owner = { stability = 1 } } change_variable = { which = urban_growth value = 0.10 } }
+		
+			set_variable = { which = PGD_urb_growth_stability which = urban_growth }
+			subtract_variable = { which = PGD_urb_growth_stability which = PGD_urb_growth_base }
+			subtract_variable = { which = PGD_urb_growth_stability which = PGD_urb_growth_devastation }
+			
+			
+			
+		
+			
+		
+		
+		#########
+		# 	UPPER CAPACITY
+		#########
+		
+		# Add the 10% of previous population. Basically the exported rural and urban pops. 
+		
+		set_variable = { which = upper_capacity which = rural_pop } change_variable = { which = upper_capacity which = urban_pop }
+		set_variable = { which = rural_pop value = 0 } 				set_variable = { which = urban_pop value = 0 }
+		
+		divide_variable = { which = upper_capacity value = 10 }
+			set_variable = { which = PGD_upper_base which = upper_capacity }
+		
+		trigger_switch = {
+			on_trigger = has_building
+			big_townhall = { 		change_variable = { which = upper_capacity value = 0.2 } set_variable = { PGD_build_upphall = 0.2 } }
+			government_palace = { 	change_variable = { which = upper_capacity value = 0.4 } set_variable = { PGD_build_upphall = 0.4 } }
+			government_district = { change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_upphall = 1.0 } }
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			shrine = { 			change_variable = { which = upper_capacity value = 0.2 } set_variable = { PGD_build_upptemple = 0.2 } }
+			small_temple = { 	change_variable = { which = upper_capacity value = 0.4 } set_variable = { PGD_build_upptemple = 0.4 } }
+			great_temple = { 	change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_upptemple = 1.0 } }
+			
+		}
+		trigger_switch = {
+			on_trigger = has_building
+			imperial_palace = { 		change_variable = { which = upper_capacity value = 1.5 } set_variable = { PGD_build_uppother = 1.5 } }
+			great_library = { 			change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
+			mathematician_academy = { 	change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
+			philosophers_academy = { 	change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
+			military_academy = { 		change_variable = { which = upper_capacity value = 1.0 } set_variable = { PGD_build_uppother = 1.0 } }
+			palace_garden = { 			change_variable = { which = upper_capacity value = 0.5 } set_variable = { PGD_build_uppother = 0.5 } }
+			library = { 				change_variable = { which = upper_capacity value = 0.2 } set_variable = { PGD_build_uppother = 0.2 } }
+			
+		}
+			set_variable = { which = PGD_builds_upper which = 0 }
+			change_variable = { which = PGD_builds_upper which = PGD_build_upphall }
+			change_variable = { which = PGD_builds_upper which = PGD_build_uppother }
+			change_variable = { which = PGD_builds_upper which = PGD_build_upptemple }
+		
+		
+		# IMPERIAL CAPITAL
+		# CAPITAL PALACE (small city, capital of the country)
+		if = { 
+			limit = { is_capital = yes } 
+			change_variable = { which = upper_capacity value = 1 }
+				set_variable = { which = PGD_upper_capbase value = 1 }
+		}
+		
+		
+		# IMPERIAL CAPITAL
+		# Will be affected by 1) rank, 2) total development
+		# % by rank are added here as well, as they are needed to be done AFTER the other flat bonuses. May be too high, could be changed in the future
+		if = { 
+			limit = { 	  is_capital = yes owner = { total_development = 5000 } } 
+			change_variable = { upper_capacity = 7 } set_variable = { which = PGD_upper_capextra value = 7 }
+		}
+		else_if = { 
+			limit = { is_capital = yes owner = { total_development = 3500 } } 
+			change_variable = { upper_capacity = 6 } set_variable = { which = PGD_upper_capextra value = 6 }
+		}
+		else_if = { 
+			limit = { is_capital = yes owner = { total_development = 2500 } } 
+			change_variable = { upper_capacity = 5 } set_variable = { which = PGD_upper_capextra value = 5 }
+		}
+		else_if = { 
+			limit = { is_capital = yes owner = { total_development = 2000 } } 
+			change_variable = { upper_capacity = 4 } set_variable = { which = PGD_upper_capextra value = 4 }
+		}
+		else_if = { 
+			limit = { is_capital = yes owner = { total_development = 1500 } } 
+			change_variable = { upper_capacity = 3 } set_variable = { which = PGD_upper_capextra value = 3 }
+		}
+		else_if = { 
+			limit = { is_capital = yes owner = { total_development = 1000 } } 
+			change_variable = { upper_capacity = 2 } set_variable = { which = PGD_upper_capextra value = 2 }
+		}
+		else_if = {
+			limit = { is_capital = yes owner = { total_development = 500 } }  
+			change_variable = { upper_capacity = 1 } set_variable = { which = PGD_upper_capextra value = 1 }
+		}
+			
+			set_variable = { which = PGD_uppersubtotal which = upper_capacity } 
+		
+		#########################
+		#	MODIFIERS			#
+		#########################
+		# The effect that affect ALL capacity, added at the bottom
+		
+		# Urban amenities (small flat bonus to urban, but quite big effect on upper population)
+		trigger_switch = {
+			on_trigger = has_building
+			small_bath = { 	multiply_variable = { upper_capacity = 1.10 } set_variable = { which = PGD_upperc value = 10 } }
+			big_bath = { 	multiply_variable = { upper_capacity = 1.25 } set_variable = { which = PGD_upperc value = 25 } }
+		}
+			set_variable = { which = PGD_uppermodabs which = upper_capacity } 
+			subtract_variable = { which = PGD_uppermodabs which = PGD_uppersubtotal }
+		
+		
+		# 	UPPER GROWTH RATIO
+		export_to_variable = { which = upper_pop value = base_tax }
+		if = { 
+			limit = { NOT = { check_variable = { which = upper_pop value = 1 } } }
+			set_variable = { which = upper_pop value = 0.2 } 
+			# bigger maximum ratio than urban pop. Also notice that most events of employment or upper promotion will need a modifier of 5, which means at least a 1 "healthy" upper pop capacity is needed to have a place here
+		}
+		set_variable = { which = upper_growth which = upper_capacity } divide_variable = { which = upper_growth which = upper_pop }
+		set_variable = { which = upper_pop value = 0 }
+			
+			set_variable = { which = PGD_upp_growth_base which = upper_growth }
+		trigger_switch = {
+			on_trigger = devastation
+			75 = { multiply_variable = { upper_growth = 0.10 } }
+			60 = { multiply_variable = { upper_growth = 0.25 } }
+			40 = { multiply_variable = { upper_growth = 0.50 } }
+			15 = { multiply_variable = { upper_growth = 0.70 } }
+			5 = {  multiply_variable = { upper_growth = 0.80 } }
+		}
+		trigger_switch = {
+			on_trigger = prosperity
+			99 = { multiply_variable = { upper_growth = 1.15 } }
+			50 = { multiply_variable = { upper_growth = 1.10 } }
+			25 = { multiply_variable = { upper_growth = 1.05 } }
+		}
+			set_variable = { which = PGD_upp_growth_devastation which = upper_growth }
+			subtract_variable = { which = PGD_upp_growth_devastation which = PGD_upp_growth_base }
+			
+		# Stability increases total growth
+		if = { 		
+			limit = { owner = { stability = 3 } } 
+			change_variable = { upper_growth = 0.20 } set_variable = { which = PGD_upp_grow_stab value = 0.20 } 
+		}
+		else_if = { 
+			limit = { owner = { stability = 2 } } 
+			change_variable = { upper_growth = 0.15 } set_variable = { which = PGD_upp_grow_stab value = 0.15 } 
+		}
+		else_if = { 
+			limit = { owner = { stability = 1 } } 
+			change_variable = { upper_growth = 0.10 } set_variable = { which = PGD_upp_grow_stab value = 0.10 } 
+		}
+			
+			
+			
+		# Other basic calculations
+		export_to_variable = { which = PS_rur_now value = base_manpower }
+		export_to_variable = { which = PS_urb_now value = base_production }
+		export_to_variable = { which = PS_upp_now value = base_tax }
+			
+	}
+	
+	
+	option = {
+		name = "population_capacity.1.a"
+		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
+	}
+	
+}
+
+
+province_event = {
+	id = popcap_oldevents.4
+	title = "popcap_oldevents.4.t"
+	desc = "popcap_oldevents.4.d"
+	picture = peasant_woman
+	#hidden = no
+	
+	trigger = {
+		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00 (100%)
+		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+		owner = { has_country_flag = PG_migration_manual }				# new, to allow the automatic event happening
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+		
+		# Reasons to leave. Devastation will NOT appear here, since it already influences rural_growth. 
+		modifier = {
+			factor = 4.0
+			check_variable = { which = urban_growth which = PG_trb_grow }	# is not supposed to fire if there is still work in the city, same province
+		}
+		modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
+		modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
+		modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
+		modifier = {
+			factor = 0.05 				# one year
+			NOT = { check_variable = { PG_trb_grow = 40 } }	# they must be really miserable...
+		}
+		
+	}
+	
+	immediate = {
+		hidden_effect = {
+			# BLOCK 1: define migration size. 
+			# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10. 
+			if = { 		limit = { base_manpower = 10 }	set_variable = { which = mig_size value = 3 } }
+			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = mig_size value = 2 } }
+			else = {									set_variable = { which = mig_size value = 1 } }
+			
+			# BLOCK 2: Discover which provinces it may go. 
+			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
+			#	A high center of trade, then a lower one (lv2), then culture/religion, owned by same, then any other both tribal and common. 
+			# 	Affected by prosperity/devastation, meaning the wealth of the province (poor citizens can't afford to travel far)
+			
+			set_variable = { which = PG_travel_range which = PG_info_range }
+			
+			
+			if = { 		limit = { check_variable = { PG_travel_range = 75 } } PG_find_target_province = { range = 1500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 50 } } PG_find_target_province = { range = 1000 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 30 } } PG_find_target_province = { range = 700 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 20 } } PG_find_target_province = { range = 350 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 10 } } PG_find_target_province = { range = 200 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  PG_find_target_province = { range = 100 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  PG_find_target_province = { range = 50 } }
+			else = { 														  PG_find_target_province = { range = 30 } }
+			
+			set_variable = { which = PG_provid which = prov_id }
+		}
+	}
+	
+	#####
+	#	OPTIONS - BY DEFAULT (with no money cost for the player. AI will choose them)
+	#####
+	
+	# 1: the simplest one: LET THEM LEAVE to the province targeted before. 
+	option = {
+		name = "popcap_oldevents.4.1"
+		trigger = { NOT = { has_province_flag = PG_starvation_start } }
+		ai_chance = { 
+			factor = 50 
+			modifier = { factor = 1.2 owner = { check_variable = { var_slaves_pop_ratio = 20 } } }	# AI: enough slaves
+			modifier = { factor = 1.3 owner = { NOT = { adm_power = 300 } } }
+		}
+		event_target:PG_target = { 		# move pops and recalculate capacity in the target province
+			# not using the while sintax, so that in the option values it can be seen
+			if = {
+				limit = { check_variable = { PG_com_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 }
+		}
+		province_event = { id = popcap_oldevents.1 }		# recalculate in the origin province
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+		# If someone modifies the code, remember to copy it in the following option as well!
+	}
+	option = {	# Same, but activates the automatic
+		name = "popcap_oldevents.4.1"
+		highlight = yes
+		trigger = { NOT = { has_province_flag = PG_starvation_start } owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		event_target:PG_target = { 		# move pops and recalculate capacity in the target province
+										# not using the while sintax, so that values can be seen by the player
+			if = {
+				limit = { check_variable = { PG_com_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 }
+		}
+		province_event = { id = popcap_oldevents.1 }		# recalculate in the origin province
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_leave }
+	}
+	
+	# 2: Convince them to stay, mana loss due to issuing of new laws. (spend dip points)
+	option = {
+		name = "popcap_oldevents.4.2" 
+		trigger = { NOT = { has_province_flag = PG_starvation_start } }
+		ai_chance = { 
+			factor = 30 
+			modifier = { factor = 0.5	owner = { check_variable = { which = var_slaves_pop_ratio value = 20 } } }
+			modifier = { factor = 2.0	owner = { adm_power = 300 } }
+		}
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "popcap_oldevents.4.2" 
+		highlight = yes
+		trigger = { NOT = { has_province_flag = PG_starvation_start } owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_stay }
+	}
+	# 3. Nasty option: spend military but risk a revolt of the population being-converted to slaves (spend mil points)
+	option = {
+		name = "popcap_oldevents.4.3" # enslave them. Expect much unrest, but may be necessary in money-hungry countries
+		ai_chance = {
+			factor = 20 
+			modifier = { factor = 0.5	owner = { NOT = { mil_power = 100 } } }
+			modifier = { factor = 0 	devastation = 10 }
+			modifier = { factor = 2.5 	owner = { NOT = { check_variable = { var_slaves_pop_ratio = 20 } } } }
+		}
+		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	# +4 unrest
+		add_nationalism = 5		add_devastation = 5							# 5 nationalism for the resistence; 5 devastation due to risk of famine
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = {
+			limit = { check_variable = { mig_size = 3 } }
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PS = "pop growth statistics", will appear in the province interaction
+			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 2 } }
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
+			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 1 } }
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
+			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
+		}
+		province_event = { id = popcap_oldevents.1 }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "popcap_oldevents.4.3" # enslave them. Expect much unrest, but may be necessary in money-hungry countries
+		highlight = yes
+		trigger = { owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	# +4 unrest
+		add_nationalism = 5		add_devastation = 5							# 5 nationalism for the resistence; 5 devastation due to risk of famine
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = {
+			limit = { check_variable = { mig_size = 3 } }
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	# PS = "pop growth statistics", will appear in the province interaction
+			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 2 } }
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
+			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 1 } }
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
+			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
+		}
+		province_event = { id = popcap_oldevents.1 }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_imprison }
+	}
+	
+	# 4. Starving: there is nothing we can do. It can snowball very fast!!
+	option = {
+		name = "popcap_oldevents.4.4"
+		trigger = { has_province_flag = PG_starvation_start }
+		ai_chance = {   factor = 30 	 modifier = { factor = 2.5	NOT = { owner = { treasury = 30 } } } }
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } add_base_manpower = -3 change_variable = { PS_rur_strv = 3 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } add_base_manpower = -2 change_variable = { PS_rur_strv = 2 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } add_base_manpower = -1 change_variable = { PS_rur_strv = 1 } }
+		
+		# get ready for trouble
+		add_devastation = 20	add_province_modifier = { name = PG_pop_starved duration = 730 } 	# +4 unrest
+		every_neighbor_province = { add_devastation = 5 }
+		province_event = { id = popcap_oldevents.1 }
+		# This one will never be automatable, it is very hard..
+	}
+	
+	# 5. Pay for more food. Lose money and mana (adm power), and no devastation happened
+	option = {
+		name = "popcap_oldevents.4.5" 
+		trigger = { has_province_flag = PG_starvation_start }
+		ai_chance = {  factor = 50 	modifier = { factor = 2.0	owner = { treasury = 30 } } }
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		owner = { change_variable = { PG_migr_auto = 1 } }	# counter to allow automation. After three times it will allow it
+	}
+	option = {
+		name = "popcap_oldevents.4.5" 
+		highlight = yes
+		trigger = { has_province_flag = PG_starvation_start 	owner = { check_variable = { PG_migr_auto = 3 } } }
+		ai_chance = { factor = 0 }
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		owner = { set_variable = { which = PG_migr_auto value = 0 } set_country_flag = PG_migration_automated set_country_flag = PG_migr_pay }
+	}
+	
+	
+	####
+	#	PLAYER-DIRECTED OPTIONS (resettle, to capital, etc). This movement will be paid!! Up to 100 gold, it's a lot
+	####
+	# 6. Move them to our capital (if there is space). First urban, then rural
+	option = {
+		name = "popcap_oldevents.4.6"		
+		trigger = { owner = { capital_scope = { OR = { check_variable = { PG_com_grow = 120 } check_variable = { PG_trb_grow = 120 } } } } }
+		ai_chance = { factor = 0 }
+		
+		random_province = {
+			limit = {
+				owned_by = PREV		is_capital = yes		NOT = { has_province_modifier = PG_new_pop }
+				OR = { check_variable = { PG_com_grow = 120 } check_variable = { PG_trb_grow = 120 } }
+			}
+			mig_dist_cost = yes
+			if = {
+				limit = { check_variable = { PG_com_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 } 
+		}
+		province_event = { id = popcap_oldevents.1 } 
+		# no automation
+	}
+	
+	# 7. Move them to another prosperous city (urban growth >1.2 + center of trade lv1 at least)
+	option = {
+		name = "popcap_oldevents.4.7"		
+		ai_chance = { factor = 0 }
+		trigger = {  
+			any_province = {
+				owned_by = PREV 								check_variable = { PG_com_grow = 120 }
+				NOT = { has_province_modifier = PG_new_pop } 	province_has_center_of_trade_of_level = 1
+			}
+		}
+		random_province = {
+			limit = {
+				owned_by = PREV 								check_variable = { PG_com_grow = 120 }
+				NOT = { has_province_modifier = PG_new_pop } 	province_has_center_of_trade_of_level = 1
+			}
+			mig_dist_cost = yes
+			if = {
+				limit = { check_variable = { PG_com_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 }
+		}
+		province_event = { id = popcap_oldevents.1 }
+		# no automation
+	}
+	
+	# 8. Move them to other agricultural lands
+	option = {
+		name = "popcap_oldevents.4.8"		
+		trigger = {  
+			any_province = {
+				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
+				NOT = { has_province_modifier = PG_new_pop } 	
+			}
+		}
+		random_province = {
+			limit = {
+				owned_by = PREV 								check_variable = { rural_growth = 2.0 }
+				NOT = { has_province_modifier = PG_new_pop } 	
+			}
+			mig_dist_cost = yes
+			if = {
+				limit = { check_variable = { PG_trb_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 }
+		}
+		province_event = { id = popcap_oldevents.1 }
+		# no automation
+	}
+	
+	
+	after = {
+		# clean up
+		set_variable = { which = mig_size value = 0 }
+		clr_province_flag = PG_starvation_start
+		
+		# Has the country flag really been added? Check general flag, and specific flags (there must be only one)
+		if = { limit = { owner = { has_country_flag = PG_migration_automated } } owner = { clr_country_flag = PG_migration_manual } }
+		if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_imprison } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_stay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison } 
+		}
+		
+	}
+	
+}
+
+
+
+# The automatic event for migration. Same MTTH, trigger adds the automated flag, but simplified options and only one will fire. 
+province_event = {
+	id = popcap_oldevents.5
+	title = "popcap_oldevents.5.t"
+	desc = "popcap_oldevents.5.d"
+	picture = peasant_woman
+	#hidden = no
+	
+	trigger = {
+		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00
+		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+		owner = { has_country_flag = PG_migration_automated }			# new, to allow the automatic event happening
+	}
+	
+	
+	mean_time_to_happen = {
+		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+		
+		# Reasons to leave. Devastation will NOT appear here, since it already influences rural_growth. 
+		modifier = {
+			factor = 3.0
+			check_variable = { which = urban_growth which = rural_growth }	# is not supposed to fire if there is still work in the city, same province
+		}
+		modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
+		modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
+		modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
+		modifier = {
+			factor = 0.05 				# one year
+			NOT = { check_variable = { PG_trb_grow = 40 } }	# they must be really miserable...
+		}
+		
+	}
+	
+	immediate = {
+			# BLOCK 1: define migration size. 
+			# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10. 
+			if = { 		limit = { base_manpower = 10 }	set_variable = { which = mig_size value = 3 } }
+			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = mig_size value = 2 } }
+			else = {									set_variable = { which = mig_size value = 1 } }
+			
+			# BLOCK 2: Discover which provinces it may go. 
+			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
+			#	A very high center of trade (lv4 or higher), then a regional one (lv2), then any other province with rural place. 
+			
+			if = { 		limit = { check_variable = { PG_travel_range = 50 } } PG_find_target_province = { range = 2000 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 30 } } PG_find_target_province = { range = 1200 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 20 } } PG_find_target_province = { range = 800 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 10 } } PG_find_target_province = { range = 500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  PG_find_target_province = { range = 300 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  PG_find_target_province = { range = 150 } }
+			else = { 														PG_find_target_province = { range = 75 } }
+			
+		# Anti-CTD measure: make sure there is only ONE flag present. This is also added in the after of the manual event, but who knows. 
+		if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } has_province_flag = PG_starvation_start } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } NOT = { has_province_flag = PG_starvation_start } } 
+			owner = { set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_leave } } 
+			owner = { clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_pay } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_imprison clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_imprison } } 
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay } 
+		}
+		else_if = { 
+			limit = { owner = { has_country_flag = PG_migr_stay } }
+			owner = { clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_imprison } 
+		}
+		else_if = { 
+			limit = { has_province_flag = PG_starvation_start }
+			owner = { set_country_flag = PG_migr_pay clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		else = { 
+			owner = { set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison }
+		}
+		
+	}
+	
+	#####
+	#	OPTIONS
+	#####
+	
+	# 1: Leave the province
+	option = {
+		name = "popcap_oldevents.5.1"
+		trigger = { owner = { has_country_flag = PG_migr_leave } }
+		ai_chance = { factor = 100 }
+		event_target:PG_target = {
+			if = {
+				limit = { check_variable = { PG_com_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_urban = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_urban = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_urban = { no = 1 } }
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_grow = 120 } }
+				if = { 		limit = { PREV = { check_variable = { mig_size = 3 } } } mig_rural_to_rural = { no = 3 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 2 } } } mig_rural_to_rural = { no = 2 } }
+				else_if = { limit = { PREV = { check_variable = { mig_size = 1 } } } mig_rural_to_rural = { no = 1 } }
+			}
+			province_event = { id = popcap_oldevents.1 }
+		}
+		province_event = { id = popcap_oldevents.1 }		# recalculate in the origin province
+		set_variable = { which = PG_var_leave which = mig_size } 
+		owner = { change_variable = { which = PG_var_leave which = PREV } }  set_variable = { which = PG_var_leave value = 0 }
+	}
+	
+	# 2: Convince them to stay (spend DIP points)
+	option = {
+		name = "popcap_oldevents.5.2" 
+		trigger = { owner = { has_country_flag = PG_migr_stay } }
+		ai_chance = { factor = 100 }
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_dip_power = -15 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_dip_power = -10 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_dip_power = -5 } }
+		set_variable = { which = PG_var_stay which = mig_size } 
+		owner = { change_variable = { which = PG_var_stay which = PREV } }  set_variable = { which = PG_var_stay value = 0 }
+	}
+	# 3. Enslave (spend MIL points)
+	option = {
+		name = "popcap_oldevents.5.3" 
+		trigger = { owner = { has_country_flag = PG_migr_imprison } }
+		ai_chance = { factor = 100 }
+		add_province_modifier = { name = PG_pop_enslaved duration = 730 } 	
+		add_nationalism = 5		add_devastation = 5							
+		
+		# not using the while sintax, so that values can be seen by the player
+		if = {
+			limit = { check_variable = { mig_size = 3 } }
+			add_base_manpower = -3 change_variable = { PS_rur_imp = 3 } 	
+			owner = { add_mil_power = -15 change_variable = { slaves = 30 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 2 } }
+			add_base_manpower = -2 change_variable = { PS_rur_imp = 2 } 
+			owner = { add_mil_power = -10 change_variable = { slaves = 20 } }
+		}
+		else_if = {
+			limit = { check_variable = { mig_size = 1 } }
+			add_base_manpower = -1 change_variable = { PS_rur_imp = 1 } 
+			owner = { add_mil_power = -5 change_variable = { slaves = 10 } }
+		}
+		province_event = { id = popcap_oldevents.1 }
+		set_variable = { which = PG_var_imprison which = mig_size } 
+		owner = { change_variable = { which = PG_var_imprison which = PREV } }  set_variable = { which = PG_var_imprison value = 0 }
+	}
+	
+	# 4. Starving. Not in the automated event
+	
+	# 5. Pay for more food. Spend ADM points
+	option = {
+		name = "popcap_oldevents.5.4" 
+		trigger = { owner = { has_country_flag = PG_migr_pay } }
+		ai_chance = { factor = 100 }
+		# not using the while sintax, so that values can be seen by the player
+		if = { 		limit = { check_variable = { mig_size = 3 } } owner = { add_adm_power = -12 add_treasury = -30 } }
+		else_if = { limit = { check_variable = { mig_size = 2 } } owner = { add_adm_power = -8  add_treasury = -20 } }
+		else_if = { limit = { check_variable = { mig_size = 1 } } owner = { add_adm_power = -4  add_treasury = -10 } }
+		set_variable = { which = PG_var_pay which = mig_size } 
+		owner = { change_variable = { which = PG_var_pay which = PREV } }  set_variable = { which = PG_var_pay value = 0 }
+	}
+	
+	
+	after = {
+		# clean up
+		set_variable = { which = mig_size value = 0 }
+		clr_province_flag = PG_starvation_start
+		if = { limit = { owner = { has_country_flag = PG_migration_automated } } owner = { clr_country_flag = PG_migration_manual } }
+		
+	}
+	
+}
+
+country_event = {				# MIGRATION AUTOMATION, OPTIONS
+	id = popcap_oldevents.8
+	title = "popcap_oldevents.8.t"
+	desc = "popcap_oldevents.8.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+	
+	#mean_time_to_happen = {
+	#	months = 2	
+	#}
+	immediate = {
+		
+	}
+	
+	option = {
+		name = "popcap_oldevents.8.1"	# Stop the automation
+		trigger = { has_country_flag = PG_migration_automated }
+		clr_country_flag = PG_migration_automated 	set_country_flag = PG_migration_manual
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "popcap_oldevents.8.2"	# Apply Leave
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		set_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "popcap_oldevents.8.3"	# Apply Stay
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay set_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "popcap_oldevents.8.4"	# Apply Pay
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave set_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay clr_country_flag = PG_migr_imprison
+	}
+	option = {
+		name = "popcap_oldevents.8.5"	# Apply Imprison
+		clr_country_flag = PG_migration_automated 	clr_country_flag = PG_migration_manual set_country_flag = PG_migration_automated	# reset
+		clr_country_flag = PG_migr_leave clr_country_flag = PG_migr_pay clr_country_flag = PG_migr_stay set_country_flag = PG_migr_imprison
+	}
+	
+	option = {
+		name = "popcap_oldevents.8.6"	# (nothing, close this)
+		
+	}
+	
+	after = {
+		set_variable = { which = PG_var_leave value = 0 }		set_variable = { which = PG_var_stay value = 0 }	
+		set_variable = { which = PG_var_imprison value = 0 }	set_variable = { which = PG_var_pay value = 0 }	
+	}
+	
+}
+
+
+

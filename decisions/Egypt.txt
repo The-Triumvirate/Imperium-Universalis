@@ -9,12 +9,38 @@ country_decisions = {
 			}
 			NOT = { TAG = MSW }
 		}
+		provinces_to_highlight = {
+			OR = {
+				region = lower_egypt_region
+				region = upper_egypt_region
+			}
+			culture_group = egyptian_group
+			culture = saracenean
+			NOT = { owned_by = ROOT }
+		}
 		allow = {
 			NOT = { exists = EGY }
 			is_at_war =  no
-			
-			lower_egypt_region = { type = all owned_by = ROOT }
-			upper_egypt_region = { type = all owned_by = ROOT }
+			NOT = {
+				AND = {
+					lower_egypt_region = {
+						OR = {
+							culture = saracenean
+							culture = wasetic
+							culture = egyptian
+						}
+						NOT = { owned_by = ROOT }
+					}
+					upper_egypt_region = {
+						OR = {
+							culture = saracenean
+							culture = wasetic
+							culture = egyptian
+						}
+						NOT = { owned_by = ROOT }
+					}
+				}
+			}
 		}
 		effect = {
 			change_tag = EGY
@@ -63,15 +89,6 @@ country_decisions = {
 				}
 				729 = {
 					add_core = NAU
-				}
-				else = {
-					random_owned_province = {
-						limit = {
-							NOT = { is_capital = no }
-						}
-						change_culture = ionic
-						change_religion = greek_religion
-					}
 				}
 			}
 		}
@@ -392,21 +409,16 @@ find_new_capital = {
 		religion = egyptian_religion
 		owns = 6254
 		NOT = { has_country_flag = egy_new_capital }
+		ai = no
 	}
 		
 	allow = {
 		6254 = { 
-			NOT = { has_province_modifier = land_reclamtion_1 }
-			NOT = { has_province_modifier = land_reclamtion_2 }
-			NOT = { has_province_modifier = land_reclamtion_3 }
-			NOT = { has_province_modifier = land_reclamtion_4 }
-			NOT = { has_province_modifier = land_reclamtion_5 }
 			NOT = { has_province_modifier = land_reclamation_1 }
 			NOT = { has_province_modifier = land_reclamation_2 }
 			NOT = { has_province_modifier = land_reclamation_3 }
 			NOT = { has_province_modifier = land_reclamation_4 }
 			NOT = { has_province_modifier = land_reclamation_5 }
-				  
 		}
 		treasury = 300
 		stability = 2
@@ -422,47 +434,60 @@ find_new_capital = {
 			}
 		}
     }
+	ai_importance = 10
+		ai_will_do = {
+			factor = 1
+			modifier = {
+	 			factor = 0
+	 			NOT = { estate_loyalty = {
+                        estate = estate_priesthood
+                        loyalty = 10
+                    }
+				}
+				NOT = { stability = 2 }
+			}
+		}
 }
   
-  rebuild_aten_temple = {
-   potential = {
-	   religion = egyptian_religion
-	   owns = 6254
-	   has_country_flag = aten_temple
-	   }
-	   
-	allow = {
-	  6254 = {
-	  has_province_modifier = land_reclamation_1
-	  OR = {
-	  has_building = shrine
-	  has_building = small_temple
-	   }
-	  }
-	  treasury = 400
-	}
-	  
-	effect = {
-	6254 = {
-	    if = { 
-		limit = { has_building = small_temple }
-		add_building_construction = {
-		building = land_reclamation
-		speed = 1
-		cost = 0.5
+	rebuild_aten_temple = {
+   		potential = {
+	   		religion = egyptian_religion
+	   		owns = 6254
+	   		has_country_flag = aten_temple
 		}
-	   }
-	    else = {
-		add_building = small_temple
-	    add_building_construction = {
-		building = land_reclamation
-		speed = 1
-		cost = 0.5
+	
+		allow = {
+	 		6254 = {
+	  			has_province_modifier = land_reclamation_1
+	  			OR = {
+	  				has_building = shrine
+	  				has_building = small_temple
+	   			}
+	  		}
+	  		treasury = 400
 		}
-	   }
+	
+		effect = {
+			6254 = {
+			    if = { 
+					limit = { has_building = small_temple }
+					add_building_construction = {
+						building = land_reclamation
+						speed = 1
+						cost = 0.5
+					}
+				}
+			    else = {
+					add_building = small_temple
+			    	add_building_construction = {
+						building = land_reclamation
+						speed = 1
+						cost = 0.5
+					}
+			   	}
+			}
+		    clr_country_flag = aten_temple
+			set_country_flag = aten_cult
+   		}
 	}
-	    clr_country_flag = aten_temple
-		set_country_flag = aten_cult
-   }
-  }
 }

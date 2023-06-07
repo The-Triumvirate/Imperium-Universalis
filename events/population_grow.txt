@@ -474,8 +474,8 @@ province_event = {
 	
 	trigger = {
 		base_manpower = 1
-		has_global_flag = popgrowth_running		# event population_capacity.4, the Popgrowth menu. Allows to switch btw popgrowth and vanilla
-		check_variable = { rural_growth = 1.0 }	# Added, since it seems growth was getting out of hand even adding a factor 30 to <0.8
+		has_global_flag = popgrowth_running		# event population_capacity.2, the Popgrowth menu. Allows to switch btw popgrowth and vanilla
+		check_variable = { PG_trb_grow = 100 }	# Added, since it seems growth was getting out of hand even adding a factor 30 to <0.8
 												
 	}
 	
@@ -488,33 +488,28 @@ province_event = {
 		
 		modifier = {
 			factor = 0.2 	# Needs a kickstart for those at only 1 tribal. Starting at 2.0 growth
-			check_variable = { which = rural_growth value = 2 }
-			base_manpower = 1
-			NOT = { base_manpower = 2 }
+			check_variable = { PG_trb_grow = 200 }
+			base_manpower = 1	NOT = { base_manpower = 2 }
 		}
 		modifier = {
 			factor = 0.95 	# base value, almost untouched. Similar to modern age Europe (late 1600s)
-			check_variable = { which = rural_growth value = 1 }
-			NOT = { check_variable = { which = rural_growth value = 1.3 } }
+			check_variable = { PG_trb_grow = 100 }	NOT = { check_variable = { PG_trb_grow = 130 } }
 		}
 		modifier = {
 			factor = 0.65	# 0.85% yearly, early 19th Century France (slow demographic explosion). // check: 1/(8*360/12*0.65) = 0.641%
-			check_variable = { which = rural_growth value = 1.3 }
-			NOT = { check_variable = { which = rural_growth value = 1.6 } }
+			check_variable = { PG_trb_grow = 130 }	NOT = { check_variable = { PG_trb_grow = 160 } }
 		}
 		modifier = {
 			factor = 0.4	# 1,35%, 1890s UK (demographic explosion)
-			check_variable = { which = rural_growth value = 1.6 }
-			NOT = { check_variable = { which = rural_growth value = 2 } }
+			check_variable = { PG_trb_grow = 160 }	NOT = { check_variable = { PG_trb_grow = 200 } }
 		}
 		modifier = {
 			factor = 0.2 	# 2,7%, usual growth of India 1970s
-			check_variable = { which = rural_growth value = 2 }
-			NOT = { check_variable = { which = rural_growth value = 5 } }
+			check_variable = { PG_trb_grow = 200 }	NOT = { check_variable = { PG_trb_grow = 500 } }
 		}
 		modifier = {
 			factor = 0.1 	# 5,5% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic. Doubles every 24 years
-			check_variable = { which = rural_growth value = 5 }
+			check_variable = { PG_trb_grow = 500 }
 			
 		}
 		
@@ -529,20 +524,20 @@ province_event = {
 		# Finally, this is supposing that the growth rate (capacity / current population) is constant, and it will not, so at higher values, growth will be way lower than the start, or just not happening at all. That's how we get a Logistic Function (S) instead of linear growth (/)
 	
 	immediate = {
-		export_to_variable = { which = PG_trib_growth value = base_manpower }
-		change_variable = { which = PG_trib_counter which = PG_trib_growth }
+		export_to_variable = { which = PG_trib_count value = base_manpower }
+		change_variable = { which = PG_trib_counter which = PG_trib_count }
 		
 		if = {
 			limit = { check_variable = { PG_trib_counter = 6 } }
-			set_variable = { which = PG_trib_counter value = 0 } set_variable = { which = PG_trib_growth value = 0 }
+			set_variable = { which = PG_trib_counter value = 0 } set_variable = { which = PG_trib_count value = 0 }
 			add_base_manpower = 1		change_variable = { PS_rur_grow = 1 }		# track total done
 			owner = { 	if = { limit = { ai = no } 	change_variable = { tribal_increased_var = 1 } } }
-			province_event = { id = population_capacity.1 }		# Recalculate capacity, once the new population is created (growth also rec'd)
+			province_event = { id = population_capacity.4 }		# Recalculate capacity, once the new population is created (growth also rec'd)
 		}
 	}
 	#######################################################
 	option = {
-		name = "province_development.1.a"
+		name = "population_grow.4.a"
 			
 	}
 }
@@ -551,15 +546,15 @@ province_event = {
 ########################################################################################
 province_event = {
 	id = population_grow.5
-	title = "population_grow.1.t"
-	desc = "population_grow.1.d"
+	title = "population_grow.5.t"
+	desc = "population_grow.5.d"
 	picture = peasant_woman
 	hidden = yes
 	
 	trigger = {
 		#base_production = 1			# no need, any province may grow it
 		has_global_flag = popgrowth_running
-		check_variable = { urban_growth = 1.0 }
+		check_variable = { PG_com_grow = 100 }
 	}
 	
 	
@@ -567,27 +562,23 @@ province_event = {
 		months = 540				# So the base mtth has been raised from 360 (rural) to 540 (+66% more rarely)
 		modifier = {
 			factor = 0.95 	# base value, almost untouched. Similar to modern age Europe (late 1600s)
-			check_variable = { which = urban_growth value = 1 }
-			NOT = { check_variable = { which = urban_growth value = 1.3 } }
+			check_variable = { PG_com_grow = 100 }	NOT = { check_variable = { PG_com_grow = 130 } }
 		}
 		modifier = {
 			factor = 0.65	# 0.6%, early 19th Century France
-			check_variable = { which = urban_growth value = 1.3 }
-			NOT = { check_variable = { which = urban_growth value = 1.6 } }
+			check_variable = { PG_com_grow = 130 }	NOT = { check_variable = { PG_com_grow = 160 } }
 		}
 		modifier = {
 			factor = 0.4	# 1%, 1890s UK
-			check_variable = { which = urban_growth value = 1.6 }
-			NOT = { check_variable = { which = urban_growth value = 2 } }
+			check_variable = { PG_com_grow = 160 }	NOT = { check_variable = { PG_com_grow = 200 } }
 		}
 		modifier = {
 			factor = 0.2 	# 2%, usual growth of India 1970s
-			check_variable = { which = urban_growth value = 2 }
-			NOT = { check_variable = { which = urban_growth value = 5 } }
+			check_variable = { PG_com_grow = 200 }	NOT = { check_variable = { PG_com_grow = 500 } }
 		}
 		modifier = {
 			factor = 0.1 	# 4% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic
-			check_variable = { which = urban_growth value = 5 }
+			check_variable = { PG_com_grow = 500 }
 			
 		}
 		
@@ -598,8 +589,8 @@ province_event = {
 	immediate = {
 		export_to_variable = { which = PG_com_growth value = base_production }
 		if = { 
-			limit = { NOT = { check_variable = { PG_com_growth = 1 } } } 
-			set_variable = { which = PG_com_growth value = 4 } 			# if not 1 pop, it makes it appear its first one
+			limit = { NOT = { base_production = 1 } }
+			set_variable = { which = PG_com_counter value = 4 } 			# if not 1 pop, it makes it appear its first one
 		}
 		change_variable = { which = PG_com_counter which = PG_com_growth }
 		
@@ -608,12 +599,12 @@ province_event = {
 			set_variable = { which = PG_com_counter value = 0 }	set_variable = { which = PG_com_growth value = 0 }
 			add_base_production = 1			change_variable = { PS_urb_grow = 1 }
 			owner = { if = { limit = { ai = no } change_variable = { commoner_increased_var = 1 } } }
-			province_event = { id = population_capacity.1 }
+			province_event = { id = population_capacity.4 }
 		}
 	}
 	#######################################################
 	option = {
-		name = "province_development.1.a"
+		name = "population_grow.5.a"
 			
 	}
 }

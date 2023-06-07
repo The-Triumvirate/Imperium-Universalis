@@ -133,6 +133,15 @@ noble_rebels = {
 	}
 	siege_won_effect = {
 		add_local_autonomy = 10
+		owner = {
+			if = {
+				limit = { has_estate = estate_nobility }
+				change_estate_land_share = {
+					estate = estate_nobility
+					share = 10.0
+				}
+			}
+		}
 	}
 	
 	# Country scope
@@ -150,15 +159,14 @@ noble_rebels = {
 	
 	# Country Scope	
 	demands_enforced_effect = {
-
 		if = {
 			limit = {
 				NOT = {	has_reform = greek_polis_reform }
 				NOT = {	has_reform = spartan_monarchy_reform }
+				NOT = {	has_reform = celestial_empire }
 				NOT = {	government = tribal }
 				NOT = {	government = native }
 				NOT = { legitimacy = 50 }
-				NOT = { horde_unity = 50 }
 				NOT = { republican_tradition = 50 }
 				NOT = { devotion = 50 }
 			}
@@ -166,15 +174,28 @@ noble_rebels = {
 			add_government_reform = aristocratic_monarchy_reform
 		}
 		if = {
-			limit = {
-				has_faction = fac_nobles
-			}
+			limit = { has_faction = fac_nobles }
 			add_faction_influence = { faction = fac_monarch influence = 30 }
 		}
-		every_owned_province = {
+		if = {
 			limit = {
-				has_rebel_faction = REB
+				has_estate = estate_nobles
+				NOT = {
+					has_estate_influence_modifier = {
+						estate = estate_nobles
+						modifier = EST_VAL_NOBLES_EXTORTED_RIGHTS
+					}
+				}
 			}
+			add_estate_influence_modifier = {
+				estate = estate_nobles
+				desc = EST_VAL_NOBLES_EXTORTED_RIGHTS
+				influence = 15
+				duration = 5475
+			}
+		}
+		every_owned_province = {
+			limit = { has_rebel_faction = REB }
 			add_local_autonomy = 15
 		}	
 		add_prestige = -25
@@ -182,9 +203,13 @@ noble_rebels = {
 		add_horde_unity = -25
 		add_republican_tradition = -25
 		add_devotion = -25
+		add_meritocracy = -25
 		if = {
-			limit = { meritocracy = 25 }
-			set_meritocracy = 25
+			limit = { has_estate = estate_nobility }
+			change_estate_land_share = {
+				estate = estate_nobility
+				share = 10.0
+			}
 		}
 	}
 }

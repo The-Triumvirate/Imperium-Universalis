@@ -6,26 +6,66 @@ namespace = greek
 country_event = {
 	id = greek.1
 	title = "greek.1.t"
-	desc = "greek.1.d"
+	desc = { 
+	    trigger = { capital_scope = { superregion = macedonia_superregion } }
+		desc = "greek.1.1.d"
+	}
+	desc = {
+	    trigger = { NOT = { capital_scope = { superregion = macedonia_superregion } } }
+		desc = "greek.1.2.d"
+	}
 	picture = forum_picture
-	fire_only_once = yes
-	major = yes
-	
 	
 	trigger = {
-		culture_group = hellenic
-		NOT = { started_in = 425.1.1 }
-		capital_scope = {
-			OR = {
-				region = greek_region
-				region = macedonia_region
-				region = mare_aegaeum_islands_region
-				region = ionia_region
-			}
-		}
 		OR = {
-			is_year = 425
-			total_development = 400
+		    AND = {
+			    culture_group = hellenic_group
+				total_development = 400
+				NOT = { capital_scope = { superregion = macedonia_superregion } }
+				NOT = { has_country_flag = had_koine }
+			}
+            AND = {
+			    NOT = { culture_group = hellenic_group }
+				owns_all_provinces = {
+				    region = macedonia_region
+				}
+				owns_all_provinces = {
+				    region = greek_region
+				}
+				NOT = { has_country_flag = had_koine }
+			}
+			AND = {
+			    culture_group = hellenic_group
+				capital_scope = {
+				    OR = {
+					    region = macedonia_region
+						region = greek_region
+					}
+				}
+			    owns_all_provinces = {
+	                region = macedonia_region
+			    }
+			    owns_all_provinces = {
+			        region = greek_region
+			    }
+				NOT = { has_country_flag = had_koine }
+		    }
+			AND = {
+			    culture_group = hellenic_group
+				capital_scope = {
+				    region = mare_aegaeum_islands_region
+				}
+				owns_all_provinces = {
+	                region = macedonia_region
+			    }
+			    owns_all_provinces = {
+			        region = greek_region
+			    }
+				owns_all_provinces = {
+				    region = mare_aegaeum_islands_region
+				}
+				NOT = { has_country_flag = had_koine }
+			}
 		}
 	}
 	
@@ -36,31 +76,186 @@ country_event = {
 	option = {
 		name = "greek.1.a"
 		hidden_effect = {
-			every_province = {
-				limit = {
-					culture_group = hellenic
-					OR = {
-						region = sarmatia_region
+			every_owned_province = {
+				if = {
+					limit = {
+						culture_group = hellenic_group
+						superregion = scythia_superregion
 					}
+					change_culture = cimmerian_greek
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							region = ariana_region
+							superregion = sakastan_superregion
+						}
+					}
+					change_culture = greco_bactrian
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							region = parthia_region
+							superregion = iran_superregion
+						}
+					}
+					change_culture = greco_persian
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							superregion = uttarapatha_superregion
+							superregion = dakshinapatha_superregion
+						}
+					}
+					change_culture = greco_indian
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						superregion = mesopotamia_superregion
+					}
+					change_culture = seleucid
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							region = lower_egypt_region
+							region = upper_egypt_region
+						}
+					}
+					change_culture = ptolemaic
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							superregion = celtica_superregion
+							superregion = hispania_superregion
+						}
+					}
+					change_culture = massaliote
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						superregion = italia_superregion
+					}
+					change_culture = italiote
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							region = bithynia_et_pontus
+							region = colchis_region
+							region = bithynia_region
+							region = propontis_region
+							AND = {
+								region = thracia_region
+								has_port = yes
+								NOT = {
+									any_neighbor_province = {
+										culture_group = hellenic_group
+										has_port = no
+									}
+								}
+							}
+						}
+					}
+					change_culture = pontic_greek
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						OR = {
+							region = syria_region
+							region = phoenicia_region
+							region = canaan_region
+							superregion = arabia_superregion
+						}
+					}
+					change_culture = greco_semitic
+				}
+				else_if = {
+					limit = {
+						culture_group = hellenic_group
+						NOT = { culture = italiote }
+						NOT = { culture = macedon }
+						NOT = { culture = epirot }
+						NOT = { culture = greco_illyrian }
+						NOT = { culture = greco_thracian }
+					}
+					change_culture = greek
+				}
+			}
+		}
+	}
+	
+	option = {
+	    name = "greek.1.b"
+		add_stability = -2
+	}
+	
+	after = {
+		hidden_effect = {
+			country_event = { id = greek.101 }
+			set_country_flag = had_koine
+		}
+	}
+
+}
+
+province_event = {
+    id = greek.102
+	title = "greek.102.t"
+	desc = "greek.102.d"
+	picture = city
+	hidden = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		owner = { has_country_flag = had_koine }
+	}
+	
+	option = {
+		name = "greek.1.a"
+		hidden_effect = {
+			if = {
+				limit = {
+					culture_group = hellenic_group
+					superregion = scythia_superregion
 				}
 				change_culture = cimmerian_greek
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					OR = {
-						region = baktria_region
 						region = ariana_region
-						region = gedrosia_region
-						region = transoxiana_region
-						region = arachosia_region
+						superregion = sakastan_superregion
 					}
 				}
 				change_culture = greco_bactrian
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
+					OR = {
+						region = parthia_region
+						superregion = iran_superregion
+					}
+				}
+				change_culture = greco_persian
+			}
+			else_if = {
+				limit = {
+					culture_group = hellenic_group
 					OR = {
 						superregion = uttarapatha_superregion
 						superregion = dakshinapatha_superregion
@@ -68,154 +263,112 @@ country_event = {
 				}
 				change_culture = greco_indian
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					superregion = mesopotamia_superregion
 				}
 				change_culture = seleucid
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					OR = {
 						region = lower_egypt_region
 						region = upper_egypt_region
-						region = nubia_region
-						region = aethiops
-						region = erythrae_region
 					}
 				}
 				change_culture = ptolemaic
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					OR = {
-						region = gallia_narbonensis
-						region = aquitania_region
-						region = celtica_area
-						region = hispania_baetica
-						region = lusitania
-						region = cartaginensis_region
-						region = gallaecia
+						superregion = celtica_superregion
+						superregion = hispania_superregion
 					}
 				}
 				change_culture = massaliote
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
+					superregion = italia_superregion
+				}
+				change_culture = italiote
+			}
+			else_if = {
+				limit = {
+					culture_group = hellenic_group
 					OR = {
 						region = bithynia_et_pontus
-						region = armenia_region
+						region = colchis_region
 						region = bithynia_region
+						region = propontis_region
+						AND = {
+							region = thracia_region
+							has_port = yes
+							NOT = {
+								any_neighbor_province = {
+									culture_group = hellenic_group
+									has_port = no
+								}
+							}
+						}
 					}
 				}
 				change_culture = pontic_greek
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					OR = {
 						region = syria_region
+						region = phoenicia_region
 						region = canaan_region
-						region = arabia_petrea_region
-						region = arabia_felix_region
+						superregion = arabia_superregion
 					}
 				}
 				change_culture = greco_semitic
 			}
-			every_province = {
+			else_if = {
 				limit = {
-					culture_group = hellenic
-					OR = {
-						region = media_region
-						region = persis_region
-						region = parthia_region
-					}
-				}
-				change_culture = greco_persian
-			}
-			every_province = {
-				limit = {
-					culture_group = hellenic
+					culture_group = hellenic_group
 					NOT = { culture = italiote }
 					NOT = { culture = macedon }
 					NOT = { culture = epirot }
-					NOT = {
-						OR = {
-							region = lybia_region
-							region = sarmatia_region
-							region = baktria_region
-							region = ariana_region
-							region = gedrosia_region
-							region = transoxiana_region
-							region = arachosia_region
-							region = southern_india_region
-							region = western_india_region
-							region = eastern_india_region
-							region = northern_india_region
-							region = gandhara
-							region = mesopotamia_region
-							region = lower_egypt_region
-							region = upper_egypt_region
-							region = nubia_region
-							region = aethiops
-							region = gallia_narbonensis
-							region = aquitania_region
-							region = celtica_area
-							region = hispania_baetica
-							region = lusitania
-							region = cartaginensis_region
-							region = gallaecia
-							region = bithynia_et_pontus
-							region = armenia_region
-							region = syria_region
-							region = canaan_region
-							region = arabia_petrea_region
-							region = arabia_felix_region
-							region = media_region
-							region = persis_region
-							region = parthia_region
-						}
+					NOT = { culture = greco_illyrian }
+					NOT = { culture = greco_thracian }
 				}
+				change_culture = greek
 			}
-			change_culture = greek
 		}
-		every_country = {
-			limit = { 
-				culture_group = hellenic
-				NOT = { TAG = ROOT }
-			}
-			country_event = { id = greek.101 }
-			}
 	}
-				
-	}
-
 }
+
 country_event = {
 	id = greek.101
 	title = "greek.1.t"
 	desc = "greek.1.d"
 	picture = city
+	hidden = yes
 	is_triggered_only = yes
 	
 	
 	trigger = {
-
 	}
 	
 	immediate = { 
 		hidden_effect = { change_primary_culture = capital }
+		hidden_effect = { set_ruler_culture = capital }
+		hidden_effect = { set_heir_culture = capital }
 	}
 	
 	option = {
 		name = "greek.1.a" 
-			tooltip = { change_primary_culture = capital }
 	}
 }
+
 ########################################################################################
 # Solon
 ########################################################################################
@@ -230,22 +383,15 @@ country_event = {
 	trigger = {
 		has_reform = greek_polis_reform
 		has_country_modifier = polis_oligarchy_modifier
-		OR = {
-		    NOT = { stability = 1 } 
-			is_year = 160
-		}
-		
-		is_year = 155
-		NOT = { started_in = 160.1.1  }
+		is_year = 160
 		NOT = { has_global_flag = solons_reform_flag  }
-		
-			capital_scope = {
-				OR = {
-					region = greek_region
-					region = mare_aegaeum_islands_region
-					region = ionia_region
-				}
+		capital_scope = {
+			OR = {
+				region = greek_region
+				region = mare_aegaeum_islands_region
+				region = ionia_region
 			}
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -274,6 +420,7 @@ country_event = {
 		set_global_flag = solons_reform_flag
 		add_stability = 1
 		add_republican_tradition = 20 
+		add_faction = fac_democrats
 		add_faction_influence = { faction = fac_democrats influence = 15 }
 			add_country_modifier = { 
 				name = solons_reform
@@ -290,6 +437,40 @@ country_event = {
 			}
 	}
 }
+
+country_event = {
+    id = greek.3
+	title = "greek.3.t"
+	desc = "greek.3.d"
+	picture = hellenistic_temple
+	
+	trigger = {
+	    has_reform = greek_polis_reform
+		has_global_flag = birth_of_democracy
+		NOT = { has_faction = fac_democrats }
+	}
+	
+	mean_time_to_happen = { 
+	    months = 1
+	}
+	
+	option = {
+	    name = "greek.3.a"
+	    add_faction = fac_democrats
+		add_faction_influence = { faction = fac_democrats influence = 15 }
+		if = {
+		    limit = {
+			    tag = ATH
+			}
+			add_country_modifier = {
+			    name = solons_reform
+				desc = SOLONS_REFORMS_DESC
+				duration = -1
+			}
+		}
+	}
+}
+
 ########################################################################################
 # plato
 ########################################################################################
@@ -303,7 +484,10 @@ country_event = {
 	
 	trigger = {
 		NOT = { started_in = 367.1.1  }
-		TAG = ATH
+		OR = {
+		    TAG = ATH
+			owns = 959
+		}
 		is_year = 360
 		NOT = { has_global_flag = plato_happened }
 	}
@@ -340,12 +524,13 @@ country_event = {
 	
 	trigger = {
 		has_country_modifier = solons_reform
-		has_reform = greek_polis_reform
+		government = republic
 		faction_influence = {
 				faction = fac_democrats
 				influence = 40
 			}
-		is_year = 240
+		tag = ATH
+		is_year = 229
 	}
 	
 	mean_time_to_happen = {
@@ -357,14 +542,23 @@ country_event = {
 			remove_country_modifier = solons_reform
 			add_country_modifier = {
 				name = kleisthenes_reform
-				duration = 36500
+				duration = -1
 			}
 			define_advisor = {
-								name = "Kleisthenes"
-								type = statesman_adv
-								skill = 2
-								discount = yes
-							}
+			    name = "Kleisthenes"
+			    type = statesman_adv
+				skill = 2
+				discount = yes
+			}
+			every_owned_province = {
+		    limit = {
+			    NOT = { has_province_modifier = kleisthenian_reforms_modifier }
+			}
+			add_province_modifier = {
+			    name = kleisthenian_reforms_modifier
+				duration = -1
+			}
+		}
 	}
 }
 ########################################################################################
@@ -384,9 +578,25 @@ country_event = {
 		}
 		capital_scope = { area = arcadia_area }
 		is_subject = no
+		OR = {
+		MAC = {
+			exists = yes
+			total_development = 160
+			any_owned_province = { region = greek_region }
+			}
+		ATH = {
+			exists = yes
+			total_development = 60
+			}
 		SP1 = {
 			exists = yes
-			total_development = 55
+			total_development = 80
+			}
+		any_country = {
+		    ai = no
+			total_development = 80
+			any_owned_province = { region = greek_region }
+		}
 		}
 		NOT = { exists = ARC}
 		OR = {
@@ -553,7 +763,7 @@ country_event = {
 	major = yes
 	
 	trigger = {
-		culture_group = hellenic
+		culture_group = hellenic_group
 		is_year = 460
 		NOT = { is_year = 490 }
 		NOT = { has_global_flag = argonautica_written }
@@ -609,6 +819,11 @@ country_event = {
 			exists = yes
 			total_development = 80
 			}
+		any_country = {
+		    ai = no
+			total_development = 80
+			any_owned_province = { region = greek_region }
+		}
 		}
 		
 		NOT = { exists = BOE }
@@ -782,10 +997,10 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		culture_group = hellenic
+		culture_group = hellenic_group
 		NOT = { is_year = 220 }
 		any_owned_province = {
-			culture_group = hellenic
+			culture_group = hellenic_group
 			OR = {
 				region = greek_region
 				region = macedonia_region
@@ -799,7 +1014,7 @@ country_event = {
 		name = "greek.11.a"
 		random_owned_province = {
 			limit = {
-				culture_group = hellenic
+				culture_group = hellenic_group
 				OR = {
 					region = greek_region
 					region = macedonia_region
@@ -823,7 +1038,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		culture_group = hellenic
+		culture_group = hellenic_group
 		num_of_ports = 1
 		OR = {
 			NOT = { num_of_cities = 4 }
@@ -831,7 +1046,7 @@ country_event = {
 		}
 		any_country = {
 			is_tribal = yes
-			NOT = { culture_group = hellenic }
+			NOT = { culture_group = hellenic_group }
 			NOT = { border_distance = { who = ROOT  distance = 600 } }
 			any_owned_province = { 
 				has_port = yes
@@ -842,8 +1057,8 @@ country_event = {
 					superregion = celtica_superregion
 					region = thracia_region
 					region = sarmatia_region
-					}
 				}
+			}
 		}
 	}
 	
@@ -864,7 +1079,7 @@ country_event = {
 		random_country = {
 			limit = {
 				is_tribal = yes
-				NOT = { culture_group = hellenic }
+				NOT = { culture_group = hellenic_group }
 				NOT = { border_distance = { who = ROOT  distance = 600 } }
 				any_owned_province = { 
 					has_port = yes
@@ -1101,7 +1316,7 @@ province_event = {
 	picture = trade
 	
 	trigger = {
-		province_id = 725
+		province_id = 994		# 725 paraitonion, 994 kos
 		is_year = 350
 		base_production = 2
 		NOT = { trade_goods = silk }
@@ -1109,20 +1324,14 @@ province_event = {
 	
 	mean_time_to_happen = {
 		months = 240
-		modifier = {
-			factor = 0.5
-			base_production = 4 
-			}
+		modifier = { factor = 0.5 base_production = 4 }
 	}
 	
 	option = {
 		name = "greek.17.a"
-			owner = { add_years_of_income = 0.2 }
-			change_trade_goods = silk
-		add_province_modifier = {
-				name = kos_modifier
-				duration = 36500
-			}
+		owner = { add_years_of_income = 0.2 }
+		change_trade_goods = silk
+		add_province_modifier = { name = kos_modifier duration = 36500 }
 	}
 }
 
@@ -1143,15 +1352,25 @@ country_event = {
 		}
 		capital_scope = { region = greek_region	}
 		is_subject = no
-		SP1 = {
+		OR = {
+		MAC = {
 			exists = yes
-			total_development = 60
-			any_owned_province = { area = arcadia_area }
-		}
+			total_development = 160
+			any_owned_province = { region = greek_region }
+			}
 		ATH = {
 			exists = yes
 			total_development = 60
-			any_owned_province = { area = corinthia_area }
+			}
+		SP1 = {
+			exists = yes
+			total_development = 80
+			}
+		any_country = {
+		    ai = no
+			total_development = 80
+			any_owned_province = { region = greek_region }
+		}
 		}
 		NOT = { exists = ACH }
 		OR = {
@@ -1310,5 +1529,33 @@ country_event = {
 		name = "greek.18.b"
 		ai_chance = { factor = 10 }
 			add_stability = -1
+	}
+}
+########################################################################################
+# Herostratus
+########################################################################################
+country_event = {
+    id = greek.20
+	title = "greek.20.t"
+	desc = "greek.20.d"
+	picture = ruins_temple
+	
+	fire_only_once = yes
+	
+	trigger = {
+	    owns = 2127
+		2127 = {
+			has_great_project = {
+				type = wonder_artemis_temple
+				tier = 1
+			}
+		}
+		is_year = 398 #356 BCE
+	}
+	
+	option = {
+	    name = "greek.20.a" #Damn you Herostratus!
+		add_stability = -2
+		2127 = { destroy_great_project = { type = wonder_artemis_temple } }
 	}
 }

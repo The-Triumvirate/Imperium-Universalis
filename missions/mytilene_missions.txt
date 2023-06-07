@@ -1,0 +1,943 @@
+mytiline_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = { TAG = LB1 }
+	has_country_shield = yes
+	
+	LB1_promote_wine_industry = {
+		position = 1
+		icon = mission_soldiers
+		required_missions = {}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 987
+				province_id = 5518
+			}
+		}
+		trigger = {
+			987 = {
+				owned_by = ROOT
+				has_production_building = yes
+			}
+			5518 = {
+				owned_by = ROOT
+				has_production_building = yes
+			}
+		}
+		effect = {
+			987 = {
+				add_province_modifier = {
+					name = mytilene_lesbian_wine
+					duration = -1
+				}
+			}
+		}
+	}
+	LB1_electrum_production = {
+		position = 2
+		icon = mission_soldiers
+		required_missions = { LB1_promote_wine_industry }
+		provinces_to_highlight = { province_id = 5519 }
+		trigger = {
+			5519 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+		}
+		effect = {
+			5519 = {
+				add_province_modifier = {
+					name = mytilene_electrum_mining
+					duration = -1
+				}
+			}
+		}
+	}
+	LB1_finance_new_fleet = {
+		position = 3
+		icon = mission_soldiers
+		required_missions = { LB1_electrum_production }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 987
+				province_id = 5519
+			}
+		}
+		trigger = {
+			treasury = 1000
+			987 = {
+				owned_by = ROOT
+				has_harbor_building = yes
+			}
+			5519 = {
+				owned_by = ROOT
+				has_harbor_building = yes
+			}
+		}
+		effect = {
+			add_treasury = -1000
+			987 = {
+				if = {
+					limit = { has_building = small_harbor }
+					remove_building = small_harbor
+					add_building = big_harbor
+				}
+				else_if = {
+					limit = { has_building = big_harbor }
+					remove_building = big_harbor
+					add_building = harbor_district
+				}
+				else = { add_base_production = 2 }
+				custom_tooltip = mytilene_mission_ct.1
+				hidden_effect = {
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+					heavy_ship = ROOT
+				}
+			}
+			5519 = {
+				if = {
+					limit = { has_building = small_harbor }
+					remove_building = small_harbor
+					add_building = big_harbor
+				}
+				else_if = {
+					limit = { has_building = big_harbor }
+					remove_building = big_harbor
+					add_building = harbor_district
+				}
+				else = { add_base_production = 2 }
+			}
+		}
+	}
+	LB1_extend_invitation = {
+		position = 5
+		icon = mission_soldiers
+		required_missions = {
+			LB1_finance_new_fleet
+			LB1_invite_outcasts_league
+		}
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = mytilene_mission_ct.2
+				num_of_heavy_ship = 30
+				num_of_light_ship = 30
+				num_of_galley = 30
+				num_of_transport = 30
+			}
+		}
+		effect = {
+			override_country_name = "NORTH_AEGEAN_LEAGUE"
+			every_known_country = {
+				if = {
+					limit = {
+						capital_scope = {
+							OR = {
+								area = thasus_et_lemnus
+								area = euboea_superior
+								area = euboea_inferior
+								area = lesbos_et_chios
+								area = cyclades_area
+								area = archipelagos_area
+								area = kos_area
+							}
+						}
+					}
+					country_event = {
+						id = mission_events.23
+						days = 4
+					}
+				}
+			}
+		}
+	}
+}
+mytiline_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = { TAG = LB1 }
+	has_country_shield = yes
+	
+	LB1_fortress_mytilene = {
+		position = 1
+		icon = mission_soldiers
+		required_missions = {}
+		provinces_to_highlight = {
+			province_id = 987
+		}
+		trigger = {
+			987 = {
+				OR = {
+					has_building = small_city_walls
+					has_building = large_city_walls
+					has_building = fortress_building
+				}
+			}
+		}
+		effect = {
+			987 = {
+				add_province_modifier = {
+					name = mytilene_better_fortifications
+					duration = -1
+				}
+			}
+		}
+	}
+
+	LB1_merge_cities_halves = {
+		position = 2
+		icon = mission_soldiers
+		required_missions = { LB1_fortress_mytilene }
+		provinces_to_highlight = {
+			province_id = 987
+		}
+		trigger = {
+			987 = {
+				development = 10
+				OR = {
+					has_building = small_temple
+					has_building = great_temple
+				}
+				has_production_building = yes
+			}
+		}
+		effect = {
+			987 = {
+				add_center_of_trade_level = 1
+				add_base_tax = 2
+				add_base_production = 2
+				add_base_manpower = 2
+			}
+		}
+	}
+
+	LB1_ladotyri_mytilinis = {
+		position = 3
+		icon = mission_soldiers
+		required_missions = { LB1_merge_cities_halves }
+		trigger = {
+			OR = {
+				AND = {
+					meat_animals = 1
+					olive = 1
+				}
+				any_ally = {
+					meat_animals = 1
+					olive = 1
+				}
+				any_subject_country = {
+					NOT = { is_subject_of_type = tributary_state }
+					meat_animals = 1
+					olive = 1
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = mytilene_ladotyri_mytilinis
+				duration = -1
+			}
+		}
+	}
+
+	LB1_invite_outcasts_league = {
+		position = 4
+		icon = mission_soldiers
+		required_missions = { LB1_aeolic_league }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 990
+				province_id = 991
+				province_id = 989
+			}
+		}
+		trigger = {
+			if = {
+				limit = { exists = SMT }
+				SMT = {
+					has_opinion = {
+						who = ROOT
+						value = 150
+					}
+					OR = {
+						alliance_with = ROOT
+						guaranteed_by = ROOT
+					}
+				}
+			}
+			else = { owns_core_province = 990 }
+			if = {
+				limit = { exists = HPS }
+				HPS = {
+					has_opinion = {
+						who = ROOT
+						value = 150
+					}
+					OR = {
+						alliance_with = ROOT
+						guaranteed_by = ROOT
+					}
+				}
+			}
+			else = { owns_core_province = 991 }
+			if = {
+				limit = { exists = PLS }
+				PLS = {
+					has_opinion = {
+						who = ROOT
+						value = 150
+					}
+					OR = {
+						alliance_with = ROOT
+						guaranteed_by = ROOT
+					}
+				}
+			}
+			else = { owns_core_province = 989 }
+		}
+		effect = {
+			if = {
+				limit = { exists = SMT }
+				inherit = SMT
+			}
+			else = { add_prestige = 2 }
+			if = {
+				limit = { exists = HPS }
+				inherit = HPS
+			}
+			else = { add_prestige = 2 }
+			if = {
+				limit = { exists = PLS }
+				inherit = PLS
+			}
+			else = { add_prestige = 2 }
+			990 = { add_base_production = 2 }
+			991 = { add_base_production = 2 }
+			989 = { add_base_production = 2 }
+			troad_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+					has_port = yes
+				}
+				add_permanent_claim = ROOT
+			}
+			asian_hellospont_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	LB1_land_troy = {
+		position = 5
+		icon = mission_soldiers
+		required_missions = { LB1_invite_outcasts_league }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = troad_area
+				area = asian_hellospont_area
+			}
+			has_port = yes
+		}
+		trigger = {
+			owns_all_provinces = { area = asian_hellospont_area }
+			owns = 2119
+			owns = 5595
+			owns = 5596
+		}
+		effect = {
+			troad_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			hellespont_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT	
+			}
+			pergamos_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			mysia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	LB1_aeolian_hellespont = {
+		position = 6
+		icon = mission_soldiers
+		required_missions = { LB1_land_troy }
+		provinces_to_highlight = {
+			OR = {
+				area = hellespont_area
+				area = asian_hellospont_area
+			}
+		}
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = mytilene_mission_ct.3
+				owns_all_provinces = { area = hellespont_area }
+				num_of_owned_provinces_with = {
+					area = hellespont_area
+					is_core = ROOT
+					has_harbor_building = yes
+					value = 4
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = mytilene_mission_ct.4
+				owns_all_provinces = { area = asian_hellospont_area }
+				num_of_owned_provinces_with = {
+					area = asian_hellospont_area
+					is_core = ROOT
+					has_harbor_building = yes
+					value = 4
+				}
+			}
+		}
+		effect = {
+			hellespont_area = {
+				if = {
+					limit = { has_building = small_harbor }
+					remove_building = small_harbor
+					add_building = big_harbor
+				}
+				else_if = {
+					limit = { has_building = big_harbor }
+					remove_building = big_harbor
+					add_building = harbor_district
+				}
+				else_if = {
+					limit = { has_port = yes }
+					add_base_tax = 1
+				}
+			}
+			asian_hellospont_area = {
+				if = {
+					limit = { has_building = small_harbor }
+					remove_building = small_harbor
+					add_building = big_harbor
+				}
+				else_if = {
+					limit = { has_building = big_harbor }
+					remove_building = big_harbor
+					add_building = harbor_district
+				}
+				else_if = {
+					limit = { has_port = yes }
+					add_base_tax = 1
+				}
+			}
+		}
+	}
+	LB1_efficient_road_network = {
+		position = 7
+		icon = mission_soldiers
+		required_missions = {
+			LB1_aeolian_hellespont
+			LB1_push_asia_minor
+		}
+		provinces_to_highlight = {
+			owned_by = ROOT
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				has_road_building = yes
+				value = 25
+			}
+		}
+		effect = {
+			every_owned_province = {
+				if = {
+					limit = { NOT = { has_building = gravel_road } }
+					add_building = gravel_road
+				}
+				else_if = {
+					limit = { has_building = gravel_road }
+					remove_building = gravel_road
+					add_building = paved_road
+				}
+				else_if = {
+					limit = { has_building = paved_road }
+					remove_building = paved_road
+					add_building = imperial_road
+				}
+			}
+		}
+	}
+}
+mytiline_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = { TAG = LB1 }
+	has_country_shield = yes
+	
+	LB1_defeat_athens = {
+		position = 1
+		icon = mission_soldiers
+		required_missions = {}
+		provinces_to_highlight = { province_id = 5595 }
+		trigger = {
+			OR = {
+				has_won_war_against = { who = ATH }
+				ATH = { is_subject_of = ROOT }
+				NOT = { exists = ATH }
+			}
+			5595 = { NOT = { owned_by = ATH } }
+		}
+		effect = {
+			2120 = { add_permanent_claim = ROOT }
+			add_prestige = 25
+			add_army_tradition = 10
+		}
+	}
+	LB1_connect_land = {
+		position = 2
+		icon = mission_soldiers
+		required_missions = { LB1_defeat_athens }
+		provinces_to_highlight = { province_id = 2120 }
+		trigger = {
+			OR = {
+				owns_core_province = 2120
+				AD1 = { is_subject_of = ROOT }
+			}
+		}
+		effect = {
+			987 = { add_center_of_trade_level = 2 }
+			every_province = {
+				limit = {
+					culture = aeolic
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	LB1_aeolic_league = {
+		position = 3
+		icon = mission_soldiers
+		required_missions = { LB1_connect_land }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			area = aeolia_area
+		}
+		trigger = {
+			OR = {
+				all_province = {
+					culture = aeolic
+					owned_by = ROOT
+				}
+				custom_trigger_tooltip = {
+					tooltip = mytilene_mission_ct.5
+					NOT = {
+						any_country = {
+							NOT = { alliance_with = ROOT }
+							any_owned_province = { culture = aeolic }
+						}
+					}
+				}
+			}
+		}
+		effect = {
+			change_tag = AEO
+			every_ally = {
+				limit = { primary_culture = aeolic }
+				ROOT = { inherit = PREV }
+			}
+			every_owned_province = {
+				limit = { area = lesbos_area }
+				add_base_production = 2
+			}
+		}
+	}
+	LB1_integrate_north = {
+		position = 4
+		icon = mission_soldiers
+		required_missions = { LB1_aeolic_league }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 988
+				province_id = 5518
+			}
+		}
+		trigger = {
+			owns_core_province = 988
+			owns_core_province = 5518
+			988 = { has_road_building = yes }
+			5518 = { has_road_building = yes }
+		}
+		effect = {
+			988 = { add_base_tax = 1 }
+			5518 = { add_base_tax = 1 }
+			lesbos_area = {
+				if = {
+					limit = { has_building = gravel_road }
+					remove_building = gravel_road
+					add_building = paved_road
+				}
+				else_if = {
+					limit = { has_building = paved_road }
+					remove_building = paved_road
+					add_building = imperial_road
+				}
+			}
+		}
+	}
+	LB1_push_asia_minor = {
+		position = 6
+		icon = mission_soldiers
+		required_missions = { LB1_land_troy }
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = pergamos_area
+				area = troad_area
+				area = mysia_area
+			}
+		}
+		trigger = {
+			owns_all_provinces = { area = pergamos_area }
+			owns_all_provinces = { area = troad_area }
+			owns_all_provinces = { area = mysia_area }
+		}
+		effect = {
+			every_owned_province = {
+				limit = {
+					region = asia_minor
+					is_core = ROOT
+				}
+				add_base_manpower = 1
+			}
+		}
+	}
+	LB1_massacre_ionians = {
+		position = 8
+		icon = mission_soldiers
+		required_missions = {
+			LB1_efficient_road_network
+			LB1_consolidate_land
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = ionia_area
+				area = doris_area
+			}
+		}
+		trigger = {
+			ionia_area = {
+				controlled_by = ROOT
+				type = all
+			}
+			doris_area = {
+				controlled_by = ROOT
+				type = all
+			}
+		}
+		effect = {
+			ionia_area = {
+				add_devastation = 100
+				change_culture = ROOT
+				set_base_tax = 0
+				set_base_production = 0
+				set_base_manpower = 1
+			}
+			doris_area = {
+				add_devastation = 100
+				change_culture = ROOT
+				set_base_tax = 0
+				set_base_production = 0
+				set_base_manpower = 1
+			}
+			lesbos_area = { add_base_manpower = 3 }
+			aeolia_area = { add_base_manpower = 3 }
+		}
+	}
+}
+mytiline_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = { TAG = LB1 }
+	has_country_shield = yes
+	
+	LB1_sapphic_poetry = {
+		position = 2
+		icon = mission_soldiers
+		required_missions = { LB1_sapho_alcaeus }
+		trigger = {
+			library = 3
+		}
+		effect = {
+			add_country_modifier = {
+				name = mytilene_promoted_sapphic_poetry
+				duration = -1
+			}
+		}
+	}
+	LB1_military_academics = {
+		position = 3
+		icon = mission_soldiers
+		required_missions = { LB1_sapphic_poetry }
+		trigger = {
+			has_mil_advisor_3 = yes
+			is_in_deficit = no
+		}
+		effect = {
+			add_country_modifier = {
+				name = mytilene_military_reforms
+				duration = -1
+			}
+		}
+	}
+	LB1_amazonian_recruitment = {
+		position = 4
+		icon = mission_soldiers
+		required_missions = { LB1_military_academics }
+		trigger = {
+			army_tradition = 90
+			NOT = { num_of_mercenaries = 1 }
+			army_size = 25
+		}
+		effect = {
+			remove_country_modifier = mytilene_military_reforms
+			add_country_modifier = {
+				name = mytilene_new_themyscira
+				duration = -1
+			}
+		}
+	}
+	LB1_reclaim_aeolia = {
+		position = 6
+		icon = mission_soldiers
+		required_missions = { LB1_integrate_north }
+		provinces_to_highlight = { area = aeolia_area }
+		trigger = {
+			owns_all_provinces = { area = aeolia_area }
+		}
+		effect = {
+			aeolia_area = {
+				if = {
+					limit = { culture = ROOT }
+					add_core = ROOT
+				}
+				else = {
+					change_culture = ROOT
+					add_core = ROOT
+				}
+			}
+			mysia_east_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+			}
+			lydia_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+			}
+			lydia_inferior_area = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+				}
+			}
+		}
+	}
+	LB1_consolidate_land = {
+		position = 7
+		icon = mission_soldiers
+		required_missions = {
+			LB1_reclaim_aeolia
+			LB1_push_asia_minor
+		}
+		provinces_to_highlight = {
+			NOT = { owned_by = ROOT }
+			OR = {
+				area = mysia_east_area
+				area = lydia_area
+				area = lydia_inferior_area
+			}
+		}
+		trigger = {
+			mysia_east_area = {
+				owned_by = ROOT
+				is_core = ROOT
+				type = all
+			}
+			lydia_area = {
+				owned_by = ROOT
+				is_core = ROOT
+				type = all
+			}
+			lydia_inferior_area = {
+				owned_by = ROOT
+				is_core = ROOT
+				type = all
+			}
+		}
+		effect = {
+			every_owned_province = {
+				limit = {
+					OR = { area = mysia_east_area }
+					OR = { area = lydia_area }
+					OR = { area = lydia_inferior_area }
+					OR = { area = troad_area }
+					OR = { area = mysia_area }
+				}
+				add_province_modifier = {
+					name = mytilene_hellenic_resettlement
+					duration = 54750
+				}
+			}
+			doris_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT	
+			}
+			ionia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT	
+			}
+		}
+	}
+}
+mytiline_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = { TAG = LB1 }
+	has_country_shield = yes
+	
+	LB1_sapho_alcaeus = {
+		position = 1
+		icon = mission_soldiers
+		required_missions = {}
+		trigger = {
+			has_adm_advisor = yes
+			has_dip_advisor = yes
+		}
+		effect = {
+			define_advisor = {
+				name = "Sapho"
+				type = philosopher_adv
+				skill = 3
+				cost_multiplier = 0.75
+			}
+			define_advisor = {
+				name = "Alcaeus"
+				type = diplomat_adv
+				skill = 3
+				cost_multiplier = 0.75
+			}
+		}
+	}
+	LB1_pittacus_great = {
+		position = 3
+		icon = mission_soldiers
+		required_missions = { LB1_sapho_alcaeus }
+		trigger = {
+			monthly_adm = 12
+			monthly_dip = 12
+			is_in_deficit = no
+		}
+		effect = {
+			hidden_effect = { set_country_flag = mytilene_pittacus_the_great_flag }
+			define_ruler = {
+				name = "Pittacus the Great"
+				adm = 6
+				dip = 6
+    			mil = 4
+				age = 22
+			}
+			add_ruler_personality = the_great_personality
+			custom_tooltip = mytilene_mission_ct.6
+		}
+	}
+	LB1_themyscira_earth = {
+		position = 5
+		icon = mission_soldiers
+		required_missions = {
+			LB1_pittacus_great
+			LB1_amazonian_recruitment
+		}
+		trigger = {
+			has_country_modifier = mytilene_codex_pittacus
+			has_country_modifier = mytilene_new_themyscira
+			has_country_modifier = mytilene_promoted_sapphic_poetry
+			monthly_adm = 11
+			monthly_dip = 11
+			monthly_mil = 11
+			army_size = 40
+			army_tradition = 90
+			is_in_deficit = no
+			NOT = { num_of_mercenaries = 1 }
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				army_professionalism = 1
+			}
+			else = { manpower_percentage = 1 }
+		}
+		effect = {
+			remove_country_modifier = mytilene_codex_pittacus
+			remove_country_modifier = mytilene_new_themyscira
+			remove_country_modifier = mytilene_promoted_sapphic_poetry
+			if = {
+				limit = { government = republic }
+				add_government_reform = land_spears_glory_reform
+			}
+			override_country_name = "THEMYSCIRA"
+			else = {
+				add_country_modifier = {
+					name = mytilene_land_spears_glory
+					duration = -1
+				}
+			}
+		}
+	}
+}
+

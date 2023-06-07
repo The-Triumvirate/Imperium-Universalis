@@ -8,7 +8,7 @@ monarchy_mechanic = {
 	valid_for_nation_designer = no
 
 	modifiers = {
-		yearly_absolutism = -0.25
+		disengagement_chance = 0.27
 	}
 }
 
@@ -22,17 +22,13 @@ despotism_reform = {
 	nation_designer_cost = 0
 	potential = {
 		must_not_have_any_indian_reform = yes
-		NOT = { have_had_reform = vedic_kingdom_reform }
-		NOT = { have_had_reform = kirata_kingdom_reform_tribal }
-		NOT = { have_had_reform = mleccha_kingdom_reform }
-		NOT = { have_had_reform = indianized_dravidian_tribe_reform }
-		NOT = { have_had_reform = tamil_tribe_reform }
-		NOT = { have_had_reform = tamil_crowned_king_tribal_reform }
 		NOT = {
-			has_reform = chinese_feudalism_reform
-			has_reform = ShiQing_feudalism_reform
-			has_reform = chinese_reform_monarchy_reform
-			has_reform = bureaucratic_monarchy_reform
+			OR = {
+				has_reform = chinese_feudalism_reform
+				has_reform = ShiQing_feudalism_reform
+				has_reform = chinese_reform_monarchy_reform
+				has_reform = celestial_empire
+			}
 		}
 	}
 	trigger = {
@@ -57,17 +53,13 @@ aristocratic_monarchy_reform = {
 	nation_designer_cost = 0
 	potential = {
 		must_not_have_any_indian_reform = yes
-		NOT = { have_had_reform = vedic_kingdom_reform }
-		NOT = { have_had_reform = kirata_kingdom_reform_tribal }
-		NOT = { have_had_reform = mleccha_kingdom_reform }
-		NOT = { have_had_reform = indianized_dravidian_tribe_reform }
-		NOT = { have_had_reform = tamil_tribe_reform }
-		NOT = { have_had_reform = tamil_crowned_king_tribal_reform }
 		NOT = {
-			has_reform = chinese_feudalism_reform
-			has_reform = ShiQing_feudalism_reform
-			has_reform = chinese_reform_monarchy_reform
-			has_reform = bureaucratic_monarchy_reform
+			OR = {
+				has_reform = chinese_feudalism_reform
+				has_reform = ShiQing_feudalism_reform
+				has_reform = chinese_reform_monarchy_reform
+				has_reform = celestial_empire
+			}
 		}
 	}
 	trigger = {
@@ -75,6 +67,7 @@ aristocratic_monarchy_reform = {
 	}
 	modifiers = {
 		free_leader_pool = 1
+		advisor_cost = -0.1
 		nobility_influence_modifier = 0.1
 		fac_nobles_influence = 0.05
 	}
@@ -84,18 +77,51 @@ aristocratic_monarchy_reform = {
 		fac_monarch
 	}
 }
+
+matriarchate_reform = {
+	icon = "matriarchal_tribe_reform"
+	allow_normal_conversion = yes
+	legacy_equivalent = despotic_monarchy
+	valid_for_nation_designer = yes
+	nation_designer_cost = 20
+	rulers_can_be_generals = no
+	potential = {
+		must_not_have_any_indian_reform = yes
+		OR = {
+		    have_had_reform = matriarchal_tribe_reform
+			is_playing_custom_nation = yes
+		}
+		NOT = {
+			OR = {
+				has_reform = chinese_feudalism_reform
+				has_reform = ShiQing_feudalism_reform
+				has_reform = chinese_reform_monarchy_reform
+				has_reform = celestial_empire
+			}
+		}
+	}
+	trigger = {
+		NOT = { is_subject_of_type = satrapy_vassal }
+	}
+	modifiers = {
+		may_recruit_female_generals = yes
+	    female_advisor_chance = 0.8
+	}
+}
+
 epirote_monarchy_reform = {
 	icon = "epirus_kingdom"
 	allow_normal_conversion = yes
 	legacy_equivalent = epirote_monarchy
 	valid_for_nation_designer = yes
 	nation_designer_cost = 25
+	lock_level_when_selected = yes
 	potential = {
 		must_not_have_any_indian_reform = yes
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 		TAG = EPI
 	}
 	trigger = {
@@ -124,38 +150,24 @@ assyrian_administration_reform = {
 		OR = {
 			has_reform = assyrian_administration_reform
 			have_had_reform = assyrian_administration_reform
-			AND = {
-				government_rank = 3
-				any_owned_province = {
-					culture_group = akkadian_group
-				}
-			}
 		}
-		NOT = { culture_group = indian_group }
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 
-	trigger = {
-		NOT = { is_subject_of_type = satrapy_vassal }
-	}
+	trigger = { NOT = { is_subject_of_type = satrapy_vassal } }
 
 	icon = "assyrian_king"
 	allow_normal_conversion = yes
 	legacy_equivalent = despotic_monarchy
 	valid_for_nation_designer = yes
 	nation_designer_cost = 25
-	
-	factions_frame = 9
-	factions = {
-		fac_nobles
-		fac_monarch
-	}
 
 	modifiers = {
-		governing_capacity_modifier = 0.2
+		fort_maintenance_modifier = -0.15
+		manpower_recovery_speed = 0.1
 		nobility_influence_modifier = -0.05
 	}
 
@@ -180,8 +192,14 @@ kemetic_kingdom = {
 	potential = {
 		must_not_have_any_indian_reform = yes
 		OR = {
-		religion = egyptian_religion
-		religion = atenism
+			religion = egyptian_religion
+			religion = atenism
+		}
+	}
+	nation_designer_trigger = {
+	    OR = {
+	        religion = egyptian_religion
+			religion = atenism
 		}
 	}
 	trigger = {
@@ -218,11 +236,10 @@ elamite_kingdom = {
 	legacy_equivalent = despotic_monarchy
 	valid_for_nation_designer = no
 	nation_designer_cost = 25
-	allow_vassal_war = yes
-	allow_vassal_alliance = yes
 	fixed_rank = 3
 	lock_level_when_selected = yes
 	maintain_dynasty = yes
+	allow_vassal_war = yes
 
 	potential = {
 		has_reform = elamite_kingdom
@@ -250,10 +267,10 @@ minor_elamite_kingdom = {
 	fixed_rank = 2
 	maintain_dynasty = yes
 	lock_level_when_selected = yes
-
 	potential = {
 		has_reform = minor_elamite_kingdom
 	}
+	replacement_on_independence_war = aristocratic_monarchy_reform
 	modifiers = {
 		land_forcelimit = 2
 		naval_forcelimit = 3
@@ -327,8 +344,8 @@ theocratic_kingdom = {
 	modifiers = {
 		missionaries = 1
 		land_morale = 0.1
-		priesthood_influence_modifier = 0.1
-		priesthood_loyalty_modifier = 0.05
+	    discipline = 0.05
+		yearly_patriarch_authority = 0.005
 	}
 	factions_frame = 9
 	factions = {
@@ -369,20 +386,15 @@ parthian_monarchy_reform = {
 
 	modifiers = {
 		stability_cost_modifier = 0.5
-		vassal_income = 0.5
-		vassal_forcelimit_bonus = 0.5
+		vassal_income = 0.25
+		vassal_forcelimit_bonus = 0.25
 		diplomatic_upkeep = 4
 		nobility_influence_modifier = 0.1
 		nobility_loyalty_modifier = -0.05
 	}
 	custom_attributes = {
 		locked_government_type = yes
-	}
-	conditional = {
-		allow = { has_dlc = "Cradle of Civilization" }
-		government_abilities = {
-			iqta_mechanic
-		}
+		has_satrapy_vassals = yes
 	}
 	
 	conditional = {
@@ -410,12 +422,8 @@ persian_achaemenid_monarchy_reform = {
 			have_had_reform = persian_achaemenid_monarchy_reform
 			AND = {
 				primary_culture = persian
-				any_owned_province = {
-					culture_group = akkadian_group
-				}
-				any_owned_province = {
-					culture_group = elamite_group
-				}
+				any_owned_province = { culture_group = akkadian_group }
+				any_owned_province = { culture_group = elamite_group }
 			}
 		}
 	}
@@ -433,11 +441,11 @@ persian_achaemenid_monarchy_reform = {
 	maintain_dynasty = yes
 	
 	modifiers = {
-		governing_capacity_modifier = 1
-		monarch_admin_power = 1
+		governing_capacity_modifier = 0.5
 		tolerance_heathen = 2
 		max_absolutism = 15
-		administrative_efficiency = 0.05
+		administrative_efficiency = 0.1
+		move_capital_cost_modifier = -1 #Seasonal capitals
 		core_decay_on_your_own = 1
 		min_autonomy = 20
 		autonomy_change_time = 1
@@ -450,13 +458,14 @@ persian_achaemenid_monarchy_reform = {
 
 	custom_attributes = {
 		locked_government_type = yes
+		has_satrapy_vassals = yes
 	}
 	
 	assimilation_cultures = {
-		italic = {
+		italic_group = {
 			discipline = 0.025
 		}
-		hellenic = {
+		hellenic_group = {
 			shock_damage_received = -0.1
 		}
 		bosporan_group = {
@@ -618,6 +627,18 @@ persian_achaemenid_monarchy_reform = {
 		tai_group = {
 			ae_impact = -0.1
 		}
+		tocharian_group = {
+			cavalry_power = 0.05
+		}
+		orang_asli_group = {
+			naval_attrition = -0.1
+		}
+		north_atlantic_group = {
+			ship_durability = 0.1
+		}
+		mongolic_group = {
+			fire_damage_received = -0.1
+		}
 	}
 	
 	ai = {
@@ -659,9 +680,8 @@ medes_monarchy_reform = {
 	modifiers = {
 		min_autonomy = 20
 		max_absolutism = 10
-		legitimacy = 1
 		liberty_desire_from_subject_development = 0.25
-		governing_capacity_modifier = 0.33
+		governing_capacity_modifier = 0.3
 		diplomats = 1
 		global_unrest = -1
 	}
@@ -673,13 +693,14 @@ medes_monarchy_reform = {
 
 	custom_attributes = {
 		locked_government_type = yes
+		has_satrapy_vassals = yes
 	}
 	
 	assimilation_cultures = {
-		italic = {
+		italic_group = {
 			discipline = 0.025
 		}
-		hellenic = {
+		hellenic_group = {
 			shock_damage_received = -0.1
 		}
 		bosporan_group = {
@@ -841,6 +862,18 @@ medes_monarchy_reform = {
 		tai_group = {
 			ae_impact = -0.1
 		}
+		tocharian_group = {
+			cavalry_power = 0.05
+		}
+		orang_asli_group = {
+			naval_attrition = -0.1
+		}
+		north_atlantic_group = {
+			ship_durability = 0.1
+		}
+		mongolic_group = {
+			fire_damage_received = -0.1
+		}
 	}
 	ai = {
 		factor = 1
@@ -855,7 +888,7 @@ roman_principate_reform = {
 	potential = {
 		OR = {
 			AND = {
-				TAG = ROM
+				is_roman_country_trigger = yes
 				has_reform = roman_principate_reform 
 				have_had_reform = roman_principate_reform
 				has_country_flag = rome_has_established_the_principate
@@ -876,8 +909,8 @@ roman_principate_reform = {
 		max_absolutism = 20
 		discipline = 0.1
 		infantry_power = 0.15
-		governing_capacity_modifier = 0.5
-		land_maintenance_modifier = 0.25
+		governing_capacity_modifier = 0.3
+		land_maintenance_modifier = 0.15
 		fort_maintenance_modifier = 0.1
 	}
 	conditional = {
@@ -895,10 +928,7 @@ roman_principate_reform = {
 		factor = 1
 		modifier = {
 			factor = 10
-			OR = {
-				TAG = ROI
-				TAG = ROM
-			}
+			is_roman_country_trigger = yes
 		}
 	}
 }
@@ -964,6 +994,7 @@ urartian_monarchy_reform = {
 
 	custom_attributes = {
 		locked_government_type = yes
+		urartian_irrigation = yes
 	}
 
 	ai = {
@@ -977,13 +1008,13 @@ urartian_monarchy_reform = {
 
 satrapy_reform = {
 	potential = {
-		has_reform = satrapy_reform
+	 	has_reform = satrapy_reform
 	}
-
 	trigger = {
+		has_reform = satrapy_reform
 		NOT = { has_reform = satrapal_dynast_reform }
 	}
-
+	replacement_on_independence_war = aristocratic_monarchy_reform
 	icon = "satrapies_reform"
 	allow_normal_conversion = no
 	legacy_equivalent = despotic_monarchy
@@ -996,24 +1027,23 @@ satrapy_reform = {
 
 	modifiers = {
 		min_autonomy = 25
-		num_accepted_cultures = 3
+		num_accepted_cultures = 1
 		tolerance_heretic = 2
 		tolerance_heathen = 2
-		global_missionary_strength = -1
-		culture_conversion_cost = 10
+		can_not_build_missionaries = yes
+		culture_conversion_cost = 1
 	}
-
 }
 
 satrapal_dynast_reform = {
 	potential = {
 		has_reform = satrapal_dynast_reform
 	}
-
 	trigger = {
+		has_reform = satrapal_dynast_reform
 		NOT = { has_reform = satrapy_reform }
 	}
-
+	replacement_on_independence_war = aristocratic_monarchy_reform
 	icon = "satrapies_reform"
 	allow_normal_conversion = no
 	legacy_equivalent = despotic_monarchy
@@ -1024,7 +1054,6 @@ satrapal_dynast_reform = {
 	modifiers = {
 		min_autonomy = 10
 		diplomatic_reputation = 1
-		prestige_decay = -0.01
 		liberty_desire = -10
 	}
 }
@@ -1032,7 +1061,6 @@ satrapal_dynast_reform = {
 satrap_diadochi_reform = {
 	potential = {
 		has_reform = satrap_diadochi_reform
-		NOT = { has_reform = diadochi_kingdom_reform }
 	}
 
 	icon = "diadochi_reform"
@@ -1047,7 +1075,8 @@ satrap_diadochi_reform = {
 		tolerance_heathen = 1
 		global_unrest = -3
 		global_manpower = 5
-		global_manpower_modifier = -0.25
+		manpower_in_culture_group_provinces = 0.25
+		manpower_in_own_culture_provinces = 0.25
 		merc_maintenance_modifier = -0.1
 	}
 
@@ -1061,8 +1090,7 @@ diadochi_kingdom_reform = {
 		OR = {
 			has_reform = diadochi_kingdom_reform
 			have_had_reform = diadochi_kingdom_reform
-		}
-		NOT = { has_reform = satrap_diadochi_reform }
+		}	
 	}
 
 	icon = "diadochi_reform"
@@ -1079,19 +1107,38 @@ diadochi_kingdom_reform = {
 
 	modifiers = {
 		mercenary_manpower = 1.0
-		global_manpower_modifier = -0.25
+		global_manpower_modifier = -0.5
+		manpower_in_culture_group_provinces = 0.25
+		manpower_in_own_culture_provinces = 0.25
 		merc_maintenance_modifier = -0.2
-		num_accepted_cultures = 1
 		diplomatic_reputation = 1
-		min_autonomy = 15
 		nobility_influence_modifier = 0.05
 	}
+}
 
-	conditional = {
-		allow = { has_dlc = "Third Rome" }
-		government_abilities = {
-			russian_mechanic
-		}
+client_state_monarchy_reform = {
+	potential = {
+		is_client_nation = yes
+	}
+
+	trigger = {
+		is_client_nation = yes
+	}
+
+	icon = "satrapies_reform"
+	allow_normal_conversion = no
+	legacy_equivalent = despotic_monarchy
+	valid_for_nation_designer = no
+	nation_designer_cost = 0
+	lock_level_when_selected = yes
+	
+	queen = no
+
+	modifiers = {
+		min_autonomy = 25
+		num_accepted_cultures = 3
+		tolerance_heretic = 2
+		tolerance_heathen = 2
 	}
 }
 
@@ -1122,13 +1169,91 @@ bosporan_kingdom_reform = {
 	}
 }
 
+slavic_state_reform = {
+	icon = "slavic_state"
+	allow_normal_conversion = no
+	legacy_equivalent = despotic_monarchy
+	valid_for_nation_designer = yes
+	nation_designer_cost = 25
+	lock_level_when_selected = yes
+
+	potential = {
+		OR = {
+			TAG = V4N
+			primary_culture = slavic
+		}
+	}
+	
+	nation_designer_trigger = {
+	    primary_culture = slavic
+	}
+	
+	conditional = {
+		allow = {
+			has_dlc = "Common Sense"
+		}
+		has_parliament = yes
+	}
+	
+	factions = {
+	    gospodari_faction
+		zemtsy_faction
+		kupechestvo_faction
+		zhretsy_faction
+		veche_faction
+		voevodi_faction
+		druzhina_faction
+	}
+	
+	custom_attributes = {
+		locked_government_type = yes
+	}
+	modifiers = {
+        max_absolutism = 10
+		governing_capacity_modifier = 0.15
+		female_advisor_chance = 0.2
+	}
+}
+
+slavic_kingdom_reform = {
+	icon = "slavic_state"
+	allow_normal_conversion = no
+	legacy_equivalent = despotic_monarchy
+	valid_for_nation_designer = yes
+	nation_designer_cost = 25
+	lock_level_when_selected = yes
+
+	potential = {
+		OR = {
+			TAG = V4N
+			primary_culture = slavic
+		}
+	}
+	
+	nation_designer_trigger = {
+	    primary_culture = slavic
+	}
+	
+	custom_attributes = {
+		locked_government_type = yes
+	}
+	
+	modifiers = {
+        max_absolutism = 10
+		legitimacy = 0.5
+		prestige = 0.5
+		harsh_treatment_cost = -0.1
+		
+	}
+}
+
 oasis_city_princedom_reform = {
 	icon = "noble_monarchy"
 	allow_normal_conversion = no
 	lock_level_when_selected = yes
 	fixed_rank = 2
 	legacy_equivalent = oasis_city_princedom_reform
-	valid_for_nation_designer = no
+	valid_for_nation_designer = yes
 	nation_designer_cost = 0
 
 	potential = {
@@ -1167,13 +1292,67 @@ mleccha_desa_monarchy_reform = {
 	lock_level_when_selected = yes
 	custom_attributes = {
 		locked_government_type = yes
+		mleccha_special_religion = yes
 	}
 	modifiers = {
-		governing_capacity_modifier = 0.25
+		governing_capacity_modifier = 0.3
 		culture_conversion_cost = -0.33
 		tolerance_own = 3
-		diplomatic_reputation = 2
+		diplomatic_reputation = 1
 		global_missionary_strength = 0.01
+	}
+	legacy_equivalent = despotic_monarchy
+}
+
+ishkuzan_kingdom_reform = {
+	potential = {
+		must_not_have_any_indian_reform = yes
+		OR = {
+			has_reform = ishkuzan_kingdom_reform
+			have_had_reform = ishkuzan_kingdom_reform
+		}
+	}
+	icon = "invasion_scythian_reform"
+	allow_normal_conversion = no
+	valid_for_nation_designer = no
+	lock_level_when_selected = yes
+
+	custom_attributes = {
+		locked_government_type = yes
+	}
+	modifiers = {
+		num_accepted_cultures = 1
+		years_of_nationalism = -2
+		global_unrest = -1
+		cav_to_inf_ratio = 0.5
+		cavalry_cost = -0.25
+		min_autonomy = 10
+	}
+	legacy_equivalent = despotic_monarchy
+}
+
+macedonian_regency_reform = {
+	potential = {
+		has_reform = macedonian_regency_reform
+	}
+	trigger = {
+		
+	}
+	icon = "macedonian_regency_reform"
+	allow_normal_conversion = no
+	valid_for_nation_designer = no
+	lock_level_when_selected = yes
+	fixed_rank = 5
+	allow_vassal_alliance = yes
+	allow_vassal_war = yes
+	custom_attributes = {
+		locked_government_type = yes
+	}
+	modifiers = {
+		stability_cost_to_declare_war = 1
+		stability_cost_modifier = 0.25
+		all_power_cost = 0.1
+		prestige = 1
 	}
 	legacy_equivalent = despotic_monarchy
 }
@@ -1197,7 +1376,7 @@ monarchy_become_oligarchy_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	trigger = {
 		OR = {
@@ -1236,7 +1415,7 @@ monarchy_reinforce_king_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
-		NOT = { has_reform = bureaucratic_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
 		free_policy = 1

@@ -1,0 +1,1076 @@
+yan_left = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		tag = YAN
+		NOT = {
+			map_setup = map_setup_random
+		}
+	}
+	has_country_shield = yes
+	#耕植土地
+	cultivation_of_land = {
+		position = 1
+		icon = missions_china_reclaim
+		completed_by = 190.1.1
+		required_missions = {   }
+		provinces_to_highlight = {
+			OR = {
+				province_id = 4030
+			    province_id = 4033
+			    province_id = 4034
+			}
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				OR = {
+					has_building = small_water_irrigation
+					has_building = big_water_irrigation
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "cultivation_of_land"
+				duration = -1
+			}
+		}
+	}
+	#铺设道路
+	road_build = {
+		position = 2
+		icon = missions_china_road
+		completed_by = 250.1.1
+		required_missions = {
+			cultivation_of_land
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 4030
+				province_id = 4021
+			}
+		}
+		trigger = {
+			4030 = {
+				custom_trigger_tooltip = {
+				tooltip = rom_via_appia.tooltip	
+					  OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}
+			4021 = {
+				custom_trigger_tooltip = {
+				tooltip = rom_via_appia.tooltip	
+					  OR = {
+						has_building = gravel_road
+						has_building = paved_road
+						has_building = imperial_road
+					}
+				}
+			}		
+			num_of_owned_provinces_with = {
+				value = 10
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_move_speed"
+				duration = -1
+			}
+		}
+	}
+	#发展农业
+	develop_agriculture = {
+		position = 3
+		icon = missions_china_agriculture
+		required_missions = {
+			road_build
+		}
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_grain_depot
+					has_building = big_grain_depot
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+			name = "agriculture_development"
+			duration = 9125 #25 年
+			}
+		}
+	}
+	#发展商业
+	develop_business = {
+		position = 4
+		icon = missions_china_commercial
+		required_missions ={
+			develop_agriculture
+		}
+		trigger = {
+			is_at_war = no
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+			}	
+		}
+		effect = {
+			add_country_modifier = {
+			name = "trade_development"
+			duration = 9125 #25 年
+			}
+			add_mercantilism = 2
+		}
+	}
+	#发展手工业
+	develop_handicraft_industry = {
+		position = 5
+		icon = missions_china_manufacturer
+		required_missions = { develop_business }
+		trigger = {
+			is_at_war = no
+			custom_trigger_tooltip = {
+			    tooltip = build_level_1_irrigation_buildings.tooltip
+				    num_of_owned_provinces_with = {
+					    value = 5
+					    OR = {
+						    has_building = small_water_irrigation
+						    has_building = big_water_irrigation
+						    has_building = big_estate
+					    }
+				    }
+			}
+			custom_trigger_tooltip = {
+				tooltip = build_level_1_mine_buildings.tooltip
+					num_of_owned_provinces_with = {
+						value = 5
+						OR = {
+							has_building = quarry
+							has_building = small_mine
+							has_building = big_mine
+						}
+					}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "handicraft_industry_development"
+				duration = 9125 # 25 年
+			}
+		}
+	}
+	#繁荣的燕国
+	prosperous_yan_country = {
+		position = 6
+		icon = missions_china_prosperous
+		required_missions = {
+			develop_handicraft_industry
+		}
+		trigger = {
+			monthly_income = 25
+			is_at_war = no
+			4030 = {
+				trade_share = {
+					country = ROOT
+					share = 50
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_development"
+				duration = 18250 # 50年
+			}
+			4030 = { 
+				add_base_production = 1
+				add_base_manpower = 1
+				add_base_tax = 1 
+			}
+			4021 ={
+				add_base_production = 1
+				add_base_manpower = 1
+				add_base_tax = 1 
+			}
+		}
+	}
+	#入侵朝鲜
+	#	invade_north_korea = {
+	#	}
+	#进军三韩
+	#	march_into_three_koreas ={
+	#	}
+	#统一朝鲜
+	#	unify_korea = {
+	#	}
+}
+yan_slot_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		NOT = { map_setup = map_setup_random }
+		tag = YAN
+	}
+	has_country_shield = yes
+    #联齐北伐
+	unit_qi_northern_expedition = {
+		icon = missions_china_alliance
+		required_missions = {  }
+		position = 1
+		provinces_to_highlight = {
+			OR = {
+				owned_by = QII
+				AND = {
+					NOT = { exists = QII }
+					region = qingzhou_china
+					ROOT = {
+						NOT = {
+							num_of_owned_provinces_with = {
+								value = 6
+								region = qingzhou_china
+							}
+						}
+					}
+				}
+			}
+		}
+		trigger = {
+			if = {
+				limit = { exists = QII }
+				OR ={
+					AND = {
+						alliance_with = QII
+						QII = {
+							has_opinion = {
+								who = ROOT
+								value = 150
+							}
+						}
+					}
+					AND = { 
+						OR = {
+							is_rival = QII
+							QII = { is_rival = ROOT }
+						}
+						army_size_percentage = 1
+				    }
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = { exists = QII }
+				}
+				OR = {
+					army_size_percentage = 1
+				}
+			}
+			is_subject = no
+		}
+		effect = {
+			youbeiping_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+		    }
+			yuyang_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			yuyang_area_southern = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+    #平定北平、渔阳
+	march_beiping_yuyang = {
+		icon = missions_china_vicyory
+		position = 2
+		required_missions = {
+			unit_qi_northern_expedition
+		}
+		provinces_to_highlight = {
+			OR = {
+				area = youbeiping_area
+			    area = yuyang_area
+			    area = yuyang_area_southern
+			}
+		}
+		trigger = {
+			youbeiping_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			yuyang_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			yuyang_area_southern = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			liaoxi_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+    #进军辽西
+	march_liaoxi = {
+		icon = missions_china_army
+		required_missions = {
+			march_beiping_yuyang
+		}
+		position = 3
+		provinces_to_highlight = {
+		    area = liaoxi_area
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			liaoxi_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			liaodong_area_northern = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+    #进军辽东
+ 	march_liaodong = {
+		icon = missions_china_nomad
+		required_missions = {
+			march_liaoxi
+		}
+		position = 4
+		provinces_to_highlight = {
+		    area = liaodong_area_northern
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			liaodong_area_northern = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_dip_power = 100
+			liaodong_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+	#进军辽南
+	march_liaonan = {
+		icon = missions_china_dashing
+		required_missions = {
+			march_liaodong
+		}
+		position = 5
+		provinces_to_highlight = {
+		    area = liaodong_area
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			liaodong_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_mil_power = 100
+			youzhou_china = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+    #一统幽州
+ 	unify_youzhou = {
+		icon = missions_china_bureaucrat
+		required_missions = {
+			march_liaonan
+		}
+		position = 6
+		provinces_to_highlight = {
+			OR = {
+				area = shanggu_area 
+				area = shanggu_area_northern
+				area = guangyang_area 
+				area = guangyang_area_western
+				area = yuyang_area
+				area = yuyang_area_southern
+				area = hejian_area		  
+				area = hejian_area_eastern
+				area = youbeiping_area 
+				area = liaoxi_area
+				area = liaoxi_area_western
+				area = liaodong_area
+				area = liaodong_area_northern
+		    }
+		}
+		trigger = {
+			youzhou_china = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 20
+			southern_wuhuan_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT }
+					NOT = { is_core = ROOT	}
+				}
+			}
+			#############
+			#朝鲜地区宣称#
+			#############
+		}
+	}
+ 	
+    #平定乌恒
+ 	recover_wuhuan = {
+		icon = missions_china_nomad
+		required_missions = {
+			unify_youzhou
+		}
+		position = 7
+		provinces_to_highlight = {
+		    area = southern_wuhuan_area
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			southern_wuhuan_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			north_wuhuan_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+    #安定北疆
+ 	stable_northern = {
+		icon = missions_china_army
+		required_missions = {
+			recover_wuhuan
+		}
+		position = 8
+		provinces_to_highlight = {
+		    area = north_wuhuan_area
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			north_wuhuan_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+		    northern_steppe = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+			#add_country_modifier = {
+			#	name = "yan_colonist"
+			#	duration = -1
+            #}
+		}
+ 	}
+    #驻扎北地
+ 	garrision_northern_steppe = {
+		icon = missions_china_camp
+		required_missions = {
+			stable_northern
+		}
+		position = 9
+		provinces_to_highlight = {
+			OR = {
+				area = southern_jetisu_area
+		        area = northern_jetisu_area
+		        area = eastern_jetisu_area
+		        area = south_dzungaria_area
+		        area = danhuan_area
+		        area = north_dzungaria_area
+		        area = turfan_area
+		        area = altai_area
+		        area = tarvagatai_area
+		        area = sha_mo_area
+		        area = xianbei_steppe_area
+		        area = north_wuhuan_area
+		        area = southern_wuhuan_area
+		        area = central_dzungaria_area
+			}
+		}
+		trigger = {
+			northern_steppe = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_colonization"
+				duration = -1
+            }
+		}
+ 	}
+ #问鼎中原
+ #	aspire_central_china = {
+ #	}
+}
+yan_slot_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = {
+		tag = YAN
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+    #召公建郾
+    zhaogong_establish_yan = {
+		icon = missions_china_bureaucrat
+		required_missions = { }
+		trigger = {
+			tag = YAN
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_establish"
+				duration = 18250 # 50 年
+            }
+		}
+	}
+    #五国相王
+	wuguo_xiangwang = {
+		icon = missions_china_diplomacy
+		required_missions = {
+			zhaogong_establish_yan
+			unit_qi_northern_expedition
+		}
+		position = 2
+		trigger = {
+			num_of_allies = 3
+			calc_true_if = {
+				all_ally = {
+					has_opinion = {
+						who = ROOT
+						value = 100
+					}
+				}
+				amount = 3
+			}
+			
+		}
+		effect = {
+			add_prestige = 30
+			add_country_modifier = {
+				name = "wuguo_xiangwang"
+				duration = -1
+            }
+		}
+	}
+    #燕哙让国
+	yankuai_waive_throne = {
+		icon = missions_china_great
+		required_missions = {
+			wuguo_xiangwang
+		}
+		position = 3
+		trigger = {
+			AND = {
+				ruler_age = 20
+				OR = {
+					NOT = { dip = 4 }
+					NOT = { adm = 4 }
+					NOT = { mil = 4 }
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yankuai_waive_throne"
+				duration = 36500 # 50 年
+			}
+		}
+	}
+
+    #筑黄金台
+	build_gold_terrace = {
+		icon = missions_china_employ
+		required_missions = {
+			yankuai_waive_throne
+		}
+		position = 4
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+			}
+			
+		}
+		effect = {
+			define_advisor = {
+				type = priest_adv
+				name = "zou yan"
+				skill = 2
+				culture = hebei
+				female = no
+				discount = yes
+			}
+			add_country_modifier = {
+				name = "recruiting_talents"
+				duration = 9125 # 25 年
+			}
+		}
+	}
+    #招贤纳士
+	recruiting_talents = {
+		icon = missions_china_employ
+		required_missions = {
+			build_gold_terrace
+		}
+		position = 5
+		trigger = {
+			priest_adv = 2
+		}
+		effect = {
+			create_general = { tradition = 100 add_fire = 6 add_shock = 6 add_manuever = 5 add_siege = 5  }
+		}
+	}
+    #合纵连横
+	alliance_attack_qii = {
+		icon = missions_china_diplomacy
+		required_missions = {
+			recruiting_talents
+		}
+		position = 6
+		trigger = {
+			if = {
+				limit = { exists = QII }
+				AND = {
+					OR = {
+						army_strength = {
+							who = QII
+							value = 2
+						}
+						alliance_with = QIN
+						alliance_with = CHU
+					}
+					is_rival = QII
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = { exists = QII }
+				}
+				OR = {
+					army_size_percentage = 1.5
+				}
+			}
+		}
+		effect = {
+			jibei_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+			linzi_area_north = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+			qinghe_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+    #联军伐齐
+	attacking_qi = {
+		icon = missions_china_dashing
+		required_missions = {
+			alliance_attack_qii
+		}
+		position = 7
+		provinces_to_highlight = {
+		    OR = {
+				area = jibei_area
+				area = linzi_area_north
+				area = qinghe_area
+			}
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			jibei_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			linzi_area_north = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			qinghe_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_dip_power = 100
+			linzi_area = {  
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+			jinan_area = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+			jibei_area_south = {
+				limit = {
+					NOT = { is_permanent_claim = ROOT	}
+					NOT = { is_core = ROOT	}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+    #一雪前耻
+	expunge_the_shame = {
+		icon = missions_china_vicyory
+		required_missions = {
+			attacking_qi
+		}
+		position = 8
+		provinces_to_highlight = {
+		    OR = {
+				area = linzi_area
+				area = jinan_area
+				area = jibei_area_south
+			}
+			NOT = { country_or_non_sovereign_subject_holds = ROOT }
+		}
+		trigger = {
+			jibei_area_south = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			jinan_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			linzi_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			qingzhou_china = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { is_permanent_claim = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+ 	}
+    #五国灭齐
+	destroy_qi = {
+		icon = missions_china_army
+		required_missions = {
+			expunge_the_shame
+		}
+		position = 9
+		provinces_to_highlight = {
+			OR = {
+				area = jiaodong_area 
+				area = jimo_area
+				area = beihai_area 
+				area = linzi_area
+				area = jinan_area
+				area = jibei_area_south
+				area = linzi_area_north		  
+				area = jibei_area
+		    }
+		}
+		trigger = {
+			qingzhou_china = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 50
+			add_country_modifier = {
+				name = "destroy_qi"
+				duration = -1
+			}
+		}
+	}
+}
+yan_slot_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = {
+		tag = YAN
+	}
+	has_country_shield = yes
+    #建立军营
+	military_barracks = {
+		icon = missions_china_camp
+		position = 1
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				OR = {
+					has_building = small_army_camp
+					has_building = small_military_settlement
+					has_building = big_military_settlement
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "military_barracks"
+				duration = 9125 #25 年
+			}
+		}
+	}
+    #刻苦训练
+	training_hard = {
+		position = 2
+		icon = missions_china_camp
+		required_missions = { military_barracks }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_conscription_center
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "training_hard"
+				duration = 9125 #25 年
+			}
+		}
+	}
+    #镇北雄狮
+	tough_army = {
+	    icon = missions_china_vicyory
+		required_missions = { training_hard }
+		position = 3
+		trigger = {
+			army_professionalism = 0.9
+		}
+		effect = {
+			add_country_modifier = {
+				name = "tough_army"
+				duration = -1
+			}
+		}
+	}
+    #重视舟师
+	focus_fleet = {
+		position = 4
+	    icon = missions_china_ship
+		trigger = {
+			num_of_heavy_ship = 10
+		}
+		effect = {
+			add_navy_tradition = 50
+			add_sailors = 5
+			create_admiral = { tradition = 50 }
+		}
+	}
+    #建造船坞
+	construction_of_shipyards = {
+		position = 5
+	    icon = missions_china_shipyard
+		required_missions = { focus_fleet }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_shipyard
+					has_building = big_shipyard
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "construction_of_shipyards"
+				duration = 9125 #25 年
+			}
+		}
+	}
+}
+yan_slot_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = {
+		tag = YAN
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+    #重振官学
+	revitalize_government_schools = {
+	    icon = missions_china_bureaucrat
+		position = 1
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 3
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_missionary_goverment"
+				duration = 9125 #25 年
+            }
+		}
+	}
+    #鼓励私学
+	encourage_private_schools = {
+	    icon = missions_china_learning
+		required_missions = {
+			revitalize_government_schools
+		}
+		position = 3
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				OR = {
+					has_building = small_theater
+					has_building = big_theater
+					has_building = great_theater
+					has_building = huge_theater
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "yan_missionary_private"
+				duration = -1
+            }
+		}
+	}
+    #征兵
+	menpower_mission = {
+		position = 5
+		icon = missions_china_army
+		required_missions = {  }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 10
+				OR = {
+					has_building = small_conscription_center
+				}
+			}
+		}
+		effect = {
+			add_yearly_manpower = 0.8
+	    }
+	}
+    #征税
+	taxition_mission = {
+		position = 6
+		icon = missions_china_commercial
+		required_missions = {  }
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = taxition_mission.tooltip
+					num_of_owned_provinces_with = {
+						value = 5
+						OR = {
+							has_building = taxman
+							has_building = tax_collector
+						}
+					}
+				}
+		}
+		effect = {
+			add_years_of_income = 0.75
+			add_inflation = -2
+		}
+	}
+}

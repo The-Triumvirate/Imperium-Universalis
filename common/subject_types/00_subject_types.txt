@@ -39,10 +39,15 @@ socii_subject = {}
 league_member_subject = {}
 march = {}
 daimyo_vassal = {}
+sukkal_vassal = {}
 personal_union = {}
+phoenician_colony_subject = {}
 client_vassal = {}
 client_march = {}
 colony = {}
+crown_colony = {}
+private_enterprise = {}
+self_governing_colony = {}
 tributary_state = {}
 triumvir = {}
 
@@ -62,6 +67,14 @@ default = {
 	transfer_trade_power = no
 	transfer_trade_if_merchant_republic = no
 	joins_overlords_wars = yes
+	can_be_co_belligerented =  no    #Enemies can force this subject to join its overlord into the defense war. Only used when the subject has the "joins_overlords_wars = no". By default it's "no".
+	can_be_called_to_wars =  no    #Overlord can ask subject to join wars like it could ask allies to join. You would require favors  to call them to wars. Only used when the subject has the "joins_overlords_wars = no". By default it's "no"
+	favors_cost_to_join_offensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into an offensive war
+	favors_cost_to_join_defensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into a defensive war
+	opinion_cost_to_join_offensive_wars = 0   #Defines how much opinion the subject loses of the overlord to call the subject into an offensive war. Applied if you do not have Leviathan
+	opinion_cost_to_join_defensive_wars = 0   #Defines how much opinion the subject loses of the overlord to call the subject into a defensive war. Applied if you do not have Leviathan
+	opinion_cost_instead_of_favors_cost = no   #Determines if the subject requires favors or opinion to join a the war. If set "yes" then it requires the aforementioned opinion costs - regardless if Leviathan is active or not. "No" is the default setting
+	opinion_on_subject_integration = -30 #Determines how much opinion they actually lose when a fellow subject gets integrated.
 	joins_colonial_wars = no
 	can_be_integrated = no
 	can_release_and_play = no							# "Release Colony" in SubjectView
@@ -94,8 +107,11 @@ default = {
 	does_overlord_size_count_for_warscore_cost = yes
 	is_colony_subtype = no
 	is_march = no
-	forms_trade_companies = yes
+	forms_trade_companies = no
 	can_concentrate_development = no
+	can_have_great_projects_moved_by_overlord = yes
+	extend_trading_range = no
+	can_gain_favors = yes
 	
 	max_government_rank = 0								# 0 means no limit
 	cities_required_for_bonuses = 0						# How many cities the subject needs before giving bonuses to overlord
@@ -106,15 +122,12 @@ default = {
 	liberty_desire_development_ratio = 0.0
 	liberty_desire_same_dynasty = 0.0
 	pays_overlord = 0.0										# 1.0 represents the amount payed by vassals
-	forcelimit_bonus = 0.0									# 1.0 represents bonus from having a vassal
 	forcelimit_to_overlord = 0.0
-	naval_forcelimit_bonus = 0.0						# 1.0 represents bonus from having a vassal
 	naval_forcelimit_to_overlord = 0.0					# Percent of subject FL to use as base for modifiers
-	manpower_bonus = 0.0								# 1.0 represents bonus from having a vassal
 	manpower_to_overlord = 0.0							# Percent of subject FL to use as base for modifiers
-	sailors_bonus = 0.0									# 1.0 represents bonus from having a vassal
 	sailors_to_overlord = 0.0							# Percent of subject FL to use as base for modifiers
 	military_focus = 1.0										# How much the AI subject should spend etc. on army and forts. 0 should make them spend nothing. Very high values will probably not make a big difference since there will be sanity checks.
+	annex_cost_per_development = 1.0					# annex/integrate cost per development
 
 	relative_power_class = 1 								# See description above
 	diplomacy_view_class = 1								# See description above
@@ -153,7 +166,7 @@ default = {
 	sacrifice_heir = no
 	increase_tariffs = no
 	decrease_tariffs = no
-	takeondebt = no
+	takeondebt = yes
 	bestow_gifts = no
 	send_additional_troops = no
 	demand_artifacts = yes
@@ -201,10 +214,12 @@ vassal = {
 	diplomacy_subject_sprite = GFX_diplomacy_amvassal_1
 
 	# Properties:
+	joins_overlords_wars = yes
 	transfer_trade_if_merchant_republic = yes
 	can_be_annexed = no
-	has_power_projection = yes
+	has_power_projection = no
 	gets_help_with_rebels = yes
+	share_rebel_popup = yes
 	can_fight_independence_war = yes
 	overlord_protects_external = yes
 	overlord_enforce_peace_attacking = yes
@@ -216,8 +231,7 @@ vassal = {
 
 	liberty_desire_development_ratio = 0.25
 	liberty_desire_same_dynasty = 0.0
-	pays_overlord = 0.25
-	forcelimit_bonus = 1.0
+	pays_overlord = 0.15
 	forcelimit_to_overlord = 0.05
 	should_quit_wars_on_activation = yes
 
@@ -232,6 +246,7 @@ vassal = {
 	grant_province = yes
 	demand_artifacts = yes
 	conscript_general = yes
+	takeondebt = yes
 
 	can_fight = {
 		independent_nations = yes
@@ -244,12 +259,10 @@ vassal = {
 		other_overlord = all
 	}
 	can_ally = {
-		independent_nations = yes
 		same_overlord = vassal
 		other_overlord = all
 	}
 	can_marry = {
-		independent_nations = yes
 		same_overlord = vassal
 	}
 	# Modifiers:
@@ -291,9 +304,8 @@ half_autonomous_vassal = {
 
 	liberty_desire_development_ratio = 0.35
 	liberty_desire_same_dynasty = 0.0
-	pays_overlord = 0.5
-	forcelimit_bonus = 1.0
-	forcelimit_to_overlord = 0.1
+	pays_overlord = 0.25
+	forcelimit_to_overlord = 0.09
 
 	relative_power_class = 1
 
@@ -308,6 +320,7 @@ half_autonomous_vassal = {
 	seize_territory = yes
 	demand_artifacts = yes
 	conscript_general = yes
+	takeondebt = yes
 
 	# Modifiers:
 	modifier_subject = {
@@ -346,9 +359,8 @@ non_autonomous_vassal = {
 
 	liberty_desire_development_ratio = 0.5
 	liberty_desire_same_dynasty = 0.0
-	pays_overlord = 0.75
-	forcelimit_bonus = 1.0
-	forcelimit_to_overlord = 0.2
+	pays_overlord = 0.5
+	forcelimit_to_overlord = 0.13
 
 	relative_power_class = 1
 	
@@ -368,6 +380,7 @@ non_autonomous_vassal = {
 	seize_territory = yes
 	demand_artifacts = yes
 	conscript_general = yes
+	takeondebt = yes
 
 	# Modifiers:
 	modifier_subject = {
@@ -411,7 +424,6 @@ velir_subject = {
 	overlord_protects_external = yes
 	takes_diplo_slot = no
 	can_release_in_peace = yes
-	overlord_can_attack = yes
 	overlord_can_be_subject = no
 	can_have_subjects_of_other_types = yes
 	share_rebel_popup = yes
@@ -424,11 +436,11 @@ velir_subject = {
 
 	liberty_desire_development_ratio = 0.25
 	liberty_desire_same_dynasty = 1.0
-	pays_overlord = 0.35
-	forcelimit_bonus = 1.0
-	forcelimit_to_overlord = 0.15
-	naval_forcelimit_bonus = 1
-	naval_forcelimit_to_overlord = 0.25
+	pays_overlord = 0.25
+	forcelimit_to_overlord = 0.1
+	naval_forcelimit_to_overlord = 0.05
+	manpower_to_overlord = 0.05
+	sailors_to_overlord = 0.1
 
 	relative_power_class = 1
 	
@@ -448,6 +460,7 @@ velir_subject = {
 	seize_territory = yes
 	demand_artifacts = yes
 	conscript_general = yes
+	takeondebt = yes
 
 	can_fight = {
 		independent_nations = yes
@@ -493,11 +506,7 @@ satrapy_vassal = {
 
 	# Triggers:
 	is_potential_overlord = {
-		OR = {
-			has_reform = persian_achaemenid_monarchy_reform
-			has_reform = parthian_monarchy_reform
-			has_reform = medes_monarchy_reform
-		}
+		has_government_attribute = has_satrapy_vassals
 	}
 	
 	# Properties:
@@ -508,7 +517,6 @@ satrapy_vassal = {
 	joins_overlords_wars = yes
 	joins_colonial_wars = no
 	
-	overlord_can_attack = yes
 	overlord_can_be_subject = no
 	can_have_subjects_of_other_types = no
 	can_be_annexed = no
@@ -527,18 +535,20 @@ satrapy_vassal = {
 	can_set_mil_focus = yes
 	can_send_missionary_to_subject = no
 	can_concentrate_development = no
+	extend_trading_range = yes
 	
 	max_government_rank = 4
-	trust_on_start = 50
+	trust_on_start = 100
 
 	base_liberty_desire = 0.0
 	liberty_desire_negative_prestige = 1.0
-	liberty_desire_development_ratio = 0.25
+	liberty_desire_development_ratio = 0.15
 	liberty_desire_same_dynasty = 0.5 #Achaemenids will feel entitle for the Persian Throne
-	pays_overlord = 0.5
-	forcelimit_bonus = 1.0
+	pays_overlord = 1.0
 	forcelimit_to_overlord = 0.2
-	military_focus = 1.2
+	naval_forcelimit_to_overlord = 0.1
+	manpower_to_overlord = 0.3
+	sailors_to_overlord = 0.25
 
 	relative_power_class = 1
 	diplomacy_view_class = 1
@@ -554,7 +564,9 @@ satrapy_vassal = {
 	subsidize_armies = yes
 	scutage = yes
 	send_officers = yes
-	divert_trade= yes
+	divert_trade = yes
+	block_settlement_growth = yes
+	allow_settlement_growth = yes
 	# (immediate)
 	placate_rulers = yes
 	place_relative_on_throne = no
@@ -598,6 +610,7 @@ socii_subject = {
 	is_potential_overlord = { 
 		OR = {
 		has_reform = res_publica_reform 
+		has_reform = late_res_publica_reform
 		has_reform = roman_kingdom_reform
 		}
 	}
@@ -605,8 +618,14 @@ socii_subject = {
 	# Properties:
 	can_fight_independence_war = yes
 	is_voluntary = no
-	joins_overlords_wars = yes
-	joins_colonial_wars = yes
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	can_be_co_belligerented = yes
+	favors_cost_to_join_offensive_wars = 20
+	favors_cost_to_join_defensive_wars = 5
+	opinion_cost_to_join_offensive_wars = -200
+	opinion_cost_to_join_defensive_wars = -20
+	joins_colonial_wars = no
 	overlord_can_attack = no
 	overlord_can_be_subject = yes
 	can_have_subjects_of_other_types = yes
@@ -633,12 +652,13 @@ socii_subject = {
 	liberty_desire_negative_prestige = 2.0
 	liberty_desire_development_ratio = 1.0
 	liberty_desire_same_dynasty = 0.0
-	pays_overlord = 0.25
-	forcelimit_bonus = 1
-	forcelimit_to_overlord = 0.2
+	pays_overlord = 0.1
+	forcelimit_to_overlord = 0.15
 	military_focus = 1.2
+	annex_cost_per_development = 2.0
 
 	relative_power_class = 1
+	should_quit_wars_on_activation = yes
 	diplomacy_view_class = 1
 
 	# Subject Interactions:
@@ -685,13 +705,20 @@ league_member_subject = {
 	diplomacy_subject_sprite = GFX_diplomacy_amvassal_leaguemember
 
 	# Triggers:
-	is_potential_overlord = { culture_group = hellenic capital_scope = { superregion = macedonia_superregion } total_development = 30 }
+	is_potential_overlord = {
+		OR = {
+			culture_group = hellenic_group
+			culture_group = macedon_group
+		}
+	}
 	
 	# Properties:
 	transfer_trade_power = no
 	can_fight_independence_war = yes
-	joins_overlords_wars = yes
-	joins_colonial_wars = yes
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	opinion_cost_instead_of_favors_cost = yes
+	opinion_cost_to_join_offensive_wars = 40
 	is_voluntary = yes
 	overlord_can_attack = no
 	takes_diplo_slot = no
@@ -700,23 +727,23 @@ league_member_subject = {
 	can_have_subjects_of_other_types = yes
 	uses_military_focus = no
 	overlord_protects_external = yes
-	counts_for_borders = yes
-	can_use_claims = yes
-	share_rebel_popup = yes
+	counts_for_borders = no
+	can_use_claims = no
+	share_rebel_popup = no
 	can_transfer_in_peace = no
-	max_government_rank = 3
+	max_government_rank = 2
 	can_be_annexed = no
 	can_concentrate_development = no
+	extend_trading_range = yes
 
-	base_liberty_desire = 12.0
-	liberty_desire_development_ratio = 1.5
+	liberty_desire_negative_prestige = 0.5
+	base_liberty_desire = 10.0
+	liberty_desire_development_ratio = 1.6
 	trust_on_start = 0
 
-	pays_overlord = 0.2
-	forcelimit_bonus = 1
-	forcelimit_to_overlord = 0.05
-	naval_forcelimit_bonus = 1
-	naval_forcelimit_to_overlord = 0.125
+	pays_overlord = 0.15
+	forcelimit_to_overlord = 0.07
+	naval_forcelimit_to_overlord = 0.08
 	
 	can_fight = {
 		independent_nations = yes
@@ -751,6 +778,8 @@ league_member_subject = {
 	# knowledge_sharing = no
 	# (continuous)
 	embargo_rivals = yes
+	divert_trade = yes
+	takeondebt = yes
 
 	# Modifiers:
 	modifier_subject = {
@@ -825,8 +854,7 @@ daimyo_vassal = {
 	copy_from = vassal
 	
 	is_potential_overlord = {
-		culture_group = elamite_group
-		has_reform = elamite_kingdom
+		always = no
 	}
 
 	# Graphics:
@@ -839,19 +867,23 @@ daimyo_vassal = {
 	takes_diplo_slot = no
 	gives_daimyo_bonuses = yes
 	gets_help_with_rebels = yes
-	separatists_become_subjects = yes
+	separatists_become_subjects = no
 	allows_taking_land_without_independence = yes
 	can_use_claims = yes
 	forms_trade_companies = no
 	can_concentrate_development = no
+	can_be_annexed = no
+	counts_for_borders = yes
+	can_fight_independence_war = yes
+	can_have_subjects_of_other_types = yes
+	can_release_in_peace = no
 
 	trust_on_start = 0
 
 	base_liberty_desire = 0.0
 	liberty_desire_development_ratio = 0.5
 	liberty_desire_negative_prestige = 0.5
-	pays_overlord = 0.33
-	forcelimit_bonus = 1.0
+	pays_overlord = 0.3
 	forcelimit_to_overlord = 0.1
 
 	relative_power_class = 1
@@ -890,10 +922,101 @@ daimyo_vassal = {
 					  
 	return_land = yes
 	conscript_general = yes
+	takeondebt = yes
 	#(special)
 	sword_hunt = yes
 	sankin_kotai = yes
 	expel_ronin = yes
+ 
+	# Modifiers:
+								
+	modifier_subject = {
+		modifier = vassal_nation
+	}
+	modifier_overlord = {
+		modifier = vassal_subject
+	}
+
+	overlord_opinion_modifier = is_vassal
+	subject_opinion_modifier = is_vassal
+}
+
+sukkal_vassal = {
+	copy_from = vassal
+	
+	is_potential_overlord = {
+		culture_group = elamite_group
+		has_reform = elamite_kingdom
+	}
+
+	# Graphics:
+	sprite = GFX_icon_vassal_sukkalvassal
+	diplomacy_overlord_sprite = GFX_diplomacy_leadvassal_sukkalvassal
+	diplomacy_subject_sprite = GFX_diplomacy_amvassal_sukkalvassal
+
+	# Properties:
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	favors_cost_to_join_offensive_wars = 10
+	overlord_can_attack = no
+	has_power_projection = yes
+	takes_diplo_slot = no
+	gets_help_with_rebels = yes
+	separatists_become_subjects = yes
+	allows_taking_land_without_independence = yes
+	can_use_claims = yes
+	forms_trade_companies = no
+	can_concentrate_development = no
+	extend_trading_range = yes
+
+	trust_on_start = 0
+
+	base_liberty_desire = 0.0
+	liberty_desire_development_ratio = 0.4
+	liberty_desire_negative_prestige = 0.7
+	pays_overlord = 0.3
+	forcelimit_to_overlord = 0.1
+	manpower_to_overlord = 0.1
+	sailors_to_overlord = 0.1
+
+	relative_power_class = 1
+	should_quit_wars_on_activation = yes
+
+	can_fight = {
+		independent_nations = yes
+		same_overlord = sukkal_vassal
+		other_overlord = all
+	}
+	can_rival = {
+		independent_nations = yes
+		same_overlord = sukkal_vassal
+		other_overlord = all
+	}
+	can_ally = {
+		independent_nations = yes
+		same_overlord = sukkal_vassal
+		other_overlord = all
+	}
+	can_marry = {
+		independent_nations = yes
+		same_overlord = sukkal_vassal
+	}
+	
+	# Subject Interactions
+	#(disable)
+	scutage = no
+	grant_core_claim = yes
+	grant_province = yes
+	place_relative_on_throne = no
+	enforce_religion = no
+	enforce_culture = no
+	seize_territory = no
+	#(enable)
+					  
+	return_land = yes
+	conscript_general = yes
+	takeondebt = yes
+	
  
 	# Modifiers:
 								
@@ -953,6 +1076,102 @@ personal_union = {
 	subject_opinion_modifier = in_union
 }
 
+phoenician_colony_subject = {
+	copy_from = default
+
+	is_potential_overlord = {
+		OR = {
+			primary_culture = phoenician
+			primary_culture = punic
+			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
+		}
+	}
+	
+	# Graphics:
+	sprite = GFX_subject_colony_icon
+	diplomacy_overlord_sprite = GFX_diplomacy_leadcolony
+	diplomacy_subject_sprite = GFX_diplomacy_subjectcolony
+
+	# Properties:
+	transfer_trade_if_merchant_republic = yes
+	transfer_trade_power = yes
+	can_be_annexed = no
+	has_power_projection = yes
+	gets_help_with_rebels = no
+	can_fight_independence_war = yes
+	overlord_protects_external = no
+	overlord_enforce_peace_attacking = no
+	takes_diplo_slot = no
+	forms_trade_companies = no
+	can_concentrate_development = no
+	joins_overlords_wars = no
+	can_be_called_to_wars =  yes
+	favors_cost_to_join_offensive_wars = 20
+	favors_cost_to_join_defensive_wars = 10
+	can_have_subjects_of_other_types = yes
+	can_transfer_in_peace = no
+	can_use_claims = no
+	can_send_missionary_to_subject = no
+	overlord_can_be_subject = yes
+	extend_trading_range = yes
+
+	max_government_rank = 2
+
+	liberty_desire_development_ratio = 0.5
+	liberty_desire_same_dynasty = 0.0
+	base_liberty_desire = -10
+	trust_on_start = 50
+
+	pays_overlord = 0.2
+	forcelimit_to_overlord = 0.0
+	naval_forcelimit_to_overlord = 0.08
+	should_quit_wars_on_activation = yes
+
+	relative_power_class = 1
+
+	# Subject Interactions:
+	# (continuous)
+	embargo_rivals = yes
+	scutage = yes
+	# (immediate)
+	placate_rulers = yes
+	grant_province = yes
+	demand_artifacts = no
+	conscript_general = no
+	takeondebt = yes
+
+	can_fight = {
+		independent_nations = yes
+		same_overlord = phoenician_colony_subject
+		other_overlord = all
+	}
+	can_rival = {
+		independent_nations = yes
+		same_overlord = phoenician_colony_subject
+		other_overlord = all
+	}
+	can_ally = {
+		independent_nations = yes
+		same_overlord = phoenician_colony_subject
+		other_overlord = all
+	}
+	can_marry = {
+		independent_nations = yes
+		same_overlord = phoenician_colony_subject
+	}
+	# Modifiers:
+	modifier_subject = {
+		modifier = phoenician_colony_subject_modifier
+	}
+	modifier_overlord = {
+		modifier = vassal_subject
+	}
+
+	overlord_opinion_modifier = is_phoenician_colony
+	subject_opinion_modifier = is_phoenician_colony
+}
+
 client_vassal = {
 	copy_from = vassal
 	count = vassal
@@ -964,11 +1183,83 @@ client_vassal = {
 	# Properties:
 	created_by_overlord = yes
 	can_concentrate_development = no
-
-	base_liberty_desire = -25.0
+	transfer_trade_power = no
+	transfer_trade_if_merchant_republic = no
+	joins_overlords_wars = no
+	joins_colonial_wars = no
+	can_be_integrated = yes
+	can_release_and_play = no
+	uses_tariffs = no
+	overlord_can_be_subject = no
+	overlord_protects_external = yes
+	can_have_subjects_of_other_types = no
+	takes_diplo_slot = no
+	can_release_in_peace = yes
+	counts_for_borders = yes
+	can_use_claims = no
+	gets_help_with_rebels = yes
+	share_rebel_popup = no
+	can_send_missionary_to_subject = yes
+	
+	max_government_rank = 3
+	trust_on_start = 30
+	
+	base_liberty_desire = -10.0
+	liberty_desire_negative_prestige = 0.0
+	liberty_desire_development_ratio = 0.2
+	pays_overlord = 0.33
+	forcelimit_to_overlord = 0.08
+	naval_forcelimit_to_overlord = 0.4
+	manpower_to_overlord = 0.3
+	sailors_to_overlord = 0.4
+	military_focus = 0.3
+	
+	relative_power_class = 1
+	
+	can_fight = {
+	    independent_nations = yes
+	}
+	can_rival = {
+		
+	}
+	can_ally = {
+	    same_overlord = client_vassal
+	}
+	can_marry = {
+	    same_overlord = client_vassal
+	}
 
 	# Subject Interactions:
 	customize_subject = yes
+	embargo_rivals = yes
+	support_loyalists = yes
+	subsidize_armies = no
+	scutage = no
+	send_officers = no
+	divert_trade = yes
+	block_settlement_growth = yes
+	allow_settlement_growth = yes
+	
+	placate_rulers = no
+	place_relative_on_throne = no
+	enforce_religion = yes
+	replace_governor = no
+	grant_province = yes
+	enforce_culture = yes
+	enforce_religion = yes
+	siphon_income = no
+	seize_territory = yes
+	fortify_march = no
+	takeondebt = yes
+	bestow_gifts = no
+	conscript_general = yes
+	send_additional_troops = no
+	demand_artifacts = no
+	demand_additional_tribute = no
+	force_seppuku = no
+	press_sailors = yes
+	knowledge_sharing = yes
+	
 }
 
 client_march = {
@@ -982,11 +1273,21 @@ client_march = {
 	# Properties:
 	created_by_overlord = yes
 	can_concentrate_development = no
-
-	base_liberty_desire = -40.0
+	
+	max_government_rank = 2
+	trust_on_start = 40
+	
+	base_liberty_desire = -15.0
+	liberty_desire_negative_prestige = 0.0
+	liberty_desire_development_ratio = 0.0
+	pays_overlord = 0.4
+	forcelimit_to_overlord = 0.0
+	
+	relative_power_class = 1
 
 	# Subject Interactions:
 	customize_subject = yes
+
 }
 
 
@@ -1015,7 +1316,6 @@ colony = {
 	overlord_enforce_peace_attacking = yes
 	can_transfer_in_peace = no
 	press_sailors = yes
-	forcelimit_bonus = 1.0
 	forcelimit_to_overlord = 0.2
 	can_concentrate_development = no
 	
@@ -1069,13 +1369,9 @@ crown_colony = {
 	can_send_missionary_to_subject = yes	
 	count = colony
 
-	forcelimit_bonus = 1.0
 	forcelimit_to_overlord = 0.5
-	manpower_bonus = 1.0
 	manpower_to_overlord = 0.5
-	naval_forcelimit_bonus = 0.5
 	naval_forcelimit_to_overlord = 0.05
-	sailors_bonus = 0.5
 	sailors_to_overlord = 0.05
 
 	# Subject Interactions:
@@ -1106,13 +1402,9 @@ private_enterprise = {
 	is_colony_subtype = yes
 	count = colony
 
-	forcelimit_bonus = 0.0
 	forcelimit_to_overlord = 0.0
-	manpower_bonus = 0.0
 	manpower_to_overlord = 0.0
-	naval_forcelimit_bonus = 1.0
 	naval_forcelimit_to_overlord = 0.5
-	sailors_bonus = 1.0
 	sailors_to_overlord = 0.5
 
 	# Subject Interactions:
@@ -1138,13 +1430,9 @@ self_governing_colony = {
 	is_colony_subtype = yes
 	count = colony
 
-	forcelimit_bonus = 0.1
 	forcelimit_to_overlord = 0.05
-	manpower_bonus = 0.1
 	manpower_to_overlord = 0.05
-	naval_forcelimit_bonus = 0.1
 	naval_forcelimit_to_overlord = 0.05
-	sailors_bonus = 0.1
 	sailors_to_overlord = 0.05
 
 	# Subject Interactions:
@@ -1193,7 +1481,6 @@ tributary_state = {
 	joins_overlords_wars = no
 	joins_colonial_wars = no
 	is_voluntary = yes
-	overlord_can_attack = yes
 	takes_diplo_slot = no
 	base_liberty_desire = 5
 	relative_power_class = 1
@@ -1287,7 +1574,20 @@ triumvir = {
 	copy_from = default
 
 	# Triggers:
-	is_potential_overlord = { TAG = ROM }
+	is_potential_overlord = {
+		OR = {
+			TAG = ROM
+			TAG = ROI
+			TAG = R1C
+			TAG = R1O
+			TAG = R1R
+			TAG = R1A
+			TAG = R1L
+			TAG = RRS
+			TAG = ROI
+			TAG = RRO
+		} 
+	}
 	
 	# Graphics:
 	sprite = GFX_icon_vassal_triumvir

@@ -1,0 +1,427 @@
+
+establish_phoenician_colony = {
+	category = influence
+	alert_index = 30
+	alert_tooltip = establish_phoenician_colony_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = no
+		OR = {
+			primary_culture = phoenician
+			primary_culture = punic
+			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
+		}
+		neither_tribal_nor_native_trigger = yes
+		FROM = {
+			OR = {
+				primary_culture = phoenician
+				primary_culture = punic
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+			}
+			is_subject = no
+			NOT = { same_continent = ROOT }
+			NOT = { num_of_states = 2 }
+		}
+	}
+	is_allowed = {
+		hidden_trigger = {
+			is_subject = no
+			OR = {
+				primary_culture = phoenician
+				primary_culture = punic
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+			}
+			neither_tribal_nor_native_trigger = yes
+			FROM = {
+				OR = {
+					primary_culture = phoenician
+					primary_culture = punic
+					primary_culture = ibero_phoenician
+					primary_culture = sardo_phoenician
+				}
+				is_subject = no
+				NOT = { same_continent = ROOT }
+				NOT = { num_of_states = 2 }
+			}
+		}
+		reverse_has_opinion = {
+			who = FROM
+			value = 190
+		}
+		FROM = {
+			trust = { who = ROOT value = 50 }
+			is_at_war = no
+			NOT = { total_development = ROOT }
+			NOT = { num_of_cities = ROOT }
+		}
+		NOT = { war_with = FROM }
+		has_any_disaster = no
+		is_bankrupt = no
+		is_at_war = no
+	}
+	on_accept = {
+		create_subject = {
+			subject_type = phoenician_colony_subject
+			subject = FROM
+		}
+	}
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -4 }
+		}
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 70 }
+		}
+		add_entry = {
+			name = NAVY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = navy_size
+				who = FROM
+			}
+			change_variable = { which = ai_value value = 1 }
+		}
+		add_entry = {
+			name = STABILITY
+			export_to_variable = {
+				variable_name = ai_value
+				value = stability
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 4 }
+		}
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = ROOT
+			}
+			divide_variable = { which = ai_value value = 8 }
+		}
+		add_entry = {
+			name = DIPLOMATIC_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 7 }
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			limit = { FROM = { ai = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -20
+			}
+		}
+	}
+	
+	ai_will_do = {
+		always = no
+	}
+}
+
+phoenician_colony_part_way = {
+	category = influence
+	alert_index = 28
+	alert_tooltip = phoenician_colony_part_way_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		is_subject_of = FROM
+		is_subject_of_type = phoenician_colony_subject
+	}
+	is_allowed = {
+		always = yes
+	}
+	on_accept = {
+		grant_independence = yes
+		if = {
+			limit = {
+				FROM = {
+					NOT = { primary_culture = phoenician }
+					NOT = { primary_culture = ibero_phoenician }
+					NOT = { primary_culture = sardo_phoenician }
+					NOT = { primary_culture = punic }
+				}
+			}
+			add_adm_power = 50
+			add_dip_power = 50
+			add_mil_power = 50
+			add_prestige = 10
+		}
+		else = {
+			add_adm_power = -100
+			add_dip_power = -100
+			add_mil_power = -100
+			add_prestige = 10
+			hidden_effect = {
+				reverse_add_opinion = {
+					who = FROM
+					modifier = colonial_ties_cut_opinion
+				}
+				reverse_add_casus_belli = {
+					target = FROM
+					type = cb_insult
+					months = 120
+				}
+			}
+		}
+	}
+	
+	ai_will_do = {
+		OR = {
+			ROM = { owns_all_provinces = { area = latium_area } }
+			ROM = { has_country_flag = latin_war_won_flag }
+			FROM = {
+				NOT = { primary_culture = phoenician }
+				NOT = { primary_culture = ibero_phoenician }
+				NOT = { primary_culture = sardo_phoenician }
+				NOT = { primary_culture = punic }
+			}
+			FROM = {
+				ai = yes
+				liberty_desire = 70
+			}
+			FROM = {
+				ai = no
+				liberty_desire = 80
+			}
+		}
+	}
+}
+
+abandon_colony_subject = {
+	category = influence
+	alert_index = 6
+	alert_tooltip = abandon_colony_subject_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of = ROOT
+			is_subject_of_type = phoenician_colony_subject
+		}
+	}
+	is_allowed = {
+		always = yes
+	}
+	on_accept = {
+		if = {
+			limit = {
+				OR = {
+					primary_culture = phoenician
+					primary_culture = ibero_phoenician
+					primary_culture = sardo_phoenician
+					primary_culture = punic
+				}
+			}
+			add_prestige = -5
+			hidden_effect = {
+				reverse_add_opinion = {
+					who = FROM
+					modifier = colonial_ties_cut_opinion
+				}
+			}
+		}
+		FROM = { grant_independence = yes }
+	}
+	
+	ai_will_do = {
+		NOT = {
+			OR = {
+				primary_culture = phoenician
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+				primary_culture = punic
+			}
+		}
+	}
+}
+
+enforce_rule_colony = {
+	category = influence
+	alert_index = 6
+	alert_tooltip = enforce_rule_colony_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		OR = {
+			primary_culture = phoenician
+			primary_culture = ibero_phoenician
+			primary_culture = sardo_phoenician
+			primary_culture = punic
+		}
+		FROM = {
+			is_subject_of = ROOT
+			is_subject_of_type = phoenician_colony_subject
+		}
+		total_development = 100
+		government_rank = 3
+	}
+	is_allowed = {
+		hidden_trigger = {
+			FROM = {
+				is_subject_of = ROOT
+				is_subject_of_type = phoenician_colony_subject
+			}
+			total_development = 100
+			government_rank = 3
+		}
+		FROM = { is_at_war = no }
+		reverse_has_opinion = {
+			who = FROM
+			value = 190
+		}
+		has_any_disaster = no
+		is_bankrupt = no
+		is_at_war = no
+	}
+	on_accept = {
+		add_prestige = 4
+		add_adm_power = -200
+		add_dip_power = -200
+		add_mil_power = -200
+		add_treasury = -100
+		add_absolutism = -20
+		hidden_effect = {
+			reverse_add_opinion = {
+				who = FROM
+				modifier = enforced_direct_rule_opinion
+			}
+			create_subject = {
+				subject_type = vassal
+				subject = FROM
+			}
+		}
+	}
+	
+	ai_will_do = {
+		always = no
+	}
+}
+
+call_to_arms_subject = {
+	category = influence
+	alert_index = 10
+	alert_tooltip = abandon_colony_subject_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		FROM = {
+			is_subject_of = ROOT
+			is_subject_of_type = phoenician_colony_subject
+		}
+	}
+	is_allowed = {
+		hidden_trigger = {
+			FROM = {
+				is_subject_of = ROOT
+				is_subject_of_type = phoenician_colony_subject
+			}
+		}
+		NOT = { FROM = { liberty_desire = 70 } } 
+		is_at_war = yes
+	}
+	on_accept = {
+		hidden_effect = {
+			FROM = {
+				join_all_offensive_wars_of = ROOT
+				join_all_defensive_wars_of = ROOT
+			}
+		}
+	}
+
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 70 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.2 }
+		}
+		add_entry = {
+			name = STABILITY
+			export_to_variable = {
+				variable_name = ai_value
+				value = stability
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = WAR_EXHAUSTION
+			export_to_variable = {
+				variable_name = ai_value
+				value = war_exhaustion
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -4 }
+		}
+		add_entry = {
+			name = IS_BANKRUPT
+			limit = { FROM = { is_bankrupt = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -100
+			}
+		}
+		add_entry = {
+			name = IS_IN_LARGE_DEBT
+			limit = { FROM = { is_in_large_debt = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -50
+			}
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			limit = { FROM = { ai = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -30
+			}
+		}
+	}
+	
+	ai_will_do = {
+		NOT = { war_score = 50 }
+		OR = {
+			is_in_war = { attacker_leader = ROOT }
+			is_in_war = { defender_leader = ROOT }
+		}
+	}
+}

@@ -1,0 +1,1341 @@
+
+###
+#	SLAVE "PRIVILEGES" OR LAWS
+###
+#	These laws will define the What, the How, even the Why, of slaves in the country. 
+# 	It will be several topics, grouped in sliders and improvements
+#	Most of the beneffits of each law will not be seen in a game modifier, but will be hard-coded for the mod's events. 
+#	So don't worry if you don't see much modifiers in a given privilege; they will still be taken into account. 
+
+	# Status defines "what is a slave"
+	#estate_slaves_status_1		# War captives
+	#estate_slaves_status_2		# Serfdom
+	#estate_slaves_status_3		# Standard
+	#estate_slaves_status_4		# Chattel slavery
+	#estate_slaves_status_5		# State owned
+	#estate_slaves_status_6		# Criminal only
+		
+	# Working conditions make them productive, but more rebellious. Goes both ways
+	#estate_slaves_condition_1		# Very lenient
+	#estate_slaves_condition_2		# Lenient
+	#estate_slaves_condition_3		# Normal
+	#estate_slaves_condition_4		# Traditional
+	#estate_slaves_condition_5		# Harsh
+	#estate_slaves_condition_6		# Very harsh
+	#estate_slaves_condition_7		# Exhausting
+	
+	# Expected jobs of slaves (not all will be X, but they are allowed to)
+	#estate_slaves_jobs_1		# Farming and mining
+	#estate_slaves_jobs_2		# Civilian jobs
+	#estate_slaves_jobs_3		# Specialized crafts
+	#estate_slaves_jobs_4		# Martial jobs (armies, navies)
+	#estate_slaves_jobs_5		# Administrators
+	
+	# Laws, five topics that will improve their condition. Many of them are required to abolish slavery. Some are negative 
+	# Each will take a bit of the "general income" gotten every five years. Instead of the 40%, it will be down until 20%
+	#estate_slaves_law_A1	# Law A: Legal protection, expanded legal rights
+	#estate_slaves_law_A2			
+	#estate_slaves_law_B1	# Law B: Right to salary; Equal pay and separate housing
+	#estate_slaves_law_B2
+	#estate_slaves_law_C1	# Law C: Ban of excessive punishments; Compulsory protection of child's slaves
+	#estate_slaves_law_C2
+	#estate_slaves_law_D1	# Law D: Debt bondage, Ban debt slavery
+	#estate_slaves_law_D2
+	#estate_slaves_law_E1	# Law E: Manumission (economic liberty), Active political liberty
+	#estate_slaves_law_E2
+	
+# Some other notes
+	# Loyalty means the loyalty of slaves, and will determine risk of general rebellion. There will be events to temporarily affect it
+	#	It will also affect the disasters put in place, for slave rebellion (Spartacus)
+	
+	# Influence is that of the slaves over the state. If it reaches high, slaves will try to lower the "bad" privileges
+	#	If influence reaches very high, due to special laws passed, it allows to start the process of Abolishing Slavery
+
+
+####
+# LET'S GO!!
+####
+
+# Status defines "what is a slave"
+	#estate_slaves_status_1		# War captives
+	#estate_slaves_status_2		# Serfdom
+	#estate_slaves_status_3		# Standard
+	#estate_slaves_status_4		# Chattel slavery
+	#estate_slaves_status_5		# State owned
+	#estate_slaves_status_6		# Criminal only
+
+estate_slaves_status_1 = {		# War captives
+	icon = privilege_status_1
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Later on it will be fixed, not it's just experimental
+		OR = {
+		    NOT = { has_estate_privilege = estate_slaves_status_1 }
+			has_estate_privilege = estate_slaves_status_2
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_5
+		}
+		# Later on, War Captives is the default option for natives and for tribals, 
+		# when they move into civilized (monarchy/republic/oligarchy/etc) they will automatically change to Serfs
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_2
+			remove_estate_privilege = estate_slaves_status_3
+			remove_estate_privilege = estate_slaves_status_4
+			remove_estate_privilege = estate_slaves_status_5
+			remove_estate_privilege = estate_slaves_status_6
+		}
+	}
+	benefits = {
+		slavesmod_state_income = -0.10
+		slavesmod_liberated = -0.10
+		slavesmod_enslav_eff = 0.10
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_status_2 = {		# Serfdom
+	icon = privilege_status_2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.05
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_status_1
+			has_estate_privilege = estate_slaves_status_3	# these two are experimental; later on it will be a penalty to "fall" into serfs
+		}
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_1 
+			remove_estate_privilege = estate_slaves_status_3
+			remove_estate_privilege = estate_slaves_status_4
+			remove_estate_privilege = estate_slaves_status_5
+			remove_estate_privilege = estate_slaves_status_6
+		}
+	}
+	benefits = {
+		slavesmod_state_income = -0.20 
+		slavesmod_liberated = -0.10
+	}
+	
+	cooldown_years = 20
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_status_3 = {		# Standard
+	icon = privilege_status_3
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.05
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_1
+			remove_estate_privilege = estate_slaves_status_2
+			remove_estate_privilege = estate_slaves_status_4
+			remove_estate_privilege = estate_slaves_status_5
+			remove_estate_privilege = estate_slaves_status_6
+		}
+	}
+	benefits = {
+		slavesmod_state_income = 0.05 
+	}
+	modifier_by_land_ownership = {	
+		
+	}
+	cooldown_years = 20
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_status_4 = {		# Chattel slavery, or "slave capitalism"
+	icon = privilege_status_4
+	land_share = 0		max_absolutism = 0		loyalty = 0.0	influence = 0.00
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Trigger
+		has_estate_privilege = estate_slaves_status_3
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_1
+			remove_estate_privilege = estate_slaves_status_2
+			remove_estate_privilege = estate_slaves_status_3
+			remove_estate_privilege = estate_slaves_status_5
+			remove_estate_privilege = estate_slaves_status_6
+		}
+	}
+	benefits = {
+		slavesmod_state_income = 0.10 
+		slavesmod_liberated = 0.01
+	}
+	
+	cooldown_years = 20
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_status_5 = {		# State owned
+	icon = privilege_status_5
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.10
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_status_1
+			has_estate_privilege = estate_slaves_status_3
+		}
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_1
+			remove_estate_privilege = estate_slaves_status_2
+			remove_estate_privilege = estate_slaves_status_3
+			remove_estate_privilege = estate_slaves_status_4
+			remove_estate_privilege = estate_slaves_status_6
+		}
+	}
+	benefits = {
+		slavesmod_state_income = 0.15 
+		slavesmod_liberated = -0.05
+	}
+	
+	cooldown_years = 20
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_status_6 = {		# Criminal only
+	icon = privilege_status_6
+	land_share = 0		max_absolutism = 0		loyalty = 0.3	influence = 0.20
+	is_valid = { # Potential
+		always = yes
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+		}
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_status_1
+			remove_estate_privilege = estate_slaves_status_2
+			remove_estate_privilege = estate_slaves_status_3
+			remove_estate_privilege = estate_slaves_status_4
+			remove_estate_privilege = estate_slaves_status_5
+		}
+	}
+	benefits = {
+		slavesmod_liberated = 0.03
+		slavesmod_productivity = -0.25
+		slavesmod_state_income = -0.30 
+	}
+	
+	cooldown_years = 20
+	
+	ai_will_do = { factor = 0 }
+}
+	
+	
+# Working conditions make them productive, but more rebellious. Goes both ways. Main effect is affecting productivity and unrest
+	#estate_slaves_condition_1		# Very lenient	| 0.35 loy	0.15 inf 	-50% effect	-50% prod
+	#estate_slaves_condition_2		# Lenient		| 0.20 loy	0.10 inf 	-33% effect	-33% prod
+	#estate_slaves_condition_3		# Normal		| 0.10 loy	0.05 inf 	  0% effect	 00% prod
+	#estate_slaves_condition_4		# Traditional	| 0.00 loy	0.00 inf 	 33% effect	 20% prod
+	#estate_slaves_condition_5		# Harsh			|-0.10 loy	0.00 inf 	 60% effect	 50% prod
+	#estate_slaves_condition_6		# Very harsh	|-0.20 loy	0.00 inf 	100% effect	 80% prod
+	#estate_slaves_condition_7		# Exhausting	|-0.40 loy	0.00 inf 	200% effect	150% prod
+	
+estate_slaves_condition_1 = {		# Very lenient
+	### Basic
+	icon = privilege_condition_1
+	land_share = 0		max_absolutism = 0		loyalty = 0.35	influence = 0.15
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_1
+			has_estate_privilege = estate_slaves_condition_2
+		}
+	}
+	can_select = { # Trigger
+		has_estate_privilege = estate_slaves_condition_2
+		mil_power = 100
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_2	# if coming down
+		}
+		add_mil_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = -0.50
+		slavesmod_natality = 0.005
+		slavesmod_mortality = -0.01
+		
+	}
+	
+	#####
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0
+	#####
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = -3.5 stability_cost_modifier = -0.50 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = -2.5 stability_cost_modifier = -0.40 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = -1.5 stability_cost_modifier = -0.30 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = -1.00 stability_cost_modifier = -0.20 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = -0.50 stability_cost_modifier = -0.125 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = -0.25 }
+ 		is_bad = no			
+ 	}
+	modifier_by_land_ownership = {	# What is here will be multiplied by this state's % of land. 
+		
+	}
+	
+	cooldown_years = 10
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_2 = {		
+	icon = privilege_condition_2
+	land_share = 0		max_absolutism = 0		loyalty = 0.20	influence = 0.05
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_1
+			has_estate_privilege = estate_slaves_condition_2
+			has_estate_privilege = estate_slaves_condition_3
+		}
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_condition_1
+			has_estate_privilege = estate_slaves_condition_3
+		}
+		mil_power = 100
+	}
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_1 
+			remove_estate_privilege = estate_slaves_condition_3
+		}
+		add_mil_power = -100
+	}
+	can_revoke = { always = no }
+	benefits = {
+		slavesmod_productivity = -0.25
+		slavesmod_mortality = -0.025
+		
+	}
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = -1.75 stability_cost_modifier = -0.50 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = -1.25 stability_cost_modifier = -0.20 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = -0.75 stability_cost_modifier = -0.15 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = -0.5 stability_cost_modifier = -0.10 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = -0.25 }
+ 		is_bad = no			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = -0.125 }
+ 		is_bad = no			
+ 	}
+	
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_3 = {		# 3 normal, 5 very high
+	icon = privilege_condition_3
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.05
+	is_valid = { # Potential
+		OR = {
+		    NOT = { has_estate_privilege = estate_slaves_condition_3 }
+			has_estate_privilege = estate_slaves_condition_2
+			has_estate_privilege = estate_slaves_condition_3
+			has_estate_privilege = estate_slaves_condition_4
+		}
+	}						
+	can_select = { # Trigger
+		OR = {
+		    NOT = { has_estate_privilege = estate_slaves_condition_3 }
+			has_estate_privilege = estate_slaves_condition_2
+			has_estate_privilege = estate_slaves_condition_4
+		}
+		mil_power = 100
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_2
+			remove_estate_privilege = estate_slaves_condition_4
+		}
+		add_mil_power = -100
+	}
+	benefits = {
+		# +0% productivity
+		# no effect on natality and mortality
+		
+	}
+	modifier_by_land_ownership = {	
+		
+	}
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_4 = {		
+	icon = privilege_condition_4
+	land_share = 0		max_absolutism = 0		loyalty = 0.0	influence = 0.00
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_3
+			has_estate_privilege = estate_slaves_condition_4
+			has_estate_privilege = estate_slaves_condition_5
+		}
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_condition_3
+			has_estate_privilege = estate_slaves_condition_5
+		}
+		mil_power = 100
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_3
+			remove_estate_privilege = estate_slaves_condition_5
+		}
+		add_mil_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = 0.20
+		# no effect on natality-mortality
+	}
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = 2.5 stability_cost_modifier = 0.35 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = 1.6 stability_cost_modifier = 0.25 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = 1.0 stability_cost_modifier = 0.20 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = 0.65 stability_cost_modifier = 0.15 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = 0.30 stability_cost_modifier = 0.10 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = 0.15 }
+ 		is_bad = yes		
+ 	}
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_5 = {		
+	icon = privilege_condition_5
+	land_share = 0		max_absolutism = 0		loyalty = -0.1	influence = 0.00
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_4
+			has_estate_privilege = estate_slaves_condition_5
+			has_estate_privilege = estate_slaves_condition_6
+		}
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_condition_4
+			has_estate_privilege = estate_slaves_condition_6
+		}
+		mil_power = 100
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_4
+			remove_estate_privilege = estate_slaves_condition_6
+		}
+		add_mil_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = 0.50
+		slavesmod_natality = -0.002
+		slavesmod_mortality = 0.005
+		
+	}
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = 4.5 stability_cost_modifier = 0.60 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = 3.0 stability_cost_modifier = 0.50 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = 2.00 stability_cost_modifier = 0.40 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = 1.25 stability_cost_modifier = 0.25 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = 0.75 stability_cost_modifier = 0.15 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = 0.30 }
+ 		is_bad = yes		
+ 	}
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_6 = {		
+	icon = privilege_condition_6
+	land_share = 0		max_absolutism = 0		loyalty = -0.2	influence = 0.00
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_5
+			has_estate_privilege = estate_slaves_condition_6
+			has_estate_privilege = estate_slaves_condition_7
+		}
+	}						
+	can_select = { # Trigger
+		OR = {
+			has_estate_privilege = estate_slaves_condition_5
+			has_estate_privilege = estate_slaves_condition_7
+		}
+		mil_power = 150
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_5
+			remove_estate_privilege = estate_slaves_condition_7
+		}
+		add_mil_power = -150
+	}
+	benefits = {
+		slavesmod_productivity = 0.80
+		slavesmod_natality = -0.005
+		slavesmod_mortality = 0.015
+		
+	}
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = 7.5 stability_cost_modifier = 1.00 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = 5.0 stability_cost_modifier = 0.80 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = 3.0 stability_cost_modifier = 0.60 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = 2.0 stability_cost_modifier = 0.40 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = 1.0 stability_cost_modifier = 0.25 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = 0.50 }
+ 		is_bad = yes		
+ 	}
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_condition_7 = {		
+	icon = privilege_condition_7
+	land_share = 0		max_absolutism = 0		loyalty = -0.40	influence = 0.00
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_condition_6
+			has_estate_privilege = estate_slaves_condition_7
+		}
+	}						
+	can_select = { # Trigger
+		has_estate_privilege = estate_slaves_condition_6
+		mil_power = 200
+	}
+	can_revoke = { always = no }
+	on_granted = { 
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_condition_6
+		}
+		add_mil_power = -200
+	}
+	benefits = {
+		slavesmod_productivity = 1.50
+		slavesmod_natality = -0.015
+		slavesmod_mortality = 0.025
+		
+	}
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = { global_unrest = 15 stability_cost_modifier = 2.00 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { global_unrest = 10 stability_cost_modifier = 1.60 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { global_unrest = 6 stability_cost_modifier = 1.20 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
+ 		modifier = { global_unrest = 4 stability_cost_modifier = 0.80 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
+ 		modifier = { global_unrest = 2 stability_cost_modifier = 0.50 }
+ 		is_bad = yes			
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
+ 		modifier = { global_unrest = 1 stability_cost_modifier = 0.20 }
+ 		is_bad = yes		
+ 	}
+	cooldown_years = 10
+	
+	ai_will_do = { factor = 0 }
+}
+
+
+# Expected jobs of slaves (not all will be X, but they are allowed to)
+	#estate_slaves_jobs_1		# Farming and mining
+	#estate_slaves_jobs_2		# Civilian jobs
+	#estate_slaves_jobs_3		# Specialized crafts
+	#estate_slaves_jobs_4		# Martial jobs (armies, navies)
+	#estate_slaves_jobs_5		# Administrators
+	
+
+estate_slaves_jobs_1 = {		# Farming and mining
+	icon = privilege_jobs_1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.00
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+		    NOT = { has_estate_privilege = estate_slaves_jobs_1 }
+			has_estate_privilege = estate_slaves_jobs_1
+			has_estate_privilege = estate_slaves_jobs_2
+		}
+	}
+	can_select = { 
+		# will be by law (disaster, great reform)
+		dip_power = 100
+		
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_jobs_2
+			remove_estate_privilege = estate_slaves_jobs_3
+			remove_estate_privilege = estate_slaves_jobs_4
+			remove_estate_privilege = estate_slaves_jobs_5
+		}
+		add_dip_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = -0.30	# lowers productivity
+		slavesmod_mortality = 0.003
+		# will be blocked from "advanced" manufactories and expensive trade goods
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_jobs_2 = {		# Civilian jobs
+	icon = privilege_jobs_2
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+		    has_estate_privilege = estate_slaves_jobs_1
+			has_estate_privilege = estate_slaves_jobs_2
+			has_estate_privilege = estate_slaves_jobs_3
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		dip_power = 100
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_jobs_1
+			remove_estate_privilege = estate_slaves_jobs_3
+			remove_estate_privilege = estate_slaves_jobs_4
+			remove_estate_privilege = estate_slaves_jobs_5
+		}
+		add_dip_power = -100
+	}
+	benefits = {
+		slavesmod_natality = 0.002
+		slavesmod_liberated = 0.005
+		# no effect on productivity. Slaves can be in any (basic) productive enterprise, also in cities
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_jobs_3 = {		# Specialized crafts
+	icon = privilege_jobs_3
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_jobs_2
+			has_estate_privilege = estate_slaves_jobs_3
+			has_estate_privilege = estate_slaves_jobs_4
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		dip_power = 150
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_jobs_1
+			remove_estate_privilege = estate_slaves_jobs_2
+			remove_estate_privilege = estate_slaves_jobs_4
+			remove_estate_privilege = estate_slaves_jobs_5
+		}
+		add_dip_power = -150
+	}
+	benefits = {
+		slavesmod_productivity = 0.20	# now slaves can be assigned to any province, including expensive trade goods
+		slavesmod_natality = 0.002
+		slavesmod_liberated = 0.008
+		
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_jobs_4 = {		# Martial jobs (armies, navies)
+	icon = privilege_jobs_4
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.15
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_jobs_3
+			has_estate_privilege = estate_slaves_jobs_4
+			has_estate_privilege = estate_slaves_jobs_5
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		dip_power = 200
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_jobs_1
+			remove_estate_privilege = estate_slaves_jobs_2
+			remove_estate_privilege = estate_slaves_jobs_3
+			remove_estate_privilege = estate_slaves_jobs_5
+		}
+		add_dip_power = -200
+	}
+	benefits = {
+		slavesmod_productivity = 0.20	# same benefit as before. This bonus comes in the conditional modifiers
+		slavesmod_natality = 0.003
+		slavesmod_liberated = 0.012
+		
+	}
+	# This tier will allow slaves into the army. Will counter 75% of the military malus from slaves in society
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = {
+			defensiveness = 0.30
+			global_garrison_growth = 0.30
+			land_morale = 0.125
+			army_tradition_decay = -0.20
+			manpower_recovery_speed = 0.22
+			movement_speed = 0.15
+			naval_morale = 0.125
+			navy_tradition_decay = -0.175
+			sailors_recovery_speed = 0.225
+		}
+ 		is_bad = no
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { 
+			defensiveness = 0.175
+			global_garrison_growth = 0.15
+			land_morale = 0.075
+			army_tradition_decay = -0.075
+			manpower_recovery_speed = 0.125
+			movement_speed = 0.10
+			naval_morale = 0.075
+			navy_tradition_decay = -0.075
+			sailors_recovery_speed = 0.125
+		}
+ 		is_bad = no	
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { defensiveness = 0.125 }
+ 		is_bad = no
+ 	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_jobs_5 = {		# Administrators
+	icon = privilege_jobs_5
+	land_share = 0		max_absolutism = 0		loyalty = 0.15	influence = 0.25
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_jobs_3
+			has_estate_privilege = estate_slaves_jobs_4
+			has_estate_privilege = estate_slaves_jobs_5
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		dip_power = 250
+	}
+	can_revoke = { always = no }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_jobs_1
+			remove_estate_privilege = estate_slaves_jobs_2
+			remove_estate_privilege = estate_slaves_jobs_3
+			remove_estate_privilege = estate_slaves_jobs_4
+		}
+		add_dip_power = -250
+	}
+	benefits = {
+		slavesmod_productivity = 0.20	# same benefit as before. This bonus comes in the conditional modifiers
+		slavesmod_natality = 0.005
+		slavesmod_liberated = 0.015
+		
+	}
+	# This tier will allow slaves into the army. Will counter 75% of the military malus from slaves in society
+	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 200 } }
+ 		modifier = {
+			global_spy_defence = 0.60
+			defensiveness = 0.30
+			global_garrison_growth = 0.30
+			land_morale = 0.125
+			army_tradition_decay = -0.20
+			manpower_recovery_speed = 0.22
+			movement_speed = 0.15
+			naval_morale = 0.125
+			navy_tradition_decay = -0.175
+			sailors_recovery_speed = 0.225
+		}
+ 		is_bad = no
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
+ 		modifier = { 
+			global_spy_defence = 0.35
+			defensiveness = 0.175
+			global_garrison_growth = 0.15
+			land_morale = 0.075
+			army_tradition_decay = -0.075
+			manpower_recovery_speed = 0.125
+			movement_speed = 0.10
+			naval_morale = 0.075
+			navy_tradition_decay = -0.075
+			sailors_recovery_speed = 0.125
+		}
+ 		is_bad = no	
+ 	}
+	conditional_modifier = { 	
+ 		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
+ 		modifier = { defensiveness = 0.125 global_spy_defence = 0.25 }
+ 		is_bad = no
+ 	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+
+	
+	# Laws, five topics that will improve their condition. Many of them are required to abolish slavery. Some are negative 
+	# Each will take a bit of the "general income" gotten every five years. Instead of the 40%, it will be down until 20%
+	#estate_slaves_law_A1	# Law A: Legal protection, expanded legal rights
+	#estate_slaves_law_A2			
+	#estate_slaves_law_B1	# Law B: Right to salary; Equal pay and separate housing
+	#estate_slaves_law_B2
+	#estate_slaves_law_C1	# Law C: Ban of excessive punishments; Compulsory protection of child's slaves
+	#estate_slaves_law_C2
+	#estate_slaves_law_D1	# Law D: Debt bondage, Ban debt slavery
+	#estate_slaves_law_D2
+	#estate_slaves_law_E1	# Law E: Manumission (economic liberty), Active political liberty
+	#estate_slaves_law_E2
+
+estate_slaves_law_A1 = {		# Legal protection
+	icon = privilege_law_A1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 100
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_A2
+		}
+		add_adm_power = -100
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = 0.05
+		slavesmod_state_income = -0.02	# Less state income for each special law
+		
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_A2 = {		# Expanded legal rights
+	icon = privilege_law_A2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 200
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_A1
+		}
+		add_adm_power = -200
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_productivity = 0.10
+		slavesmod_state_income = -0.04	# Less state income for each special law
+		
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+
+estate_slaves_law_B1 = {		# Right to salary
+	icon = privilege_law_B1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 100
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_B2
+		}
+		add_adm_power = -100
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_natality = 0.002
+		slavesmod_productivity = 0.05
+		slavesmod_state_income = -0.02	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_B2 = {		# Equal pay and separate housing
+	icon = privilege_law_B2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 200
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_B1
+		}
+		add_adm_power = -200
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_natality = 0.003
+		slavesmod_productivity = 0.15
+		slavesmod_state_income = -0.04	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+
+estate_slaves_law_C1 = {		# Ban of excessive punishments
+	icon = privilege_law_C1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 100
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_C2
+		}
+		add_adm_power = -100
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_mortality = -0.001
+		slavesmod_productivity = 0.05
+		slavesmod_state_income = -0.02	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_C2 = {		# Compulsory protection of child's slaves
+	icon = privilege_law_C2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 200
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_C1
+		}
+		add_adm_power = -200
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_mortality = -0.003
+		slavesmod_productivity = 0.10
+		# natality modifier counts towards liberated slaves. Slave population no longer grows
+		slavesmod_state_income = -0.04	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+
+	
+estate_slaves_law_D1 = {		# Debt bondage
+	icon = privilege_law_D1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 100
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_D2
+		}
+		add_adm_power = -100
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_liberated = 0.002
+		slavesmod_state_income = -0.02	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_D2 = {		# Ban debt slavery
+	icon = privilege_law_D2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 200
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_D1
+		}
+		add_adm_power = -200
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_natality = 0.003
+		slavesmod_liberated = 0.005
+		slavesmod_state_income = -0.04	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_E1 = {		# Manumission (economic liberty)
+	icon = privilege_law_E1
+	land_share = 0		max_absolutism = 0		loyalty = 0.05	influence = 0.05
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 100
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_E2
+		}
+		add_adm_power = -100
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_liberated = 0.01
+		slavesmod_state_income = -0.02	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+estate_slaves_law_E2 = {		# Active political liberty
+	icon = privilege_law_E2
+	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.10
+	### Potential and trigger
+	is_valid = { # Potential
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			has_estate_privilege = estate_slaves_status_6
+		}
+	}						
+	can_select = { 
+		# will be by law (disaster, great reform)
+		adm_power = 200
+	}
+	can_revoke = { adm_power = 100 }
+	### Effects
+	on_granted = {
+		hidden_effect = {
+			remove_estate_privilege = estate_slaves_law_E1
+		}
+		add_adm_power = -200
+	}
+	on_revoked = {
+		add_adm_power = -100
+	}
+	benefits = {
+		slavesmod_liberated = 0.02
+		slavesmod_state_income = -0.04	# Less state income for each special law
+	}
+	
+	cooldown_years = 20
+	ai_will_do = { factor = 0 }
+}
+
+
