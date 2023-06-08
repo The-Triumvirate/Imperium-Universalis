@@ -322,8 +322,8 @@ country_event = {			# Event that the country gets, asking to lower the value
 	
 	trigger = {
 		any_owned_province = {
-			had_province_flag = { flag = DE_tndecadent days = 1 }	# always has 2 years of cooldown before getting event
-			
+			had_province_flag = { flag = DE_tndecadent days = 730 }	# always has 2 years of cooldown before getting event
+			province_has_center_of_trade_of_level = 2
 		}
 		
 	}
@@ -346,21 +346,26 @@ country_event = {			# Event that the country gets, asking to lower the value
 	}
 	
 	immediate = {
-		# Find which trade node will count: 
-		random_owned_province = {
-			limit = { 
-				had_province_flag = { flag = DE_tndecadent days = 1 } 
-				province_has_center_of_trade_of_level = 2 					# otherwise it wouldn't reduce
+		hidden_effect = {
+			# Find which trade node will count: 
+			random_owned_province = {
+				limit = { 
+					had_province_flag = { flag = DE_tndecadent days = 1 } 
+					province_has_center_of_trade_of_level = 2 					# otherwise it wouldn't reduce
+				}
+				save_event_target_as = DE_decadent_target
+				
 			}
-			save_event_target_as = DE_decadent_target
 			
+			# Find which ratio are we talking about -> save the trade node capital as an event target
+			DE_pin_tn_capital = yes
+				# now the province with the variables is here: DE_TN_capital_pinned
 		}
-		
 	}
 	
 	
 	option = {
-		name = "trade_limits.4.a"		# Accept the downgrade
+		name = "trade_limits.4.1"		# Accept the downgrade
 		ai_chance = {
 			factor = 60
 			modifier = { factor = 2 NOT = { event_target:DE_decadent_target = { is_core = ROOT } } }
@@ -384,7 +389,7 @@ country_event = {			# Event that the country gets, asking to lower the value
 	}
 	
 	option = {
-		name = "trade_limits.4.a"		# Pay gold. 25% of CoT upgrade price
+		name = "trade_limits.4.2"		# Pay gold. 25% of CoT upgrade price
 		ai_chance = {
 			factor = 15
 			modifier = { factor = 3 years_of_income = 2 }
@@ -408,7 +413,7 @@ country_event = {			# Event that the country gets, asking to lower the value
 	}
 	
 	option = {
-		name = "trade_limits.4.a"		# Make new trade policies. Spend dip power, 10% of that CoT's gold cost
+		name = "trade_limits.4.3"		# Make new trade policies. Spend dip power, 10% of that CoT's gold cost
 		ai_chance = {
 			factor = 15
 			modifier = { factor = 3 dip_power = 300 }
@@ -432,7 +437,7 @@ country_event = {			# Event that the country gets, asking to lower the value
 	}
 	
 	option = {
-		name = "trade_limits.4.a"		# Accept a setback in trade power. Relative, -50% of that CoT power
+		name = "trade_limits.4.4"		# Accept a setback in trade power. Relative, -50% of that CoT power
 		ai_chance = {
 			factor = 15
 			modifier = { factor = 3 NOT = { trade_income_percentage = 0.2 } }
@@ -441,18 +446,18 @@ country_event = {			# Event that the country gets, asking to lower the value
 		event_target:DE_decadent_target = {
 			trigger_switch = {
 				on_trigger = province_has_center_of_trade_of_level
-				9 = { add_trade_modifier = { who = ROOT duration = 1820 power = 27 key = DECADENCE } }
-				8 = { add_trade_modifier = { who = ROOT duration = 1820 power = 21 key = DECADENCE } }
-				7 = { add_trade_modifier = { who = ROOT duration = 1820 power = 18 key = DECADENCE } }
-				6 = { add_trade_modifier = { who = ROOT duration = 1820 power = 15 key = DECADENCE } }
-				5 = { add_trade_modifier = { who = ROOT duration = 1820 power = 12 key = DECADENCE } }
-				4 = { add_trade_modifier = { who = ROOT duration = 1820 power = 9 key = DECADENCE } }
-				3 = { add_trade_modifier = { who = ROOT duration = 1820 power = 6 key = DECADENCE } }
-				2 = { add_trade_modifier = { who = ROOT duration = 1820 power = 3 key = DECADENCE } }
+				9 = { add_trade_modifier = { who = ROOT duration = 1820 power = -27 key = TN_TRADE_DECADENCE } }
+				8 = { add_trade_modifier = { who = ROOT duration = 1820 power = -21 key = TN_TRADE_DECADENCE } }
+				7 = { add_trade_modifier = { who = ROOT duration = 1820 power = -18 key = TN_TRADE_DECADENCE } }
+				6 = { add_trade_modifier = { who = ROOT duration = 1820 power = -15 key = TN_TRADE_DECADENCE } }
+				5 = { add_trade_modifier = { who = ROOT duration = 1820 power = -12 key = TN_TRADE_DECADENCE } }
+				4 = { add_trade_modifier = { who = ROOT duration = 1820 power = -9 key = TN_TRADE_DECADENCE } }
+				3 = { add_trade_modifier = { who = ROOT duration = 1820 power = -6 key = TN_TRADE_DECADENCE } }
+				2 = { add_trade_modifier = { who = ROOT duration = 1820 power = -3 key = TN_TRADE_DECADENCE } }
 				
 			}
 		}
-		
+		custom_tooltip = TRADE_LIMIT_4_4
 	}
 	
 	after = {
