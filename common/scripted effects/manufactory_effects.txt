@@ -1,0 +1,315 @@
+
+
+SD_update_provslots = {
+	# Manufactory slots determined by Slave Law (expected jobs); 
+	set_variable = { which = SD_prov_slots value = 0 }
+	if = {
+		limit = { 
+			owner = { 
+				OR = { 
+					has_estate_privilege = estate_slaves_jobs_3 
+					has_estate_privilege = estate_slaves_jobs_4 
+					has_estate_privilege = estate_slaves_jobs_5 
+				}
+			}
+			OR = {	# Left hand are basic; right hand are specialized crafts
+				has_building = farming_settlement 	has_building = winery
+				has_building = shepherds			has_building = apiary
+				has_building = fishermen_huts		has_building = weavers
+				has_building = salt_gatherers		has_building = tannery
+				has_building = miners_camp			has_building = glassmaker
+				has_building = pottery				has_building = blacksmith
+				has_building = tar_pit				has_building = horsebreeder
+				has_building = lumberjack			has_building = dyer
+			}
+		}
+		change_variable = { SD_prov_slots = 5 }
+	}
+	else_if = {
+		limit = {
+			owner = { has_estate_privilege = estate_slaves_jobs_2 }		# Specialized crafts not allowed, all capped at 3 slots
+			OR = {
+				has_building = farming_settlement 
+				has_building = shepherds		
+				has_building = fishermen_huts	
+				has_building = salt_gatherers
+				has_building = miners_camp
+				has_building = pottery
+				has_building = tar_pit
+				has_building = lumberjack
+			}
+			
+		}
+		change_variable = { SD_prov_slots = 3 }
+	}
+	else_if = {
+		limit = { 
+			owner = { has_estate_privilege = estate_slaves_jobs_1 }		# Only farming and mining, capped at 3 slots
+			OR = {
+				has_building = farming_settlement 
+				has_building = shepherds		
+				has_building = miners_camp
+			}
+			
+		}
+		change_variable = { SD_prov_slots = 3 }
+	}
+	
+	
+	# Add monuments and special modifiers
+		# will add famous mines, production places, etc
+	
+	
+	# Adds other buildings
+	trigger_switch = {
+		on_trigger = has_building
+		big_mine = { 				change_variable = { SD_prov_slots = 3 } }
+		small_mine = { 				change_variable = { SD_prov_slots = 2 } }
+		quarry = { 					change_variable = { SD_prov_slots = 1 } }
+		
+		big_estate = { 				change_variable = { SD_prov_slots = 3 } }
+		big_water_irrigation = { 	change_variable = { SD_prov_slots = 2 } }
+		small_water_irrigation = { 	change_variable = { SD_prov_slots = 1 } }
+		
+		artisan_district = { 		change_variable = { SD_prov_slots = 3 } }
+		small_workshop = { 			change_variable = { SD_prov_slots = 2 } }
+		craftsman = { 				change_variable = { SD_prov_slots = 1 } }
+		
+	}
+	
+	# Check in case of slavery abolished and slave republic: move slots back to zero
+	
+	
+	
+	# Now we know the maximum capacity, and we see what to do with the slaves already there. 
+	
+	# Find how many free space there is
+	
+		# Use slot free as a proxy for slaves in province
+		set_variable = { which = SD_slot_free which = slaves_in_province } multiply_variable = { SD_slot_free = 0.1 }
+	
+	if = {
+		limit = { check_variable = { slaves_in_province = 0.001 } NOT = { check_variable = { SD_prov_slots = 1 } } }
+		# Slaves exist, but no possible slot. Gone back to the country
+		set_variable = { which = SD_slot_free value = 0 }
+		SD_slaves_return_all = yes
+	}
+	else_if = {
+		limit = { 
+			check_variable = { which = SD_slot_free which = SD_prov_slots  }				# More slaves than slots. 
+			NOT = { is_variable_equal = { which = SD_slot_free which = SD_prov_slots } }	# The extra will be moved to the country
+		}
+		set_variable = { which = SD_slot_free which = slaves_in_province }	multiply_variable = { SD_slot_free = 0.1 }
+		subtract_variable = { which = SD_slot_free which = SD_prov_slots }	multiply_variable = { SD_slot_free = 10 }
+		SD_slaves_return_partial = yes
+		set_variable = { which = SD_slot_free value = 0 }
+	}
+	else_if = {
+		limit = { check_variable = { SD_prov_slots = 1 } }		# There is a slot & with previous else_if maybe has slaves, but not higher
+		set_variable = { which = SD_slot_free which = SD_prov_slots }			multiply_variable = { SD_slot_free = 10 }
+		subtract_variable = { which = SD_slot_free which = slaves_in_province } 
+		divide_variable = { SD_slot_free = 10000 }	multiply_variable = { SD_slot_free = 1000 }	# rounds to tens, then converts to units
+	}
+	
+	if = { limit = { NOT = { check_variable = { slaves_in_province = 0.001 } } } set_variable = { which = slaves_in_province value = 0 } }
+	
+}
+SD_slaves_return_all = {
+	# Takes into account which status law we are using
+	if = {
+		limit = { owner = { has_estate_privilege = estate_slaves_status_1 } }
+		set_variable = { which = slaves_captive which = slaves_in_province } 	# must be corrected
+		set_variable = { which = slaves_in_province value = 0 }
+		owner = { change_variable = { which = slaves_captive which = PREV } }
+		set_variable = { which = slaves_captive value = 0 }
+	}
+	else_if = {
+		limit = { owner = { has_estate_privilege = estate_slaves_status_2 } }
+		set_variable = { which = slaves_serf which = slaves_in_province } 	# must be corrected
+		set_variable = { which = slaves_in_province value = 0 }
+		owner = { change_variable = { which = slaves_serf which = PREV } }
+		set_variable = { which = slaves_serf value = 0 }
+	}
+	else = {
+		set_variable = { which = slaves which = slaves_in_province }
+		set_variable = { which = slaves_in_province value = 0 }
+		owner = { change_variable = { which = slaves which = PREV } }
+		set_variable = { which = slaves value = 0 }
+	}
+	
+	
+}
+
+SD_slaves_return_partial = {
+	# Takes into account which status law we are using
+	if = {
+		limit = { owner = { has_estate_privilege = estate_slaves_status_1 } }
+		set_variable = { which = slaves_captive which = SD_slot_free } 
+		subtract_variable = { which = slaves_in_province which = slaves_captive }
+		owner = { change_variable = { which = slaves_captive which = PREV } }
+		set_variable = { which = slaves_captive value = 0 }
+	}
+	#else_if = {
+	#	limit = { owner = { has_estate_privilege = estate_slaves_status_2 } }
+	#	set_variable = { which = slaves_serf which = SD_slot_free } 
+	#	subtract_variable = { which = slaves_in_province which = slaves_serf }
+	#	owner = { change_variable = { which = slaves_serf which = PREV } }
+	#	set_variable = { which = slaves_serf value = 0 }
+	#}
+	else = {
+		set_variable = { which = slaves which = SD_slot_free } 
+		subtract_variable = { which = slaves_in_province which = slaves }
+		owner = { change_variable = { which = slaves which = PREV } }
+		set_variable = { which = slaves value = 0 }
+	}
+	
+}
+
+
+SD_update_prov_output = {
+	owner = { PREV = { export_to_variable = { which = SD_slave_output value = modifier:slavesmod_productivity who = PREV } } }
+	change_variable = { SD_slave_output = 1 } 
+	multiply_variable = { which = SD_slave_output which = slaves_in_province }
+	multiply_variable = { SD_slave_output = 0.02 } 		# 0.20 goods per slave, divided by 10 to convert to a pop
+	
+	trigger_switch = {
+		on_trigger = has_province_modifier
+		manf_slave_35 = { remove_province_modifier = manf_slave_35 }
+		manf_slave_34 = { remove_province_modifier = manf_slave_34 }
+		manf_slave_33 = { remove_province_modifier = manf_slave_33 }
+		manf_slave_32 = { remove_province_modifier = manf_slave_32 }
+		manf_slave_31 = { remove_province_modifier = manf_slave_31 }
+		manf_slave_30 = { remove_province_modifier = manf_slave_30 }
+		manf_slave_29 = { remove_province_modifier = manf_slave_29 }
+		manf_slave_28 = { remove_province_modifier = manf_slave_28 }
+		manf_slave_27 = { remove_province_modifier = manf_slave_27 }
+		manf_slave_26 = { remove_province_modifier = manf_slave_26 }
+		manf_slave_25 = { remove_province_modifier = manf_slave_25 }
+		manf_slave_24 = { remove_province_modifier = manf_slave_24 }
+		manf_slave_23 = { remove_province_modifier = manf_slave_23 }
+		manf_slave_22 = { remove_province_modifier = manf_slave_22 }
+		manf_slave_21 = { remove_province_modifier = manf_slave_21 }
+		manf_slave_20 = { remove_province_modifier = manf_slave_20 }
+		manf_slave_19 = { remove_province_modifier = manf_slave_19 }
+		manf_slave_18 = { remove_province_modifier = manf_slave_18 }
+		manf_slave_17 = { remove_province_modifier = manf_slave_17 }
+		manf_slave_16 = { remove_province_modifier = manf_slave_16 }
+		manf_slave_15 = { remove_province_modifier = manf_slave_15 }
+		manf_slave_14 = { remove_province_modifier = manf_slave_14 }
+		manf_slave_13 = { remove_province_modifier = manf_slave_13 }
+		manf_slave_12 = { remove_province_modifier = manf_slave_12 }
+		manf_slave_11 = { remove_province_modifier = manf_slave_11 }
+		manf_slave_10 = { remove_province_modifier = manf_slave_10 }
+		manf_slave_09 = { remove_province_modifier = manf_slave_09 }
+		manf_slave_08 = { remove_province_modifier = manf_slave_08 }
+		manf_slave_07 = { remove_province_modifier = manf_slave_07 }
+		manf_slave_06 = { remove_province_modifier = manf_slave_06 }
+		manf_slave_05 = { remove_province_modifier = manf_slave_05 }
+		manf_slave_04 = { remove_province_modifier = manf_slave_04 }
+		manf_slave_03 = { remove_province_modifier = manf_slave_03 }
+		manf_slave_02 = { remove_province_modifier = manf_slave_02 }
+		manf_slave_01 = { remove_province_modifier = manf_slave_01 }
+		manf_slave_00 = { remove_province_modifier = manf_slave_00 }
+		
+	}
+	
+	if = { 		limit = { check_variable = { SD_slave_output = 7.50 } } SD_add_manuf_modifier = { level = 35 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 7.00 } } SD_add_manuf_modifier = { level = 34 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 6.50 } } SD_add_manuf_modifier = { level = 33 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 6.00 } } SD_add_manuf_modifier = { level = 32 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 5.50 } } SD_add_manuf_modifier = { level = 31 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 5.00 } } SD_add_manuf_modifier = { level = 30 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 4.50 } } SD_add_manuf_modifier = { level = 29 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 4.00 } } SD_add_manuf_modifier = { level = 28 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.75 } } SD_add_manuf_modifier = { level = 27 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.50 } } SD_add_manuf_modifier = { level = 26 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.25 } } SD_add_manuf_modifier = { level = 25 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.00 } } SD_add_manuf_modifier = { level = 24 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.75 } } SD_add_manuf_modifier = { level = 23 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.50 } } SD_add_manuf_modifier = { level = 22 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.25 } } SD_add_manuf_modifier = { level = 21 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.0 } }  SD_add_manuf_modifier = { level = 20 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.9 } }  SD_add_manuf_modifier = { level = 19 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.8 } }  SD_add_manuf_modifier = { level = 18 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.7 } }  SD_add_manuf_modifier = { level = 17 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.6 } }  SD_add_manuf_modifier = { level = 16 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.5 } }  SD_add_manuf_modifier = { level = 15 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.4 } }  SD_add_manuf_modifier = { level = 14 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.3 } }  SD_add_manuf_modifier = { level = 13 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.2 } }  SD_add_manuf_modifier = { level = 12 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.1 } }  SD_add_manuf_modifier = { level = 11 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.0 } }  SD_add_manuf_modifier = { level = 10 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.9 } }  SD_add_manuf_modifier = { level = 09 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.8 } }  SD_add_manuf_modifier = { level = 08 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.7 } }  SD_add_manuf_modifier = { level = 07 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.6 } }  SD_add_manuf_modifier = { level = 06 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.5 } }  SD_add_manuf_modifier = { level = 05 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.4 } }  SD_add_manuf_modifier = { level = 04 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.3 } }  SD_add_manuf_modifier = { level = 03 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.2 } }  SD_add_manuf_modifier = { level = 02 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.1 } }  SD_add_manuf_modifier = { level = 01 } }
+	else = { 													        SD_add_manuf_modifier = { level = 00 } }
+	
+	
+}
+SD_add_manuf_modifier = {
+	add_permanent_province_modifier = { name = manf_slave_$level$ duration = -1 }
+}
+
+SD_remove_manuf_modifiers = {
+	trigger_switch = {
+		on_trigger = has_province_modifier
+		manf_slave_35 = { remove_province_modifier = manf_slave_35 }
+		manf_slave_34 = { remove_province_modifier = manf_slave_34 }
+		manf_slave_33 = { remove_province_modifier = manf_slave_33 }
+		manf_slave_32 = { remove_province_modifier = manf_slave_32 }
+		manf_slave_31 = { remove_province_modifier = manf_slave_31 }
+		manf_slave_30 = { remove_province_modifier = manf_slave_30 }
+		manf_slave_29 = { remove_province_modifier = manf_slave_29 }
+		manf_slave_28 = { remove_province_modifier = manf_slave_28 }
+		manf_slave_27 = { remove_province_modifier = manf_slave_27 }
+		manf_slave_26 = { remove_province_modifier = manf_slave_26 }
+		manf_slave_25 = { remove_province_modifier = manf_slave_25 }
+		manf_slave_24 = { remove_province_modifier = manf_slave_24 }
+		manf_slave_23 = { remove_province_modifier = manf_slave_23 }
+		manf_slave_22 = { remove_province_modifier = manf_slave_22 }
+		manf_slave_21 = { remove_province_modifier = manf_slave_21 }
+		manf_slave_20 = { remove_province_modifier = manf_slave_20 }
+		manf_slave_19 = { remove_province_modifier = manf_slave_19 }
+		manf_slave_18 = { remove_province_modifier = manf_slave_18 }
+		manf_slave_17 = { remove_province_modifier = manf_slave_17 }
+		manf_slave_16 = { remove_province_modifier = manf_slave_16 }
+		manf_slave_15 = { remove_province_modifier = manf_slave_15 }
+		manf_slave_14 = { remove_province_modifier = manf_slave_14 }
+		manf_slave_13 = { remove_province_modifier = manf_slave_13 }
+		manf_slave_12 = { remove_province_modifier = manf_slave_12 }
+		manf_slave_11 = { remove_province_modifier = manf_slave_11 }
+		manf_slave_10 = { remove_province_modifier = manf_slave_10 }
+		manf_slave_09 = { remove_province_modifier = manf_slave_09 }
+		manf_slave_08 = { remove_province_modifier = manf_slave_08 }
+		manf_slave_07 = { remove_province_modifier = manf_slave_07 }
+		manf_slave_06 = { remove_province_modifier = manf_slave_06 }
+		manf_slave_05 = { remove_province_modifier = manf_slave_05 }
+		manf_slave_04 = { remove_province_modifier = manf_slave_04 }
+		manf_slave_03 = { remove_province_modifier = manf_slave_03 }
+		manf_slave_02 = { remove_province_modifier = manf_slave_02 }
+		manf_slave_01 = { remove_province_modifier = manf_slave_01 }
+		manf_slave_00 = { remove_province_modifier = manf_slave_00 }
+	}
+	
+}
+
+SD_autoassign_slaves = {
+	# Triggered when a decision is set at the slaves options. Will add slaves directly after the building is done
+	while = {
+		limit = { check_variable = { SD_slot_free = 1 } owner = { treasury = 10 check_variable = { slaves = 10 } } }
+		change_variable = { slaves_in_province = 10 } subtract_variable = { SD_slot_free = 1 }
+		owner = {
+			add_treasury = -10
+			change_variable = { slaves_in_province = 10 } subtract_variable = { slaves = 10 }
+		}
+	}
+	SD_update_provslots = yes 	
+	SD_update_prov_output = yes 
+}
+
