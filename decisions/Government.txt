@@ -2,12 +2,29 @@ country_decisions = {
 	############################################
 	abolish_slavers_dec = {
 		potential = {
-			always = no
+			#always = no
 			
+			# New system, trigger: be already at the last slavery law (criminal only or state), and have three upgraded privileges
+			OR = {
+				has_estate_privilege = estate_slaves_status_5
+				has_estate_privilege = estate_slaves_status_6
+			}
 		}
 		allow = {
-			stability = 1	
+			stability = 3	
 			NOT = { has_reform = spartan_monarchy_reform }
+			
+			has_estate_privilege = estate_slaves_condition_1
+			calc_true_if = {
+				OR = {
+					has_estate_privilege = estate_slaves_law_A2
+					has_estate_privilege = estate_slaves_law_B2
+					has_estate_privilege = estate_slaves_law_C2
+					has_estate_privilege = estate_slaves_law_D2
+					has_estate_privilege = estate_slaves_law_E2
+				}	
+				amount = 3
+			}
 		}
 		effect = {
 			add_country_modifier = {
@@ -18,9 +35,39 @@ country_decisions = {
 				limit = { has_country_modifier = debt_bondage_banned }
 				remove_country_modifier = debt_bondage_banned
 			}
-			add_stability = -1	
-			set_variable = { which = slaves value = 0 }
-			country_event = { id = slaves.1 days = 2 }
+			
+			# scaled hit depending on how many
+			if = {		limit = { check_variable = { slave_pop_social = 150 } } add_stability = -6 } # how have you survived so far?
+			else_if = {	limit = { check_variable = { slave_pop_social = 100 } } add_stability = -5 } 
+			else_if = {	limit = { check_variable = { slave_pop_social = 75 } } 	add_stability = -4 }
+			else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -3 }
+			else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -2 }
+			else = { add_stability = -1 }
+			
+			custom_tooltip = SD_abolished_amount
+			hidden_effect = {
+				change_variable = { which = freedmen_new which = slaves }
+				change_variable = { which = freedmen_new which = slaves_in_province }
+				change_variable = { which = freedmen_new which = SD_new_slaves }
+				change_variable = { which = freedmen_new which = SD_slaves_available }
+				change_variable = { which = freedmen_new which = SD_captives }
+				set_variable = { which = slaves value = 0 }
+				
+				every_owned_province = {
+					limit = { check_variable = { slaves_in_province = 1 } }
+					set_variable = { which = slaves_in_province value = 0 }
+				}
+				every_owned_province = {
+					limit = { check_variable = { SD_slaves_available = 0.1 } }
+					set_variable = { which = SD_slaves_available value = 0 }
+				}
+				every_owned_province = {
+					province_event = { id = population_capacity.4 }		# careful here
+				}
+			}
+			country_event = { id = slaves.2 days = 30 }		# freedmen. Done some days later, to allow update of popgrowth values. 
+			
+			# deactivate estate: no effect, the country modifier counters it in the trigger of common/estates/base
 		}
 		ai_will_do = {
 			factor = 1
