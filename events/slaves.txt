@@ -161,7 +161,7 @@ country_event = {
 	
 	option = {
 		name = "slaves.1.1"				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 75 }
 		hidden_effect = {
 			# Modifier
 			slaves_ratio_create_high = yes		
@@ -212,7 +212,13 @@ country_event = {
 	}
 	option = {
 		name = "slaves.1.3"			# (same effect); open the event to order the purchase of slaves
-		ai_chance = { factor = 0 }	# for now
+		ai_chance = { 				# Low, but possible. Increases a lot if target is under "desired" value. 
+			factor = 25 
+			modifier = { factor = 0 	NOT = { years_of_income = 0.5 } } 
+			modifier = { factor = 2 	years_of_income = 1.0 }
+			modifier = { factor = 5 	treasury = 500 }
+			modifier = { factor = 0.1 	check_variable = { slave_pop_social = 60 } }	# soft limit for AI
+		}
 		
 		hidden_effect = {
 			slaves_ratio_create_high = yes
@@ -424,7 +430,11 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.2"		# Dedicate yearly income (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 50 
+			modifier = { factor = 0 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 2 	years_of_income = 1.0 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget which = float_1 }
 			set_variable = { which = SD_budget_dif which = float_2 } 
@@ -435,7 +445,12 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.3"		# Dedicate 100 (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 30 
+			modifier = { factor = 0.5 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 0 	NOT = { treasury = 100 } } 
+			modifier = { factor = 2 	treasury = 150 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget value = 100 }
 			set_variable = { which = SD_budget_dif which = float_3 } 
@@ -446,7 +461,12 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.4"		# Dedicate 250 (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 30 
+			modifier = { factor = 0.5 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 0 	NOT = { treasury = 250 } } 
+			modifier = { factor = 3 	treasury = 400 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget value = 250 }
 			set_variable = { which = SD_budget_dif which = float_4 } 
@@ -457,7 +477,12 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.5"		# Dedicate 500 (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 20 
+			modifier = { factor = 0.5 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 0 	NOT = { treasury = 500 } } 
+			modifier = { factor = 5 	treasury = 700 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget value = 500 }
 			set_variable = { which = SD_budget_dif which = float_5 } 
@@ -468,7 +493,12 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.6"		# Dedicate 1000 (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 10 
+			modifier = { factor = 0.5 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 0 	NOT = { treasury = 1000 } } 
+			modifier = { factor = 10 	treasury = 1500 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget value = 1000 }
 			set_variable = { which = SD_budget_dif which = float_6 } 
@@ -479,7 +509,12 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.7"		# Dedicate 2500 (slave income + difference)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 10 
+			modifier = { factor = 0.5 	NOT = { years_of_income = 1.0 } } 
+			modifier = { factor = 0 	NOT = { treasury = 2500 } } 
+			modifier = { factor = 20 	treasury = 3000 }
+		}
 		hidden_effect = { 
 			set_variable = { which = SD_slave_budget value = 2500 }
 			set_variable = { which = SD_budget_dif which = float_7 } 
@@ -490,7 +525,10 @@ country_event = {	# Purchase slaves, decide budget
 	}
 	option = {
 		name = "slaves.3.8"		# No, stop this, and give me my slave money
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 50 
+			modifier = { factor = 0.5 	treasury = 200 }	# will avoid, and purchase small quantities whenever possible
+		}
 		hidden_effect = {
 			money_gain_effect = { var = slave_income }
 			set_variable = { which = SD_slave_demand value = 0 }
@@ -531,7 +569,11 @@ country_event = {	# How many slaves
 	
 	option = {
 		name = "slaves.4.1"		# Up to 25%
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 50
+			modifier = { factor = 2 	NOT = { check_variable = { slave_pop_social = 25 } } }	# AI always targets step by step
+			modifier = { factor = 0.5 	NOT = { stability = 1 } }	# reduce in case of unrest
+		}
 		trigger = { check_variable = { float_1 = 0 } }
 		
 		hidden_effect = { 
@@ -542,7 +584,11 @@ country_event = {	# How many slaves
 	}
 	option = {
 		name = "slaves.4.2"		# Up to 40%
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 30
+			modifier = { factor = 3 	NOT = { check_variable = { slave_pop_social = 40 } } }	# AI always targets step by step
+			modifier = { factor = 0.5 	NOT = { stability = 1 } }	# reduce in case of unrest
+		}
 		trigger = { check_variable = { float_2 = 0 } }
 		
 		hidden_effect = { 
@@ -553,7 +599,11 @@ country_event = {	# How many slaves
 	}
 	option = {
 		name = "slaves.4.3"		# Up to 60%
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 20
+			modifier = { factor = 5 	NOT = { check_variable = { slave_pop_social = 60 } } }	# AI always targets step by step
+			modifier = { factor = 0.5 	NOT = { stability = 1 } }	# reduce in case of unrest
+		}
 		trigger = { check_variable = { float_3 = 0 } }
 		
 		hidden_effect = { 
@@ -564,7 +614,11 @@ country_event = {	# How many slaves
 	}
 	option = {
 		name = "slaves.4.4"		# Up to 80% (and no more)
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 10
+			modifier = { factor = 10 	NOT = { check_variable = { slave_pop_social = 80 } } }	# AI always targets step by step
+			modifier = { factor = 0.5 	NOT = { stability = 1 } }	# reduce in case of unrest
+		}
 		trigger = { check_variable = { float_4 = 0 } }
 		
 		hidden_effect = { 
@@ -575,7 +629,11 @@ country_event = {	# How many slaves
 	}
 	option = {
 		name = "slaves.4.5"		# 100.000 new (must have 500.000 already) -> max to purchase
-		ai_chance = { factor = 0 }
+		ai_chance = { 
+			factor = 10
+			modifier = { factor = 20 	NOT = { check_variable = { slave_pop_social = 50 } } }	# AI Empires will try to fill up to 50% most. 
+			
+		}
 		trigger = { check_variable = { slaves_tot_display = 500 } }
 		hidden_effect = { 
 			set_variable = { which = SD_slave_demand value = 100 } 
@@ -590,7 +648,7 @@ country_event = {	# How many slaves
 	}
 	option = {
 		name = "slaves.4.7"		# No, stop it
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 50 }
 		hidden_effect = {
 			money_gain_effect = { var = slave_income }
 			set_variable = { which = SD_slave_demand value = 0 }
@@ -658,7 +716,7 @@ country_event = {	# At what price
 	
 	option = {
 		name = "slaves.5.1"		# Only at 20
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 30 }
 		hidden_effect = { set_variable = { which = SD_trade_price value = 20 } }
 		custom_tooltip = SLAVE_5_1_COST
 		custom_tooltip = SLAVE_5_1_MANY
@@ -675,7 +733,7 @@ country_event = {	# At what price
 	}
 	option = {
 		name = "slaves.5.2"		# Up to 40
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 50 }
 		hidden_effect = { set_variable = { which = SD_trade_price value = 40 } }
 		custom_tooltip = SLAVE_5_2_COST
 		custom_tooltip = SLAVE_5_2_MANY
@@ -693,7 +751,7 @@ country_event = {	# At what price
 	}
 	option = {
 		name = "slaves.5.3"		# Up to 60
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 20 }
 		hidden_effect = { set_variable = { which = SD_trade_price value = 60 } }
 		custom_tooltip = SLAVE_5_3_COST
 		custom_tooltip = SLAVE_5_3_MANY
@@ -721,7 +779,7 @@ country_event = {	# At what price
 	}
 	option = {
 		name = "slaves.5.6"		# No, stop it
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 10 }
 		hidden_effect = {
 			money_gain_effect = { var = slave_income }
 			set_variable = { which = SD_slave_demand value = 0 }
