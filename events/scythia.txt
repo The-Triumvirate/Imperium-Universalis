@@ -791,3 +791,176 @@ country_event = {
 		add_prestige = 10
 	}
 }
+
+########################################################################################
+# Scythian domination of Asia
+########################################################################################
+country_event = {
+	id = scythian.9
+	title = "scythian.9.t"
+	desc = "scythian.9.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = SX1
+		NOT = { is_year = 165 }
+	}
+	
+	option = {
+		name = "scythian.9.a"
+		ai_chance = { factor = 90 }
+		add_country_modifier = {
+			name = scythian_dominion_asia_modifier
+			duration = 7300
+		}
+		add_manpower = 10
+		capital_scope = { build_to_forcelimit = { cavalry = 1 } }
+		add_stability = 1
+		add_treasury = 200
+		CYM = { country_event = { id = scythian.10 } }
+	}
+}
+
+#Cimmerian exhaustion
+country_event = {
+	id = scythian.10
+	title = "scythian.10.t"
+	desc = "scythian.10.d"
+	picture = lostbattle
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = CYM
+	}
+	
+	option = {
+		name = "scythian.10.a"
+		ai_chance = { factor = 90 }
+		add_war_exhaustion = 5
+		MOE = { add_war_exhaustion = 3 }
+		SX1 = { set_country_flag = pending_scythian_victory_flag }
+	}
+}
+
+#Clean up, scythian victory
+country_event = {
+	id = scythian.11
+	title = "scythian.11.t"
+	desc = "scythian.11.d"
+	picture = saka
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = SX1
+		has_country_flag = pending_scythian_victory_flag
+	}
+	
+	option = {
+		name = "scythian.11.a"
+		ai_chance = { factor = 90 }
+		inherit = MOE
+		if = {
+			limit = { exists = CYM }
+			inherit = CYM
+		}
+		remove_historical_rival = CYM
+		add_historical_rival = LYD
+		add_historical_rival = MDI
+		LYD = { add_historical_rival = SX1 }
+		MDI = { add_historical_rival = SX1 }
+		clr_country_flag = pending_scythian_victory_flag
+	}
+}
+
+#Clean up, cimmerian victory
+country_event = {
+	id = scythian.12
+	title = "scythian.12.t"
+	desc = "scythian.12.d"
+	picture = surrender
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = SX1
+		has_country_flag = pending_scythian_victory_flag
+	}
+	
+	option = {
+		name = "scythian.12.a"
+		ai_chance = { factor = 90 }
+		clr_country_flag = pending_scythian_victory_flag
+		remove_country_modifier = scythian_dominion_asia_modifier
+		add_stability = -1
+		kill_ruler = yes
+		CYM = { add_stability = 1 }
+	}
+}
+
+########################################################################################
+# Scythian attack on Cilicia
+########################################################################################
+country_event = {
+	id = scythian.13
+	title = "scythian.13.t"
+	desc = "scythian.13.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = SX1
+		exists = KIL
+		is_neighbor_of = KIL
+		NOT = { truce_with = KIL }
+		NOT = { exists = CYM }
+	}
+	
+	option = {
+		name = "scythian.13.a"
+		ai_chance = { factor = 90 }
+		declare_war_with_cb = {
+			casus_belli = cb_invasion
+			who = KIL
+		}
+		set_ruler_flag = scythian_invasion_cilicia_flag
+	}
+	option = {
+		name = "scythian.13.b"
+		ai_chance = { factor = 10 }
+		add_prestige = -5
+	}
+}
+
+#Scythian king dead in Cilicia
+country_event = {
+	id = scythian.14
+	title = "scythian.14.t"
+	desc = "scythian.14.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = SX1
+		war_with = KIL
+	}
+	
+	option = {
+		name = "scythian.14.a"
+		ai_chance = { factor = 90 }
+		white_peace = KIL
+	}
+	option = {
+		name = "scythian.14.b"
+		ai_chance = { factor = 10 }
+		add_stability = -1
+		add_war_exhaustion = 5
+	}
+}
