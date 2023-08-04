@@ -13,6 +13,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		has_global_flag = scythian_power_moves_flag
 		primary_culture = scythian
 		has_reform = steppe_horde_reform
 		total_development = 20
@@ -1000,5 +1001,182 @@ country_event = {
 			add_government_reform = scythian_clan_reform
 		}
 		else = { add_government_reform = scythian_clan_reform }
+	}
+}
+
+########################################################################################
+# Middle east goods in scythia
+########################################################################################
+country_event = {
+	id = scythian.16
+	title = "scythian.16.t"
+	desc = "scythian.16.d"
+	picture = trade
+	major = yes
+	fire_only_once = yes
+	
+	trigger = {
+		is_year = 150
+		tag = SCY
+		NOT = { is_year = 170 }
+		exists = SX1
+		exists = SX2
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "scythian.16.a"
+		ai_chance = { factor = 90 }
+		add_treasury = 200
+		add_prestige = 10
+		2446 = {
+			add_trade_modifier = {
+				who = SCY
+				duration = 7300
+				power = 30
+				key = scythian_trade_modifier
+			}
+		}
+		every_subject_country = {
+			limit = { culture_group = steppe_people }
+			add_treasury = 100
+			add_prestige = 5
+		}
+	}
+}
+
+########################################################################################
+# Shift of power to Ukraine
+########################################################################################
+country_event = {
+	id = scythian.17
+	title = "scythian.17.t"
+	picture = saka
+	major = yes
+	fire_only_once = yes
+
+	desc = {
+		trigger = { ai = yes }
+		desc = "scythian.17.d"
+	}
+	desc = {
+		trigger = { ai = no }
+		desc = "scythian.17.da"
+	}
+	
+	trigger = {
+		tag = SCY
+		total_development = 100
+		has_reform = steppe_horde_reform
+		NOT = { exists = SX1 }
+		NOT = { exists = SX2 }
+		is_year = 204
+		NOT = { is_year = 254 }
+		NOT = {
+			num_of_owned_provinces_with = {
+				superregion = armenia_superregion
+				value = 30
+			}
+		}
+		any_country = {
+			NOT = { culture_group = steppe_people }
+			capital_scope = {
+				OR = {
+					superregion = asia_superregion
+					superregion = armenia_superregion
+					superregion = iran_superregion
+				}
+			}
+			total_development = 200
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "scythian.17.a"
+		ai_chance = { factor = 90 }
+		every_subject_country = {
+			limit = { is_subject_of_type = scythian_clan_subject }
+			SCY = { inherit = PREV }
+		}
+		pasyris_area = {
+			limit = { owner = { ai = yes } }
+			add_core = SCY
+			cede_province = SCY
+		}
+		gerrhae_area = {
+			limit = { owner = { ai = yes } }
+			add_core = SCY
+			cede_province = SCY
+		}
+		hidden_effect = {
+			set_global_flag = scythian_power_moves_flag
+			release = AB4
+			release = AB6
+			release = AB8
+			release = ABZ
+			release = BCT
+			release = GC9
+			release = LEG
+			release = MA1
+			release = MA2
+			release = MA3
+			release = MA4
+			release = MA5
+			release = MA6
+			release = MA7
+			release = MA8
+			release = MA9
+			release = M10
+			release = M12
+			release = MZE
+			release = OLD
+			release = PSS
+			release = RMM
+			release = SLV
+			release = SXI
+			release = SX3
+			release = SX4
+			release = SX5
+			release = SX6
+			release = SX7
+			release = SX9
+			release = VDN
+			7106 = { change_culture = maeotian }
+			7345 = { change_culture = maeotian }
+			7346 = { change_culture = maeotian }
+			7352 = { change_culture = maeotian }
+			every_owned_province = {
+				limit = {
+					OR = {
+						superregion = armenia_superregion
+						region = caucasia_region
+						region = maeotis_region
+						region = asian_sarmatia
+					}
+				}
+				cede_province = previous_owner
+			}
+		}
+		if = {
+			limit = { owns = 3230 }
+			set_capital = 3230
+		}
+	}
+
+	option = {
+		name = "scythian.17.b"
+		ai_chance = { factor = 10 }
+		add_stability = -3
+		add_country_modifier = {
+			name = royal_scythian_decline_modifier
+			duration = 5475
+		}
 	}
 }
