@@ -13,6 +13,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		has_global_flag = scythian_power_moves_flag
 		primary_culture = scythian
 		has_reform = steppe_horde_reform
 		total_development = 20
@@ -789,5 +790,408 @@ country_event = {
 		ai_chance = { factor = 10 }
 		add_stability = -1
 		add_prestige = 10
+	}
+}
+
+########################################################################################
+# Scythian domination of Asia
+########################################################################################
+country_event = {
+	id = scythian.9
+	title = "scythian.9.t"
+	desc = "scythian.9.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		tag = SX1
+	}
+	
+	option = {
+		name = "scythian.9.a"
+		ai_chance = { factor = 90 }
+		add_country_modifier = {
+			name = scythian_dominion_asia_modifier
+			duration = 7300
+		}
+		add_manpower = 10
+		capital_scope = { build_to_forcelimit = { cavalry = 1 } }
+		add_stability = 1
+		add_treasury = 200
+		SX2 = {
+			add_stability = 1
+			add_treasury = 100
+			add_country_modifier = {
+				name = scythian_dominion_asia_modifier_2
+				duration = 7300
+			}
+		}
+		CYM = { country_event = { id = scythian.10 } }
+	}
+}
+
+#Cimmerian exhaustion
+country_event = {
+	id = scythian.10
+	title = "scythian.10.t"
+	desc = "scythian.10.d"
+	picture = lostbattle
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = CYM
+	}
+	
+	option = {
+		name = "scythian.10.a"
+		ai_chance = { factor = 90 }
+		add_war_exhaustion = 5
+		MOE = { add_war_exhaustion = 3 }
+		SX1 = { set_country_flag = pending_scythian_victory_flag }
+	}
+}
+
+#Clean up, scythian victory
+country_event = {
+	id = scythian.11
+	title = "scythian.11.t"
+	desc = "scythian.11.d"
+	picture = saka
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = SX1
+		has_country_flag = pending_scythian_victory_flag
+	}
+	
+	option = {
+		name = "scythian.11.a"
+		ai_chance = { factor = 90 }
+		inherit = MOE
+		if = {
+			limit = { exists = CYM }
+			inherit = CYM
+		}
+		remove_historical_rival = CYM
+		add_historical_rival = LYD
+		add_historical_rival = MDI
+		LYD = { add_historical_rival = SX1 }
+		MDI = { add_historical_rival = SX1 }
+		clr_country_flag = pending_scythian_victory_flag
+	}
+}
+
+#Clean up, cimmerian victory
+country_event = {
+	id = scythian.12
+	title = "scythian.12.t"
+	desc = "scythian.12.d"
+	picture = surrender
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		TAG = SX1
+		has_country_flag = pending_scythian_victory_flag
+	}
+	
+	option = {
+		name = "scythian.12.a"
+		ai_chance = { factor = 90 }
+		clr_country_flag = pending_scythian_victory_flag
+		remove_country_modifier = scythian_dominion_asia_modifier
+		add_stability = -1
+		kill_ruler = yes
+		CYM = { add_stability = 1 }
+	}
+}
+
+########################################################################################
+# Scythian attack on Cilicia
+########################################################################################
+country_event = {
+	id = scythian.13
+	title = "scythian.13.t"
+	desc = "scythian.13.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = SX1
+		exists = KIL
+		is_neighbor_of = KIL
+		NOT = { truce_with = KIL }
+		NOT = { exists = CYM }
+	}
+	
+	option = {
+		name = "scythian.13.a"
+		ai_chance = { factor = 90 }
+		declare_war_with_cb = {
+			casus_belli = cb_invasion
+			who = KIL
+		}
+		set_ruler_flag = scythian_invasion_cilicia_flag
+	}
+	option = {
+		name = "scythian.13.b"
+		ai_chance = { factor = 10 }
+		add_prestige = -5
+	}
+}
+
+#Scythian king dead in Cilicia
+country_event = {
+	id = scythian.14
+	title = "scythian.14.t"
+	desc = "scythian.14.d"
+	picture = saka
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		TAG = SX1
+		war_with = KIL
+	}
+	
+	option = {
+		name = "scythian.14.a"
+		ai_chance = { factor = 90 }
+		white_peace = KIL
+	}
+	option = {
+		name = "scythian.14.b"
+		ai_chance = { factor = 10 }
+		add_stability = -1
+		add_war_exhaustion = 5
+	}
+}
+
+########################################################################################
+# Corrects gov of scythian clan
+########################################################################################
+country_event = {
+	id = scythian.15
+	title = "scythian.14.t"
+	desc = "scythian.14.d"
+	picture = saka
+	hidden = yes
+	
+	trigger = {
+		is_subject_of_type = scythian_clan_subject
+		NOT = { has_reform = scythian_clan_reform }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "scythian.14.a"
+		ai_chance = { factor = 90 }
+		if = {
+			limit = { NOT = { government = tribal } }
+			change_government = tribal
+			add_government_reform = scythian_clan_reform
+		}
+		else = { add_government_reform = scythian_clan_reform }
+	}
+}
+
+########################################################################################
+# Middle east goods in scythia
+########################################################################################
+country_event = {
+	id = scythian.16
+	title = "scythian.16.t"
+	desc = "scythian.16.d"
+	picture = trade
+	major = yes
+	fire_only_once = yes
+	
+	trigger = {
+		is_year = 150
+		tag = SCY
+		NOT = { is_year = 170 }
+		exists = SX1
+		exists = SX2
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "scythian.16.a"
+		ai_chance = { factor = 90 }
+		add_treasury = 200
+		add_prestige = 10
+		2446 = {
+			add_trade_modifier = {
+				who = SCY
+				duration = 7300
+				power = 30
+				key = scythian_trade_modifier
+			}
+		}
+		every_subject_country = {
+			limit = { culture_group = steppe_people }
+			add_treasury = 100
+			add_prestige = 5
+		}
+	}
+}
+
+########################################################################################
+# Shift of power to Ukraine
+########################################################################################
+country_event = {
+	id = scythian.17
+	title = "scythian.17.t"
+	picture = saka
+	major = yes
+	fire_only_once = yes
+
+	desc = {
+		trigger = { ai = yes }
+		desc = "scythian.17.d"
+	}
+	desc = {
+		trigger = { ai = no }
+		desc = "scythian.17.da"
+	}
+	
+	trigger = {
+		tag = SCY
+		total_development = 100
+		has_reform = steppe_horde_reform
+		OR = {
+			SX1 = {
+				exists = no
+				NOT = { total_development = 20 }
+			}
+		}
+		OR = {
+			SX2 = {
+				exists = no
+				NOT = { total_development = 20 }
+			}
+		}
+		is_year = 204
+		NOT = { is_year = 254 }
+		NOT = {
+			num_of_owned_provinces_with = {
+				superregion = armenia_superregion
+				value = 30
+			}
+		}
+		any_country = {
+			NOT = { culture_group = steppe_people }
+			capital_scope = {
+				OR = {
+					superregion = asia_superregion
+					superregion = armenia_superregion
+					superregion = iran_superregion
+				}
+			}
+			total_development = 200
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "scythian.17.a"
+		ai_chance = { factor = 90 }
+		every_subject_country = {
+			limit = { is_subject_of_type = scythian_clan_subject }
+			SCY = { inherit = PREV }
+		}
+		pasyris_area = {
+			limit = { owner = { ai = yes } }
+			add_core = SCY
+			cede_province = SCY
+		}
+		gerrhae_area = {
+			limit = { owner = { ai = yes } }
+			add_core = SCY
+			cede_province = SCY
+		}
+		hidden_effect = {
+			set_global_flag = scythian_power_moves_flag
+			release = AB4
+			release = AB6
+			release = AB8
+			release = ABZ
+			release = BCT
+			release = GC9
+			release = LEG
+			release = MA1
+			release = MA2
+			release = MA3
+			release = MA4
+			release = MA5
+			release = MA6
+			release = MA7
+			release = MA8
+			release = MA9
+			release = M10
+			release = M12
+			release = MZE
+			release = OLD
+			release = PSS
+			release = RMM
+			release = SLV
+			release = SXI
+			release = SX3
+			release = SX4
+			release = SX5
+			release = SX6
+			release = SX7
+			release = SX8
+			release = SX9
+			release = VDN
+			7106 = { change_culture = maeotian }
+			7345 = { change_culture = maeotian }
+			7346 = { change_culture = maeotian }
+			7352 = { change_culture = maeotian }
+			every_owned_province = {
+				limit = {
+					OR = {
+						superregion = armenia_superregion
+						region = caucasia_region
+						region = maeotis_region
+						region = asian_sarmatia
+					}
+				}
+				cede_province = previous_owner
+			}
+			every_core_province = {
+				limit = { NOT = { owned_by = SCY } }
+				remove_core = SCY
+			}
+		}
+		if = {
+			limit = { owns = 3230 }
+			set_capital = 3230
+		}
+	}
+
+	option = {
+		name = "scythian.17.b"
+		ai_chance = { factor = 10 }
+		add_stability = -3
+		add_country_modifier = {
+			name = royal_scythian_decline_modifier
+			duration = 5475
+		}
 	}
 }

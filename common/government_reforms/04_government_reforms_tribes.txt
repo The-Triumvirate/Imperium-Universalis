@@ -114,6 +114,7 @@ client_state_tribe_reform = {
 	modifiers = {
 		num_accepted_cultures = 3
 		land_forcelimit_modifier = -0.33
+		can_not_build_colonies = yes
 		tolerance_heretic = 2
 		tolerance_heathen = 2
 	}
@@ -261,6 +262,19 @@ steppe_horde_reform = {
 		wars_give_horde_unity = yes
 	}
 
+	removed_effect = {
+		if = {
+			limit = {
+				tag = SCY
+				any_subject_country = { is_subject_of_type = scythian_clan_subject }
+			}
+			every_subject_country = {
+				limit = { is_subject_of_type = scythian_clan_subject }
+				SCY = { inherit = PREV }
+			}
+		}
+	}
+
 	modifiers = {
 		cav_to_inf_ratio = 0.35
 		cavalry_cost = -0.35
@@ -327,6 +341,33 @@ mleccha_desa_tribal_reform = {
 		global_missionary_strength = 0.01
 	}
 	legacy_equivalent = tribal_kingdom
+}
+
+scythian_clan_reform = {
+	icon = "village_tribunals"
+	allow_normal_conversion = no
+
+	valid_for_nation_designer = no
+	legacy_equivalent = tribal_horde
+	lock_level_when_selected = yes
+	royal_marriage = no
+
+	potential = {
+		is_subject_of_type = scythian_clan_subject
+		has_reform = scythian_clan_reform
+	}
+
+	custom_attributes = {
+		locked_government_type = yes
+	}
+
+	modifiers = {
+		global_tax_modifier = 0.2
+		global_trade_goods_size_modifier = 0.2
+		land_forcelimit_modifier = -0.25
+		global_manpower_modifier = -0.25
+		naval_forcelimit_modifier = -1
+	}
 }
 
 ###########
@@ -761,7 +802,7 @@ isolationist_tribe_reform = {
     trigger = {
 		NOT = {
 		    any_known_country = {
-			    is_tribal = no
+			    neither_tribal_nor_native_trigger = yes
 			    OR = {
 				    alliance_with = ROOT
 				    marriage_with = ROOT
@@ -967,9 +1008,11 @@ reform_to_republic = {
 	}
 	allow_normal_conversion = yes
 	effect = {
-		lose_reforms = 4
-		change_government = republic
-		add_government_reform = citizens_republic_reform
+		hidden_effect = {
+		    lose_reforms = 4
+		    change_government = republic
+		    add_government_reform = citizens_republic_reform
+		}
 	}
 
 	ai = {
@@ -1003,9 +1046,11 @@ reform_to_league = {
 	}
 	allow_normal_conversion = yes
 	effect = {
-		lose_reforms = 4
-		change_government = republic
-		add_government_reform = league_reform
+		hidden_effect = {
+		    lose_reforms = 4
+		    change_government = republic
+		    add_government_reform = league_reform
+		}
 	}
 
 	ai = {
@@ -1044,9 +1089,11 @@ reform_to_oligarchy = {
 	}
 	allow_normal_conversion = yes
 	effect = {
-		lose_reforms = 4
-		change_government = theocracy
-		add_government_reform = oligarchy_reform
+		hidden_effect = {
+		    lose_reforms = 4
+		    change_government = theocracy
+		    add_government_reform = oligarchy_reform
+		}
 	}
 
 	ai = {
@@ -1093,9 +1140,11 @@ reform_to_monarchy = {
 	}
 	allow_normal_conversion = yes
 	effect = {
-		lose_reforms = 4
-		change_government = monarchy
-		add_government_reform = aristocratic_monarchy_reform
+		hidden_effect = {
+		    lose_reforms = 4
+		    change_government = monarchy
+		    add_government_reform = aristocratic_monarchy_reform
+		}
 	}
 
 	ai = {

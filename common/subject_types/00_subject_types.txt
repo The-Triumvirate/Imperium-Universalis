@@ -41,6 +41,7 @@ march = {}
 daimyo_vassal = {}
 sukkal_vassal = {}
 personal_union = {}
+scythian_clan_subject = {}
 phoenician_colony_subject = {}
 client_vassal = {}
 client_march = {}
@@ -68,7 +69,7 @@ default = {
 	transfer_trade_if_merchant_republic = no
 	joins_overlords_wars = yes
 	can_be_co_belligerented =  no    #Enemies can force this subject to join its overlord into the defense war. Only used when the subject has the "joins_overlords_wars = no". By default it's "no".
-	can_be_called_to_wars =  no    #Overlord can ask subject to join wars like it could ask allies to join. You would require favors  to call them to wars. Only used when the subject has the "joins_overlords_wars = no". By default it's "no"
+	must_accept_cta_from_overlord =  no    #Overlord can ask subject to join wars like it could ask allies to join. You would require favors  to call them to wars. Only used when the subject has the "joins_overlords_wars = no". By default it's "no"
 	favors_cost_to_join_offensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into an offensive war
 	favors_cost_to_join_defensive_wars = 0   #Defines how much favors the overlord need to invest to call the subject into a defensive war
 	opinion_cost_to_join_offensive_wars = 0   #Defines how much opinion the subject loses of the overlord to call the subject into an offensive war. Applied if you do not have Leviathan
@@ -439,7 +440,7 @@ velir_subject = {
 	pays_overlord = 0.25
 	forcelimit_to_overlord = 0.1
 	naval_forcelimit_to_overlord = 0.05
-	manpower_to_overlord = 0.05
+	manpower_to_overlord = 0.1
 	sailors_to_overlord = 0.1
 
 	relative_power_class = 1
@@ -619,7 +620,7 @@ socii_subject = {
 	can_fight_independence_war = yes
 	is_voluntary = no
 	joins_overlords_wars = no
-	can_be_called_to_wars =  yes
+	must_accept_cta_from_overlord =  no
 	can_be_co_belligerented = yes
 	favors_cost_to_join_offensive_wars = 10
 	favors_cost_to_join_defensive_wars = 5
@@ -715,16 +716,17 @@ league_member_subject = {
 	# Properties:
 	transfer_trade_power = no
 	can_fight_independence_war = yes
-	joins_overlords_wars = yes
+	joins_overlords_wars = no
+	must_accept_cta_from_overlord =  no
 	is_voluntary = yes
-	overlord_can_attack = no
+	overlord_can_attack = yes
 	takes_diplo_slot = no
 	relative_power_class = 1
 	can_send_tribute = yes
 	can_have_subjects_of_other_types = yes
 	uses_military_focus = no
 	overlord_protects_external = yes
-	counts_for_borders = no
+	counts_for_borders = yes
 	can_use_claims = no
 	share_rebel_popup = no
 	can_transfer_in_peace = no
@@ -953,9 +955,9 @@ sukkal_vassal = {
 
 	# Properties:
 	joins_overlords_wars = no
-	can_be_called_to_wars =  yes
-	favors_cost_to_join_offensive_wars = 10
-	overlord_can_attack = no
+	must_accept_cta_from_overlord =  no
+	#favors_cost_to_join_offensive_wars = 10
+	overlord_can_attack = yes
 	has_power_projection = yes
 	takes_diplo_slot = no
 	gets_help_with_rebels = yes
@@ -1073,6 +1075,63 @@ personal_union = {
 	subject_opinion_modifier = in_union
 }
 
+scythian_clan_subject = {
+	copy_from = default
+
+	is_potential_overlord = {
+		tag = SCY
+		has_reform = steppe_horde_reform
+	}
+	
+	#use_vassal_ui = yes
+	#use_vassal_ui = yes
+
+	# Graphics:
+	sprite = GFX_court_union
+	diplomacy_overlord_sprite = GFX_diplomacy_leadunions
+	diplomacy_subject_sprite = GFX_diplomacy_inunion
+
+	# Properties:
+	transfer_trade_power = yes
+	has_overlords_ruler = yes
+	can_be_integrated = yes
+	overlord_can_attack = no
+	has_power_projection = no
+	gets_help_with_rebels = yes
+	can_have_subjects_of_other_types = yes
+	can_union_break = yes
+	transfer_subjects_when_made = yes
+	takes_diplo_slot = no
+	forms_trade_companies = no
+	can_concentrate_development = no
+
+	liberty_desire_negative_prestige = 1.0
+
+	relative_power_class = 1
+	should_quit_wars_on_activation = yes
+
+	pays_overlord = 0.6
+	forcelimit_to_overlord = 0.25
+	manpower_to_overlord = 0.25
+
+	restoration_cb = cb_clan_subjugation
+	
+	# Subject Interactions:
+	placate_rulers = no
+	enforce_culture = yes
+	enforce_religion = yes
+	siphon_income = yes
+	support_loyalists = yes
+
+	# Modifiers:
+	modifier_overlord = {
+		modifier = union_subject
+	}
+
+	overlord_opinion_modifier = is_clan_subject
+	subject_opinion_modifier = is_clan_subject
+}
+
 phoenician_colony_subject = {
 	copy_from = default
 
@@ -1091,6 +1150,7 @@ phoenician_colony_subject = {
 	diplomacy_subject_sprite = GFX_diplomacy_subjectcolony
 
 	# Properties:
+	counts_for_borders = no
 	transfer_trade_if_merchant_republic = yes
 	transfer_trade_power = yes
 	can_be_annexed = no
@@ -1103,9 +1163,9 @@ phoenician_colony_subject = {
 	forms_trade_companies = no
 	can_concentrate_development = no
 	joins_overlords_wars = no
-	can_be_called_to_wars =  yes
-	favors_cost_to_join_offensive_wars = 20
-	favors_cost_to_join_defensive_wars = 10
+	must_accept_cta_from_overlord =  no
+	favors_cost_to_join_offensive_wars = 0
+	favors_cost_to_join_defensive_wars = 0
 	can_have_subjects_of_other_types = yes
 	can_transfer_in_peace = no
 	can_use_claims = no
@@ -1197,6 +1257,7 @@ client_vassal = {
 	gets_help_with_rebels = yes
 	share_rebel_popup = no
 	can_send_missionary_to_subject = yes
+	extend_trading_range = yes
 	
 	max_government_rank = 3
 	trust_on_start = 30
@@ -1214,10 +1275,10 @@ client_vassal = {
 	relative_power_class = 1
 	
 	can_fight = {
-	    independent_nations = yes
+	    
 	}
 	can_rival = {
-		
+		same_overlord = client_vassal
 	}
 	can_ally = {
 	    same_overlord = client_vassal
@@ -1239,7 +1300,6 @@ client_vassal = {
 	
 	placate_rulers = no
 	place_relative_on_throne = no
-	enforce_religion = yes
 	replace_governor = no
 	grant_province = yes
 	enforce_culture = yes

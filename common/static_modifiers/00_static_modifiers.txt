@@ -31,6 +31,8 @@ difficulty_very_easy_player = {
 	improve_relation_modifier = 0.2
 	ae_impact = -0.33
 	yearly_corruption = -1.5
+	inflation_reduction = 0.2
+	interest = -4
 }
 
 difficulty_easy_player = {
@@ -45,6 +47,8 @@ difficulty_easy_player = {
 	interest = -2
 	ae_impact = -0.15
 	yearly_corruption = -0.6
+	inflation_reduction = 0.1
+	interest = -2
 }
 
 difficulty_normal_player = {
@@ -108,12 +112,16 @@ city = {
 	garrison_growth = 0.05
 	allowed_num_of_manufactories = 1
 	allowed_num_of_buildings = 1
+	local_has_samurai = yes
+	local_has_musketeers = yes
 }
 
 port = {
 	#naval_forcelimit = 1	# removed, now it is done by population
 	#local_sailors = 500	# moved to population as well
 	local_institution_spread = 0.10
+	local_has_voc_indiamen = yes
+	local_has_caravel = yes
 }
 
 in_state = {
@@ -362,9 +370,10 @@ development = {
 	#local_sailors = 30			# special case, affected by autonomy & set to 0 by code if not port
 	#province_trade_power_value = 0.2
 	local_amount_of_banners = 0.05
+	local_build_cost = 0.02
 	#local_amount_of_cawa = 0.125
 	#local_amount_of_carolean = 0.1
-	#local_amount_of_hussars = 0.01
+	local_amount_of_hussars = 0.03
 }
 
 development_scaled = {
@@ -648,8 +657,8 @@ base_values = {
 	merchants = 2
 	diplomats = 2
 	missionaries = 1
-	army_tradition_decay = 0.08
-	navy_tradition_decay = 0.05
+	army_tradition_decay = 0.04
+	navy_tradition_decay = 0.04
 	prestige_decay = 0.05
 	tolerance_own = 1
 	diplomatic_upkeep = 2
@@ -681,11 +690,13 @@ base_values = {
 	inflation_reduction = 0.10 #compensation for gold provinces
 	max_revolutionary_zeal = 5	# repurposed for Siege Ferocity
 	native_assimilation = 0.30	# repurposed for Enslavement Efficiency
-	slavesmod_natality = 0.035	# based on demographic models, base natality 3.5-4%
-	slavesmod_mortality = 0.030
-	slavesmod_state_income = 0.30
 	max_flagships = 1
 	num_of_parliament_issues = 10
+	has_man_of_war = yes
+	has_caravel = yes 
+	has_galleon = yes
+	has_samurai = yes
+	amount_of_samurai = 1
 }
 
 # AI 'cheats' that compensate for flaws in its long-term decision making, removing these may severely cripple the AI
@@ -700,17 +711,24 @@ ai_nation = {
 	meritocracy = 0.5
 	army_tradition = 0.1
 	navy_tradition = 0.1
-	global_unrest = -1
-	inflation_reduction = 0.5
-	years_of_nationalism = -5
+	capture_ship_chance = -1.0
+	land_maintenance_modifier = -0.5
+	naval_maintenance_modifier = -0.5
+	state_maintenance_modifier = -1.25
+	global_unrest = -3
+	inflation_reduction = 5.0
+	years_of_nationalism = -12
+	governing_capacity_modifier = 0.2
 	administrative_efficiency = 0.05
+	global_autonomy = -0.2
 	country_admin_power = 1
 	country_diplomatic_power = 1
 	country_military_power = 1
 	global_monthly_devastation = -0.2
 	global_tax_income = 12
 	manpower_recovery_speed = 0.2
-	war_exhaustion = -0.05
+	war_exhaustion = -0.15
+	war_exhaustion_cost = -0.33
 }
 
 war_taxes = {
@@ -983,6 +1001,7 @@ army_tradition = {
 	recover_army_morale_speed = 0.1
 	land_morale = 0.25
 	monthly_militarized_society = 0.2
+	army_tradition_decay = 0.04
 	drill_decay_modifier = -0.5
 	fac_pharaoh_influence = 0.05
 	fac_janapadins_influence = 0.15
@@ -994,6 +1013,7 @@ navy_tradition = {
 	naval_morale = 0.25
 	trade_steering = 0.5
 	privateer_efficiency = 0.25
+	navy_tradition_decay = 0.02
 	blockade_efficiency = 1
 	sailors_recovery_speed = 0.6
 	fac_pharaoh_influence = 0.05
@@ -1097,7 +1117,7 @@ fervor = {
 
 # Multiplied by the amount of Karma / so 100 karma = x100
 karma = {
-	technology_cost = -0.01
+	technology_cost = -0.001
 	ae_impact = 0.002
 }
 
@@ -1139,6 +1159,7 @@ republican_tradition = {
 	diplomatic_reputation = 1
 	global_autonomy = -0.1
 	technology_cost = -0.1
+	innovativeness_gain = 0.2
 	max_absolutism = 10
 	global_unrest = -2
 	discipline	= 0.05
@@ -1148,10 +1169,10 @@ republican_tradition = {
 }
 
 inverse_republican_tradition = {
-	stability_cost_modifier = 1.0
-	yearly_corruption = 0.2
-	interest = 3
-	administrative_efficiency = -0.2
+	stability_cost_modifier = 0.4
+	interest = 5
+	technology_cost = 0.1
+	administrative_efficiency = -0.3
 	embracement_cost = 0.5
 	innovativeness_gain = -0.5
 	inflation_action_cost = 0.5
@@ -2048,101 +2069,111 @@ army_drill_modifier = { # Used by an entire army, is the average of all subunits
 	movement_speed = 0.2
 }
 
-janissary_regiment = {
-	reinforce_cost_modifier = -0.25
-	reinforce_speed = 0.25
-	reserves_organisation = 0.33
+janissary_regiment = { #future auxilias/foederati
+	fire_damage = 0.1
 }
 
-cawa_regiment = {
+cawa_regiment = { #not used for now
 	shock_damage_received = -0.15
 	land_attrition = -0.25
 	reinforce_cost_modifier = 0.25
 	reinforce_speed = -0.25
 }
 
-hussars_regiment = {
+hussars_regiment = { #cataphracts
 	cavalry_shock = 1
-	morale_damage = 0.5
+	morale_damage = 0.25
+	fire_damage_received = -0.25
 	reinforce_speed = -0.5
 }
 
-marine_regiment = {
+marine_regiment = { #marines
     #shock_damage_received = 0.1
     #regiment_disembark_speed = 2 #requires a new country modifier
 }
 
-banner_regiment = {
+banner_regiment = { #citizens
 	discipline = 0.05
 	land_morale = 0.1
 	land_maintenance_modifier = -0.5
 	reinforce_speed = -0.25
 }
 
-streltsy_regiment = {
+streltsy_regiment = { #natives for diadochi
     fire_damage = 0.1
 	regiment_manpower_usage = -0.5
 	reinforce_cost_modifier = -0.33
 }
 
-tercio_regiment = {
+tercio_regiment = { #not used, maybe someday we'll use it for military settlets, but citizens exist, so maybe a free unit.
 	shock_damage_received = -0.3
 }
 
-musketeer_regiment = {
-	fire_damage = 0.15
-}
-
-samurai_regiment = {
+musketeer_regiment = { #immortals
 	discipline = 0.05
-	morale_damage_received = -0.1
-	reinforce_cost_modifier = 0.5
+	reinforce_speed = 0.75
+	morale_damage_received = -0.25
+	land_maintenance_modifier = 0.25
+	reinforce_cost_modifier = 0.25
 }
 
-geobukseon_ship = {
+samurai_regiment = { #elites
+	discipline = 0.1
+	morale_damage_received = -0.25
+	reinforce_cost_modifier = 0.5
+	reinforce_speed = -0.25
+	land_maintenance_modifier = 0.33
+}
+
+geobukseon_ship = { #free for now
 	ship_durability = 0.1
 	galley_power = 0.1
 }
 
-man_of_war_ship = {
-	#engagement_cost = -1
-	#naval_maintenance_modifier = 0.5
-	naval_morale_damage = 0.15
+man_of_war_ship = { #polyreme
+	engagement_cost = 1
+	hull_size_modifier = 0.15
+	number_of_cannons_modifier = 0.15
+	naval_maintenance_modifier = 0.25
+	naval_morale_damage = 0.1
 }
 
-galleon_ship = {
+galleon_ship = { #siege vessel
+	engagement_cost_modifier = 2
 	hull_size_modifier = 0.1
-	heavy_ship_power = 0.1
+	heavy_ship_power = 0.15
+	naval_maintenance_modifier = 0.25
+	siege_blockade_progress = 1
 }
 
-galleass_ship = {
+galleass_ship = { #probably will be raiding ship
 	galley_power = 0.2
 }
 
-caravel_ship = {
+caravel_ship = { #punic seafarer
 	movement_speed_in_fleet_modifier = 1 
 	naval_attrition = -0.25
 	global_ship_trade_power = 0.33
 }
 
-voc_indiamen_ship = {
+voc_indiamen_ship = { #pirate samaina
 	number_of_cannons_modifier = 0.33
 	ship_trade_power_modifier = 0.2
 	can_transport_units = yes
 }
 
-cossacks_regiment = {
+cossacks_regiment = { #elephants
 	morale_damage = 0.5
     shock_damage = 0.2
 	discipline = -0.05
 }
 
-carolean_regiment = {
+carolean_regiment = { #future legio cohort
 	morale_damage = 0.1
 	drill_decay_modifier = -0.25
 }
 
-revolutionary_guard_regiment = {
+revolutionary_guard_regiment = { #can't be used, rev guard requires zeal modifier reused in population system instead
 	fire_damage_received = -0.1
 	shock_damage_received = -0.1
 	drill_gain_modifier = 1.0
@@ -2156,7 +2187,7 @@ innovativeness = {
 	reform_progress_growth = 0.25
 }
 
-rajput_regiment = {
+rajput_regiment = { #Qi-JiJi, chinese elites
 	drill_decay_modifier = -0.25
 	discipline = 0.05
 }

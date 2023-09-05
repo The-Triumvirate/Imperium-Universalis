@@ -466,12 +466,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {	
-			total_development = 600
-			OR = {
-				NOT = { war_score = -5 }
-				NOT = { manpower_percentage = 0.1 }
-			}
+	    total_development = 300
+		OR = {
+			is_at_war = no
+			NOT = { manpower_percentage = 0.3 }
 		}
+	}
 	
 	
 	mean_time_to_happen = {
@@ -526,7 +526,12 @@ country_event = {
 			AND = {
 				NOT = { has_dlc = "Common Sense" }
 				total_development = 1100
-				is_hegemon = yes
+				if = {
+				    limit = {
+					    has_dlc = "Emperor"
+					}
+					is_hegemon = yes
+				}
 				NOT = { government_rank = 5 }
 			}
 		}	
@@ -534,7 +539,7 @@ country_event = {
 	
 	
 	mean_time_to_happen = {
-		days = 1
+		months = 1
 	}
 	
 	immediate = { 
@@ -602,14 +607,15 @@ country_event = {
 		has_dlc = "Common Sense"
 		NOT = { total_development = 300 }
 		is_nomad = no
-		NOT = {
-			TAG = PNC
-		}
+		NOT = {	TAG = PNC }
+		NOT = {	TAG = SCY }
+		NOT = { is_emperor = yes }
+		NOT = { is_elector = yes }
 	}
 	
 	
 	mean_time_to_happen = {
-		days = 1
+		months = 1
 	}
 	
 	immediate = { 
@@ -638,7 +644,7 @@ country_event = { #for panchala
 	
 	
 	mean_time_to_happen = {
-		days = 1
+		months = 1
 	}
 	
 	immediate = { 
@@ -652,7 +658,7 @@ country_event = { #for panchala
 }
 
 ########################################################################################
-# zensus
+# Census: event to show current population changes
 ########################################################################################
 country_event = {
 	id = government.22
@@ -663,15 +669,18 @@ country_event = {
 	
 	trigger = {	
 			
-		}
+	}
 	
 	
 	mean_time_to_happen = {
 		days = 1
 	}
 	
-	immediate = { 
-			
+	immediate = {
+		# Update slave values
+		hidden_effect = {
+			SD_slave_totaldisp_update = yes
+		}
 	}
 	
 	option = {		
@@ -969,7 +978,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-	    days = 1
+	    months = 1
 	}
 	
 	option = {
@@ -1327,6 +1336,13 @@ country_event = {
 			NOT = { has_reform = client_state_tribe_reform }
 			NOT = { has_reform = roman_province_reform }
 			NOT = { has_reform = tribal_republic_reform }
+			AND = {
+			    OR = { 
+				    has_reform = client_state_tribe_reform
+					has_reform = tribal_republic_reform
+				}
+				overlord = { tribal_or_native_trigger = no }
+			}
 		}
 	}
 	
@@ -1428,32 +1444,32 @@ country_event = {
 	}
 }
 
-country_event = { #coruler death
-    id = government.37
-	title = "government.37.t"
-	desc = "government.37.d"
-	picture = illness
+#country_event = { #coruler death
+    #id = government.37
+	#title = "government.37.t"
+	#desc = "government.37.d"
+	#picture = illness
 	
-	trigger = {
-	    has_ruler_modifier = heir_is_coruler
-		has_heir = no
-	}
+	#trigger = {
+	    #has_ruler_modifier = heir_is_coruler
+		#has_heir = no
+	#}
 	
-	mean_time_to_happen = {
-	    days = 1
-	}
+	#mean_time_to_happen = {
+	    #months = 1
+	#}
 	
-	option = {
-	    name = "government.37.a"
-		add_prestige = -20
-		add_stability = -1
-		remove_country_modifier = heir_is_coruler
+	#option = {
+	    #name = "government.37.a"
+		#add_prestige = -20
+		#add_stability = -1
+		#remove_country_modifier = heir_is_coruler
 		#country_event = {
 		#	id = government.39
 		#	days = 0
 		#}
-	}
-}
+	#}
+#}
 
 ########################################################################################
 # co-ruler personality mod add

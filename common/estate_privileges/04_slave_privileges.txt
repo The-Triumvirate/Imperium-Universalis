@@ -76,12 +76,11 @@ estate_slaves_status_1 = {		# War captives
 		    NOT = { has_estate_privilege = estate_slaves_status_1 }
 			has_estate_privilege = estate_slaves_status_2
 			has_estate_privilege = estate_slaves_status_3
-			has_estate_privilege = estate_slaves_status_5
 		}
 		# Later on, War Captives is the default option for natives and for tribals, 
 		# when they move into civilized (monarchy/republic/oligarchy/etc) they will automatically change to Serfs
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -90,15 +89,33 @@ estate_slaves_status_1 = {		# War captives
 			remove_estate_privilege = estate_slaves_status_4
 			remove_estate_privilege = estate_slaves_status_5
 			remove_estate_privilege = estate_slaves_status_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+		
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_1
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
-		slavesmod_state_income = -0.10
-		slavesmod_liberated = -0.10
+		slavesmod_state_income = 0.20	# base value 30%, so, -10%
+		slavesmod_liberated = 0.01
 		slavesmod_enslav_eff = 0.10
+		slaves_privilege_slots = -2	# base 6, reduced to 4, only the three laws
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 40
 	ai_will_do = { factor = 0 }
 }
 estate_slaves_status_2 = {		# Serfdom
@@ -106,14 +123,17 @@ estate_slaves_status_2 = {		# Serfdom
 	land_share = 0		max_absolutism = 0		loyalty = 0.10	influence = 0.05
 	is_valid = { # Potential
 		always = yes
-	}						
+	}
 	can_select = { # Trigger
 		OR = {
-			has_estate_privilege = estate_slaves_status_1
+			AND = {
+				has_estate_privilege = estate_slaves_status_1
+				adm_tech = 10
+			}
 			has_estate_privilege = estate_slaves_status_3	# these two are experimental; later on it will be a penalty to "fall" into serfs
 		}
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_status_1 
@@ -121,14 +141,32 @@ estate_slaves_status_2 = {		# Serfdom
 			remove_estate_privilege = estate_slaves_status_4
 			remove_estate_privilege = estate_slaves_status_5
 			remove_estate_privilege = estate_slaves_status_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+		
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_2
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
-		slavesmod_state_income = -0.20 
+		slavesmod_state_income = 0.10	# base value 30%, so, -20%
 		slavesmod_liberated = -0.10
+		slaves_privilege_slots = -2	# base 6, reduced to 4, only the three laws
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 40
 	
 	ai_will_do = { factor = 0 }
 }
@@ -140,12 +178,28 @@ estate_slaves_status_3 = {		# Standard
 	}						
 	can_select = { # Trigger
 		OR = {
+			AND = {
+				has_estate_privilege = estate_slaves_status_1
+				OR = {
+					NOT = { government = tribal }
+					adm_tech = 15
+					
+				}
+			}
+			AND = {
+				has_estate_privilege = estate_slaves_status_2
+				OR = {
+					NOT = { government = tribal }
+					adm_tech = 15
+					
+				}
+			}
 			has_estate_privilege = estate_slaves_status_4
 			has_estate_privilege = estate_slaves_status_5
 			has_estate_privilege = estate_slaves_status_6
 		}
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_status_1
@@ -153,15 +207,33 @@ estate_slaves_status_3 = {		# Standard
 			remove_estate_privilege = estate_slaves_status_4
 			remove_estate_privilege = estate_slaves_status_5
 			remove_estate_privilege = estate_slaves_status_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+		
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_3
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
-		slavesmod_state_income = 0.05 
+		slavesmod_state_income = 0.30	# base value 30%, so, 0%
+		slaves_privilege_slots = 3	# base 6, upped to 9, to do 3 base + 5 benefit laws + extra button
 	}
 	modifier_by_land_ownership = {	
 		
 	}
-	cooldown_years = 20
+	cooldown_years = 40
 	
 	ai_will_do = { factor = 0 }
 }
@@ -172,9 +244,17 @@ estate_slaves_status_4 = {		# Chattel slavery, or "slave capitalism"
 		always = yes
 	}						
 	can_select = { # Trigger
-		has_estate_privilege = estate_slaves_status_3
+		OR = {
+			AND = {
+				has_estate_privilege = estate_slaves_status_3
+				NOT = { government = tribal }
+				adm_tech = 25
+			}
+			has_estate_privilege = estate_slaves_status_5
+		
+		}
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_status_1
@@ -182,14 +262,32 @@ estate_slaves_status_4 = {		# Chattel slavery, or "slave capitalism"
 			remove_estate_privilege = estate_slaves_status_3
 			remove_estate_privilege = estate_slaves_status_5
 			remove_estate_privilege = estate_slaves_status_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+		
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_4
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
-		slavesmod_state_income = 0.10 
+		slavesmod_state_income = 0.40	# base value 30%, so, +10%
 		slavesmod_liberated = 0.01
+		slaves_privilege_slots = 3	# base 6, upped to 9, to do 3 base + 5 benefit laws + extra button
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 40
 	
 	ai_will_do = { factor = 0 }
 }
@@ -201,11 +299,13 @@ estate_slaves_status_5 = {		# State owned
 	}						
 	can_select = { # Trigger
 		OR = {
-			has_estate_privilege = estate_slaves_status_1
 			has_estate_privilege = estate_slaves_status_3
+			has_estate_privilege = estate_slaves_status_4
 		}
+		NOT = { government = tribal }
+		adm_tech = 25
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_status_1
@@ -213,14 +313,32 @@ estate_slaves_status_5 = {		# State owned
 			remove_estate_privilege = estate_slaves_status_3
 			remove_estate_privilege = estate_slaves_status_4
 			remove_estate_privilege = estate_slaves_status_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+		
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_5
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
-		slavesmod_state_income = 0.15 
+		slavesmod_state_income = 0.45	# base value 30%, so, +15%
 		slavesmod_liberated = -0.05
+		slaves_privilege_slots = 3	# base 6, upped to 9, to do 3 base + 5 benefit laws + extra button
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 40
 	
 	ai_will_do = { factor = 0 }
 }
@@ -236,24 +354,44 @@ estate_slaves_status_6 = {		# Criminal only
 			has_estate_privilege = estate_slaves_status_4
 			has_estate_privilege = estate_slaves_status_5
 		}
+		adm_tech = 30
 	}
-	can_revoke = { always = no }
-	on_granted = { 
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
+	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_status_1
 			remove_estate_privilege = estate_slaves_status_2
 			remove_estate_privilege = estate_slaves_status_3
 			remove_estate_privilege = estate_slaves_status_4
 			remove_estate_privilege = estate_slaves_status_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
+		# stability hit, depending on size of slaves
+		if = {		limit = { check_variable = { slave_pop_social = 100 } } add_stability = -3 }
+		else_if = { limit = { check_variable = { slave_pop_social = 50 } } 	add_stability = -2 }
+		else_if = { limit = { check_variable = { slave_pop_social = 20 } } 	add_stability = -1 }
+			
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_status_6
+				country_event = { id = slaves.6 }			# event to add it back
+				
+			}
+		}
+		
 	}
 	benefits = {
+		slavesmod_state_income = 0.05	# base value 30%, so, -25%
 		slavesmod_liberated = 0.03
 		slavesmod_productivity = -0.25
-		slavesmod_state_income = -0.30 
+		slaves_privilege_slots = 3	# base 6, upped to 9, to do 3 base + 5 benefit laws + extra button
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 40
 	
 	ai_will_do = { factor = 0 }
 }
@@ -264,9 +402,9 @@ estate_slaves_status_6 = {		# Criminal only
 	#estate_slaves_condition_2		# Lenient		| 0.20 loy	0.10 inf 	-33% effect	-33% prod
 	#estate_slaves_condition_3		# Normal		| 0.10 loy	0.05 inf 	  0% effect	 00% prod
 	#estate_slaves_condition_4		# Traditional	| 0.00 loy	0.00 inf 	 33% effect	 20% prod
-	#estate_slaves_condition_5		# Harsh			|-0.10 loy	0.00 inf 	 60% effect	 50% prod
-	#estate_slaves_condition_6		# Very harsh	|-0.20 loy	0.00 inf 	100% effect	 80% prod
-	#estate_slaves_condition_7		# Exhausting	|-0.40 loy	0.00 inf 	200% effect	150% prod
+	#estate_slaves_condition_5		# Harsh			|-0.10 loy	0.00 inf 	 50% effect	 50% prod
+	#estate_slaves_condition_6		# Very harsh	|-0.20 loy	0.00 inf 	 75% effect	 80% prod
+	#estate_slaves_condition_7		# Exhausting	|-0.40 loy	0.00 inf 	100% effect	150% prod
 	
 estate_slaves_condition_1 = {		# Very lenient
 	### Basic
@@ -281,54 +419,66 @@ estate_slaves_condition_1 = {		# Very lenient
 	}
 	can_select = { # Trigger
 		has_estate_privilege = estate_slaves_condition_2
-		mil_power = 100
+		mil_power = 200
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_2	# if coming down
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -100
+		add_mil_power = -200
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_1
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
 		slavesmod_productivity = -0.50
-		slavesmod_natality = 0.005
-		slavesmod_mortality = -0.01
-		
+		slavesmod_natality = 0.035		# now include the base values
+		slavesmod_mortality = 0.015
+		ae_impact = -0.1
 	}
 	
 	#####
-	#	Tiers: 200, 120, 80, 50, 25, 10, 0
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - -50% effect
 	#####
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = -3.5 stability_cost_modifier = -0.50 }
+ 		modifier = { global_unrest = -7 stability_cost_modifier = -0.75 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = -2.5 stability_cost_modifier = -0.40 }
+ 		modifier = { global_unrest = -5 stability_cost_modifier = -0.60 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = -1.5 stability_cost_modifier = -0.30 }
+ 		modifier = { global_unrest = -3.5 stability_cost_modifier = -0.40 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = -1.00 stability_cost_modifier = -0.20 }
+ 		modifier = { global_unrest = -2 stability_cost_modifier = -0.25 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = -0.50 stability_cost_modifier = -0.125 }
+ 		modifier = { global_unrest = -1.25 stability_cost_modifier = -0.15 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = -0.25 }
+ 		modifier = { global_unrest = -0.50 }
  		is_bad = no			
  	}
 	modifier_by_land_ownership = {	# What is here will be multiplied by this state's % of land. 
@@ -353,50 +503,63 @@ estate_slaves_condition_2 = {
 			has_estate_privilege = estate_slaves_condition_1
 			has_estate_privilege = estate_slaves_condition_3
 		}
-		mil_power = 100
+		mil_power = 150
 	}
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_1 
 			remove_estate_privilege = estate_slaves_condition_3
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -100
+		add_mil_power = -150
 	}
-	can_revoke = { always = no }
-	benefits = {
-		slavesmod_productivity = -0.25
-		slavesmod_mortality = -0.025
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_2
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
 		
 	}
-	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	benefits = {
+		slavesmod_productivity = -0.25
+		slavesmod_natality = 0.030		# now include the base values
+		slavesmod_mortality = 0.030
+		
+	}
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - -33% effect
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = -1.75 stability_cost_modifier = -0.50 }
+ 		modifier = { global_unrest = -4.5 stability_cost_modifier = -0.50 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = -1.25 stability_cost_modifier = -0.20 }
+ 		modifier = { global_unrest = -3.5 stability_cost_modifier = -0.40 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = -0.75 stability_cost_modifier = -0.15 }
+ 		modifier = { global_unrest = -2.35 stability_cost_modifier = -0.25 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = -0.5 stability_cost_modifier = -0.10 }
+ 		modifier = { global_unrest = -1.35 stability_cost_modifier = -0.16 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = -0.25 }
+ 		modifier = { global_unrest = -0.80 }
  		is_bad = no			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = -0.125 }
+ 		modifier = { global_unrest = -0.33 }
  		is_bad = no			
  	}
 	
@@ -423,17 +586,30 @@ estate_slaves_condition_3 = {		# 3 normal, 5 very high
 		}
 		mil_power = 100
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_2
 			remove_estate_privilege = estate_slaves_condition_4
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
 		add_mil_power = -100
 	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_3
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
+	}
 	benefits = {
 		# +0% productivity
-		# no effect on natality and mortality
+		slavesmod_natality = 0.030		# now include the base values
+		slavesmod_mortality = 0.035
 		
 	}
 	modifier_by_land_ownership = {	
@@ -458,51 +634,66 @@ estate_slaves_condition_4 = {
 			has_estate_privilege = estate_slaves_condition_3
 			has_estate_privilege = estate_slaves_condition_5
 		}
-		mil_power = 100
+		mil_power = 150
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_3
 			remove_estate_privilege = estate_slaves_condition_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -100
+		add_mil_power = -150
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_4
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
 		slavesmod_productivity = 0.20
-		# no effect on natality-mortality
+		slavesmod_natality = 0.030		# now include the base values
+		slavesmod_mortality = 0.035
+		
 	}
-	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - +33% effect
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = 2.5 stability_cost_modifier = 0.35 }
- 		is_bad = yes			
+ 		modifier = { global_unrest = 4.5 stability_cost_modifier = 0.50 }
+ 		is_bad = yes	
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = 1.6 stability_cost_modifier = 0.25 }
- 		is_bad = yes			
+ 		modifier = { global_unrest = 3.5 stability_cost_modifier = 0.40 }
+ 		is_bad = yes	
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = 1.0 stability_cost_modifier = 0.20 }
- 		is_bad = yes			
+ 		modifier = { global_unrest = 2.35 stability_cost_modifier = 0.25 }
+ 		is_bad = yes	
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = 0.65 stability_cost_modifier = 0.15 }
- 		is_bad = yes			
+ 		modifier = { global_unrest = 1.35 stability_cost_modifier = 0.16 }
+ 		is_bad = yes	
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = 0.30 stability_cost_modifier = 0.10 }
- 		is_bad = yes			
+ 		modifier = { global_unrest = 0.80 }
+ 		is_bad = yes	
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = 0.15 }
- 		is_bad = yes		
+ 		modifier = { global_unrest = 0.33 }
+ 		is_bad = yes	
  	}
+	
 	cooldown_years = 10
 	
 	ai_will_do = { factor = 0 }
@@ -522,53 +713,66 @@ estate_slaves_condition_5 = {
 			has_estate_privilege = estate_slaves_condition_4
 			has_estate_privilege = estate_slaves_condition_6
 		}
-		mil_power = 100
+		mil_power = 200
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_4
 			remove_estate_privilege = estate_slaves_condition_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -100
+		add_mil_power = -200
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_5
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
 		slavesmod_productivity = 0.50
-		slavesmod_natality = -0.002
-		slavesmod_mortality = 0.005
+		slavesmod_natality = 0.028		# now include the base values
+		slavesmod_mortality = 0.040
 		
 	}
-	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - +50% effect
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = 4.5 stability_cost_modifier = 0.60 }
+ 		modifier = { global_unrest = 7 stability_cost_modifier = 0.75 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = 3.0 stability_cost_modifier = 0.50 }
+ 		modifier = { global_unrest = 5 stability_cost_modifier = 0.60 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = 2.00 stability_cost_modifier = 0.40 }
+ 		modifier = { global_unrest = 3.5 stability_cost_modifier = 0.40 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = 1.25 stability_cost_modifier = 0.25 }
+ 		modifier = { global_unrest = 2 stability_cost_modifier = 0.25 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = 0.75 stability_cost_modifier = 0.15 }
+ 		modifier = { global_unrest = 1.25 stability_cost_modifier = 0.15 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = 0.30 }
- 		is_bad = yes		
+ 		modifier = { global_unrest = 0.50 }
+ 		is_bad = yes			
  	}
+	
 	cooldown_years = 10
 	
 	ai_will_do = { factor = 0 }
@@ -588,53 +792,67 @@ estate_slaves_condition_6 = {
 			has_estate_privilege = estate_slaves_condition_5
 			has_estate_privilege = estate_slaves_condition_7
 		}
-		mil_power = 150
+		mil_power = 300
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_5
 			remove_estate_privilege = estate_slaves_condition_7
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -150
+		add_mil_power = -300
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_6
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
 		slavesmod_productivity = 0.80
-		slavesmod_natality = -0.005
-		slavesmod_mortality = 0.015
+		slavesmod_natality = 0.025		# now include the base values
+		slavesmod_mortality = 0.050
+		diplomatic_reputation = -1
 		
 	}
-	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - +75% effect
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = 7.5 stability_cost_modifier = 1.00 }
+ 		modifier = { global_unrest = 10 stability_cost_modifier = 1.15 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = 5.0 stability_cost_modifier = 0.80 }
+ 		modifier = { global_unrest = 7.5 stability_cost_modifier = 0.90 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = 3.0 stability_cost_modifier = 0.60 }
+ 		modifier = { global_unrest = 5.5 stability_cost_modifier = 0.60 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = 2.0 stability_cost_modifier = 0.40 }
+ 		modifier = { global_unrest = 3 stability_cost_modifier = 0.37 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = 1.0 stability_cost_modifier = 0.25 }
+ 		modifier = { global_unrest = 1.87 stability_cost_modifier = 0.25 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = 0.50 }
- 		is_bad = yes		
+ 		modifier = { global_unrest = 0.75 }
+ 		is_bad = yes			
  	}
+	
 	cooldown_years = 10
 	
 	ai_will_do = { factor = 0 }
@@ -650,51 +868,68 @@ estate_slaves_condition_7 = {
 	}						
 	can_select = { # Trigger
 		has_estate_privilege = estate_slaves_condition_6
-		mil_power = 200
+		mil_power = 400
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	on_granted = { 
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_condition_6
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_mil_power = -200
+		add_mil_power = -400
+	}
+	on_revoked = { 
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_condition_7
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
 		slavesmod_productivity = 1.50
-		slavesmod_natality = -0.015
-		slavesmod_mortality = 0.025
+		slavesmod_natality = 0.020		# now include the base values
+		slavesmod_mortality = 0.075		# net of -5,5, will lose 5,5x5=27% of slaves at every 5-year event!!
+		
+		# diplomatic penalty, you are acting against human life, no foreign diplomat would look at your face
+		diplomatic_reputation = -3
+		diplomatic_annexation_cost = 0.30
+		prestige = -0.75
 		
 	}
-	#	1: 0-10%	2: 10-25%	3: 25-50%	4: 50-80%	5: 80-120%	6: 120-200%		7: >200%. You better not reach over 50%
+	#	Tiers: 200, 120, 80, 50, 25, 10, 0 - +100% effect. It is over, surrender, there is no way out. 
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 200 } }
- 		modifier = { global_unrest = 15 stability_cost_modifier = 2.00 }
+ 		modifier = { global_unrest = 13.5 stability_cost_modifier = 1.50 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 120 } NOT = { check_variable = { slave_pop_social = 200 } } }
- 		modifier = { global_unrest = 10 stability_cost_modifier = 1.60 }
+ 		modifier = { global_unrest = 10 stability_cost_modifier = 1.20 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 80 } NOT = { check_variable = { slave_pop_social = 120 } } }
- 		modifier = { global_unrest = 6 stability_cost_modifier = 1.20 }
+ 		modifier = { global_unrest = 7 stability_cost_modifier = 0.80 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 50 } NOT = { check_variable = { slave_pop_social = 80 } } }
- 		modifier = { global_unrest = 4 stability_cost_modifier = 0.80 }
+ 		modifier = { global_unrest = 4 stability_cost_modifier = 0.50 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 25 } NOT = { check_variable = { slave_pop_social = 50 } } }
- 		modifier = { global_unrest = 2 stability_cost_modifier = 0.50 }
+ 		modifier = { global_unrest = 2.5 stability_cost_modifier = 0.30 }
  		is_bad = yes			
  	}
 	conditional_modifier = { 	
  		trigger = { check_variable = { slave_pop_social = 10 } NOT = { check_variable = { slave_pop_social = 25 } } }
- 		modifier = { global_unrest = 1 stability_cost_modifier = 0.20 }
- 		is_bad = yes		
+ 		modifier = { global_unrest = 1 }
+ 		is_bad = yes			
  	}
 	cooldown_years = 10
 	
@@ -723,10 +958,10 @@ estate_slaves_jobs_1 = {		# Farming and mining
 	}
 	can_select = { 
 		# will be by law (disaster, great reform)
-		dip_power = 100
+		dip_power = 150
 		
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -734,16 +969,30 @@ estate_slaves_jobs_1 = {		# Farming and mining
 			remove_estate_privilege = estate_slaves_jobs_3
 			remove_estate_privilege = estate_slaves_jobs_4
 			remove_estate_privilege = estate_slaves_jobs_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_dip_power = -100
+		add_dip_power = -150
+	}
+	on_revoked = {
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_jobs_1
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
+		slavesmod_state_income = 0.03
 		slavesmod_productivity = -0.30	# lowers productivity
+		slavesmod_natality = -0.004
 		slavesmod_mortality = 0.003
 		# will be blocked from "advanced" manufactories and expensive trade goods
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 0
 	ai_will_do = { factor = 0 }
 }
 estate_slaves_jobs_2 = {		# Civilian jobs
@@ -759,9 +1008,9 @@ estate_slaves_jobs_2 = {		# Civilian jobs
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		dip_power = 100
+		dip_power = 200
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -769,16 +1018,26 @@ estate_slaves_jobs_2 = {		# Civilian jobs
 			remove_estate_privilege = estate_slaves_jobs_3
 			remove_estate_privilege = estate_slaves_jobs_4
 			remove_estate_privilege = estate_slaves_jobs_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_dip_power = -100
+		add_dip_power = -200
+	}
+	on_revoked = { 
+		hidden_effect = { 
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_jobs_2
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
 	}
 	benefits = {
-		slavesmod_natality = 0.002
-		slavesmod_liberated = 0.005
+		slavesmod_state_income = 0.01
 		# no effect on productivity. Slaves can be in any (basic) productive enterprise, also in cities
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 0
 	ai_will_do = { factor = 0 }
 }
 estate_slaves_jobs_3 = {		# Specialized crafts
@@ -794,9 +1053,9 @@ estate_slaves_jobs_3 = {		# Specialized crafts
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		dip_power = 150
+		dip_power = 300
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -804,17 +1063,30 @@ estate_slaves_jobs_3 = {		# Specialized crafts
 			remove_estate_privilege = estate_slaves_jobs_2
 			remove_estate_privilege = estate_slaves_jobs_4
 			remove_estate_privilege = estate_slaves_jobs_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_dip_power = -150
+		add_dip_power = -300
+	}
+	on_revoked = { 
+		hidden_effect = { 
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_jobs_3
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
+		slavesmod_state_income = -0.02
 		slavesmod_productivity = 0.20	# now slaves can be assigned to any province, including expensive trade goods
 		slavesmod_natality = 0.002
-		slavesmod_liberated = 0.008
+		slavesmod_liberated = 0.001
 		
 	}
 	
-	cooldown_years = 20
+	cooldown_years = 0
 	ai_will_do = { factor = 0 }
 }
 estate_slaves_jobs_4 = {		# Martial jobs (armies, navies)
@@ -830,9 +1102,9 @@ estate_slaves_jobs_4 = {		# Martial jobs (armies, navies)
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		dip_power = 200
+		dip_power = 400
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -840,13 +1112,26 @@ estate_slaves_jobs_4 = {		# Martial jobs (armies, navies)
 			remove_estate_privilege = estate_slaves_jobs_2
 			remove_estate_privilege = estate_slaves_jobs_3
 			remove_estate_privilege = estate_slaves_jobs_5
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_dip_power = -200
+		add_dip_power = -400
+	}
+	on_revoked = { 
+		hidden_effect = { 
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_jobs_4
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
+		slavesmod_state_income = -0.05
 		slavesmod_productivity = 0.20	# same benefit as before. This bonus comes in the conditional modifiers
-		slavesmod_natality = 0.003
-		slavesmod_liberated = 0.012
+		slavesmod_natality = 0.002
+		slavesmod_liberated = 0.002
 		
 	}
 	# This tier will allow slaves into the army. Will counter 75% of the military malus from slaves in society
@@ -887,7 +1172,7 @@ estate_slaves_jobs_4 = {		# Martial jobs (armies, navies)
  		is_bad = no
  	}
 	
-	cooldown_years = 20
+	cooldown_years = 0
 	ai_will_do = { factor = 0 }
 }
 estate_slaves_jobs_5 = {		# Administrators
@@ -903,9 +1188,9 @@ estate_slaves_jobs_5 = {		# Administrators
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		dip_power = 250
+		dip_power = 500
 	}
-	can_revoke = { always = no }
+	can_revoke = { had_country_flag = { flag = SD_priv_recent_change days = 10 } }
 	### Effects
 	on_granted = {
 		hidden_effect = {
@@ -913,13 +1198,27 @@ estate_slaves_jobs_5 = {		# Administrators
 			remove_estate_privilege = estate_slaves_jobs_2
 			remove_estate_privilege = estate_slaves_jobs_3
 			remove_estate_privilege = estate_slaves_jobs_4
+			clr_country_flag = SD_priv_recent_change
+			set_country_flag = SD_priv_recent_change		# reset timer for revoke
 		}
-		add_dip_power = -250
+		add_dip_power = -500
+	}
+	on_revoked = { 
+		hidden_effect = { 
+			if = { 
+				limit = { NOT = { had_country_flag = { flag = SD_priv_recent_change days = 10 } } }
+				set_country_flag = SD_lostpriv_jobs_5
+				country_event = { id = slaves.6 }			# event to add it back
+			}
+		}
+		
 	}
 	benefits = {
+		slavesmod_state_income = -0.075
 		slavesmod_productivity = 0.20	# same benefit as before. This bonus comes in the conditional modifiers
-		slavesmod_natality = 0.005
-		slavesmod_liberated = 0.015
+		slavesmod_natality = 0.002
+		slavesmod_mortality = -0.002
+		slavesmod_liberated = 0.004
 		
 	}
 	# This tier will allow slaves into the army. Will counter 75% of the military malus from slaves in society
@@ -962,7 +1261,7 @@ estate_slaves_jobs_5 = {		# Administrators
  		is_bad = no
  	}
 	
-	cooldown_years = 20
+	cooldown_years = 0
 	ai_will_do = { factor = 0 }
 }
 
@@ -994,7 +1293,7 @@ estate_slaves_law_A1 = {		# Legal protection
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 100
+		adm_power = 200
 	}
 	can_revoke = { adm_power = 100 }
 	### Effects
@@ -1002,14 +1301,16 @@ estate_slaves_law_A1 = {		# Legal protection
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_A2
 		}
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	on_revoked = {
 		add_adm_power = -100
 	}
 	benefits = {
 		slavesmod_productivity = 0.05
-		slavesmod_state_income = -0.02	# Less state income for each special law
+		slavesmod_natality = 0.001
+		slavesmod_mortality = -0.001
+		slavesmod_state_income = -0.025	# Less state income for each special law
 		
 	}
 	
@@ -1029,22 +1330,24 @@ estate_slaves_law_A2 = {		# Expanded legal rights
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 200
+		adm_power = 300
 	}
-	can_revoke = { adm_power = 100 }
+	can_revoke = { adm_power = 200 }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_A1
 		}
-		add_adm_power = -200
+		add_adm_power = -300
 	}
 	on_revoked = {
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	benefits = {
 		slavesmod_productivity = 0.10
-		slavesmod_state_income = -0.04	# Less state income for each special law
+		slavesmod_natality = 0.003
+		slavesmod_mortality = -0.002
+		slavesmod_state_income = -0.05	# Less state income for each special law
 		
 	}
 	
@@ -1066,7 +1369,7 @@ estate_slaves_law_B1 = {		# Right to salary
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 100
+		adm_power = 200
 	}
 	can_revoke = { adm_power = 100 }
 	### Effects
@@ -1074,15 +1377,16 @@ estate_slaves_law_B1 = {		# Right to salary
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_B2
 		}
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	on_revoked = {
 		add_adm_power = -100
 	}
 	benefits = {
 		slavesmod_natality = 0.002
+		slavesmod_liberated = 0.001
 		slavesmod_productivity = 0.05
-		slavesmod_state_income = -0.02	# Less state income for each special law
+		slavesmod_state_income = -0.025	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1101,23 +1405,24 @@ estate_slaves_law_B2 = {		# Equal pay and separate housing
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 200
+		adm_power = 300
 	}
-	can_revoke = { adm_power = 100 }
+	can_revoke = { adm_power = 200 }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_B1
 		}
-		add_adm_power = -200
+		add_adm_power = -300
 	}
 	on_revoked = {
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	benefits = {
 		slavesmod_natality = 0.003
+		slavesmod_liberated = 0.002
 		slavesmod_productivity = 0.15
-		slavesmod_state_income = -0.04	# Less state income for each special law
+		slavesmod_state_income = -0.05	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1138,7 +1443,7 @@ estate_slaves_law_C1 = {		# Ban of excessive punishments
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 100
+		adm_power = 200
 	}
 	can_revoke = { adm_power = 100 }
 	### Effects
@@ -1146,7 +1451,7 @@ estate_slaves_law_C1 = {		# Ban of excessive punishments
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_C2
 		}
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	on_revoked = {
 		add_adm_power = -100
@@ -1154,7 +1459,7 @@ estate_slaves_law_C1 = {		# Ban of excessive punishments
 	benefits = {
 		slavesmod_mortality = -0.001
 		slavesmod_productivity = 0.05
-		slavesmod_state_income = -0.02	# Less state income for each special law
+		slavesmod_state_income = -0.025	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1173,24 +1478,24 @@ estate_slaves_law_C2 = {		# Compulsory protection of child's slaves
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 200
+		adm_power = 300
 	}
-	can_revoke = { adm_power = 100 }
+	can_revoke = { adm_power = 200 }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_C1
 		}
-		add_adm_power = -200
+		add_adm_power = -300
 	}
 	on_revoked = {
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	benefits = {
 		slavesmod_mortality = -0.003
 		slavesmod_productivity = 0.10
 		# natality modifier counts towards liberated slaves. Slave population no longer grows
-		slavesmod_state_income = -0.04	# Less state income for each special law
+		slavesmod_state_income = -0.05	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1212,7 +1517,7 @@ estate_slaves_law_D1 = {		# Debt bondage
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 100
+		adm_power = 200
 	}
 	can_revoke = { adm_power = 100 }
 	### Effects
@@ -1220,14 +1525,14 @@ estate_slaves_law_D1 = {		# Debt bondage
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_D2
 		}
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	on_revoked = {
 		add_adm_power = -100
 	}
 	benefits = {
-		slavesmod_liberated = 0.002
-		slavesmod_state_income = -0.02	# Less state income for each special law
+		slavesmod_liberated = 0.001
+		slavesmod_state_income = -0.025	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1246,23 +1551,22 @@ estate_slaves_law_D2 = {		# Ban debt slavery
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 200
+		adm_power = 300
 	}
-	can_revoke = { adm_power = 100 }
+	can_revoke = { adm_power = 200 }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_D1
 		}
-		add_adm_power = -200
+		add_adm_power = -300
 	}
 	on_revoked = {
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	benefits = {
-		slavesmod_natality = 0.003
-		slavesmod_liberated = 0.005
-		slavesmod_state_income = -0.04	# Less state income for each special law
+		slavesmod_liberated = 0.003
+		slavesmod_state_income = -0.05	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1282,7 +1586,7 @@ estate_slaves_law_E1 = {		# Manumission (economic liberty)
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 100
+		adm_power = 200
 	}
 	can_revoke = { adm_power = 100 }
 	### Effects
@@ -1290,14 +1594,14 @@ estate_slaves_law_E1 = {		# Manumission (economic liberty)
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_E2
 		}
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	on_revoked = {
 		add_adm_power = -100
 	}
 	benefits = {
-		slavesmod_liberated = 0.01
-		slavesmod_state_income = -0.02	# Less state income for each special law
+		slavesmod_liberated = 0.005
+		slavesmod_state_income = -0.025	# Less state income for each special law
 	}
 	
 	cooldown_years = 20
@@ -1316,22 +1620,22 @@ estate_slaves_law_E2 = {		# Active political liberty
 	}						
 	can_select = { 
 		# will be by law (disaster, great reform)
-		adm_power = 200
+		adm_power = 300
 	}
-	can_revoke = { adm_power = 100 }
+	can_revoke = { adm_power = 200 }
 	### Effects
 	on_granted = {
 		hidden_effect = {
 			remove_estate_privilege = estate_slaves_law_E1
 		}
-		add_adm_power = -200
+		add_adm_power = -300
 	}
 	on_revoked = {
-		add_adm_power = -100
+		add_adm_power = -200
 	}
 	benefits = {
-		slavesmod_liberated = 0.02
-		slavesmod_state_income = -0.04	# Less state income for each special law
+		slavesmod_liberated = 0.01
+		slavesmod_state_income = -0.05	# Less state income for each special law
 	}
 	
 	cooldown_years = 20

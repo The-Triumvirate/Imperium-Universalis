@@ -30,23 +30,7 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				# SS: Sieges and repairs
 				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
 				
-				# DE Dynamic Economy
-				if = {
-					limit = { had_province_flag = { flag = DE_2years days = 700 } } 
-					trigger_switch = {
-						on_trigger = trade_goods
-						gold = { DE_consume_ore = { metal = gold } }
-						silver = { DE_consume_ore = { metal = silver } }
-						copper = { DE_consume_ore = { metal = copper } }
-						iron = { DE_consume_ore = { metal = iron } }
-						tin = { DE_consume_ore = { metal = tin } }
-						lead = { DE_consume_ore = { metal = lead } }
-						marble = { DE_consume_ore = { metal = marble } }
-						gems = { DE_consume_ore = { metal = gems } }
-						jade = { DE_consume_ore = { metal = jade } }
-					}
-					clr_province_flag = DE_2years set_province_flag = DE_2years		# reset counter. Avoids losing ores if used manually
-				}
+				# Trade limits, update province economic output
 				DE_update_goods = yes 
 				DE_update_value = yes
 				
@@ -181,6 +165,16 @@ province_event = {				# PROVINCE INTERACTION MENU
 		owner = { country_event = { id = popgrowth_stats.5 } }
 		
 	}
+	option = {
+		name = "population_capacity.3.6"	# Add a new center of trade
+		trigger = { 
+			NOT = { province_has_center_of_trade_of_level = 1 }				# must have no previous CoT
+			base_production = 1 
+		}
+		province_event = { id = dyneconomy.1 }
+		
+	}
+	
 	
 	option = {
 		name = "population_capacity.3.99"	# (nothing, close this)

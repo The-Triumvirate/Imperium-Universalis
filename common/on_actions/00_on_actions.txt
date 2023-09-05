@@ -24,6 +24,7 @@ on_startup = {
 		indian.50 #Starts indian religious schools
 		danda_niti.13 #Danda Niti Mechanic
 		rm.1
+		startup.8
 	}
 }
 
@@ -106,6 +107,7 @@ on_war_won = {
 		rome.54
 		rome.43
 		indian.7501 #Ahimsa modifier
+		scythian.11
 	}
 	if = {
 		limit = { has_country_modifier = crusader_china }
@@ -158,6 +160,7 @@ on_war_lost = {
 		rome.49
 		rome.55
 		rome.42
+		scythian.12
 	}
 	if = {
 		limit = { has_country_modifier = crusader_china }
@@ -227,7 +230,21 @@ on_battle_won_unit = {
 
 # #Unit Scope OnAction for Battle Lost
 on_battle_lost_unit = {
-	
+	if = {
+        limit = {
+            unit_owner = {
+                tag = SX1
+                has_ruler_flag = scythian_invasion_cilicia_flag
+            }
+            is_ruler_commanding_unit = yes
+			enemy_unit = {
+				unit_owner = {
+					tag = KIL
+				}
+			}
+        }
+		SX1 = { country_event = { id = scythian.14 } }
+    }
 }
 
 # province
@@ -658,6 +675,17 @@ on_government_change = {
 			days = 30
 		}
 	}
+	if = {
+		limit = {
+			tag = SCY
+			any_subject_country = { is_subject_of_type = scythian_clan_subject }
+			NOT = { government = tribal }
+		}
+		every_subject_country = {
+			limit = { is_subject_of_type = scythian_clan_subject }
+			SCY = { inherit = PREV }
+		}
+	}
 }
 
 # When a native changes government after filling all their advancement groups.
@@ -798,6 +826,18 @@ on_yearly_pulse_3 = {
 on_yearly_pulse_4 = {
 }
 on_yearly_pulse_5 = {
+	if = {
+		limit = {
+			OR = {
+				has_reform = steppe_horde_reform
+				has_reform = scythian_clan_reform
+				has_reform = hunter_gatherer_tribe_reform
+				has_reform = pastoral_tribe_reform
+			}
+			ai = yes
+		}
+		disband_all_ships = yes
+	}
 }
 
 on_bi_yearly_pulse = {
@@ -827,8 +867,10 @@ on_bi_yearly_pulse_4 = {
 # country random events
 on_thri_yearly_pulse = {
 	random_events = {
-		100 = natural_disaster.8
 		100 = randomprovince.13
+
+		50 = tribal.11
+		50 = tribal.12
 	
 		100 = culture.1
 		100 = culture.2
@@ -1156,15 +1198,6 @@ on_five_year_pulse = {
 		50 = new_governments.12
 		50 = new_governments.17
 		50 = new_governments.18
-		25 = natural_disaster.1
-		25 = natural_disaster.2
-		25 = natural_disaster.3
-		25 = natural_disaster.4
-		25 = natural_disaster.5
-		50 = natural_disaster.6
-		25 = natural_disaster.7
-		50 = natural_disaster.11
-		50 = new_governments.26
 		50 = indian.58
 		25 = indian.59
 		25 = indian.60
@@ -1268,20 +1301,8 @@ on_five_year_pulse_2 = {
 		150 = tribal_estate_events.12 #Demands
 		150 = tribal_estate_events.13 #Demands
 		150 = tribal_estate_events.14 #Demands
-		#Ruler Health
-		10 = ruler_health.1
-		15 = ruler_health.2
-		15 = ruler_health.3
-		10 = ruler_health.4
-		20 = ruler_health.5
-		15 = ruler_health.6
-		10 = ruler_health.7
-		20 = ruler_health.8
-		10 = ruler_health.9
-		10 = ruler_health.10
-		15 = ruler_health.11
-		15 = ruler_health.12
-		10 = ruler_health.13
+		100 = new_governments.26
+		75 = custom_religion.3
 
 		1600 = 0
 	}
@@ -1298,9 +1319,32 @@ on_five_year_pulse_4 = {
 	random_events = {
 		#10 = custom_religion.16
 		#15 = custom_religion.25
-		30 = custom_religion.3
+		5 = natural_disaster.1
+		10 = natural_disaster.2
+		10 = natural_disaster.3
+		10 = natural_disaster.4
+		10 = natural_disaster.5
+		5 = natural_disaster.6
+		10 = natural_disaster.7
+		25 = natural_disaster.8
+		25 = natural_disaster.11
+		#Ruler Health
+		5 = ruler_health.1
+		7 = ruler_health.2
+		7 = ruler_health.3
+		5 = ruler_health.4
+		10 = ruler_health.5
+		7 = ruler_health.6
+		5 = ruler_health.7
+		10 = ruler_health.8
+		5 = ruler_health.9
+		5 = ruler_health.10
+		7 = ruler_health.11
+		7 = ruler_health.12
+		5 = ruler_health.13
+		
 
-		1000 = 0
+		100000 = 0
 	}
 }
 
@@ -1525,9 +1569,13 @@ on_convert_by_trade_policy = {
 # FROM = old owner
 on_province_owner_change = {
 	events = {
-		new_governments.7
+		new_governments.7		# upper classes conquered, for kemetic kingdoms
 		#new_governments.21
 	}
+	# Check for slaves in the province, update in case slot is no longer needed
+	SD_update_provslots = yes
+	SD_update_prov_output = yes
+	
 	#Ishkuza mission tree
 	if = {
 		limit = {
@@ -1761,8 +1809,7 @@ on_company_chartered = {
 
 # ROOT = Overlord, FROM = Minor
 on_dependency_gained = {
-	events = {
-	}
+	
 }
 
 # ROOT = Overlord, FROM = Minor
@@ -1778,8 +1825,43 @@ on_create_vassal = {
 		change_primary_culture = zhongyuan
 		change_religion = chinese_religion
 	}
-	country_event = {
-		id = elam.31
+	if = {
+		limit = {
+			culture_group = steppe_people
+			FROM = {
+				has_reform = steppe_horde_reform
+				tag = SCY
+			}
+		}
+		FROM = {
+			create_subject = {
+				who = ROOT
+				subject_type = scythian_clan_subject
+			}
+		}
+		change_government = tribal
+		add_government_reform = scythian_clan_reform
+	}
+	if = {
+		limit = {
+			FROM = { has_reform = elamite_kingdom }
+			is_subject_of_type = sukkal_vassal
+			NOT = { tag = SUS }
+			NOT = { tag = SU1 }
+			NOT = { tag = SU2 }
+			NOT = { tag = SU3 }
+			NOT = { tag = SU4 }
+			NOT = { tag = SU5 }
+			NOT = { tag = SU6 }
+			NOT = { tag = SU7 }
+			NOT = { tag = SU8 }
+		}
+		FROM = {
+			create_subject = {
+				who = ROOT
+				subject_type = vassal
+			}
+		}
 	}
 }
 
@@ -1816,13 +1898,11 @@ on_country_released = {
 		change_primary_culture = zhongyuan
 		change_religion = chinese_religion
 	}
-	THIS = {
-		add_legitimacy = 100
-		add_republican_tradition = 100
-		add_devotion = 100
-		add_horde_unity = 100
-		add_meritocracy = 100
-	}
+	add_legitimacy = 100
+	add_republican_tradition = 100
+	add_devotion = 100
+	add_horde_unity = 100
+	add_meritocracy = 100
 }
 
 # ROOT = province, FROM = country
@@ -2189,4 +2269,8 @@ on_alliance_created = { #ROOT - Alliance sender, FROM - Alliance accepter
 
 on_royal_marriage = { #ROOT - Marraige sender, FROM - marriage accepter
 
+}
+
+on_heir_disinherited = {
+	remove_country_modifier = heir_is_coruler
 }
