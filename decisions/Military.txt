@@ -270,4 +270,141 @@ country_decisions = {
 			}
 		}
 	}
+
+	engage_guerrilla_warfare = {
+		potential = {
+			NOT = { has_country_modifier = guerrilla_warfare_modifier }
+			is_in_war = { defenders = ROOT }
+			NOT = { total_development = 100 }
+			NOT = { num_of_cities = 20 }
+		}
+		allow = {
+			mil_power = 50
+			any_war_enemy_country = {
+				ROOT = {
+					NOT = { total_development = PREV }
+					NOT = { army_size = PREV }
+				}
+			}
+			any_owned_province = {
+				OR = {
+					has_terrain = hills
+					has_terrain = highlands
+					has_terrain = fertile_highlands
+					has_terrain = desert_mountain
+					has_terrain = mountain
+					has_terrain = forest
+					has_terrain = woods
+					has_terrain = jungle
+					has_terrain = oasis
+					has_terrain = desert
+					has_terrain = desert_river
+					has_terrain = salt_desert
+					has_terrain = coastal_desert
+					has_terrain = savannah
+					has_terrain = steppe
+					has_terrain = forest_steppe
+					has_terrain = marsh
+					has_terrain = mangrove
+					has_terrain = floodplains
+					has_terrain = wetlands
+				}
+			}
+		}
+		effect = {
+			add_mil_power = -50
+			add_country_modifier = {
+				name = guerrilla_warfare_modifier
+				duration = -1
+			}
+			every_owned_province = {
+				limit = {
+					OR = {
+						has_terrain = hills
+						has_terrain = highlands
+						has_terrain = fertile_highlands
+						has_terrain = desert_mountain
+						has_terrain = mountain
+						has_terrain = forest
+						has_terrain = woods
+						has_terrain = jungle
+						has_terrain = oasis
+						has_terrain = desert
+						has_terrain = desert_river
+						has_terrain = salt_desert
+						has_terrain = coastal_desert
+						has_terrain = savannah
+						has_terrain = steppe
+						has_terrain = forest_steppe
+						has_terrain = marsh
+						has_terrain = mangrove
+						has_terrain = floodplains
+						has_terrain = wetlands
+					}
+				}
+				add_province_modifier = {
+					name = guerrilla_presence_modifier
+					duration = -1
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { mil_power = 50 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					ruler_has_personality = bold_fighter_personality
+					ruler_has_personality = chauvinist_personality
+				}
+			}
+			modifier = {
+				factor = 3
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 2
+				tribal_or_native_trigger = yes
+			}
+		}
+	}
+
+	stop_guerrilla_warfare = {
+		potential = {
+			has_country_modifier = guerrilla_warfare_modifier
+		}
+		allow = {
+			mil_power = 50
+		}
+		effect = {
+			add_mil_power = -50
+			remove_country_modifier = guerrilla_warfare_modifier
+			every_owned_province = {
+				limit = { has_province_modifier = guerrilla_presence_modifier }
+				remove_province_modifier = guerrilla_presence_modifier
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				war_exhaustion = 8
+			}
+			modifier = {
+				factor = 0
+				NOT = { mil_power = 50 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { war_score = 50 }
+			}
+			modifier = {
+				factor = 0
+				any_war_enemy_country = { ROOT = { NOT = { army_size = PREV } } }
+			}
+		}
+	}
 }
