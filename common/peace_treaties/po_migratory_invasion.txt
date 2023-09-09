@@ -1,0 +1,109 @@
+po_migratory_invasion = {
+	category = 6
+	power_projection = vassalized_rival
+	power_cost_base = 0.1
+	prestige_base = 0.5
+	ae_base = 0.5
+	warscore_cost = {
+		no_provinces = 70.0
+		owner_keeps = 0.0
+		returned_core = 0.0
+		released_nation = 0.0
+	}
+	warscore_cap = 70
+	is_make_subject = no
+	requires_is_allowed = yes
+	
+	is_visible = {
+		
+	}
+	is_allowed = {
+		
+	}
+	effect = {
+		hidden_effect = {
+			clr_country_flag = migratory_attacker_war_flag
+			set_country_flag = won_migration_war_flag
+			FROM = {
+				clr_country_flag = migratory_defender_war_flag
+				every_owned_province = {
+					limit = { controlled_by = ROOT }
+					remove_loot = {
+						who = ROOT
+						amount = 100
+					}
+					add_territorial_core = ROOT
+					cede_province = ROOT
+				}
+				add_stability = -1
+				every_subject_country = { grant_independence = yes }
+			}
+			embrace_institutions_of = FROM
+			remove_country_modifier = migratory_war1_modifier
+			remove_country_modifier = migratory_war2_modifier
+			remove_country_modifier = migratory_war3_modifier
+			remove_country_modifier = migratory_war4_modifier
+			remove_country_modifier = migratory_war5_modifier
+			every_owned_province = {
+				limit = { has_province_flag = migration_oldhome_prov_flag }
+				if = {
+					limit = { any_core_country = { NOT = { tag = ROOT } } }
+					random_core_country = {
+						limit = { NOT = { tag = ROOT } }
+						PREV = { cede_province = PREV }
+					}
+				}
+				else_if = {
+					limit = {
+						any_neighbor_province = {
+							is_city = yes
+							NOT = { owned_by = ROOT }
+						}
+					}
+					random_neighbor_province = {
+						limit = {
+							is_city = yes
+							NOT = { owned_by = ROOT }
+						}
+						owner = { save_event_target_as = new_owner }
+					}
+					if = {
+						limit = { has_saved_event_target = new_owner }
+						cede_province = event_target:new_owner
+					}
+				}
+				else = { decolonize = yes }
+				clr_province_flag = migration_oldhome_prov_flag
+			}
+		}
+		random_owned_province = {
+			ROOT = { set_capital = PREV }
+			add_core = ROOT
+			change_culture = ROOT
+			change_religion = ROOT
+		}
+		add_country_modifier = {
+			name = victorious_migration_modifier
+			duration = 7300
+		}
+		change_government_reform_progress = 300
+		if = {
+			limit = { ai = yes }
+			disband_all_regiments = yes
+			add_treasury = 300
+			add_stability = 1
+			random_owned_province = { build_to_forcelimit = {} }
+		}
+	}
+	ai_weight = {
+		export_to_variable = {
+			variable_name = ai_value
+			value = 1000
+		}
+		limit = {
+			FROM = {
+				any_owned_province = { controlled_by = ROOT }
+			}
+		}
+	}
+}

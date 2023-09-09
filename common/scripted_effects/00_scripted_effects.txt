@@ -1,3 +1,57 @@
+migration_start_effect = {
+	if = {
+		limit = { has_country_flag = won_migration_war_flag }
+		clr_country_flag = won_migration_war_flag
+	}
+	set_country_flag = migratory_attacker_war_flag
+	FROM = { set_country_flag = migratory_defender_war_flag }
+	every_owned_province = { set_province_flag = migration_oldhome_prov_flag }
+	if = {
+		limit = { total_development = 50 }
+		add_country_modifier = {
+			name = migratory_war5_modifier
+			duration = -1
+		}
+		add_manpower = 50
+	}
+	else_if = {
+		limit = { total_development = 40 }
+		add_country_modifier = {
+			name = migratory_war4_modifier
+			duration = -1
+		}
+		add_manpower = 40
+	}
+	else_if = {
+		limit = { total_development = 30 }
+		add_country_modifier = {
+			name = migratory_war3_modifier
+			duration = -1
+		}
+		add_manpower = 30
+	}
+	else_if = {
+		limit = { total_development = 20 }
+		add_country_modifier = {
+			name = migratory_war2_modifier
+			duration = -1
+		}
+		add_manpower = 20
+	}
+	else = {
+		add_country_modifier = {
+			name = migratory_war1_modifier
+			duration = -1
+		}
+		add_manpower = 10
+	}
+	if = {
+		limit = { has_reform = steppe_horde_reform }
+		capital_scope = { build_to_forcelimit = { cavalry = 0.5 infantry = 0.25 artillery = 0.25 } }
+	}
+	else = { capital_scope = { build_to_forcelimit = { infantry = 0.75 artillery = 0.25 } } }
+}
+
 add_legitimacy_equivalent_100_effect = {
 	if = {
 		limit = { government = monarchy }
@@ -240,60 +294,6 @@ move_capital_effect = {
 	if = {
 		limit = { is_capital = no }
 		ROOT = { set_capital = PREV }
-	}
-}
-
-first_emmigration_effect_test = {
-	every_owned_province = {
-		add_base_manpower = -999
-		if = {
-			limit = { is_capital = yes }
-			set_province_flag = former_migratory_tribal_capital_flag
-		}
-		else_if = {
-			limit = { any_neighbor_province = { is_empty = no } }
-			random_neighbor_province = { owner = { save_event_target_as = new_tribal_owner_country } }
-			cede_province = event_target:new_tribal_owner_country
-		}
-		else = { cede_province = XXX }
-	}
-	set_country_flag = migratory_tribe_flag
-	add_manpower = 10
-	add_treasury = 50
-	capital_scope = {
-		if = {
-			limit = {
-				owner = {
-					OR = {
-						has_reform = steppe_horde_reform
-						has_reform = pastoral_tribe_reform
-					}
-				}
-				
-			}
-			build_to_forcelimit = { cavalry = 1 }
-		}
-		else = { build_to_forcelimit = { infantry = 1 } }
-	}
-}
-
-second_emmigration_effect_test = {			# (mrkcosta): who did that?? 
-	random_owned_province = {
-		if = {
-			limit = { NOT = { has_province_flag = former_migratory_tribal_capital_flag } }
-			owner = { set_capital = PREV }
-			change_culture = owner
-			change_religion = owner
-		}
-		else_if = {
-			limit = { any_neighbor_province = { is_empty = no } }
-			random_neighbor_province = { owner = { save_event_target_as = new_tribal_owner_country } }
-			cede_province = event_target:new_tribal_owner_country
-		}
-		else_if = {
-			limit = { has_province_flag = former_migratory_tribal_capital_flag }
-			cede_province = XXX
-		}
 	}
 }
 
