@@ -8,7 +8,7 @@ country_event = {
 	id = celt.1
 	title = "celt.1.t"
 	desc = "celt.1.d"
-	picture = forum_picture
+	picture = tradecity
 	fire_only_once = yes	
 	
 	trigger = {
@@ -114,7 +114,7 @@ country_event = {
 	id = celt.3
 	title = "celt.3.t"
 	desc = "celt.3.d"
-	picture = city
+	picture = tradecity
 	is_triggered_only = yes
 	
 	
@@ -151,7 +151,7 @@ country_event = {
 	id = celt.4
 	title = "celt.4.t"
 	desc = "celt.4.d"
-	picture = forum_picture
+	picture = peasant_woman
 	fire_only_once = yes	
 	
 	trigger = {
@@ -209,7 +209,7 @@ country_event = {
 	id = celt.5
 	title = "celt.5.t"
 	desc = "celt.5.d"
-	picture = city
+	picture = peasant_woman
 	is_triggered_only = yes
 	
 	
@@ -229,3 +229,242 @@ country_event = {
 #################################################
 # hallstat influence spreads
 #################################################
+country_event = {
+	id = celt.6
+	title = "celt.6.t"
+	desc = "celt.6.d"
+	picture = rich_woman
+	fire_only_once = yes	
+	
+	trigger = {
+		OR = {
+		culture = western_hallstat
+		culture = eastern_hallstat
+		}
+		NOT = { started_in = 195.1.1 }
+		capital_scope = {
+			OR = {
+				area = deserta_boiorum
+				area = germania_superior
+				area = mogontiacum_area
+				area = helvetica_area
+				area = alpes_noricae
+				area = vindobona_area
+				area = alpes_raetae
+			}
+		}
+		is_year = 204
+		NOT = {
+			has_global_flag = hallstat_expansion
+		}
+	}
+	mean_time_to_happen = {
+		months = 6	
+	}
+	
+	option = {
+		name = "celt.6.a"
+		set_global_flag = hallstat_expansion
+		
+		every_province = {
+				limit = { 
+					OR = {
+						region = belgica_region
+						area = batavorum_area
+						area = frisia_area
+						area = moenus_area
+						area = rhenus_area
+						area = alesia_area
+						area = icenorum_area
+						area = dubris_area
+					}
+				}
+				change_culture = western_hallstat
+		}
+		every_province = {
+			limit = { 
+				OR = {
+					area = sarmatici_mons
+				}
+			}
+			change_culture = eastern_hallstat
+		}		
+	}
+}
+#################################################
+# birth_of_latene
+#################################################
+country_event = {
+	id = celt.7
+	title = "celt.7.t"
+	desc = "celt.7.d"
+	picture = military_parade
+	fire_only_once = yes	
+	
+	trigger = {
+		OR = {
+			culture = western_hallstat
+			culture = eastern_hallstat
+		}
+		NOT = { started_in = 254.1.1 }
+		capital_scope = {
+			OR = {
+				area = deserta_boiorum
+				area = germania_superior
+				area = mogontiacum_area
+				area = helvetica_area
+				area = alpes_noricae
+				area = vindobona_area
+				area = alpes_raetae
+			}
+		}
+		is_year = 270
+		NOT = {
+			has_global_flag = la_tene_start
+		}
+	}
+	mean_time_to_happen = {
+		months = 6	
+	}
+	
+	option = {
+		name = "celt.7.a"
+		set_global_flag = la_tene_start
+		
+		every_province = {
+				limit = { 
+					OR = {
+						area = remorum_area
+						area = germania_inferior
+						area = boiohemum_area
+						area = rhenus_area
+					}
+				}
+				change_culture = la_tene_celtic
+		}
+		every_country = {
+			limit = { 
+				any_owned_province = {
+					OR = {
+						area = remorum_area
+						area = germania_inferior
+						area = boiohemum_area
+						area = rhenus_area
+					}
+				}
+			}
+			change_primary_culture = la_tene_celtic
+			add_accepted_culture = western_hallstat
+			add_accepted_culture = eastern_hallstat
+			add_country_modifier = {
+				name = la_tene_boost
+				duration = 19525
+			}
+			if = {
+				limit= { 
+					ai = yes
+				}
+				swap_free_idea_group = yes
+			}
+			else = {
+				country_event = { id = new_ideas.1 }
+			}			
+		}
+	}
+}
+#################################################
+# end_of_hallstat
+#################################################
+country_event = {
+	id = celt.8
+	title = "celt.8.t"
+	desc = "celt.8.d"
+	picture = cavalry
+	fire_only_once = yes	
+	
+	trigger = {
+		OR = {
+		culture = la_tene_celtic
+		}
+		NOT = { started_in = 254.1.1 }
+		capital_scope = {
+			OR = {
+				area = remorum_area
+				area = germania_inferior
+				area = boiohemum_area
+				area = rhenus_area
+			}
+		}
+		is_year = 300
+		NOT = {
+			has_global_flag = hallstat_end
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "celt.8.a"
+		set_global_flag = hallstat_end
+		
+		every_province = {
+				limit = { 
+					OR = {
+						culture = western_hallstat
+						culture = eastern_hallstat
+					}
+				}
+				change_culture = la_tene_celtic
+				add_base_manpower = -1
+				add_devastation = 5
+		}
+		every_country = {
+			limit = {
+				OR = {
+					primary_culture =  western_hallstat
+					primary_culture =  eastern_hallstat
+				}
+			}
+			if = {
+				limit= { 
+					ai = yes
+				}
+				change_primary_culture = la_tene_celtic
+				swap_free_idea_group = yes
+			}
+			else = {
+				country_event = { id = celt.9 }
+			}			
+		}			
+	}
+}
+#halstatt player chooses to surrender and join la tene guys or receive tons of raiders
+country_event = {
+	id = celt.9
+	title = "celt.9.t"
+	desc = "celt.9.d"
+	picture = city
+	is_triggered_only = yes
+		
+	trigger = {
+	}
+	
+	option = {
+		name = "celt.9.a"
+		change_primary_culture = la_tene_celtic
+		swap_free_idea_group = yes
+		kill_ruler = yes
+		add_stability = -1
+	}
+	option = {
+		name = "celt.9.b"		
+		every_owned_province = {
+			spawn_rebels = {
+				size = 3
+				type = nomad_raiders
+			}
+		}
+		add_stability = -2
+	}
+}
