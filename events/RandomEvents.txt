@@ -1,3 +1,4 @@
+# Generic random events from the vanilla game transplanted to IU
 #########################################################
 #		Gift to the state								#
 #########################################################
@@ -7405,8 +7406,8 @@ country_event = {
 	id = 879
 	title = "EVTNAME879"
 	desc = "EVTDESC879"
-	picture = NAVAL_MILITARY_eventPicture
-	goto = pirates
+	picture = pirates
+	goto = gold_country
 
 	is_triggered_only = yes
 	
@@ -7559,3 +7560,1952 @@ country_event = {
 
 # Expanding influence / ID 882 Unused
 
+# Local Noble's Power Grows
+country_event = {
+	id = 884
+	title = "EVTNAME884"
+	desc = "EVTDESC884"
+	picture = aristocrats
+	goto = local_noble_province
+
+	is_triggered_only = yes
+	
+	trigger = {
+		has_estate = estate_nobility
+		NOT = { adm = 3 }
+		num_of_cities = 2
+		any_owned_province = {
+			is_capital = no
+			culture_group = root
+			NOT = { has_province_modifier = powerful_noble }
+			NOT = { local_autonomy = 0.5 }
+			OR = {
+				development = 10
+				owner = {
+					NOT = { num_of_cities = 9 }
+				}
+			}
+		}
+		OR = {
+			government = monarchy
+			government = theocracy
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_capital = no
+					culture_group = root
+					NOT = { has_province_modifier = powerful_noble }
+					NOT = { local_autonomy = 0.5 }
+					OR = {
+						development = 10
+						owner = {
+							NOT = { num_of_cities = 9 }
+						}
+					}
+				}
+				save_event_target_as = local_noble_province
+				root = {
+					set_saved_name = {
+						key = local_noble_name
+						type = advisor
+						scope = prev
+					}
+				}
+			}
+		}
+	}
+	after = {
+		clear_saved_name = local_noble_name
+	}
+	
+	option = {
+		name = "EVTOPTA884"
+		ai_chance = {
+			factor = 33
+		}
+		add_prestige = -10
+		event_target:local_noble_province = {
+			add_province_modifier = {
+				name = "powerful_noble"
+				duration = 240
+			}
+			add_local_autonomy = 20
+
+		}
+		add_estate_nobility_loyalty_effect = yes
+	}
+	option = {
+		name = "EVTOPTB884"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { stability = 1 }
+			}
+			modifier = {
+				factor = 0.25 #Should prefer A
+				has_estate = estate_nobles
+				NOT = {
+					estate_loyalty = {
+						estate = estate_nobility
+						loyalty = 30
+					}
+				}
+			}
+		}
+		add_prestige = 5
+		if = {
+			limit = { NOT = { stability = -2 } }
+			add_adm_power = -100
+		}		
+		if = {
+			limit = { stability = -2 }
+			add_stability = -1
+		}
+	}
+	option = {
+		name = "EVTOPTC884"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0 #Never if below 30
+				has_estate = estate_nobility
+				NOT = {
+					estate_loyalty = {
+						estate = estate_nobility
+						loyalty = 30
+					}
+				}
+			}
+		}
+		add_prestige = 5
+		event_target:local_noble_province = {
+			spawn_large_scaled_rebels = {
+				type = pretender_rebels
+				saved_name = local_noble_name
+			}
+		}
+		reduce_estate_nobility_loyalty_effect = yes
+	}
+	option = {
+		name = "personality_options.884.a"
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = lawgiver } }
+		ai_chance = {
+			factor = 100
+		}
+		add_prestige = 5
+		add_adm_power = -50
+	}
+	option = {
+		name = "personality_options.884.b"
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = charismatic_negotiator } }
+		ai_chance = {
+			factor = 100
+		}
+		add_prestige = 5
+		add_dip_power = -50
+	}
+	option = {
+		name = "personality_options.884.c"
+		highlight = yes
+		trigger = {
+			OR = {
+				ruler_has_personality = cruel_personality
+				ruler_has_personality = malevolent_personality
+			}
+		}
+		ai_chance = {
+			factor = 100
+		}
+		add_prestige = 5
+		add_mil_power = -50
+	}
+}
+
+# Colonial Discovery! / ID 885 Unused
+
+# Country Destabilized
+country_event = {
+	id = 806
+	title = "EVTNAME806"
+	desc = "EVTDESC806"
+	picture = civilwar
+	
+	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	trigger = {
+		war_exhaustion = 10
+		stability = -2
+	}
+
+	option = {
+		name = "EVTOPTB806A"
+		add_stability = -1
+	}
+	option = {
+		name = "personality_options.806.a" #
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = careful } } 
+		ai_chance = {
+			factor = 100
+		}
+		random_owned_province = {
+			limit = {
+				is_capital = no
+				NOT = { local_autonomy = 90 } 
+				is_city = yes
+			}
+			area = {
+				limit = {
+					owned_by = ROOT
+					is_capital = no
+				}
+				add_local_autonomy = 25
+			}
+		}
+	}
+}
+
+# Naval thought suffering
+country_event = {
+	id = 836
+	title = "EVTNAME836"
+	desc = "EVTDESC836"
+	picture = navy
+
+	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	trigger = {
+		num_of_ports = 1
+		primitives = no
+		NOT = { has_idea_group = maritime_ideas }
+		NOT = { has_idea_group = naval_ideas }
+		OR = { 
+			has_idea_group = infantry_ideas
+			has_idea_group = cavalry_ideas
+			has_idea_group = skirmisher_ideas
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB836A"
+		add_dip_power = -50
+	}
+	option = {
+		name = "personality_options.836.a"
+		highlight = yes
+		trigger = {
+			ruler_has_personality_ancestor = { key = navigator }
+		}
+		add_dip_power = -25
+	}
+}
+
+# Naval Officers are retiring
+country_event = {
+	id = 837
+	title = "EVTNAME837"
+	desc = "EVTDESC837"
+	picture = mosaic_poseidon
+	
+	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	trigger = {
+		num_of_ports = 1
+		primitives = no
+		NOT = { has_idea_group = maritime_ideas }
+		NOT = { has_idea_group = naval_ideas }
+		OR = { 
+			has_idea_group = infantry_ideas
+			has_idea_group = cavalry_ideas
+			has_idea_group = skirmisher_ideas
+		}
+	}	
+	
+	option = {
+		name = "EVTOPTB837A"
+		add_navy_tradition = -10
+	}
+	option = {
+		name = "personality_options.837.a"
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = navigator } }
+		add_navy_tradition = -5
+	}
+}
+
+# An example to us all / ID 838 Unused
+
+### Scripted by Sara Wendel-Örtqvist ###
+
+namespace = random_event
+
+# Support for revolution overseas - No longer supported; the event takes a lot of performance for little gain.
+#country_event = {
+#	id = random_event.1
+#	title = "random_event.EVTNAME1"
+#	desc = "random_event.EVTDESC1"
+#	picture = LAND_MILITARY_eventPicture
+#	
+#	is_triggered_only = yes
+#	
+#	trigger = {
+#		is_at_war = no
+#		treasury = 100
+#		any_rival_country = {
+#			any_known_country = {
+#				OR = {
+#					is_in_war = {
+#						attacker_leader = this
+#						defender_leader = prev
+#						casus_belli = cb_colonial_independence_war
+#					}
+#					AND = {
+#						is_former_colonial_nation = yes
+#						is_in_war = {
+#							defender_leader = this
+#							attacker_leader = prev
+#						}
+#					}
+#				}
+#			}
+#		}
+#		any_enemy_country = {
+#			any_known_country = {
+#				OR = {
+#					is_in_war = {
+#						attacker_leader = this
+#						defender_leader = prev
+#						casus_belli = cb_colonial_independence_war
+#					}
+#					AND = {
+#						is_former_colonial_nation = yes
+#						is_in_war = {
+#							defender_leader = this
+#							attacker_leader = prev
+#						}
+#					}
+#				}
+#			}
+#		}
+#	}
+#
+#	immediate = {
+#		hidden_effect = {
+#			random_country = {
+#				limit = {
+#					OR = {
+#						is_rival = root
+#						root = { is_rival = prev }
+#					}
+#					any_known_country = {
+#						OR = {
+#							is_in_war = {
+#								attacker_leader = this
+#								defender_leader = prev
+#								casus_belli = cb_colonial_independence_war
+#							}
+#							AND = {
+#								is_former_colonial_nation = yes
+#								is_in_war = {
+#									defender_leader = this
+#									attacker_leader = prev
+#								}
+#							}
+#						}
+#					}
+#				}
+#				save_event_target_as = enemy_country
+#				random_known_country = {
+#					limit = {
+#						OR = {
+#							is_in_war = {
+#								attacker_leader = this
+#								defender_leader = prev
+#								casus_belli = cb_colonial_independence_war
+#							}
+#							AND = {
+#								is_former_colonial_nation = yes
+#								is_in_war = {
+#									defender_leader = this
+#									attacker_leader = prev
+#								}
+#							}
+#						}
+#					}
+#					save_event_target_as = former_colony
+#				}
+#			}
+#		}
+#	}
+#	
+#	mean_time_to_happen = {
+#		days = 1
+#	}
+#	
+#	option = {
+#		name = "random_event.EVTOPTA1"
+#		add_treasury = -100
+#		event_target:former_colony = {
+#			add_treasury = 100
+#			add_opinion = {
+#				who = ROOT
+#				modifier = opinion_sent_help
+#				years = 20
+#			}
+#		}
+#		event_target:enemy_country = {
+#			add_opinion = {
+#				who = ROOT
+#				modifier = opinion_interfered_in_war
+#				years = 20
+#			}
+#		}
+#	}
+#	option = {
+#		name = "random_event.EVTOPTB1"
+#		add_prestige = -10
+#		event_target:former_colony = {
+#			add_opinion = {
+#				who = ROOT
+#				modifier = opinion_refused_send_help
+#				years = 20
+#			}
+#		}
+#		event_target:enemy_country = {
+#			add_opinion = {
+#				who = ROOT
+#				modifier = opinion_pleased
+#				years = 20
+#			}
+#		}
+#	}
+#}
+
+# Culture ties weakened
+# Mangled by Daniel Tolman for 1.28 / ID random_event.2 Unused
+
+# Traitor in Parliament
+country_event = {
+	id = random_event.3
+	title = "random_event.EVTNAME3"
+	desc = "random_event.EVTDESC3"
+	picture = spy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_parliament = yes
+		is_at_war = yes
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA3"
+		trigger = { 
+			stability = -2 
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0.5
+				NOT = { stability = 1 }
+			}
+		}
+		add_stability = -1
+	}
+	option = {
+		name = "random_event.EVTOPTB3"
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0.5
+				war_exhaustion = 8
+			}
+		}
+		add_war_exhaustion = 2
+	}
+	option = {
+		name = "personality_options.random.3.a"
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = secretive } }
+		ai_chance = {
+			factor = 100
+		}
+		add_dip_power = -25
+	}
+}
+
+# A new religion spreads? / ID random_event.4 Unused
+
+# Our ancestors are watching
+country_event = {
+	id = random_event.5
+	title = "random_event.EVTNAME5"
+	desc = "random_event.EVTDESC5"
+	picture = sacrifice
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			government = monarchy
+			government = theocracy
+			has_reform = steppe_horde_reform
+		}
+		is_lesser_in_union = no
+		NOT = { legitimacy_or_horde_unity = 40 }
+		NOT = {
+			any_owned_province = {
+				has_province_modifier = watching_ancestors
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA5"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { years_of_income = 0.3 }
+			}
+		}
+		add_years_of_income = -0.20
+		add_prestige = 20
+		add_legitimacy = 20
+		add_devotion = 20
+		add_horde_unity = 20
+		add_mandate_effect = yes
+	}
+	option = {
+		name = "random_event.EVTOPTB5"
+		trigger = { NOT = { has_reform = celestial_empire } }
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { years_of_income = 0.2 }
+			}
+		}
+		add_years_of_income = -0.10
+		add_prestige = 5
+		add_legitimacy = 5
+		add_devotion = 5
+		add_horde_unity = 5
+	}
+	option = {
+		name = "random_event.EVTOPTC5"
+		ai_chance = {
+			factor = 33
+		}
+		every_owned_province = {
+			limit = {
+				is_core = ROOT
+			}
+			add_province_modifier = {
+				name = watching_ancestors
+				duration = 18250
+			}			
+		}
+	}
+}
+
+# A new champion of the joust
+country_event = {
+	id = random_event.6
+	title = "vanillaevent_override.9.t"
+	desc = "vanillaevent_override.9.d"
+	picture = spartan_boys
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = {
+			is_year = 1500
+		}
+		OR = {
+			government = monarchy
+			government = theocracy
+		}
+		is_lesser_in_union = no
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA6"
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0.5
+				NOT = { legitimacy = 70 }
+			}
+		}
+		create_general = { tradition = 100 }
+		add_prestige = -25
+		add_legitimacy = -25
+	}
+	option = {
+		name = "random_event.EVTOPTB6"
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 1.5
+				NOT = { legitimacy = 70 }
+			}
+		}
+		add_legitimacy = 25
+	}
+}
+
+# A new flagship!
+country_event = {
+	id = random_event.7
+	title = "random_event.EVTNAME7"
+	desc = "random_event.EVTDESC7"
+	picture = shildyard
+	goto = flagship_province
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_dlc = "Golden Century" }
+		naval_forcelimit = 90
+		num_of_ports = 1
+		any_owned_province = {
+			has_port = yes
+			is_core = ROOT
+			controlled_by = ROOT
+		}
+		primitives = no
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		random_owned_province = {
+			limit = {
+				has_port = yes
+				is_core = ROOT
+				controlled_by = ROOT
+			}
+			save_event_target_as = flagship_province
+		}
+	}
+
+	option = {
+		name = "random_event.EVTOPTA7"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { treasury = 100 }
+			}
+		}
+		add_treasury = -50
+		add_prestige = 5
+		event_target:flagship_province = {
+			heavy_ship = ROOT
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB7"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { treasury = 50 }
+			}
+		}
+		add_treasury = -20
+		add_prestige = 2
+		event_target:flagship_province = {
+			light_ship = ROOT
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTC7"
+		ai_chance = {
+			factor = 33
+		}
+		add_treasury = -10
+		add_prestige = 1
+		event_target:flagship_province = {
+			galley = ROOT
+		}
+	}
+}
+
+# Heresy! / ID random_event.8 Unused
+
+# We have a man inside!
+country_event = {
+	id = random_event.9
+	title = "random_event.EVTNAME9"
+	desc = "random_event.EVTDESC9"
+	picture = assassination_noble
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_regency = no
+		is_at_war = yes
+		any_war_enemy_country = {
+			war_with = ROOT
+			employed_advisor = {
+				type = border_adv
+				culture = root
+			}
+		}
+		NOT = {
+			has_ruler_modifier = inside_man
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_country = {
+				limit = {
+					employed_advisor = {
+						type = border_adv
+						culture = root
+					}
+					war_with = ROOT
+				}
+				save_event_target_as = enemy_country
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTB9"
+		add_ruler_modifier = {
+			name = inside_man
+		}
+	}
+}
+
+# A greedy corsair
+country_event = {
+	id = random_event.10
+	title = "random_event.EVTNAME10"
+	desc = "random_event.EVTDESC10"
+	picture = NAVAL_MILITARY_eventPicture
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		naval_forcelimit = 50
+		num_of_ports = 1
+		OR = {
+			advisor = cartograph
+			advisor = naval_veteran
+			advisor = naval_leader_adv
+		}
+		primitives = no
+		num_ships_privateering = 1
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA10"
+		reduce_meritocracy_effect = yes
+		if = {
+			limit = {
+				advisor = cartograph
+			}
+			kill_advisor = cartograph
+		}
+		if = {
+			limit = {
+				advisor = naval_veteran
+			}
+			kill_advisor = naval_veteran
+		}
+		if = {
+			limit = {
+				advisor = naval_leader_adv
+			}
+			kill_advisor = naval_leader_adv
+		}
+		add_dip_power = 75
+	}
+	option = {
+		name = "random_event.EVTOPTB10"
+		add_years_of_income = 0.2
+		add_mercantilism = -2
+	}
+}
+
+# Foreign Military Expert
+country_event = {
+	id = random_event.11
+	title = "random_event.EVTNAME11"
+	desc = "random_event.EVTDESC11"
+	picture = celtic_chariot
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		is_at_war = yes
+		NOT = { army_tradition = 20 } 
+		any_neighbor_country = {
+			same_continent = root
+			army_tradition = 50
+			NOT = { war_with = root }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_neighbor_country = {
+				limit = {
+					same_continent = root
+					army_tradition = 50
+					NOT = { war_with = root }
+				}
+				save_event_target_as = advisor_origin_country
+				root = {
+					set_saved_name = {
+						key = foreign_military_expert
+						type = advisor
+						scope = prev
+					}
+				}
+			}
+		}
+	}
+	after = {
+		clear_saved_name = foreign_military_expert
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA11"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { years_of_income = 0.5 }
+			}
+		}
+		add_years_of_income = -0.15
+		add_army_tradition = 10
+		
+		if = {
+			limit = {
+				NOT = { monthly_income = 15 }
+			}
+			define_advisor = {
+				name = foreign_military_expert
+				type = foreign_advisor
+				religion = event_target:advisor_origin_country
+				culture = event_target:advisor_origin_country
+				skill = 1
+				discount = yes
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { monthly_income = 25 }
+			}
+			define_advisor = {
+				name = foreign_military_expert
+				type = foreign_advisor
+				religion = event_target:advisor_origin_country
+				culture = event_target:advisor_origin_country
+				skill = 2
+				discount = yes
+			}
+		}
+		else = {
+			define_advisor = {
+				name = foreign_military_expert
+				type = foreign_advisor
+				religion = event_target:advisor_origin_country
+				culture = event_target:advisor_origin_country
+				skill = 3
+				discount = yes
+			}
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB11"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0.5
+				NOT = { years_of_income = 0.25 }
+			}
+		}
+		add_years_of_income = -0.15
+
+		create_general = {
+			name = foreign_military_expert
+			tradition = 70
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTC11"
+		if = {
+			limit = { years_of_income = 0.15 }
+			add_legitimacy = 10
+		}
+		else = {
+			add_legitimacy = 5
+		}
+		ai_chance = {
+			factor = 33
+		}
+	}
+}
+
+# The White Elephant
+country_event = {
+	id = random_event.12
+	title = "random_event.EVTNAME12"
+	desc = "random_event.EVTDESC12"
+	picture = elephants
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+			culture_group = viet_group
+			culture_group = malay_group
+		}
+		ivory = 1
+		NOT = {
+			stability = 3
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA12"
+		add_stability_or_adm_power = yes
+	}
+}
+
+# Profits in Mecca! / ID random_event.13 Unused
+
+# An astonishing performance
+country_event = {
+	id = random_event.14
+	title = "random_event.EVTNAME14"
+	desc = "vanillaevent_override.10.d"
+	picture = celebration_priestess
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		religion_group = pagan_group
+		has_idea_group = academy_ideas
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_saved_name = {
+				key = female_troubadour
+				type = advisor
+				female = yes
+			}
+		}
+	}
+	after = {
+		clear_saved_name = female_troubadour
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA14"
+		ai_chance = {
+			factor = 5
+		}
+		add_prestige = 5
+		add_meritocracy_effect = yes
+		define_advisor = {
+			name = female_troubadour
+			female = yes
+			skill = 2
+			type = artist_adv
+			discount = yes
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB14"
+		ai_chance = {
+			factor = 5
+		}
+		add_adm_power = 20
+	}
+	option = {
+		name = "personality_options.random.14.a"
+		highlight = yes
+		trigger = { ruler_has_personality_ancestor = { key = free_thinker } }
+		add_dip_power = 50
+	}
+}
+
+# Musket or Bow? / ID random_event.15 Unused
+
+# Gaps in the Blockade
+country_event = {
+	id = random_event.16
+	title = "random_event.EVTNAME16"
+	desc = "random_event.EVTDESC16"
+	picture = sea_invasion
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		is_at_war = yes
+		blockade = 75
+		NOT = {
+			has_country_modifier = gaps_blockade
+		}
+		NOT = {
+			has_country_modifier = merchants_gaps_blockade
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA16"
+		add_country_modifier = {
+			name = gaps_blockade
+			duration = 365
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB16"
+		add_country_modifier = {
+			name = merchants_gaps_blockade
+			duration = 365
+		}
+	}
+	#option = {
+	#	name = "random_event.EVTOPTC16"
+	#	add_prestige = 3
+	#}
+}
+
+# The Four Kings / ID random_event.20 Unused
+
+# Bible Translated / ID random_event.21 Unused
+
+# Establish Penal Colony in COLONYNAME / ID random_event.22 Unused
+
+# Influenza!
+province_event = {
+	id = random_event.23
+	title = "random_event.EVTNAME23"
+	desc = "random_event.EVTDESC23"
+	picture = illness
+	goto = root
+	
+	trigger = {
+		has_port = yes
+		is_capital = no
+		OR = {
+			NOT = { has_province_flag = province_had_influenza }
+			had_province_flag = { flag = province_had_influenza days = 10950 }
+		}
+	}
+	
+	is_mtth_scaled_to_size = 1
+	
+	mean_time_to_happen = {
+		months = 600
+		modifier = {
+			factor = 0.9
+			has_terrain = marsh
+		}
+	}
+	
+	immediate = {
+		set_province_flag = province_had_influenza
+	}
+
+	option = {
+		name = "random_event.EVTOPTA23" # Quarantine the port and let them die!
+		ai_chance = {
+			factor = 50
+		}
+		owner = { add_adm_power = -50 }
+		add_province_modifier = {
+			name = "quarantined_influenza"
+			duration = 3650
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB23" # This is not the first flu in our country, I don't care!
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				calc_true_if = {
+					all_neighbor_province = {
+						owned_by = ROOT
+						development = 12
+					}
+					amount = 3
+				}
+			}
+		}
+		add_province_modifier = {
+			name = "influenza"
+			duration = 3650
+		}
+		if = {
+			limit = {
+				any_neighbor_province = {
+					NOT = { has_province_modifier = quarantined_influenza }
+					NOT = { has_province_modifier = influenza }
+					NOT = { has_province_flag = province_had_influenza }
+				}
+			}
+			custom_tooltip = random_events.23.b.tt
+		}
+	}
+}
+
+# Influenza Spreads
+province_event = {
+	id = random_event.24
+	title = "random_event.EVTNAME24"
+	desc = "random_event.EVTDESC24"
+	picture = illness
+	goto = root
+	
+	trigger = {
+		development = 8
+		OR = {
+			NOT = { has_province_flag = province_had_influenza }
+			had_province_flag = { flag = province_had_influenza days = 10950 }
+		}
+		any_neighbor_province = {
+			has_province_modifier = influenza
+		}
+		NOT = { has_province_modifier = quarantined_influenza }
+	}
+	
+	mean_time_to_happen = {
+		months = 120
+	}
+	
+	immediate = {
+		set_province_flag = province_had_influenza
+	}
+	
+	option = {
+		name = "random_event.EVTOPTA24" # Quarantine the province!
+		ai_chance = {
+			factor = 50
+		}
+		add_province_modifier = {
+			name = "quarantined_influenza"
+			duration = 3650
+		}
+		every_neighbor_province = {
+			limit = {
+				owned_by = ROOT
+				NOT = { has_province_modifier = quarantined_influenza }
+			}
+			add_province_modifier = {
+				name = "quarantined_influenza"
+				duration = 3650
+			}
+		}
+		owner = {
+			if = {
+				limit = {
+					any_owned_province = { has_province_modifier = influenza }
+				}
+				every_owned_province = {
+					limit = {
+						has_province_modifier = influenza
+					}
+					remove_province_modifier = influenza
+					add_province_modifier = {
+						name = "quarantined_influenza"
+						duration = 3650
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = "random_event.EVTOPTB24" # It will soon go away
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				calc_true_if = {
+					all_neighbor_province = {
+						owned_by = ROOT
+						development = 12
+					}
+					amount = 3
+				}
+			}
+		}
+		add_province_modifier = {
+			name = "influenza"
+			duration = 3650
+		}
+		if = {
+			limit = {
+				any_neighbor_province = {
+					NOT = { has_province_modifier = quarantined_influenza }
+					NOT = { has_province_modifier = influenza }
+					NOT = { has_province_flag = province_had_influenza }
+				}
+			}
+			custom_tooltip = random_events.23.b.tt
+		}
+	}
+}
+
+# Iconoclastic Fury / ID random_event.25 Unused
+
+# Debased Currency
+country_event = {
+	id = random_event.26
+	title = "EVTNAME9478"
+	desc = "vanillaevent_override.11.d"
+	picture = ruins_2
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		gold_income_percentage = 0.1
+		inflation = 1
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "EVTOPTA9478"
+		add_inflation = 1
+		add_prestige = -5
+	}
+}
+
+# The Great Fire of [Root.Capital.GetName] / ID random_event.27 Unused, think we have this stuff already
+
+######### Product Events #######
+
+# Excellent Year
+country_event = {
+	id = 6418
+	title = "EVTNAME6418"
+	desc = "EVTDESC6418"
+	picture = food_supplies
+
+	is_triggered_only = yes
+
+	trigger = {
+		grain = 1
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6418"
+		add_yearly_manpower = 0.25
+	}
+}
+
+# Excellent Vintage / ID 6419 Unused, also have this already
+
+# Poor Vintage
+country_event = {
+	id = 6420
+	title = "EVTNAME6420"
+	desc = "EVTDESC6420"
+	picture = slave_agriculture
+
+	trigger = {
+		wine  = 1
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6420"
+		add_prestige = -5
+		add_piety = 0.10
+	}
+}
+
+# Quality wool
+country_event = {
+	id = 6421
+	title = "EVTNAME6421"
+	desc = "EVTDESC6421"
+	picture = village
+
+	trigger = {
+		wool = 1
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6421"
+		add_years_of_income = 0.1
+	}
+}
+
+# Poor Uniforms
+country_event = {
+	id = 6422
+	title = "EVTNAME6422"
+	desc = "EVTDESC6422"
+	picture = training_3
+
+	trigger = {
+		cloth = 1 
+		NOT = { has_country_modifier = poor_uniforms }
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6422"
+		add_country_modifier = {
+			name = "poor_uniforms"
+			duration = 730
+		}
+	}
+}
+
+# Hardy Seamen
+country_event = {
+	id = 6423
+	title = "EVTNAME6423"
+	desc = "EVTDESC6423"
+	picture = seaside_prayer
+
+	trigger = {
+		fish =  1
+		num_of_ports = 1
+		primitives = no
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+
+	option = {
+		name = "EVTOPTA6423"
+		add_navy_tradition = 10
+	}
+}
+
+# Natives not assisting / ID 6424 Unused
+
+# Salt Crisis
+country_event = {
+	id = 6425
+	title = "EVTNAME6425"
+	desc = "EVTDESC6425"
+	picture = peasant_woman
+
+	trigger = {
+		salt = 1
+		NOT = { has_country_modifier = salt_crisis }
+	}
+
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = "EVTOPTA6425"
+		add_country_modifier = {
+			name = "salt_crisis"
+			duration = 730
+		}
+	}
+}
+
+# Excellent supplies
+country_event = {
+	id = 6426
+	title = "EVTNAME6426"
+	desc = "EVTDESC6426"
+	picture = rivercrossing
+
+	trigger = {
+		naval_supplies = 1
+		num_of_ports = 1
+		primitives = no
+		NOT = { has_country_modifier = good_supplies }
+	}
+
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "EVTOPTA6426"
+		add_country_modifier = {
+			name = "good_supplies"
+			duration = 730
+		}
+	}
+}
+
+# Poor Quality Copper
+country_event = {
+	id = 6427
+	title = "EVTNAME6427"
+	desc = "EVTDESC6427"
+	picture = artisans
+
+	trigger = {
+		copper = 1
+		NOT = { has_country_modifier = poor_copper }
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6427"
+		add_country_modifier = {
+			name = "poor_copper"
+			duration = 730
+		}
+	}
+}
+
+# GOLD RUSH!
+country_event = {
+	id = 6428
+	title = "EVTNAME6428"
+	desc = "EVTDESC6428"
+	picture = TRADE_GOODS_METALS_AND_MINING_EQUIPENT_eventPicture
+
+	trigger = {
+		gold = 1
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6428"
+		add_years_of_income = 1.0
+		add_inflation = 1
+	}
+}
+
+# Iron ore quality problems
+country_event = {
+	id = 6429
+	title = "EVTNAME6429"
+	desc = "EVTDESC6429"
+	picture = artisans
+
+	trigger = {
+		iron = 1
+		NOT = { has_country_modifier = poor_iron }
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6429"
+		add_country_modifier = {
+			name = "poor_iron"
+			duration = 730
+		}
+	}
+}
+
+# Quality Ivory
+country_event = {
+	id = 6431
+	title = "EVTNAME6431"
+	desc = "EVTDESC6431"
+	picture = elephants
+
+	trigger = {
+		ivory = 1
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6431"
+		add_prestige = 20
+	}
+}
+
+# Tea Party / ID 6432 Unused
+
+# Storms
+country_event = {
+	id = 6433
+	title = "EVTNAME6433N"
+	desc = "vanillaevent_override.12.d"
+	picture = artisans
+	goto = chinaware_province
+
+	trigger = {
+		ceramic = 1
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					trade_goods = ceramic
+				}
+				save_event_target_as = chinaware_province
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA6433N"
+		event_target:chinaware_province = {
+			add_province_modifier = {
+				name = "storms"
+				duration = 730
+			}			
+		}
+	}
+}
+
+# Harvest failure / ID 6434 Unused
+
+# Benign Neglect
+country_event = {
+	id = 9472
+	title = "EVTNAME9472"
+	desc = "EVTDESC9472"
+	picture = bath
+	goto = benign_neglect_province
+	
+	trigger = {
+		num_of_cities = 20
+	}
+	
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_capital = no
+					is_city = yes
+				}
+				save_event_target_as = benign_neglect_province
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA9472"
+		event_target:benign_neglect_province = {
+			add_province_modifier = {
+				name = "benign_neglect_trade"
+				duration = 1825
+			}
+		
+		}
+	}
+	option = {
+		name = "EVTOPTB9472"
+		event_target:benign_neglect_province = {
+			add_province_modifier = {
+				name = "benign_neglect_tax"
+				duration = 1825
+			}
+		
+		}		
+	}
+	option = {
+		name = "EVTOPTC9472"
+		event_target:benign_neglect_province = {
+			add_province_modifier = {
+				name = "benign_neglect_manpower"
+				duration = 1825
+			}
+		
+		}			
+
+	}
+}
+
+# Jackals! Vultures!
+country_event = {
+	id = 3097
+	title = "EVTNAME3097"
+	desc = "EVTDESC3097"
+	picture = execution
+	goto = jackals_and_vultures_province
+	
+	trigger = {
+		num_of_rebel_armies = 1
+		NOT = { religious_unity = 1.0 }
+		any_owned_province = {
+			unrest = 1
+			controlled_by = root
+		}
+	}
+	
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}	
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 1
+					controlled_by = root
+				}
+				save_event_target_as = jackals_and_vultures_province
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTA3097"
+		event_target:jackals_and_vultures_province = {
+			add_unrest = 15
+		}
+	}
+}
+
+# Revolt!
+country_event = {
+	id = 5005
+	title = "EVTNAME5005"
+	desc = "EVTDESC5005"
+	picture = civilwar
+	goto = revolt_5005_province
+
+	is_triggered_only = yes
+	
+	trigger = {
+		num_of_cities = 2
+		any_owned_province = {
+			is_capital = no
+			unrest = 1
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_capital = no
+					unrest = 1
+					is_city = yes
+				}
+				save_event_target_as = revolt_5005_province
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}	
+	
+	option = {
+		name = "EVTOPTA5005" # Ignore them
+		event_target:revolt_5005_province = {
+			add_province_modifier = {
+				name = ignored_unrest
+				duration = 1825
+			}
+		}
+
+	}
+	option = {
+		name = "EVTOPTB5005" # Lower taxes
+		event_target:revolt_5005_province = {
+			add_province_modifier = {
+				name = lower_taxes_unrest
+				duration = 1825
+			}
+			add_local_autonomy = 20
+		}			
+	}
+}
+
+# Plague
+country_event = {
+	id = 5026
+	title = "EVTNAME5026"
+	desc = "EVTDESC5026"
+	picture = illness
+	goto = plague_province
+
+	trigger = {
+		OR = {
+			grain = 1
+			rice = 1
+		}
+		num_of_cities = 2
+		any_owned_province = {
+			OR = {
+				trade_goods = grain
+				trade_goods = rice
+			}
+			is_capital = no
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					OR = {
+						trade_goods = grain
+						trade_goods = rice
+					}
+					is_capital = no
+				}
+				save_event_target_as = plague_province
+			}
+		}
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA5026"		# We have to do something!
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 0.5
+				NOT = { years_of_income = 0.2 }
+			}
+		}
+		add_years_of_income = -0.10
+	}
+	option = {
+		name = "EVTOPTB5026"		# There is nothing we can do.
+		ai_chance = {
+			factor = 45
+		}
+		event_target:plague_province = {
+			add_local_autonomy = 25
+			add_province_modifier = {
+				name = "plague"
+				duration = 1095
+			}
+		}				
+	}
+}
+
+# ID 5037 Unused
+
+# Noble Family Feuds
+country_event = {
+	id = 5063
+	title = "EVTNAME5063"
+	desc = "EVTDESC5063"
+	picture = assassination_noble
+	goto = province_in_question
+
+	trigger = {
+		government = monarchy
+		any_owned_province = {
+			is_city = yes
+			is_capital = no
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_city = yes
+					is_capital = no
+				}
+				save_event_target_as = province_in_question
+			}
+		}
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA5063"		# Side with one family
+		event_target:province_in_question = {
+			noble_rebels = 1
+		}
+	}
+	option = {
+		name = "EVTOPTB5063"		# Let them fight it out.
+		trigger = { num_of_cities = 2 }
+		ai_chance = { factor = 25 }
+		event_target:province_in_question = {
+			add_local_autonomy = 25
+		}
+	}
+	option = {
+		name = "EVTOPTC5063"		# Try to settle the issue.
+		ai_chance = { factor = 25 }
+		add_dip_power = -33
+	}
+}
+
+# Good Harvest
+country_event = {
+	id = 6014
+	title = "EVTNAME6014"
+	desc = "EVTDESC6014"
+	picture = music_garden
+
+	trigger = {
+		is_month = 8
+	}
+
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "EVTOPTA6014"		# Put into the treasury
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 0.5
+				NOT = { num_of_cities = 10 }
+			}
+			modifier = {
+				factor = 1.5
+				num_of_cities = 20
+			}
+		}
+		add_years_of_income = 0.50
+	}
+	option = {
+		name = "EVTOPTB6014"		# Invest the money
+		add_adm_power = 50
+		ai_chance = {
+			factor = 45
+		}
+	}
+}
