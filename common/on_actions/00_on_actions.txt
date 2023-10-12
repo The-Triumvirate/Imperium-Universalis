@@ -13,6 +13,22 @@ on_startup = {
 	emperor = {
 		save_global_event_target_as = Emperor
 	}
+	set_global_flag = coloredvassals_yes
+	every_country  = {
+		limit = {
+			is_subject = yes
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+				is_subject_of_type = vassal
+				is_subject_of_type = half_autonomous_vassal
+			}
+		}
+		set_country_flag = color_changed_overlord
+		change_country_color = {
+			country = OVERLORD
+		}
+	}
 	
 	events = {
 		roman_kingdom.4
@@ -890,6 +906,28 @@ on_yearly_pulse_5 = {
 }
 
 on_bi_yearly_pulse = {
+	every_country  = {
+		limit = {
+			is_subject = yes
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+				is_subject_of_type = vassal
+				is_subject_of_type = half_autonomous_vassal
+			}
+		}
+		set_country_flag = color_changed_overlord
+		change_country_color = {
+			country = OVERLORD
+		}
+	}
+	every_country  = {
+		limit = {
+			is_subject = no
+		}
+		clr_country_flag = color_changed_overlord
+		restore_country_color = yes
+	}
 	events = {
 		population_capacity.1
 		egypt.6
@@ -2002,12 +2040,35 @@ on_company_chartered = {
 
 # ROOT = Overlord, FROM = Minor
 on_dependency_gained = {
-	
+	FROM = {
+		if = { 
+			limit = { 
+			has_global_flag = coloredvassals_yes
+				is_colonial_nation = no
+				NOT = {
+					is_subject_of_type = tributary_state
+					is_subject_of_type = vassal
+					is_subject_of_type = half_autonomous_vassal
+				}
+			}
+			set_country_flag = color_changed_overlord
+			change_country_color = {
+				country = ROOT
+			}
+		}
+	}
 }
 
 # ROOT = Overlord, FROM = Minor
 on_dependency_lost = {
-	
+	FROM = {
+		if = { 
+			limit = { 
+			}
+			clr_country_flag = color_changed_overlord
+			restore_country_color = yes
+		}
+	}
 }
 
 # ROOT = New vassal, FROM = Overlord
@@ -2054,6 +2115,21 @@ on_create_vassal = {
 				who = ROOT
 				subject_type = vassal
 			}
+		}
+	}
+	if = {
+		limit = {
+			FROM = { has_global_flag = coloredvassals_yes }
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+				is_subject_of_type = vassal
+				is_subject_of_type = half_autonomous_vassal
+			}
+		}
+		set_country_flag = color_changed_overlord
+		change_country_color = {
+			country = FROM
 		}
 	}
 }
@@ -2161,6 +2237,21 @@ on_post_mil_advisor_fired = {
 on_create_client_state = {
     country_event = {
 		id = government.36
+	}
+	if = { 
+		limit = {
+		FROM = { has_global_flag = coloredvassals_yes }
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+				is_subject_of_type = vassal
+				is_subject_of_type = half_autonomous_vassal
+			}
+		}
+		set_country_flag = color_changed_overlord
+		change_country_color = {
+			country = FROM
+		}
 	}
 }
 
