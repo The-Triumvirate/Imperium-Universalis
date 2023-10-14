@@ -1154,6 +1154,7 @@ country_event = {
 	    name = "rome.33.a"
 		ai_chance = { factor = 100 }
 		add_liberty_desire = 100
+		set_country_flag = got_lib_desire
 	}
 }
 
@@ -1180,6 +1181,7 @@ country_event = {
 					liberty_desire = 25
 				}
 				set_country_flag = rom_rebel_socii
+				grant_independence = yes
 				if = {
 					limit = {
 						exists = LAT
@@ -1234,16 +1236,16 @@ country_event = {
 					set_country_flag = rom_vol_war
 				}
 				PRE = {
-					create_alliance = PRE
+					create_alliance = LAT
 					set_country_flag = rom_pre_war
 				}
 				VEL = {
-					create_alliance = VEL
+					create_alliance = LAT
 					set_country_flag = rom_vel_war
 				}
 				LAT = {
 					declare_war_with_cb = {
-						casus_belli = cb_super_badboy
+						casus_belli = rom_socii_rebellion
 						who = ROM
 					}
 					declare_war = ROM
@@ -1263,12 +1265,12 @@ country_event = {
 					set_country_flag = rom_vol_war
 				}
 				VEL = {
-					create_alliance = VEL
+					create_alliance = PRE
 					set_country_flag = rom_vel_war
 				}
 				PRE = {
 					declare_war_with_cb = {
-						casus_belli = cb_super_badboy
+						casus_belli = rom_socii_rebellion
 						who = ROM
 					}
 					set_country_flag = rom_pre_war
@@ -1287,7 +1289,7 @@ country_event = {
 				}
 				VEL = {
 					declare_war_with_cb = {
-						casus_belli = cb_super_badboy
+						casus_belli = rom_socii_rebellion
 						who = ROM
 					}
 					set_country_flag = rom_vel_war
@@ -1306,15 +1308,34 @@ country_event = {
 			every_ally = {
 				join_all_offensive_wars_of = PRE
 			}
+			if = {
+				limit = {
+					is_at_war = no
+					truce_with = ROM 
+				}
+				declare_war_with_cb = {
+					casus_belli = rom_socii_rebellion
+					who = ROM
+				}
+			}
 		}
 		VEL = {
 			every_ally = {
 				join_all_offensive_wars_of = VEL
 			}
+			if = {
+				limit = {
+					NOT = { is_at_war = yes }
+					truce_with = ROM 
+				}
+				declare_war_with_cb = {
+					casus_belli = rom_socii_rebellion
+					who = ROM
+				}
+			}
 		}
 		every_country = {
 			limit = {
-				is_subject_of = ROM
 				has_country_flag = rom_rebel_socii
 				truce_with = ROM
 			}
@@ -1380,6 +1401,17 @@ country_event = {
 		custom_tooltip = rom_latin_war_won.tooltip
 	}
 	after = {
+		every_country = {
+			limit = {
+				OR = {
+					is_subject_of = ROM
+					NOT = { has_country_flag = rom_rebel_socii }
+					has_country_flag = got_lib_desire
+				}
+			}
+			add_liberty_desire = -100
+			clr_country_flag = got_lib_desire
+		}
 		every_country = {
 			limit = {
 				OR = {
@@ -2544,9 +2576,24 @@ country_event = {
 	option = { #close info
 	    name = "rome.62.a"
 		remove_country_modifier = socii_somewhat_dissatisfied_modifier
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = for_socii_somewhat_dissatisfied_modifier 
+		}
 		add_country_modifier = {
 			name = socii_dissatisfied_modifier
 			duration = -1
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = for_socii_dissatisfied_modifier 
+				duration = -1
+			}
 		}
 	}
 }
@@ -2576,9 +2623,24 @@ country_event = {
 	option = { #close info
 	    name = "rome.62.a"
 		remove_country_modifier = socii_minor_dissatisfied_modifier
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = for_socii_minor_dissatisfied_modifier 
+		}
 		add_country_modifier = {
 			name = socii_somewhat_dissatisfied_modifier
 			duration = -1
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = for_socii_somewhat_dissatisfied_modifier 
+				duration = -1
+			}
 		}
 	}
 }
@@ -2610,6 +2672,15 @@ country_event = {
 		add_country_modifier = {
 			name = socii_minor_dissatisfied_modifier
 			duration = -1
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = for_socii_minor_dissatisfied_modifier 
+				duration = -1
+			}
 		}
 	}
 }
@@ -2655,6 +2726,14 @@ country_event = {
 			remove_country_modifier = socii_minor_dissatisfied_modifier
 			remove_country_modifier = socii_somewhat_dissatisfied_modifier
 			remove_country_modifier = socii_dissatisfied_modifier
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				remove_country_modifier = for_socii_minor_dissatisfied_modifier
+				remove_country_modifier = for_socii_somewhat_dissatisfied_modifier
+				remove_country_modifier = for_socii_dissatisfied_modifier
+			}
 		}
 	}
 }
@@ -3127,3 +3206,73 @@ country_event = {
 	}
 }
 #start from 73
+
+country_event = {
+    id = rome.73
+	title = "rome.73.t"
+	desc = "rome.73.d"
+	picture = deligation
+	mean_time_to_happen = {
+		months = 2
+	}
+	trigger = {
+		is_subject_of_type = socii_subject
+		overlord = {
+			check_variable = {
+				which = rom_socii_dissatisfaction_variable
+				value = 75
+			}
+		}
+		overlord = {
+			OR = {
+				has_country_modifier = socii_minor_dissatisfied_modifier
+				has_country_modifier = socii_somewhat_dissatisfied_modifier
+				has_country_modifier = socii_dissatisfied_modifier
+			}
+		}
+		NOT = {
+			OR = {
+				has_country_modifier = for_socii_minor_dissatisfied_modifier
+				has_country_modifier = for_socii_somewhat_dissatisfied_modifier
+				has_country_modifier = for_socii_dissatisfied_modifier
+			}
+		}
+		NOT = {
+			OR = {
+				has_country_flag = social_war_started_flag
+				has_country_flag = social_war_won_flag
+				has_country_flag = social_war_lost_flag
+			}
+		}
+	}
+	option = { #close info
+	    name = "rome.73.a"
+		if = {
+			limit = {
+				OVERLORD = { has_country_modifier = socii_somewhat_dissatisfied_modifier }
+			}
+			add_country_modifier = {
+				name = for_socii_somewhat_dissatisfied_modifier
+				duration = -1
+			}
+		}
+		if = {
+			limit = {
+				OVERLORD = { has_country_modifier = socii_minor_dissatisfied_modifier }
+			}
+			add_country_modifier = {
+				name = for_socii_minor_dissatisfied_modifier
+				duration = -1
+			}
+		}
+		if = {
+			limit = {
+				OVERLORD = { has_country_modifier = socii_dissatisfied_modifier }
+			}
+			add_country_modifier = {
+				name = for_socii_dissatisfied_modifier
+				duration = -1
+			}
+		}
+	}
+}
