@@ -473,3 +473,80 @@ country_event = {
 		clr_country_flag = held_recent_military_parade
 	}
 }
+
+country_event = {
+	id = army_professionalism.8
+	title = "army_professionalism.8.t"
+	desc = "army_professionalism.8.d"
+	picture = roman_road
+
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		any_owned_province = {
+			AND = {
+				has_supply_depot = ROOT
+				units_in_province = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	immediate = {
+        hidden_effect = {
+            random_owned_province = {
+                limit = {
+                    has_supply_depot = ROOT
+                    controlled_by = ROOT					
+					units_in_province = 1
+                    NOT = {
+                        OR = {
+                            has_building = gravel_road
+                            has_building = paved_road							
+                        }
+                    }
+                }
+                save_event_target_as = military_road_province
+            }
+        }
+    } 
+	option = {
+        name = "army_professionalism.8.a"
+        ai_chance = { factor = 100 }
+        event_target:military_road_province = {
+            if = {
+                limit = {
+                    owner = {
+                        adm_tech = 36
+                    }
+                }
+                add_building_construction = {
+                    building = imperial_road
+                    speed = 0.75
+                    cost = 0.33
+                }
+            }
+            else_if = {
+                limit = {
+                    owner = {
+                        adm_tech = 15
+                    }
+                }
+                add_building_construction = {
+                    building = paved_road
+                    speed = 0.5 
+                    cost = 0.25
+                }
+            }
+            else = {                
+                add_building_construction = {
+                    building = gravel_road
+                    speed = 0.33 
+                    cost = 0.2
+                }
+            }
+        }
+    }
+}
