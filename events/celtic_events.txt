@@ -468,7 +468,9 @@ country_event = {
 		}			
 	}
 }
+#################################################
 #halstatt player chooses to surrender and join la tene guys or receive tons of raiders
+#################################################
 country_event = {
 	id = celt.9
 	title = "celt.9.t"
@@ -497,7 +499,9 @@ country_event = {
 		add_stability = -2
 	}
 }
+#################################################
 #event for south/central celtic primitives to settle receiving hallstatt and greeko-etrurian influence
+#################################################
 country_event = {
 	id = celt.10
 	title = "celt.10.t"
@@ -519,3 +523,304 @@ country_event = {
 		add_government_reform = tribal_federation_reform
 	}
 }
+#################################################
+#start of La Tene expansion
+#################################################
+country_event = {
+	id = celt.11
+	title = "celt.11.t"
+	desc = "celt.11.d"
+	picture = tribemen
+	major = yes
+	
+	trigger = {
+		capital_scope = { 
+			OR = {
+				area = remorum_area
+				area = germania_inferior
+				area = boiohemum_area
+				area = rhenus_area
+			}
+		}
+		has_global_flag = la_tene_start
+		has_global_flag = hallstat_end
+		NOT = { has_global_flag = la_tene_invasions_start }
+		is_year = 323
+		NOT = { is_year = 400 }
+		NOT = { started_in = 323.1.1 }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	immediate = { 
+		set_global_flag = la_tene_invasions_start
+	}
+	
+	option = {
+		name = "celt.11.a"			
+	}
+}
+#################################################
+#La Tene expansion: 323 core celt lands
+#################################################
+country_event = {
+	id = celt.12
+	title = "celt.12.t"
+	desc = "celt.12.d"
+	picture = military_parade
+	fire_only_once = yes	
+	
+	trigger = {
+		OR = {
+			culture = la_tene_celtic
+		}
+		NOT = { started_in = 323.1.1 }
+		capital_scope = {
+			OR = {
+				area = deserta_boiorum
+				area = germania_superior
+				area = mogontiacum_area
+				area = helvetica_area
+				area = alpes_noricae
+				area = vindobona_area
+				area = alpes_raetae
+			}
+		}
+		is_year = 323
+		has_global_flag = la_tene_invasions_start
+		NOT = {
+			has_global_flag = la_tene_expansion_core
+		}
+	}
+	mean_time_to_happen = {
+		months = 6	
+	}
+	
+	option = {
+		name = "celt.12.a"
+		ai_chance = { factor = 100 }
+		set_global_flag = la_tene_expansion_core
+		#provs
+		every_province = { #helvetian culture
+			limit = { 
+				OR = {
+					area = agri_decumates
+					area = moenus_area
+				}
+			}
+			change_culture = helvetii
+				add_base_manpower = -1
+		}
+		every_country = {
+			limit = { 
+				any_owned_province = {
+					OR = {
+						area = agri_decumates
+						area = moenus_area
+					}
+				}
+			}
+			change_primary_culture = helvetii
+			add_accepted_culture = la_tene_celtic
+		}
+
+		every_province = { #vindelici culture
+				limit = {
+					AND = {
+						OR = {
+							area = nariscia_area
+							area = deserta_boiorum
+							area = raetia_secunda
+							area = germania_superior						
+							area = raetia_prima
+							area = alpes_raetae	
+						}					
+						NOT = {
+							OR = {
+								culture = raeti
+								culture = lepontic
+							}						
+						}
+					}
+				}
+				change_culture = vindelici				
+				add_base_manpower = -1
+		}
+		every_country = {
+			limit = { 
+				any_owned_province = {
+					OR = {
+						area = nariscia_area
+						area = deserta_boiorum
+						area = raetia_secunda
+						area = germania_superior					
+					}
+				}
+			}
+			change_primary_culture = vindelici
+			add_accepted_culture = la_tene_celtic
+		}
+		every_province = { #noric
+				limit = { 
+					AND = {
+						OR = {
+							region = raetia_et_noricum
+							area = suebia_transdanuvia
+							region = pannonia_region
+						}
+						NOT = {
+							OR = {
+								culture = vindelici
+								culture = lepontic
+								culture = raeti
+							}
+						}
+						OR = {
+							culture = la_tene_celtic
+							culture = eastern_hallstat
+							culture = western_hallstat
+						}
+					}
+				}
+				change_culture = noric				
+				add_base_manpower = -1
+		}		
+		every_country = {
+			limit = { 
+				any_owned_province = {
+					culture = noric
+				}
+				NOT = {
+					OR = {
+						primary_culture = vindelici
+						primary_culture = lepontic
+						primary_culture = raeti
+					}
+				}
+			}
+			change_primary_culture = noric
+			add_accepted_culture = la_tene_celtic
+		}
+		every_province = { #boiian culture
+				limit = { 
+					OR = {
+						area = boiohemum_area
+						area = gabreta_hyle
+						area = medoslanum_area
+						area = sudeti_montes
+						area = asciburgius_mons
+					}
+				}
+				change_culture = boiian				
+				add_base_manpower = -1
+		}
+		every_country = {
+			limit = { 
+				any_owned_province = {
+					OR = {
+						area = boiohemum_area
+						area = gabreta_hyle
+						area = medoslanum_area
+						area = sudeti_montes
+						area = asciburgius_mons
+					}
+				}
+			}
+			change_primary_culture = boiian
+			add_accepted_culture = la_tene_celtic
+			change_religion = celtic_religion
+		}
+		VL8 = {	 #volci (late to override boiian and vindelican as it is between areas
+			change_primary_culture = volci
+			add_accepted_culture = la_tene_celtic
+			every_owned_province = {
+					change_culture = volci					
+					add_base_manpower = -1
+				}				
+		}
+		every_country = {
+			limit = {
+				AND = {
+					OR = {
+						primary_culture = volci
+						primary_culture = boiian
+						primary_culture = noric
+						primary_culture = vindelici
+						primary_culture = helvetian
+					}
+					capital_scope = { 
+						OR = {
+							region = raetia_et_noricum
+							region = germani_cisrhenani
+							region = germania_region
+							region = suebia_region							
+						}
+					}
+				}
+			}
+			if = {
+				limit= { 
+					ai = yes
+				}
+				swap_free_idea_group = yes
+			}
+			else = {
+				country_event = { id = new_ideas.1 }
+			}		
+		}
+	}
+}
+
+#################################################
+#La Tene expansion: 323 gaul
+#################################################
+
+#################################################
+#La Tene expansion: 323 germans expanding, gothones and burgundi moving to coasts
+#################################################
+
+#################################################
+#La Tene expansion: 352 lugians becoming half celts (south) or half-germans (pommeranian culture)
+#################################################
+
+#################################################
+#La Tene expansion: 352 spain wave (+pop to central celtiberians)
+#################################################
+
+#################################################
+#La Tene expansion: 352 start of north italian one
+#################################################
+
+#################################################
+#La Tene expansion: 352 pannonia - galatians and cotini and buri
+#################################################
+
+
+#################################################
+#La Tene expansion: 395 pannonia - costoboci, galatians expanding, bastarni moving, agathyrsi shrinks, dacians appear
+#################################################
+
+
+#################################################
+#La Tene expansion: 448 pannonia - getae expands on agathyrsi lands and becoems getodacian, costoboci divides on teurisci, pannonian boii appears? galatians shift to scordisci positions
+#################################################
+
+
+#################################################
+#La Tene expansion: 477 balkans - all galatian lands become cores of scordisci, dindari and celegeri appear as its vassals. Spawn opm galatia as migratory band, that attacks any nation wit ha capital on macedon, thessaly, aetolia and delphi. 
+#################################################
+
+#################################################
+#La Tene expansion: 477 balkans - spawn opm tylis that gots cores on its future kingdom, in same time as migratory band attacks all nations in tribalian lands with huge force.
+#################################################
+
+
+#################################################
+#La Tene expansion: 479 balkans - if galatians are defeated they mvoe to asia minor in invasion. local tag in bythinia region with not owned cores receives events to hire them as mercs. And starts war with biggest tag in region, calling galatians in war.
+#################################################
+
+#################################################
+#La Tene expansion: 479 gaul - volcae-tectosages and arecomici settles in south gaul.
+#################################################
