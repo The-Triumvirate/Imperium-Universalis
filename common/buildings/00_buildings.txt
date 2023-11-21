@@ -361,12 +361,10 @@ great_library = { #year 400
 # BATHS RELATED #
 #################
 
-# Small Bath
-
-small_bath = { #year 445
-	cost = 200
-	time = 24
-	#make_obsolete = 
+# palestra
+palestra = { #year 445
+	cost = 150
+	time = 12 
 	modifier = {
 		local_tax_modifier = 0.1
 		local_prosperity_growth = 0.075
@@ -389,12 +387,39 @@ small_bath = { #year 445
 		
 	}
 }
+# Small Bath
+small_bath = { #year 445
+	cost = 300
+	time = 24
+	make_obsolete = palestra
+	modifier = {
+		local_tax_modifier = 0.15
+		local_prosperity_growth = 0.1
+		local_culture_conversion_cost = -0.15
+	}
+
+	ai_will_do = {
+		factor = 1.5
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
+	}
+}
 
 # Big Bath
 
 big_bath = { #year 700
-	cost = 400
-	time = 24
+	cost = 500
+	time = 36
 	make_obsolete = small_bath
 
 	modifier = {
@@ -1110,6 +1135,42 @@ hospital = { #year 550
 	}
 }
 
+aqueduct = { #year 565
+	cost = 600
+	time = 36	
+
+	modifier = {
+		local_production_efficiency = 0.2
+		supply_limit_modifier = 0.25
+		local_state_maintenance_modifier = 0.3
+	}
+	
+	build_trigger = {
+		owner = {
+			OR = {
+				full_idea_group = agraculture_ideas				
+				full_idea_group = engineering_ideas
+			}
+		}
+	}
+
+	ai_will_do = {
+		factor = 5.0
+		modifier = { factor = 0	owner = { NOT = { OR = { full_idea_group = agraculture_ideas full_idea_group = engineering_ideas } }	} } # only engineers and agriculturals
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
+	}
+}
 ###############################
 # MILITARY SETTLEMENT RELATED #
 ###############################
@@ -1590,10 +1651,53 @@ big_shipyard = { #year 385
 	}
 
 	modifier = {
-		local_ship_repair = 0.2
+		local_ship_repair = 0.15
 		ship_recruit_speed = -0.1
+		local_ship_cost = -0.15
+		local_state_maintenance_modifier = 0.15
+		local_has_man_of_war = yes
+	}
+	
+	ai_will_do = {
+		factor = 3.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = shipbuilding_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
+	}
+}
+
+military_wharf = { #year 535
+	cost = 750
+	time = 36
+	make_obsolete = big_shipyard
+	
+	build_trigger = {
+		has_port = yes
+		owner = {
+			OR = {
+				full_idea_group = shipbuilding_ideas
+				full_idea_group = maritime_ideas
+				full_idea_group = naval_ideas
+				full_idea_group = engineering_ideas
+			}
+		}
+	}
+
+	modifier = {
+		local_ship_repair = 0.33
+		ship_recruit_speed = -0.15
 		local_ship_cost = -0.25
-		local_state_maintenance_modifier = 0.2
+		local_state_maintenance_modifier = 0.25
 		local_has_man_of_war = yes
 		local_has_galleon = yes
 	}
@@ -1615,7 +1719,6 @@ big_shipyard = { #year 385
 		
 	}
 }
-
 ###################
 # SPECIAL RELATED #
 ###################
@@ -1766,15 +1869,45 @@ palace_garden = { #year 325
 # TAX COLLECTOR RELATED #
 #########################
 
-# Taxman
+# Tribute
+tribute_gathering = { #year 220
+	cost = 150
+	time = 12
 
+	modifier = {
+		tax_income = 1
+        local_unrest = 1
+	}
+	
+	build_trigger = {
+	}
+
+	ai_will_do = {
+		factor = 2.0
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = financial_ideas } government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+		
+	}
+}
+
+# Taxman
 taxman = { #year 280
-	cost = 200
+	cost = 250
 	time = 24
 
 	modifier = {
 		tax_income = 2
-        local_unrest = 1
+        local_unrest = 2
 	}
 	
 	build_trigger = {
@@ -1808,7 +1941,7 @@ taxman = { #year 280
 # Tax Collector
 
 tax_collector = { #year 460
-	cost = 400
+	cost = 500
 	time = 36
 	make_obsolete = taxman
 
