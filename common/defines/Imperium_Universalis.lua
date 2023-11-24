@@ -384,8 +384,10 @@ NDefines.NMilitary.LEADER_GAIN_PERSONALITY_BASE_CHANCE = 990.0
 NDefines.NMilitary.SUPPLY_DEPOT_DURATION_MONTHS = 12				-- Time until supply depot is removed.
 NDefines.NMilitary.SUPPLY_DEPOT_MIL_COST = 10				-- Mil power cost to build a supply depot in an area.
 NDefines.NMilitary.CREATE_JANISSARIES_MIL_COST = 6
-NDefines.NMilitary.CREATE_HUSSARS_MIL_COST = 6;
+NDefines.NMilitary.CREATE_HUSSARS_MIL_COST = 6
 NDefines.NMilitary.CREATE_CAWA_MIL_COST = 2
+NDefines.NMilitary.CAWA_STARTING_STRENGTH = 0.1					-- Starting strength of a cawa regiment, 1.0 being full strength
+NDefines.NMilitary.CAWA_STARTING_MORALE = 1						-- Starting morale of a cawa regiment, 1.0 being full strength
 NDefines.NMilitary.FORTRESS_COST = 0.5
 
 NDefines.NMilitary.MERCENARY_REINFORCE_COST_MULTIPLIER = -1.0
