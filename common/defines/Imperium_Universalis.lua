@@ -382,7 +382,7 @@ NDefines.NMilitary.NAVAL_DOCTRINE_MIN_FORCE_LIMIT = 50
 
 NDefines.NMilitary.LEADER_GAIN_PERSONALITY_BASE_CHANCE = 990.0
 NDefines.NMilitary.SUPPLY_DEPOT_DURATION_MONTHS = 12				-- Time until supply depot is removed.
-NDefines.NMilitary.SUPPLY_DEPOT_MIL_COST = 10				-- Mil power cost to build a supply depot in an area.
+NDefines.NMilitary.SUPPLY_DEPOT_MIL_COST = 15				-- Mil power cost to build a supply depot in an area.
 NDefines.NMilitary.CREATE_JANISSARIES_MIL_COST = 6
 NDefines.NMilitary.CREATE_HUSSARS_MIL_COST = 6
 NDefines.NMilitary.CREATE_CAWA_MIL_COST = 2
