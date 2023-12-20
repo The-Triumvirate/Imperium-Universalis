@@ -813,8 +813,8 @@ country_event = {
 		name = "scythian.9.a"
 		ai_chance = { factor = 90 }
 		add_country_modifier = {
-			name = scythian_dominion_asia_modifier
-			duration = 7300
+			name = scythian_dominion_asia_modifier_2
+			duration = 6400
 		}
 		add_manpower = 10
 		capital_scope = { build_to_forcelimit = { cavalry = 1 } }
@@ -825,7 +825,7 @@ country_event = {
 			add_treasury = 100
 			add_country_modifier = {
 				name = scythian_dominion_asia_modifier_2
-				duration = 7300
+				duration = 6400
 			}
 		}
 		CYM = { country_event = { id = scythian.10 } }
@@ -882,6 +882,8 @@ country_event = {
 		LYD = { add_historical_rival = SX1 }
 		MDI = { add_historical_rival = SX1 }
 		clr_country_flag = pending_scythian_victory_flag
+		add_truce_with = HUM
+		add_truce_with = KIL
 	}
 }
 
@@ -907,6 +909,8 @@ country_event = {
 		add_stability = -1
 		kill_ruler = yes
 		CYM = { add_stability = 1 }
+		add_truce_with = HUM
+		add_truce_with = KIL
 	}
 }
 
@@ -918,30 +922,53 @@ country_event = {
 	title = "scythian.13.t"
 	desc = "scythian.13.d"
 	picture = saka
-	is_triggered_only = yes
+
 	fire_only_once = yes
 	
 	trigger = {
 		TAG = SX1
-		exists = KIL
-		is_neighbor_of = KIL
-		NOT = { truce_with = KIL }
+		OR = {
+			exists = KIL
+			exists = HUM
+		}
+		OR = {
+			is_neighbor_of = KIL
+			is_neighbor_of = HUM
+		}		
+		OR ={
+			NOT = { truce_with = KIL }
+			NOT = { truce_with = HUM }
+		}
+		
 		NOT = { exists = CYM }
 	}
-	
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
 	option = {
 		name = "scythian.13.a"
 		ai_chance = { factor = 90 }
-		declare_war_with_cb = {
-			casus_belli = cb_invasion
-			who = KIL
+		if = {
+			limit = { exists = KIL }
+			declare_war_with_cb = {
+				casus_belli = cb_invasion
+				who = KIL
+			}
+		}
+		else = { 
+			declare_war_with_cb = {
+				casus_belli = cb_invasion
+				who = HUM
+			}
 		}
 		set_ruler_flag = scythian_invasion_cilicia_flag
 	}
 	option = {
 		name = "scythian.13.b"
 		ai_chance = { factor = 10 }
-		add_prestige = -5
+		add_prestige = -10
 	}
 }
 
@@ -951,25 +978,45 @@ country_event = {
 	title = "scythian.14.t"
 	desc = "scythian.14.d"
 	picture = saka
-	is_triggered_only = yes
+
 	fire_only_once = yes
 	major = yes
 	
 	trigger = {
 		TAG = SX1
-		war_with = KIL
+		OR = {
+			war_with = KIL
+			war_with = HUM
+		}
+		has_ruler_flag = scythian_invasion_cilicia_flag
 	}
-	
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
 	option = {
 		name = "scythian.14.a"
 		ai_chance = { factor = 90 }
+		add_prestige = -20
+		kill_ruler = yes
 		white_peace = KIL
+		add_country_modifier = {
+			name = weakened_scythians
+			duration = 3600
+		}
 	}
 	option = {
 		name = "scythian.14.b"
 		ai_chance = { factor = 10 }
+		add_prestige = -10
+		kill_ruler = yes
 		add_stability = -1
 		add_war_exhaustion = 5
+		add_country_modifier = {
+			name = weakened_scythians
+			duration = 3600
+		}
 	}
 }
 
@@ -1074,13 +1121,13 @@ country_event = {
 		OR = {
 			SX1 = {
 				exists = no
-				NOT = { total_development = 20 }
+				NOT = { total_development = 50 }
 			}
 		}
 		OR = {
 			SX2 = {
 				exists = no
-				NOT = { total_development = 20 }
+				NOT = { total_development = 50 }
 			}
 		}
 		is_year = 204
@@ -1194,4 +1241,76 @@ country_event = {
 			duration = 5475
 		}
 	}
+}
+
+########################################################################################
+# part of warriors return to steppes with loot
+########################################################################################
+country_event = {
+	id = scythian.18
+	title = "scythian.18.t"
+	desc = "scythian.18.d"
+	picture = saka
+	
+	trigger = {
+		OR = {
+			tag = SX1
+			tag = SX2
+		}
+		total_development = 50
+		has_reform = steppe_horde_reform
+		is_year = 150
+		NOT = { is_year = 175 }
+		exists = SCY
+		NOT =  { has_country_modifier = scythians_return_in_steppes }
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "scythian.18.a"
+		ai_chance = { factor = 60 }
+		add_years_of_income = -0.25
+		add_yearly_manpower = -0.25
+		add_prestige = 2.5
+		add_country_modifier = {
+			name = scythians_return_in_steppes
+			duration = 365
+		}
+		SCY = { 
+			add_years_of_income = 0.25
+			add_prestige = 2.5
+		}
+	}
+	option = {
+		name = "scythian.18.b"
+		ai_chance = { factor = 40 }
+		add_yearly_manpower = -0.15
+		add_prestige = -2.5
+		army_tradition = -5
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
