@@ -1,0 +1,70 @@
+po_force_celt_confederation_member = {
+	category = 6
+	power_projection = vassalized_rival
+	power_cost_base = 1.0
+	prestige_base = 0.5
+	ae_base = 0.1
+	warscore_cost = {
+		all_provinces = 1
+		owner_keeps = 0.0
+		returned_core = 0.0
+		released_nation = 0.0
+	}
+	warscore_cap = -1
+	is_make_subject = yes
+	requires_is_allowed = no
+	
+	is_visible = {
+		is_subject = no
+		OR = {
+			culture_group = gaulish_group
+			culture_group = eastern_celtic
+			culture_group = north_atlantic_group
+			culture_group = britannic_group
+			culture_group = ibero_celtic_group
+		}
+		NOT = { government = native }
+		FROM = {
+			NOT = { government = native }
+			OR = {
+				culture_group = gaulish_group
+				culture_group = eastern_celtic
+				culture_group = north_atlantic_group
+				culture_group = britannic_group
+				culture_group = ibero_celtic_group
+			}
+			is_subject = no
+			NOT = { government_rank = 3 }
+			NOT = { celt_confederation_member = 1 }
+		}
+	}
+	is_allowed = { 
+		total_development = FROM
+	}
+	effect = {
+		custom_tooltip = force_league_member_ct.1
+		hidden_effect = {
+			reverse_add_opinion = {
+				who = FROM
+				modifier = forced_league_member_opinion
+			}
+			FROM = {
+				every_subject_country = {
+					grant_independence = yes
+					add_truce_with = ROOT
+					add_truce_with = PREV
+				}
+			}
+		}
+		create_subject = {
+			subject_type = celt_confederation_member
+			subject = FROM
+		}
+	}
+	ai_weight = {
+		export_to_variable = {
+			variable_name = ai_value
+			value = 1000
+		}
+	}
+}

@@ -1,0 +1,485 @@
+
+#Ask for League Member
+ask_for_celt_confederation_member = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = ask_for_celt_confederation_member_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		is_subject = no
+		OR = {
+			culture_group = gaulish_group
+			culture_group = eastern_celtic
+			culture_group = north_atlantic_group
+			culture_group = britannic_group
+			culture_group = ibero_celtic_group
+		}
+		NOT = { government = native }
+		NOT = { have_had_reform = client_state_republic_reform }
+		NOT = { have_had_reform = client_state_monarchy_reform }
+		NOT = { is_rival = FROM }
+		FROM = {
+			NOT = { government = native }
+			OR = {
+				culture_group = gaulish_group
+				culture_group = eastern_celtic
+				culture_group = north_atlantic_group
+				culture_group = britannic_group
+				culture_group = ibero_celtic_group
+			}
+			is_subject = no
+			NOT = { is_rival = ROOT }
+			NOT = { have_had_reform = client_state_republic_reform }
+		    NOT = { have_had_reform = client_state_monarchy_reform }
+			NOT = { celt_confederation_member = 1 }
+			NOT = { government_rank = 3 }
+		}
+	}
+	is_allowed = {
+		reverse_has_opinion = {
+			who = FROM
+			value = 120
+		}
+		total_development = FROM
+		is_bankrupt = no
+		is_at_war = no
+		stability = 0
+		FROM = { NOT = { has_country_modifier = banned_league_modifier } }
+		FROM = { NOT = { any_ally = { is_rival = ROOT } } }
+		FROM = {
+			is_at_war = no
+		}
+	}
+	on_accept = {
+		add_prestige = 10
+		create_subject = {
+			subject_type = celt_confederation_member
+			subject = FROM
+		}
+	}
+
+	# PDX uses 1000 as "infinite" value, so using 100 as a base "maximum" (then uncapped modifiers will start to outgrow capped ones)
+	# Positive modifiers
+	# trust 100 	= 30 -> high weight, I find trust to be the best modifier to model relation between countries, as opinion can be maxed in a few months and dip rep is passive and applies to everyone
+	# opinion 200 	= 20 -> lower weight, from previous explanation, but still existing as it makes it interactive/engaging
+	# prestige 100 	= 20 -> high weight for more "historical"
+	# dip rep 5 	= 20 -> classic dip rep weight
+	# army size 20 	= 5 -> low weight as it's not capped
+	# navy size 80 	= 5 -> even lower weight than army to reduce gap between landlocked and non landlocked tags
+	# total 		= 100
+
+	# Negative modifiers
+	# dev 20 				= -20 -> from testing (low to avoid big disparity between very small tags and others, mostly compensated in base value)
+	# border distance 150 	= -30 -> from testing
+	# number of subjects 20 = -10  -> avoid infinite vassal swarm since they take no diplo slot
+	# different culture 	= -10 -> small weight as it's already kind of included in border distance, but kept for more historic logic
+	# base 					= -30 -> high weight to avoid making it possible in very early game
+	# total                 = -100
+	
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = FROM
+				with = ROOT
+			}
+			subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 0.4 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.2 }
+		}
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.5 }
+		}
+		add_entry = {
+			name = DIP_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 4 }
+		}
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.25 }
+		}
+		add_entry = {
+			name = NAVY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = naval_forcelimit
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 0.0325 }
+		}
+		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -1 }
+		}
+		add_entry = {
+			name = BORDER_DISTANCE
+			export_to_variable = {
+				variable_name = ai_value
+				value = border_distance
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = -0.2 }
+		}
+		add_entry = {
+			name = NUMBER_OF_SUBJECTS
+			export_to_variable = {
+				variable_name = ai_value
+				value = trigger_value:num_of_subjects
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = -0.25 }
+		}
+		add_entry = {
+			name = DIFFERENT_PRIMARY_CULTURE
+			limit = { NOT = { primary_culture = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -8
+			}
+		}
+		add_entry = {
+			name = NON_EXISTING_LEAGUE
+			limit = { NOT = { league_member_subject = 1 } }
+			export_to_variable = {
+				which = ai_value
+				value = -8
+			}
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			limit = { FROM = { ai = yes } }
+			export_to_variable = {
+				which = ai_value
+				value = -25
+			}
+		}
+	}
+	
+	ai_will_do = {
+	}
+}
+
+#Removes League Member
+remove_celt_confederation_member = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = remove_celt_confederation_member_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		FROM = {
+			is_subject_of_type = celt_confederation_member
+			is_subject_of = ROOT
+		}
+	}
+	is_allowed = {
+		is_at_war = no
+		has_any_disaster = no
+	}
+	on_accept = {
+		add_truce_with = FROM
+		FROM = {
+			grant_independence = yes
+			add_country_modifier = {
+				name = banned_league_modifier
+				duration = 730
+			}
+			add_opinion = {
+				who = ROOT
+    			modifier = banned_from_league_opinion
+			}
+		}
+		add_prestige = -10
+	}
+	
+	ai_will_do = {
+		FROM = {
+			OR = {
+				total_development = ROOT
+				liberty_desire = 80
+				AND = {
+					liberty_desire = 65
+					NOT = {
+						reverse_has_opinion = {
+							who = FROM
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+#Ask to join league as member
+ask_to_join_confederation = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = ask_to_join_confederation_alert_tooltip.1
+	
+	require_acceptance = yes
+	is_visible = {
+		FROM = {
+			is_subject = no
+			OR = {
+				culture_group = gaulish_group
+				culture_group = eastern_celtic
+				culture_group = north_atlantic_group
+				culture_group = britannic_group
+				culture_group = ibero_celtic_group
+			}
+			NOT = { government = native }
+			NOT = { is_rival = ROOT }
+		}
+		is_subject = no
+		NOT = { government = native }
+		OR = {
+			culture_group = gaulish_group
+			culture_group = eastern_celtic
+			culture_group = north_atlantic_group
+			culture_group = britannic_group
+			culture_group = ibero_celtic_group
+		}
+		NOT = { is_rival = FROM }
+		NOT = { celt_confederation_member = 1 }
+		NOT = { government_rank = 3 }
+	}
+	is_allowed = {
+		FROM = {
+			reverse_has_opinion = {
+				who = ROOT
+				value = 120
+			}
+			total_development = ROOT
+			is_bankrupt = no
+			is_at_war = no
+			stability = 0
+		}
+		NOT = { has_country_modifier = banned_league_modifier }
+		NOT = { any_ally = { is_rival = FROM } }
+		is_at_war = no
+	}
+	on_accept = {
+		FROM = {
+			add_prestige = 5
+			create_subject = {
+				subject_type = celt_confederation_member
+				subject = ROOT
+			}
+		}
+	}
+	on_decline = {
+		ROOT = {
+			add_country_modifier = {
+				name = banned_league_modifier
+				duration = 730
+			}
+		}
+	}
+	ai_acceptance = {
+		add_entry = {
+			name = TRUST
+			export_to_variable = {
+				variable_name = ai_value
+				value = trust
+				who = ROOT
+				with = FROM
+			}
+			subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 0.4 }
+		}
+		add_entry = {
+			name = OPINION
+			export_to_variable = {
+				variable_name = ai_value
+				value = opinion
+				who = ROOT
+				with = FROM
+			}
+			multiply_variable = { which = ai_value value = 0.2 }
+		}
+		add_entry = {
+			name = PRESTIGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = prestige
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = 0.5 }
+		}
+		add_entry = {
+			name = DIP_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = 4 }
+		}
+		add_entry = {
+			name = ARMY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = land_forcelimit
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = 0.25 }
+		}
+		add_entry = {
+			name = NAVY_SIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = naval_forcelimit
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = 0.0325 }
+		}
+		add_entry = {
+			name = TOTAL_DEVELOPMENT
+			export_to_variable = {
+				variable_name = ai_value
+				value = total_development
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = -1 }
+		}
+		add_entry = {
+			name = BORDER_DISTANCE
+			export_to_variable = {
+				variable_name = ai_value
+				value = border_distance
+				who = ROOT
+				with = FROM
+			}
+			multiply_variable = { which = ai_value value = -0.2 }
+		}
+		add_entry = {
+			name = NUMBER_OF_SUBJECTS
+			export_to_variable = {
+				variable_name = ai_value
+				value = trigger_value:num_of_subjects
+				who = FROM
+			}
+			multiply_variable = { which = ai_value value = -0.25 }
+		}
+		add_entry = {
+			name = DIFFERENT_PRIMARY_CULTURE
+			limit = { NOT = { primary_culture = FROM } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+		add_entry = {
+			name = NON_EXISTING_LEAGUE
+			limit = { FROM = { NOT = { league_member_subject = 1 } } }
+			export_to_variable = {
+				which = ai_value
+				value = -8
+			}
+		}
+		add_entry = {
+			name = BASE_VALUE_CUSTOM
+			export_to_variable = {
+				which = ai_value
+				value = -20
+			}
+		}
+	}
+	ai_will_do = {
+	}
+}
+
+#Stops being league member for subject
+abandon_confederation_hegemon = {
+	category = influence
+	alert_index = 41
+	alert_tooltip = abandon_confederation_hegemon_alert_tooltip.1
+	
+	require_acceptance = no
+	is_visible = {
+		is_subject_of_type = celt_confederation_member
+		FROM = { overlord_of = ROOT }
+	}
+	is_allowed = {
+		is_at_war = no
+		has_any_disaster = no
+		is_bankrupt = no
+		stability = 0
+		dip_power = 200
+		mil_power = 200
+		NOT = { truce_with = FROM }
+	}
+	on_accept = {
+		grant_independence = yes
+		add_dip_power = -200
+		add_mil_power = -200
+		add_stability = -2
+		hidden_effect = {
+			add_truce_with = FROM
+			add_country_modifier = {
+				name = banned_league_modifier
+				duration = 730
+			}
+			reverse_add_casus_belli = {
+				target = ROOT
+				type = cb_vassalize_mission
+				months = 144
+			}
+			capital_scope = { add_claim = FROM }
+			reverse_add_opinion = {
+				who = ROOT
+				modifier = abandoned_league_opinion
+			}
+		}
+	}
+	
+	ai_will_do = {
+		stability = 1
+		dip_power = 300
+		is_in_deficit = no
+		AND = {
+			OR = {
+				total_development = FROM
+				army_size = FROM
+				navy_size = FROM
+			}
+			liberty_desire = 60
+		}
+	}
+}
