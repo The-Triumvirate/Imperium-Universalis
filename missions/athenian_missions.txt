@@ -6,9 +6,91 @@ ath_missions_expansion_1 = {
 	ai = yes
 	potential = { tag = ATH }
 	has_country_shield = yes
-	
-	ath_fall_of_megara = {
+
+	ath_buildings_temples = {
+		position = 2
+		icon = mission_temple
+		#completed_by = 200.1.1
+		required_missions = {  }
+		trigger = {	
+			959 = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}				
+			}
+			5545 = {
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+			}
+		}
+		effect = {
+			add_prestige = 10
+			add_splendor = 50
+			5545 = {
+				if = {
+					limit = {
+						base_production = 1
+					}
+					add_base_tax = 1
+					add_base_production = -1
+				}
+				else = {
+					add_base_production = 1
+				}				
+			}
+		}
+	}
+	ath_acropolis_expansion = {
 		position = 3
+		icon = akropolis
+		#completed_by = 200.1.1
+		required_missions = { ath_buildings_temples }
+		trigger = {
+			has_great_project = {
+				type = athens_acropolis
+				tier = 2
+			}	
+		}
+		effect = {
+			add_splendor = 300
+		}
+	}
+	ath_golden_age_of_athens = {
+		position = 5
+		icon = akropolis2
+		#completed_by = 200.1.1
+		required_missions = { ath_acropolis_expansion ath_athenian_democracy }
+		trigger = {
+			OR = {
+				AND = {
+					current_age = classical_age
+					in_golden_age = yes
+					splendor = 800
+					treasury = 1500
+				}
+				AND = {
+					in_golden_age = yes
+					splendor = 800
+					treasury = 3000
+				}
+			}		
+		}
+		effect = {
+				add_great_project_tier = {
+					type = athens_acropolis
+					tier = 1
+				}
+				add_splendor = -800
+				treasury = -1500
+		}
+	}
+	ath_fall_of_megara = {
+		position = 6
 		icon = mission_siege
 		#completed_by = 200.1.1
 		required_missions = {	ath_build_an_army }
@@ -34,7 +116,7 @@ ath_missions_expansion_1 = {
 		}
 	}
 	ath_fall_of_corinth = {
-		position = 5
+		position = 9
 		icon = mission_corinth
 		required_missions = { ath_dominant_power_in_greece }
 		provinces_to_highlight = {
@@ -122,7 +204,7 @@ ath_missions_expansion_1 = {
 		}
 	}
 	ath_fall_of_sparta = {
-		position = 8
+		position = 12
 		icon = mission_sparta
 		required_missions = { ath_fall_of_corinth }
 		provinces_to_highlight = {
@@ -163,12 +245,53 @@ ath_missions_expansion_2 = {
 	ai = yes
 	potential = { tag = ATH }
 	has_country_shield = yes
-	
-	ath_build_an_army = {
+
+	ath_pisitratids_tyranny = {
 		position = 2
-		icon = mission_training
+		icon = mission_great_leader
 		#completed_by = 200.1.1
 		required_missions = {  }
+		trigger = {
+			OR = {
+				has_reform = aristocratic_monarchy_reform
+				AND = {
+					faction_influence = {
+						faction = fac_diakrii
+						influence = 70
+					}					
+					months_of_ruling = 120
+				}
+			}			
+		}
+		effect = {
+			add_stability = 1
+		}
+	}
+	ath_athenian_democracy = {
+		position = 4
+		icon = mission_great_leader
+		#completed_by = 200.1.1
+		required_missions = { ath_polis_of_athens }
+		trigger = {			
+			has_government_reform = citizens_republic_reform
+		}
+		effect = {
+			every_owned_province = {
+				limit = {
+					area = attica_area
+				}
+				add_province_modifier = {
+					name = kleisthenian_reforms_modifier
+					duration = -1
+				}
+			}
+		}
+	}
+	ath_build_an_army = {
+		position = 5
+		icon = mission_soldiers
+		#completed_by = 200.1.1
+		required_missions = { }
 		trigger = {
 			army_size = 12
 			capital_scope = { has_building = small_conscription_center }
@@ -183,7 +306,7 @@ ath_missions_expansion_2 = {
 		}
 	}
 	ath_fall_of_aegina = {
-		position = 3
+		position = 6
 		icon = mission_siege2
 		required_missions = { ath_build_an_army ath_ships_for_war }
 		provinces_to_highlight = {
@@ -200,11 +323,12 @@ ath_missions_expansion_2 = {
 			add_prestige = 10
 		}
 	}
+	
 	ath_dominant_power_in_greece = {
-		position = 4
+		position = 8
 		icon = mission_athens
 		#completed_by = 200.1.1
-		required_missions = { ath_fall_of_aegina ath_fall_of_megara ath_attack_on_cyclades }
+		required_missions = { ath_fall_of_aegina }
 		trigger = {
 			army_size = 16
 			num_of_heavy_ship = 12
@@ -250,7 +374,7 @@ ath_missions_expansion_2 = {
 		}
 	}
 	ath_attack_on_thebes = {
-		position = 5
+		position = 9
 		icon = mission_thebens
 		required_missions = { ath_dominant_power_in_greece }
 		provinces_to_highlight = {
@@ -296,7 +420,7 @@ ath_missions_expansion_2 = {
 		}
 	}
 	ath_northern_expansion = {
-		position = 6
+		position = 10
 		icon = mission_hoplite_2
 		required_missions = { ath_attack_on_thebes }
 		provinces_to_highlight = {
@@ -362,7 +486,7 @@ ath_missions_expansion_2 = {
 		}
 	}
 	ath_attack_on_thessalia = {
-		position = 8
+		position = 12
 		icon = mission_cavalry
 		required_missions = { ath_northern_expansion }
 		provinces_to_highlight = {
@@ -409,9 +533,94 @@ ath_missions_expansion_3 = {
 	ai = yes
 	potential = { tag = ATH }
 	has_country_shield = yes
-	
-	ath_ships_for_war = {
+
+	ath_end_sigeion_conflict = {
+		position = 1
+		icon = mission_hoplite_1
+		#completed_by = 200.1.1
+		required_missions = {  }
+		trigger = {	
+			OR = {
+				AND = {
+					is_at_war = no
+					SIE = {
+						is_subject_of = ATH
+					}
+				}
+				AND = {
+					is_at_war = no
+					SIE = {
+						is_subject_of = LB1
+					}
+				}
+			}
+				
+		}
+		effect = {
+			add_war_exhaustion = -2
+		}
+	}
+	ath_uniting_attica = {
 		position = 2
+		icon = mission_boarding
+		#completed_by = 200.1.1
+		required_missions = { ath_end_sigeion_conflict }
+		trigger = {	
+			959 = {
+				total_development = 9
+			}		
+		}
+		effect = {
+			if = {
+				limit = {
+					base_manpower = 3
+				}
+				add_base_manpower = -2
+				add_base_production = 1
+				add_base_tax = 1
+			}
+			else = {
+				add_base_manpower = -1
+				add_base_production = 1
+			}
+		}
+	}
+
+	ath_polis_of_athens = {
+		position = 3
+		icon = akropolis
+		#completed_by = 200.1.1
+		required_missions = { ath_uniting_attica ath_agriculture_and_production ath_buildings_temples ath_solon_reforms ath_pisitratids_tyranny }
+		trigger = {			
+		}
+		effect = {
+			add_base_production = 1
+			add_base_tax = 1
+			add_center_of_trade_level = 1
+			if = {
+				limit = {
+					NOT = {
+						959 = {
+							has_great_project = {
+								type = athens_acropolis
+								tier = 2
+							}
+						}
+					}
+				}
+				add_great_project_tier = {
+					type = athens_acropolis
+					tier = 1
+				}
+			}
+			else = {
+				add_splendor = 400
+			}
+		}
+	}
+
+	ath_ships_for_war = {
+		position = 5
 		icon = mission_boarding
 		#completed_by = 200.1.1
 		required_missions = { ath_shipyards }
@@ -449,7 +658,7 @@ ath_missions_expansion_3 = {
 		}
 	}
 	ath_attack_on_cyclades = {
-		position = 3
+		position = 6
 		icon = mission_big_fleet
 		#completed_by = 200.1.1
 		required_missions = { ath_ships_for_war }
@@ -482,7 +691,7 @@ ath_missions_expansion_3 = {
 		}
 	}
 	ath_euboea = {
-		position = 5
+		position = 9
 		icon = mission_hoplite_1
 		required_missions = { ath_dominant_power_in_greece }
 		provinces_to_highlight = {
@@ -517,7 +726,7 @@ ath_missions_expansion_3 = {
 		}
 	}
 	ath_chalcidice = {
-		position = 6
+		position = 10
 		icon = mission_macedons
 		required_missions = { ath_euboea ath_agean_sea }
 		provinces_to_highlight = {
@@ -579,7 +788,7 @@ ath_missions_expansion_3 = {
 		}
 	}
 	ath_ionia = {
-		position = 7
+		position = 11
 		icon = mission_ship
 		required_missions = { ath_northern_expansion }
 		provinces_to_highlight = {
@@ -606,7 +815,7 @@ ath_missions_expansion_3 = {
 		}
 	}
 	ath_magna_graeicia = {
-		position = 8
+		position = 12
 		icon = mission_s_italy
 		required_missions = { ath_ionia }
 		provinces_to_highlight = {
@@ -647,6 +856,26 @@ ath_missions_expansion_3 = {
 			}
 		}
 	}
+	ath_naval_empire = {
+		position = 13
+		icon = mission_europa_e
+		required_missions = { ath_magna_graeicia ath_attack_on_thessalia ath_fall_of_sparta ath_eastern_trade ath_southern_trade }
+		provinces_to_highlight = {			
+		}
+		trigger = {
+			num_of_total_ports = 200
+			num_of_heavy_ship = 100
+			num_of_galley = 100
+		}
+		effect = {
+			add_navy_tradition = 10
+			add_stability = 1
+			add_country_modifier = {
+				name = "mediterranean_ambition_ath"
+				duration = -1			
+			}	
+		}
+	}
 }
 ath_missions_expansion_4 = {
 	slot = 4
@@ -654,12 +883,37 @@ ath_missions_expansion_4 = {
 	ai = yes
 	potential = { tag = ATH }
 	has_country_shield = yes
-	
-	ath_shipyards = {
+
+	ath_salamis_conflict = {
 		position = 1
-		icon = mission_ship
+		icon = mission_hoplite_2
 		#completed_by = 200.1.1
 		required_missions = {  }
+		trigger = {	
+			owns = 5546
+		}
+		effect = {
+			add_prestige = 5
+			add_dip_power = 40
+		}
+	}
+	ath_solon_reforms = {
+		position = 2
+		icon = mission_advisors
+		#completed_by = 200.1.1
+		required_missions = { ath_salamis_conflict }
+		trigger = {	
+			has_country_modifier = solons_reform		
+		}
+		effect = {
+			add_adm_power = 50
+		}
+	}
+	ath_shipyards = {
+		position = 4
+		icon = mission_ship
+		#completed_by = 200.1.1
+		required_missions = { ath_polis_of_athens }
 		trigger = {
 			custom_trigger_tooltip = {
 				tooltip = ath_shipyards.tooltip
@@ -677,10 +931,67 @@ ath_missions_expansion_4 = {
 				add_yearly_sailors = 1
 		}
 	}
-	ath_agean_sea = {
+	ath_salamis_and_marathon = {
 		position = 5
+		icon = mission_big_fleet
+		#completed_by = 200.1.1
+		required_missions = { ath_shipyards }
+		trigger = {
+			navy_tradition = 33
+			army_tradition = 33
+			prestige = 25
+			current_age = archaic_age
+		}
+		effect = {
+			add_country_modifier = {
+				name = political_cunning
+				duration = 26575
+			}
+		}
+	}
+	ath_delian_league = {
+		position = 7
+		icon = mission_athens
+		#completed_by = 200.1.1
+		required_missions = { ath_salamis_and_marathon ath_attack_on_cyclades }
+		trigger = {
+			league_member_subject = 15
+			977 = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = 	delian_league_mission
+				duration = 15575
+			}
+			if = {
+				limit = {
+					AND = {
+						977 = {
+							province_has_center_of_trade_of_level = 2
+						}
+						959 = {
+							NOT = { province_has_center_of_trade_of_level = 9 }
+						}
+					}
+				}
+				977 = {
+					add_center_of_trade_level = -1
+				}
+				959 = {
+					add_center_of_trade_level = 1
+				}
+			}
+			else = {
+				add_dip_power = 300
+			}
+		}
+	}
+	ath_agean_sea = {
+		position = 9
 		icon = mission_captain
-		required_missions = { ath_dominant_power_in_greece }
+		required_missions = { ath_dominant_power_in_greece ath_delian_league }
 		provinces_to_highlight = {
 			NOT = {
 				country_or_non_sovereign_subject_holds = ROOT
@@ -709,7 +1020,7 @@ ath_missions_expansion_4 = {
 		}
 	}
 	ath_ionian_coast = {
-		position = 6
+		position = 10
 		icon = mission_invasion
 		required_missions = { ath_agean_sea }
 		provinces_to_highlight = {
@@ -748,7 +1059,7 @@ ath_missions_expansion_4 = {
 		}
 	}
 	ath_the_propontis = {
-		position = 7
+		position = 11
 		icon = mission_propontis
 		required_missions = { ath_ionian_coast ath_chalcidice }
 		provinces_to_highlight = {
@@ -765,12 +1076,12 @@ ath_missions_expansion_4 = {
 				}
 		}
 		trigger = {
-			owns = 1086
-			owns = 1082
-			owns = 1081
-			owns = 2117
-			owns = 2118
-			owns = 2151
+			1086 = { country_or_non_sovereign_subject_holds = ROOT }
+			1082 = { country_or_non_sovereign_subject_holds = ROOT }
+			1081 = { country_or_non_sovereign_subject_holds = ROOT }
+			2117 = { country_or_non_sovereign_subject_holds = ROOT }
+			2118 = { country_or_non_sovereign_subject_holds = ROOT }
+			2151 = { country_or_non_sovereign_subject_holds = ROOT }
 		}
 		effect = {
 			add_dip_power = 50
@@ -805,7 +1116,7 @@ ath_missions_expansion_4 = {
 		}
 	}
 	ath_eastern_trade = {
-		position = 8
+		position = 12
 		icon = mission_asia
 		#completed_by = 200.1.1
 		required_missions = { ath_the_propontis }
@@ -835,12 +1146,65 @@ ath_missions_expansion_5 = {
 	ai = yes
 	potential = { tag = ATH }
 	has_country_shield = yes
+
+	ath_agriculture_and_production = {
+		position = 2
+		icon = farmland
+		#completed_by = 200.1.1
+		required_missions = {  }
+		trigger = {
+			OR = {
+				OR = {
+					quarry = 2
+					small_mine = 2
+				}
+				OR = {
+					small_water_irrigation = 2
+					farming_settlement = 2
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = economic_boost
+				duration = 15000
+			}			
+		}
+	}
+	ath_trade_expansion = {
+		position = 3
+		icon = mission_trade
+		#completed_by = 200.1.1
+		required_missions = { ath_agriculture_and_production }
+		trigger = {	
+			OR = {
+				OR = {
+					small_market = 2
+					medium_market = 2
+					great_market = 2
+				}
+				OR = {
+					small_harbor = 2
+					big_harbor = 2
+					harbor_district = 2
+				}
+			}
+		}
+		effect = {
+			effect = {
+				add_country_modifier = {
+					name = merchant_society
+					duration = 15000
+				}			
+			}
+		}
+	}
 	
 	ath_merchantnavy = {
-		position = 2
+		position = 4
 		icon = mission_harbor
 		#completed_by = 200.1.1
-		required_missions = { ath_shipyards }
+		required_missions = { ath_trade_expansion }
 		trigger = {
 			num_of_light_ship = 12
 			1419 = { #Aegaen
@@ -863,10 +1227,10 @@ ath_missions_expansion_5 = {
 		}
 	}
 	ath_agean_trade = {
-		position = 7
+		position = 11
 		icon = mission_trade
 		#completed_by = 200.1.1
-		required_missions = { ath_merchantnavy ath_ionian_coast }
+		required_missions = { ath_ionian_coast }
 		trigger = {
 			1419 = { #Aegaen
 				trade_share = {
@@ -882,7 +1246,7 @@ ath_missions_expansion_5 = {
 		}
 	}
 	ath_southern_trade = {
-		position = 8
+		position = 12
 		icon = mission_egypt_2
 		#completed_by = 200.1.1
 		required_missions = { ath_agean_trade }
