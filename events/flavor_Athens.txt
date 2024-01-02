@@ -1,42 +1,34 @@
 namespace = athen
 
-
 ########################################################################################
-# Isagoras
+# cleanup event for early athens to remove default factions
 ########################################################################################
 country_event = {
-	id = athen.1
-	title = "athen.1.t"
-	desc = "athen.1.d"
+	id = athen.101
+	title = "athen.101.t"
+	desc = "athen.101.d"
 	picture = senat_conflict
-	
+	is_triggered_only = yes
+	hidden = yes
+
 	trigger = {
 		tag = ATH
-		has_country_modifier = solons_reform
-		faction_in_power = fac_oligarchs
-		is_year = 240
+		NOT = { is_year = 195 }
 	}
 	
 	mean_time_to_happen = {
-		months = 80
+		months = 1
 	}
 	
 	option = {
-		name = "athen.1.a"
-			remove_country_modifier = solons_reform
-			add_faction_influence = { faction = fac_democrats influence = -10 }
-			define_ruler = {
-				name = "Isagoras"
-				dynasty = "Tisandae"
-				mil = 2
-				adm = 4
-				dip = 2
-			}
-	}
-	option = {
-		name = "athen.1.b"
-			add_faction_influence = { faction = fac_oligarchs influence = -10 }
-			add_stability = -1
+		name = "athen.101.a"
+		remove_faction = fac_democrats
+		remove_faction = fac_oligarchs
+		remove_faction = fac_monarchists
+		remove_country_modifier = polis_oligarchy_modifier
+		add_faction_influence = { faction = fac_diakrii influence = -15 }
+		add_faction_influence = { faction = fac_paralii influence = 5 }
+		add_faction_influence = { faction = fac_pedii influence = 10 }
 	}
 }
 
@@ -178,56 +170,31 @@ country_event = {
 	}
 }
 ########################################################################################
-# social unrest
-########################################################################################
-country_event = {
-	id = athen.6
-	title = "athen.6.t"
-	desc = "athen.6.d"
-	picture = plebs
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ATH
-		is_year = 150
-		NOT = { started_in = 160.1.1  }
-	}
-	
-	mean_time_to_happen = {
-		months = 60
-	}
-	
-	option = {
-		name = "athen.6.a"
-			add_stability = -1
-	}
-}
-########################################################################################
 # marble found
 ########################################################################################
-country_event = {
-	id = athen.7
-	title = "athen.7.t"
-	desc = "athen.7.d"
-	picture = temple
-	fire_only_once = yes
-	
-	trigger = {
-		tag = ATH
-		is_year = 200
-		959 = { NOT = { trade_goods = marble } }
-	}
-	
-	mean_time_to_happen = {
-		months = 24
-	}
-	
-	option = {
-		name = "athen.7.a"
-			add_prestige = 10
-			959 = { change_trade_goods = marble } 
-	}
-}
+#country_event = {
+#	id = athen.7
+#	title = "athen.7.t"
+#	desc = "athen.7.d"
+#	picture = temple
+#	fire_only_once = yes
+#	
+#	trigger = {
+#		tag = ATH
+#		is_year = 200
+#		959 = { NOT = { trade_goods = marble } }
+#	}
+#	
+#	mean_time_to_happen = {
+#		months = 24
+#	}
+#	
+#	option = {
+#		name = "athen.7.a"
+#			add_prestige = 10
+#			959 = { change_trade_goods = marble } 
+#	}
+#}
 
 province_event = { #Kleisthenes
     id = athen.8
@@ -280,3 +247,781 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Pittacus of Mytilene
+########################################################################################
+country_event = {
+	id = athen.10
+	title = "athen.10.t"
+	desc = "athen.10.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = LB1
+		is_year = 150
+		NOT = { started_in = 160.1.1  }
+		war_with = ATH
+		NOT = {	has_country_flag = pittacus	}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.10.a"
+		add_stability = 1
+		define_ruler = {
+			name = "Pittacus" #one of Seven Sages of Greece
+			dynasty = "of Mytilene"
+			birth_date = 116.1.1
+			death_date = 186.1.1
+			dip = 5
+			adm = 6
+			mil = 5
+		}
+		define_ruler_to_general = {
+			fire = 6	
+			shock = 6	
+			manuever = 5	
+			siege = 2
+		}
+		set_country_flag = pittacus
+	}
+}
+
+########################################################################################
+# Duel with Phrynon and peace with Athens
+########################################################################################
+country_event = {
+	id = athen.11
+	title = "athen.11.t"
+	desc = "athen.11.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 150
+		NOT = { started_in = 160.1.1  }
+		war_with = LB1
+		has_country_flag = pittacus
+		NOT = {	has_country_flag = pittacus_duel	}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.11.a"
+		ai_chance = { factor = 90 }
+		kill_leader = { name = "Phrynon" }
+		add_prestige = -5
+		white_peace = LB1
+		release = SIE
+		LB1 = {
+			vassalize = SIE
+		}
+		set_country_flag = pittacus_duel
+	}
+	option = {
+		name = "athen.11.b"
+		ai_chance = { factor = 10 }
+		kill_leader = { name = "Phrynon" }
+		add_prestige = -10
+		add_war_exhaustion = 2
+		set_country_flag = pittacus_duel
+	}
+}
+
+
+########################################################################################
+# Atheno-Megarian conflict
+########################################################################################
+country_event = {
+	id = athen.12
+	title = "athen.12.t"
+	desc = "athen.12.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		NOT = {	has_country_flag = atheno_megarian_conflict }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.12.a"
+		add_country_modifier = {
+			name = megarian_sea_blockade
+			duration = 18250
+		}
+		set_country_flag = atheno_megarian_conflict
+	}
+}
+
+########################################################################################
+# Sent Force to Salamis and raid Nisaia while Megarians are distracted?
+########################################################################################
+country_event = {
+	id = athen.13
+	title = "athen.13.t"
+	desc = "athen.13.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		has_country_flag = atheno_megarian_conflict
+		NOT = {	has_country_flag = sent_force }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.13.a"
+
+		add_mil_power = -50
+		add_manpower = -4
+		set_country_flag = sent_force
+		define_general = {
+			name = "Solon"
+			fire = 3
+			shock = 3
+			manuever = 3
+			siege = 2
+		}
+	}
+}
+
+########################################################################################
+# Athens with Solon as general capture Salamis while Megarians distracted by conflict with Perinthos and Samos
+########################################################################################
+country_event = {
+	id = athen.14
+	title = "athen.14.t"
+	desc = "athen.14.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		has_country_flag = atheno_megarian_conflict
+		has_country_flag = sent_force
+		NOT = {	has_country_flag = salamis_capture }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.14.a"
+	    5546 = {
+			cede_province = ATH
+		}
+		set_country_flag = salamis_capture
+	}
+}
+
+########################################################################################
+# Solon reforms: local focus on reducing debt, patronise small farmers, olive growing and export, land maximum reduced aristorcratic lands
+########################################################################################
+country_event = {
+	id = athen.15
+	title = "athen.15.t"
+	desc = "athen.15.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 160
+		has_ruler = "Solon"
+		NOT = { started_in = 195.1.1  }
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+	}
+	
+	option = {
+		name = "athen.15.a"
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_faction = fac_diakrii
+		add_faction_influence = { faction = fac_diakrii influence = 15 }
+	}
+}
+########################################################################################
+# social unrest - many now happy about Solon reforms - aristocrats that lost power, demos - that got not enough
+########################################################################################
+country_event = {
+	id = athen.6
+	title = "athen.6.t"
+	desc = "athen.6.d"
+	picture = plebs
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 161			
+		NOT = { started_in = 185.1.1  }
+		has_ruler = "Solon"		
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.6.a"
+		add_stability = -1
+		add_republican_tradition = -5
+		set_country_flag = solon_unrest
+	}
+}
+
+
+########################################################################################
+# Solon exile
+########################################################################################
+country_event = {
+	id = athen.601
+	title = "athen.601.t"
+	desc = "athen.601.d"
+	picture = plebs
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 161			
+		NOT = { started_in = 166.1.1  }
+		has_country_modifier = solons_reform
+		has_country_flag = solon_unrest
+		NOT = { has_country_flag = solon_exiled }
+	}
+	
+	mean_time_to_happen = {
+		months = 3
+	}
+	
+	option = {
+		name = "athen.601.a"
+		add_republican_tradition = -5	
+		kill_ruler = yes
+		set_country_flag = solon_exiled
+	}
+}
+
+
+########################################################################################
+# Megarians recapture Salamis while Athens in turmoil
+########################################################################################
+country_event = {
+	id = athen.16
+	title = "athen.16.t"
+	desc = "athen.16.d"
+	picture = plebs
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH			
+		NOT = { started_in = 195.1.1  }
+		has_country_flag = solon_exiled		
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+	}
+	
+	option = {
+		name = "athen.16.a"
+		5546 = {
+			cede_province = MEG
+		}
+		MEG = {
+			add_manpower = 5
+		}
+	}
+}
+
+########################################################################################
+# Pisistratus leads and empowers Diakrii faction - + influence to them
+########################################################################################
+country_event = {
+	id = athen.17
+	title = "athen.17.t"
+	desc = "athen.17.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 193
+		NOT = { started_in = 195.1.1  }
+		NOT = { has_country_flag = pisistratus_start }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.17.a"
+		add_republican_tradition = -10
+		add_manpower = -0.005
+		set_country_flag = pisistratus_start
+	}
+}
+
+
+########################################################################################
+# Pisistratus seizes Acropolis for first time and rules from there. Seems everyone accepted him for some time.
+########################################################################################
+country_event = {
+	id = athen.18
+	title = "athen.18.t"
+	desc = "athen.18.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		is_year = 193
+		NOT = { started_in = 195.1.1  }
+		has_country_flag = pisistratus_start
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "athen.18.a"
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_government_reform = written_law_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratids"
+			birth_date = "154.1.1"
+			death_date = "226.1.1"
+			dip = 3
+			adm = 4
+			mil = 5
+			add_stability = 1
+			add_army_professionalism = 0.1
+			attach_leader = "Peisistratos"
+		}
+		set_country_flag = pisistratus_1_term
+	}
+}
+########################################################################################
+# Pisistratus overthrown by combined force of Paralii and Pedii
+########################################################################################
+country_event = {
+	id = athen.19
+	title = "athen.19t"
+	desc = "athen.19.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		OR = {
+			AND = {
+				has_country_flag = pisistratus_1_term
+				is_year = 198
+				has_ruler = "Peisistratos"
+			}
+			AND = {
+				has_country_flag = pisistratus_1_term
+				NOT = {
+					has_ruler = "Peisistratos"
+				}
+			}
+		}
+		NOT = { started_in = 200.1.1  }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "athen.19.a"
+		change_government = republic
+		add_government_reform = early_athens_polis_reform
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_government_reform = written_law_reform
+		define_ruler = {
+			name = "Hegesias"
+			dynasty = ""
+			dip = 3
+			adm = 3
+			mil = 3
+		}
+		set_country_flag = pisistratus_1_exile		
+		add_faction_influence = { faction = fac_paralii influence = 10 }
+		add_faction_influence = { faction = fac_pedii influence = 10 }
+		add_faction_influence = { faction = fac_diakrii influence = -20 }
+	}	
+}
+
+########################################################################################
+# Pisistratus returns again for short time
+#######################################################################################
+country_event = {
+	id = athen.20
+	title = "athen.20.t"
+	desc = "athen.20.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		is_year = 198
+		has_country_flag = pisistratus_1_exile
+		NOT = {
+			has_ruler = "Peisistratos"
+		}
+		NOT = { started_in = 200.1.1  }
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "athen.20.a"
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_government_reform = written_law_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratids"
+			birth_date = "154.1.1"
+			death_date = "226.1.1"
+			dip = 3
+			adm = 4
+			mil = 5
+			add_stability = 1
+			add_army_professionalism = 0.1
+			attach_leader = "Peisistratos"
+		}		
+		define_consort = {
+			name = "Kesira"
+			country_of_origin = ATH
+			dynasty = "Alcmeonidae"
+			adm = 2
+			dip = 2
+			mil = 2
+			female = yes
+			age = 25
+		}
+		set_country_flag = pisistratus_2_term
+	}
+
+}
+
+########################################################################################
+# Pisistratus exiled again after neglected his new wife, daughter of paralii leader
+########################################################################################
+country_event = {
+	id = athen.21
+	title = "athen.21.t"
+	desc = "athen.21.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ATH
+		has_country_flag = pisistratus_2_term
+		NOT = { started_in = 204.1.1  }
+	}
+	
+	mean_time_to_happen = {
+		months = 4
+	}
+	
+	option = {
+		name = "athen.21.a"
+		change_government = republic
+		add_government_reform = early_athens_polis_reform
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_government_reform = written_law_reform
+		define_ruler = {
+			name = "Hegesias"
+			dynasty = ""
+			dip = 3
+			adm = 3
+			mil = 3
+		}
+		set_country_flag = pisistratus_2_exile
+		add_faction_influence = { faction = fac_paralii influence = 15 }
+		add_faction_influence = { faction = fac_pedii influence = 15 }
+		add_faction_influence = { faction = fac_diakrii influence = -30 }
+	}	
+}
+
+########################################################################################
+# Pisistratus returns again, now till the end
+########################################################################################
+country_event = {
+	id = athen.22
+	title = "athen.22.t"
+	desc = "athen.22.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		is_year = 208
+		has_country_flag = pisistratus_2_exile
+		NOT = {
+			has_ruler = "Peisistratos"
+		}
+		NOT = { started_in = 210.1.1  }
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+	}
+	
+	option = {
+		name = "athen.22.a"
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_government_reform = written_law_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratids"
+			birth_date = "154.1.1"
+			death_date = "226.1.1"
+			dip = 3
+			adm = 4
+			mil = 5
+			add_stability = 1
+			add_army_professionalism = 0.1
+			attach_leader = "Peisistratos"
+		}		
+		define_consort = {
+			name = "Timonassa"
+			country_of_origin = ARG
+			dynasty = "of Argos"
+			adm = 2
+			dip = 2
+			mil = 2
+			female = yes
+			age = 25
+		}
+		define_heir = {
+			name = "Hippias"
+			dynasty = "Peisistratids"			
+			birth_date = "207.1.1"
+			death_date = "264.1.1"
+			adm = 3
+			dip = 4
+			mil = 2
+		}
+		set_country_flag = pisistratus_3_term
+		#clears alliances and addes new
+		create_alliance = ARG
+		create_alliance = ERT
+		create_alliance = BOE
+		#overseas lands of Peisistratos,captured in exile, now belongs to Athens.
+		5528 = {
+			cede_province = ATH
+		}
+		1074 = {
+			cede_province = ATH
+		}
+	}
+	option = {
+		name = "athen.22.b"
+		961 = {
+			spawn_rebels = {
+			type = pretender_rebels
+			size = 3
+			leader = "Peisistratos Peisistratids"
+			friend = ARG
+			}
+		}
+		set_country_flag = pisistratus_3_term_refuse	
+	}
+}
+
+########################################################################################
+# Pisistratus reforms: protection of farmers and lower intrest rates
+########################################################################################
+country_event = {
+	id = athen.23
+	title = "athen.23.t"
+	desc = "athen.23.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			is_year = 208
+			has_country_flag = pisistratus_3_term
+			has_ruler = "Peisistratos"
+			NOT = { started_in = 210.1.1  }
+		}		
+	}	
+	mean_time_to_happen = {
+		months = 8
+	}
+	
+	option = {
+		name = "athen.23.a"
+		set_country_flag = pisistratus_farmer_protectionism
+		add_country_modifier = {
+			name = pisistratus_farmer_protectionism_modifier
+			duration = 17500
+		}
+	}
+}
+
+
+
+
+########################################################################################
+# Pisistratus reforms: returning solon reforms, if somehow they were disbanded
+########################################################################################
+########################################################################################
+# Pisistratus reforms: buildings for prodcution - plantations and workshops, mines in Laurium, roads, markets
+########################################################################################
+
+########################################################################################
+# consenquences - athenian pottery surpasses corinthian. Reduce Korinth TC by 1 level, add 1 level of Athenian TC
+########################################################################################
+
+
+is_year = 215
+########################################################################################
+# Pisistratus "golden age" +2 stability
+########################################################################################
+########################################################################################
+# Pisistratus reforms: temples in Athens and Eleusis, or even wonder level 1? - Hekatompedon, pre-parthenon acropolis level 1. in 490 after Marathon it becomes level 2, then persians demoted to 1, then Pericles rebuilt it to 3.
+########################################################################################
+########################################################################################
+# Pisistratus reforms: Panathenaic games (small splendor permanent modifier)
+########################################################################################
+
+
+########################################################################################
+# Pisistratus ambitions: claims (or wars?) for Sigeion (created vassal or revassalized Sigeion, putting his son Hegesistratus to rule there)
+########################################################################################
+########################################################################################
+# Pisistratus promise - attack on Naxos and Delos, to install Lygdamis of Naxos as Ruler
+########################################################################################
+########################################################################################
+# Pisistratus "cleansing" of Delos on occupation - removes 1 pop, adds splendor and permanent claim on island.
+########################################################################################
+########################################################################################
+# Miltiades taking Sestos, becomes vassal of Athens.
+########################################################################################
+########################################################################################
+# on death of Peisistratus - adds Hipparchus as heir to Hippias
+########################################################################################
+########################################################################################
+#Harmodius and Aristogeiton, tyranoslayers (kill heir Hipparchus, -1 stab)
+########################################################################################
+########################################################################################
+#Hippias killing many citizens, -1 upper pop, -1 stab
+########################################################################################
+########################################################################################
+#Cleithenes Alcmeonidae return with spartan troops, 510 bc, Hippias deposed
+########################################################################################
+
+
+########################################################################################
+# Isagoras
+########################################################################################
+country_event = {
+	id = athen.1
+	title = "athen.1.t"
+	desc = "athen.1.d"
+	picture = senat_conflict
+	
+	trigger = {
+		tag = ATH
+		has_country_modifier = solons_reform
+		faction_in_power = fac_oligarchs
+		is_year = 240
+	}
+	
+	mean_time_to_happen = {
+		months = 80
+	}
+	
+	option = {
+		name = "athen.1.a"
+			remove_country_modifier = solons_reform
+			add_faction_influence = { faction = fac_democrats influence = -10 }
+			define_ruler = {
+				name = "Isagoras"
+				dynasty = "Tisandae"
+				mil = 2
+				adm = 4
+				dip = 2
+			}
+	}
+	option = {
+		name = "athen.1.b"
+			add_faction_influence = { faction = fac_oligarchs influence = -10 }
+			add_stability = -1
+	}
+}
+#Cleithenes offers democracy, people of Athens overthrow Isagoras, and spartans invade (Isagoras as pretender rebel supported by Sparta?)
+#Democracy established, Cleithenes takes power and reforms.
+#Cleisthenes of Athens ultimately triumphs in a power struggle, 
+#dividing the Athenian citizens into ten new tribes, 
+#creating a Council of Five Hundred as a representative assembly, 
+#and ushering in the age of democratic government in the year 508/507 BC
+
+#modifier for a flock of "new men" into politics - +1 advisor and +1 random ruler skill for 25 years
