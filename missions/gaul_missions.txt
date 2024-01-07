@@ -1,8 +1,8 @@
 ###################
 ### 	SLOT 1
 ###################
-military_missions = {
-	slot = 1 
+gaul_economic_and_naval_missions = {
+	slot = 1
 	generic = no
 	ai = yes
 	potential = {
@@ -18,11 +18,740 @@ military_missions = {
 				}
 			}					
 		}
-	} 
-##### ARMY
-	gather_tribe_mission = {
-		#position = 1
-		icon = mission_training
+	}
+	has_country_shield = yes
+#####  trade
+	gaul_tin_trade_river_outposts_mission = {
+		position = 1
+		icon = mission_tribal_farming
+		required_missions = {  }
+		trigger = {
+			num_of_owned_provinces_with = {
+			value = 3
+			has_building = small_market
+			}
+		}
+		effect = {
+			all_owned_province = {
+				limit = {
+					has_building = small_market
+				}
+				add_province_modifier = tin_trade_participant
+			}
+		}
+	}
+	gaul_trading_with_mediterranean_mission = {
+		position = 2
+		icon = mission_celt_medit_trade
+		required_missions = { gaul_tin_trade_river_outposts_mission }
+		trigger = {
+			mare_ligusticum = {
+				has_merchant = ROOT
+			}	
+			any_owned_province = {
+				has_country_modifier = trade_with_etruscans
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = flourishing_economy_modifier
+				duration = 12500
+		}
+	}
+	}
+	gaul_river_trade_centers_mission = {
+		position = 3
+		icon = mission_slav_town
+		required_missions = { gaul_trading_with_mediterranean_mission }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 5
+				province_has_center_of_trade_of_level = 3
+			}			
+		}
+		effect = {
+				add_country_modifier = {
+					name = increasing_trade_modifier
+					duration = 12500
+			}
+		}
+	}
+	gaul_atlantic_trade_ports_mission = {
+		position = 4
+		icon = mission_harbor
+		required_missions = { gaul_river_trade_centers_mission }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 8
+				region = celtica_superregion
+				has_shipyard_building = yes
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = coastal_centers_of_trade
+				duration = 12500
+			}
+		}
+	}
+	gaul_celtic_trade_fleet_mission = {
+		position = 5
+		icon = mission_ship2
+		required_missions = { gaul_atlantic_trade_ports_mission }
+		trigger = {
+			num_of_light_ship = 20			
+		}
+		effect = {
+			add_country_modifier = {
+				name = strong_merchant_navy_modifier
+				duration = 12500
+			}
+		}
+	}
+	gaul_international_trade_networks_mission = {
+		position = 6
+		icon = mission_tradeport
+		required_missions = { gaul_celtic_trade_fleet_mission }
+		trigger = {
+			1352 = {
+				trade_share = {
+					country = ROOT
+					share = 25
+				}
+			}
+			1287 = {
+				trade_share = {
+					country = ROOT
+					share = 25
+				}
+			}
+		}
+		effect = {
+			add_years_of_income = 1
+		}
+	}
+	gaul_celtic_military_fleet_mission = {
+		position = 7
+		icon = mission_big_fleet
+		required_missions = { gaul_international_trade_networks_mission }
+		trigger = {
+			num_of_heavy_ship = 20
+			num_of_transport = 40
+		}
+		effect = {
+			britannia_superior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			britannia_inferior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			hibernia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			effect = {
+				add_country_modifier = {
+					name = proud_navy_modifier
+					duration = 12500
+				}
+			}
+		}
+	}
+	gaul_invade_britain_mission = {
+		position = 8
+		icon = mission_britannia
+		required_missions = { gaul_celtic_military_fleet_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 15
+				region = britannia_superior
+			}
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 15
+				region = britannia_inferior
+			}
+		}
+		effect = {
+			add_prestige = 10
+		}
+	}
+	gaul_settle_in_hibernia_mission = {
+		position = 9
+		icon = mission_britannia
+		required_missions = { gaul_invade_britain_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 15
+				region = hibernia
+			}		
+		}
+		effect = {
+			add_prestige = 5
+		}
+	}
+	gaul_la_tene_invasion_mission = {
+		position = 10
+		icon = mission_celtic_king
+		required_missions = {  }
+		trigger = {
+			OR = {
+				primary_culture = la_tene_celtic
+				primary_culture = gaul
+				primary_culture = southern_gaul
+				primary_culture = armorican
+				primary_culture = belgae
+			}
+			NOT = {
+				has_country_modifier = la_tene_boost
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = la_tene_boost
+				duration = 9600
+			}
+		}
+	}
+	gaul_fortified_settlements_mission = {
+		position = 11
+		icon = dac_citadel
+		required_missions = { gaul_la_tene_invasion_mission }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 4
+				has_fort_trigger = yes
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = celt_hillforts
+				duration = -1
+			}
+		}
+	}
+	gaul_early_urbanisation_mission = {
+		position = 12
+		icon = dac_tradetown
+		required_missions = { gaul_fortified_settlements_mission }
+		trigger = {
+			num_of_owned_provinces_with = {
+				value = 4
+				base_tax = 2
+				base_production = 5		
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = india_urban_explosion
+				duration = 6000
+			}
+		}
+	}
+	gaul_coinage_mission = {
+		position = 13
+		icon = coinage
+		required_missions = { gaul_early_urbanisation_mission }
+		trigger = {
+			has_institution = coin_usage
+		}
+		effect = {
+			add_years_of_income = 1
+		}
+	}	
+	
+	gaul_accepting_greek_ways_mission = {
+		position = 14
+		icon = mission_artist
+		required_missions = { gaul_coinage_mission }
+		trigger = {
+			AND = {
+				has_institution = siege_engineering_institution
+				has_institution = cast_iron_institution
+				has_institution = civil_law_institution
+			}
+			
+		}
+		effect = {
+			change_government_reform_progress = 400
+		}
+	}
+	gaul_massalian_academies_mission = {
+		position = 15
+		icon = mission_advisors
+		required_missions = { gaul_accepting_greek_ways_mission }
+		trigger = {
+			has_institution = classical_philosophy_institution
+			massalia_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			368 = {
+				OR = {
+					has_building = mathematician_academy
+					has_building = philosophers_academy
+					has_building = military_academy
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = meager_hellenic_influence_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+gaul_society_missions = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+			culture_group = gaulish_group
+			AND = {
+				OR = {
+					culture_group = north_atlantic_group
+					culture_group = ligures_group
+				}
+				capital_scope = {
+					superregion = celtica_superregion
+				}
+			}					
+		}
+	}
+	has_country_shield = yes
+##### not be primitive
+	gaul_developing_society_mission = {
+		position = 1
+		icon = asian_huts
+		required_missions = {  }
+		trigger = {
+			NOT = {
+				government = native
+			}
+			adm_tech = 4
+		}
+		effect = {
+			change_government_reform_progress = 75
+		}
+	}
+	gaul_wealth_inequality_mission = {
+		position = 2
+		icon = mission_celt_nobility
+		required_missions = { gaul_developing_society_mission }
+		trigger = {
+			capital_scope = {
+				base_tax = 1
+				base_production = 2
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = la_tene_inequality
+				duration = 15600
+			}
+		}
+	}
+	gaul_assert_dominance_mission = {
+		position = 3
+		icon = mission_celtic_king
+		required_missions = { gaul_wealth_inequality_mission }
+		trigger = {
+			celt_confederation_member = 3
+			capital_scope = {
+				area_for_scope_province = {
+					type = all
+					country_or_non_sovereign_subject_holds = ROOT
+				}
+			}
+			prestige = 15
+		}
+		effect = {
+			add_prestige = 5
+			add_splendor = 33
+		}
+	}
+	
+	gaul_celtic_arts_mission = {
+		position = 11
+		icon = mission_celtart
+		required_missions = { gaul_la_tene_invasion_mission }
+		trigger = {
+			splendor = 333
+			in_golden_age = yes
+		}
+		effect = {
+			add_splendor = -333
+			add_country_modifier = {
+				name = la_tene_art_masters
+				duration = -1
+			}
+		}
+	}
+	gaul_master_craftmen_mission = {
+		position = 12
+		icon = mission_celt_crafts
+		required_missions = { gaul_celtic_arts_mission }
+		trigger = {
+			splendor = 333
+			production_efficiency = 0.3
+			blacksmith = 2
+		}
+		effect = {
+			add_splendor = -333
+			add_country_modifier = {
+				name = la_tene_craft_masters
+				duration = -1
+			}
+		}
+	}
+	gaul_enterpreneur_spirit_mission = {
+		position = 13
+		icon = mission_celt_enterpreneurs
+		required_missions = { gaul_master_craftmen_mission }
+		trigger = {
+			splendor = 333
+			trade_efficiency = 0.33
+			small_workshop = 2
+			medium_market = 2
+		}
+		effect = {
+			add_splendor = -333
+			add_country_modifier = {
+				name = la_tene_enterpreneurs
+				duration = -1
+			}
+		}
+	}
+	gaul_egalitarian_society_mission = {
+		position = 14
+		icon = mission_celt_egalitarian
+		required_missions = { gaul_enterpreneur_spirit_mission }
+		trigger = {
+			splendor = 333
+			OR = {
+				has_reform = egalitarian_tribe_reform
+				has_reform = cosmopolitanism_reform				
+			}
+			has_idea_group = syncretism_ideas		
+		}
+		effect = {
+			add_splendor = -333
+			add_country_modifier = {
+				name = equality
+				duration = -1
+			}
+		}
+	}	
+}
+
+gaul_religious_missions = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+			culture_group = gaulish_group
+			AND = {
+				OR = {
+					culture_group = north_atlantic_group
+					culture_group = ligures_group
+				}
+				capital_scope = {
+					superregion = celtica_superregion
+				}
+			}					
+		}
+	}
+	has_country_shield = yes
+##### praise the gods
+	gaul_build_shrines_mission = {
+		position = 1
+		icon = mission_celt_shrine
+		required_missions = {  }
+		trigger = {
+			OR = {
+				shrine = 3
+				small_temple = 3
+				large_temple = 3
+			}
+
+		}
+		effect = {
+			add_patriarch_authority = 0.10
+		}
+	}
+	gaul_pleasing_the_gods_mission = {
+		position = 2
+		icon = mission_slavic_god
+		required_missions = { gaul_build_shrines_mission }
+		trigger = {
+			patriarch_authority = 0.2
+		}
+		effect = {
+			add_stability = 1
+		}
+	}
+	gaul_claiming_old_temple_complexes_mission = {
+		position = 3
+		icon = mission_celt_shrine2
+		required_missions = { gaul_pleasing_the_gods_mission }
+		trigger = {
+			OR = {
+				has_great_project = {
+					type = bibracte_city
+					tier = 2
+				}
+				has_great_project = {
+					type = mona_island
+					tier = 2
+				}
+				has_great_project = {
+					type = martberg
+					tier = 2
+				}
+				has_province_modifier = stonehendge
+			}
+		}
+		effect = {
+			add_patriarch_authority = 0.25
+			add_adm_power = 100
+		}
+	}
+	gaul_claiming_high_king_title = {
+		position = 4
+		icon = mission_celt_king
+		required_missions = { gaul_first_victories_mission gaul_assert_dominance_mission gaul_claiming_old_temple_complexes_mission }
+		trigger = {
+			num_of_subjects = 5
+			OR = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 20
+					region = celtica_area
+				}
+				tag = GLI
+			}	
+			prestige = 60	
+		}
+		effect = {
+			add_prestige = 10
+			celtica_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	gaul_narbonensis_gold_mission = {
+		position = 6
+		icon = mission_gaul
+		required_missions = { gaul_gaul_hegemon_mission }
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			region = gallia_narbonensis
+		}
+		trigger = {
+			gallia_narbonensis = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			aquitania_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}
+		effect = {
+			hispania_tarraconensis = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}			
+				add_permanent_claim = ROOT
+			}		
+			add_army_tradition_or_mil_power = { amount = 5 }
+			add_prestige_or_monarch_power = { amount = 10 }
+		}
+	}
+	
+	gaul_alliance_with_celtiberians_mission = {
+		position = 7
+		icon = mission_spain
+		required_missions = { gaul_narbonensis_gold_mission }
+		trigger = {
+			calc_true_if = {
+				any_ally = {
+					capital_scope = {
+						OR = {
+							region = gallaecia
+							region = hispania_tarraconensis
+						}
+					}
+				}
+				amount = 3
+			}
+			
+		}
+		effect = {
+			add_prestige = 5
+			gallaecia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	gaul_unite_celtiberians_mission = {
+		position = 8
+		icon = mission_spain
+		required_missions = { gaul_alliance_with_celtiberians_mission }
+		trigger = {
+			gallaecia = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}	
+			hispania_tarraconensis = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}	
+		}
+		effect = {
+			add_prestige = 5
+			cartaginensis_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			lusitania = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			hispania_baetica = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+
+	gaul_invade_spain_mission = {
+		position = 9
+		icon = mission_spain
+		required_missions = { gaul_unite_celtiberians_mission }
+		trigger = {
+			hispania_superregion = {
+				type = all
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
+			}	
+		}
+		effect = {
+			add_prestige = 5
+			mauretania_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			africa_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	
+	gaul_invade_africa_mission = {
+		position = 10
+		icon = mission_celt_africa
+		required_missions = { gaul_invade_spain_mission }
+		trigger = {
+			OR = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 20
+					region = mauretania_region
+				}
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 20
+					region = africa_region
+				}
+			}			
+		}
+		effect = {
+			add_prestige = 10
+		}
+	}
+
+	gaul_lands_of_the_free_people_mission = {
+		position = 15
+		icon = mission_celt_free_land
+		required_missions = { gaul_celtic_triumph_mission gaul_egalitarian_society_mission }
+		trigger = {
+			has_estate_privilege = estate_slaves_status_6
+		}
+		effect = {				
+				add_country_modifier = {
+					name = gaul_land_of_free_peoples
+					duration = -1
+				}
+			}
+	}
+}
+
+gaul_military_missions = {
+	slot = 4 
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+			culture_group = gaulish_group
+			AND = {
+				OR = {
+					culture_group = north_atlantic_group
+					culture_group = ligures_group
+				}
+				capital_scope = {
+					superregion = celtica_superregion
+				}
+			}					
+		}
+	}
+	has_country_shield = yes
+##### gather army
+	gaul_gather_tribe_mission = {
+		position = 1
+		icon = mission_tribal_training
 		required_missions = {  }
 		trigger = {
 			manpower_percentage = 0.50
@@ -34,6 +763,561 @@ military_missions = {
 			add_army_tradition = 10
 			add_army_professionalism = 0.1
 			capital_scope = { area = { add_claim = ROOT } }	
+		}
+	}
+	
+	gaul_first_champions_mission = {
+		position = 2
+		icon = mission_celt_champions
+		required_missions = { gaul_gather_tribe_mission gaul_early_celtic_warfare_mission}
+		trigger = {
+			OR = {
+				AND = {
+					has_dlc = "Domination"
+					num_of_samurai = 2
+					army_professionalism = 0.1
+				}
+				army_professionalism = 0.2
+				has_global_modifier_value = {
+					which = discipline
+					value = 0.1
+				}
+			}
+			has_reform = martial_origin_of_power_reform		
+		}
+		effect = {
+			add_prestige = 5
+		}
+	}	
+	gaul_first_victories_mission = {
+		position = 3
+		icon = dac_celtic
+		required_missions = { gaul_first_champions_mission }
+		trigger = {
+			prestige = 35
+			army_tradition = 25
+		}
+		effect = {
+			add_prestige = 5
+		}
+	}	
+	
+	gaul_gaul_hegemon_mission = {
+		position = 5
+		icon = mission_celt_king
+		required_missions = { gaul_claiming_high_king_title }
+		trigger = {
+			num_of_subjects = 8
+			OR = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 40
+					region = celtica_area
+				}
+				tag = GLI
+			}	
+			prestige = 80			
+		}
+		effect = {
+			prestige = 10
+			belgica_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			germani_cisrhenani = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			aquitania_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			gallia_narbonensis = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			raetia_et_noricum = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_unite_with_belgae_mission = {
+		position = 6
+		icon = mission_gaul
+		required_missions = { gaul_gaul_hegemon_mission }
+		provinces_to_highlight = {
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			is_city = yes
+			OR = {
+				region = belgica_region
+				area = batavorum_area
+			}
+		}
+		trigger = {
+			belgica_region = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			batavorum_area = {
+				type = all
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
+			}
+		}
+		effect = {
+			add_prestige_or_monarch_power = { amount = 10 }
+		}
+	}
+	gaul_united_gaul_mission = {
+		position = 7
+		icon = mission_gaul
+		required_missions = { gaul_unite_with_belgae_mission gaul_rhenus_celts_mission gaul_narbonensis_gold_mission }
+		trigger = {
+			celtica_superregion = {
+				type = all
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
+			}
+			helvetica_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			treverorum_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			mogontiacum_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			germania_inferior = {
+				type = all
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
+			}
+			batavorum_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		}		
+
+		effect = {
+			add_prestige = 5
+			gallia_cisalpina  = {
+				limit = {
+					NOT = {
+						is_core = ROOT
+					}
+					NOT = {
+						owned_by = ROOT
+					}
+				}
+				add_permanent_claim = ROOT
+			}
+			add_country_modifier = {
+				name = united_gallia
+				duration = -1
+			}
+		}
+	}
+	gaul_cisalpine_gaul_mission = {
+		position = 8
+		icon = italy_map
+		required_missions = { gaul_united_gaul_mission }
+		trigger = {
+			gallia_cisalpina = {
+				type = all
+				OR = {
+					country_or_non_sovereign_subject_holds = ROOT
+					is_empty = yes
+				}
+			}
+		}
+		effect = {
+			add_prestige = 5
+			italia_superregion  = {
+				limit = {
+					NOT = {
+						is_core = ROOT
+					}
+					NOT = {
+						owned_by = ROOT
+					}
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_invade_italy_mission = {
+		position = 9
+		icon = mission_italy
+		required_missions = { gaul_cisalpine_gaul_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 60
+				superregion = italia_superregion
+			}		
+		}
+		effect = {
+			add_prestige = 10
+		}
+	}
+	gaul_vae_victis_mission = {
+		position = 10
+		icon = mission_chaos
+		required_missions = { gaul_invade_italy_mission }
+		trigger = {
+			53 = {
+				controlled_by = ROOT
+			}			
+		}
+		effect = {
+			add_prestige = 15
+			53 = {
+				add_devastation = 100
+				add_base_tax = -3
+				add_base_production = -8
+			}
+			add_years_of_income = 10
+		}
+	}
+	gaul_pillage_of_delphi_mission = {
+		position = 12
+		icon = city_sack_mission
+		required_missions = { gaul_invade_greece_mission gaul_vae_victis_mission }
+		trigger = {			
+			968 = {
+				controlled_by = ROOT
+			}
+		}
+		effect = {
+			add_prestige = 15
+			968 = {
+				add_devastation = 100
+				add_base_tax = -3
+				add_base_production = -8
+			}
+			add_years_of_income = 10
+			add_splendor = 400
+		}
+		asia_minor = {
+			limit = {
+				NOT = { is_core = ROOT }
+				NOT = { owned_by = ROOT }
+			}
+			add_permanent_claim = ROOT
+		}
+		galatia_region = {
+			limit = {
+				NOT = { is_core = ROOT }
+				NOT = { owned_by = ROOT }
+			}
+			add_permanent_claim = ROOT
+		}
+	}
+	gaul_galatian_invasion_mission = {
+		position = 13
+		icon = mission_galatians
+		required_missions = { gaul_pillage_of_delphi_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 40
+				superregion = asia_superregion
+			}			
+		}
+		effect = {
+			add_prestige = 5
+			lower_egypt_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_celtic_triumph_mission = {
+		position = 14
+		icon = mission_celt_triumph
+		required_missions = { gaul_galatian_invasion_mission }
+		trigger = {
+			prestige = 100
+			is_great_power = yes
+			power_projection = 50	
+		}
+		effect = {
+			add_country_modifier = {
+				name = celtic_triumph
+				duration = -1
+			}
+		}
+	}
+}
+
+gaul_army_model_missions = {
+	slot = 5 
+	generic = no
+	ai = yes
+	potential = {
+		OR = {
+			culture_group = gaulish_group
+			AND = {
+				OR = {
+					culture_group = north_atlantic_group
+					culture_group = ligures_group
+				}
+				capital_scope = {
+					superregion = celtica_superregion
+				}
+			}					
+		}
+	}
+	has_country_shield = yes
+##### champions
+	gaul_early_celtic_warfare_mission = {
+		position = 1
+		icon = mission_celt_early_warfare
+		required_missions = {  }
+		trigger = {
+			mil_tech = 3		
+		}
+		effect = {
+			add_country_modifier = {
+				name = mission_early_celtic_army
+				duration = -1
+			}
+		}
+	}
+	gaul_la_tene_warfare_mission = {
+		position = 2
+		icon = mission_celtic_army
+		required_missions = { gaul_early_celtic_warfare_mission }
+		trigger = {
+			mil_tech = 15		
+		}
+		effect = {
+			add_country_modifier = {
+				name = mission_la_tene_army
+				duration = -1
+			}
+		}
+	}
+	gaul_late_la_tene_warfare_mission = {
+		position = 3
+		icon = mission_gaulish_army
+		required_missions = { gaul_la_tene_warfare_mission }
+		trigger = {
+			mil_tech = 25		
+		}
+		effect = {
+			add_country_modifier = {
+				name = mission_late_la_tene_army
+				duration = -1
+			}
+		}
+	}
+	gaul_druidic_assembly_mission = {
+		position = 4
+		icon = dac_spread_religion
+		required_missions = { }
+		trigger = {
+			458 = {
+				owned_by = ROOT
+			}
+			459 = {
+				owned_by = ROOT
+			}
+			has_country_modifier = high_priest_modifier
+			patriarch_authority = 0.33
+			oracle = 1
+		}
+		effect = {
+			add_country_modifier = {
+				name = celtic_druidic_assemblies
+				duration = -1
+			}
+		}
+	}
+	gaul_rhenus_celts_mission = {
+		position = 6
+		icon = mission_gaul
+		required_missions = { gaul_gaul_hegemon_mission }
+		trigger = {
+			OR = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 25
+					region = germani_cisrhenani
+				}
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 25
+					region = raetia_et_noricum
+				}
+			}			
+		}
+		effect = {
+			add_prestige = 5
+			germania_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_into_germany_mission = {
+		position = 7
+		icon = dac_germanic
+		required_missions = { gaul_rhenus_celts_mission }
+		trigger = {
+			OR = {
+				num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+					value = 30
+					region = germania_region
+				}
+			}			
+		}
+		effect = {
+			add_prestige = 5
+			suebia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_celticise_silesia_mission = {
+		position = 8
+		icon = dac_germanic
+		required_missions = { gaul_into_germany_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 30
+				region = suebia_region
+			}		
+		}
+		effect = {
+			add_prestige = 5
+		}
+	}
+	gaul_pannonia_mission = {
+		position = 9
+		icon = mission_galatians
+		required_missions = { gaul_cisalpine_gaul_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 25
+				region = pannonia_region
+			}
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 10
+				region = illyria_region
+			}
+		}
+		effect = {
+			add_prestige = 5
+			thracia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			dacia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_tylis_mission = {
+		position = 10
+		icon = mission_galatians
+		required_missions = { gaul_pannonia_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 30
+				region = thracia_region
+			}		
+		}
+		effect = {
+			add_prestige = 5
+			macedonia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			greek_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+	}
+	gaul_invade_greece_mission = {
+		position = 11
+		icon = mission_greece
+		required_missions = { gaul_tylis_mission }
+		trigger = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 30
+				superregion = macedonia_superregion
+			}				
+		}
+		effect = {
+			add_prestige = 5
+			mare_aegaeum_islands_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			ionia_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			propontis_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
 		}
 	}
 }
