@@ -156,7 +156,7 @@ country_event = {
 }
 
 ########################################################################################
-# Media destroys the Cimmerians
+# Media destroys the Scythians, killing their kings when they gathered for feast
 ########################################################################################
 country_event = {
 	id = media.2
@@ -170,33 +170,34 @@ country_event = {
 		TAG = MDI
 		has_global_flag = allowed_rise_media_persia_flag
 		ai = yes
-		OR = {
-			has_ruler = "Uvakhkshatra I"
-			has_ruler = "Rshtivaiga I"
-		}
 		dynasty = "Khshathrita"
 		NOT = { started_in = 195.1.1 }
-		NOT = { is_year = 180 }
+		NOT = { is_year = 185 }
 		is_year = 165
-		mil = 4
+		mil = 3
 		has_any_disaster = no
 		is_at_war = no
 		stability = 0
+		manpower = 5
 		NOT = { war_exhaustion = 10 }
 		is_neighbor_of = SX2
 		exists = SX2
-		OR = {
-			NOT = { exists = URT }
-			ARM = { is_subject_of = MDI }
-		}
 	}
 	
 	mean_time_to_happen = {
-		months = 12
+		months = 1
 	}
-
-	option = {
-		name = "media.2.a"
+	immediate = {
+		if = {
+			limit = {
+				BAB = {
+					NOT = {	alliance_with = MDI	}
+				}
+			}
+			BAB = {
+				create_alliance = MDI 
+			}
+		}		
 		cappadocia_region = {
 			limit = {
 				NOT = { owned_by = MDI }
@@ -217,14 +218,188 @@ country_event = {
 				NOT = { is_core = MDI }
 			}
 			add_permanent_claim = MDI
+		}		
+	}
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = MDI
+		}
+	}
+	option = {
+		name = "media.2.a"
+		add_prestige = -10
+		add_manpower = 10
+		SX2 = {
+			kill_ruler = yes
+			add_stability = -2
+			add_army_tradition = -15
+			add_manpower = -2
+			add_war_exhaustion = 2			
+		}
+		SX1 = {
+			kill_ruler = yes
+			add_stability = -2
+			add_army_tradition = -15
+			add_manpower = -2
+			add_war_exhaustion = 2
 		}
 		declare_war_with_cb = {
 			casus_belli = cb_mission_invasion
 			who = SX2
 		}
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = SX1
+		}
 	}
 }
+##########################################################################
+#ishuza
+##########################################################################
+country_event = {
+	id = media.201
+	title = "media.201.t"
+	desc = "media.201.d"
+	picture = battle
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
+		ai = yes
+		war_score_against = {
+			who = SX2
+			value = 50
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
 
+	option = {
+		name = "media.201.a"
+		add_prestige = 10		
+		white_peace = SX2
+		inherit = SX2
+	}
+}
+##########################################################################
+country_event = {
+	id = media.202
+	title = "media.202.t"
+	desc = "media.202.d"
+	picture = battle
+	fire_only_once = yes
+	
+	trigger = {
+		TAG = MDI
+		has_global_flag = allowed_rise_media_persia_flag
+		ai = yes
+		war_score_against = {
+			who = SX1
+			value = 50
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "media.202.a"
+		add_prestige = 10
+		SX1 = {			
+			create_vassal = GC3
+			create_vassal = AMX
+			create_vassal = GC4
+			create_vassal = GC2
+			create_vassal = TRA
+			create_vassal = GC6
+			create_vassal = KTR
+			every_owned_province = {
+				if = {
+					limit = { area = gogarene_area }
+					add_core = SAS
+					cede_province = SAS
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							area = colchis_superior
+							area = colchis_inferior
+							area = ecrecticene_area
+						}
+					}
+					add_core =  COL
+					cede_province =  COL
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							area = moschi_area
+						}
+					}
+					add_core = GC5
+					cede_province = GC5
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							area = phasis_area
+							area = pityous_area
+							area = achaeia_area
+						}
+					}
+					add_core = ABZ
+					cede_province = ABZ
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							area = triarene_area							
+						}
+					}
+					add_core = ARV
+					cede_province = ARV
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							area = iberia_caucasus_region
+						}
+
+					}
+					add_core = IBE
+					cede_province = IBE
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							region = galatia_region
+							region = lycia_pamphylia_region
+						}
+					}
+					add_core = LYD
+					cede_province = LYD
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							region = cilicia_region
+						}
+					}
+					add_core = KIL
+					cede_province = KIL
+				}
+			}
+			create_vassal = GC1
+			release_all_subjects = yes
+		}
+		white_peace = SX1
+		inherit = SX1
+	}
+}
 ########################################################################################
 # Media adopts Assyrian Statecraft
 ########################################################################################
@@ -300,13 +475,9 @@ country_event = {
 	
 	trigger = {
 		TAG = MDI
-		OR = {
-			has_ruler = "Uvakhkshatra I"
-			has_ruler = "Rshtivaiga I"
-		}
 		dynasty = "Khshathrita"
 		NOT = { started_in = 169.1.1 }
-		NOT = { is_year = 180 }
+		NOT = { is_year = 185 }
 		is_year = 170
 		NOT = { alliance_with = LYD }
 		is_at_war = no
