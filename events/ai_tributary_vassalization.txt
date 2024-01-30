@@ -1,0 +1,289 @@
+
+namespace = tribvassal
+
+########################################################################################
+# Event fortributary being tributary for 30 years to be marked for possible vassalization
+########################################################################################
+country_event = {
+	id = tribvassal.1
+	title = "tribvassal.1.t"
+	desc = "tribvassal.1.d"
+	picture = ruler
+	
+	trigger = {
+		is_subject_of_type = tributary_state
+		NOT = { has_country_modifier = no_trib_vasssalisation_for_now }		
+		NOT = {	has_country_flag = ai_trib_vassal_incoming	}
+		overlord = { 
+			ai = yes		
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = ai_trib_vassal_incoming
+			ROOT = {
+				save_event_target_as = target_for_vassalisation
+			}
+		}
+	}
+
+	option = { #30 years passed , uh-huh, we are marked, event to overlord to decide what to do next
+		name = "tribvassal.1.a"
+		ai_chance = { factor = 100 }
+		add_prestige = -1
+		overlord = {
+			country_event = {
+				id = tribvassal.2
+				days = 30
+			}
+		}
+	}
+}
+
+########################################################################################
+# Event for AI who have tributary for 30 years to decide, should he vassalize it
+########################################################################################
+country_event = {
+	id = tribvassal.2
+	title = "tribvassal.2.t"
+	desc = "tribvassal.2.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+	option = { #lets notify them they are becoming tighter ruled by us from now
+		name = "tribvassal.2.a"
+		ai_chance = { factor = 90 
+			modifier = {
+				factor = 0.5
+				NOT = { stability = 1 }
+			}
+		}
+		event_target:target_for_vassalisation = {
+			country_event = {
+				id = tribvassal.3
+				days = 30
+			}
+		}
+		add_prestige = 1	
+	}
+	option = {
+		name = "tribvassal.2.b" #it is not the right time/let them live
+		ai_chance = { factor = 10 
+			modifier = {
+				factor = 2
+				war_exhaustion = 2
+			}
+			modifier = {
+				factor = 2
+				NOT = { 
+					AND = {
+						ADM = 2
+						MIL = 2
+					}					
+				}
+			}
+		}
+		add_prestige = -3
+		any_subject_country = {
+			limit = {
+				has_country_flag = ai_trib_vassal_incoming
+			}			
+			clr_country_flag = ai_trib_vassal_incoming
+			add_country_modifier = {
+				name = no_trib_vasssalisation_for_now
+				duration = 3650
+			}
+		}
+	}
+}
+########################################################################################
+# Event for tributary about vassalization
+########################################################################################
+country_event = {
+	id = tribvassal.3
+	title = "tribvassal.3.t"
+	desc = "tribvassal.3.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+	after = {
+	    every_ally = {
+		    join_all_offensive_wars_of = ROOT
+		}
+	}
+	
+	option = { #I guess we have no choice, they are much stronger
+		name = "tribvassal.3.a"
+		ai_chance = { factor = 40 
+			modifier = {
+				factor = 2
+				FROM = {
+					NOT = { development_of_overlord_fraction = 0.1 }
+				}
+			}
+			modifier = {
+				factor = 1.5
+				NOT = { liberty_desire = 20 }
+			}
+		}
+		add_prestige = -5
+		overlord = {
+			vassalize = ROOT
+		}
+		add_liberty_desire = -10
+		clr_country_flag = ai_trib_vassal_incoming
+	}
+	option = {
+		name = "tribvassal.3.b" #that was not the deal, we will stop paying and declare independance
+		ai_chance = { factor = 47 
+			modifier = {
+				factor = 3.0
+				liberty_desire = 50
+			}
+			modifier = {
+				factor = 0.75
+				has_opinion = {
+					who = FROM
+					value = 180
+				}
+			}
+			modifier = {
+				factor = 2.0
+				OR = {
+					ruler_has_personality = aggressive_personality
+					ruler_has_personality = tactical_genius_personality
+					ruler_has_personality = bold_fighter_personality
+
+				}
+			}
+		}
+		add_prestige = 5
+		overlord = {
+			release = ROOT
+			country_event = {
+				id = tribvassal.4
+				days = 30
+			}
+		}
+	}
+	option = {
+		name = "tribvassal.3.c" #uno-reverse-card! 6 mil tributary declares surprise invasion against evil overlord and unite allies around him
+		trigger = { MIL = 6 }
+		ai_chance = { factor = 3 
+			modifier = {
+				factor = 100
+				MIL = 6
+			}
+			modifier = {
+				factor = 50
+				OR = {
+					ruler_has_personality = the_great_personality
+					ruler_has_personality = conqueror_personality
+				}
+			}
+		}
+		declare_war_with_cb = {
+			who = overlord
+			casus_belli = cb_invasion
+		}
+		overlord = {
+			add_country_modifier = {
+				name = surprise_trib_attack_on_overlord
+				duration = 240
+			}
+		}
+		clr_country_flag = ai_trib_vassal_incoming
+	}
+}
+
+########################################################################################
+# Event for overlord to decide how should he react to independance
+########################################################################################
+country_event = {
+	id = tribvassal.4
+	title = "tribvassal.4.t"
+	desc = "tribvassal.4.d"
+	picture = ruler
+	is_triggered_only = yes
+
+		
+	option = { #if they choose war, so let it be war
+		name = "tribvassal.4.a"
+		ai_chance = { factor = 40 
+			modifier = {
+				factor = 2.0
+				MIL = 5
+			}
+			modifier = {
+				factor = 1.5
+				stability = 1
+			}
+			modifier = {
+				factor = 1.5
+				manpower = 10
+			}
+			modifier = {
+				factor = 0.5
+				is_at_war = yes
+			}
+		}
+		add_prestige = 3
+		declare_war_with_cb = {
+			who = event_target:target_for_vassalisation
+			casus_belli = cb_vassalize_mission
+		}
+		event_target:target_for_vassalisation = {
+			clr_country_flag = ai_trib_vassal_incoming
+		}
+	}
+	option = {
+		name = "tribvassal.4.b" #it is not the right time for war...
+		add_prestige = -3
+		ai_chance = { factor = 47 
+			modifier = {
+				factor = 2.0
+				is_at_war = yes
+			}
+			modifier = {
+				factor = 2.0
+				war_exhaustion = 2
+			}
+		}
+		ROOT = {
+			add_casus_belli = {
+				target = event_target:target_for_vassalisation
+				type = cb_vassalize_mission
+				months = 3650
+			}
+		}
+	}
+	option = {
+		name = "tribvassal.4.c" #only for 5-6 dip overlords - he offers for target to still remain tributary and everyone pretend to be content with it. 30 years counter refreshes
+		trigger = { DIP = 5 }
+		ai_chance = { factor = 3 
+			modifier = {
+				factor = 20.0
+				DIP = 5
+			}
+		}
+		add_dip_power = -30
+		ROOT = {
+			create_subject = {
+				who = event_target:target_for_vassalisation
+				subject_type = tributary_state
+			}
+		}
+		event_target:target_for_vassalisation = {
+			add_country_modifier = {
+				name = no_trib_vasssalisation_for_now
+				duration = 10950
+			}
+			clr_country_flag = ai_trib_vassal_incoming
+		}
+	}
+}
