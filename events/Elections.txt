@@ -849,6 +849,12 @@ country_event = {
 	option = {
 		name = "elections.a"	# An administrator type
 		ai_chance = { factor = 30 }
+		if = {
+			limit = {
+				has_ruler_flag = reelected_thrice_rom
+			}
+			add_stability = -1
+		}
 		define_ruler = {
 			adm = 3
 			max_random_dip = 2
@@ -901,6 +907,12 @@ country_event = {
 	option = {
 		name = "elections.b"	# A diplomat
 		ai_chance = { factor = 30 }
+		if = {
+			limit = {
+				has_ruler_flag = reelected_thrice_rom
+			}
+			add_stability = -1
+		}
 		define_ruler = {
 			max_random_adm = 2
 			dip = 3
@@ -952,6 +964,12 @@ country_event = {
 	option = {
 		name = "elections.c"	# A military man
 		ai_chance = { factor = 30 }
+		if = {
+			limit = {
+				has_ruler_flag = reelected_thrice_rom
+			}
+			add_stability = -1
+		}
 		define_ruler = {
 			max_random_adm = 2
 			max_random_dip = 2
@@ -1005,15 +1023,25 @@ country_event = {
 		trigger = { 
 		    republican_tradition = 60
 			OR = {
+				AND = {
+					has_reform = res_publica_reform
+					OR = {
+						is_at_war = yes
+						NOT = { stability = 0 }
+						average_unrest = 0
+					}
+				}
 			    has_reform = late_res_publica_reform
 				has_reform = empower_senatorial_faction_reform
 			}
 		}
 		ai_chance = { factor = 10 }
-		add_scaled_republican_tradition = -20
-		change_adm = 1
-		change_dip = 1
-		change_mil = 1
+		add_scaled_republican_tradition = -32
+		random_list = {
+			33 = { change_adm = 1 }
+			33 = { change_dip = 1 }
+			33 = { change_mil = 1 }
+		}
 		if = {
 		    limit = { has_heir = no }
 			define_heir = {
@@ -1026,6 +1054,33 @@ country_event = {
 				no_consort_with_heir = yes
 			}
 			convert_heir_to_general = 25
+		}
+		if = {
+			limit = {
+				has_ruler_flag = reelected_twice_rom
+			}
+			custom_tooltip = rome_relect_3.tt
+			clr_ruler_flag = reelected_twice_rom
+			set_ruler_flag = reelected_thrice_rom
+		}
+		if = {
+			limit = {
+				has_ruler_flag = reelected_once_rom
+			}
+			custom_tooltip = rome_relect_2.tt
+			clr_ruler_flag = reelected_once_rom
+			set_ruler_flag = reelected_twice_rom
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_ruler_flag = reelected_once_rom
+					has_ruler_flag = reelected_twice_rom
+					has_ruler_flag = reelected_thrice_rom
+				}
+			}
+			custom_tooltip = rome_relect_1.tt
+			set_ruler_flag = reelected_once_rom
 		}
 	}
 	

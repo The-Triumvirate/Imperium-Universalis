@@ -1,0 +1,476 @@
+estate_socii_socialize_neighbour = {
+	can_select = {
+		is_free_or_tributary_trigger = yes
+		num_of_cities = 2
+		any_neighbor_country = {
+			is_at_war = no
+			NOT = { has_reform = free_city }
+			is_free_or_tributary_trigger = yes
+			OR = {
+				NOT = { num_of_cities = 3 }
+				NOT = { total_development = 100 }
+			}
+			OR = {
+				NOT = { num_of_cities = 3 }
+				NOT = { total_development = 50 }
+				ROOT = { total_development = 500 }
+			}
+			NOT = { is_subject_of = root }
+			NOT = { overlord_of = root }
+			OR = {
+				alliance_with = root
+				NOT = { ROOT = { truce_with = prev } }
+			}
+			capital_scope = {
+				OR = {
+					region = italian_region
+					area = lucania_area
+					area = apulia_area
+					area = salento_area
+					area = samnium_area
+					area = bruttium_area
+					area = calabria_area
+				}
+			}
+			OR = {
+				is_part_of_hre = no
+				NOT = { hre_reform_passed = landfriede }
+				ROOT = { is_part_of_hre = no }
+			}
+		}
+		NOT = { has_country_modifier = foreign_contacts }
+	}
+	selection_weight = {
+		factor = 10
+		modifier = {
+			factor = 0.5
+			has_non_generic_missions = yes
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 6
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 8
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 10
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 14
+		}
+		modifier = {
+			factor = 1.5
+			num_of_cities = 20
+		}
+		modifier = {
+			factor = 0.25
+			any_country = {
+				coalition_target = root
+			}
+		}
+	}
+	pre_effect = {
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_reform = free_city }
+				is_free_or_tributary_trigger = yes
+				OR = {
+					NOT = { num_of_cities = 3 }
+					NOT = { total_development = 100 }
+				}
+				OR = {
+					NOT = { num_of_cities = 3 }
+					NOT = { total_development = 50 }
+					ROOT = { total_development = 500 }
+				}
+				NOT = { is_subject_of = root }
+				NOT = { overlord_of = root }
+				OR = {
+					NOT = { ROOT = { truce_with = prev } }
+					alliance_with = root
+				}
+				capital_scope = {
+					OR = {
+						region = italian_region
+						area = lucania_area
+						area = apulia_area
+						area = salento_area
+						area = samnium_area
+						area = bruttium_area
+						area = calabria_area
+					}
+				}
+				OR = {
+					is_part_of_hre = no
+					NOT = { hre_reform_passed = landfriede }
+					ROOT = { is_part_of_hre = no }
+				}
+			}
+			save_event_target_as = agenda_country
+			capital_scope = {
+				save_event_target_as = agenda_province
+			}
+		}
+	}
+	immediate_effect = {
+	}
+	on_invalid = {
+	}
+	provinces_to_highlight = {
+		is_capital_of = event_target:agenda_country
+	}
+	task_requirements = {
+		event_target:agenda_country = {
+			is_subject_of = root
+			is_subject_of_type = socii_subject
+		}
+	}
+	fail_if = {
+		OR = {
+			is_subject_other_than_tributary_trigger = yes
+			event_target:agenda_country = {
+				NOT = { num_of_cities = 1 }
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_socii
+			loyalty = 10
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = -4 }
+		add_country_modifier = {
+			name = foreign_contacts
+			duration = 3650
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_socii
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 4 }
+    }
+}
+
+estate_socii_lower_ratio = {
+	can_select = {
+		NOT = { has_estate_privilege = estate_socii_1_land_distribution }
+		OR = {
+			AND = {
+				dip_tech = 4
+				has_estate_privilege = estate_socii_2_land_distribution
+			}
+			has_estate_privilege = estate_socii_3_land_distribution
+			has_estate_privilege = estate_socii_4_land_distribution
+		}
+	}
+	selection_weight = {
+		factor = 7
+		modifier = {
+			factor = 1.5
+			has_estate_privilege = estate_socii_3_land_distribution
+		}
+		modifier = {
+			factor = 2
+			has_estate_privilege = estate_socii_4_land_distribution
+		}
+		modifier = {
+			factor = 0.5
+			has_non_generic_missions = yes
+		}
+	}
+	pre_effect = {
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_2_land_distribution
+			}
+			set_country_flag = estate_2_lower_agenda
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_3_land_distribution
+			}
+			set_country_flag = estate_3_lower_agenda
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_4_land_distribution
+			}
+			set_country_flag = estate_4_lower_agenda
+		}
+	}
+	immediate_effect = {
+	}
+	on_invalid = {
+	}
+	provinces_to_highlight = {
+	}
+	task_requirements = {
+		if = {
+			limit = {
+				has_country_flag = estate_2_lower_agenda
+			}
+			has_estate_privilege = estate_socii_1_land_distribution
+		}
+		if = {
+			limit = {
+				has_country_flag = estate_3_lower_agenda
+			}
+			has_estate_privilege = estate_socii_2_land_distribution
+		}
+		if = {
+			limit = {
+				has_country_flag = estate_4_lower_agenda
+			}
+			has_estate_privilege = estate_socii_3_land_distribution
+		}
+	}
+	fail_if = {
+		if = {
+			limit = {
+				has_country_flag = estate_2_lower_agenda
+			}
+			has_estate_privilege = estate_socii_3_land_distribution
+		}
+		if = {
+			limit = {
+				has_country_flag = estate_3_lower_agenda
+			}
+			has_estate_privilege = estate_socii_4_land_distribution
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_socii
+			loyalty = 10
+		}
+		add_prestige = 10
+		add_dip_power = 100
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = -24 }
+		hidden_effect = {
+			clr_country_flag = estate_2_lower_agenda
+			clr_country_flag = estate_3_lower_agenda
+			clr_country_flag = estate_4_lower_agenda
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_socii
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -10
+			duration = 7300
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 32 }
+		hidden_effect = {
+			clr_country_flag = estate_2_lower_agenda
+			clr_country_flag = estate_3_lower_agenda
+			clr_country_flag = estate_4_lower_agenda
+		}
+    }
+}
+
+estate_socii_lower_land_ratio = {
+	can_select = {
+		NOT = { has_country_modifier = under_10_ratio_rome }
+		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = { value = 7 is_city = yes }
+	}
+	selection_weight = {
+		factor = 7
+		modifier = {
+			factor = 1.5
+			has_country_modifier = 10_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 2
+			has_country_modifier = 25_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 3
+			has_country_modifier = 50_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 0.5
+			has_non_generic_missions = yes
+		}
+	}
+	pre_effect = {
+		if = {
+			limit = {
+				has_country_modifier = perfect_ratio_rome
+			}
+			set_country_flag = perfect_lower_agenda
+		}
+		if = {
+			limit = {
+				has_country_modifier = 10_percent_over_ratio_rome
+			}
+			set_country_flag = 10_lower_agenda
+		}
+		if = {
+			limit = {
+				has_country_modifier = 25_percent_over_ratio_rome
+			}
+			set_country_flag = 25_lower_agenda
+		}
+		if = {
+			limit = {
+				has_country_modifier = 50_percent_over_ratio_rome
+			}
+			set_country_flag = 50_lower_agenda
+		}
+	}
+	immediate_effect = {
+	}
+	on_invalid = {
+	}
+	provinces_to_highlight = {
+	}
+	task_requirements = {
+		if = {
+			limit = {
+				has_country_flag = perfect_lower_agenda
+			}
+			has_country_modifier = under_10_ratio_rome
+		}
+		if = {
+			limit = {
+				has_country_flag = 10_lower_agenda
+			}
+			has_country_modifier = perfect_ratio_rome
+		}
+		if = {
+			limit = {
+				has_country_flag = 25_lower_agenda
+			}
+			has_country_modifier = 10_percent_over_ratio_rome
+		}
+		if = {
+			limit = {
+				has_country_flag = 50_lower_agenda
+			}
+			has_country_modifier = 25_percent_over_ratio_rome
+		}
+	}
+	fail_if = {
+		if = {
+			limit = {
+				has_country_flag = perfect_lower_agenda
+			}
+			has_country_modifier = 10_percent_over_ratio_rome
+		}
+		if = {
+			limit = {
+				has_country_flag = 10_lower_agenda
+			}
+			has_country_modifier = 25_percent_over_ratio_rome
+		}
+		if = {
+			limit = {
+				has_country_flag = 25_lower_agenda
+			}
+			has_country_modifier = 50_percent_over_ratio_rome
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_socii
+			loyalty = 10
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = -4 }
+		add_prestige = 10
+		add_dip_power = 100
+		hidden_effect = {
+			clr_country_flag = perfect_lower_agenda
+			clr_country_flag = 10_lower_agenda
+			clr_country_flag = 25_lower_agenda
+			clr_country_flag = 50_lower_agenda
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_socii
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -10
+			duration = 7300
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 8 }
+		hidden_effect = {
+			clr_country_flag = perfect_lower_agenda
+			clr_country_flag = 10_lower_agenda
+			clr_country_flag = 25_lower_agenda
+			clr_country_flag = 50_lower_agenda
+		}
+    }
+}
+
+estate_socii_release_new_socii = {
+	can_select = {
+		num_of_cities = 6
+	}
+	selection_weight = {
+		factor = 5
+		modifier = {
+			factor = 1.5
+			has_country_modifier = 10_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 2
+			has_country_modifier = 25_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 3
+			has_country_modifier = 50_percent_over_ratio_rome
+		}
+		modifier = {
+			factor = 0.5
+			has_non_generic_missions = yes
+		}
+	}
+	pre_effect = {
+		set_country_flag = release_new_socii_active_agenda
+	}
+	immediate_effect = {
+	}
+	on_invalid = {
+	}
+	provinces_to_highlight = {
+	}
+	task_requirements = {
+		has_country_flag = socii_released_from_mainland
+	}
+	fail_if = {
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_socii
+			loyalty = 10
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = -8 }
+		add_prestige = 5
+		add_dip_power = 50
+		hidden_effect = {
+			clr_country_flag = socii_released_from_mainland
+			clr_country_flag = release_new_socii_active_agenda
+		}
+	}
+    failing_effect = {
+        add_estate_loyalty_modifier = {
+            estate = estate_socii
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -10
+			duration = 7300
+		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 6 }
+		hidden_effect = {
+			clr_country_flag = socii_released_from_mainland
+			clr_country_flag = release_new_socii_active_agenda
+		}
+    }
+}

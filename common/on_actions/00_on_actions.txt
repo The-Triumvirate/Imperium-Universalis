@@ -30,6 +30,8 @@ on_startup = {
 		}
 	}
 	
+	recalc_socii_variables_w_check = yes
+
 	if = {
 		limit = { NOT = { has_country_flag = tech_mods_set } }
 		tech_modifier_startup_effect = yes
@@ -151,6 +153,7 @@ on_war_won = {
 			value = 10
 		}
 	}
+	recalc_socii_variables_w_check = yes
 }
 
 # country
@@ -200,6 +203,7 @@ on_war_lost = {
 		rome.42
 		scythian.12
 	}
+	recalc_socii_variables_w_check = yes
 	if = {
 		limit = { has_country_modifier = crusader_china }
 		remove_country_modifier = crusader_china
@@ -424,6 +428,15 @@ on_monarch_death = {
 	}
 	if = {
 		limit = {
+			OR = {
+				has_ruler_flag = reelected_twice_rom
+				has_ruler_flag = reelected_thrice_rom
+			}
+		}
+		add_stability = -1
+	}
+	if = {
+		limit = {
 			NOT = {
 				has_disaster_progress = {
 					disaster = chinesecivilwar
@@ -511,9 +524,10 @@ on_diplomatic_annex = {
 	change_variable = { which = SD_slaves_available which = FROM }
 	change_variable = { which = SD_captives which = FROM }
 	
+	recalc_socii_variables_w_check = yes
 	if = {
 		limit = { FROM = { tag = ROM is_subject_of_type = socii_subject } }
-		change_variable = { which = rom_socii_dissatisfaction_variable value = 2 }
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 2 }
 	}
 	events = {
 		subject_event.10
@@ -779,6 +793,7 @@ on_annexed = {
 		subject_event.11
 		subject_event.12
 	}
+	recalc_socii_variables_w_check = yes
 	# transfer money
 	export_to_variable = { which = cash_income value = treasury who = FROM }
 	money_income = yes
@@ -2046,6 +2061,7 @@ on_company_chartered = {
 
 # ROOT = Overlord, FROM = Minor
 on_dependency_gained = {
+	recalc_socii_variables_w_check = yes
 	FROM = {
 		if = {
 			limit = { 
@@ -2076,6 +2092,7 @@ on_dependency_gained = {
 
 # ROOT = Overlord, FROM = Minor
 on_dependency_lost = {
+	recalc_socii_variables_w_check = yes
 	FROM = {
 		if = { 
 			limit = { 
@@ -2088,12 +2105,14 @@ on_dependency_lost = {
 
 # ROOT = New vassal, FROM = Overlord
 on_create_vassal = {
+	recalc_socii_variables_w_check = yes
 	if = {
 		limit = { tag = ZHO }
 		change_government = monarchy
 		change_primary_culture = zhongyuan
 		change_religion = chinese_religion
 	}
+	release_as_socii = yes
 	if = {
 		limit = {
 			culture_group = steppe_people
@@ -2176,6 +2195,9 @@ on_flagship_destroyed = {
 
 # this = Released country, FROM = Releasing country
 on_country_released = {
+	FROM = {	
+		recalc_socii_variables_w_check = yes
+	}
 	if = {
 		limit = { tag = ZHO }
 		change_government = monarchy
@@ -2250,6 +2272,9 @@ on_post_mil_advisor_fired = {
 
 # this = new client state, from = parent country
 on_create_client_state = {
+	FROM = {
+		recalc_socii_variables_w_check = yes
+	}
     country_event = {
 		id = government.36
 	}

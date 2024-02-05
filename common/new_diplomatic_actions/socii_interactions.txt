@@ -48,8 +48,8 @@ ask_for_socii_subject = {
 						area = bruttium_area
 						area = calabria_area
 					}
-			}
-			is_subject = no
+				}
+				is_subject = no
 			}
 		}
 		alliance_with = FROM
@@ -71,10 +71,7 @@ ask_for_socii_subject = {
 			subject_type = socii_subject
 			subject = FROM
 		}
-		change_variable = {
-			which = rom_socii_dissatisfaction_variable
-			value = 2
-		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 2 }
 	}
 	
 	ai_acceptance = {
@@ -134,6 +131,46 @@ ask_for_socii_subject = {
 			multiply_variable = { which = ai_value value = 6 }
 		}
 		add_entry = {
+			name = LATIN_WAR_WON_LATIN
+			limit = { has_country_flag = latin_war_won_flag FROM = { culture = latin } }
+			export_to_variable = {
+				which = ai_value
+				value = 10
+			}
+		}
+		add_entry = {
+			name = LATIN_WAR_WON
+			limit = { has_country_flag = latin_war_won_flag NOT = { FROM = { culture = latin } } }
+			export_to_variable = {
+				which = ai_value
+				value = 5
+			}
+		}
+		add_entry = {
+			name = SOCII_ESTATE_LOYALTY_BAD
+			limit = { NOT = { estate_loyalty = { estate = estate_socii loyalty = 50 } } }
+			export_to_variable = {
+				which = ai_value
+				value = -10
+			}
+		}
+		add_entry = {
+			name = SOCII_ESTATE_LOYALTY_NEUTRAL
+			limit = { estate_loyalty = { estate = estate_socii loyalty = 50 } NOT = { estate_loyalty = { estate = estate_socii loyalty = 60 } } }
+			export_to_variable = {
+				which = ai_value
+				value = -5
+			}
+		}
+		add_entry = {
+			name = SOCII_ESTATE_LOYALTY_HIGH
+			limit = { estate_loyalty = { estate = estate_socii loyalty = 60 } }
+			export_to_variable = {
+				which = ai_value
+				value = 5
+			}
+		}
+		add_entry = {
 			name = DIFFERENT_RELIGION
 			limit = { NOT = { religion = FROM } }
 			export_to_variable = {
@@ -154,10 +191,10 @@ ask_for_socii_subject = {
 			limit = { FROM = { ai = yes } }
 			export_to_variable = {
 				which = ai_value
-				value = -15
+				value = -20
 			}
 		}
-	}
+	} 
 	
 	ai_will_do = {
 		has_any_disaster = no
@@ -197,6 +234,11 @@ remove_socii_subject = {
 				is_subject_of = ROOT
 			}
 		}
+		NOT = {
+			has_country_modifier = 10_percent_over_ratio_rome
+			has_country_modifier = 25_percent_over_ratio_rome
+			has_country_modifier = 50_percent_over_ratio_rome
+		}
 		is_at_war = no
 		has_any_disaster = no
 		FROM = {
@@ -212,11 +254,16 @@ remove_socii_subject = {
 				name = recently_removed_socii
 				duration = 7300
 			}
+			add_opinion = {
+				who = ROOT
+				modifier = break_alliance
+			}
 		}
-		change_variable = {
-			which = rom_socii_dissatisfaction_variable
-			value = -2
+		add_opinion = {
+			who = FROM
+			modifier = break_alliance
 		}
+		add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = -2 }
 		add_prestige = -5
 		add_mil_power = -20
 	}
@@ -323,17 +370,29 @@ call_socii_into_wars = {
 		}
 	}
 	on_accept = {
-		FROM = {
-			ROOT = {
-				add_favors = {
-					who = PREV
-					amount = -5
+		if = {
+			limit = {
+				is_in_war = {
+					defender_leader = ROOT
 				}
 			}
-			join_all_defensive_wars_of = ROOT
+			FROM = {
+				ROOT = {
+					add_favors = {
+						who = PREV
+						amount = -5
+					}
+				}
+				join_all_defensive_wars_of = ROOT
+			}
 		}
 		if = {
 			limit = {
+				ROOT = {
+					is_in_war = {
+						attacker_leader = ROOT
+					}
+				}
 				FROM = {
 					owes_favors = {
 						who = ROOT
@@ -343,10 +402,7 @@ call_socii_into_wars = {
 			}
 			FROM = {
 				ROOT = {
-					change_variable = {
-						which = rom_socii_dissatisfaction_variable
-						value = 1
-					}
+					add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 0.25 }
 					add_favors = {
 						who = PREV
 						amount = -10
@@ -354,6 +410,7 @@ call_socii_into_wars = {
 				}
 				add_liberty_desire = 5
 				join_all_offensive_wars_of = ROOT
+				join_all_defensive_wars_of = ROOT
 			}
 		}
 	}

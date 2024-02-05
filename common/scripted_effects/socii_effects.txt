@@ -1,0 +1,833 @@
+recalc_socii_variables_w_check = {
+	if = {
+		limit = {
+			OR = {
+				tag = ROM
+				tag = ROI
+			}
+			NOT = {
+				has_country_flag = no_more_socii
+				has_country_flag = social_war_lost_flag
+				has_country_flag = social_war_won_flag
+				has_country_flag = all_socii_annexed
+			}
+		}
+		recalc_socii_variables = yes
+	}
+}
+
+recalc_socii_variables = {
+	change_estate_land_share = {
+		estate = estate_socii
+		share = -100
+	}
+	every_subject_country = {
+		clr_country_flag = socii_counted
+		clr_country_flag = provs_counted
+	}
+	every_owned_province = {
+		limit = {
+			OR = {
+				region = italian_region
+				area = lucania_area
+				area = apulia_area
+				area = salento_area
+				area = samnium_area
+				area = bruttium_area
+				area = calabria_area
+			}
+		}
+		clr_province_flag = provs_counted
+	}
+	rome_socii_estate_give_priv = yes
+	set_variable = {
+		which = num_of_socii_variable
+		value = 0
+	}
+	set_variable = {
+		which = num_of_socii_variable_pre
+		value = 0
+	}
+	set_variable = {
+		which = socii_owned_provs_hold_variable
+		value = 0
+	}
+	set_variable = {
+		which = socii_owned_provs_variable
+		value = 0
+	}
+	set_variable = {
+		which = roman_owned_provs_variable_pre
+		value = 0
+	}
+	set_variable = {
+		which = roman_owned_provs_variable
+		value = 0
+	}
+	set_variable = {
+		which = rome_socii_ratio_variable
+		value = 0
+	}
+	every_subject_country = {
+		limit = {
+			is_subject_of_type = socii_subject
+		}
+		set_country_flag = socii_counted
+		overlord = {
+			change_variable = {
+				which = num_of_socii_variable
+				value = 1
+			}
+			export_to_variable = {
+				which = socii_owned_provs_hold_variable
+				value = num_of_cities
+				who = PREV
+			}
+			change_variable = {
+				which = socii_owned_provs_variable
+				which = socii_owned_provs_hold_variable
+			}
+		}
+	}
+	every_owned_province = {
+		limit = {
+			OR = {
+				region = italian_region
+				area = lucania_area
+				area = apulia_area
+				area = salento_area
+				area = samnium_area
+				area = bruttium_area
+				area = calabria_area
+			}
+		}
+		ROOT = {
+			change_variable = {
+				which = roman_owned_provs_variable_pre
+				value = 1
+			}
+		}
+	}
+	change_variable = {
+		which = roman_owned_provs_variable
+		which = roman_owned_provs_variable_pre
+	}
+	divide_variable = {       
+		which = roman_owned_provs_variable
+		which = socii_owned_provs_variable
+	}
+	change_variable = {
+		which = rome_socii_ratio_variable
+		which = roman_owned_provs_variable
+	}
+	
+	if = {
+		limit = {
+		NOT = { num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = { value = 7 is_city = yes } }
+		}
+		add_country_modifier = {
+			name = 10_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = { value = 7 is_city = yes }
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_1_land_distribution
+			}
+			socii_ratio_lowered = yes
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_2_land_distribution
+			}
+			socii_ratio_regular = yes
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_3_land_distribution
+			}
+			socii_ratio_better_1 = yes
+		}
+		if = {
+			limit = {
+				has_estate_privilege = estate_socii_4_land_distribution
+			}
+			socii_ratio_better_2 = yes
+		}
+		
+	}
+	socii_dissatisfaction_modifier_give = yes
+	socii_buffs_give = yes
+	if = {
+		limit = {
+			NOT = { 
+				has_country_flag = latin_war_started_flag
+				has_subject_of_type = socii_subject 
+			}
+		}
+		set_country_flag = no_more_socii
+		set_country_flag = all_socii_annexed
+		remove_country_modifier = under_10_ratio_rome
+		remove_country_modifier = perfect_ratio_rome
+		remove_country_modifier = 10_percent_over_ratio_rome
+		remove_country_modifier = 25_percent_over_ratio_rome
+		remove_country_modifier = 50_percent_over_ratio_rome
+		every_owned_province = {
+			remove_province_modifier = socii_free_trade_in_area_modifier
+		}
+		every_owned_province = {
+			remove_province_modifier = socii_regional_administration_in_area_modifier
+		}
+		set_government_power = { 
+				mechanic_type = social_dissatisfacton_mechanic
+				power_type = social_dissatisfacton
+				value = 0
+		}
+		freeze_government_power = {
+			mechanic_type = social_dissatisfacton_mechanic
+			power_type = social_dissatisfacton
+		}
+		set_government_power = { 
+				mechanic_type = social_rule_mechanic
+				power_type = social_administrative_rule
+				value = 0
+		}
+		freeze_government_power = {
+			mechanic_type = social_rule_mechanic
+			power_type = social_administrative_rule
+		}
+		set_government_power = { 
+				mechanic_type = social_rule_mechanic
+				power_type = social_diplomatic_rule
+				value = 0
+		}
+		freeze_government_power = {
+			mechanic_type = social_rule_mechanic
+			power_type = social_diplomatic_rule
+		}
+		set_government_power = { 
+				mechanic_type = social_rule_mechanic
+				power_type = social_military_rule
+				value = 0
+		}
+		freeze_government_power = {
+			mechanic_type = social_rule_mechanic
+			power_type = social_military_rule
+		}
+	}
+}
+
+socii_ratio_lowered = {
+	remove_country_modifier = under_10_ratio_rome
+	remove_country_modifier = perfect_ratio_rome
+	remove_country_modifier = 10_percent_over_ratio_rome
+	remove_country_modifier = 25_percent_over_ratio_rome
+	remove_country_modifier = 50_percent_over_ratio_rome
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 0.80 } }
+		}
+		add_country_modifier = {
+			name = under_10_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.80 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.00 } }
+		}
+		add_country_modifier = {
+			name = perfect_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.15 } }
+		}
+		add_country_modifier = {
+			name = 10_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.15 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.3 } }
+		}
+		add_country_modifier = {
+			name = 25_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.3 }
+			#NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 50_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+}
+
+socii_ratio_regular = {
+	remove_country_modifier = under_10_ratio_rome
+	remove_country_modifier = perfect_ratio_rome
+	remove_country_modifier = 10_percent_over_ratio_rome
+	remove_country_modifier = 25_percent_over_ratio_rome
+	remove_country_modifier = 50_percent_over_ratio_rome
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 0.90 } }
+		}
+		add_country_modifier = {
+			name = under_10_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.90 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.10 } }
+		}
+		add_country_modifier = {
+			name = perfect_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.10 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.25 } }
+		}
+		add_country_modifier = {
+			name = 10_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.25 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 25_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.5 }
+			#NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 50_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+}
+
+socii_ratio_better_1 = {
+	remove_country_modifier = under_10_ratio_rome
+	remove_country_modifier = perfect_ratio_rome
+	remove_country_modifier = 10_percent_over_ratio_rome
+	remove_country_modifier = 25_percent_over_ratio_rome
+	remove_country_modifier = 50_percent_over_ratio_rome
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.00 } }
+		}
+		add_country_modifier = {
+			name = under_10_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.20 } }
+		}
+		add_country_modifier = {
+			name = perfect_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.20 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.35 } }
+		}
+		add_country_modifier = {
+			name = 10_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.35 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 25_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.5 }
+			#NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 50_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+}
+
+socii_ratio_better_2 = {
+	remove_country_modifier = under_10_ratio_rome
+	remove_country_modifier = perfect_ratio_rome
+	remove_country_modifier = 10_percent_over_ratio_rome
+	remove_country_modifier = 25_percent_over_ratio_rome
+	remove_country_modifier = 50_percent_over_ratio_rome
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 0.00 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.10 } }
+		}
+		add_country_modifier = {
+			name = under_10_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.10 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.25 } }
+		}
+		add_country_modifier = {
+			name = perfect_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.25 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.40 } }
+		}
+		add_country_modifier = {
+			name = 10_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.40 }
+			NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.60 } }
+		}
+		add_country_modifier = {
+			name = 25_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+	
+	if = {
+		limit = {
+			#NOT = { has_country_flag = social_war_won_flag }
+			check_variable = { which = rome_socii_ratio_variable value = 1.60 }
+			#NOT = { check_variable = { which = rome_socii_ratio_variable value = 1.5 } }
+		}
+		add_country_modifier = {
+			name = 50_percent_over_ratio_rome
+			duration = -1
+		}
+	}
+}
+
+release_as_socii = {
+	if = {
+		limit = {
+			FROM = { has_country_flag = release_as_socii }
+			OR = { tag = ZRI tag = UMB tag = ZAR tag = I05 tag = PSA tag = ZPU tag = I04 tag = I03 tag = ZPE tag = ZVZ tag = I02 tag = ZVT tag = ZVL tag = ZTA tag = I01 tag = ZVE tag = I23 tag = I12 tag = PIC tag = NOM tag = SAB tag = I13 tag = FID tag = LAT tag = GAB tag = PRE tag = TUS tag = BOV tag = LAV tag = ARD tag = VEL tag = VOL tag = I14 tag = STR tag = CIR tag = IMS tag = VES tag = IPA tag = IAU tag = PTR tag = CPU tag = I15 tag = FRE tag = I22 tag = NPL tag = POM tag = NUA tag = I21 tag = CAU tag = DAU tag = HIR tag = POS tag = LCA tag = POA tag = SIP tag = MSS tag = TAR tag = MET tag = HRC tag = SYB tag = OEN tag = CRO tag = KLU tag = LOK tag = RHE }
+		}
+		FROM = {
+			create_subject = {
+				subject_type = socii_subject
+				subject = ROOT
+			}
+			if ={
+				limit = {
+					has_country_flag = release_new_socii_active_agenda 
+				}
+				set_country_flag = socii_released_from_mainland
+			}
+		}
+		recalc_socii_variables = yes
+	}
+}
+
+socii_buffs_give = {
+	if = {
+		limit = {
+			has_country_flag = unified_command_rom
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = socii_unified_command_modifier
+				duration = -1
+			}
+		}
+	}
+	else = {
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = socii_unified_command_modifier
+		}
+	}
+
+	if = {
+		limit = {
+			has_country_flag = soc_mil_training_rom
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = socii_military_training_modifier
+				duration = -1
+			}
+		}
+	}
+	else = {
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = socii_military_training_modifier
+		}
+	}
+
+	if = {
+		limit = {
+			has_country_flag = socii_free_trade_rom
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			capital_scope = { 
+				area = {
+					limit = {
+						owned_by = ROOT
+					}
+					add_province_modifier = {
+						name = socii_free_trade_in_area_modifier
+						duration = -1
+					}
+				}
+			}
+			add_country_modifier = {
+				name = socii_free_trade_modifier
+				duration = -1
+			}
+		}
+	}
+	else = {
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = socii_free_trade_modifier
+		}
+		every_owned_province = {
+			remove_province_modifier = socii_free_trade_in_area_modifier
+		}
+	}
+
+	if = {
+		limit = {
+			has_country_flag = socii_autonomy_rom
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			add_country_modifier = {
+				name = socii_autonomy_modifier
+				duration = -1
+			}
+		}
+	}
+	else = {
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = socii_autonomy_modifier
+		}
+	}
+
+	if = {
+		limit = {
+			has_country_flag = socii_regional_admin_rom
+		}
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			capital_scope = { 
+				area = {
+					limit = {
+						owned_by = ROOT
+					}
+					add_province_modifier = {
+						name = socii_regional_administration_in_area_modifier
+						duration = -1
+					}
+				}
+			}
+			add_country_modifier = {
+				name = socii_regional_administration_modifier
+				duration = -1
+			}
+		}
+	}
+	else = {
+		every_subject_country = {
+			limit = {
+				is_subject_of_type = socii_subject
+			}
+			remove_country_modifier = socii_regional_administration_modifier
+		}
+		every_owned_province = {
+			remove_province_modifier = socii_regional_administration_in_area_modifier
+		}
+	}
+}
+
+rome_socii_estate_give_priv = {
+	if = {
+		limit = {
+			NOT = {
+				OR = {
+					has_estate_privilege = estate_socii_1_land_distribution
+					has_estate_privilege = estate_socii_2_land_distribution
+					has_estate_privilege = estate_socii_3_land_distribution
+					has_estate_privilege = estate_socii_4_land_distribution
+				}
+			}
+		}
+		set_estate_privilege = estate_socii_2_land_distribution
+	}
+}
+
+socii_dissatisfaction_modifier_give = {
+	if = {
+		limit = {
+			NOT = {
+				OR = {
+					has_country_flag = social_war_started_flag
+					has_country_flag = social_war_won_flag
+					has_country_flag = social_war_lost_flag
+				}
+			}
+		}
+		every_subject_country = {
+			remove_country_modifier = for_socii_dissatisfied_1_modifier
+			remove_country_modifier = for_socii_dissatisfied_2_modifier
+			remove_country_modifier = for_socii_dissatisfied_3_modifier
+			remove_country_modifier = for_socii_dissatisfied_4_modifier
+			remove_country_modifier = for_socii_dissatisfied_5_modifier
+			remove_country_modifier = for_socii_dissatisfied_6_modifier
+			remove_country_modifier = for_socii_dissatisfied_7_modifier
+			remove_country_modifier = for_socii_dissatisfied_8_modifier
+			remove_country_modifier = for_socii_dissatisfied_9_modifier
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 50 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 150 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_1_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 150 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 250 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_2_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 250 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 350 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_3_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 350 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 450 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_4_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 450 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 550 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_5_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 550 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 650 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_6_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 650 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 750 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_7_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 750 }
+				NOT = { has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 850 } }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_8_modifier 
+					duration = -1
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 850 }
+			}
+			every_subject_country = {
+				limit = {
+					is_subject_of_type = socii_subject
+				}
+				add_country_modifier = {
+					name = for_socii_dissatisfied_9_modifier 
+					duration = -1
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,210 @@
+social_dissatisfacton_mechanic = {
+	available = {
+		NOT = { has_country_flag = all_socii_annexed }
+	}
+	powers = {
+		social_dissatisfacton = {
+			gui = social_dissatisfaction_gov_mech
+			max = 1000
+			reset_on_new_ruler = no
+			base_monthly_growth = 0.10
+			development_scaled_monthly_growth = 0
+			scaled_modifier = {
+				end_value = 1000
+				modifier = {
+					vassal_income = -0.60
+					vassal_manpower_bonus = -0.60
+					vassal_forcelimit_bonus = -0.60
+					diplomatic_reputation = -2
+					socii_loyalty_modifier = -0.2
+				}
+			}
+			is_good = no
+		}
+	}
+}
+
+social_rule_mechanic = {
+	alert_icon_gfx = GFX_alerticons_government_mechanics
+	alert_icon_index = 9
+	available = {
+		NOT = { has_country_flag = all_socii_annexed }
+	}
+	powers = {
+		social_administrative_rule = {
+			max = 100
+			min = 0
+			reset_on_new_ruler = no
+			base_monthly_growth = 0.00
+			development_scaled_monthly_growth = 0
+			monarch_power = adm
+			scaled_modifier = {
+				modifier = {
+					vassal_income = 0.1
+				}
+			}
+		}
+		social_diplomatic_rule = {
+			max = 100
+			min = 0
+			reset_on_new_ruler = no
+			base_monthly_growth = 0.00
+			development_scaled_monthly_growth = 0
+			monarch_power = dip
+			scaled_modifier = {
+				modifier = {
+					diplomatic_reputation = 0.5
+					improve_relation_modifier = 0.075
+				}
+			}
+		}
+		social_military_rule = {
+			max = 100
+			min = 0
+			reset_on_new_ruler = no
+			base_monthly_growth = 0.00
+			development_scaled_monthly_growth = 0
+			monarch_power = mil
+			scaled_modifier = {
+				modifier = {
+					vassal_manpower_bonus = 0.2
+					vassal_forcelimit_bonus = 0.1
+				}
+			}
+		}
+	}
+	
+	interactions = {
+		call_all_socii_to_arms = {
+			icon = GFX_social_dissatisfaction_adm_button
+			cost_type = social_administrative_rule
+			cost = 0
+			trigger = {
+				is_at_war = yes
+			}
+			effect = {
+				hidden_effect = {
+					every_subject_country = {
+						limit = {
+							is_subject_of_type = socii_subject
+							NOT = { liberty_desire = 50 }
+							owes_favors = { 
+								who = ROOT 
+								value = 10 
+							}
+						}
+						OVERLORD = {
+							add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 0.25 }
+							add_favors = {
+								who = PREV
+								amount = -10
+							}
+						}
+						join_all_defensive_wars_of = ROOT
+						join_all_offensive_wars_of = ROOT
+					}
+				}
+			}
+			cooldown_years = 1
+			ai_chance = {
+				factor = 1
+				modifier = {
+					factor = 0
+					has_any_active_estate_agenda = no
+					has_active_debate = no
+					NOT = { average_autonomy_above_min = 20 }
+					personality = ai_militarist	#CCR from the passive buff > autonomy reduction
+				}
+				modifier = {
+					factor = 100
+					OR = {
+						has_any_active_estate_agenda = yes
+						has_active_debate = yes 
+					}
+					NOT = { personality = ai_militarist }
+				}
+			}
+		}
+		enforce_roman_rule = {
+			icon = GFX_social_dissatisfaction_dip_button
+			cost_type = social_diplomatic_rule
+			cost = 50
+			trigger = {
+				has_government_power = { mechanic_type = social_rule_mechanic power_type = social_administrative_rule value = 33 }
+			}
+			effect = { 
+				custom_tooltip = annex_one_socii_tt
+				set_country_flag = annex_a_socii
+				hidden_effect = {
+					add_government_power = { mechanic_type = social_rule_mechanic power_type = social_administrative_rule value = -33 }
+				}
+				add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 12 }
+			}
+			cooldown_years = 0
+			ai_chance = {
+				factor = 10
+			}
+		}
+		overenlist_socii_troops = {
+			icon = GFX_social_dissatisfaction_mil_button
+			cost_type = social_military_rule
+			cost = 50
+			trigger = {
+				has_government_power = { mechanic_type = social_rule_mechanic power_type = social_administrative_rule value = 33 }
+				NOT = { has_estate_privilege = estate_socii_rely_on_troops }
+			}
+			effect = {
+				custom_tooltip = overenlisting_troops_tt
+				add_war_exhaustion = -1
+				hidden_effect = {
+					set_estate_privilege = estate_socii_rely_on_troops
+					add_government_power = { mechanic_type = social_rule_mechanic power_type = social_administrative_rule value = -33 }
+					every_subject_country = {
+						limit = {
+							is_subject_of_type = socii_subject
+							NOT = { liberty_desire = 50 }
+						}
+						export_to_variable = {
+							variable_name = socii_manpower
+							value = manpower
+						}
+						divide_variable = {
+							which = socii_manpower
+							value = 10
+						}
+						add_liberty_desire = 10
+						ROOT = {
+							add_government_power = { mechanic_type = social_dissatisfacton_mechanic power_type = social_dissatisfacton value = 1.5 }
+							change_variable = {
+								which = socii_manpower
+								which = PREV
+							}
+							manpower_add_effect = { var = socii_manpower }
+						}
+						manpower_remove_effect = { var = socii_manpower }
+					}
+				}
+			}
+			cooldown_years = 0
+			ai_chance = {
+				factor = 1
+				modifier = {
+					factor = 10
+					is_at_war = yes
+					OR = {
+						war_exhaustion = 2
+						NOT = { has_country_modifier = reliance_on_socii_troops }
+					}
+				}
+				modifier = {
+					factor = 10
+					is_in_important_war = yes
+				}
+				modifier = {
+					factor = 10
+					is_at_war = yes
+				}
+			}
+		}
+	}
+}
