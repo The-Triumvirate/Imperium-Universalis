@@ -1,7 +1,7 @@
 namespace = lydia
 
 ########################################################################################
-# Croesus starts his conquests
+# Alyattes (or Croesus) starts conquests
 ########################################################################################
 country_event = {
 	id = lydia.1
@@ -13,10 +13,10 @@ country_event = {
 	
 	trigger = {
 		tag = LYD
-		is_year = 150
+		is_year = 143
 		NOT = { is_year = 208 }
 		NOT = { exists = CYM }
-		has_ruler = "Krowishash"
+		#has_ruler = "Krowishash"
 	}
 	
 	immediate = {
@@ -77,30 +77,12 @@ country_event = {
 	option = {
 		name = "lydia.1.a"
 		ai_chance = { factor = 100 }
-		every_country = {
-			limit = {
-				capital_scope = {
-					OR = {
-						region = bithynia_region
-						region = asia_minor
-						region = ionia_region
-						region = propontis_region
-						region = lycia_pamphylia_region
-						region = galatia_region
-					}
-				}
-			}
-			reverse_add_casus_belli = {
-				type = cb_invasion
-				target = LYD
-				months = 120
-			}
-		}
 		add_yearly_manpower = 10
 		add_country_modifier = {
 			name = lydian_expansionism_modifier
-			duration = 3650
+			duration = 9600
 		}
+		add_truce_with = LB1
 	}
 }
 
@@ -133,3 +115,91 @@ country_event = {
 		change_innovativeness = 2
 	}
 }
+########################################################################################
+# Alyattes starts conquest of dying Phrygia remnants
+########################################################################################
+country_event = {
+	id = lydia.3
+	title = "lydia.3.t"
+	desc = "lydia.3.d"
+	picture = cavalry
+	is_triggered_only = yes
+
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = LYD
+		}
+	}
+	option = {
+		name = "lydia.3.a"
+		ai_chance = { factor = 100 }				
+		LYD = {
+			if = {
+				limit = {
+					NOT = {
+						war_with = PHR
+					}
+				}	
+				declare_war_with_cb = {
+					who = PHR
+					casus_belli = cb_invasion
+				}
+				set_country_flag = phrygia_conquest			
+			}
+			else = {
+					add_casus_belli = {
+						type = cb_invasion
+						target = PHR
+						months = 120
+					}
+			}
+		}
+	}
+}
+
+########################################################################################
+# releasing phrygian vassals around Pteria after war
+########################################################################################
+country_event = {
+	id = lydia.4
+	title = "lydia.4.t"
+	desc = "lydia.4.d"
+	picture = ruler
+	is_triggered_only = yes
+
+	trigger = {
+		tag = LYD
+		NOT = {
+			exists = PHR
+		}
+		has_country_flag = phrygia_conquest
+	}
+
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	option = {
+		name = "lydia.4.a"
+		ai_chance = { factor = 100 }
+		add_prestige = 10
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = galatia_area
+					area = saravene_area
+					area = pontus_galaticus_area
+				}
+			}
+			cede_province = PHR
+		}
+		2226 = { cede_province = PHR }
+		5757 = { cede_province = PHR }
+		vassalize = PHR
+		PHR = {	add_liberty_desire = -40}
+	}
+}
+########################################################################################
+# releasing phrygian vassals around Pteria after war
+########################################################################################
+
