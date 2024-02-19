@@ -120,7 +120,7 @@ NDefines.NCountry.RAZE_PROVINCE_COOLDOWN_YRS = 20 	-- Same duration of cooldown 
 NDefines.NCountry.RAZE_PROVINCE_CONQUERED_TIME_LIMIT_MONTHS = 6
 NDefines.NCountry.HORDE_UNITY_PER_LOOT = 0.15		-- Horde unity gained per ducat looted.
 NDefines.NCountry.HORDE_UNITY_PER_RAZE = 0.75		-- Horde unity gained per development level razed. Raisef from 0.50 Vanilla to 0.75
-	
+
 NDefines.NCountry.MIN_DEV_FOR_OLD_GREAT_POWER = 100
 NDefines.NCountry.MAX_ACTIVE_POLICIES = 3
 NDefines.NCountry.MINIMUM_POLICY_TIME = 5
@@ -228,7 +228,7 @@ NDefines.NCountry.GALLEY_INLAND_SEA_COAST_RATIO = 0.5
 NDefines.NCountry.LIBERTY_DESIRE_ANNEXATION = 15.0
 NDefines.NCountry.LAND_FORCELIMIT_EXTRA_COST_FACTOR = 2.0
 NDefines.NCountry.NAVAL_FORCELIMIT_EXTRA_COST_FACTOR = 2.0
-	
+
 NDefines.NCountry.HRE_RANK = 5
 NDefines.NCountry.HRE_MAX_RANK = 3
 NDefines.NCountry.HRE_MAX_RANK_ELECTOR = 4
@@ -304,7 +304,7 @@ NDefines.NEconomy.GOLD_MINE_DEPLETION_THRESHOLD = 1
 NDefines.NEconomy.GOLD_MINE_DEPLETION_CHANCE = 0.0
 NDefines.NEconomy.GOLD_MINE_SIZE_PRIMITIVES = 30
 
-NDefines.NMilitary.BANNER_AGE_MULTIPLIER = 0    
+NDefines.NMilitary.BANNER_AGE_MULTIPLIER = 0
 NDefines.NMilitary.PARTICIPATION_SCORE_BATTLE = 0.1
 NDefines.NMilitary.PARTICIPATION_SCORE_OVERSEAS_MULT = 0.33
 NDefines.NMilitary.BASE_MP_TO_MANPOWER = 0.3
@@ -337,12 +337,12 @@ NDefines.NMilitary.TRANSPORT_TIME = 160
 
 NDefines.NMilitary.GALLEY_BONUS_INLAND_SEA = 0.5
 NDefines.NMilitary.GALLEY_BONUS_COASTAL_SEA = 0.5
-	
-NDefines.NMilitary.INFANTRY_SPEED = 1.1						
-NDefines.NMilitary.CAVALRY_SPEED = 1.6						
+
+NDefines.NMilitary.INFANTRY_SPEED = 1.1
+NDefines.NMilitary.CAVALRY_SPEED = 1.6
 NDefines.NMilitary.ARTILLERY_SPEED = 1.1
-							
-NDefines.NMilitary.INFANTRY_COST = 12.0	
+
+NDefines.NMilitary.INFANTRY_COST = 12.0
 NDefines.NMilitary.CAVALRY_COST = 28.0
 NDefines.NMilitary.ARTILLERY_COST = 12.0
 NDefines.NMilitary.INFANTRY_TIME = 90
@@ -376,7 +376,7 @@ NDefines.NMilitary.REBEL_LEADER_POWER = 30
 NDefines.NMilitary.REBEL_GARRISON_GROWTH = 0.5
 NDefines.NMilitary.ART_LOOT = 0.1
 NDefines.NMilitary.NAVAL_BASE_ENGAGEMENT_WIDTH = 60
-NDefines.NMilitary.MORALE_RECOVERY_SPEED_OWN_TERRITORY = 0.1	
+NDefines.NMilitary.MORALE_RECOVERY_SPEED_OWN_TERRITORY = 0.1
 NDefines.NMilitary.FORT_DEVASTATION_IMPACT = -5
 NDefines.NMilitary.NAVAL_DOCTRINE_MIN_FORCE_LIMIT = 50
 
@@ -415,7 +415,7 @@ NDefines.NMilitary.GALLEON_USES_CONSTRUCTION = 1
 NDefines.NMilitary.GALLEON_BASE_COST_MODIFIER = 1.5
 NDefines.NMilitary.GALLEON_SAILORS_COST_MODIFIER = 1.5
 NDefines.NMilitary.GALLEON_STARTING_STRENGTH = 1.0
-NDefines.NMilitary.GALLEON_STARTING_MORALE = 1 
+NDefines.NMilitary.GALLEON_STARTING_MORALE = 1
 
 NDefines.NMilitary.SAMURAI_USES_CONSTRUCTION = 0
 NDefines.NMilitary.SAMURAI_BASE_COST_MODIFIER = 2.0
@@ -594,7 +594,7 @@ NDefines.NGraphics.BORDER_WIDTH = 1.0
 NDefines.NGraphics.LAND_UNIT_MOVEMENT_SPEED = 10
 NDefines.NGraphics.NAVAL_UNIT_MOVEMENT_SPEED = 10
 NDefines.NGraphics.MAX_TRADE_NODE_FLAGS_SHOWN = 10
-NDefines.NGraphics.CITY_SPRAWL_AMOUNT = 2.5 		
+NDefines.NGraphics.CITY_SPRAWL_AMOUNT = 2.5
 
 NDefines.NEngine.EVENT_PROCESS_OFFSET = 30
 

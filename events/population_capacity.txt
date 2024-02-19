@@ -3,7 +3,7 @@ namespace = population_capacity
 ########################################################################################
 # PROVINCE CAPACITY - Rural, Urban and Upper
 ########################################################################################
-# population_capacity.X is empty. It will contain the "simplified" pop capacity calculation, for horde countries once it is back to the mod. 
+# population_capacity.X is empty. It will contain the "simplified" pop capacity calculation, for horde countries once it is back to the mod.
 
 country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	id = population_capacity.1
@@ -11,13 +11,13 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	desc = "population_capacity.1.d"
 	picture = peasant_woman
 	hidden = yes
-	
+
 	is_triggered_only = yes		# Happens ALWAYS, either having Popgrowth turned or on off. It does many other things
-	
+
 	trigger = {					# Changed: affects only the human player. This trigger forces this
-		ai = no	
+		ai = no
 	}
-	
+
 	immediate = {
 		hidden_effect = {
 			every_province = {	# careful, now it's every province
@@ -25,27 +25,27 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				if = {
 					limit = { has_global_flag = popgrowth_running }
 					# PG: Pop Growth (capacities)
-					province_event = { id = population_capacity.4 }	
+					province_event = { id = population_capacity.4 }
 				}
 				# SS: Sieges and repairs
 				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
-				
+
 				# Trade limits, update province economic output
-				DE_update_goods = yes 
+				DE_update_goods = yes
 				DE_update_value = yes
-				
-				
-				
+
+
+
 			}
 		}
-	
-	
+
+
 	}
 	option = {
 		name = "population_capacity.1.a"
-		
+
 	}
-	
+
 }
 
 # SUBMOD Menu
@@ -54,23 +54,23 @@ country_event = {
 	title = "population_capacity.2.t"
 	desc = "population_capacity.2.d"
 	picture = celebration_priestess
-	
+
 	is_triggered_only = yes
 
-	option = {								
+	option = {
 		name = "population_capacity.2.1"	# Initiate for first time. Adds flag "initiated", startup.2 sets flag "running". Init + running
 		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_vanilla }
 		country_event = { id = startup.2 }
 	}
-	option = {								
+	option = {
 		name = "population_capacity.2.2"	# Apply the submod again
 		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_initiated 	has_global_flag = popgrowth_vanilla }
 		set_global_flag = popgrowth_running
 		clr_global_flag = popgrowth_vanilla
 	}
-	option = {								
+	option = {
 		name = "population_capacity.2.3"	# Disable the submod
 		trigger = {  has_global_flag = popgrowth_initiated has_global_flag = popgrowth_running }
 		clr_global_flag = popgrowth_running
@@ -86,11 +86,11 @@ country_event = {
 		trigger = { has_global_flag = popgrowth_initiated }
 		country_event = { id = popgrowth_stats.1 }
 	}
-	
+
 	option = {
 		name = "population_capacity.2.6"	# Keep playing with vanilla mechanics
 		trigger = { has_global_flag = popgrowth_vanilla }
-		
+
 	}
 	#option = {
 	#	name = "population_capacity.2.6"	# Show menu for automated migration options and variables
@@ -101,19 +101,19 @@ country_event = {
 		name = "population_capacity.2.7"	# Nothing, go back
 		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_running }
-		
+
 	}
 	option = {
 		name = "population_capacity.2.7"	# I don't know if it may happen, but if there is a possible lack of options, this should work
 		ai_chance = { factor = 100 }
-		trigger = { 
+		trigger = {
 			NOT = { has_global_flag = popgrowth_running }
 			NOT = { has_global_flag = popgrowth_vanilla }
-			
+
 		}
-		
+
 	}
-	
+
 }
 
 
@@ -127,9 +127,9 @@ province_event = {				# PROVINCE INTERACTION MENU
 	is_triggered_only = yes
 	#hidden = yes
 	#fire_only_once = yes
-	
+
 	#mean_time_to_happen = {
-	#	months = 2	
+	#	months = 2
 	#}
 	immediate = {
 		hidden_effect = {
@@ -139,48 +139,48 @@ province_event = {				# PROVINCE INTERACTION MENU
 			save_event_target_as = PGS_provtarget
 		}
 	}
-	
+
 	option = {
 		name = "population_capacity.3.1"	# Show only detailed capacities in this province
 		province_event = { id = population_capacity.5 }
-		
+
 	}
 	option = {
 		name = "population_capacity.3.2"	# Explain me the detailed Capacities, choose scope
 		owner = { country_event = { id = popgrowth_stats.401 } }
-		
+
 	}
 	option = {
 		name = "population_capacity.3.3"	# Show population variations, only this province
 		province_event = { id = popgrowth_stats.6 }
-		
+
 	}
 	option = {
 		name = "population_capacity.3.4"	# Show population variations, choose scope
 		owner = { country_event = { id = popgrowth_stats.402 } }
-		
+
 	}
 	option = {
 		name = "population_capacity.3.5"	# Paint the map, based on this province
 		owner = { country_event = { id = popgrowth_stats.5 } }
-		
+
 	}
 	option = {
 		name = "population_capacity.3.6"	# Add a new center of trade
-		trigger = { 
+		trigger = {
 			NOT = { province_has_center_of_trade_of_level = 1 }				# must have no previous CoT
-			base_production = 1 
+			base_production = 1
 		}
 		province_event = { id = dyneconomy.1 }
-		
+
 	}
-	
-	
+
+
 	option = {
 		name = "population_capacity.3.99"	# (nothing, close this)
-		
+
 	}
-	
+
 }
 ######
 #	POPULATION CAPACITY, MAIN EVENT
@@ -191,23 +191,23 @@ province_event = {
 	desc = "population_capacity.4.d"
 	picture = peasant_woman
 	hidden = yes
-	
+
 	is_triggered_only = yes
 	# will fire after what may have changed the rural population, every two years
-	
-	
+
+
 	immediate = {
-		# Remember that in the Popgrowth System, we start with the Rural / Urban divide, and then transform it into Tribal, Commoner and Upper population. This means that it could be that someone living in rural areas actually is working "as a commoner", because is exporting extra goods and is contributing to the state equally. 
-		
+		# Remember that in the Popgrowth System, we start with the Rural / Urban divide, and then transform it into Tribal, Commoner and Upper population. This means that it could be that someone living in rural areas actually is working "as a commoner", because is exporting extra goods and is contributing to the state equally.
+
 		######################
-		# RURAL CAPACITY, those living off the land. Will be assigned mostly to tribal pops, but also commoners. 10% to upper pops. 
+		# RURAL CAPACITY, those living off the land. Will be assigned mostly to tribal pops, but also commoners. 10% to upper pops.
 		######################
-		
+
 		# HARD BASE, province size. Basically the natural limit to sustain people in this province
 		set_variable = { which = rural_capacity which = prov_size }		# size into population
-		
-		# Rural population tend to the land in almost subsistence matter, with little to export. They are very affected by terrain type, winters (what food to grow) and weather. Terrain can be improved through buildings (rural infrastructure), winter can be mitigated somewhat (better seeds, animal husbandry, better plowing techniques -> institutions); but weather (arid and monsoons) can't be changed. 
-		
+
+		# Rural population tend to the land in almost subsistence matter, with little to export. They are very affected by terrain type, winters (what food to grow) and weather. Terrain can be improved through buildings (rural infrastructure), winter can be mitigated somewhat (better seeds, animal husbandry, better plowing techniques -> institutions); but weather (arid and monsoons) can't be changed.
+
 		# Winters
 		trigger_switch = {
 			on_trigger = has_winter
@@ -217,15 +217,15 @@ province_event = {
 		}
 		if = { limit = { has_climate = arid } 		multiply_variable = { rural_capacity = 0.8 } }
 		if = { limit = { has_climate = tropical } 	multiply_variable = { rural_capacity = 0.8 } }
-		# Monsoons: reduces total capacity (less places to securely farm, due to flooding), but extra growth (more humidity). 
-		
+		# Monsoons: reduces total capacity (less places to securely farm, due to flooding), but extra growth (more humidity).
+
 		trigger_switch = {
 			on_trigger = province_group
 			pg_monsoon_mild_group = { 	multiply_variable = { rural_capacity = 0.80 } }	# but +10% growth
 			pg_monsoon_normal_group = { multiply_variable = { rural_capacity = 0.65 } }	# 15% growth
 			pg_monsoon_severe_group = { multiply_variable = { rural_capacity = 0.50 } }	# 20% growth
 		}
-		
+
 		## Terrains
 		trigger_switch = {
 			on_trigger = has_terrain		# Here tiers = buildings present
@@ -294,36 +294,36 @@ province_event = {
 			salt_desert = { 	PG_terrain_rurcap = { tier4 = 0.60 tier3 = 0.45 tier2 = 0.30 tier1 = 0.25 }	}
 			desert_mountain = { PG_terrain_rurcap = { tier4 = 0.80 tier3 = 0.70 tier2 = 0.60 tier1 = 0.40 }	}
 			arctic = { 			PG_terrain_rurcap = { tier4 = 0.60 tier3 = 0.45 tier2 = 0.30 tier1 = 0.25 }	}
-			
-			
+
+
 		}
-		
-		
+
+
 		# BUILDINGS - now the only buildings that can increase "by itself" is health (terrain, above) and land development
 		# New for 3.0.2: land reclamation % effect is now read through the modifier local_development_cost, as is any other modifier. Easier!
-		
+
 		if = {		limit = { has_province_modifier = land_reclamation_5 } change_variable = { rural_capacity = 2.50 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_4 } change_variable = { rural_capacity = 2.50 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_3 } change_variable = { rural_capacity = 2.25 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_2 } change_variable = { rural_capacity = 1.75 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_1 } change_variable = { rural_capacity = 1.00 } }
-		
+
 		# 5. FISHING BLOCK - depending on province size (and coastal), and coastal buildings
 		if = {
-			limit = { has_port = yes check_variable = { prov_size = 7 } } 
-			set_variable = { which = PG_fishercap value = 2.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 7 } }
+			set_variable = { which = PG_fishercap value = 2.5 }
 		}
 		else_if = {
-			limit = { has_port = yes check_variable = { prov_size = 4 } } 
-			set_variable = { which = PG_fishercap value = 1.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 4 } }
+			set_variable = { which = PG_fishercap value = 1.5 }
 		}
 		else_if = {
-			limit = { has_port = yes check_variable = { prov_size = 1 } } 
-			set_variable = { which = PG_fishercap value = 0.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 1 } }
+			set_variable = { which = PG_fishercap value = 0.5 }
 		}
 		if = {
-			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
-				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } }
 			change_variable = { PG_fishercap = 1.0 }
 		}
 		trigger_switch = {
@@ -333,39 +333,39 @@ province_event = {
 			small_harbor = { 	change_variable = { PG_fishercap = 0.50 } }
 		}
 		if = { limit = { has_province_flag = PG_river_port } multiply_variable = { PG_fishercap = 0.50 }	} # River ports, -50%
-		
+
 		change_variable = { which = rural_capacity which = PG_fishercap }
 		set_variable = { which = PG_fishercap value = 0 }
-		
-		
-		
+
+
+
 		# 6. MODIFIER %
 		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance  }	# as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
-		
-		
+
+
 		# EFFECT OF INSTITUTIONS
-		
+
 		# Percentage of rural people living like their peers at the cities (exporting goods, trade, conscripts to regular army, etc)
-		# Each institution will raise the base limit, which can also be upped with production buildings, among others. 
-		
-				#	writing_system (100) -> upper % (the first 10%)
-				#	coin_usage (150) -> urban %
-				#	elephant_domestication (0)-> nothing
-				#	siege_engineering_institution (200) -> military
-				#	bureaucracy_institution (250) -> urban %
-				#	cast_iron_institution (300) -> mitigate winters + (china, urban %)
-				#	classical_philosophy_institution (350) -> upper class %
-				#	civil_law_institution (400) -> politics, no effect to province level
-				#	axiomatic_maths_institution (450) -> urban %
-				#	blast_furnace_institution (500) -> (china, urban %)
-				#	advanced_hydraulics_institution	(550) -> mitigate winters
-				#	astronomy_institution (600) -> upper class %
-				#	engineering_architecture_institution (650) -> urban %
-				#	tactics_strategy_institution -> military
-				#	monotheism_institution -> nope
-				
+		# Each institution will raise the base limit, which can also be upped with production buildings, among others.
+
+		#	writing_system (100) -> upper % (the first 10%)
+		#	coin_usage (150) -> urban %
+		#	elephant_domestication (0)-> nothing
+		#	siege_engineering_institution (200) -> military
+		#	bureaucracy_institution (250) -> urban %
+		#	cast_iron_institution (300) -> mitigate winters + (china, urban %)
+		#	classical_philosophy_institution (350) -> upper class %
+		#	civil_law_institution (400) -> politics, no effect to province level
+		#	axiomatic_maths_institution (450) -> urban %
+		#	blast_furnace_institution (500) -> (china, urban %)
+		#	advanced_hydraulics_institution	(550) -> mitigate winters
+		#	astronomy_institution (600) -> upper class %
+		#	engineering_architecture_institution (650) -> urban %
+		#	tactics_strategy_institution -> military
+		#	monotheism_institution -> nope
+
 		set_variable = { which = PG_urbtransfer value = 0.0 }
 		if = { 		limit = { engineering_architecture_institution = 100 } 	change_variable = { PG_urbtransfer = 0.30 } }
 		else_if = { limit = { axiomatic_maths_institution = 100 } 			change_variable = { PG_urbtransfer = 0.25 } }
@@ -374,16 +374,16 @@ province_event = {
 		else_if = { limit = { cast_iron_institution = 100 } 				change_variable = { PG_urbtransfer = 0.20 } }
 		else_if = { limit = { coin_usage = 100 } 							change_variable = { PG_urbtransfer = 0.10 } }
 		else = { set_variable = { PG_urbtransfer = 0.0 } }
-		
+
 		# Several institutions will also affect, although just slightly, the % of URBANS that go to upper. Raised further with baths and other culture things
-		
+
 		set_variable = { which = PG_upptransfer value = 0.0 }
 		if = { 		limit = { astronomy_institution = 100 } 			change_variable = { PG_upptransfer = 0.20 } }
 		else_if = { limit = { classical_philosophy_institution = 100 } 	change_variable = { PG_upptransfer = 0.15 } }
 		else_if = { limit = { writing_system = 100 } 					change_variable = { PG_upptransfer = 0.10 } }
-			
-			# initial 10% is with writing system, affects those in urban places. The rurals will keep promoting 10% to uppers (it's fixed). 
-		
+
+		# initial 10% is with writing system, affects those in urban places. The rurals will keep promoting 10% to uppers (it's fixed).
+
 		# Buildings affecting transfer from Rural to Commoner population: Roads + Production
 		trigger_switch = {		# For rural -> urban, changed from Baths to Roads. Baths will make urban -> uppers
 			on_trigger = has_building
@@ -392,15 +392,15 @@ province_event = {
 			imperial_road = { 	set_variable = { which = PG_urbtransfer value = 0.20 } }	# same as road lv2, no further benefits
 		}
 		trigger_switch = {
-			on_trigger = has_building		
+			on_trigger = has_building
 			small_water_irrigation = { 	change_variable = { PG_urbtransfer = 0.15 } }
 			big_water_irrigation = { 	change_variable = { PG_urbtransfer = 0.25 } }	# re-made values
 			big_estate = { 		change_variable = { PG_urbtransfer = 0.40 } }
-			
+
 			craftsman = { 		change_variable = { PG_urbtransfer = 0.15 } }
 			small_workshop = { 	change_variable = { PG_urbtransfer = 0.25 } }
 			artisan_district = { change_variable = { PG_urbtransfer = 0.40 } }
-			
+
 			quarry = { 			change_variable = { PG_urbtransfer = 0.15 } }
 			small_mine = { 		change_variable = { PG_urbtransfer = 0.25 } }
 			big_mine = { 		change_variable = { PG_urbtransfer = 0.40 } }
@@ -411,156 +411,156 @@ province_event = {
 			small_bath = { 	change_variable = { PG_upptransfer = 0.15 } }
 			big_bath = { 	change_variable = { PG_upptransfer = 0.20 } }	# possible upper %: instits 20% + 20% here, FORTY % OF URBAN
 		}
-		
-		
+
+
 		# Special province modifiers
-			# Nothing added so far, although any modifier can affect rural/urban population, with the local_development_cost modifier. 
-		
-		
-		
-		
+		# Nothing added so far, although any modifier can affect rural/urban population, with the local_development_cost modifier.
+
+
+
+
 		######################
 		## URBAN CAPACITY; those living in the cities. Will then be assigned to Commoners and Upper pops
 		######################
-		
+
 		# THE TRADE POWER MULTIPLIER
 		#	updated August'22
-		
-			
+
+
 		# correct for autonomy: it can go as low as -50%, so this must be corrected back
 		export_to_variable = { which = urban_capacity value = local_autonomy }	multiply_variable = { urban_capacity = 0.5 }
 		subtract_variable = { urban_capacity = 100 }							multiply_variable = { urban_capacity = -0.01 }
 		export_to_variable = { which = PG_urb_tp value = province_trade_power }
 		divide_variable = { which = PG_urb_tp which = urban_capacity }
-	
+
 		set_variable = { which = urban_capacity value = 0 }	# Cleanup
-		
-		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
-		
-		
-			# Trade power points are less effective the bigger it is. In economics this is called "Diminishing marginal returns":
-			# After trade power 10 (10 = 3 pops), every new pop will need one more point (4th pop: 4 points, 5th pop: 5 points). Capped at 15/110tp
-			# So a trade power of 30 will be: 30 -10(3) -4 -5 -6 = 6 pops
-			# Trade 120: 120 -10(3) -4 -5 -6 -7 -8 -9 -10 -11 -12 -13 -14 = 14 pops
-			if = {
-				limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 } 
-				change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 } 
-				change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 } 
-				change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 } 
-				change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 } 
-				change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 } 
-				change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 } 
-				change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 } 
-				change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 } 
-				change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 } 
-				change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 } 
-				change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 } 
-				change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 } 
-			}
-			else = { divide_variable = { PG_urb_tp = 3.3 } }
-			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
-			set_variable = { which = PG_urb_tp value = 0 }
-		
+
+		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in.
+
+
+		# Trade power points are less effective the bigger it is. In economics this is called "Diminishing marginal returns":
+		# After trade power 10 (10 = 3 pops), every new pop will need one more point (4th pop: 4 points, 5th pop: 5 points). Capped at 15/110tp
+		# So a trade power of 30 will be: 30 -10(3) -4 -5 -6 = 6 pops
+		# Trade 120: 120 -10(3) -4 -5 -6 -7 -8 -9 -10 -11 -12 -13 -14 = 14 pops
+		if = {
+			limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 }
+			change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 }
+			change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 }
+			change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 }
+			change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 }
+			change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 }
+			change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 }
+			change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 }
+			change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 }
+			change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 }
+			change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 }
+			change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 }
+			change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 }
+		}
+		else = { divide_variable = { PG_urb_tp = 3.3 } }
+		change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
+		set_variable = { which = PG_urb_tp value = 0 }
+
 		# BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
 		PG_urban_buildings = yes
-		
-		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -25% reduction, but it stays in commoners, and the rural transfer still works. 
+
+		# Maluses from primitive governments: natives (hordes, migrating ones) can't convert rurals to urban people and all those originally urban (buildings and trade power) only get 50%, which is MOVED TO RURAL. Tribal gov's (all the other tribals) do have -25% reduction, but it stays in commoners, and the rural transfer still works.
 		if = {
 			limit = { owner = { has_reform = steppe_horde_reform } }	# Careful, conquered places's commoners will flee quickly!
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } multiply_variable = { PG_urb_to_trib = 0.5 }
 			set_variable = { which = urban_capacity value = 0 }				 set_variable = { which = PG_urbtransfer value = 0 }
 		}
 		else_if = {
-			limit = { owner = { government = tribal } } 
+			limit = { owner = { government = tribal } }
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.25 }
 			subtract_variable = { which = urban_capacity which = PG_urb_to_trib }
 		}
-		
+
 		# CAPITAL PALACE. +1 urban and +1 upper, for all capitals (shows +2 due to later being cut into upper. Now urban =/= commoner)
 		if = { limit = { is_capital = yes } change_variable = { urban_capacity = 2 } }
-		
-		
-		#	RELATIVE % MODIFIERS. The same modifier used in rural, as it will affect both. 
-		multiply_variable = { which = urban_capacity which = PG_dev_extra }	
-		
-		
-		
+
+
+		#	RELATIVE % MODIFIERS. The same modifier used in rural, as it will affect both.
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }
+
+
+
 		######################
 		# 	UPPER CAPACITY, coming from both rural and urban sources. It is roughly 10% of the above
 		######################
-		
-		# Rural capacity to upper: always 10% of those. // Urban to upper: dependent on institutions, starting with writing systems 10%). 
+
+		# Rural capacity to upper: always 10% of those. // Urban to upper: dependent on institutions, starting with writing systems 10%).
 		set_variable = { which = PG_ruralupper which = rural_capacity } multiply_variable = { PG_ruralupper = 0.1 }
 		set_variable = { which = PG_urbanupper which = urban_capacity } multiply_variable = { which = PG_urbanupper which = PG_upptransfer }
-		
+
 		# What else: capital city (from urban), and buildings which take from rural if tribal or native (otherwise take from urban)
 		if = { 	limit = { is_capital = yes } change_variable = { PG_urbanupper = 1 } }
 		if = {
 			limit = { owner = { NOT = { government = tribal } NOT = { government = native } } }
 			PG_urbanupper_capital = yes			# extra uppers for high total development only in non-tribals
 		}
-		if = { 
+		if = {
 			limit = { owner = { OR = { government = tribal government = native } } }
-					PG_ruralupper_buildings = yes
+			PG_ruralupper_buildings = yes
 		}
 		else = { 	PG_urbanupper_buildings = yes }
-		
+
 		######################
 		# 	ASSIGN CAPACITIES to Tribal, Commoner and Upper pops
 		######################
-		
+
 		# Tribal population capacity: Rural - transfer to urban - rural transfer to upper. Always minimum 1.00
 		# Commoner population capacity: Urban + transfer to urban - urban transfer to upper
 		# Upper population capacity: Rural to upper + Urban to upper
-		
-		set_variable = { which = PG_trb_cap which = rural_capacity } 
+
+		set_variable = { which = PG_trb_cap which = rural_capacity }
 		change_variable = { which = PG_trb_cap which = PG_urb_to_trib }		# Commoners that count as tribal (tribal gov type)
 		set_variable = { which = PG_com_cap which = PG_urbtransfer }		# Commoner cap will start being used to subtract rural transfer
 		multiply_variable = { which = PG_com_cap which = rural_capacity }
 		subtract_variable = { which = PG_trb_cap which = PG_com_cap }
 		subtract_variable = { which = PG_trb_cap which = PG_ruralupper }
-		
+
 		change_variable = { which = PG_com_cap which = urban_capacity }		# Now commoner cap (was only % rur to urban) adds urban itself
 		subtract_variable = { which = PG_com_cap which = PG_urbanupper }
-		
-		set_variable = { which = PG_upp_cap which = PG_ruralupper }	
+
+		set_variable = { which = PG_upp_cap which = PG_ruralupper }
 		change_variable = { which = PG_upp_cap which = PG_urbanupper }
-		
+
 		# Done! The main part of capacities
-		
+
 		# Condition: having certain basic buildings will allow at least 1 commoner or 1 upper, if it's not there. Taken from tribal cap
 		if = {
 			limit = { NOT = { check_variable = { PG_com_cap = 1 } } PG_any_prod_port_trade = yes } 	# scripted trigger, several buildings exist
@@ -574,28 +574,28 @@ province_event = {
 			subtract_variable = { which = PG_upp_now which = PG_upp_cap }	subtract_variable = { which = PG_trb_cap which = PG_upp_now }
 			change_variable = { which = PG_upp_cap which = PG_upp_now }		set_variable = { which = PG_upp_now value = 0 }
 		}
-		
+
 		# Condition: avoid having less than 1 tribal
 		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
-		
-		
-		# Condition: if there is not enough upper capacity to get one, or not enough commoner cap, these are given back to other pops, like tribals. 
+
+
+		# Condition: if there is not enough upper capacity to get one, or not enough commoner cap, these are given back to other pops, like tribals.
 		set_variable = { which = PG_new_cap which = PG_com_cap } change_variable = { which = PG_new_cap which = PG_upp_cap }
 		if = {
 			limit = { NOT = { check_variable = { PG_new_cap = 1 } } }	# Sum of com + upp <1
-			set_province_flag = PG_move_all 
+			set_province_flag = PG_move_all
 		}
-		else_if = { 
+		else_if = {
 			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } check_variable = { PG_new_cap = 1 } } 	# Com + upp =1, but upp <1
 			set_province_flag = PG_move_upp_com																# Will move upper into commoner
 		}
-		
+
 		if = {
 			limit = { has_province_flag = PG_move_all }
 			set_variable = { which = PG_trb_old which = PG_trb_cap } 	set_variable = { which = PG_com_old which = PG_com_cap }
 			set_variable = { which = PG_upp_old which = PG_upp_cap }
 			change_variable = { which = PG_trb_cap which = PG_com_cap } change_variable = { which = PG_trb_cap which = PG_upp_cap }
-			set_variable = { which = PG_com_cap value = 0 } 			set_variable = { which = PG_upp_cap value = 0 } 
+			set_variable = { which = PG_com_cap value = 0 } 			set_variable = { which = PG_upp_cap value = 0 }
 		}
 		else_if = {
 			limit = { has_province_flag = PG_move_upp_com }
@@ -604,39 +604,39 @@ province_event = {
 			set_variable = { which = PG_upp_old which = PG_upp_cap }
 			change_variable = { which = PG_com_cap which = PG_upp_cap } set_variable = { which = PG_upp_cap value = 0 }
 		}
-		
+
 		######################
 		# GROWTH RATIOS
 		######################
-		
-		# Now that we have all the capacities allocated in tribal/commoner/upper, it's time to check against the current population values. It is a simple division, being the neutral value 1.00. Anything over 1 will trigger the (hidden) events to grow and promote; anything under 1 will trigger the ones to starve, migrate, demote, etc. 
-		
+
+		# Now that we have all the capacities allocated in tribal/commoner/upper, it's time to check against the current population values. It is a simple division, being the neutral value 1.00. Anything over 1 will trigger the (hidden) events to grow and promote; anything under 1 will trigger the ones to starve, migrate, demote, etc.
+
 		# Current
 		export_to_variable = { which = PG_trb_now value = base_manpower }
 		export_to_variable = { which = PG_com_now value = base_production }
 		export_to_variable = { which = PG_upp_now value = base_tax }
 		set_variable = { which = PG_tot_now which = PG_trb_now } 	change_variable = { which = PG_tot_now which = PG_com_now }	# tot = total
 		change_variable = { which = PG_tot_now which = PG_upp_now } set_variable = { which = PG_tot_cap which = PG_trb_cap }
-		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap } 
-		
+		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap }
+
 		# Growths
-			# avoid zero values
+		# avoid zero values
 		if = { limit = { NOT = { check_variable = { PG_trb_now = 1 } } } set_variable = { which = PG_trb_now value = 0.2 } }
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0.2 } }
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0.2 } }
-		
+
 		set_variable = { which = PG_trb_grow which = PG_trb_cap } 		 divide_variable = { which = PG_trb_grow which = PG_trb_now }
 		set_variable = { which = PG_com_grow which = PG_com_cap } 		 divide_variable = { which = PG_com_grow which = PG_com_now }
 		set_variable = { which = PG_upp_grow which = PG_upp_cap } 		 divide_variable = { which = PG_upp_grow which = PG_upp_now }
-		
+
 		if = { limit = { NOT = { check_variable = { PG_trb_now = 1 } } } set_variable = { which = PG_trb_now value = 0 } }	# reset
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0 } }	# reset
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0 } }	# reset
-		
-		
+
+
 		# MODIFIERS, province level
 		# Now using the local modifiers local_development_cost. It works in a MULTIPLICATIVELY way and affects growth the more extreme it is
-			# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type. 
+		# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type.
 		trigger_switch = {
 			on_trigger = devastation
 			75 = { PG_growth_modify_all = { trb = 0.20 com = 0.10 upp = 0.10 } }
@@ -658,36 +658,36 @@ province_event = {
 			pg_monsoon_normal_group = { multiply_variable = { PG_trb_grow = 1.15 } }
 			pg_monsoon_severe_group = { multiply_variable = { PG_trb_grow = 1.25 } }
 		}
-		
-		# general modifier: add the local_development_cost in any modifier, and will appear here (like Weather events). 
+
+		# general modifier: add the local_development_cost in any modifier, and will appear here (like Weather events).
 		export_to_variable = { which = PG_grow_extra value = modifier:local_development_cost }		# as 0.2 for +20%
 		change_variable = { PG_grow_extra = 1 }														# now 1.2, will modify things
-		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }						
-		multiply_variable = { which = PG_com_grow which = PG_grow_extra }						
-		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }						
-		
-		
+		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }
+		multiply_variable = { which = PG_com_grow which = PG_grow_extra }
+		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }
+
+
 		# MODIFIERS, country level
 		# Country modifiers affect ADDITIVELY
-		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner } 
-		
+		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner }
+
 		change_variable = { which = PG_trb_grow which = PG_grow_country }
 		change_variable = { which = PG_com_grow which = PG_grow_country }
 		change_variable = { which = PG_upp_grow which = PG_grow_country }
-		
-		
-		
-		
+
+
+
+
 		######################
 		#	OTHER EFFECTS
 		######################
 		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
 		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
 		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
-		
+
 		# Find how much information is flowing to this province. Will allow for long-range migration
-		PG_update_inforange = yes		
-		
+		PG_update_inforange = yes
+
 		# If there was not enough capacity for upper or commoner, change the modifier. Otherwise, return to the old one
 		if = {
 			limit = { OR = { has_province_flag = PG_move_all has_province_flag = PG_move_upp_com } }
@@ -696,50 +696,50 @@ province_event = {
 		}
 		else_if = {
 			limit = { has_province_modifier = popgrowth_viewer2 }
-			remove_province_modifier  = popgrowth_viewer2 
+			remove_province_modifier  = popgrowth_viewer2
 			add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
 		}
-		
+
 		# Update naval forcelimit nerfs, in inland and river ports
 		if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
 		else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
-		
-		
+
+
 		# Clean variables to be good-looking (/100 for rounding; x100 for percentages)
-			# Caps
-		divide_variable = { PG_trb_cap = 100 }  multiply_variable = { PG_trb_cap = 100 }	# 4.567 / 100 = 0.045 x 100 = 4.5. 
+		# Caps
+		divide_variable = { PG_trb_cap = 100 }  multiply_variable = { PG_trb_cap = 100 }	# 4.567 / 100 = 0.045 x 100 = 4.5.
 		divide_variable = { PG_com_cap = 100 }  multiply_variable = { PG_com_cap = 100 }
 		divide_variable = { PG_upp_cap = 100 }  multiply_variable = { PG_upp_cap = 100 }
 		divide_variable = { PG_tot_cap = 100 }  multiply_variable = { PG_tot_cap = 100 }
 		divide_variable = { rural_capacity = 100 }  multiply_variable = { rural_capacity = 100 }
 		divide_variable = { urban_capacity = 100 }  multiply_variable = { urban_capacity = 100 }
-		
+
 		divide_variable = { PG_urbtransfer = 10 }  multiply_variable = { PG_urbtransfer = 1000 }
 		divide_variable = { PG_trb_grow = 10 } multiply_variable = { PG_trb_grow = 1000 }
 		divide_variable = { PG_com_grow = 10 } multiply_variable = { PG_com_grow = 1000 }
 		divide_variable = { PG_upp_grow = 10 } multiply_variable = { PG_upp_grow = 1000 }
-		
-		
+
+
 	}
-	
-	
+
+
 	option = {
 		name = "population_capacity.4.a"
-			# ok, all done inside the immediate
+		# ok, all done inside the immediate
 	}
-	
+
 	after = {
-		clr_province_flag = PG_move_all 
+		clr_province_flag = PG_move_all
 		clr_province_flag = PG_move_upp_com
 	}
-	
+
 }
 
 ##################################################
 # POPULATION CAPACITY CALCULATION, DEBUG MODE
 # 	Same as pop capacity.1, but shows a breakdown of what constitutes growth. Only activated if asked by the player
 #	All information that is displayed is done one tab to the right, and starts by PGD_xxx (PopGrowth Display)
-# 	Most code comments from the main event are gone, but I've added some numerical examples. 
+# 	Most code comments from the main event are gone, but I've added some numerical examples.
 ##################################################
 
 
@@ -749,22 +749,22 @@ province_event = {
 	desc = "population_capacity.5.d"
 	picture = peasant_woman
 	hidden = yes
-	
+
 	is_triggered_only = yes
 	# will fire after what may have changed the rural population, every two years
-	
-	
+
+
 	immediate = {
-		# This is the DETAILED version. Every one in a while a new variable will pop up (like "PS_rur_1" and so) detailing each step. 
-		
+		# This is the DETAILED version. Every one in a while a new variable will pop up (like "PS_rur_1" and so) detailing each step.
+
 		######################
 		# RURAL CAPACITY
 		######################
-		
-		# First calculate and "track" everything separate, then the variables will subtract between them, to have only variations. 
+
+		# First calculate and "track" everything separate, then the variables will subtract between them, to have only variations.
 		# 0: Province size (no separate value, but will show size as rural capacity)
 		set_variable = { which = rural_capacity which = prov_size }
-		
+
 		# 1:Winters
 		trigger_switch = {
 			on_trigger = has_winter
@@ -772,9 +772,9 @@ province_event = {
 			normal_winter = { 	PG_winter_rurcap = { tier3 = 1.00 tier2 = 0.80 tier1 = 0.50 } }
 			severe_winter = { 	PG_winter_rurcap = { tier3 = 0.80 tier2 = 0.50 tier1 = 0.35 } } # severe = normal, if no tech
 		}
-		
+
 		set_variable = { which = PS_rur1 which = rural_capacity }
-		
+
 		# 2: Arid/Tropical/Monsoons
 		if = { limit = { has_climate = arid } 		multiply_variable = { rural_capacity = 0.8 } }
 		if = { limit = { has_climate = tropical } 	multiply_variable = { rural_capacity = 0.8 } }
@@ -785,7 +785,7 @@ province_event = {
 			pg_monsoon_severe_group = { multiply_variable = { rural_capacity = 0.50 } }	# 20% growth
 		}
 		set_variable = { which = PS_rur2 which = rural_capacity }
-		
+
 		# 3: Terrains
 		trigger_switch = {
 			on_trigger = has_terrain		# Here tiers = buildings present
@@ -854,13 +854,13 @@ province_event = {
 			salt_desert = { 	PG_terrain_rurcap = { tier4 = 0.60 tier3 = 0.45 tier2 = 0.30 tier1 = 0.25 }	PS_terr_max = { max = 0.60 } }
 			desert_mountain = { PG_terrain_rurcap = { tier4 = 0.80 tier3 = 0.70 tier2 = 0.60 tier1 = 0.40 }	PS_terr_max = { max = 0.80 } }
 			arctic = { 			PG_terrain_rurcap = { tier4 = 0.60 tier3 = 0.45 tier2 = 0.30 tier1 = 0.25 }	PS_terr_max = { max = 0.60 } }
-			
-			
+
+
 		}
-		set_variable = { which = PS_rur3 which = rural_capacity } 
+		set_variable = { which = PS_rur3 which = rural_capacity }
 		set_variable = { which = PS_terr_left which = PS_terrmax } subtract_variable = { which = PS_terr_left which = PS_rur3 }
-		
-		
+
+
 		# 4. BUILDINGS
 		if = {		limit = { has_province_modifier = land_reclamation_5 } change_variable = { rural_capacity = 2.50 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_4 } change_variable = { rural_capacity = 2.50 } }
@@ -868,25 +868,25 @@ province_event = {
 		else_if = { limit = { has_province_modifier = land_reclamation_2 } change_variable = { rural_capacity = 1.75 } }
 		else_if = { limit = { has_province_modifier = land_reclamation_1 } change_variable = { rural_capacity = 1.00 } }
 		set_variable = { which = PS_rur4 which = rural_capacity }
-		
-		
+
+
 		# 5. FISHING BLOCK - depending on province size (and coastal), and coastal buildings
 		# Fishing done after land reclamation, as land reclamation should affect only agricultural activities, not fishing
 		if = {
-			limit = { has_port = yes check_variable = { prov_size = 7 } } 
-			set_variable = { which = PG_fishercap value = 2.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 7 } }
+			set_variable = { which = PG_fishercap value = 2.5 }
 		}
 		else_if = {
-			limit = { has_port = yes check_variable = { prov_size = 4 } } 
-			set_variable = { which = PG_fishercap value = 1.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 4 } }
+			set_variable = { which = PG_fishercap value = 1.5 }
 		}
 		else_if = {
-			limit = { has_port = yes check_variable = { prov_size = 1 } } 
-			set_variable = { which = PG_fishercap value = 0.5 } 
+			limit = { has_port = yes check_variable = { prov_size = 1 } }
+			set_variable = { which = PG_fishercap value = 0.5 }
 		}
 		if = {
-			limit = { OR = { has_terrain = coastline has_terrain = naxos_t 
-				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } } 
+			limit = { OR = { has_terrain = coastline has_terrain = naxos_t
+				has_terrain = steep_coast has_terrain = patara_t has_terrain = coastal_desert } }
 			change_variable = { PG_fishercap = 1.0 }
 		}
 		set_variable = { which = PG_fisher1 which = PG_fishercap }
@@ -897,41 +897,41 @@ province_event = {
 			small_harbor = { 	change_variable = { PG_fishercap = 0.50 } }
 		}
 		set_variable = { which = PG_fisher2 which = PG_fishercap }
-		
+
 		if = { limit = { has_province_flag = PG_river_port } multiply_variable = { PG_fishercap = 0.50 }	} # River ports, -50%
 		set_variable = { which = PG_fisher3 which = PG_fishercap }
-		
+
 		change_variable = { which = rural_capacity which = PG_fishercap }
 		set_variable = { which = PG_fishercap value = 0 }
 		set_variable = { which = PS_rur5 which = rural_capacity }
-		
+
 		# 6. MODIFIER %
 		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance } # as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
 		set_variable = { which = PS_rur6 which = rural_capacity }
-		
+
 		# EFFECT OF INSTITUTIONS
-		
+
 		# Percentage of rural people living like their peers at the cities (exporting goods, trade, conscripts to regular army, etc)
-		# Each institution will raise the base limit, which can also be upped with production buildings, among others. 
-		
-				#	writing_system (100) -> upper % (the first 10%)
-				#	coin_usage (150) -> urban %
-				#	elephant_domestication (0)-> nothing
-				#	siege_engineering_institution (200) -> military
-				#	bureaucracy_institution (250) -> urban %
-				#	cast_iron_institution (300) -> mitigate winters + (china, urban %)
-				#	classical_philosophy_institution (350) -> upper class %
-				#	civil_law_institution (400) -> politics, no effect to province level
-				#	axiomatic_maths_institution (450) -> urban %
-				#	blast_furnace_institution (500) -> (china, urban %)
-				#	advanced_hydraulics_institution	(550) -> mitigate winters
-				#	astronomy_institution (600) -> upper class %
-				#	engineering_architecture_institution (650) -> urban %
-				#	tactics_strategy_institution -> military
-				#	monotheism_institution -> nope
-				
+		# Each institution will raise the base limit, which can also be upped with production buildings, among others.
+
+		#	writing_system (100) -> upper % (the first 10%)
+		#	coin_usage (150) -> urban %
+		#	elephant_domestication (0)-> nothing
+		#	siege_engineering_institution (200) -> military
+		#	bureaucracy_institution (250) -> urban %
+		#	cast_iron_institution (300) -> mitigate winters + (china, urban %)
+		#	classical_philosophy_institution (350) -> upper class %
+		#	civil_law_institution (400) -> politics, no effect to province level
+		#	axiomatic_maths_institution (450) -> urban %
+		#	blast_furnace_institution (500) -> (china, urban %)
+		#	advanced_hydraulics_institution	(550) -> mitigate winters
+		#	astronomy_institution (600) -> upper class %
+		#	engineering_architecture_institution (650) -> urban %
+		#	tactics_strategy_institution -> military
+		#	monotheism_institution -> nope
+
 		set_variable = { which = PG_urbtransfer value = 0.0 }
 		if = { 		limit = { engineering_architecture_institution = 100 } 	change_variable = { PG_urbtransfer = 0.30 } }
 		else_if = { limit = { axiomatic_maths_institution = 100 } 			change_variable = { PG_urbtransfer = 0.25 } }
@@ -940,38 +940,38 @@ province_event = {
 		else_if = { limit = { cast_iron_institution = 100 } 				change_variable = { PG_urbtransfer = 0.20 } }
 		else_if = { limit = { coin_usage = 100 } 							change_variable = { PG_urbtransfer = 0.10 } }
 		set_variable = { which = PS_urbtransfer1 which = PG_urbtransfer }
-		
+
 		set_variable = { which = PG_upptransfer value = 0.0 }
 		if = { 		limit = { astronomy_institution = 100 } 			change_variable = { PG_upptransfer = 0.20 } }
 		else_if = { limit = { classical_philosophy_institution = 100 } 	change_variable = { PG_upptransfer = 0.15 } }
 		else_if = { limit = { writing_system = 100 } 					change_variable = { PG_upptransfer = 0.10 } }
 		set_variable = { which = PG_upptransfer1 which = PG_upptransfer }
-		
-		
-		trigger_switch = {	
+
+
+		trigger_switch = {
 			on_trigger = has_building
 			gravel_road = { 	change_variable = { which = PG_urbtransfer value = 0.10 } }
 			paved_road = { 		change_variable = { which = PG_urbtransfer value = 0.20 } }	# re-made values
 			imperial_road = { 	change_variable = { which = PG_urbtransfer value = 0.20 } }	# same as road lv2, no further benefits
 		}
 		set_variable = { which = PS_urbtransfer2 which = PG_urbtransfer }
-		
+
 		trigger_switch = {
-			on_trigger = has_building		
+			on_trigger = has_building
 			small_water_irrigation = { 	change_variable = { PG_urbtransfer = 0.15 } }
 			big_water_irrigation = { 	change_variable = { PG_urbtransfer = 0.25 } }	# re-made values
 			big_estate = { 		change_variable = { PG_urbtransfer = 0.40 } }
-			
+
 			craftsman = { 		change_variable = { PG_urbtransfer = 0.15 } }
 			small_workshop = { 	change_variable = { PG_urbtransfer = 0.25 } }
 			artisan_district = { change_variable = { PG_urbtransfer = 0.40 } }
-			
+
 			quarry = { 			change_variable = { PG_urbtransfer = 0.15 } }
 			small_mine = { 		change_variable = { PG_urbtransfer = 0.25 } }
 			big_mine = { 		change_variable = { PG_urbtransfer = 0.40 } }
 		}
 		set_variable = { which = PS_urbtransfer3 which = PG_urbtransfer }
-		
+
 		trigger_switch = {
 			on_trigger = has_building
 			palestra = { 	change_variable = { PG_upptransfer = 0.05 } }
@@ -979,170 +979,170 @@ province_event = {
 			big_bath = { 	change_variable = { PG_upptransfer = 0.20 } }	# possible upper %: instits 20% + 20% here, FORTY % OF URBAN
 		}
 		set_variable = { which = PG_upptransfer2 which = PG_upptransfer }
-		
-		
+
+
 		# Special province modifiers
-			# Nothing added so far, although any modifier can affect rural/urban population, with the local_development_cost modifier. 
-		
-		
-		
+		# Nothing added so far, although any modifier can affect rural/urban population, with the local_development_cost modifier.
+
+
+
 		######################
 		## URBAN CAPACITY; those living in the cities. Will then be assigned to Commoners and Upper pops
 		######################
-		
+
 		# 1. THE TRADE POWER MULTIPLIER
 		#	updated August'22
-		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in. 
-			
+		# More trade means more logistics, people employed in on-offloading ships, wealth coming from other places, etc. This will be the main source of commoner population for most of the game, until institutions and buildings kick in.
+
 		# correct for autonomy: it can go as low as -50%, so this must be corrected back
 		export_to_variable = { which = urban_capacity value = local_autonomy }	multiply_variable = { urban_capacity = 0.5 }
 		subtract_variable = { urban_capacity = 100 }							multiply_variable = { urban_capacity = -0.01 }
-		
+
 		export_to_variable = { which = PG_urb_tp value = province_trade_power }
 		divide_variable = { which = PG_urb_tp which = urban_capacity }
 		set_variable = { which = urban_capacity value = 0 }	# Cleanup
-		
+
 		set_variable = { which = PS_trade_power which = PG_urb_tp }
-			if = {
-				limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 } 
-				change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 } 
-				change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 } 
-				change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 } 
-				change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 } 
-				change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 } 
-				change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 } 
-				change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 } 
-				change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 } 
-				change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 } 
-				change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 } 
-				change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 } 
-			}
-			else_if = {
-				limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 } 
-				change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 } 
-			}
-			else = { divide_variable = { PG_urb_tp = 3.3 } }
-			change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
-			set_variable = { which = PG_urb_tp value = 0 }
+		if = {
+			limit = { check_variable = { PG_urb_tp = 109 } } 	subtract_variable = { PG_urb_tp = 109 }
+			change_variable = { urban_capacity = 14 } 			divide_variable = { PG_urb_tp = 15 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 95 } } 	subtract_variable = { PG_urb_tp = 95 }
+			change_variable = { urban_capacity = 13 } 			divide_variable = { PG_urb_tp = 14 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 82 } } 	subtract_variable = { PG_urb_tp = 82 }
+			change_variable = { urban_capacity = 12 } 			divide_variable = { PG_urb_tp = 13 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 70 } } 	subtract_variable = { PG_urb_tp = 70 }
+			change_variable = { urban_capacity = 11 } 			divide_variable = { PG_urb_tp = 12 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 59 } } 	subtract_variable = { PG_urb_tp = 59 }
+			change_variable = { urban_capacity = 10 } 			divide_variable = { PG_urb_tp = 11 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 49 } } 	subtract_variable = { PG_urb_tp = 49 }
+			change_variable = { urban_capacity = 9 } 			divide_variable = { PG_urb_tp = 10 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 40 } } 	subtract_variable = { PG_urb_tp = 40 }
+			change_variable = { urban_capacity = 8 } 			divide_variable = { PG_urb_tp = 9 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 32 } } 	subtract_variable = { PG_urb_tp = 32 }
+			change_variable = { urban_capacity = 7 } 			divide_variable = { PG_urb_tp = 8 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 25 } } 	subtract_variable = { PG_urb_tp = 25 }
+			change_variable = { urban_capacity = 6 } 			divide_variable = { PG_urb_tp = 7 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 19 } } 	subtract_variable = { PG_urb_tp = 19 }
+			change_variable = { urban_capacity = 5 } 			divide_variable = { PG_urb_tp = 6 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 14 } } 	subtract_variable = { PG_urb_tp = 14 }
+			change_variable = { urban_capacity = 4 } 			divide_variable = { PG_urb_tp = 5 }
+		}
+		else_if = {
+			limit = { check_variable = { PG_urb_tp = 10 } } 	subtract_variable = { PG_urb_tp = 10 }
+			change_variable = { urban_capacity = 3 } 			divide_variable = { PG_urb_tp = 4 }
+		}
+		else = { divide_variable = { PG_urb_tp = 3.3 } }
+		change_variable = { which = urban_capacity which = PG_urb_tp }	# add the remaining trade power (applies to all)
+		set_variable = { which = PG_urb_tp value = 0 }
 		set_variable = { which = PS_urb1 which = urban_capacity }
-		
+
 		# 2. BUILDINGS: A "basic" flat bonus is granted. Added in a scripted effect, to not take too much space
 		PG_urban_buildings_details = yes
 		set_variable = { which = PS_urb2 which = urban_capacity }
-		
-		
-		
-		# 3. Maluses from primitive governments: Natives (HORDES, migrating ones) can't effectively use commoners, and HALF will be converted to tribals. The other half will not count, due to inefficiencies of this govenrment. TRIBALS will count 25% to tribal and 75% remains as commoners. 
+
+
+
+		# 3. Maluses from primitive governments: Natives (HORDES, migrating ones) can't effectively use commoners, and HALF will be converted to tribals. The other half will not count, due to inefficiencies of this govenrment. TRIBALS will count 25% to tribal and 75% remains as commoners.
 		if = {
 			limit = { owner = { has_reform = steppe_horde_reform } }	# Careful, conquered places's commoners will flee quickly!
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } multiply_variable = { PG_urb_to_trib = 0.5 }
 			set_variable = { which = urban_capacity value = 0 }				 set_variable = { which = PG_urbtransfer value = 0 }
 		}
 		else_if = {
-			limit = { owner = { government = tribal } } 
+			limit = { owner = { government = tribal } }
 			set_variable = { which = PG_urb_to_trib which = urban_capacity } 	multiply_variable = { PG_urb_to_trib = 0.25 }
 			subtract_variable = { which = urban_capacity which = PG_urb_to_trib }
 		}
 		set_variable = { which = PS_urb3 which = urban_capacity }
-		
-		
+
+
 		# 4. CAPITAL PALACE. +1 urban and +1 upper, for all capitals (shows +2 due to later being cut into upper. Now urban =/= commoner)
 		if = { limit = { is_capital = yes } change_variable = { urban_capacity = 2 } }
 		set_variable = { which = PS_urb4 which = urban_capacity }
-		
-		
-		# 5. RELATIVE % MODIFIERS. The same modifier used in rural, as it will affect both. 
-		multiply_variable = { which = urban_capacity which = PG_dev_extra }	
+
+
+		# 5. RELATIVE % MODIFIERS. The same modifier used in rural, as it will affect both.
+		multiply_variable = { which = urban_capacity which = PG_dev_extra }
 		set_variable = { which = PS_urb5 which = urban_capacity }
-		
-		
-		
+
+
+
 		######################
 		# 	UPPER CAPACITY, coming from both rural and urban sources. It is roughly 10% of the above
 		######################
-		
-		# Rural capacity to upper: always 10% of those. // Urban to upper: dependent on institutions, starting with writing systems 10%). 
+
+		# Rural capacity to upper: always 10% of those. // Urban to upper: dependent on institutions, starting with writing systems 10%).
 		set_variable = { which = PG_ruralupper which = rural_capacity } multiply_variable = { PG_ruralupper = 0.1 }
 		set_variable = { which = PS_ruralupper1 which = PG_ruralupper }
-		
+
 		set_variable = { which = PG_urbanupper which = urban_capacity } multiply_variable = { which = PG_urbanupper which = PG_upptransfer }
 		set_variable = { which = PS_urbanupper1 which = PG_urbanupper }
-		
+
 		# What else: capital city (from urban), and buildings which take from rural if tribal or native (otherwise take from urban)
 		if = { 	limit = { is_capital = yes } change_variable = { PG_urbanupper = 1 } }
-		if = { 
+		if = {
 			limit = { owner = { NOT = { government = tribal } NOT = { government = native } } }
 			PG_urbanupper_capital = yes			# extra uppers for high total development only in non-tribals
 		}
 		set_variable = { which = PS_urbanupper2 which = PG_urbanupper }
-		
-		if = { 
+
+		if = {
 			limit = { owner = { OR = { government = tribal government = native } } }
 			PG_ruralupper_buildings_detail = yes
 		}
 		else = { PG_urbanupper_buildings_detail = yes }
 		set_variable = { which = PS_urbanupper3 which = PG_urbanupper }
-		
+
 		######################
 		# 	ASSIGN CAPACITIES to Tribal, Commoner and Upper pops
 		######################
-		
+
 		# Tribal population capacity: Rural - transfer to urban - rural transfer to upper. Always minimum 1.00
 		# Commoner population capacity: Urban + transfer to urban - urban transfer to upper
 		# Upper population capacity: Rural to upper + Urban to upper
-		
-		set_variable = { which = PG_trb_cap which = rural_capacity } 
+
+		set_variable = { which = PG_trb_cap which = rural_capacity }
 		change_variable = { which = PG_trb_cap which = PG_urb_to_trib }		# Commoners that count as tribal (tribal gov type)
-		
+
 		set_variable = { which = PG_com_cap which = PG_urbtransfer }		# Commoner cap will start being used to subtract rural transfer
 		multiply_variable = { which = PG_com_cap which = rural_capacity }
-		
+
 		set_variable = { which = PS_rur_to_com which = PG_com_cap }
 		set_variable = { which = PS_com_cap1 which = PG_com_cap }
-		
+
 		subtract_variable = { which = PG_trb_cap which = PG_com_cap }
 		subtract_variable = { which = PG_trb_cap which = PG_ruralupper }
 		set_variable = { which = PS_trb_cap1 which = PG_trb_cap } subtract_variable = { which = PS_trb_cap1 which = PG_urb_to_trib }
-		
-		
+
+
 		change_variable = { which = PG_com_cap which = urban_capacity }		# Now commoner cap (was only % rur to urban) adds urban itself
 		subtract_variable = { which = PG_com_cap which = PG_urbanupper }
 		set_variable = { which = PS_com_cap2 which = PG_urbanupper }
 		set_variable = { which = PS_com_cap3 which = urban_capacity } subtract_variable = { which = PS_com_cap3 which = PG_urbanupper }
-		
+
 		set_variable = { which = PG_upp_cap which = PG_ruralupper }
 		change_variable = { which = PG_upp_cap which = PG_urbanupper }
-		
+
 		# Condition: having certain basic buildings will allow at least 1 commoner or 1 upper, if it's not there. Taken from tribal cap
 		if = {
 			limit = { NOT = { check_variable = { PG_com_cap = 1 } } PG_any_prod_port_trade = yes } 	# scripted trigger, several buildings exist
@@ -1160,48 +1160,48 @@ province_event = {
 			set_variable = { which = PS_trb_cap3 which = PG_upp_now }		multiply_variable = { which = PS_trb_cap3 value = -1 }
 		}
 		else = { set_variable = { which = PS_trb_upp value = 0 } set_variable = { which = PS_trb_cap3 value = 0 } }	# to appear in the modifier
-		
+
 		# Condition: avoid having less than 1 tribal
 		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
-		
-		
-		
+
+
+
 		######################
 		# GROWTH RATIOS
 		######################
-		
-		# Now that we have all the capacities allocated in tribal/commoner/upper, it's time to check against the current population values. It is a simple division, being the neutral value 1.00. Anything over 1 will trigger the (hidden) events to grow and promote; anything under 1 will trigger the ones to starve, migrate, demote, etc. 
-		
+
+		# Now that we have all the capacities allocated in tribal/commoner/upper, it's time to check against the current population values. It is a simple division, being the neutral value 1.00. Anything over 1 will trigger the (hidden) events to grow and promote; anything under 1 will trigger the ones to starve, migrate, demote, etc.
+
 		# Current
 		export_to_variable = { which = PG_trb_now value = base_manpower }
 		export_to_variable = { which = PG_com_now value = base_production }
 		export_to_variable = { which = PG_upp_now value = base_tax }
 		set_variable = { which = PG_tot_now which = PG_trb_now } 	change_variable = { which = PG_tot_now which = PG_com_now }	# tot = total
 		change_variable = { which = PG_tot_now which = PG_upp_now } set_variable = { which = PG_tot_cap which = PG_trb_cap }
-		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap } 
-		
+		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap }
+
 		# Growths
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0.2 } }
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0.2 } }
-		
+
 		set_variable = { which = PG_trb_grow which = PG_trb_cap } 		 divide_variable = { which = PG_trb_grow which = PG_trb_now }
 		set_variable = { which = PG_com_grow which = PG_com_cap } 		 divide_variable = { which = PG_com_grow which = PG_com_now }
 		set_variable = { which = PG_upp_grow which = PG_upp_cap } 		 divide_variable = { which = PG_upp_grow which = PG_upp_now }
-		
+
 		if = { limit = { NOT = { check_variable = { PG_com_now = 1 } } } set_variable = { which = PG_com_now value = 0 } }	# reset
 		if = { limit = { NOT = { check_variable = { PG_upp_now = 1 } } } set_variable = { which = PG_upp_now value = 0 } }	# reset
-		
-		
+
+
 		# MODIFIERS, province level
 		# Now using the local modifiers local_development_cost. It works in a MULTIPLICATIVELY way and affects growth the more extreme it is
-			# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type. 
-			# If it is left inside the modifier, it will be linear. It is better having it non-linear (very bad at first, not so after)
-			
-			# Let's track growth components
-			set_variable = { which = PS_trbgrw_0 which = PG_trb_grow }
-			set_variable = { which = PS_comgrw_0 which = PG_com_grow }
-			set_variable = { which = PS_uppgrw_0 which = PG_upp_grow }
-		
+		# I'm leaving devastation / prosperity and monsoons separate, because the growth effect is different depending on the pop type.
+		# If it is left inside the modifier, it will be linear. It is better having it non-linear (very bad at first, not so after)
+
+		# Let's track growth components
+		set_variable = { which = PS_trbgrw_0 which = PG_trb_grow }
+		set_variable = { which = PS_comgrw_0 which = PG_com_grow }
+		set_variable = { which = PS_uppgrw_0 which = PG_upp_grow }
+
 		trigger_switch = {
 			on_trigger = devastation
 			75 = { PG_growth_modify_all = { trb = 0.20 com = 0.10 upp = 0.10 } }
@@ -1216,10 +1216,10 @@ province_event = {
 			50 = { PG_growth_modify_all = { trb = 1.10 com = 1.10 upp = 1.10 } }
 			25 = { PG_growth_modify_all = { trb = 1.10 com = 1.05 upp = 1.05 } }
 		}
-			set_variable = { which = PS_trbgrw_1 which = PG_trb_grow }
-			set_variable = { which = PS_comgrw_1 which = PG_com_grow }
-			set_variable = { which = PS_uppgrw_1 which = PG_upp_grow }
-			
+		set_variable = { which = PS_trbgrw_1 which = PG_trb_grow }
+		set_variable = { which = PS_comgrw_1 which = PG_com_grow }
+		set_variable = { which = PS_uppgrw_1 which = PG_upp_grow }
+
 		# Monsoons reduces capacity but increases growth
 		trigger_switch = {
 			on_trigger = province_group
@@ -1227,39 +1227,39 @@ province_event = {
 			pg_monsoon_normal_group = { multiply_variable = { PG_trb_grow = 1.15 } }
 			pg_monsoon_severe_group = { multiply_variable = { PG_trb_grow = 1.25 } }
 		}
-			set_variable = { which = PS_trbgrw_2 which = PG_trb_grow }
-			
+		set_variable = { which = PS_trbgrw_2 which = PG_trb_grow }
+
 		export_to_variable = { which = PG_grow_extra value = modifier:local_development_cost }		# as 0.2 for +20%
 		change_variable = { PG_grow_extra = 1 }														# now 1.2, will modify things
-		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }						
-		multiply_variable = { which = PG_com_grow which = PG_grow_extra }						
-		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }						
-			set_variable = { which = PS_trbgrw_3 which = PG_trb_grow }
-			set_variable = { which = PS_comgrw_3 which = PG_com_grow }
-			set_variable = { which = PS_uppgrw_3 which = PG_upp_grow }
-		
+		multiply_variable = { which = PG_trb_grow which = PG_grow_extra }
+		multiply_variable = { which = PG_com_grow which = PG_grow_extra }
+		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }
+		set_variable = { which = PS_trbgrw_3 which = PG_trb_grow }
+		set_variable = { which = PS_comgrw_3 which = PG_com_grow }
+		set_variable = { which = PS_uppgrw_3 which = PG_upp_grow }
+
 		# MODIFIERS, country level
 		# Country modifiers affect ADDITIVELY
-		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner } 
-		
+		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner }
+
 		change_variable = { which = PG_trb_grow which = PG_grow_country }
 		change_variable = { which = PG_com_grow which = PG_grow_country }
 		change_variable = { which = PG_upp_grow which = PG_grow_country }
-			set_variable = { which = PS_trbgrw_4 which = PG_trb_grow }
-			set_variable = { which = PS_comgrw_4 which = PG_com_grow }
-			set_variable = { which = PS_uppgrw_4 which = PG_upp_grow }
-		
-		
+		set_variable = { which = PS_trbgrw_4 which = PG_trb_grow }
+		set_variable = { which = PS_comgrw_4 which = PG_com_grow }
+		set_variable = { which = PS_uppgrw_4 which = PG_upp_grow }
+
+
 		######################
 		#	OTHER EFFECTS
 		######################
 		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
 		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
 		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
-		
+
 		# Find how much information is flowing to this province. Will allow for long-range migration
-		PG_update_inforange = yes		
-		
+		PG_update_inforange = yes
+
 		# If there was not enough capacity for upper or commoner, change the modifier. Otherwise, return to the old one
 		if = {
 			limit = { OR = { has_province_flag = PG_move_all has_province_flag = PG_move_upp_com } }
@@ -1268,26 +1268,26 @@ province_event = {
 		}
 		else_if = {
 			limit = { has_province_modifier = popgrowth_viewer2 }
-			remove_province_modifier  = popgrowth_viewer2 
+			remove_province_modifier  = popgrowth_viewer2
 			add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
 		}
-		
+
 		# Clean variables to be good-looking (/100 for rounding; x100 for percentages)
-			# Caps
-		divide_variable = { PG_trb_cap = 100 }  multiply_variable = { PG_trb_cap = 100 }	# 4.567 / 100 = 0.045 x 100 = 4.5. 
+		# Caps
+		divide_variable = { PG_trb_cap = 100 }  multiply_variable = { PG_trb_cap = 100 }	# 4.567 / 100 = 0.045 x 100 = 4.5.
 		divide_variable = { PG_com_cap = 100 }  multiply_variable = { PG_com_cap = 100 }
 		divide_variable = { PG_upp_cap = 100 }  multiply_variable = { PG_upp_cap = 100 }
 		divide_variable = { PG_tot_cap = 100 }  multiply_variable = { PG_tot_cap = 100 }
 		divide_variable = { rural_capacity = 100 }  multiply_variable = { rural_capacity = 100 }
 		divide_variable = { urban_capacity = 100 }  multiply_variable = { urban_capacity = 100 }
-		
+
 		divide_variable = { PG_urbtransfer = 10 }  multiply_variable = { PG_urbtransfer = 1000 }
 		divide_variable = { PG_upptransfer = 10 }  multiply_variable = { PG_upptransfer = 1000 }
 		divide_variable = { PG_trb_grow = 10 } multiply_variable = { PG_trb_grow = 1000 }
 		divide_variable = { PG_com_grow = 10 } multiply_variable = { PG_com_grow = 1000 }
 		divide_variable = { PG_upp_grow = 10 } multiply_variable = { PG_upp_grow = 1000 }
-		
-		
+
+
 		##
 		# DETAILED: SHOW EACH VARIATION
 		## Must be from higherst to lowest, or they will not be there for the next one
@@ -1298,63 +1298,63 @@ province_event = {
 		subtract_variable = { which = PS_terrmax which = PS_rur2 }
 		subtract_variable = { which = PS_rur2 which = PS_rur1 }
 		subtract_variable = { which = PS_rur1 which = prov_size }
-		
+
 		subtract_variable = { which = PG_fisher3 which = PG_fisher2 }
 		subtract_variable = { which = PG_fisher2 which = PG_fisher1 }
-		
+
 		subtract_variable = { which = PS_urb5 which = PS_urb4 }
 		subtract_variable = { which = PS_urb4 which = PS_urb3 }
 		subtract_variable = { which = PS_urb3 which = PS_urb2 }
 		subtract_variable = { which = PS_urb2 which = PS_urb1 }
 		divide_variable = { PS_urb2 = 100 } 		multiply_variable = { PS_urb2 = 100 }
 		divide_variable = { PS_trade_power = 100 } 	multiply_variable = { PS_trade_power = 100 }
-		
+
 		subtract_variable = { which = PS_urbanupper3 which = PS_urbanupper2 }
 		subtract_variable = { which = PS_urbanupper2 which = PS_urbanupper1 }
-		
+
 		subtract_variable = { which = PS_urbtransfer3 which = PS_urbtransfer2 } multiply_variable = { PS_urbtransfer3 = 100 }
 		subtract_variable = { which = PS_urbtransfer2 which = PS_urbtransfer1 } multiply_variable = { PS_urbtransfer2 = 100 }
 		subtract_variable = { which = PG_upptransfer2 which = PG_upptransfer1 } multiply_variable = { PG_upptransfer2 = 100 }
 		multiply_variable = { PG_upptransfer1 = 100 }	multiply_variable = { PS_urbtransfer1 = 100 }
-		
+
 		subtract_variable = { which = PS_trbgrw_4 which = PS_trbgrw_3 }
 		subtract_variable = { which = PS_trbgrw_3 which = PS_trbgrw_2 }
 		subtract_variable = { which = PS_trbgrw_2 which = PS_trbgrw_1 }
-		subtract_variable = { which = PS_trbgrw_1 which = PS_trbgrw_0 } 
-		
+		subtract_variable = { which = PS_trbgrw_1 which = PS_trbgrw_0 }
+
 		subtract_variable = { which = PS_comgrw_4 which = PS_comgrw_3 }
 		subtract_variable = { which = PS_comgrw_3 which = PS_comgrw_1 }
 		subtract_variable = { which = PS_comgrw_1 which = PS_comgrw_0 }
-		
+
 		subtract_variable = { which = PS_uppgrw_4 which = PS_uppgrw_3 }
 		subtract_variable = { which = PS_uppgrw_3 which = PS_uppgrw_1 }
 		subtract_variable = { which = PS_uppgrw_1 which = PS_uppgrw_0 }
-		
+
 		multiply_variable = { PS_trbgrw_0 = 100 } multiply_variable = { PS_trbgrw_1 = 100 } multiply_variable = { PS_trbgrw_2 = 100 }
-		multiply_variable = { PS_trbgrw_3 = 100 } multiply_variable = { PS_trbgrw_4 = 100 } 
-		multiply_variable = { PS_comgrw_0 = 100 } multiply_variable = { PS_comgrw_1 = 100 } 
+		multiply_variable = { PS_trbgrw_3 = 100 } multiply_variable = { PS_trbgrw_4 = 100 }
+		multiply_variable = { PS_comgrw_0 = 100 } multiply_variable = { PS_comgrw_1 = 100 }
 		multiply_variable = { PS_comgrw_3 = 100 } multiply_variable = { PS_comgrw_4 = 100 }
 		multiply_variable = { PS_uppgrw_0 = 100 } multiply_variable = { PS_uppgrw_1 = 100 }
 		multiply_variable = { PS_uppgrw_3 = 100 } multiply_variable = { PS_uppgrw_4 = 100 }
-		
-		set_variable = { which = PS_devextra which = PG_dev_extra } 
+
+		set_variable = { which = PS_devextra which = PG_dev_extra }
 		subtract_variable = { PS_devextra = 1 } multiply_variable = { PS_devextra = 100 }
-		set_variable = { which = PS_growextra which = PG_grow_extra } 
+		set_variable = { which = PS_growextra which = PG_grow_extra }
 		subtract_variable = { PS_growextra = 1 } multiply_variable = { PS_growextra = 100 }
-		set_variable = { which = PS_growctry which = PG_grow_country } 
+		set_variable = { which = PS_growctry which = PG_grow_country }
 		subtract_variable = { PS_growctry = 1 } multiply_variable = { PS_growctry = 100 }
-		
+
 		PG_detail_zerovalues = yes
-		
+
 	}
-	
-	
+
+
 	option = {
 		name = "population_capacity.5.a"
 		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
 		add_province_modifier = { name = PGD_growth_viewer duration = 30 }
 	}
-	
+
 }
 
 
@@ -1367,69 +1367,69 @@ province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
 	is_triggered_only = yes
 	#hidden = yes
 	#fire_only_once = yes
-	
+
 	#mean_time_to_happen = {
-	#	months = 2	
+	#	months = 2
 	#}
 	immediate = {
 		export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
 		export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
 		export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
-		change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav } 
-		#set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 } 
-		
+		change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav }
+		#set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 }
+
 		# Now we have the amount of ships to be deducted
-		if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_navalsize = { amt = 16 } } 
-		if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_navalsize = { amt = 8 } } 
-		if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_navalsize = { amt = 4 } } 
-		if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_navalsize = { amt = 2 } } 
-		if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_navalsize = { amt = 1 } } 
-		if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_navalsize = { amt = 0.5 } } 
-		if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_navalsize = { amt = 0.25 } } 
-		if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_navalsize = { amt = 0.125 } } 
+		if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_navalsize = { amt = 16 } }
+		if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_navalsize = { amt = 8 } }
+		if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_navalsize = { amt = 4 } }
+		if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_navalsize = { amt = 2 } }
+		if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_navalsize = { amt = 1 } }
+		if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_navalsize = { amt = 0.5 } }
+		if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_navalsize = { amt = 0.25 } }
+		if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_navalsize = { amt = 0.125 } }
 		set_variable = { which = PG_nav value = 0 }
-		
+
 	}
-	
+
 	option = {
 		name = "population_capacity.99.1"
 		add_province_modifier = { name = PG_dev_01 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.2"
 		add_province_modifier = { name = PG_dev_02 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.3"
 		add_province_modifier = { name = PG_dev_03 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.4"
 		add_province_modifier = { name = PG_dev_04 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.5"
 		add_province_modifier = { name = PG_dev_05 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.6"
 		add_province_modifier = { name = PG_dev_06 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.7"
 		add_province_modifier = { name = PG_dev_07 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.8"
 		add_province_modifier = { name = PG_dev_08 duration = 20 }
-		
+
 	}
 	option = {
 		name = "population_capacity.99.9"
@@ -1439,12 +1439,12 @@ province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
 			}
 		}
 	}
-	
+
 	option = {
 		name = "population_capacity.7.99"	# (nothing, close this)
-		
+
 	}
-	
+
 }
 
 

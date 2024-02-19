@@ -11,12 +11,12 @@ country_event = {
 	is_triggered_only = yes
 	hidden = yes
 	fire_only_once = yes
-	
+
 	trigger = {
 		NOT = { has_global_flag = game_start_flag }
 		ai = no
 	}
-	
+
 	immediate = {
 		#One time only scripted effects
 		iu_initialize_schools_effect = yes
@@ -28,10 +28,10 @@ country_event = {
 		#################################
 		set_global_flag = game_start_flag
 		# Popgrowth
-		set_global_flag = popgrowth_vanilla	
+		set_global_flag = popgrowth_vanilla
 		set_global_flag = coloredvassals_ai_yes
 		country_event = { id = startup.2 }	# adds popgrowth base values
-		
+
 		every_country = {
 			# Institutions
 			if = {
@@ -48,7 +48,7 @@ country_event = {
 					duration = -1
 				}
 			}
-			
+
 			# Estates
 			if = {
 				limit = {
@@ -77,39 +77,39 @@ country_event = {
 				}
 			}
 		}
-		
+
 		# Slavery
-		
+
 		every_country = {
 			export_to_variable = { which = slaves value = total_development }
 			# effect of total development: 30% to 10% total value
 			trigger_switch = {
 				on_trigger = total_development
 				1000 = { multiply_variable = { slaves = 1.01 } } # 10%
-				500 = { multiply_variable = { slaves = 1.2 } }	
+				500 = { multiply_variable = { slaves = 1.2 } }
 				200 = { multiply_variable = { slaves = 1.5 } }	# 15%: 250 dev = 2.500.000 population x 15% = 375.000. 250 x 1.5 = 375 (thousand). OK
-				100 = { multiply_variable = { slaves = 1.8 } }	
+				100 = { multiply_variable = { slaves = 1.8 } }
 				50 = { multiply_variable = { slaves = 2.5 }	}
 				10 = { multiply_variable = { slaves = 3.0 }	}
 				1 = { multiply_variable = { slaves = 3.5 } }	# 4 dev = 40.000 population x 35% = 14000. 4 x 3.5 = 14. OK
 			}
 			set_country_flag = SD_priv_recent_change		# updater for privileges
-			
+
 			# Assign slave types by government type. Values: Native -60%, Tribal -30%, Republics -10%, Oligarchy 0%, Monarchy +10%
 			trigger_switch = {
 				on_trigger = government
 				native = { 			# shouldn't have slaves estate, anyway
-					multiply_variable = { slaves = 0.4 } 
-					set_estate_privilege = estate_slaves_status_1 	# war captives
-					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
-				}	
-				tribal = { 			# shouldn't have slaves estate, anyway
-					multiply_variable = { slaves = 0.7 } 
+					multiply_variable = { slaves = 0.4 }
 					set_estate_privilege = estate_slaves_status_1 	# war captives
 					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
 				}
-				republic = { 
-					multiply_variable = { slaves = 0.9 } 
+				tribal = { 			# shouldn't have slaves estate, anyway
+					multiply_variable = { slaves = 0.7 }
+					set_estate_privilege = estate_slaves_status_1 	# war captives
+					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
+				}
+				republic = {
+					multiply_variable = { slaves = 0.9 }
 					set_estate_privilege = estate_slaves_status_3 	# normal type
 					set_estate_privilege = estate_slaves_jobs_2		# normal use
 				}
@@ -117,25 +117,25 @@ country_event = {
 					set_estate_privilege = estate_slaves_status_3 	# normal type
 					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
 				}
-				monarchy = { 
-					multiply_variable = { slaves = 1.10 } 
+				monarchy = {
+					multiply_variable = { slaves = 1.10 }
 					set_estate_privilege = estate_slaves_status_2 	# serfdom
 					set_estate_privilege = estate_slaves_jobs_1		# farming and mining
 				}
-				
+
 			}
 			set_estate_privilege = estate_slaves_condition_3		# 3 is normal. Ranges from 1 to 7
 			change_estate_land_share = { estate = estate_slaves share = -100 }
-			
+
 			every_owned_province = {
 				limit = { SD_slavesprod_check = yes }
 				SD_update_provslots = yes
 			}
 		}
-		
+
 		# Flag, to remove naval forcelimit from inland provinces, and -50% in "river ports"
 		PG_add_river_ports = yes
-		
+
 		# Correct production buildings where they are not correct
 		every_province = {
 			limit = {
@@ -157,7 +157,7 @@ country_event = {
 				NOT = { trade_goods = dyes }	NOT = { trade_goods = silk }
 				NOT = { trade_goods = glas }	NOT = { trade_goods = pearls }   NOT = { trade_goods = exotic_animals  }
 				NOT = { trade_goods = ivory }	NOT = { trade_goods = tar_good } NOT = { trade_goods = metalware }
-				
+
 			}
 			correct_production_tradegood = yes
 		}
@@ -171,7 +171,7 @@ country_event = {
 			}
 			correct_production_tradegood = yes
 		}
-		
+
 		every_country = {
 			limit = {
 				government = monarchy
@@ -182,10 +182,10 @@ country_event = {
 			set_ruler_flag = ruler_coronation
 		}
 	}
-	
+
 	option = {
-		name = "startup.1.a"	
-		
+		name = "startup.1.a"
+
 	}
 }
 
@@ -200,23 +200,23 @@ country_event = {
 	major = yes
 	fire_only_once = yes
 	is_triggered_only = yes		# Fired by the popgrowth menu, in the country decisions
-	
+
 	#trigger = {
 	#	NOT = { has_global_flag = popgrowth_initiated }
 	#	NOT = { ai = yes }
 	#}
-	
+
 	immediate = {
 		set_global_flag = popgrowth_initiated	# always
 		clr_global_flag = popgrowth_vanilla		# disables the vanilla growth mechanism
 		set_global_flag = popgrowth_running		# applies the mod itself, all other events
-		
-		
-		# here comes the BIG part of the population mechanics. Basically this gives each province a "province size" that is used to define how much population it can sustain. Then this will be multiplied by any variable that affects agriculture (ie winters, monsoons, aridity); some of those can be offset with technology or certain buildings. 
-		# anyway, this number is the base tribal number, so if a province has got value 5, it may sustain 5 tribal pops. More capacity than current population, will allow it to keep growing. 
-		# this number of size is the amount of pixels in the file Provinces.bmp (folder mod/IU/maps), retrievable thanks to trigger "province_size". 
-		# The table that we use is this one. The thresholds have been tested A LOT, and we welcome more feedback on that. I could share the excel file that I use for analysis, if you request it through Discord. 
-		
+
+
+		# here comes the BIG part of the population mechanics. Basically this gives each province a "province size" that is used to define how much population it can sustain. Then this will be multiplied by any variable that affects agriculture (ie winters, monsoons, aridity); some of those can be offset with technology or certain buildings.
+		# anyway, this number is the base tribal number, so if a province has got value 5, it may sustain 5 tribal pops. More capacity than current population, will allow it to keep growing.
+		# this number of size is the amount of pixels in the file Provinces.bmp (folder mod/IU/maps), retrievable thanks to trigger "province_size".
+		# The table that we use is this one. The thresholds have been tested A LOT, and we welcome more feedback on that. I could share the excel file that I use for analysis, if you request it through Discord.
+
 		# Size / pixel to pixel, delta: absolute - marginal, comment
 		#  1:     1 to    50 px (only islands and such. Smallest one is 6240 Pithekoussai with 14 pixels, you know where is it?)
 		#  2:    50 to   150 px (delta  100 -  50 )
@@ -228,7 +228,7 @@ country_event = {
 		#  8:  1100 to  1425 px (delta  325 -  50 )
 		#  9:  1425 to  1800 px (delta  375 -  50 )
 		# 10:  1800 to  2250 px (delta  450 -  75 )
-		# 11:  2250 to  2775 px (delta  525 -  75 ) only 551 land provinces (out of 8.000 aprox) are size >10. A 6,9% of all. 
+		# 11:  2250 to  2775 px (delta  525 -  75 ) only 551 land provinces (out of 8.000 aprox) are size >10. A 6,9% of all.
 		# 12:  2775 to  3400 px (delta  625 - 100 )
 		# 13:  3400 to  4125 px (delta  725 - 100 )
 		# 14:  4125 to  5000 px (delta  875 - 150 )
@@ -238,16 +238,16 @@ country_event = {
 		# 18:  8600 to 10175 px (delta 1575 - 200 )
 		# 19: 10175 to 11950 px (delta 1775 - 200 )
 		# 20: 11950 to   max px (delta  max - max )
-		
-		
-		
+
+
+
 		hidden_effect = {
-			
+
 			# Remember to keep updating this database. Last update: 18/08/2023 (Popgrowth version 4, sizes up to 20)
-			# Now the size is not needed to be maintained, but we still keep a list of buffed and nerfed provs. 
-			# Besides, we need to add the variable "prov_id_base" to locate provinces in the game events, anyway. We can't get rid of this 8000+ line block. 
-			
-			
+			# Now the size is not needed to be maintained, but we still keep a list of buffed and nerfed provs.
+			# Besides, we need to add the variable "prov_id_base" to locate provinces in the game events, anyway. We can't get rid of this 8000+ line block.
+
+
 			1 = { set_variable = { which = prov_size value = 1 } set_variable = { which = prov_id_base value = 1 } } # Bonus of 1
 			2 = { set_variable = { which = prov_size value = 1 } set_variable = { which = prov_id_base value = 2 } } # Bonus of 1
 			3 = { set_variable = { which = prov_size value = 0 } set_variable = { which = prov_id_base value = 3 } }
@@ -8221,7 +8221,7 @@ country_event = {
 			8628 = { set_variable = { which = prov_size value = 0 } set_variable = { which = prov_id_base value = 8628 } }
 			8629 = { set_variable = { which = prov_size value = 0 } set_variable = { which = prov_id_base value = 8629 } }
 
-			
+
 			# Trade node "capitals", to interact on the trade_limits events
 			3419 = { set_province_flag = tn_capital } # northern_steppe
 			6629 = { set_province_flag = tn_capital } # filipinas_node
@@ -8327,8 +8327,8 @@ country_event = {
 
 			# Common values
 			every_province = {
-				
-				# New method of extracting pixels, this way new provinces are also added automatically. 
+
+				# New method of extracting pixels, this way new provinces are also added automatically.
 				export_to_variable = { which = pixels value = trigger_value:province_size }
 				if = { 		limit = { check_variable = { pixels = 11950 } } change_variable = { prov_size = 20 } }
 				else_if = { limit = { check_variable = { pixels = 10175 } } change_variable = { prov_size = 19 } }
@@ -8350,8 +8350,8 @@ country_event = {
 				else_if = { limit = { check_variable = { pixels = 150 } }	change_variable = { prov_size = 3 } }
 				else_if = { limit = { check_variable = { pixels = 50 } }	change_variable = { prov_size = 2 } }
 				else = { change_variable = { prov_size = 1 } }
-				
-				
+
+
 				# Show the province size in the trade mapmode; for the first days only
 				if = { 		limit = { check_variable = { prov_size = 11 } } add_province_modifier = { name = PS_provsize11 duration = 30 } }
 				else_if = { limit = { check_variable = { prov_size = 10 } } add_province_modifier = { name = PS_provsize10 duration = 30 } }
@@ -8365,15 +8365,15 @@ country_event = {
 				else_if = { limit = { check_variable = { prov_size = 2 } }  add_province_modifier = { name = PS_provsize02 duration = 30 } }
 				else_if = { limit = { check_variable = { prov_size = 1 } }  add_province_modifier = { name = PS_provsize01 duration = 30 } }
 				else = { set_variable = { which = prov_size value = 1 } 	add_province_modifier = { name = PS_provsize_no duration = 30 } }
-				
+
 				export_to_variable = { which = PS_trb_init value = base_manpower }
 				export_to_variable = { which = PS_urb_init value = base_production }
 				export_to_variable = { which = PS_upp_init value = base_tax }
 				export_to_variable = { which = PS_tot_init value = development }
 				export_to_variable = { which = PS_year_init value = trigger_value:is_year }	# all used for statistics tracking
-				
+
 				province_event = { id = population_capacity.4 }	# new version, v4.0
-				
+
 				# adding conditions, in case that the starting dev > capacity. Gives 100-year exception to migration and demotion
 				if = {
 					limit = { check_variable = { which = PS_trb_init which = PG_trb_cap } }
@@ -8383,20 +8383,20 @@ country_event = {
 					limit = { check_variable = { which = PS_urb_init which = PG_com_cap } }
 					add_permanent_province_modifier = { name = urban_pause duration = 36500 hidden = yes }
 				}
-				
-				
+
+
 				# Production and value, to find trade node capacity
 				DE_update_goods = yes
 				DE_update_value = yes
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	option = {
-		name = "startup.2.a"	
+		name = "startup.2.a"
 		hidden_effect = {
 			every_province = {
 				if = {
@@ -8405,44 +8405,44 @@ country_event = {
 				}
 			}
 			set_variable = {                        # admin stress variable
-                which = easy_ride
-                value = 1
-            }
+				which = easy_ride
+				value = 1
+			}
 		}
 	}
 
-	after = { 
-	    hidden_effect = { country_event = { id = sieges.3 } }
+	after = {
+		hidden_effect = { country_event = { id = sieges.3 } }
 	}
 }
 
 #country_event = {
-	#id = startup.3
-	#title = "startup.3.t"
-	#desc = "startup.3.d"
-	#picture = culture
-	#is_triggered_only = yes
-	#hidden = yes			# hidden! it just prepares the events that will fire
-	#fire_only_once = yes
-	
-	#trigger = {
-		#NOT = { has_global_flag = game_start_pg_ss_menus }
-		#ai = no
-	#}
-	
-	#mean_time_to_happen = {		
-		#days = 1
-	#}
-	
-	#immediate = {
-		#set_global_flag = game_start_pg_ss_menus
-		#country_event = { id = population_capacity.2 days = 1 }
-		#country_event = { id = sieges.3 days = 4 }
-	#}
-	
-	#option = {
-		#name = "startup.3.a"
-	#}
+#id = startup.3
+#title = "startup.3.t"
+#desc = "startup.3.d"
+#picture = culture
+#is_triggered_only = yes
+#hidden = yes			# hidden! it just prepares the events that will fire
+#fire_only_once = yes
+
+#trigger = {
+#NOT = { has_global_flag = game_start_pg_ss_menus }
+#ai = no
+#}
+
+#mean_time_to_happen = {
+#days = 1
+#}
+
+#immediate = {
+#set_global_flag = game_start_pg_ss_menus
+#country_event = { id = population_capacity.2 days = 1 }
+#country_event = { id = sieges.3 days = 4 }
+#}
+
+#option = {
+#name = "startup.3.a"
+#}
 #}
 
 country_event = {
@@ -8452,21 +8452,21 @@ country_event = {
 	picture = culture
 	fire_only_once = yes
 	is_triggered_only = yes
-	
+
 	trigger = { ai = no }
-	
+
 	option = {
-	    name = "startup.4.a" #literally does nothing, does not enable admin stress
+		name = "startup.4.a" #literally does nothing, does not enable admin stress
 	}
-	
+
 	option = {
-	    name = "startup.4.c" #permanently disable admin stress for this save
+		name = "startup.4.c" #permanently disable admin stress for this save
 		hidden_effect = {
-		    change_variable = {
-            which = easy_ride
-            value = -1
-            }
-		
+			change_variable = {
+				which = easy_ride
+				value = -1
+			}
+
 			remove_country_modifier = inefficient_land_organization_modifier_1
 			remove_country_modifier = inefficient_land_organization_modifier_2
 			remove_country_modifier = inefficient_land_organization_modifier_3
@@ -8479,7 +8479,7 @@ country_event = {
 			remove_country_modifier = inefficient_land_organization_modifier_10
 			remove_country_modifier = inefficient_land_organization_modifier_11
 			remove_country_modifier = inefficient_land_organization_modifier_12
-			
+
 			remove_country_modifier = border_garrisons_modifier_1
 			remove_country_modifier = border_garrisons_modifier_2
 			remove_country_modifier = border_garrisons_modifier_3
@@ -8490,7 +8490,7 @@ country_event = {
 			remove_country_modifier = border_garrisons_modifier_8
 			remove_country_modifier = border_garrisons_modifier_9
 			remove_country_modifier = border_garrisons_modifier_10
-			
+
 			remove_country_modifier = administrative_stress_modifier_1
 			remove_country_modifier = administrative_stress_modifier_2
 			remove_country_modifier = administrative_stress_modifier_3
@@ -8515,15 +8515,15 @@ country_event = {
 	picture = culture
 	fire_only_once = yes
 	is_triggered_only = yes
-	
+
 	trigger = {}
-	
+
 	option = {
-	    name = "startup.5.a"
+		name = "startup.5.a"
 		hidden_effect = { set_global_flag = historical_winners_modifier_flag }
 	}
 	option = {
-	    name = "startup.5.b"
+		name = "startup.5.b"
 	}
 }
 
@@ -8535,14 +8535,14 @@ country_event = {
 	picture = culture
 	fire_only_once = yes
 	is_triggered_only = yes
-	
+
 	trigger = {}
-	
+
 	option = {
-	    name = "startup.6.a"
+		name = "startup.6.a"
 	}
 	option = {
-	    name = "startup.6.b"
+		name = "startup.6.b"
 		hidden_effect = { override_country_names_start_effect = yes }
 	}
 }
@@ -8557,11 +8557,11 @@ country_event = {
 	hidden = yes
 	fire_only_once = yes
 	is_triggered_only = yes
-	
+
 	trigger = {}
-	
+
 	option = {
-	    name = "startup.6.a"
+		name = "startup.6.a"
 		if = {
 			limit = {
 				NOT = { has_estate = estate_clans }
@@ -8597,7 +8597,7 @@ country_event = {
 	desc = "startup.8.d"
 	picture = helper
 	fire_only_once = yes
-	
+
 	trigger = {
 		started_in = 200.1.1
 		NOT = { ai = yes }
@@ -8609,9 +8609,9 @@ country_event = {
 			add_bookmark_help_modifier = yes
 		}
 	}
-	
+
 	option = {
-	    name = "startup.8.a"
-		add_years_of_income = 2 
+		name = "startup.8.a"
+		add_years_of_income = 2
 	}
 }
