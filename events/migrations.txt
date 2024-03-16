@@ -4,6 +4,45 @@ namespace = migrations
 # MIGRATIONS, what keeps the world moving
 ########################################################################################
 
+country_event = {
+	id = migrations.101
+	title = "migrations.1.t"
+	desc = "migrations.1.d"
+	picture = peasant_woman
+	hidden = yes
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = popgrowth_running					# to only affect if the popgrowth mechanic is active
+	}
+
+	option = {
+		name = "migrations.1.1"
+
+		every_owned_province = {
+			limit = {
+				base_manpower = 2 									# does not let the last rural pop to leave, obviously
+				NOT = { check_variable = { PG_trb_grow = 100 } }	# negative growth, anything under 1.00 (100%)
+				NOT = { has_province_modifier = rural_pause }		# condition that initial values are kept for 100 years
+			}
+			random_list = {
+				19 = {
+					# Reasons to leave. Devastation will NOT appear here, since it already influences growth.
+					modifier = { 	factor = 5.0 	check_variable = { PG_com_grow = 110 } } 			# not if there's work in the city, same province
+					modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
+					modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
+					modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
+					modifier = { 	factor = 0.05 	NOT = { check_variable = { PG_trb_grow = 40 } } } 	# they must be really miserable...
+				}
+				1 = {
+					province_event = { id = migrations.1 }
+				}
+			}
+		}
+	}
+}
+
 province_event = {
 	id = migrations.1
 	title = "migrations.1.t"
@@ -11,25 +50,13 @@ province_event = {
 	picture = peasant_woman
 	hidden = yes
 
+	is_triggered_only = yes
+
 	trigger = {
 		base_manpower = 2 									# does not let the last rural pop to leave, obviously
 		has_global_flag = popgrowth_running					# to only affect if the popgrowth mechanic is active
 		NOT = { check_variable = { PG_trb_grow = 100 } }	# negative growth, anything under 1.00 (100%)
 		NOT = { has_province_modifier = rural_pause }		# condition that initial values are kept for 100 years
-
-	}
-
-
-	mean_time_to_happen = {
-		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
-
-		# Reasons to leave. Devastation will NOT appear here, since it already influences growth.
-		modifier = { 	factor = 5.0 	check_variable = { PG_com_grow = 110 } } 			# not if there's work in the city, same province
-		modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
-		modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
-		modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
-		modifier = { 	factor = 0.05 	NOT = { check_variable = { PG_trb_grow = 40 } } } 	# they must be really miserable...
-
 	}
 
 	immediate = {
@@ -115,6 +142,43 @@ province_event = {
 
 }
 
+country_event = {
+	id = migrations.102
+	title = "migrations.2.t"
+	desc = "migrations.2.d"
+	picture = peasant_woman
+	# hidden = yes
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = popgrowth_running			# Only if popgrowth running
+		any_owned_province = {
+			has_province_flag = PG_trib_migr_start
+		}
+	}
+
+	option = {
+		name = "migrations.2.1"
+
+		random_list = {
+			3 = {
+				modifier = {
+					factor = 0.65
+					calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
+				}
+				modifier = {
+					factor = 0.65	# added to the prior one
+					calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 10 }
+				}
+			}
+			1 = {
+				country_event = { id = migrations.2 }
+			}
+		}
+	}
+}
+
 country_event = {		# 1st Country Event: tribal population want to leave. The country decides at a regional level
 	id = migrations.2
 	title = "migrations.2.t"
@@ -122,26 +186,13 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 	picture = peasant_woman
 	#hidden = no
 
+	is_triggered_only = yes
+
 	trigger = {
 		has_global_flag = popgrowth_running			# Only if popgrowth running
 		any_owned_province = {
 			has_province_flag = PG_trib_migr_start
-
 		}
-
-	}
-
-	mean_time_to_happen = {
-		months = 48				# remember, this is a country event. Won't fire that much anyway
-		modifier = {
-			factor = 0.65
-			calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
-		}
-		modifier = {
-			factor = 0.65	# added to the prior one
-			calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 10 }
-		}
-
 	}
 
 	immediate = {
