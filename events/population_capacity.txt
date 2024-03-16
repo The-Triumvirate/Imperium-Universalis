@@ -13,11 +13,9 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	picture = peasant_woman
 	hidden = yes
 
-	is_triggered_only = yes		# Happens ALWAYS, either having Popgrowth turned or on off. It does many other things
+	is_triggered_only = yes
 
-	trigger = {					# Changed: affects only the human player. This trigger forces this
-		# ai = no
-	}
+	trigger = { }		# Happens ALWAYS, either having Popgrowth turned or on off. It does many other things
 
 	immediate = {
 		hidden_effect = {
@@ -30,7 +28,10 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 					province_event = { id = population_capacity.4 }
 				}
 				# SS: Sieges and repairs
-				if = { limit = { has_building = building_ruins } SS_cleanup_old_ruins = yes } # checks if any is older than 5 years, deletes it
+				if = {
+					limit = { has_building = building_ruins }
+					SS_cleanup_old_ruins = yes # checks if any is older than 5 years, deletes it
+				}
 
 				# Trade limits, update province economic output
 				DE_update_goods = yes
@@ -82,11 +83,9 @@ country_event = {
 		trigger = { has_global_flag = popgrowth_initiated }
 		country_event = { id = popgrowth_stats.1 }
 	}
-
 	option = {
 		name = "population_capacity.2.6"	# Keep playing with vanilla mechanics
 		trigger = { has_global_flag = popgrowth_vanilla }
-
 	}
 	#option = {
 	#	name = "population_capacity.2.6"	# Show menu for automated migration options and variables
@@ -105,7 +104,6 @@ country_event = {
 		trigger = {
 			NOT = { has_global_flag = popgrowth_running }
 			NOT = { has_global_flag = popgrowth_vanilla }
-
 		}
 	}
 }
@@ -119,9 +117,6 @@ province_event = {				# PROVINCE INTERACTION MENU
 	#hidden = yes
 	#fire_only_once = yes
 
-	#mean_time_to_happen = {
-	#	months = 2
-	#}
 	immediate = {
 		hidden_effect = {
 			export_to_variable = { which = PS_trb_now value = base_manpower }
@@ -134,27 +129,22 @@ province_event = {				# PROVINCE INTERACTION MENU
 	option = {
 		name = "population_capacity.3.1"	# Show only detailed capacities in this province
 		province_event = { id = population_capacity.5 }
-
 	}
 	option = {
 		name = "population_capacity.3.2"	# Explain me the detailed Capacities, choose scope
 		owner = { country_event = { id = popgrowth_stats.401 } }
-
 	}
 	option = {
 		name = "population_capacity.3.3"	# Show population variations, only this province
 		province_event = { id = popgrowth_stats.6 }
-
 	}
 	option = {
 		name = "population_capacity.3.4"	# Show population variations, choose scope
 		owner = { country_event = { id = popgrowth_stats.402 } }
-
 	}
 	option = {
 		name = "population_capacity.3.5"	# Paint the map, based on this province
 		owner = { country_event = { id = popgrowth_stats.5 } }
-
 	}
 	option = {
 		name = "population_capacity.3.6"	# Add a new center of trade
@@ -163,15 +153,11 @@ province_event = {				# PROVINCE INTERACTION MENU
 			base_production = 1
 		}
 		province_event = { id = dyneconomy.1 }
-
 	}
-
 
 	option = {
 		name = "population_capacity.3.99"	# (nothing, close this)
-
 	}
-
 }
 
 ######
@@ -180,13 +166,12 @@ province_event = {				# PROVINCE INTERACTION MENU
 province_event = {
 	id = population_capacity.4			# Population capacity heavily re-written. This is version 4, as of March 2022
 	title = "population_capacity.4.t"	# v1 was Feb'19, v2 June'20, v3 (first in the public mod) Oct'21
-	desc = "population_capacity.4.d"
+	desc = "population_capacity.4.d"	# Optimized as of 3/6/2024
 	picture = peasant_woman
 	hidden = yes
 
 	is_triggered_only = yes
 	# will fire after what may have changed the rural population, every two years
-
 
 	immediate = {
 		# Remember that in the Popgrowth System, we start with the Rural / Urban divide, and then transform it into Tribal, Commoner and Upper population. This means that it could be that someone living in rural areas actually is working "as a commoner", because is exporting extra goods and is contributing to the state equally.
@@ -555,46 +540,64 @@ province_event = {
 
 		# Condition: having certain basic buildings will allow at least 1 commoner or 1 upper, if it's not there. Taken from tribal cap
 		if = {
-			limit = { NOT = { check_variable = { PG_com_cap = 1 } } PG_any_prod_port_trade = yes } 	# scripted trigger, several buildings exist
+			limit = {
+				NOT = { check_variable = { PG_com_cap = 1 } }
+				PG_any_prod_port_trade = yes	# scripted trigger, several buildings exist
+			}
 			set_variable = { which = PG_com_now value = 1 }
-			subtract_variable = { which = PG_com_now which = PG_com_cap }	subtract_variable = { which = PG_trb_cap which = PG_com_now }
-			change_variable = { which = PG_com_cap which = PG_com_now }		set_variable = { which = PG_com_now value = 0 }
+			subtract_variable = { which = PG_com_now which = PG_com_cap }
+			subtract_variable = { which = PG_trb_cap which = PG_com_now }
+			change_variable = { which = PG_com_cap which = PG_com_now }
+			set_variable = { which = PG_com_now value = 0 }
 		}
 		if = {
-			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } PG_any_gov_tax_temple = yes } 	# scripted trigger, several buildings exist
+			limit = {
+				NOT = { check_variable = { PG_upp_cap = 1 } }
+				PG_any_gov_tax_temple = yes 	# scripted trigger, several buildings exist
+			}
 			set_variable = { which = PG_upp_now value = 1 }
-			subtract_variable = { which = PG_upp_now which = PG_upp_cap }	subtract_variable = { which = PG_trb_cap which = PG_upp_now }
-			change_variable = { which = PG_upp_cap which = PG_upp_now }		set_variable = { which = PG_upp_now value = 0 }
+			subtract_variable = { which = PG_upp_now which = PG_upp_cap }
+			subtract_variable = { which = PG_trb_cap which = PG_upp_now }
+			change_variable = { which = PG_upp_cap which = PG_upp_now }
+			set_variable = { which = PG_upp_now value = 0 }
 		}
 
 		# Condition: avoid having less than 1 tribal
-		if = { limit = { NOT = { check_variable = { PG_trb_cap = 1 } } } set_variable = { which = PG_trb_cap value = 1 } }	# at least 1 tribal
-
+		if = {
+			limit = { NOT = { check_variable = { PG_trb_cap = 1 } } }	# at least 1 tribal
+			set_variable = { which = PG_trb_cap value = 1 }
+		}
 
 		# Condition: if there is not enough upper capacity to get one, or not enough commoner cap, these are given back to other pops, like tribals.
-		set_variable = { which = PG_new_cap which = PG_com_cap } change_variable = { which = PG_new_cap which = PG_upp_cap }
+		set_variable = { which = PG_new_cap which = PG_com_cap }
+		change_variable = { which = PG_new_cap which = PG_upp_cap }
 		if = {
 			limit = { NOT = { check_variable = { PG_new_cap = 1 } } }	# Sum of com + upp <1
 			set_province_flag = PG_move_all
-		}
-		else_if = {
-			limit = { NOT = { check_variable = { PG_upp_cap = 1 } } check_variable = { PG_new_cap = 1 } } 	# Com + upp = 1, but upp <1
-			set_province_flag = PG_move_upp_com																# Will move upper into commoner
+		} else_if = {
+			limit = {
+				NOT = { check_variable = { PG_upp_cap = 1 } }
+				check_variable = { PG_new_cap = 1 } 	# Com + upp = 1, but upp <1
+			}
+			set_province_flag = PG_move_upp_com	# Will move upper into commoner
 		}
 
 		if = {
 			limit = { has_province_flag = PG_move_all }
-			set_variable = { which = PG_trb_old which = PG_trb_cap } 	set_variable = { which = PG_com_old which = PG_com_cap }
+			set_variable = { which = PG_trb_old which = PG_trb_cap }
+			set_variable = { which = PG_com_old which = PG_com_cap }
 			set_variable = { which = PG_upp_old which = PG_upp_cap }
-			change_variable = { which = PG_trb_cap which = PG_com_cap } change_variable = { which = PG_trb_cap which = PG_upp_cap }
-			set_variable = { which = PG_com_cap value = 0 } 			set_variable = { which = PG_upp_cap value = 0 }
-		}
-		else_if = {
+			change_variable = { which = PG_trb_cap which = PG_com_cap }
+			change_variable = { which = PG_trb_cap which = PG_upp_cap }
+			set_variable = { which = PG_com_cap value = 0 }
+			set_variable = { which = PG_upp_cap value = 0 }
+		} else_if = {
 			limit = { has_province_flag = PG_move_upp_com }
 			set_variable = { which = PG_trb_old which = PG_trb_cap }
 			set_variable = { which = PG_com_old which = PG_com_cap }
 			set_variable = { which = PG_upp_old which = PG_upp_cap }
-			change_variable = { which = PG_com_cap which = PG_upp_cap } set_variable = { which = PG_upp_cap value = 0 }
+			change_variable = { which = PG_com_cap which = PG_upp_cap }
+			set_variable = { which = PG_upp_cap value = 0 }
 		}
 
 		######################
@@ -607,9 +610,12 @@ province_event = {
 		export_to_variable = { which = PG_trb_now value = base_manpower }
 		export_to_variable = { which = PG_com_now value = base_production }
 		export_to_variable = { which = PG_upp_now value = base_tax }
-		set_variable = { which = PG_tot_now which = PG_trb_now } 	change_variable = { which = PG_tot_now which = PG_com_now }	# tot = total
-		change_variable = { which = PG_tot_now which = PG_upp_now } set_variable = { which = PG_tot_cap which = PG_trb_cap }
-		change_variable = { which = PG_tot_cap which = PG_com_cap } change_variable = { which = PG_tot_cap which = PG_upp_cap }
+		set_variable = { which = PG_tot_now which = PG_trb_now }
+		change_variable = { which = PG_tot_now which = PG_com_now }	# tot = total
+		change_variable = { which = PG_tot_now which = PG_upp_now }
+		set_variable = { which = PG_tot_cap which = PG_trb_cap }
+		change_variable = { which = PG_tot_cap which = PG_com_cap }
+		change_variable = { which = PG_tot_cap which = PG_upp_cap }
 
 		# Growths
 		# avoid zero values
@@ -635,7 +641,7 @@ province_event = {
 			60 = { PG_growth_modify_all = { trb = 0.35 com = 0.25 upp = 0.25 } }
 			40 = { PG_growth_modify_all = { trb = 0.60 com = 0.50 upp = 0.40 } }
 			20 = { PG_growth_modify_all = { trb = 0.75 com = 0.70 upp = 0.60 } }
-			10 = {  multiply_variable = { PG_upp_grow = 0.80 } }					# Raised to 10, to avoid devastation from piracy
+			10 = { multiply_variable = { PG_upp_grow = 0.80 } }					# Raised to 10, to avoid devastation from piracy
 		}
 		trigger_switch = {
 			on_trigger = prosperity
@@ -658,7 +664,6 @@ province_event = {
 		multiply_variable = { which = PG_com_grow which = PG_grow_extra }
 		multiply_variable = { which = PG_upp_grow which = PG_grow_extra }
 
-
 		# MODIFIERS, country level
 		# Country modifiers affect ADDITIVELY
 		export_to_variable = { which = PG_grow_country value = modifier:development_cost who = owner }
@@ -668,33 +673,41 @@ province_event = {
 		change_variable = { which = PG_upp_grow which = PG_grow_country }
 
 
-
-
 		######################
 		#	OTHER EFFECTS
 		######################
 		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
-		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
-		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
+		if = {
+			limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } }
+			remove_province_modifier = rural_pause
+		}
+		if = {
+			limit = { check_variable = { which = PG_com_cap which = PS_urb_init } }
+			remove_province_modifier = urban_pause
+		}
 
 		# Find how much information is flowing to this province. Will allow for long-range migration
 		PG_update_inforange = yes
 
 		# If there was not enough capacity for upper or commoner, change the modifier. Otherwise, return to the old one
 		if = {
-			limit = { OR = { has_province_flag = PG_move_all has_province_flag = PG_move_upp_com } }
+			limit = {
+				OR = {
+					has_province_flag = PG_move_all
+					has_province_flag = PG_move_upp_com
+				}
+			}
 			remove_province_modifier  = popgrowth_viewer
 			add_permanent_province_modifier = { name = popgrowth_viewer2 duration = -1 }
-		}
-		else_if = {
+		} else_if = {
 			limit = { has_province_modifier = popgrowth_viewer2 }
 			remove_province_modifier  = popgrowth_viewer2
 			add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
 		}
 
 		# Update naval forcelimit nerfs, in inland and river ports
-		if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
-		else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
+		if = {		limit = { has_port = no }									 PG_inland_navalsize = yes }
+		else_if = {	limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
 
 
 		# Clean variables to be good-looking (/100 for rounding; x100 for percentages)
@@ -1344,8 +1357,6 @@ province_event = {
 
 }
 
-
-
 province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
 	id = population_capacity.99
 	title = "population_capacity.99.t"
@@ -1355,9 +1366,6 @@ province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
 	#hidden = yes
 	#fire_only_once = yes
 
-	#mean_time_to_happen = {
-	#	months = 2
-	#}
 	immediate = {
 		export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
 		export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
@@ -1433,7 +1441,3 @@ province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
 	}
 
 }
-
-
-
-

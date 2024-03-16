@@ -126,9 +126,7 @@ country_event = {
 							}
 						}
 					}
-					1 = {
-						province_event = { id = population_grow.1 }
-					}
+					1 = { province_event = { id = population_grow.1 } }
 				}
 			}
 			if = {
@@ -239,9 +237,7 @@ country_event = {
 							}
 						}
 					}
-					1 = {
-						province_event = { id = population_grow.2 }
-					}
+					1 = { province_event = { id = population_grow.2 } }
 				}
 			}
 			if = {
@@ -352,9 +348,7 @@ country_event = {
 							}
 						}
 					}
-					1 = {
-						province_event = { id = population_grow.3 }
-					}
+					1 = { province_event = { id = population_grow.3 } }
 				}
 			}
 		}
@@ -372,15 +366,10 @@ province_event = {
 
 	is_triggered_only = yes
 
-	trigger = {
-		base_manpower = 1
-		has_global_flag = popgrowth_vanilla		# vanilla = not using Popgrowth. It will also be tracked, with "PVS" pop vanilla statistics
-	}
+	trigger = { }
 
-
-	#######################################################
 	immediate = {
-		export_to_variable = {  variable_name = tribal_pop_grow value = trigger_value:base_manpower }
+		export_to_variable = { which = tribal_pop_grow value = trigger_value:base_manpower }
 		multiply_variable = { tribal_pop_grow = 0.25 }
 		change_variable = { which = tribal_pop which = tribal_pop_grow }
 
@@ -398,12 +387,13 @@ province_event = {
 			}
 		}
 	}
-	#######################################################
+
 	option = {
 		name = "province_development.1.a"
 
 	}
 }
+
 ########################################################################################
 # yearly grow - commoner population
 ########################################################################################
@@ -416,22 +406,15 @@ province_event = {
 
 	is_triggered_only = yes
 
-	trigger = {
-		base_production = 1
-		has_global_flag = popgrowth_vanilla
-	}
+	trigger = { }
 
-
-	#######################################################
 	immediate = {
-		export_to_variable = { variable_name = commoner_pop_grow value = trigger_value:base_production }
+		export_to_variable = { which = commoner_pop_grow value = trigger_value:base_production }
 		multiply_variable = { which = commoner_pop_grow value = 0.25 }
 		change_variable = { which = commoner_pop which = commoner_pop_grow }
 
 		while = {
-			limit = {
-				check_variable = { which = commoner_pop value = 2 }
-			}
+			limit = { check_variable = { which = commoner_pop value = 2 } }
 			set_variable = { which = commoner_pop value = 0 }
 			set_variable = { which = commoner_pop_grow value = 0 }
 			add_base_production = 1
@@ -444,12 +427,13 @@ province_event = {
 			}
 		}
 	}
-	#######################################################
+
 	option = {
 		name = "province_development.1.a"
 
 	}
 }
+
 ########################################################################################
 # yearly grow - upper population
 ########################################################################################
@@ -462,14 +446,10 @@ province_event = {
 
 	is_triggered_only = yes
 
-	trigger = {
-		base_tax = 1
-		has_global_flag = popgrowth_vanilla
-	}
+	trigger = { }
 
-	#######################################################
 	immediate = {
-		export_to_variable = {  variable_name = upper_pop_grow value = trigger_value:base_tax }
+		export_to_variable = { which = upper_pop_grow value = trigger_value:base_tax }
 		multiply_variable = { upper_pop_grow = 0.25 }
 		change_variable = { which = upper_pop which = upper_pop_grow }
 
@@ -487,17 +467,15 @@ province_event = {
 			}
 		}
 	}
-	#######################################################
+
 	option = {
 		name = "province_development.1.a"
-
 	}
 }
 
-####
+########################################################################################
 #	POPULATION GROWTH EVENT - POPGROWTH MECHANICS VERSION
-####
-
+########################################################################################
 country_event = {
 	id = population_grow.104
 	title = "population_grow.4.t"
@@ -526,64 +504,65 @@ country_event = {
 
 						modifier = {
 							factor = 0.2 	# Needs a kickstart for those at only 1 tribal. Starting at 2.0 growth
+							NOT = { base_manpower = 2 }
 							check_variable = { PG_trb_grow = 200 }
-							base_manpower = 1	NOT = { base_manpower = 2 }
 						}
 						modifier = {
 							factor = 0.95 	# base value, almost untouched. Similar to modern age Europe (late 1600s)
-							check_variable = { PG_trb_grow = 100 }	NOT = { check_variable = { PG_trb_grow = 130 } }
+							NOT = { check_variable = { PG_trb_grow = 130 } }
 						}
 						modifier = {
 							factor = 0.65	# 0.85% yearly, early 19th Century France (slow demographic explosion). // check: 1/(8*360/12*0.65) = 0.641%
-							check_variable = { PG_trb_grow = 130 }	NOT = { check_variable = { PG_trb_grow = 160 } }
+							check_variable = { PG_trb_grow = 130 }
+							NOT = { check_variable = { PG_trb_grow = 160 } }
 						}
 						modifier = {
 							factor = 0.4	# 1,35%, 1890s UK (demographic explosion)
-							check_variable = { PG_trb_grow = 160 }	NOT = { check_variable = { PG_trb_grow = 200 } }
+							check_variable = { PG_trb_grow = 160 }
+							NOT = { check_variable = { PG_trb_grow = 200 } }
 						}
 						modifier = {
 							factor = 0.2 	# 2,7%, usual growth of India 1970s
-							check_variable = { PG_trb_grow = 200 }	NOT = { check_variable = { PG_trb_grow = 500 } }
+							check_variable = { PG_trb_grow = 200 }
+							NOT = { check_variable = { PG_trb_grow = 500 } }
 						}
 						modifier = {
 							factor = 0.1 	# 5,5% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic. Doubles every 24 years
 							check_variable = { PG_trb_grow = 500 }
-
 						}
 					}
-					1 = {
-						province_event = { id = population_grow.4 }
-					}
+					1 = { province_event = { id = population_grow.4 } }
 				}
 			}
 			if = {
-				limit = {  check_variable = { PG_com_grow = 100 } }
+				limit = { check_variable = { PG_com_grow = 100 } }
 				random_list = {
 					44 = {
 						modifier = {
 							factor = 0.95 	# base value, almost untouched. Similar to modern age Europe (late 1600s)
-							check_variable = { PG_com_grow = 100 }	NOT = { check_variable = { PG_com_grow = 130 } }
+							NOT = { check_variable = { PG_com_grow = 130 } }
 						}
 						modifier = {
 							factor = 0.65	# 0.6%, early 19th Century France
-							check_variable = { PG_com_grow = 130 }	NOT = { check_variable = { PG_com_grow = 160 } }
+							check_variable = { PG_com_grow = 130 }
+							NOT = { check_variable = { PG_com_grow = 160 } }
 						}
 						modifier = {
 							factor = 0.4	# 1%, 1890s UK
-							check_variable = { PG_com_grow = 160 }	NOT = { check_variable = { PG_com_grow = 200 } }
+							check_variable = { PG_com_grow = 160 }
+							NOT = { check_variable = { PG_com_grow = 200 } }
 						}
 						modifier = {
 							factor = 0.2 	# 2%, usual growth of India 1970s
-							check_variable = { PG_com_grow = 200 }	NOT = { check_variable = { PG_com_grow = 500 } }
+							check_variable = { PG_com_grow = 200 }
+							NOT = { check_variable = { PG_com_grow = 500 } }
 						}
 						modifier = {
 							factor = 0.1 	# 4% yearly growth, based in sub-saharan africa 1990s, or Ireland before the potato pandemic
 							check_variable = { PG_com_grow = 500 }
 						}
 					}
-					1 = {
-						province_event = { id = population_grow.2 }
-					}
+					1 = { province_event = { id = population_grow.2 } }
 				}
 			}
 		}
@@ -599,12 +578,7 @@ province_event = {
 
 	is_triggered_only = yes
 
-	trigger = {
-		base_manpower = 1
-		has_global_flag = popgrowth_running		# event population_capacity.2, the Popgrowth menu. Allows to switch btw popgrowth and vanilla
-		check_variable = { PG_trb_grow = 100 }	# Added, since it seems growth was getting out of hand even adding a factor 30 to <0.8
-
-	}
+	trigger = { }
 
 	#######################################################
 		# How this works: every time this event fires (remember, base mtth is 60 years), the amount of rural population is added to the "counter". Once the counter reaches 6, a new pop is created and the previous counter resetted to zero.
@@ -618,18 +592,25 @@ province_event = {
 
 		if = {
 			limit = { check_variable = { PG_trib_counter = 6 } }
-			set_variable = { which = PG_trib_counter value = 0 } set_variable = { which = PG_trib_count value = 0 }
-			add_base_manpower = 1		change_variable = { PS_rur_grow = 1 }		# track total done
-			owner = { 	if = { limit = { ai = no } 	change_variable = { tribal_increased_var = 1 } } }
+			set_variable = { which = PG_trib_counter value = 0 }
+			set_variable = { which = PG_trib_count value = 0 }
+			add_base_manpower = 1
+			change_variable = { PS_rur_grow = 1 }		# track total done
+			owner = {
+				if = {
+					limit = { ai = no }
+					change_variable = { tribal_increased_var = 1 }
+				}
+			}
 			province_event = { id = population_capacity.4 }		# Recalculate capacity, once the new population is created (growth also rec'd)
 		}
 	}
-	#######################################################
+
 	option = {
 		name = "population_grow.4.a"
-
 	}
 }
+
 ########################################################################################
 # yearly grow - commoner population / POPGROWTH VERSION
 ########################################################################################
@@ -642,13 +623,8 @@ province_event = {
 
 	is_triggered_only = yes
 
-	trigger = {
-		#base_production = 1			# no need, any province may grow it
-		has_global_flag = popgrowth_running
-		check_variable = { PG_com_grow = 100 }
-	}
+	trigger = { }
 
-	#######################################################
 	immediate = {
 		export_to_variable = { which = PG_com_growth value = base_production }
 		if = {
@@ -659,13 +635,20 @@ province_event = {
 
 		if = {
 			limit = { check_variable = { PG_com_counter = 4 } }
-			set_variable = { which = PG_com_counter value = 0 }	set_variable = { which = PG_com_growth value = 0 }
-			add_base_production = 1			change_variable = { PS_urb_grow = 1 }
-			owner = { if = { limit = { ai = no } change_variable = { commoner_increased_var = 1 } } }
+			set_variable = { which = PG_com_counter value = 0 }
+			set_variable = { which = PG_com_growth value = 0 }
+			add_base_production = 1
+			change_variable = { PS_urb_grow = 1 }
+			owner = {
+				if = {
+					limit = { ai = no }
+					change_variable = { commoner_increased_var = 1 }
+				}
+			}
 			province_event = { id = population_capacity.4 }
 		}
 	}
-	#######################################################
+
 	option = {
 		name = "population_grow.5.a"
 
