@@ -274,7 +274,6 @@ increase_production_dev_effect = {
 
 	add_base_production = 1
 	change_variable = { PS_urb_evtu = 1 }
-
 }
 
 
@@ -295,7 +294,6 @@ increase_tax_dev_effect = {
 
 	add_base_tax = 1
 	change_variable = { PS_upp_evtu = 1 }
-
 }
 
 move_capital_effect = {
@@ -332,7 +330,6 @@ correct_production_tradegood = {
 			small_mine = { 		remove_building = small_mine		add_building = big_water_irrigation }
 			big_mine = { 		remove_building = big_mine			add_building = big_estate }
 		}
-
 	}
 	if = {
 		limit = { craftsman_workshop_building_trigger = yes }
@@ -346,7 +343,6 @@ correct_production_tradegood = {
 			small_mine = { 		remove_building = small_mine		add_building = small_workshop }
 			big_mine = { 		remove_building = big_mine			add_building = artisan_district }
 		}
-
 	}
 	if = {
 		limit = { mines_workshop_building_trigger = yes }
@@ -359,7 +355,6 @@ correct_production_tradegood = {
 			craftsman = { 		remove_building = craftsman			add_building = quarry }
 			small_workshop = { 	remove_building = small_workshop	add_building = small_mine }
 			artisan_district = { remove_building = artisan_district add_building = big_mine }
-
 		}
 	}
 }
@@ -1006,6 +1001,7 @@ battle_cult_spreading_greek_religion_effect = {
 		FROM = { country_event = { id = cult_spreading.19 } }
 	}
 }
+
 add_overlord_harmonized_religions_effect = {
 	if = {
 		limit = {
@@ -1664,4 +1660,75 @@ spawn_large_scaled_rebels = {
 		}
 		]
 	}
+}
+
+base_disable_province = {
+	decolonize = yes
+	set_base_production = 0
+	set_base_tax = 0
+	remove_all_buildings_scripted_effect = yes
+}
+
+colonizable_disable_province = {
+	base_disable_province = yes
+	set_base_manpower = 1
+}
+
+complete_disable_province = {
+	base_disable_province = yes
+	set_base_manpower = 0
+}
+
+colonizable_disable_superregion = {
+	set_global_flag = picked_disable_$superregion$_flag
+	$superregion$ = {
+		limit = {
+			NOT = { owned_by = ROOT }
+		}
+		colonizable_disable_province = yes
+	}
+}
+complete_disable_superregion = {
+	set_global_flag = picked_disable_$superregion$_flag
+	$superregion$ = {
+		complete_disable_province = yes
+	}
+}
+
+country_disable_superregion = {
+	set_global_flag = picked_disable_$superregion$_flag
+	every_country = {
+		limit = {
+			ai = yes
+			capital_scope = {
+				superregion = $superregion$
+			}
+		}
+		compromise_superregions = yes
+		every_owned_province = {
+			colonizable_disable_province = yes
+		}
+	}
+}
+
+compromise_superregion = {
+	if = {
+		limit = {
+			NOT = { has_global_flag = $superregion$_compromised_flag }
+			NOT = { has_global_flag = picked_disable_$superregion$_flag }
+			any_owned_province = { superregion = $superregion$ }
+		}
+		set_global_flag = $superregion$_compromised_flag
+	}
+}
+
+compromise_superregions = {
+	compromise_superregion = { superregion = asia_superregion }
+	compromise_superregion = { superregion = mesopotamia_superregion }
+	compromise_superregion = { superregion = iran_superregion }
+	compromise_superregion = { superregion = china_superregion }
+	compromise_superregion = { superregion = macedonia_superregion }
+	compromise_superregion = { superregion = italia_superregion }
+	compromise_superregion = { superregion = syria_superregion }
+	compromise_superregion = { superregion = eastern_africa_superregion }
 }
