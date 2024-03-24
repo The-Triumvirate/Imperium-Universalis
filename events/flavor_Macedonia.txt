@@ -539,6 +539,12 @@ country_event = {
 	}
 	option = {
 		name = "macedon.12.a"
+		MAC = {
+			add_casus_belli = {
+				type = cb_invasion
+				target = PSE
+			}
+		}
 	}
 }
 
@@ -888,6 +894,7 @@ country_event = {
 	desc = macedon.27.d
 	picture = philip
 	fire_only_once = yes
+
 	trigger = {
 		tag = MAC
 		1064 = {
@@ -921,9 +928,11 @@ country_event = {
 			started_in = 275.1.1
 		}
 	}
+
 	mean_time_to_happen = {
 		months = 1
 	}
+
 	option = {
 		name = "macedon.27.a"
 		ai_chance = {
@@ -947,12 +956,6 @@ country_event = {
 			change_religion = greek_religion
 			add_devastation = 5
 		}
-		5529 = {
-			add_core = MAC
-			change_culture = old_macedon
-			change_religion = greek_religion
-			add_devastation = 5
-		}
 		add_mil_power = -75
 		add_dip_power = -75
 		add_prestige = 7
@@ -965,6 +968,486 @@ country_event = {
 		add_prestige = -2
 	}
 }
-#(King Archelaus) $MONARCH$ Trade Opportunity - adds debuff in production modifier on all provs, but adds huge income immediately or huge flat tax for few decades - selling macedonian timber to greeks (after Athens lost their fleet in Sicily historically) ? at least 254 AUC, event 28
-#(King Archelaus) $MONARCH$ Reforms - reformprogress and builds buildings - roads and forts (from timber money). Starts upgrading the Palace In Aegai from t0 to t1, if it is t0. Changes ruler to Archelaus I with medium legitimacy? at least 254 AUC, event 29
-# macedonisation of mygdonia (anthemousia and syndos)
+#(King Archelaus) spawn  Changes ruler to Archelaus I with medium legitimacy? at least 254 AUC, event 28
+country_event = {
+	id = macedon.28
+	title = macedon.28.t
+	desc = macedon.28.d
+	picture = aristocrats
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		is_year = 340
+		NOT = { started_in = 395.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "macedon.28.a"
+		ai_chance = { factor = 90 }
+			define_ruler = {
+				name = "Archelaus I"
+				dynasty = "Argead"
+				culture = macedon
+				religion = greek_religion
+				age = 25
+				dip = 4
+				adm = 5
+				mil = 4
+			}
+			kill_heir = {}
+			add_legitimacy = -50
+	}
+	option = {
+		name = "macedon.28.b"
+		ai_chance = { factor = 10 }
+		add_legitimacy = 10
+	}
+}
+
+#(King Archelaus) $MONARCH$ Trade Opportunity - adds debuff in production modifier on all provs, but adds huge income immediately or huge flat tax for few decades - selling macedonian timber to greeks (after Athens lost their fleet in Sicily historically) ? at least 254 AUC, event 29
+country_event = {
+	id = macedon.29
+	title = macedon.29.t
+	desc = macedon.29.d
+	picture = shildyard
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		exists = ATH
+		is_year = 342
+		NOT = { started_in = 395.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "macedon.29.a"
+		ai_chance = { factor = 45 }
+		set_country_flag = archelaus_timber
+		reverse_add_opinion = { who = ATH modifier = careful_trade_expansion }
+		add_treasury = 800
+		add_years_of_income = 3
+		ATH = {
+			add_country_modifier = {
+				name = macedonian_timber_imported
+				duration = 10950
+			}
+		}
+	}
+	option = {
+		name = "macedon.29.b"
+		ai_chance = { factor = 45 }
+		set_country_flag = archelaus_timber
+		reverse_add_opinion = { who = ATH modifier = careful_trade_expansion }
+		add_country_modifier = {
+			name = macedonian_timber_exported
+			duration = 10950
+		}
+		ATH = {
+			add_country_modifier = {
+				name = macedonian_timber_imported
+				duration = 10950
+			}
+		}
+	}
+	option = {
+		name = "macedon.29.c"
+		ai_chance = { factor = 10 }
+		set_country_flag = archelaus_timber
+		reverse_add_opinion = { who = ATH modifier = trade_conflict }
+	}
+}
+#(King Archelaus) $MONARCH$ Reforms - reformprogress and builds buildings - roads and forts (from timber money). Starts upgrading the Palace In Aegai from t0 to t1, if it is t0. event 30
+country_event = {
+	id = macedon.30
+	title = macedon.30.t
+	desc = macedon.30.d
+	picture = ruler
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		is_year = 342
+		NOT = { started_in = 395.1.1 }
+		OR = {
+			has_country_flag = archelaus_timber
+			adm_tech = 15
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 10
+	}
+
+	option = {
+		name = "macedon.30.a"
+		ai_chance = { factor = 100 }
+		change_government_reform_progress = 500
+		add_adm_power = 200
+		add_army_professionalism = 0.05
+		every_owned_province = {
+			limit = {
+				area = macedonia_secunda
+				area = macedonia_prima
+				area = macedonia_interior_area
+				NOT = {
+					OR = {
+						has_building = gravel_road
+						has_building = paved_road
+					}
+				}
+			}
+			if = {
+				limit = {
+					owner = {
+						adm_tech = 15
+					}
+				}
+				add_building_construction = {
+					building = paved_road
+					cost = 0.2
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = gravel_road
+					cost = 0.2
+				}
+			}
+		}
+		1061 = {
+			add_great_project_tier = {
+				type = palace_aegae
+				tier = 1
+			}
+		}
+		if = {
+			limit = {
+				1063 = {
+					NOT = {
+						is_capital = yes
+					}
+				}
+			}
+			set_capital = 1063
+		}
+	}
+}
+# macedonisation of mygdonia (anthemousia and syndos) event 31
+country_event = {
+	id = macedon.31
+	title = macedon.31.t
+	desc = macedon.31.d
+	picture = philip
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		primary_culture = macedon
+		5528 = {
+			owned_by = MAC
+			NOT = {
+				OR = {
+					culture = old_macedon
+					culture = macedon
+				}
+			}
+		}
+		5529 = {
+			owned_by = MAC
+			NOT = {
+				OR = {
+					culture = old_macedon
+					culture = macedon
+				}
+			}
+		}
+		1072 = {
+			owned_by = MAC
+			NOT = {
+				OR = {
+					culture = old_macedon
+					culture = macedon
+				}
+			}
+		}
+		5522 = {
+			owned_by = MAC
+			NOT = {
+				OR = {
+					culture = old_macedon
+					culture = macedon
+				}
+			}
+		}
+		NOT = {
+			started_in = 275.1.1
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+	option = {
+		name = "macedon.31.a"
+		ai_chance = {
+			factor = 100
+		}
+		5528 = {
+			add_core = MAC
+			change_culture = macedon
+			change_religion = greek_religion
+			add_devastation = 5
+		}
+		5529 = {
+			add_core = MAC
+			change_culture = macedon
+			change_religion = greek_religion
+			add_devastation = 5
+		}
+		5522 = {
+			add_core = MAC
+			change_culture = macedon
+			change_religion = greek_religion
+			add_devastation = 5
+		}
+		1072 = {
+			add_core = MAC
+			change_culture = macedon
+			change_religion = greek_religion
+			add_devastation = 5
+		}
+		add_mil_power = -100
+		add_dip_power = -100
+		add_prestige = 10
+	}
+	option = {
+		name = "macedon.17.b" # I am very strange rare macedon who does not want macedon culture to expand
+		ai_chance = {
+			factor = 0
+		}
+		add_prestige = -5
+	}
+}
+#lyncestian conflicts (pretender revolt in Lyncestia if owned, war if not) event 32
+country_event = {
+	id = macedon.32
+	title = macedon.32.t
+	desc = macedon.32.d
+	picture = philip
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		NOT = {
+			started_in = 395.1.1
+		}
+		is_year = 355
+		OR = {
+			exists = LNK
+			5533 = {
+				owned_by = MAC
+			}
+			1056 = {
+				owned_by = MAC
+			}
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = LNK
+		}
+	}
+	option = {
+		name = "macedon.32.a"
+		ai_chance = {
+			factor = 100
+		}
+		if = {
+			limit = {
+				exists = LNK
+			}
+			LNK = {
+				declare_war = MAC
+			}
+		}
+		else = {
+			1056 = {
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 4
+				}
+			}
+		}
+	}
+}
+#event 33 - illyrian invasion, king dies. Can trigger either if any illyrian/paeonian country not subject, then it is war, or just spawn huge pack of raider rebels.
+country_event = {
+	id = macedon.33
+	title = macedon.33.t
+	desc = macedon.33.d
+	picture = philip
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		OR = {
+			is_year = 394
+			mil_tech = 18
+		}
+		NOT = { started_in = 395.1.1 }
+		is_at_war = yes
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "macedon.33.a"
+		ai_chance = { factor = 100 }
+		set_country_flag = generic_philip_preflag
+		random_owned_province = {
+			spawn_rebels = {
+				type = thracian_rebels
+				size = 3
+			}
+		}
+		kill_ruler = yes
+	}
+}
+
+#event 34 - generic nonscenario case of Philipp 2 elected.
+country_event = {
+	id = macedon.34
+	title = macedon.34.t
+	desc = macedon.34.d
+	picture = philip2
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = MAC
+		OR = {
+			is_year = 394
+			mil_tech = 18
+		}
+		NOT = { started_in = 395.1.1 }
+		OR = {
+			is_at_war = yes
+			has_country_flag = generic_philip_preflag
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "macedon.34.a"
+		ai_chance = { factor = 100 }
+		add_legitimacy = -50
+		add_mil_tech = 1
+		add_mil_power = 144
+		MAC = {
+			define_ruler = {
+				name = "Philip II"
+				dynasty = "Argead"
+				culture = macedon
+				religion = greek_religion
+				age = 25
+				dip = 5
+				adm = 5
+				mil = 6
+			}
+			define_ruler_to_general = {
+				name = "Philip II Argead"
+				fire = 7
+				shock = 7
+				manuever = 8
+				siege = 5
+			}
+			define_general = {
+				name = "Parmenion"
+				fire = 8
+				shock = 8
+				manuever = 7
+				siege = 3
+			}
+			define_consort = {
+				name = "Phila"
+				dynasty = "Elymeitid"
+				culture = macedon
+				religion = greek_religion
+				age = 33
+				adm = 2
+				dip = 2
+				mil = 2
+			}
+		}
+	}
+}
+
+#event 35 - generic nonscenario case of Alexander birth, king and general events above will already work from that I think.
+country_event = {
+	id = macedon.35
+	title = macedon.35.t
+	desc = macedon.35.d
+	picture = alex_birth
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = MAC
+		is_year = 398
+		has_ruler = "Philip II"
+		NOT = { started_in = 395.1.1 }
+		NOT = {	has_country_flag = alex_birth }
+		OR = {
+			any_ally = { primary_culture = epirote }
+			any_subject_country = { primary_culture = epirote }
+			num_of_owned_provinces_with = {
+				value = 5
+				culture = epirote
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 15
+	}
+	option = {
+		name = rm.15.a
+		ai_chance = { factor = 100 }
+		set_country_flag = alex_birth
+		define_consort = {
+			name = "Olympias"
+			dynasty = "Aeacidae"
+			age = 20
+			adm = 3
+			dip = 3
+			mil = 3
+		}
+		define_heir = {
+			name = "Alexander III the Great"
+			dynasty = "Argead"
+			age = 0
+			adm = 5
+			dip = 4
+			mil = 6
+		}
+	}
+}
+
+
+
