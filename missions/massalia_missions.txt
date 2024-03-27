@@ -1,19 +1,123 @@
+massalia_missions_1_placeholder = {
+	slot = 1
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = {
+		tag = MSZ
+		NOT = {
+			OR = {
+				has_country_flag = MSZ_dominate
+				has_country_flag = MSZ_assimilate
+				has_country_flag = MSZ_subjugate
+			}
+		}
+	}
+
+	msz_1_p_3 = {
+		icon = mission_unknown_mission
+		position = 3
+		required_missions = { msz_locals }
+
+		trigger = { always = no }
+
+		effect = {  }
+	}
+
+	msz_1_p_4 = {
+		icon = mission_unknown_mission
+		position = 4
+		required_missions = { msz_1_p_3 }
+
+		trigger = { always = no }
+
+		effect = {  }
+	}
+
+	msz_1_p_5 = {
+		icon = mission_unknown_mission
+		position = 5
+		required_missions = { msz_1_p_4 }
+
+		trigger = { always = no }
+
+		effect = {  }
+	}
+
+	msz_1_p_6 = {
+		icon = mission_unknown_mission
+		position = 6
+		required_missions = { msz_1_p_5 }
+
+		trigger = { always = no }
+
+		effect = {  }
+	}
+
+	msz_1_p_7 = {
+		icon = mission_unknown_mission
+		position = 7
+		required_missions = { msz_1_p_6 }
+
+		trigger = {  }
+
+		effect = {  }
+	}
+}
 massalia_missions_1_dominate = {
 	slot = 1
 	generic = no
 	ai = yes
 	has_country_shield = yes
-	potential = { tag = MSZ }
+	potential = {
+		tag = MSZ
+		has_country_flag = MSZ_dominate
+	}
 
 	msz_1_d_3 = {
 		icon = mission_unknown_mission
 		position = 3
 		required_missions = { msz_locals }
-		provinces_to_highlight = {  }
+		provinces_to_highlight = {
+			all_province = {
+				region = gallia_narbonensis
+				has_port = yes
+				area = { NOT = { owned_by = MSZ } }
+			}
+		}
 
-		trigger = {  }
+		trigger = {
+			all_province = {
+				region = gallia_narbonensis
+				has_port = yes
+				area = { owned_by = MSZ }
+			}
+		}
 
-		effect = {  }
+		effect = {
+			every_owned_province = {
+				limit = {
+					any_neighbor_province = {
+						superregion = celtica_superregion
+						NOT = { owned_by = MSZ }
+					}
+				}
+				every_neighbor_province = {
+					limit = {
+						superregion = celtica_superregion
+						NOT = { owned_by = MSZ }
+					}
+					area = { add_permanent_claim = MSZ }
+				}
+				every_empty_neighbor_province = {
+					limit = {
+						superregion = celtica_superregion
+						NOT = { owned_by = MSZ }
+					}
+					area = { add_permanent_claim = MSZ }
+				}
+			}
+		}
 	}
 
 	msz_1_d_4 = {
@@ -65,7 +169,10 @@ massalia_missions_1_assimilate = {
 	generic = no
 	ai = yes
 	has_country_shield = yes
-	potential = { tag = MSZ }
+	potential = {
+		tag = MSZ
+		has_country_flag = MSZ_assimilate
+	}
 
 	msz_immigration = {
 		icon = friends_in_high_places
@@ -73,18 +180,12 @@ massalia_missions_1_assimilate = {
 		required_missions = { msz_locals }
 		provinces_to_highlight = {  }
 
-		trigger = { prestige = 50 }
+		trigger = {
+			# prestige = 50
+		}
 
 		effect = {
-			capital_scope = {
-				add_base_tax = 1
-				add_base_production = 1
-				add_base_manpower = 1
-			}
-			add_country_modifier = {
-				name = "growing_economy"
-				duration = 9125
-			}
+
 		}
 	}
 
@@ -137,7 +238,10 @@ massalia_missions_1_subjugate = {
 	generic = no
 	ai = yes
 	has_country_shield = yes
-	potential = { tag = MSZ }
+	potential = {
+		tag = MSZ
+		has_country_flag = MSZ_subjugate
+	}
 
 	msz_1_s_3 = {
 		icon = mission_unknown_mission
@@ -241,29 +345,36 @@ massalia_missions_2 = {
 		icon = mission_celtic_army
 		position = 2
 		required_missions = { msz_question }
-		provinces_to_highlight = {  }
 
 		trigger = {
-			custom_trigger_tooltip = {
-				tooltip = building_alliances.tooltip
-				num_of_allies = 2
-				calc_true_if = {
-					all_ally = {
-						has_opinion = {
-							who = ROOT
-							value = 150
-						}
-						culture_group = ligures_group
-					}
-					amount = 2
-				}
+			# custom_trigger_tooltip = {
+			# 	tooltip = building_alliances.tooltip
+			# 	num_of_allies = 2
+			# 	calc_true_if = {
+			# 		all_ally = {
+			# 			has_opinion = {
+			# 				who = ROOT
+			# 				value = 150
+			# 			}
+			# 			culture_group = ligures_group
+			# 		}
+			# 		amount = 2
+			# 	}
+			# }
+			massalia_area = {
+				is_city = yes
+				owned_by = MSZ
+				is_core = MSZ
 			}
 		}
 
 		effect = {
-			add_country_modifier = {
-				name = "influential_diplomacy"
-				duration = 9125
+			# add_country_modifier = {
+			# 	name = "influential_diplomacy"
+			# 	duration = 9125
+			# }
+			country_event = {
+				id = flavor_MSZ.1
 			}
 		}
 	}
@@ -272,13 +383,13 @@ massalia_missions_2 = {
 		icon = mission_greece
 		position = 3
 		required_missions = { msz_locals }
-		provinces_to_highlight = {  }
 
 		trigger = {
 			custom_trigger_tooltip = {
 				tooltip = building_alliances.tooltip
-				num_of_allies = 3
+				num_of_allies = 2
 				calc_true_if = {
+					amount = 2
 					all_ally = {
 						has_opinion = {
 							who = ROOT
@@ -287,7 +398,6 @@ massalia_missions_2 = {
 						culture_group = hellenic_group
 						capital_scope = { region = greek_region }
 					}
-					amount = 3
 				}
 			}
 		}
@@ -298,15 +408,13 @@ massalia_missions_2 = {
 				name = "influential_diplomacy"
 				duration = 9125
 			}
-			random_ally = {
-				limit = { culture_group = hellenic_group }
-				add_historical_friend = ROOT
-				ROOT = { add_historical_friend = PREV }
-			}
-			random_ally = {
-				limit = { culture_group = hellenic_group }
-				add_historical_friend = ROOT
-				ROOT = { add_historical_friend = PREV }
+			every_ally = {
+				limit = {
+					culture_group = hellenic_group
+					capital_scope = { region = greek_region }
+				}
+				add_historical_friend = MSZ
+				MSZ = { add_historical_friend = PREV }
 			}
 		}
 	}
@@ -388,13 +496,27 @@ massalia_missions_3 = {
 	msz_question = {
 		icon = mission_unknown_mission
 		position = 1
-		provinces_to_highlight = {  }
 
-		trigger = { stability = 1 }
+		trigger = {
+			# stability = 1
+			army_size_percentage = 0.85
+			manpower_percentage = 0.5
+		}
 
 		effect = {
-			add_stability_or_adm_power = yes
-			add_years_of_income = 1
+			create_general = { tradition = 65 }
+			add_country_modifier = {
+				name = "thriving_arms_industry"
+				duration = 9125
+			}
+			massalia_area = { add_permanent_claim = MSZ }
+			add_casus_belli = {
+				target = SL9
+				type = cb_annex
+				months = 120
+			}
+			# add_stability_or_adm_power = yes
+			# add_years_of_income = 1
 		}
 	}
 
@@ -415,7 +537,13 @@ massalia_missions_3 = {
 		}
 
 		effect = {
-			add_mercantilism_or_monarch_power = { amount = 5 }
+			define_advisor = {	# potential for famous person
+				type = trader
+				# name = "John Smith"
+				skill = 2
+				# culture = english
+				# religion = catholic
+			}
 			368 = {
 				add_province_modifier = {
 					name = "greek_trade_outpost"
@@ -429,11 +557,55 @@ massalia_missions_3 = {
 		icon = mission_asian_trader
 		position = 3
 		required_missions = { msz_trade }
-		provinces_to_highlight = {  }
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_has_center_of_trade_of_level = 1
+					NOT = { owned_by = MSZ }
+				}
+				AND = {
+					owned_by = MSZ
+					NOT = { province_has_center_of_trade_of_level = 1 }
+				}
+			}
+		}
 
-		trigger = {  }
+		trigger = {
+			calc_true_if = {
+				amount = 3
+				all_owned_province = {
+					province_has_center_of_trade_of_level = 1
+				}
+			}
+		}
 
-		effect = {  }
+		effect = {
+			add_dip_power = 300
+			# custom_tooltip = "3 of our centers of trade will get a trade building"
+			# hidden_effect = {
+			# 	random_owned_province = {
+			# 		limit = {
+			# 			province_has_center_of_trade_of_level = 1
+			# 			NOT = { has_building = small_market }
+			# 		}
+			# 		add_building = small_market
+			# 	}
+			# 	random_owned_province = {
+			# 		limit = {
+			# 			province_has_center_of_trade_of_level = 1
+			# 			NOT = { has_building = small_market }
+			# 		}
+			# 		add_building = small_market
+			# 	}
+			# 	random_owned_province = {
+			# 		limit = {
+			# 			province_has_center_of_trade_of_level = 1
+			# 			NOT = { has_building = small_market }
+			# 		}
+			# 		add_building = small_market
+			# 	}
+			# }
+		}
 	}
 
 	msz_navy = {
@@ -448,7 +620,7 @@ massalia_missions_3 = {
 			add_navy_tradition = 10
 			add_country_modifier = {
 				name = "expansion_of_the_shipbuilding_industry"
-				duration = 7200
+				duration = 9125
 			}
 		}
 	}
@@ -457,16 +629,29 @@ massalia_missions_3 = {
 		icon = mission_early_game_buildings
 		position = 5
 		required_missions = { msz_navy }
-		provinces_to_highlight = {  }
 
-		trigger = { grown_by_development = 10 }
+		trigger = {
+			grown_by_development = 10
+			massalia_area = {
+				owned_by = MSZ
+				is_core = MSZ
+			}
+		}
 
 		effect = {
-			random_owned_province = { add_base_manpower = 1 }
-			random_owned_province = { add_base_manpower = 1 }
-			random_owned_province = { add_base_manpower = 1 }
-			random_owned_province = { add_base_manpower = 1 }
-			random_owned_province = { add_base_manpower = 1 }
+			add_country_modifier = {
+				name = "growing_economy"
+				duration = 9125
+			}
+			massalia_area = {
+				change_religion = MSZ
+				change_culture = MSZ
+				if = {
+					limit = { base_manpower = 2 }
+					add_base_production = 1
+					add_base_manpower = -1
+				}
+			}
 		}
 	}
 
@@ -520,24 +705,20 @@ massalia_missions_4 = {
 		required_missions = { msz_question }
 		provinces_to_highlight = {  }
 
-		trigger = { army_size_percentage = 0.85 }
+		trigger = {
+			368 = { has_building = small_market }
+		}
 
 		effect = {
-			create_general = { tradition = 65 }
-			add_country_modifier = {
-				name = "thriving_arms_industry"
-				duration = 9125
-			}
-			every_owned_province = {
-				every_neighbor_province = {
-					limit = {
-						NOT = { owned_by = ROOT }
-						NOT = { is_permanent_claim = ROOT }
-						NOT = { is_core = ROOT }
-					}
-					add_permanent_claim = ROOT
-				}
-			}
+			138 = { add_permanent_claim = MSZ }
+			139 = { add_permanent_claim = MSZ }
+			151 = { add_permanent_claim = MSZ }
+			6496 = { add_permanent_claim = MSZ }
+			6510 = { add_permanent_claim = MSZ }
+			6502 = { add_permanent_claim = MSZ }
+			250 = { add_permanent_claim = MSZ }
+			254 = { add_permanent_claim = MSZ }
+			baleares_area = { add_permanent_claim = MSZ }
 		}
 	}
 
@@ -548,19 +729,40 @@ massalia_missions_4 = {
 		provinces_to_highlight = {  }
 
 		trigger = {
+			# OR = {
+			# 	num_of_heavy_ship = 7
+			# 	num_of_galley = 21
+			# }
 			OR = {
-				num_of_heavy_ship = 7
-				num_of_galley = 21
+				AND = {
+					alliance_with = tag
+					reverse_has_opinion = {
+						who = tag
+						value = 150
+					}
+				}
+				NOT = { exists = tag }
+			}
+			OR = {
+				AND = {
+					alliance_with = tag
+					reverse_has_opinion = {
+						who = tag
+						value = 150
+					}
+				}
+				NOT = { exists = tag }
 			}
 		}
 
 		effect = {
-			define_admiral = { tradition = 100 }
-			add_navy_tradition = 10
-			add_country_modifier = {
-				name = "naval_enthusiasm_mission"
-				duration = 9125
-			}
+			# create_admiral = { tradition = 100 }	# potential for historical figure?
+			# add_navy_tradition = 10
+			# add_country_modifier = {
+			# 	name = "naval_enthusiasm_mission"
+			# 	duration = 9125
+			# }
+
 		}
 	}
 
@@ -570,13 +772,28 @@ massalia_missions_4 = {
 		required_missions = { msz_delegation }
 		provinces_to_highlight = {  }
 
-		trigger = { grown_by_states = 3 }
+		trigger = {
+			# grown_by_states = 3
+			# calc_true_if = {
+			# 	amount = 5
+			# 	all_owned_province = {
+			# 		is_city = yes
+			# 		is_core = MSZ
+			# 		is_overseas = yes
+			# 		culture_group = hellenic_group
+			# 	}
+			# }
+		}
 
 		effect = {
-			add_adm_power = 100
-			add_country_modifier = {
-				name = "fra_expansion_in_italy_modifier"
-				duration = 9125
+			# add_adm_power = 100
+			# add_country_modifier = {
+			# 	name = "fra_expansion_in_italy_modifier"
+			# 	duration = 9125
+			# }
+			custom_tooltip = "We will unlock decisions to found some more colonies nearby"
+			hidden_effect = {
+				set_country_flag = MSZ_can_found_colonies
 			}
 		}
 	}
@@ -586,60 +803,60 @@ massalia_missions_4 = {
 		position = 5
 		required_missions = { msz_expand }
 		provinces_to_highlight = {
-			owned_by = ROOT
-			region = gallia_narbonensis
-			NOT = { fort_level = 2 }
-			NOT = { has_port = yes }
+			# owned_by = ROOT
+			# region = gallia_narbonensis
+			# NOT = { fort_level = 2 }
+			# NOT = { has_port = yes }
 		}
 
 		trigger = {
-			calc_true_if = {
-				all_owned_province = {
-					region = gallia_narbonensis
-					fort_level = 2
-					NOT = { has_port = yes }
-				}
-				amount = 3
-			}
+			# calc_true_if = {
+			# 	all_owned_province = {
+			# 		region = gallia_narbonensis
+			# 		fort_level = 2
+			# 		NOT = { has_port = yes }
+			# 	}
+			# 	amount = 3
+			# }
 		}
 
 		effect = {
-			random_owned_province = {
-				limit = {
-					region = gallia_narbonensis
-					fort_level = 2
-					NOT = { has_port = yes }
-				}
-				add_province_modifier = {
-					name = "rus_reinforced_defenses"
-					duration = -1
-				}
-				add_base_manpower = 1
-			}
-			random_owned_province = {
-				limit = {
-					region = gallia_narbonensis
-					fort_level = 2
-					NOT = { has_port = yes }
-				}
-				add_province_modifier = {
-					name = "rus_reinforced_defenses"
-					duration = -1
-				}
-				add_base_manpower = 1
-			}
-			random_owned_province = {
-				limit = {
-					region = gallia_narbonensis
-					fort_level = 2
-					NOT = { has_port = yes }
-				}
-				add_province_modifier = {
-					name = "rus_reinforced_defenses"
-					duration = -1
-				}
-				add_base_manpower = 1
-			}
+			# random_owned_province = {
+			# 	limit = {
+			# 		region = gallia_narbonensis
+			# 		fort_level = 2
+			# 		NOT = { has_port = yes }
+			# 	}
+			# 	add_province_modifier = {
+			# 		name = "rus_reinforced_defenses"
+			# 		duration = -1
+			# 	}
+			# 	add_base_manpower = 1
+			# }
+			# random_owned_province = {
+			# 	limit = {
+			# 		region = gallia_narbonensis
+			# 		fort_level = 2
+			# 		NOT = { has_port = yes }
+			# 	}
+			# 	add_province_modifier = {
+			# 		name = "rus_reinforced_defenses"
+			# 		duration = -1
+			# 	}
+			# 	add_base_manpower = 1
+			# }
+			# random_owned_province = {
+			# 	limit = {
+			# 		region = gallia_narbonensis
+			# 		fort_level = 2
+			# 		NOT = { has_port = yes }
+			# 	}
+			# 	add_province_modifier = {
+			# 		name = "rus_reinforced_defenses"
+			# 		duration = -1
+			# 	}
+			# 	add_base_manpower = 1
+			# }
 		}
 	}
 
@@ -648,125 +865,125 @@ massalia_missions_4 = {
 		position = 6
 		required_missions = { msz_choose }
 		provinces_to_highlight = {
-			OR = {
-				AND = {
-					has_country_flag = went_with_carthage
-					OR = {
-						region = gallia_narbonensis
-						area = sicilia_est
-						area = syracuse_area
-						area = bruttium_area
-						area = calabria_area
-						area = salento_area
-						region = gallia_cisalpina
-					}
-				}
-				AND = {
-					has_country_flag = went_with_rome
-					OR = {
-						region = gallia_narbonensis
-						region = aquitania_region
-						region = celtica_area
-					}
-				}
-				AND = {
-					has_country_flag = went_with_etruscans
-					OR = {
-						region = gallia_narbonensis
-						region = cartaginensis_region
-						region = hispania_tarraconensis
-						region = aquitania_region
-					}
-				}
-				AND = {
-					has_country_flag = went_alone
-					OR = {
-						region = gallia_cisalpina
-						region = italian_region
-						region = sardinia_corsica_region
-						region = magna_graecia
-						region = gallia_narbonensis
-						region = hispania_tarraconensis
-						region = cartaginensis_region
-						AND = {
-							region = africa_region
-							has_port = yes
-						}
-					}
-				}
-			}
-			NOT = { owned_by = ROOT }
+			# OR = {
+			# 	AND = {
+			# 		has_country_flag = went_with_carthage
+			# 		OR = {
+			# 			region = gallia_narbonensis
+			# 			area = sicilia_est
+			# 			area = syracuse_area
+			# 			area = bruttium_area
+			# 			area = calabria_area
+			# 			area = salento_area
+			# 			region = gallia_cisalpina
+			# 		}
+			# 	}
+			# 	AND = {
+			# 		has_country_flag = went_with_rome
+			# 		OR = {
+			# 			region = gallia_narbonensis
+			# 			region = aquitania_region
+			# 			region = celtica_area
+			# 		}
+			# 	}
+			# 	AND = {
+			# 		has_country_flag = went_with_etruscans
+			# 		OR = {
+			# 			region = gallia_narbonensis
+			# 			region = cartaginensis_region
+			# 			region = hispania_tarraconensis
+			# 			region = aquitania_region
+			# 		}
+			# 	}
+			# 	AND = {
+			# 		has_country_flag = went_alone
+			# 		OR = {
+			# 			region = gallia_cisalpina
+			# 			region = italian_region
+			# 			region = sardinia_corsica_region
+			# 			region = magna_graecia
+			# 			region = gallia_narbonensis
+			# 			region = hispania_tarraconensis
+			# 			region = cartaginensis_region
+			# 			AND = {
+			# 				region = africa_region
+			# 				has_port = yes
+			# 			}
+			# 		}
+			# 	}
+			# }
+			# NOT = { owned_by = ROOT }
 		}
 
 		trigger = {
-			calc_true_if = {
-				amount = 60
-				all_owned_province = {
-					OR = {
-						AND = {
-							has_country_flag = went_with_carthage
-							OR = {
-								region = gallia_narbonensis
-								area = sicilia_est
-								area = syracuse_area
-								area = bruttium_area
-								area = calabria_area
-								area = salento_area
-								region = gallia_cisalpina
-							}
-						}
-						AND = {
-							has_country_flag = went_with_rome
-							OR = {
-								region = gallia_narbonensis
-								region = aquitania_region
-								region = celtica_area
-							}
-						}
-						AND = {
-							has_country_flag = went_with_etruscans
-							OR = {
-								region = gallia_narbonensis
-								region = cartaginensis_region
-								region = hispania_tarraconensis
-								region = aquitania_region
-							}
-						}
-						AND = {
-							has_country_flag = went_alone
-							OR = {
-								region = gallia_cisalpina
-								region = italian_region
-								region = sardinia_corsica_region
-								region = magna_graecia
-								region = gallia_narbonensis
-								region = hispania_tarraconensis
-								region = cartaginensis_region
-								AND = {
-									region = africa_region
-									has_port = yes
-								}
-							}
-						}
-					}
-				}
-			}
+			# calc_true_if = {
+			# 	amount = 60
+			# 	all_owned_province = {
+			# 		OR = {
+			# 			AND = {
+			# 				has_country_flag = went_with_carthage
+			# 				OR = {
+			# 					region = gallia_narbonensis
+			# 					area = sicilia_est
+			# 					area = syracuse_area
+			# 					area = bruttium_area
+			# 					area = calabria_area
+			# 					area = salento_area
+			# 					region = gallia_cisalpina
+			# 				}
+			# 			}
+			# 			AND = {
+			# 				has_country_flag = went_with_rome
+			# 				OR = {
+			# 					region = gallia_narbonensis
+			# 					region = aquitania_region
+			# 					region = celtica_area
+			# 				}
+			# 			}
+			# 			AND = {
+			# 				has_country_flag = went_with_etruscans
+			# 				OR = {
+			# 					region = gallia_narbonensis
+			# 					region = cartaginensis_region
+			# 					region = hispania_tarraconensis
+			# 					region = aquitania_region
+			# 				}
+			# 			}
+			# 			AND = {
+			# 				has_country_flag = went_alone
+			# 				OR = {
+			# 					region = gallia_cisalpina
+			# 					region = italian_region
+			# 					region = sardinia_corsica_region
+			# 					region = magna_graecia
+			# 					region = gallia_narbonensis
+			# 					region = hispania_tarraconensis
+			# 					region = cartaginensis_region
+			# 					AND = {
+			# 						region = africa_region
+			# 						has_port = yes
+			# 					}
+			# 				}
+			# 			}
+			# 		}
+			# 	}
+			# }
 		}
 
 		effect = {
-			set_government_rank = 3
-			add_prestige = 50
-			add_dip_power = 100
-			add_adm_power = 100
-			add_mil_power = 100
-			add_country_modifier = {
-				name = "hegemonic_ambition"
-				duration = 9125
-			}
-			add_country_modifier = {
-				name = "expansionist_country"
-				duration = 9125
-			}
+			# set_government_rank = 3
+			# add_prestige = 50
+			# add_dip_power = 100
+			# add_adm_power = 100
+			# add_mil_power = 100
+			# add_country_modifier = {
+			# 	name = "hegemonic_ambition"
+			# 	duration = 9125
+			# }
+			# add_country_modifier = {
+			# 	name = "expansionist_country"
+			# 	duration = 9125
+			# }
 		}
 	}
 
@@ -793,20 +1010,34 @@ massalia_missions_5 = {
 		icon = mission_unknown_mission
 		position = 3
 		required_missions = { msz_west }
-		provinces_to_highlight = {  }
+		provinces_to_highlight = {
+			area = baleares_area
+			NOT = { owned_by = MSZ }
+		}
 
-		trigger = { is_in_war = { defenders = ROOT }  }
+		trigger = {
+			baleares_area = {
+				owned_by = MSZ
+				is_core = MSZ
+				is_city = yes
+			}
+			# is_in_war = { defenders = ROOT }
+		}
 
 		effect = {
-			add_war_exhaustion = -2
-			add_country_modifier = {
-				name = "victories_omen"
-				duration = 9125
+			baleares_area = {
+				change_religion = MSZ
+				change_culture = MSZ
 			}
-			add_country_modifier = {
-				name = "good_harvest_omen"
-				duration = 9125
-			}
+			# add_war_exhaustion = -2
+			# add_country_modifier = {
+			# 	name = "victories_omen"
+			# 	duration = 9125
+			# }
+			# add_country_modifier = {
+			# 	name = "good_harvest_omen"
+			# 	duration = 9125
+			# }
 		}
 	}
 
@@ -814,25 +1045,67 @@ massalia_missions_5 = {
 		icon = mission_unknown_mission
 		position = 3
 		required_missions = { msz_race }
-		provinces_to_highlight = {  }
+		# provinces_to_highlight = {  }
 
 		trigger = {
-			exists = yes
-			any_ally = { is_great_power = yes }
+			# exists = yes
+			# any_ally = { is_great_power = yes }
+			OR = {
+				AND = {
+					alliance_with = TTQ
+					reverse_has_opinion = {
+						who = TTQ
+						value = 150
+					}
+				}
+				is_rival = TTQ
+			}
 		}
 
-		effect = { add_prestige = 25 }
+		effect = {
+			if = {
+				limit = {
+					alliance_with = TTQ
+					reverse_has_opinion = {
+						who = TTQ
+						value = 150
+					}
+				}
+				add_historical_friend = TTQ
+				TTQ = { add_historical_friend = MSZ }
+				add_country_modifier = {
+					name = msz_silver_pact
+					duration = -1
+					desc = "We will both get this modifier until our alliance ends"
+				}
+				hidden_effect = {
+					TTQ = {
+						add_country_modifier = {
+							name = msz_silver_pact
+							duration = -1
+							desc = "We will both get this modifier until our alliance ends"
+						}
+					}
+				}
+			} else = {
+
+			}
+		}
 	}
 
 	msz_silver = {
 		icon = mission_unknown_mission
 		position = 5
 		required_missions = { msz_tartessos }
-		provinces_to_highlight = {  }
+		# provinces_to_highlight = {  }
 
-		trigger = {  }
+		trigger = {
 
-		effect = {  }
+		}
+
+		effect = {
+
+		}
 	}
 }
 massalia_missions_5_rome = {
