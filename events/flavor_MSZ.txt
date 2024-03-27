@@ -10,13 +10,13 @@ country_event = {
 	option = {	# assimilate/trade
 		name = flavor_MSZ.1.a
 		set_country_flag = MSZ_assimilate
-		country_events = { new_ideas.1 }
+		country_event = { new_ideas.1 }
 	}
 
 	option = {	# dominate/conquer
 		name = flavor_MSZ.1.b
 		set_country_flag = MSZ_dominate
-		country_events = { new_ideas.1 }
+		country_event = { new_ideas.1 }
 		gallia_narbonensis = {
 			limit = { has_port = yes }
 			area = { add_permanent_claim = MSZ }
@@ -26,14 +26,14 @@ country_event = {
 	option = {	# subjugate/trade
 		name = flavor_MSZ.1.b
 		set_country_flag = MSZ_subjugate
-		country_events = { new_ideas.1 }
+		country_event = { new_ideas.1 }
 	}
 }
 
 country_event = {
-	id = flavor_MSZ.2
-	title = flavor_MSZ.2.t
-	desc = flavor_MSZ.2.desc
+	id = flavor_MSZ.6
+	title = flavor_MSZ.6.t
+	desc = flavor_MSZ.6.desc
 
 	fire_only_once = yes
 
@@ -57,8 +57,8 @@ country_event = {
 		}
 	}
 
-	option = {
-		name = flavor_MSZ.2.a
+	option = {	# to war!
+		name = flavor_MSZ.6.a
 		MSZ = {
 			remove_country_modifier = MSZ_silver_pact
 			remove_historical_friend = TTQ
@@ -75,12 +75,60 @@ country_event = {
 				who = TTQ
 				casus_belli = cb_insult
 			}
+			add_stability = 5
+			add_war_exhaustion = -5
 		} else_if = {
 			limit = { tag = TTQ }
 			declare_war_with_cb = {
 				who = MSZ
 				casus_belli = cb_insult
 			}
+			add_stability = 5
+			add_war_exhaustion = -5
+		}
+
+		ai_chance = {
+			factor = 10
+			modifier = { factor = 10 MSZ = { ai = yes } }
+			modifier = { factor = 10 TTQ = { ai = yes } }
+			modifier = { factor = 0.75 NOT = { num_of_cities = 18 } }
+			modifier = { factor = 0.5 NOT = { num_of_cities = 12 } }
+			modifier = { factor = 0.25 NOT = { num_of_cities = 6 } }
+			modifier = { factor = 100 army_size_percentage = MSZ }
+			modifier = { factor = 100 army_size_percentage = TTQ }
+		}
+	}
+
+	option = {	# oh well
+		name = flavor_MSZ.6.b
+		MSZ = {
+			remove_country_modifier = MSZ_silver_pact
+			remove_historical_friend = TTQ
+			add_historical_rival = TTQ
+		}
+		TTQ = {
+			remove_country_modifier = MSZ_silver_pact
+			remove_historical_friend = MSZ
+			add_historical_rival = MSZ
+		}
+		if = {
+			limit = { tag = MSZ }
+			add_casus_belli = {
+				target = TTQ
+				type = cb_humiliate_rotw
+				months = 120
+			}
+		} else_if = {
+			limit = { tag = TTQ }
+			add_casus_belli = {
+				target = MSZ
+				type = cb_humiliate_rotw
+				months = 120
+			}
+		}
+
+		ai_chance = {
+			factor = 100
 		}
 	}
 }
