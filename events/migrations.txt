@@ -40,6 +40,29 @@ country_event = {
 				}
 			}
 		}
+
+		if = {
+			limit = {
+				any_owned_province = {
+					has_province_flag = PG_trib_migr_start
+				}
+			}
+			random_list = {
+				3 = {
+					modifier = {
+						factor = 0.65
+						calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
+					}
+					modifier = {
+						factor = 0.65	# added to the prior one
+						calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 10 }
+					}
+				}
+				1 = {
+					country_event = { id = migrations.2 }
+				}
+			}
+		}
 	}
 }
 
@@ -133,44 +156,6 @@ province_event = {
 		clr_province_flag = PG_provtarget_other
 		clr_province_flag = PG_target_success
 	}
-
-}
-
-country_event = {
-	id = migrations.102
-	title = "migrations.2.t"
-	desc = "migrations.2.d"
-	picture = peasant_woman
-	# hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = {
-		has_global_flag = popgrowth_running			# Only if popgrowth running
-		any_owned_province = {
-			has_province_flag = PG_trib_migr_start
-		}
-	}
-
-	option = {
-		name = "migrations.2.1"
-
-		random_list = {
-			3 = {
-				modifier = {
-					factor = 0.65
-					calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
-				}
-				modifier = {
-					factor = 0.65	# added to the prior one
-					calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 10 }
-				}
-			}
-			1 = {
-				country_event = { id = migrations.2 }
-			}
-		}
-	}
 }
 
 country_event = {		# 1st Country Event: tribal population want to leave. The country decides at a regional level
@@ -182,12 +167,7 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 
 	is_triggered_only = yes
 
-	trigger = {
-		has_global_flag = popgrowth_running			# Only if popgrowth running
-		any_owned_province = {
-			has_province_flag = PG_trib_migr_start
-		}
-	}
+	trigger = { }
 
 	immediate = {
 		# Find which region we are talking about. First it will force for a region with a lot of the same flag; otherwise redirect to any one.
@@ -606,81 +586,80 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 
 
 # experimental events, do not activate
-province_event = {
-	id = migrations.38
-	title = "migrations.38.t"
-	desc = "migrations.38.d"
-	picture = peasant_woman
-	#hidden = no
-	is_triggered_only = yes
+# province_event = {
+# 	id = migrations.38
+# 	title = "migrations.38.t"
+# 	desc = "migrations.38.d"
+# 	picture = peasant_woman
+# 	#hidden = no
+# 	is_triggered_only = yes
 
-	trigger = {
-		base_manpower = 2 												# does not let the last rural pop to leave, obviously
-		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
-		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00 (100%)
-		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
-		owner = { has_country_flag = PG_migration_manual }				# new, to allow the automatic event happening
-	}
-
-
-	# mean_time_to_happen = {
-	# 	months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
-	# }
-
-	immediate = {
-		hidden_effect = {
+# 	trigger = {
+# 		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+# 		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
+# 		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00 (100%)
+# 		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+# 		owner = { has_country_flag = PG_migration_manual }				# new, to allow the automatic event happening
+# 	}
 
 
+# 	# mean_time_to_happen = {
+# 	# 	months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+# 	# }
 
-		}
-
-	}
-
-	option = {
-		name = "population_capacity.4.1"
-		#set_base_manpower = 0
-		#set_base_production = 0
-		#set_base_tax = 0
-		#SD_update_provslots = yes
-		#SD_update_prov_output = yes
+# 	immediate = {
+# 		hidden_effect = {
 
 
 
-	}
+# 		}
+
+# 	}
+
+# 	option = {
+# 		name = "population_capacity.4.1"
+# 		#set_base_manpower = 0
+# 		#set_base_production = 0
+# 		#set_base_tax = 0
+# 		#SD_update_provslots = yes
+# 		#SD_update_prov_output = yes
 
 
-	after = {
 
-	}
-
-}
-
-country_event = {
-	id = migrations.86
-	title = "migrations.86.t"
-	desc = "migrations.86.d"
-	picture = peasant_woman
-	#hidden = no
-	is_triggered_only = yes
+# 	}
 
 
-	immediate = {
+# 	after = {
 
-	}
+# 	}
 
-	option = {
-		name = "population_capacity.4.1"
-		add_country_modifier = { name = popgrowth_debug_build duration = 100 }
-	}
-	option = {
-		name = "population_capacity.4.1"
-		set_country_flag = SD_auto_assign_slaves
-	}
+# }
+
+# country_event = {
+# 	id = migrations.86
+# 	title = "migrations.86.t"
+# 	desc = "migrations.86.d"
+# 	picture = peasant_woman
+# 	#hidden = no
+# 	is_triggered_only = yes
 
 
-	after = {
+# 	immediate = {
 
-	}
+# 	}
 
-}
+# 	option = {
+# 		name = "population_capacity.4.1"
+# 		add_country_modifier = { name = popgrowth_debug_build duration = 100 }
+# 	}
+# 	option = {
+# 		name = "population_capacity.4.1"
+# 		set_country_flag = SD_auto_assign_slaves
+# 	}
 
+
+# 	after = {
+
+# 	}
+
+# }
