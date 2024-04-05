@@ -2,687 +2,544 @@ namespace = population_upgrade
 
 country_event = {
 	id = population_upgrade.101
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
+	title = "population_upgrade.101.t"
+	desc = "population_upgrade.101.d"
 	picture = peasant_woman
 	hidden = yes
 
+	is_triggered_only = yes
+
 	trigger = {
-		NOT = { has_global_flag = popgrowth_running }
+		owns = 53
+		OR = {
+			has_global_flag = popgrowth_running		# event population_capacity.2, the Popgrowth menu. Allows to switch btw popgrowth and vanilla
+			has_global_flag = popgrowth_vanilla		# vanilla = not using Popgrowth. It will also be tracked, with "PVS" pop vanilla statistics
+		}
+		# NOT = { government = native }
 	}
 
 	option = {
-		name = "province_development.1.a"
+		name = "population_upgrade.101.a"
 
-		every_owned_province = {
-			limit = { is_city = yes }
-			if = {
-				limit = {
-					base_manpower = 3
-					NOT = { devastation = 1 }
+		if = {	# POPGROWTH UPGRADE EVENTS - alternate version of population growth. See Population Capacity events
+			limit = { has_global_flag = popgrowth_running }
+			every_country = {
+				limit = { NOT = { government = native } }
+				every_owned_province = {
+					limit = { is_city = yes }
+					if = {	# POPGROWTH: rank up (promotion) - tribal to commoner population
+						limit = {
+							check_variable = { which = PG_com_grow value = 100 }
+							base_manpower = 2
+						}
+						random_list = {
+							14 = {
+								# old event needed seven increments. Now reduced to three increments, to avoid a low mtth
+								# Values: about 2x the ones for growth seen in the other events
+								modifier = {
+									factor = 10		check_variable = { which = PG_com_grow which = rural_growth }
+									# as long as more demand in city than in the field. So if the field is depopulated due to everyone promoting, it will actually stop a bit. You don't want a city with just commoners and no tribals, then you may get a hard time controlling it or getting enough manpower.
+								}
+								modifier = { factor = 0.50 check_variable = { PG_com_grow = 100 } NOT = { check_variable = { PG_com_grow = 150 } } }
+								modifier = { factor = 0.33 check_variable = { PG_com_grow = 150 } NOT = { check_variable = { PG_com_grow = 200 } } }
+								modifier = { factor = 0.25 check_variable = { PG_com_grow = 200 } NOT = { check_variable = { PG_com_grow = 300 } } }
+								modifier = { factor = 0.20 check_variable = { PG_com_grow = 300 } NOT = { check_variable = { PG_com_grow = 400 } } }
+								modifier = { factor = 0.10 check_variable = { PG_com_grow = 400 } NOT = { check_variable = { PG_com_grow = 500 } } }
+								modifier = { factor = 0.05 check_variable = { PG_com_grow = 500 } }
+							}
+							1 = {
+								change_variable = { pop_upgrade_rate = 34 }	# needs only three increments
+								if = {
+									limit = { check_variable = { pop_upgrade_rate = 100 } }
+									set_variable = { which = pop_upgrade_rate value = 0 }
+									add_base_manpower = -1
+									add_base_production = 1
+									change_variable = { PS_urb_prom = 1 }
+									change_variable = { PS_rur_goup = 1 }
+									owner = {
+										if = {
+											limit = { ai = no }
+											change_variable = { which = tribal_to_commoner_var value = 1 }
+										}
+									}
+									province_event = { id = population_capacity.4 }
+								}
+							}
+						}
+					}
+					if = {	# POPGROWTH: rank down (demotion) - both pops: first Upper to Commoner, if not then Commoner to Tribal
+						limit = {		# to avoid going lower than starting value
+							OR = {
+								AND = {
+									NOT = { check_variable = { PG_com_grow = 100 } }
+									base_production = 2
+								}
+								AND = {
+									NOT = { check_variable = { PG_upp_grow = 100 } }
+									base_tax = 2
+								}
+							}
+							NOT = { has_province_modifier = urban_pause }
+						}
+						random_list = {
+							19 = {
+								# Urban growth, basically. Remember that while this is active other events may fire as well, such as migration, etc
+
+								# Until growth <85% no modifiers will start
+								modifier = { factor = 0.5 NOT = { check_variable = { PG_com_grow = 85 } } check_variable = { PG_com_grow = 70 } }
+								# 240 x 0.5 x 3 = 360 months, 30 years, one generation
+
+								modifier = { factor = 0.2 NOT = { check_variable = { PG_com_grow = 70 } } check_variable = { PG_com_grow = 50 } }
+								# Will leave you 240 x 0.1 x 3 = 72 months, 6 years to lose one pop. Enough time to correct it
+
+								modifier = { factor = 0.05 NOT = { check_variable = { PG_com_grow = 50 } } }
+								# (3 years) Run for your lifes you fools! Probably other events will strike first
+
+							}
+							1 = {
+								change_variable = { pop_upgrade_rate = -34 }
+								if = {
+									limit = { NOT = { check_variable = { pop_upgrade_rate = -100 } } }
+									set_variable = { which = pop_upgrade_rate value = 0 }
+									if = {
+										limit = {
+											NOT = { check_variable = { PG_upp_grow = 1 } }
+											base_tax = 2
+										}
+										add_base_production = 1
+										add_base_tax = -1
+										change_variable = { PS_urb_dem = 1 }
+										change_variable = { PS_upp_down = 1 }
+										owner = {
+											if = {
+												limit = { ai = no }
+												change_variable = { uppers_to_commoner_var = 1 }
+											}
+										}
+									} else_if = {
+										limit = { base_production = 2 }
+										add_base_manpower = 1
+										add_base_production = -1
+										change_variable = { PS_rur_dem = 1 }
+										change_variable = { PS_urb_down = 1 }
+										owner = {
+											if = {
+												limit = { ai = no }
+												change_variable = { commoner_to_tribal_var = 1 }
+											}
+										}
+									}
+									province_event = { id = population_capacity.4 }
+								}
+							}
+						}
+					}
+					if = {	# POPGROWTH: rank up - commoner population to Upper population
+						limit = {
+							check_variable = { which = PG_upp_grow value = 100 }
+							base_production = 2
+						}
+						random_list = {
+							29 = {
+								modifier = { factor = 0.75 check_variable = { PG_upp_grow = 100 } NOT = { check_variable = { PG_upp_grow = 150 } } }
+								modifier = { factor = 0.50 check_variable = { PG_upp_grow = 150 } NOT = { check_variable = { PG_upp_grow = 200 } } }
+								modifier = { factor = 0.33 check_variable = { PG_upp_grow = 200 } NOT = { check_variable = { PG_upp_grow = 300 } } }
+								modifier = { factor = 0.25 check_variable = { PG_upp_grow = 300 } NOT = { check_variable = { PG_upp_grow = 400 } } }
+								modifier = { factor = 0.15 check_variable = { PG_upp_grow = 400 } NOT = { check_variable = { PG_upp_grow = 500 } } }
+								modifier = { factor = 0.05 check_variable = { PG_upp_grow = 500 } } # Will quickly appoint someone to the job
+							}
+							1 = {
+								change_variable = { c_pop_upgrade_rate = 34 }
+								if = {
+									limit = { check_variable = { c_pop_upgrade_rate = 100 } }
+									set_variable = { which = c_pop_upgrade_rate value = 0 }
+									add_base_production = -1
+									add_base_tax = 1
+									change_variable = { PS_upp_prom = 1 }
+									change_variable = { PS_urb_goup = 1 }
+									owner = {
+										if = {
+											limit = { ai = no }
+											change_variable = { commoner_to_upper_var = 1 }
+										}
+									}
+									province_event = { id = population_capacity.4 }
+								}
+							}
+						}
+					}
 				}
-				random_list = {
-					4 = {
-						###### POSITIVE
-						modifier = {
-							factor = 0.95
-							OR = {
-								has_building = quarry
-								has_building = small_mine
-								has_building = big_mine
+			}
+		} else = {
+			every_country = {
+				limit = { NOT = { government = native } }
+				every_owned_province = {
+					limit = { is_city = yes }
+					if = {	# rank up - tribal population
+						limit = {
+							base_manpower = 3
+							NOT = { devastation = 1 }
+						}
+						random_list = {
+							4 = {
+								###### POSITIVE
+								modifier = {
+									factor = 0.95
+									OR = {
+										has_building = quarry
+										has_building = small_mine
+										has_building = big_mine
 
-								has_building = small_water_irrigation
-								has_building = big_water_irrigation
-								has_building = big_estate
+										has_building = small_water_irrigation
+										has_building = big_water_irrigation
+										has_building = big_estate
 
-								has_building = craftsman
-								has_building = small_workshop
-								has_building = artisan_district
+										has_building = craftsman
+										has_building = small_workshop
+										has_building = artisan_district
+									}
+								}
+								modifier = {
+									factor = 0.95
+									OR = {
+										has_building = small_market
+										has_building = medium_market
+										has_building = great_market
+									}
+								}
+								modifier = {
+									factor = 0.95
+											prosperity = 25
+									NOT = { prosperity = 50 }
+								}
+								modifier = {
+									factor = 0.9
+											prosperity = 50
+									NOT = { prosperity = 75 }
+								}
+								modifier = {
+									factor = 0.85
+											prosperity = 75
+									NOT = { prosperity = 99 }
+								}
+								modifier = {
+									factor = 0.8
+											prosperity = 99
+								}
+								##### NEGATIVE
+								modifier = {
+									factor = 1.05
+									OR = {
+										has_terrain = wetlands
+										has_terrain = woods
+										has_terrain = drylands
+										has_terrain = highlands
+										has_terrain = oasis
+										has_terrain = forest_steppe
+										has_terrain = steppe
+									}
+								}
+								modifier = {
+									factor = 1.1
+									OR = {
+										has_terrain = desert_mountain
+										has_terrain = mountain
+										has_terrain = desert
+										has_terrain = salt_desert
+										has_terrain = coastal_desert
+										has_terrain = forest
+										has_terrain = jungle
+										has_terrain = marsh
+									}
+								}
+								modifier = {
+									factor = 1.2
+									NOT = { base_manpower = 2 }
+								}
+								modifier = {
+									factor = 1.15
+									NOT = { base_manpower = 4 }
+								}
+								modifier = {
+									factor = 1.1
+									NOT = { base_manpower = 6 }
+								}
+								modifier = {
+									factor = 1.05
+									NOT = { base_manpower = 8 }
+								}
+							}
+							1 = {
+								change_variable = { which = pop_upgrade_rate value = 15 }
+								if = {
+									limit = { check_variable = { which = pop_upgrade_rate value = 100 } }
+									set_variable = { which = pop_upgrade_rate value = 0 }
+
+									if = {
+										limit = { base_manpower = 3 }
+										add_base_manpower = -1
+										add_base_production = 1
+										change_variable = { PVS_rur_urb = 1 }
+										owner = {
+											if = {
+												limit = { ai = no}
+												change_variable = { which = tribal_to_commoner_var value = 1 }
+											}
+										}
+									}
+									if = {
+										limit = { base_production = 2 }
+										add_base_production = -1
+										add_base_tax = 1
+										change_variable = { PVS_rur_upp = 1 }
+										owner = {
+											if = {
+												limit = { ai = no}
+												change_variable = { which = commoner_to_upper_var value = 1 }
+											}
+										}
+									}
+								}
 							}
 						}
-						modifier = {
-							factor = 0.95
+					}
+					if = {	# rank up - commoner population
+						limit = {
+							devastation = 1
 							OR = {
-								has_building = small_market
-								has_building = medium_market
-								has_building = great_market
+								base_production = 2
+								base_tax = 2
 							}
 						}
-						modifier = {
-							factor = 0.95
-									prosperity = 25
-							NOT = { prosperity = 50 }
+						random_list = {
+							4 = {
+								##### NEGATIVE
+								modifier = {
+									factor = 0.9
+									OR = {
+										has_climate = arid
+										has_climate = tropical
+									}
+								}
+								modifier = {
+									factor = 0.9
+											devastation = 5
+									NOT = { devastation = 10 }
+								}
+								modifier = {
+									factor = 0.8
+											devastation = 10
+									NOT = { devastation = 15 }
+								}
+								modifier = {
+									factor = 0.7
+											devastation = 15
+									NOT = { devastation = 20 }
+								}
+								modifier = {
+									factor = 0.6
+											devastation = 20
+									NOT = { devastation = 25 }
+								}
+								modifier = {
+									factor = 0.5
+											devastation = 25
+									NOT = { devastation = 30 }
+								}
+								modifier = {
+									factor = 0.4
+											devastation = 30
+									NOT = { devastation = 35 }
+								}
+								modifier = {
+									factor = 0.35
+											devastation = 35
+									NOT = { devastation = 40 }
+								}
+								modifier = {
+									factor = 0.3
+											devastation = 40
+									NOT = { devastation = 50 }
+								}
+								modifier = {
+									factor = 0.25
+									devastation = 50
+								}
+							}
+							1 = {
+								change_variable = { which = pop_upgrade_rate value = -15 }
+								if = {
+									limit = { NOT = { check_variable = { which = pop_upgrade_rate value = -100 } } }
+									set_variable = { which = pop_upgrade_rate value = 0 }
+
+									if = {
+										limit = { base_production = 1 }
+										add_base_manpower = 1
+										add_base_production = -1
+										change_variable = { PVS_urb_rur = 1 }
+										owner = {
+											if = {
+												limit = { ai = no}
+												change_variable = { which = commoner_to_tribal_var value = 1 }
+											}
+										}
+									}
+									if = {
+										limit = { base_tax = 1 }
+										add_base_production = 1
+										add_base_tax = -1
+										change_variable = { PVS_upp_urb = 1 }
+										owner = {
+											if = {
+												limit = { ai = no}
+												change_variable = { which = uppers_to_commoner_var value = 1 }
+											}
+										}
+									}
+								}
+							}
 						}
-						modifier = {
-							factor = 0.9
-									prosperity = 50
-							NOT = { prosperity = 75 }
+					}
+					if = {	# rank down - tribal population
+						limit = {
+							base_production = 2
+							NOT = { devastation = 1 }
 						}
-						modifier = {
-							factor = 0.85
-									prosperity = 75
-							NOT = { prosperity = 99 }
-						}
-						modifier = {
-							factor = 0.8
+						random_list = {
+							5 = {
+								###### POSITIVE
+								modifier = {
+									factor = 0.95
+									OR = {
+										has_building = small_townhall
+										has_building = big_townhall
+										has_building = government_palace
+										has_building = government_district
+									}
+								}
+								modifier = {
+									factor = 0.95
+									OR = {
+										has_building = small_market
+										has_building = medium_market
+										has_building = great_market
+									}
+								}
+								modifier = {
+									factor = 0.95
+									OR = {
+										has_building = shrine
+										has_building = small_temple
+										has_building = great_temple
+									}
+								}
+								modifier = {
+									factor = 0.95
+											prosperity = 25
+									NOT = { prosperity = 50 }
+								}
+								modifier = {
+									factor = 0.9
+											prosperity = 50
+									NOT = { prosperity = 75 }
+								}
+								modifier = {
+									factor = 0.85
+											prosperity = 75
+									NOT = { prosperity = 99 }
+								}
+								modifier = {
+									factor = 0.8
 									prosperity = 99
-						}
-						##### NEGATIVE
-						modifier = {
-							factor = 1.05
-							OR = {
-								has_terrain = wetlands
-								has_terrain = woods
-								has_terrain = drylands
-								has_terrain = highlands
-								has_terrain = oasis
-								has_terrain = forest_steppe
-								has_terrain = steppe
+								}
+								modifier = {
+									factor = 0.85
+									NOT = { base_tax = 1 }
+								}
+								modifier = {
+									factor = 1.1
+									base_tax = 2
+									NOT = { base_tax = 4 }
+								}
+								modifier = {
+									factor = 1.25
+									base_tax = 4
+									NOT = { base_tax = 6 }
+								}
+								modifier = {
+									factor = 1.4
+									base_tax = 6
+									NOT = { base_tax = 8 }
+								}
+								modifier = {
+									factor = 1.8
+									base_tax = 8
+								}
+								modifier = {
+									factor = 1.3
+									NOT = { base_production = 2 }
+								}
+								modifier = {
+									factor = 1.25
+									NOT = { base_production = 4 }
+								}
+								modifier = {
+									factor = 1.15
+									NOT = { base_production = 6 }
+								}
+								modifier = {
+									factor = 1.1
+									NOT = { base_production = 8 }
+								}
+								##### NEGATIVE
+								modifier = {
+									factor = 1.05
+									OR = {
+										has_terrain = wetlands
+										has_terrain = woods
+										has_terrain = drylands
+										has_terrain = highlands
+										has_terrain = oasis
+										has_terrain = forest_steppe
+										has_terrain = steppe
+									}
+								}
+								modifier = {
+									factor = 1.1
+									OR = {
+										has_terrain = desert_mountain
+										has_terrain = mountain
+										has_terrain = desert
+										has_terrain = salt_desert
+										has_terrain = coastal_desert
+										has_terrain = forest
+										has_terrain = jungle
+										has_terrain = marsh
+									}
+								}
 							}
-						}
-						modifier = {
-							factor = 1.1
-							OR = {
-								has_terrain = desert_mountain
-								has_terrain = mountain
-								has_terrain = desert
-								has_terrain = salt_desert
-								has_terrain = coastal_desert
-								has_terrain = forest
-								has_terrain = jungle
-								has_terrain = marsh
-							}
-						}
-						modifier = {
-							factor = 1.2
-							NOT = { base_manpower = 2 }
-						}
-						modifier = {
-							factor = 1.15
-							NOT = { base_manpower = 4 }
-						}
-						modifier = {
-							factor = 1.1
-							NOT = { base_manpower = 6 }
-						}
-						modifier = {
-							factor = 1.05
-							NOT = { base_manpower = 8 }
-						}
-					}
-					1 = { province_event = { id = population_upgrade.1 } }
-				}
-			}
-			if = {
-				limit = {
-					devastation = 1
-					OR = {
-						base_production = 2
-						base_tax = 2
-					}
-				}
-				random_list = {
-					4 = {
-						##### NEGATIVE
-						modifier = {
-							factor = 0.9
-							OR = {
-								has_climate = arid
-								has_climate = tropical
-							}
-						}
-						modifier = {
-							factor = 0.9
-									devastation = 5
-							NOT = { devastation = 10 }
-						}
-						modifier = {
-							factor = 0.8
-									devastation = 10
-							NOT = { devastation = 15 }
-						}
-						modifier = {
-							factor = 0.7
-									devastation = 15
-							NOT = { devastation = 20 }
-						}
-						modifier = {
-							factor = 0.6
-									devastation = 20
-							NOT = { devastation = 25 }
-						}
-						modifier = {
-							factor = 0.5
-									devastation = 25
-							NOT = { devastation = 30 }
-						}
-						modifier = {
-							factor = 0.4
-									devastation = 30
-							NOT = { devastation = 35 }
-						}
-						modifier = {
-							factor = 0.35
-									devastation = 35
-							NOT = { devastation = 40 }
-						}
-						modifier = {
-							factor = 0.3
-									devastation = 40
-							NOT = { devastation = 50 }
-						}
-						modifier = {
-							factor = 0.25
-							devastation = 50
-						}
-					}
-					1 = { province_event = { id = population_upgrade.2 } }
-				}
-			}
-			if = {
-				limit = {
-					NOT = { devastation = 1 }
-					base_production = 2
-				}
-				random_list = {
-					5 = {
-						###### POSITIVE
-						modifier = {
-							factor = 0.95
-							OR = {
-								has_building = small_townhall
-								has_building = big_townhall
-								has_building = government_palace
-								has_building = government_district
-							}
-						}
-						modifier = {
-							factor = 0.95
-							OR = {
-								has_building = small_market
-								has_building = medium_market
-								has_building = great_market
-							}
-						}
-						modifier = {
-							factor = 0.95
-							OR = {
-								has_building = shrine
-								has_building = small_temple
-								has_building = great_temple
-							}
-						}
-						modifier = {
-							factor = 0.95
-									prosperity = 25
-							NOT = { prosperity = 50 }
-						}
-						modifier = {
-							factor = 0.9
-									prosperity = 50
-							NOT = { prosperity = 75 }
-						}
-						modifier = {
-							factor = 0.85
-									prosperity = 75
-							NOT = { prosperity = 99 }
-						}
-						modifier = {
-							factor = 0.8
-							prosperity = 99
-						}
-						modifier = {
-							factor = 0.85
-							NOT = { base_tax = 1 }
-						}
-						modifier = {
-							factor = 1.1
-							base_tax = 2
-							NOT = { base_tax = 4 }
-						}
-						modifier = {
-							factor = 1.25
-							base_tax = 4
-							NOT = { base_tax = 6 }
-						}
-						modifier = {
-							factor = 1.4
-							base_tax = 6
-							NOT = { base_tax = 8 }
-						}
-						modifier = {
-							factor = 1.8
-							base_tax = 8
-						}
-						modifier = {
-							factor = 1.3
-							NOT = { base_production = 2 }
-						}
-						modifier = {
-							factor = 1.25
-							NOT = { base_production = 4 }
-						}
-						modifier = {
-							factor = 1.15
-							NOT = { base_production = 6 }
-						}
-						modifier = {
-							factor = 1.1
-							NOT = { base_production = 8 }
-						}
-						##### NEGATIVE
-						modifier = {
-							factor = 1.05
-							OR = {
-								has_terrain = wetlands
-								has_terrain = woods
-								has_terrain = drylands
-								has_terrain = highlands
-								has_terrain = oasis
-								has_terrain = forest_steppe
-								has_terrain = steppe
-							}
-						}
-						modifier = {
-							factor = 1.1
-							OR = {
-								has_terrain = desert_mountain
-								has_terrain = mountain
-								has_terrain = desert
-								has_terrain = salt_desert
-								has_terrain = coastal_desert
-								has_terrain = forest
-								has_terrain = jungle
-								has_terrain = marsh
-							}
-						}
-					}
-					1 = { province_event = { id = population_grow.3 } }
-				}
-			}
-		}
-	}
-}
+							1 = {
+								change_variable = { which = c_pop_upgrade_rate value = 15 }
 
-########################################################################################
-# rank up - tribal population
-########################################################################################
-province_event = {
-	id = population_upgrade.1
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
+								if = {
+									limit = { check_variable = { which = c_pop_upgrade_rate value = 100 } }
+									set_variable = { which = c_pop_upgrade_rate value = 0 }
+									add_base_production = -1
+									add_base_tax = 1
+									change_variable = { PVS_urb_upp = 1 }
+									owner = {
+										if = {
+											limit = { ai = no }
+											change_variable = { which = commoner_to_upper_var value = 1 }
+										}
+									}
 
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { which = pop_upgrade_rate value = 15 }
-
-		while = {
-			limit = { check_variable = { which = pop_upgrade_rate value = 100 } }
-			set_variable = { which = pop_upgrade_rate value = 0 }
-
-			if = {
-				limit = { base_manpower = 3 }
-				add_base_manpower = -1
-				add_base_production = 1
-				change_variable = { PVS_rur_urb = 1 }
-				owner = {
-					if = {
-						limit = { ai = no}
-						change_variable = { which = tribal_to_commoner_var value = 1 }
-					}
-				}
-			}
-			if = {
-				limit = { base_production = 2 }
-				add_base_production = -1
-				add_base_tax = 1
-				change_variable = { PVS_rur_upp = 1 }
-				owner = {
-					if = {
-						limit = { ai = no}
-						change_variable = { which = commoner_to_upper_var value = 1 }
+								}
+							}
+						}
 					}
 				}
 			}
 		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-	}
-}
-
-########################################################################################
-# rank down - tribal population
-########################################################################################
-province_event = {
-	id = population_upgrade.2
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { which = pop_upgrade_rate value = -15 }
-
-		while = {
-			limit = { NOT = { check_variable = { which = pop_upgrade_rate value = -100 } } }
-			set_variable = { which = pop_upgrade_rate value = 0 }
-
-			if = {
-				limit = { base_production = 1 }
-				add_base_manpower = 1
-				add_base_production = -1
-				change_variable = { PVS_urb_rur = 1 }
-				owner = {
-					if = {
-						limit = { ai = no}
-						change_variable = { which = commoner_to_tribal_var value = 1 }
-					}
-				}
-			}
-			if = {
-				limit = { base_tax = 1 }
-				add_base_production = 1
-				add_base_tax = -1
-				change_variable = { PVS_upp_urb = 1 }
-				owner = {
-					if = {
-						limit = { ai = no}
-						change_variable = { which = uppers_to_commoner_var value = 1 }
-					}
-				}
-			}
-		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-	}
-}
-
-########################################################################################
-# rank up - commoner population
-########################################################################################
-province_event = {
-	id = population_upgrade.3
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { which = c_pop_upgrade_rate value = 15 }
-
-		while = {
-			limit = { check_variable = { which = c_pop_upgrade_rate value = 100 } }
-			set_variable = { which = c_pop_upgrade_rate value = 0 }
-			add_base_production = -1
-			add_base_tax = 1
-			change_variable = { PVS_urb_upp = 1 }
-			owner = {
-				if = {
-					limit = { ai = no }
-					change_variable = { which = commoner_to_upper_var value = 1 }
-				}
-			}
-
-		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-	}
-}
-
-########################################################################################
-# POPGROWTH UPGRADE EVENTS - alternate version of population growth. See Population Capacity events
-########################################################################################
-
-country_event = {
-	id = population_upgrade.104
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	trigger = {
-		has_global_flag = popgrowth_running
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-		every_owned_province = {
-			limit = { is_city = yes }
-			if = {
-				limit = {
-					base_manpower = 2
-					check_variable = { which = PG_com_grow value = 100 }
-				}
-				random_list = {
-					14 = {
-						# old event needed seven increments. Now reduced to three increments, to avoid a low mtth
-						# Values: about 2x the ones for growth seen in the other events
-						modifier = {
-							factor = 10		check_variable = { which = PG_com_grow which = rural_growth }
-							# as long as more demand in city than in the field. So if the field is depopulated due to everyone promoting, it will actually stop a bit. You don't want a city with just commoners and no tribals, then you may get a hard time controlling it or getting enough manpower.
-						}
-						modifier = { factor = 0.50 check_variable = { PG_com_grow = 100 } NOT = { check_variable = { PG_com_grow = 150 } } }
-						modifier = { factor = 0.33 check_variable = { PG_com_grow = 150 } NOT = { check_variable = { PG_com_grow = 200 } } }
-						modifier = { factor = 0.25 check_variable = { PG_com_grow = 200 } NOT = { check_variable = { PG_com_grow = 300 } } }
-						modifier = { factor = 0.20 check_variable = { PG_com_grow = 300 } NOT = { check_variable = { PG_com_grow = 400 } } }
-						modifier = { factor = 0.10 check_variable = { PG_com_grow = 400 } NOT = { check_variable = { PG_com_grow = 500 } } }
-						modifier = { factor = 0.05 check_variable = { PG_com_grow = 500 } }
-					}
-					1 = {
-						province_event = { id = population_upgrade.4 }
-					}
-				}
-			}
-			if = {
-				limit = {
-					NOT = { has_province_modifier = urban_pause }		# to avoid going lower than starting value
-					OR = {
-						AND = { NOT = { check_variable = { PG_com_grow = 100 } } base_production = 2 }
-						AND = { NOT = { check_variable = { PG_upp_grow = 100 } } base_tax = 2 }
-					}
-				}
-				random_list = {
-					19 = {
-						# Urban growth, basically. Remember that while this is active other events may fire as well, such as migration, etc
-
-						# Until growth <85% no modifiers will start
-						modifier = { factor = 0.5 NOT = { check_variable = { PG_com_grow = 85 } } check_variable = { PG_com_grow = 70 } }
-						# 240 x 0.5 x 3 = 360 months, 30 years, one generation
-
-						modifier = { factor = 0.2 NOT = { check_variable = { PG_com_grow = 70 } } check_variable = { PG_com_grow = 50 } }
-						# Will leave you 240 x 0.1 x 3 = 72 months, 6 years to lose one pop. Enough time to correct it
-
-						modifier = { factor = 0.05 NOT = { check_variable = { PG_com_grow = 50 } } }
-						# (3 years) Run for your lifes you fools! Probably other events will strike first
-
-					}
-					1 = {
-						province_event = { id = population_grow.5 }
-					}
-				}
-			}
-			if = {
-				limit = {
-					base_production = 2
-					check_variable = { which = PG_upp_grow value = 100 }
-				}
-				random_list = {
-					29 = {
-						modifier = { factor = 0.75 check_variable = { PG_upp_grow = 100 } NOT = { check_variable = { PG_upp_grow = 150 } } }
-						modifier = { factor = 0.50 check_variable = { PG_upp_grow = 150 } NOT = { check_variable = { PG_upp_grow = 200 } } }
-						modifier = { factor = 0.33 check_variable = { PG_upp_grow = 200 } NOT = { check_variable = { PG_upp_grow = 300 } } }
-						modifier = { factor = 0.25 check_variable = { PG_upp_grow = 300 } NOT = { check_variable = { PG_upp_grow = 400 } } }
-						modifier = { factor = 0.15 check_variable = { PG_upp_grow = 400 } NOT = { check_variable = { PG_upp_grow = 500 } } }
-						modifier = { factor = 0.05 check_variable = { PG_upp_grow = 500 } } # Will quickly appoint someone to the job
-					}
-					1 = {
-						province_event = { id = population_grow.6 }
-					}
-				}
-			}
-		}
-	}
-}
-
-########################################################################################
-# POPGROWTH: rank up (promotion) - tribal to commoner population
-########################################################################################
-province_event = {
-	id = population_upgrade.4
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { pop_upgrade_rate = 34 }	# needs only three increments
-		if = {
-			limit = { check_variable = { pop_upgrade_rate = 100 } }
-			set_variable = { which = pop_upgrade_rate value = 0 }
-			if = {
-				limit = { base_manpower = 2 }
-				add_base_manpower = -1
-				add_base_production = 1
-				change_variable = { PS_urb_prom = 1 }
-				change_variable = { PS_rur_goup = 1 }
-				owner = {
-					if = {
-						limit = { ai = no }
-						change_variable = { which = tribal_to_commoner_var value = 1 }
-					}
-				}
-			}
-			province_event = { id = population_capacity.4 }
-		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-	}
-}
-
-########################################################################################
-# POPGROWTH: rank down (demotion) - both pops: first Upper to Commoner, if not then Commoner to Tribal
-########################################################################################
-province_event = {
-	id = population_upgrade.5
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { pop_upgrade_rate = -34 }
-
-		if = {
-			limit = { NOT = { check_variable = { pop_upgrade_rate = -100 } } }
-			set_variable = { which = pop_upgrade_rate value = 0 }
-
-			if = {
-				limit = {
-					base_tax = 2
-					NOT = { check_variable = { PG_upp_grow = 1 } }
-				}
-				add_base_production = 1
-				add_base_tax = -1
-				change_variable = { PS_urb_dem = 1 }
-				change_variable = { PS_upp_down = 1 }
-				owner = {
-					if = {
-						limit = { ai = no }
-						change_variable = { uppers_to_commoner_var = 1 }
-					}
-				}
-			} else_if = {
-				limit = { base_production = 2 }
-				add_base_manpower = 1
-				add_base_production = -1
-				change_variable = { PS_rur_dem = 1 }
-				change_variable = { PS_urb_down = 1 }
-				owner = {
-					if = {
-						limit = { ai = no }
-						change_variable = { commoner_to_tribal_var = 1 }
-					}
-				}
-			}
-			province_event = { id = population_capacity.4 }
-		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
-	}
-}
-
-########################################################################################
-# POPGROWTH: rank up - commoner population to Upper population
-########################################################################################
-province_event = {
-	id = population_upgrade.6
-	title = "population_upgrade.1.t"
-	desc = "population_upgrade.1.d"
-	picture = peasant_woman
-	hidden = yes
-
-	is_triggered_only = yes
-
-	trigger = { }
-
-	immediate = {
-		change_variable = { c_pop_upgrade_rate = 34 }
-		if = {
-			limit = { check_variable = { c_pop_upgrade_rate = 100 } }
-			set_variable = { which = c_pop_upgrade_rate value = 0 }
-			add_base_production = -1
-			add_base_tax = 1
-			change_variable = { PS_upp_prom = 1 }
-			change_variable = { PS_urb_goup = 1 }
-			owner = {
-				if = {
-					limit = { ai = no }
-					change_variable = { commoner_to_upper_var = 1 }
-				}
-			}
-			province_event = { id = population_capacity.4 }
-		}
-	}
-
-	option = {
-		name = "province_development.1.a"
-
 	}
 }
