@@ -16,10 +16,6 @@ country_event = {
 		stability = 1
 	}
 
-	mean_time_to_happen = {
-		days = 1
-	}
-
 	option = { # yes
 		name = "religion.1.a"
 		ai_chance = { factor = 20 }
@@ -49,10 +45,6 @@ country_event = {
 		stability = 1
 	}
 
-	mean_time_to_happen = {
-		days = 1
-	}
-
 	option = {
 		name = "religion.2.a"
 		add_patriarch_authority = 0.05
@@ -73,10 +65,6 @@ country_event = {
 	trigger = {
 		has_advisor = yes
 		uses_patriarch_authority = yes
-	}
-
-	mean_time_to_happen = {
-		days = 1
 	}
 
 	option = {
@@ -115,10 +103,6 @@ country_event = {
 		num_of_cities = 10
 	}
 
-	mean_time_to_happen = {
-		days = 1
-	}
-
 	option = {
 		name = "religion.4.a"
 		random_province = {
@@ -144,6 +128,7 @@ country_event = {
 
     trigger = {
         uses_patriarch_authority = yes
+		NOT = { num_of_cities = 10 }
 		treasury = 100
 		NOT = { government = native }
 		adm_tech = 2
@@ -219,18 +204,14 @@ country_event = {
 		NOT = { religious_unity = 0.85 }
     }
 
-    mean_time_to_happen = {
-        days = 1
-    }
-
     option = {
         name = "religion.9.a"
         if = {
 			limit = {  uses_patriarch_authority = yes }
 			add_patriarch_authority = 0.05
 		}
-			add_legitimacy = -5
-			add_prestige = -5
+		add_legitimacy = -5
+		add_prestige = -5
     }
 
     option = {
@@ -239,8 +220,8 @@ country_event = {
 			limit = {  uses_patriarch_authority = yes }
 			add_patriarch_authority = -0.05
 		}
-			add_legitimacy = 5
-			add_prestige = 5
+		add_legitimacy = 5
+		add_prestige = 5
     }
 }
 ########################################################################################
@@ -251,6 +232,7 @@ country_event = {
 	title = "religion.10.t"
 	desc = "religion.10.d"
 	picture = religious
+
 	is_triggered_only = yes
 
 	trigger = {
@@ -259,10 +241,10 @@ country_event = {
 			religion_group = persian_group
 		}
 		capital_scope = {
-			OR = {
-				continent = asia
-			}
+			continent = asia
 		}
+		NOT = { religion = iranian_religion }
+		num_of_cities = 10
 		OR = {
 			any_neighbor_country = {
 				religion = iranian_religion
@@ -271,12 +253,6 @@ country_event = {
 				religion = iranian_religion
 			}
 		}
-		NOT = { religion = iranian_religion }
-		num_of_cities = 10
-	}
-
-	mean_time_to_happen = {
-		days = 1
 	}
 
 	option = {
@@ -290,7 +266,6 @@ country_event = {
 	}
 }
 
-
 ########################################################################################
 # religion spreads
 ########################################################################################
@@ -303,6 +278,8 @@ province_event = {
 	hidden = yes
 
 	trigger = {
+		NOT = { religion = ROOT }
+		religion_group = pagan_group
 		any_neighbor_province = {
 			owner = { NOT = { patriarch_authority = 0.25 } }
 		}
@@ -310,8 +287,34 @@ province_event = {
 			owner = { patriarch_authority = 0.25 }
 			owner = { uses_patriarch_authority = no }
 		}
-		NOT = { religion = ROOT }
-		religion_group = pagan_group
+	}
+
+	mean_time_to_happen = {
+		months = 65000
+		modifier = {
+			factor = 2.0
+			owner = { is_tribal = yes }
+		}
+		modifier = {
+			factor = 2.0
+			owner = { NOT = { patriarch_authority = 0.4 } }
+		}
+		modifier = {
+			factor = 1.5
+			owner = { NOT = { patriarch_authority = 0.6 } }
+		}
+		modifier = {
+			factor = 0.85
+			owner = { patriarch_authority = 0.8 }
+		}
+		modifier = {
+			factor = 0.9
+			owner = { DIP = 4 }
+		}
+		modifier = {
+			factor = 1.25
+			owner = { full_idea_group = syncretism_ideas }
+		}
 	}
 
 	immediate = {
@@ -328,34 +331,6 @@ province_event = {
 				days = 1
 			}
 		}
-	}
-
-	mean_time_to_happen = {
-		months = 65000
-		modifier = {
-				factor = 2.0
-				owner = { is_tribal = yes }
-			}
-		modifier = {
-				factor = 2.0
-				owner = { NOT = { patriarch_authority = 0.4 } }
-			}
-		modifier = {
-				factor = 1.5
-				owner = { NOT = { patriarch_authority = 0.6 } }
-			}
-		modifier = {
-				factor = 0.85
-				owner = { patriarch_authority = 0.8 }
-			}
-		modifier = {
-				factor = 0.9
-				owner = { DIP = 4 }
-			}
-		modifier = {
-				factor = 1.25
-				owner = { full_idea_group = syncretism_ideas }
-			}
 	}
 
 	option = {
@@ -387,8 +362,6 @@ province_event = {
 	desc = "religion.13.d"
 	picture = religious
 
-	is_mtth_scaled_to_size = 2
-
 	trigger = {
 		is_reformation_center = yes
 		had_province_flag = {
@@ -403,6 +376,8 @@ province_event = {
 			}
 		}
 	}
+
+	is_mtth_scaled_to_size = 2
 
 	mean_time_to_happen = {
 		months = 12
