@@ -959,6 +959,7 @@ country_event = {
 				OR = {
 					ruler_has_personality = greedy_personality
 					ruler_has_personality = malevolent_personality
+					ruler_has_personality = embezzler_personality
 				}
 			}
 		}
@@ -1180,6 +1181,32 @@ country_event = {
 }
 
 ########################################################################################
+# zhou circulates anti liyuebadao propaganda (other countries get)
+########################################################################################
+country_event = {
+	id = china.32
+	title = "china.32.t"
+	desc = "china.32.d"
+	picture = archemedis
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.32.a"
+		every_country = {
+			limit = {
+				religion = liyuebadao
+			}
+			add_reverse_opinion = {
+				who = ROOT
+				modifier = opinion_anti_liyuebadao
+			}
+		}
+	}
+}
+
+########################################################################################
 # zhou circulates anti liyuebadao propaganda
 ########################################################################################
 country_event = {
@@ -1247,10 +1274,7 @@ country_event = {
 			limit = {
 				religion = chinese_religion
 			}
-			add_opinion = {
-				who = CHU #find a way to set opinion modifier to all liyuebadao nations?
-				modifier = opinion_anti_liyuebadao
-			}
+			country_event = { id = china.32 }
 		}
 		ai_chance = { 
 			factor = 95
@@ -1265,4 +1289,280 @@ country_event = {
 	}
 }
 
+########################################################################################
+# zhou can give a little boost to a small nation (given in full)
+########################################################################################
+country_event = {
+	id = china.34
+	title = "china.34.t"
+	desc = "china.34.d"
+	picture = deligation
+	
+	is_triggered_only = yes
 
+	option = {
+		name = "china.34.a"
+		add_country_modifier = {
+			name = zho_give_smallnation_aid
+			duration = 2190
+		}
+		add_opinion = {
+			who = ZHO
+			modifier = opinion_zhou_gave_aid
+		}
+	}
+}
+
+########################################################################################
+# zhou can give a little boost to a small nation (zhou embezzled)
+########################################################################################
+country_event = {
+	id = china.35
+	title = "china.35.t"
+	desc = "china.35.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.35.a"
+		prestige = 10
+		add_opinion = {
+			who = ZHO
+			modifier = opinion_zhou_embezzled_aid
+		}
+	}
+}
+
+########################################################################################
+# zhou can give a little boost to a small nation
+########################################################################################
+country_event = {
+	id = china.33
+	title = "china.33.t"
+	desc = "china.33.d"
+	picture = deligation
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 500
+		calc_true_if = {
+			all_known_country = {
+				religion = chinese_religion
+				capital_scope = {
+					continent = china
+				}
+				is_subject = no
+				NOT = {
+					total_development = 60
+				}
+			}
+			amount = 1
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 600
+		modifier = {
+			factor = 0.8
+			OR = {
+				ruler_has_personality = well_connected_personality
+				ruler_has_personality = tactical_genius_personality
+			}
+		}
+		modifier = {
+			factor = 0.9
+			calc_true_if = {
+				all_known_country = {
+					religion = chinese_religion
+					capital_scope = {
+						continent = china
+					}
+					is_subject = no
+					NOT = {
+						total_development = 60
+					}
+				}
+				amount = 5
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_known_country = {
+				limit = {
+					religion = chinese_religion
+					capital_scope = {
+						continent = china
+					}
+					is_subject = no
+					NOT = {
+						total_development = 60
+					}
+				}
+				save_event_target_as = zho_small_nation_pick
+			}
+		}
+	}
+
+	option = {
+		name = "china.33.a"
+		add_curia_treasury = -500
+		event_target:zho_small_nation_pick = {
+			country_event = { id = china.34 }
+		}
+		ai_chance = { 
+			factor = 75
+		}
+	}
+	option = {
+		name = "china.33.b"
+		add_curia_treasury = -500
+		add_treasury = 250
+		add_corruption = 0.5
+		event_target:zho_small_nation_pick = {
+			country_event = { id = china.35 }
+		}
+		ai_chance = { 
+			factor = 20
+			modifier = {
+				factor = 4
+				ruler_has_personality = embezzler_personality
+			}
+			modifier = {
+				factor = 1.5
+				NOT = {
+					years_of_income = 0.5
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.33.c"
+		add_prestige = -5
+		ai_chance = { 
+			factor = 5
+			modifier = {
+				factor = 2
+				ruler_has_personality = craven_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou can settle migrants
+########################################################################################
+country_event = {
+	id = china.36
+	title = "china.36.t"
+	desc = "china.36.d"
+	picture = deligation
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 400
+		NOT = {
+			num_of_cities = 7
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 500
+		modifier = {
+			factor = 0.8
+			OR = {
+				ruler_has_personality = tolerant_personality
+				ruler_has_personality = industrious_personality
+			}
+		}
+		modifier = {
+			factor = 0.9
+			NOT = {
+				total_development = 51
+			}
+		}
+		modifier = {
+			factor = 0.9
+			NOT = {
+				num_of_cities = 3
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				save_event_target_as = zho_settler_province
+			}
+		}
+	}
+
+	option = {
+		name = "china.36.a"
+		add_curia_treasury = -300
+		event_target:zho_settler_province = {
+			add_base_production = 1
+		}
+		ai_chance = { 
+			factor = 40
+		}
+	}
+	option = {
+		name = "china.36.b"
+		add_curia_treasury = -200
+		event_target:zho_settler_province = {
+			add_base_manpower = 1
+		}
+		ai_chance = { 
+			factor = 20
+		}
+	}
+	option = {
+		name = "china.36.c"
+		add_curia_treasury = -400
+		random_list = {
+			33 = {
+				define_advisor = {
+					type = architect
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+			33 = {
+				define_advisor = {
+					type = negotiator_adv
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+			34 = {
+				define_advisor = {
+					type = armor_smith
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+		}
+		ai_chance = { 
+			factor = 40
+		}
+	}
+	option = {
+		name = "china.36.dd"
+		ai_chance = { 
+			factor = 0
+		}
+	}
+}
