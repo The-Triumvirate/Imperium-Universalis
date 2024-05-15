@@ -630,4 +630,949 @@ country_event = {
 	}
 }
 
+########################################################################################
+# shu easter egg event
+########################################################################################
+country_event = {
+	id = china.18
+	title = "china.18.t"
+	desc = "china.18.d"
+	picture = religious
+	fire_only_once = yes
 
+	trigger = {
+		tag = SHU
+		primary_culture = xinan_chinese
+	}
+
+	mean_time_to_happen = {
+		months = 600
+
+	}
+	option = {
+		name = "china.18.a"
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# zhou gets event to give rank
+########################################################################################
+country_event = {
+	id = china.19
+	title = "china.19.t"
+	desc = "china.19.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.19.a"
+		ai_chance = { 
+			factor = 50 
+			modifier = {
+				factor = 1.25
+				has_opinion = {
+					who = ROOT
+					value = 150
+				}
+			}
+			modifier = {
+				factor = 1.35
+				has_opinion = {
+					who = ROOT
+					value = 175
+				}
+			}
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = ROOT
+					value = 200
+				}
+			}
+			modifier = {
+				factor = 1.25
+				ROOT = {
+					papal_influence = 5
+				}
+			}
+			modifier = {
+				factor = 1.3
+				ROOT = {
+					papal_influence = 10
+				}
+			}
+			modifier = {
+				factor = 10
+				ROOT = {
+					papal_influence = 51
+				}
+			}
+		}
+		add_treasury = 75
+		FROM = {
+			add_treasury = -100
+			set_country_flag = zhuxiatouxian_Bo
+		}
+		FROM = {
+			country_event = {
+				id = china.20
+			}
+		}
+	}
+	
+	option = {
+		name = "china.19.b"
+		ai_chance = { 
+			factor = 50 
+			modifier = {
+				factor = 1.1
+				ROOT = {
+					NOT = {
+						papal_influence = 2
+					}
+				}
+			}
+		}
+		add_opinion = {
+			who = FROM
+			modifier = china_rejected_rank_opinion
+		}
+		FROM = {
+			country_event = {
+				id = china.21
+			}
+		}
+	}
+}
+
+
+########################################################################################
+# zhou rank event - receiving end (accepted)
+########################################################################################
+country_event = {
+	id = china.20
+	title = "china.20.t"
+	desc = "china.20.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.20.a"
+		add_prestige = 20
+		add_country_modifier = { 
+			name = china_rank_upgrade_modifier
+			duration = 1825 
+		}
+	}
+}
+
+########################################################################################
+# zhou rank event - receiving end (rejected)
+########################################################################################
+country_event = {
+	id = china.21
+	title = "china.21.t"
+	desc = "china.21.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.21.a"
+		add_country_modifier = { 
+			name = china_rejected_rank_modifier
+			duration = 1825 
+		}
+	}
+}
+
+########################################################################################
+# chu loses wang title if theyre too weak (zhou notification)
+########################################################################################
+country_event = {
+	id = china.22
+	title = "china.22.t"
+	desc = "china.22.d"
+	picture = ritual_feast
+	is_triggered_only = yes
+
+	option = {
+		name = "china.22.a" #dw5 reference
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# chu loses wang title if theyre too weak
+########################################################################################
+country_event = {
+	id = china.23
+	title = "china.23.t"
+	desc = "china.23.d"
+	picture = plundering
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		NOT = {
+			total_development = 225
+		}
+		has_country_flag = zhuxiatouxian_wang
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "china.23.a"
+		add_prestige = -10
+		clr_country_flag = zhuxiatouxian_wang
+		ZHO = {
+			country_event = {
+				id = china.22
+			}
+		}
+		JIN = {
+			country_event = {
+				id = china.22
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou build temple flavor
+########################################################################################
+country_event = {
+	id = china.24
+	title = "china.24.t"
+	desc = "china.24.d"
+	picture = construction
+	goto = random_prov_add_shrine_zho
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 200
+		adm_tech = 2
+		any_owned_province = {
+			num_free_building_slots = 1
+			NOT = { has_construction = building }
+			NOT = { has_building = shrine }
+            NOT = { has_building = small_temple }
+            NOT = { has_building = great_temple }
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_building = shrine }
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+					num_free_building_slots = 1
+				}
+				save_event_target_as = random_prov_add_shrine_zho
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 300
+	}
+
+	option = {
+		name = "china.24.a"
+		add_curia_treasury = -200
+		add_prestige = 5
+		if = {
+			limit = { adm_tech = 19 }
+			event_target:random_prov_add_shrine_zho = {
+				add_building = great_temple
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 6 }
+			event_target:random_prov_add_shrine_zho = {
+				add_building = small_temple
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 1 }
+        	event_target:random_prov_add_shrine_zho = {
+				add_building = shrine
+			}
+		}
+		ai_chance = { 
+			factor = 60 
+			modifier = {
+				factor = 3
+				OR = {
+					ruler_has_personality = just_personality
+					ruler_has_personality = righteous_personality
+					ruler_has_personality = kind_hearted_personality
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.24.b"
+		add_curia_treasury = -200
+		add_corruption = 0.5
+		add_treasury = 100
+		if = {
+			limit = { adm_tech = 19 }
+			event_target:random_prov_add_shrine_zho = {
+				add_building_construction = {
+					building = great_temple
+					speed = 1.2
+					cost = 0
+				}
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 6 }
+			event_target:random_prov_add_shrine_zho = {
+				add_building_construction = {
+					building = small_temple
+					speed = 1.2
+					cost = 0
+				}
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 1 }
+			event_target:random_prov_add_shrine_zho = {
+				add_building_construction = {
+					building = shrine
+					speed = 1.2
+					cost = 0
+				}
+			}
+		}
+		ai_chance = { 
+			factor = 39
+			modifier = {
+				factor = 4
+				OR = {
+					ruler_has_personality = greedy_personality
+					ruler_has_personality = malevolent_personality
+					ruler_has_personality = embezzler_personality
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.24.c"
+		add_prestige = -10
+		ai_chance = { 
+			factor = 1
+		}
+	}
+}
+
+########################################################################################
+# LiYueJiaoHua countries get told to stop fighting
+########################################################################################
+country_event = {
+	id = china.26
+	title = "china.26.t"
+	desc = "china.26.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.26.a"
+		add_country_modifier = { 
+			name = zhou_pleads_stop_fighting
+			duration = 1460 
+		}
+	}
+}
+
+########################################################################################
+# zhou calls conference to attempt to stop the fighting
+########################################################################################
+country_event = {
+	id = china.25
+	title = "china.25.t"
+	desc = "china.25.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 1250
+		calc_true_if = {
+			all_known_country = {
+				religion_group = chinese_religions
+				capital_scope = {
+					continent = china
+				}
+			}
+			amount = 22
+		}
+		NOT = {
+			calc_true_if = {
+				all_known_country = {
+					religion_group = chinese_religions
+					capital_scope = {
+						continent = china
+					}
+				}
+				amount = 35
+			}
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 36
+	}
+
+	option = {
+		name = "china.25.a"
+		add_curia_treasury = -1250
+		every_country = {
+			limit = {
+				religion = chinese_religion
+				NOT = {
+					tag = ZHO
+				}
+			}
+			country_event = { id = china.26 }
+		}
+		ai_chance = { 
+			factor = 80
+			modifier = {
+				factor = 2
+				curia_treasury_size = 2000
+			}
+		}
+		custom_tooltip = zho_conference_tooltip_one
+	}
+	option = {
+		name = "china.25.b"
+		ai_chance = { 
+			factor = 20
+		}
+	}
+}
+
+########################################################################################
+# Crusade buff
+########################################################################################
+country_event = {
+	id = china.27
+	title = "china.27.t"
+	desc = "china.27.d"
+	picture = battle
+	
+	trigger = {
+		religion = chinese_religion
+		crusade_target = {
+			exists = yes
+			war_with = ROOT
+		}  
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.27.a"
+		add_country_modifier = { 
+			name = crusader_china
+			duration = -1 
+		}
+	}
+}
+
+########################################################################################
+# Crusade buff removal
+########################################################################################
+country_event = {
+	id = china.28
+	title = "china.28.t"
+	desc = "china.28.d"
+	picture = training
+	
+	trigger = {
+		has_country_modifier = crusader_china
+		crusade_target = {
+			OR = {
+				exists = no
+				NOT = {
+					war_with = ROOT
+				}
+			}
+		}  
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.28.a"
+		remove_country_modifier = crusader_china
+	}
+}
+
+########################################################################################
+# Banished ruler
+########################################################################################
+country_event = {
+	id = china.29
+	title = "china.29.t"
+	desc = "china.29.d"
+	picture = ruler
+	
+	trigger = {
+		religion = chinese_religion
+		is_excommunicated = yes
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.29.a"
+		add_country_modifier = { 
+			name = banished_china
+			duration = -1 
+		}
+	}
+}
+
+
+########################################################################################
+# Banished ruler (end)
+########################################################################################
+country_event = {
+	id = china.30
+	title = "china.30.t"
+	desc = "china.30.d"
+	picture = ruler
+	
+	trigger = {
+		religion = chinese_religion
+		is_excommunicated = no
+		has_country_modifier = banished_china
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.30.a"
+		remove_country_modifier = banished_china
+	}
+}
+
+########################################################################################
+# zhou circulates anti liyuebadao propaganda (other countries get)
+########################################################################################
+country_event = {
+	id = china.32
+	title = "china.32.t"
+	desc = "china.32.d"
+	picture = archemedis
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.32.a"
+		every_country = {
+			limit = {
+				religion = liyuebadao
+			}
+			reverse_add_opinion	 = {
+				who = ROOT
+				modifier = opinion_anti_liyuebadao
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou circulates anti liyuebadao propaganda
+########################################################################################
+country_event = {
+	id = china.31
+	title = "china.31.t"
+	desc = "china.31.d"
+	picture = archemedis
+	
+	trigger = {
+		tag = ZHO
+		exists = CHU
+		NOT = {
+			has_opinion_modifier = {
+				who = CHU
+				modifier = opinion_anti_liyuebadao
+			}
+		}
+		religion = chinese_religion
+		curia_treasury_size = 750
+		calc_true_if = {
+			all_known_country = {
+				religion = liyuebadao
+				capital_scope = {
+					continent = china
+				}
+			}
+			amount = 1
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 700
+		modifier = {
+			factor = 0.9
+			calc_true_if = {
+				all_known_country = {
+					religion = liyuebadao
+					capital_scope = {
+						continent = china
+					}
+				}
+				amount = 2
+			}
+		}
+		modifier = {
+			factor = 0.8
+			calc_true_if = {
+				all_known_country = {
+					religion = liyuebadao
+					capital_scope = {
+						continent = china
+					}
+				}
+				amount = 3
+			}
+		}
+	}
+
+	option = {
+		name = "china.31.a"
+		add_curia_treasury = -750
+		every_country = {
+			limit = {
+				religion = chinese_religion
+				NOT = {
+					tag = ZHO
+				}
+			}
+			country_event = { id = china.32 }
+		}
+		every_country = {
+			limit = {
+				religion = liyuebadao
+			}
+			reverse_add_opinion = {
+				who = ROOT
+				modifier = opinion_anti_liyuebadao
+			}
+		}
+		ai_chance = { 
+			factor = 95
+		}
+	}
+	option = {
+		name = "china.31.b"
+		add_prestige = -5
+		ai_chance = { 
+			factor = 5
+		}
+	}
+}
+
+########################################################################################
+# zhou can give a little boost to a small nation (given in full)
+########################################################################################
+country_event = {
+	id = china.34
+	title = "china.34.t"
+	desc = "china.34.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.34.a"
+		add_country_modifier = {
+			name = zho_give_smallnation_aid
+			duration = 2190
+		}
+		add_opinion = {
+			who = ZHO
+			modifier = opinion_zhou_gave_aid
+		}
+	}
+}
+
+########################################################################################
+# zhou can give a little boost to a small nation (zhou embezzled)
+########################################################################################
+country_event = {
+	id = china.35
+	title = "china.35.t"
+	desc = "china.35.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.35.a"
+		prestige = 10
+		add_opinion = {
+			who = ZHO
+			modifier = opinion_zhou_embezzled_aid
+		}
+	}
+}
+
+########################################################################################
+# zhou can give a little boost to a small nation
+########################################################################################
+country_event = {
+	id = china.33
+	title = "china.33.t"
+	desc = "china.33.d"
+	picture = deligation
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 500
+		calc_true_if = {
+			all_known_country = {
+				religion = chinese_religion
+				capital_scope = {
+					continent = china
+				}
+				is_subject = no
+				NOT = {
+					total_development = 60
+				}
+			}
+			amount = 1
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 600
+		modifier = {
+			factor = 0.8
+			OR = {
+				ruler_has_personality = well_connected_personality
+				ruler_has_personality = tactical_genius_personality
+			}
+		}
+		modifier = {
+			factor = 0.9
+			calc_true_if = {
+				all_known_country = {
+					religion = chinese_religion
+					capital_scope = {
+						continent = china
+					}
+					is_subject = no
+					NOT = {
+						total_development = 60
+					}
+				}
+				amount = 5
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_known_country = {
+				limit = {
+					religion = chinese_religion
+					capital_scope = {
+						continent = china
+					}
+					is_subject = no
+					NOT = {
+						total_development = 60
+					}
+				}
+				save_event_target_as = zho_small_nation_pick
+			}
+		}
+	}
+
+	option = {
+		name = "china.33.a"
+		add_curia_treasury = -500
+		event_target:zho_small_nation_pick = {
+			country_event = { id = china.34 }
+		}
+		ai_chance = { 
+			factor = 75
+		}
+	}
+	option = {
+		name = "china.33.b"
+		add_curia_treasury = -500
+		add_treasury = 250
+		add_corruption = 0.5
+		event_target:zho_small_nation_pick = {
+			country_event = { id = china.35 }
+		}
+		ai_chance = { 
+			factor = 20
+			modifier = {
+				factor = 4
+				ruler_has_personality = embezzler_personality
+			}
+			modifier = {
+				factor = 1.5
+				NOT = {
+					years_of_income = 0.5
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.33.c"
+		add_prestige = -5
+		ai_chance = { 
+			factor = 5
+			modifier = {
+				factor = 2
+				ruler_has_personality = craven_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou can settle migrants
+########################################################################################
+country_event = {
+	id = china.36
+	title = "china.36.t"
+	desc = "china.36.d"
+	picture = deligation
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		curia_treasury_size = 400
+		NOT = {
+			num_of_cities = 7
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 500
+		modifier = {
+			factor = 0.8
+			OR = {
+				ruler_has_personality = tolerant_personality
+				ruler_has_personality = industrious_personality
+			}
+		}
+		modifier = {
+			factor = 0.9
+			NOT = {
+				total_development = 51
+			}
+		}
+		modifier = {
+			factor = 0.9
+			NOT = {
+				num_of_cities = 3
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				save_event_target_as = zho_settler_province
+			}
+		}
+	}
+
+	option = {
+		name = "china.36.a"
+		add_curia_treasury = -300
+		event_target:zho_settler_province = {
+			add_base_production = 1
+		}
+		ai_chance = { 
+			factor = 40
+		}
+	}
+	option = {
+		name = "china.36.b"
+		add_curia_treasury = -200
+		event_target:zho_settler_province = {
+			add_base_manpower = 1
+		}
+		ai_chance = { 
+			factor = 20
+		}
+	}
+	option = {
+		name = "china.36.c"
+		add_curia_treasury = -400
+		random_list = {
+			33 = {
+				define_advisor = {
+					type = architect
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+			33 = {
+				define_advisor = {
+					type = negotiator_adv
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+			34 = {
+				define_advisor = {
+					type = armor_smith
+					skill = 2
+					discount = yes
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+		}
+		ai_chance = { 
+			factor = 40
+		}
+	}
+	option = {
+		name = "china.36.dd"
+		ai_chance = { 
+			factor = 0
+		}
+	}
+}

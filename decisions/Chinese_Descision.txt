@@ -3,8 +3,8 @@ country_decisions = {
 	# 称王
 	ChengWang1 = {
 		potential = {
-			has_global_flag = zhanguokaishi
 			culture_group = chinese_group
+			has_global_flag = zhanguokaishi
 			NOT = { has_country_flag = zhuxiatouxian_wang }
 			NOT = { has_country_flag = zhuxiatouxian_di }
 		}
@@ -24,16 +24,15 @@ country_decisions = {
 	# 称帝
 	ChengDi1 = {
 		potential = {
-			has_global_flag = zhanguokaishi
 			OR = {
 				has_country_flag = zhuxiatouxian_wang
 				has_reform = heaven_republic_reform
 			}
+			has_global_flag = zhanguokaishi
 			#NOT = { hre_size = 1 }
 			NOT = { has_country_flag = zhuxiatouxian_di }
 		}
 		allow = {
-			has_global_flag = zhanguokaishi
 			OR = {
 				has_reform = ZhanGuo_WeiGuo_7
 				has_reform = ZhanGuo_QinGuo_7
@@ -76,6 +75,7 @@ country_decisions = {
 		}
 	}
 	call_help_for_wang = {
+		color = { 245 40 40 }
 		potential = {
 			tag = ZHO
 			NOT = { has_ruler_flag = call_help_for_wang_flag }
@@ -107,10 +107,11 @@ country_decisions = {
 	}
 
 	call_help_for_zhuhou = {
+		color = { 245 40 40 }
 		potential = {
+			is_part_of_hre = yes
 			NOT = { tag = ZHO }
 			NOT = { has_ruler_flag = call_help_for_zhuhou_flag }
-			is_part_of_hre = yes
 		}
 		allow = {
 			is_in_war = {
@@ -153,9 +154,10 @@ country_decisions = {
 	}
 	force_to_tribute = {
 		potential = {
+			is_part_of_hre = yes
 			OR = {
-
-
+				is_emperor = yes
+				is_elector = yes
 			}
 		}
 		allow = {
@@ -166,6 +168,7 @@ country_decisions = {
 				}
 				AND = {
 					prestige = 25
+					is_emperor = no #emperors are also electors
 					is_elector = yes
 				}
 			}
@@ -178,45 +181,47 @@ country_decisions = {
 					is_emperor = yes
 				}
 				add_imperial_influence = -10
+				add_prestige = -15 #for ai factor
 				every_known_country = {
 					limit = {
 						is_part_of_hre = yes
 						NOT = { tag = ROOT }
+						NOT = { tag = ZHO }
 						NOT = { is_subject_of = ROOT }
 					}
 					country_event = { id = ShiJian.24 }
 				}
 			}
-			if = {
-				limit = {
-					is_elector = yes
-				}
-				add_prestige = -10
+			else = {
+				add_prestige = -15
 				every_neighbor_country = {
 					limit = {
+						is_part_of_hre = yes
 						NOT = { is_elector = yes }
 						NOT = { is_emperor = yes }
-						NOT = { tag = ROOT }
+						NOT = { tag = ZHO }
 						NOT = { is_subject_of = ROOT }
 					}
 					country_event = { id = ShiJian.24 }
 				}
 			}
 		}
-		ai_importance = 50
+		ai_importance = 150
 		ai_will_do = {
-			factor = 0
+			factor = 1
 			modifier = {
-				prestige = 100
-				factor = 1
+				NOT = {
+					prestige = 80
+				}
+				factor = 0
 			}
 		}
 	}
 
 	back_to_liyue = {
 		potential = {
-			government = monarchy
 			culture_group = chinese_group
+			government = monarchy
 			NOT = { religion_group = chinese_religions }
 			capital_scope = {
 				continent = china
@@ -251,9 +256,14 @@ country_decisions = {
 	}
 
 	appeal_to_zhuxia = {
+		color = { 245 160 60 }
 		potential = {
+			capital_scope = {
+				continent = china
+			}
+			hre_size = 1
 			is_part_of_hre = no
-			any_known_country = {
+			any_neighbor_country = {
 				is_part_of_hre = yes
 			}
 		}
@@ -350,7 +360,6 @@ country_decisions = {
 
 		ai_will_do = {
 			factor = 1
-
 		}
 	}
 }

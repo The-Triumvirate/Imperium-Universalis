@@ -550,9 +550,6 @@ cb_excommunication = {
 				OR = {
 					is_core = ROOT
 					is_claim = ROOT
-					any_neighbor_province = {
-						owned_by = ROOT
-					}
 				}
 			}
 		}
@@ -1323,27 +1320,15 @@ cb_egypt_unification = {
 		}
 	}
 
-	prerequisites = {
-		FROM = {
-			NOT = { is_subject_of = ROOT }
-			OR = {
-				any_owned_province = {
-					OR = {
-						region = lower_egypt_region
-						region = upper_egypt_region
-					}
-				}
-				any_subject_country = {
-					any_owned_province = {
-						OR = {
-							region = lower_egypt_region
-							region = upper_egypt_region
-						}
-					}
-				}
-			}
-		}
+    prerequisites = {
 		is_neighbor_of = FROM
+        FROM = {
+            NOT = { is_subject_of = ROOT }
+            OR = {
+                lower_egypt_region = { country_or_subject_holds = FROM }
+                upper_egypt_region = { country_or_subject_holds = FROM }
+            }
+        }
 	}
 
 	war_goal = superiority_egyptian_unification
@@ -1357,6 +1342,7 @@ cb_elam_unification = {
 	}
 
 	prerequisites = {
+		is_neighbor_of = FROM
 		FROM = {
 			NOT = { is_subject_of = ROOT }
 			any_owned_province = {
@@ -1368,7 +1354,6 @@ cb_elam_unification = {
 				}
 			}
 		}
-		is_neighbor_of = FROM
 	}
 
 	war_goal = superiority_elam_unification
@@ -1761,6 +1746,43 @@ cb_seize_elector = {
 	}
 
 	war_goal = seize_elector
+}
+jinpartition_cb = {
+	valid_for_subject = no
+
+	prerequisites = {
+		always = no
+	}
+
+	attacker_disabled_po = {
+		po_demand_provinces
+		po_revoke_cores
+		po_release_vassals
+		po_release_annexed
+		po_return_cores
+		po_become_vassal
+		po_subjugate_vassal
+		po_become_tributary_state
+		po_subjugate_tributary_state
+		po_form_personal_union
+		po_transfer_vassals
+	}
+
+	defender_disabled_po = {
+		po_demand_provinces
+		po_revoke_cores
+		po_release_vassals
+		po_release_annexed
+		po_return_cores
+		po_become_vassal
+		po_subjugate_vassal
+		po_become_tributary_state
+		po_subjugate_tributary_state
+		po_form_personal_union
+		po_transfer_vassals
+	}
+
+	war_goal = jin_partition_wargoal
 }
 
 #cb_seize_emperor = {

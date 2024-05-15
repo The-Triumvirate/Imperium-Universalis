@@ -15,6 +15,11 @@ country_event = {
 		tag = ROM
 		has_reform = roman_kingdom_reform
 		has_heir = no
+		NOT = {
+			has_country_flag = tarquinius_priscus
+			has_country_flag = servius_tullius
+			has_country_flag = tarquinius_superbus
+		}
 	}
 
 	option = {
@@ -91,6 +96,7 @@ country_event = {
 	title = "roman_kingdom.2.t"
 	desc = "roman_kingdom.2.d"
 	picture = forum_picture
+
 	fire_only_once = yes
 
 	trigger = {
@@ -130,7 +136,7 @@ country_event = {
 }
 
 ########################################################################################
-# historical kings of rome must be immortal
+# use for smth else
 ########################################################################################
 
 country_event = {
@@ -138,84 +144,7 @@ country_event = {
 	title = "roman_kingdom.3.t"
 	desc = "roman_kingdom.3.d"
 	picture = forum_picture
-	trigger = {
-		tag = ROM
-		has_reform = roman_kingdom_reform
-		OR = {
-			AND = {
-				NOT = { has_ruler = "Tarquinius Priscus" }
-				has_country_flag = tarquinius_priscus
-			}
-			AND = {
-				NOT = { has_ruler = "Servius Tullius" }
-				has_country_flag = servius_tullius
-			}
-			AND = {
-				NOT = { has_ruler = "Tarquinius Superbus" }
-				has_country_flag = tarquinius_superbus
-			}
-		}
-	}
-	mean_time_to_happen = {
-		months = 1
-	}
-	option = {
-		name = "roman_kingdom.3.a"
-		ai_chance = { factor = 1 }
-		if = {
-			limit = {
-				has_country_flag = tarquinius_priscus
-			}
-			define_ruler = {
-				dynasty = "Etruscus"
-				name = "Tarquinius Priscus"
-				claim = 100
-				culture = etruscan
-				age = 22
-				adm = 3
-				dip = 3
-				mil = 3
-			}
-			add_ruler_personality = roman_king_immortal_personality
-			add_ruler_personality = aggressive_personality
-		}
-		if = {
-			limit = {
-				has_country_flag = servius_tullius
-			}
-			define_ruler = {
-				dynasty = "Etruscus"
-				name = "Servius Tullius"
-				claim = 100
-				culture = etruscan
-				age = 22
-				adm = 4
-				dip = 4
-				mil = 4
-			}
-			add_ruler_personality = roman_king_immortal_personality
-			add_ruler_personality = strict_personality
-			add_ruler_personality = reformist_personality
-		}
-		if = {
-			limit = {
-				has_country_flag = tarquinius_superbus
-			}
-			define_ruler = {
-				dynasty = "Etruscus"
-				name = "Tarquinius Superbus"
-				claim = 100
-				culture = etruscan
-				age = 22
-				adm = 2
-				dip = 2
-				mil = 2
-			}
-			add_ruler_personality = roman_king_immortal_personality
-			add_ruler_personality = cruel_personality
-			add_ruler_personality = malevolent_personality
-		}
-	}
+	is_triggered_only = yes
 }
 
 ########################################################################################
@@ -244,12 +173,6 @@ country_event = {
 		name = "roman_kingdom.4.a"
 		ai_chance = { factor = 1 }
 		custom_tooltip = roman_kingdom.4.tt
-		hidden_effect = {
-			set_variable = {
-				which = rom_socii_dissatisfaction_variable
-				value = 0
-			}
-		}
 	}
 }
 
@@ -263,6 +186,7 @@ country_event = {
 	desc = "roman_kingdom.5.d"
 	picture = forum_picture
 	fire_only_once = yes
+	major = yes
 	trigger = {
 		tag = ROM
 		has_reform = roman_kingdom_reform
@@ -270,14 +194,14 @@ country_event = {
 		is_year = 179
 	}
 	mean_time_to_happen = {
-		months = 1
+		months = 12
 	}
 	immediate = {
 		hidden_effect = { add_stability = -1 }
 	}
 	option = {
 		name = "roman_kingdom.5.a"
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 90 }
 		define_ruler = {
 			dynasty = "Etruscus"
 			name = "Servius Tullius"
@@ -288,18 +212,34 @@ country_event = {
 			dip = 4
 			mil = 4
 		}
-		clr_country_flag = tarquinius_priscus
-		set_country_flag = servius_tullius
-		set_country_flag = servius_tullius_had
-		add_ruler_personality = roman_king_immortal_personality
-		add_ruler_personality = strict_personality
-		add_ruler_personality = reformist_personality
-		kill_heir = {}
+		define_ruler_to_general = {
+			fire = 3
+			shock = 3
+			manuever = 0
+			siege = 0
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					AI = yes
+				}
+				53 = {
+					add_building = small_city_walls
+				}
+			}
+			clr_country_flag = tarquinius_priscus
+			set_country_flag = servius_tullius
+			set_country_flag = servius_tullius_had
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = strict_personality
+			add_ruler_personality = reformist_personality
+			kill_heir = {}
+		}
 	}
 
 	option = {
 		name = "roman_kingdom.5.b"
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 10 }
 		define_ruler = {
 			dynasty = "Etruscus"
 			name = "Servius Tullius"
@@ -309,6 +249,12 @@ country_event = {
 			adm = 4
 			dip = 4
 			mil = 4
+		}
+		define_ruler_to_general = {
+			fire = 3
+			shock = 3
+			manuever = 0
+			siege = 0
 		}
 		add_stability = -2
 		add_war_exhaustion = 2
@@ -328,6 +274,14 @@ country_event = {
 			set_country_flag = last_king_of_rome
 			add_ruler_personality = strict_personality
 			add_ruler_personality = reformist_personality
+			if = {
+				limit = {
+					AI = yes
+				}
+				53 = {
+					add_building = small_city_walls
+				}
+			}
 		}
 	}
 }
@@ -342,6 +296,7 @@ country_event = {
 	desc = "roman_kingdom.6.d"
 	picture = forum_picture
 	fire_only_once = yes
+	major = yes
 	trigger = {
 		tag = ROM
 		has_reform = roman_kingdom_reform
@@ -367,6 +322,12 @@ country_event = {
 			dip = 2
 			mil = 2
 		}
+		define_ruler_to_general = {
+			fire = 1
+			shock = 1
+			manuever = 1
+			siege = 0
+		}
 		clr_country_flag = servius_tullius
 		set_country_flag = tarquinius_superbus
 		add_ruler_personality = roman_king_immortal_personality
@@ -374,5 +335,1996 @@ country_event = {
 		add_ruler_personality = malevolent_personality
 		override_country_name = ROMAN_REGNUM
 		kill_heir = {}
+	}
+}
+
+########################################################################################
+# return resurrected personalities
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.7
+	title = "roman_kingdom.6.t"
+	desc = "roman_kingdom.6.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = "roman_kingdom.6.a"
+		if = {
+			limit = {
+				has_country_flag = tarquinius_priscus
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = aggressive_personality
+		}
+		if = {
+			limit = {
+				has_country_flag = servius_tullius
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = strict_personality
+			add_ruler_personality = reformist_personality
+		}
+		if = {
+			limit = {
+				has_country_flag = tarquinius_superbus
+			}
+			add_ruler_personality = roman_king_immortal_personality
+			add_ruler_personality = cruel_personality
+			add_ruler_personality = malevolent_personality
+		}
+	}
+}
+
+########################################################################################
+# tarquinius priscus shan't die
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.8
+	title = "roman_kingdom.6.t"
+	desc = "roman_kingdom.6.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		has_country_flag = tarquinius_priscus
+		NOT = {
+			has_country_flag = ruler_dying
+		}
+	}
+
+	option = {
+		name = "roman_kingdom.6.a"
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = ruler_dying
+				}
+			}
+			set_country_flag = ruler_dying
+			if = {
+				limit = {
+					is_year = 180
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 72
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 179
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 71
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 178
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 70
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 177
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 69
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 176
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 68
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 175
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 68
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 174
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 67
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 173
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 66
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 172
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 65
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 171
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 64
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 170
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 63
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 169
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 62
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 168
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 61
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 167
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 60
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 166
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 59
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 165
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 58
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 164
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 57
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 163
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 56
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 162
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 55
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 161
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 54
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 160
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 53
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 159
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 52
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 158
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 51
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 157
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 50
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 156
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 49
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 155
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 48
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 154
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 47
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 153
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 46
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 152
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 45
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 151
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 44
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 150
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 43
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 149
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 42
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 148
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 41
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 147
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 40
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 146
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 39
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 145
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 38
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 144
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 37
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 143
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 36
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 142
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Priscus"
+					claim = 50
+					culture = etruscan
+					age = 35
+					adm = 3
+					dip = 3
+					mil = 3
+				}
+			}
+			define_ruler_to_general = {
+				fire = 2
+				shock = 3
+				manuever = 1
+				siege = 0
+				}
+			kill_heir = {}
+			country_event = {
+				id = roman_kingdom.7
+			}
+			clr_country_flag = ruler_dying
+		}
+	}
+}
+
+########################################################################################
+# servius tullius shan't die
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.9
+	title = "roman_kingdom.6.t"
+	desc = "roman_kingdom.6.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		has_country_flag = servius_tullius
+	}
+
+	option = {
+		name = "roman_kingdom.6.a"
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = ruler_dying
+				}
+			}
+			set_country_flag = ruler_dying
+			if = {
+				limit = {
+					is_year = 219
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 62
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 218
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 61
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 217
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 60
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 216
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 59
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 215
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 58
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 214
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 57
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 213
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 56
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 212
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 55
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 211
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 54
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 210
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 53
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 209
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 52
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 208
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 51
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 207
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 50
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 206
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 49
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 205
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 48
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 204
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 47
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 203
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 46
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 202
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 45
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 201
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 44
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 200
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 43
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 199
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 42
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 198
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 41
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 197
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 40
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 196
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 39
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 195
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 38
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 194
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 37
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 193
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 36
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 192
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 35
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 191
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 34
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 190
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 33
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 189
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 32
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 188
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 31
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 187
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 30
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 186
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 29
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 185
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 28
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 184
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 27
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 183
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 26
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 182
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 25
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 181
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 24
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 180
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 23
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 179
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Servius Tullius"
+					claim = 100
+					culture = etruscan
+					age = 22
+					adm = 4
+					dip = 4
+					mil = 4
+				}
+			}
+			define_ruler_to_general = {
+				fire = 3
+				shock = 3
+				manuever = 0
+				siege = 0
+			}
+			kill_heir = {}
+			country_event = {
+				id = roman_kingdom.7
+			}
+			clr_country_flag = ruler_dying
+		}
+	}
+}
+########################################################################################
+# tarquinius superbus shan't die
+########################################################################################
+
+country_event = {
+	id = roman_kingdom.10
+	title = "roman_kingdom.6.t"
+	desc = "roman_kingdom.6.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		has_country_flag = tarquinius_superbus
+	}
+
+	option = {
+		name = "roman_kingdom.6.a"
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = ruler_dying
+				}
+			}
+			set_country_flag = ruler_dying
+			if = {
+				limit = {
+					is_year = 260
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 50
+					culture = etruscan
+					age = 63
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 259
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 62
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 258
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 61
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 257
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 60
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 256
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 59
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 255
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 58
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 254
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 57
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 253
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 56
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 252
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 55
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 251
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 54
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 250
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 53
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 249
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 52
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 248
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 51
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 247
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 50
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 246
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 49
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 245
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 48
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 244
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 47
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 243
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 46
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 242
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 45
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 241
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 44
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 240
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 43
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 239
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 42
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 238
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 41
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 237
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 40
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 236
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 39
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 235
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 38
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 234
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 37
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 233
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 36
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 232
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 35
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 231
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 34
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 230
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 33
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 229
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 32
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 228
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 31
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 227
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 30
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 226
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 29
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 225
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 28
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 224
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 27
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 223
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 26
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}else_if = {
+				limit = {
+					is_year = 222
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 25
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 221
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 24
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 220
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 23
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			else_if = {
+				limit = {
+					is_year = 219
+				}
+				define_ruler = {
+					dynasty = "Etruscus"
+					name = "Tarquinius Superbus"
+					claim = 100
+					culture = etruscan
+					age = 22
+					adm = 2
+					dip = 2
+					mil = 2
+				}
+			}
+			define_ruler_to_general = {
+				fire = 1
+				shock = 1
+				manuever = 1
+				siege = 0
+			}
+			kill_heir = {}
+			country_event = {
+				id = roman_kingdom.7
+			}
+			clr_country_flag = ruler_dying
+		}
 	}
 }

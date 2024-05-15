@@ -552,7 +552,7 @@ country_event = {
 	id = rome.1603
 	title = "rome.1603.t"
 	desc = "rome.1603.d"
-	picture = alexander4
+	picture = court
 	is_triggered_only = yes
 
 	trigger = {
@@ -577,17 +577,10 @@ country_event = {
 #rome wins, clear flags
 country_event = {
 	id = rome.1604
-	title = "rome.1602.t"
-	desc = "rome.1602.d"
-	picture = conquest
+	title = "rome.1604.t"
+	desc = "rome.1604.d"
+	picture = senat
 	is_triggered_only = yes
-	hidden = yes
-
-	trigger = {
-		tag = ROM
-		has_country_flag = roman_king_goes_to_etruria_flag
-		FROM = { has_country_flag = etruscans_help_the_roman_king_flag }
-	}
 
 	immediate = {
 		hidden_effect = {
@@ -597,7 +590,36 @@ country_event = {
 	}
 
 	option = {
+		name = "rome.1604.a"
+		add_stability = 1
+		add_prestige = 20
+	}
+}
+country_event = { # did rome win or lose?
+	id = rome.1605
+	title = "rome.1602.t"
+	desc = "rome.1602.d"
+	picture = conquest
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		TAG = ROM
+	}
+	option = {
 		name = "rome.1602.a"
+		if = {
+			limit = {
+				has_reform = res_publica_reform
+			}
+			country_event = {
+				id = rome.1604
+			}
+			end_disaster = end_roman_monarchy
+		}
+		else = {
+			country_event = rome.1603
+		}
 	}
 }
 
@@ -1500,46 +1522,8 @@ country_event = {
 }
 
 ########################################################################################
-# AI Roman start claims/buffs
+# Moved rome.39 to AI_Driving.txt
 ########################################################################################
-
-country_event = {
-	id = rome.39
-	title = "rome.39.t"
-	desc = "rome.39.d"
-	picture = maniple
-	fire_only_once = yes
-	trigger = {
-		tag = ROM
-		ai = yes
-	}
-	mean_time_to_happen = {
-		days = 1
-	}
-
-	option = {
-		name = "rome.39.a"
-		latium_area = { add_permanent_claim = ROM }
-		66 = { add_permanent_claim = ROM }
-		5644 = { add_permanent_claim = ROM }
-		54 = { add_permanent_claim = ROM }
-		if = {
-			limit = { NOT = { total_development = 150 } }
-			add_country_modifier = {
-				name = rom_small_buff
-				duration = 36500
-			}
-		}
-		every_subject_country = {
-			if = {
-				limit = {
-					is_subject_of_type = socii_subject
-				}
-				ROOT = { inherit = FROM }
-			}
-		}
-	}
-}
 
 ########################################################################################
 # Disloyal Socii Rebellion - socii
@@ -2594,57 +2578,127 @@ country_event = {
 }
 
 ########################################################################################
-# unused (used to be for dissatisfaction
+# colonize of circeii
 ########################################################################################
 
-# country_event = {
-# id = rome.62
-# title = "rome.62.t"
-# desc = "rome.62.d"
-# picture = deligation
-# fire_only_once = yes
-# mean_time_to_happen = {
-# years = 2
-# }
-# trigger = {
-# }
-# option = {
-# name = "rome.62.a"
-# }
-# }
+country_event = {
+	id = rome.63
+	title = "rome.63.t"
+	desc = "rome.63.d"
+	picture = cloaca_maxima_event
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	immediate = {
+		hidden_effect = {
+			53 = {
+				if = {
+					limit = {
+						has_building = medicus
+					}
+					add_building = hospital
+					remove_building = medicus
+				}
+				if = {
+					limit = {
+						has_building = herbalist
+					}
+					add_building = medicus
+					remove_building = herbalist
+				}
+				if = {
+					limit = {
+						NOT = { has_building = herbalist }
+					}
+					add_building = herbalist
+				}
+				add_base_manpower = 1
+			}
+		}
+	}
+	option = {
+		name = "rome.63.a"
+		trigger = {
+			manpower = 2
+			NOT = {
+				owns = 5639
+			}
+		}
+		ai_chance = { factor = 90 }
+		hidden_effect = {
+			VOL = {
+				if = {
+					limit = {
+						owns = 5639
+					}
+					set_country_flag = angry_volscians
+				}
+			}
+		}
+		5639 = {
+			cede_province = ROM
+			add_core = ROM
+		}
+		add_adm_power = -25
+		add_manpower = -2
+		custom_tooltip = rome.63.tt
+	}
+	option = {
+		name = "rome.63.b"
+		ai_chance = { factor = 10 }
+		add_prestige = -5
+		53 = {
+			add_base_production = 1
+		}
+	}
+}
 
-# country_event = {
-# id = rome.63
-# title = "rome.62.t"
-# desc = "rome.62.d"
-# picture = deligation
-# fire_only_once = yes
-# mean_time_to_happen = {
-# years = 2
-# }
-# trigger = {
+########################################################################################
+# circus maximus building
+########################################################################################
 
-# }
-# option = {
-# name = "rome.62.a"
-# }
-# }
-
-# country_event = {
-# id = rome.71
-# title = "rome.62.t"
-# desc = "rome.62.d"
-# picture = deligation
-# fire_only_once = yes
-# mean_time_to_happen = {
-# years = 2
-# }
-# trigger = {
-# }
-# option = { #close info
-# name = "rome.62.a"
-# }
-# }
+country_event = {
+	id = rome.71
+	title = "rome.71.t"
+	desc = "rome.71.d"
+	picture = circus_maximus_event
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = "rome.71.a"
+		53 = {
+			add_base_manpower = -1
+			add_base_production = 1
+			if = {
+				limit = {
+					has_building = great_theater
+				}
+				add_building = huge_theater
+				remove_building = great_theater
+			}
+			if = {
+				limit = {
+					has_building = big_theater
+				}
+				add_building = great_theater
+				remove_building = big_theater
+			}
+			if = {
+				limit = {
+					has_building = small_theater
+				}
+				add_building = big_theater
+				remove_building = small_theater
+			}
+			if = {
+				limit = {
+					NOT = { has_building = small_theater }
+				}
+				add_building = small_theater
+			}
+		}
+	}
+}
 
 # country_event = {
 # id = rome.72
@@ -3216,5 +3270,3 @@ country_event = {
 		}
 	}
 }
-
-
