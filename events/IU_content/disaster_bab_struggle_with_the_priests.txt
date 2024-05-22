@@ -1,0 +1,229 @@
+namespace = bab_struggle_with_the_priests
+
+########################################################################################
+# Disaster Start
+########################################################################################
+country_event = {
+	id = bab_struggle_with_the_priests.1
+	title = "bab_struggle_with_the_priests.1.t"
+	desc = "bab_struggle_with_the_priests.1.d"
+	picture = religious
+
+	is_triggered_only = yes
+	major = yes
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+				}
+				spawn_rebels = {
+					type = 	peasant_rebels
+					size = 2
+					win = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "bab_struggle_with_the_priests.1.a"
+		add_stability = -1
+		add_legitimacy = -10
+	}
+}
+########################################################################################
+# Disaster ends
+########################################################################################
+country_event = {
+	id = bab_struggle_with_the_priests.2
+	title = "bab_struggle_with_the_priests.2.t"
+	desc = "bab_struggle_with_the_priests.2.d"
+	picture = military_parade
+
+	is_triggered_only = yes
+	major = yes
+
+	immediate = {
+		hidden_effect = {
+			every_owned_province = {
+				limit = { has_province_flag = priests_take_over_province_flag }
+				clr_province_flag = priests_take_over_province_flag
+			}
+		}
+	}
+
+	option = {
+		name = "bab_struggle_with_the_priests.2.a"
+		add_stability = 1
+	}
+}
+########################################################################################
+# Priests take control of
+########################################################################################
+country_event = {
+	id = bab_struggle_with_the_priests.3
+	title = "bab_struggle_with_the_priests.3.t"
+	desc = "bab_struggle_with_the_priests.3.d"
+	picture = city
+
+	is_triggered_only = yes
+
+	trigger = {
+		any_owned_province = {
+			is_capital = no
+			is_state = yes
+			religion = mesopotamian_religion
+			NOT = { has_province_flag = priests_take_over_province_flag }
+			can_spawn_rebels = peasant_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_capital = no
+					is_state = yes
+					religion = mesopotamian_religion
+					NOT = { has_province_flag = priests_take_over_province_flag }
+					can_spawn_rebels = peasant_rebels
+				}
+				save_event_target_as = priests_take_over_province
+			}
+		}
+	}
+
+	# crush them
+	option = {
+		name = "bab_struggle_with_the_priests.3.a"
+		ai_chance = { factor = 80
+			modifier = {
+				factor = 0.0
+				num_of_rebel_armies = BAB
+			}
+			modifier = {
+				factor = 0.0
+				NOT = { army_size = 20 }
+			}
+		}
+
+		add_patriarch_authority = -0.025
+		add_legitimacy = 2.5
+		event_target:priests_take_over_province = {
+			set_province_flag = priests_take_over_province_flag
+			spawn_rebels = {
+				size = 1.5
+				leader = peasant_rebels
+			}
+		}
+	}
+
+	# let them in peace
+	option = {
+		name = "bab_struggle_with_the_priests.3.b"
+		ai_chance = { factor = 20
+			modifier = {
+				factor = 0.0
+				NOT = { num_of_rebel_armies = 2 }
+			}
+		}
+
+		event_target:priests_take_over_province = {
+			set_province_flag = priests_take_over_province_flag
+			add_local_autonomy = 20
+			add_legitimacy = -2.5
+		}
+	}
+}
+########################################################################################
+# Priests open the gates of Babylon 1/2
+########################################################################################
+country_event = {
+	id = bab_struggle_with_the_priests.4
+	title = "bab_struggle_with_the_priests.4.t"
+	desc = "bab_struggle_with_the_priests.4.d"
+	picture = siege_picture
+
+	fire_only_once = yes
+
+	trigger = {
+		owns = 2500
+		is_at_war = yes
+		2500 = {
+			has_siege = yes
+		}
+		controls = 2500
+		NOT = { has_global_flag = gates_of_babylon_opened }
+		any_enemy_country = {
+			OR = {
+				religion_group = pagan_group
+				religion_group = persian_group
+			}
+			2500 = { units_in_province = 4 }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = gates_of_babylon_opened
+			random_country = {
+				limit = {
+					OR = {
+						religion_group = pagan_group
+						religion_group = persian_group
+					}
+					war_with = BAB
+					2500 = {
+						units_in_province = 4
+					}
+				}
+				save_event_target_as = country_to_open_the_gates
+			}
+		}
+	}
+
+	# bad
+	option = {
+		name = "bab_struggle_with_the_priests.4.a"
+
+		add_stability = -1
+		tooltip = {
+			2500 = {
+				change_siege = 100
+			}
+		}
+		hidden_effect = {
+			event_target:country_to_open_the_gates = {
+				country_event = {
+					id = bab_struggle_with_the_priests.5
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+#  Priests open the gates of Babylon 2/2
+########################################################################################
+country_event = {
+	id = bab_struggle_with_the_priests.5
+	title = "bab_struggle_with_the_priests.5.t"
+	desc = "bab_struggle_with_the_priests.5.d"
+	picture = siege_picture
+
+	is_triggered_only = yes
+
+	# crush them
+	option = {
+		name = "bab_struggle_with_the_priests.5.a"
+		2500 = {
+			change_siege = 100
+		}
+	}
+}

@@ -1,0 +1,120 @@
+
+namespace = sarmatian
+
+########################################################################################
+# The Sarmatians become different from the Scythians
+########################################################################################
+country_event = {
+	id = sarmatian.1
+	title = "sarmatian.1.t"
+	desc = "sarmatian.1.d"
+	picture = parthians
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		NOT = { started_in = 390.1.1 }
+		NOT = { has_global_flag = sarmatians_rising_flag }
+		is_year = 390
+		primary_culture = sarmatian
+		religion = scythian_religion
+		num_of_owned_provinces_with = {
+			culture = sarmatian
+			religion = scythian_religion
+			value = 10
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = sarmatians_rising_flag
+			every_known_country = {
+				limit = {
+					primary_culture = scythian
+					capital_scope = { superregion = scythia_superregion }
+				}
+				save_event_target_as = all_scythians_in_scythia
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "sarmatian.1.a"
+		ai_chance = { factor = 60 }
+		add_prestige = 5
+		add_mil_power = 25
+		hidden_effect = {
+			add_opinion = {
+				who = event_target:all_scythians_in_scythia
+				modifier = sarmatians_different_from_scythians_opinion
+			}
+			every_country = {
+				limit = {
+					primary_culture = sarmatian
+					religion = scythian_religion
+				}
+				change_religion = sarmatian_religion
+				every_owned_province = {
+					every_neighbor_province = {
+						limit = {
+							owner = { primary_culture = scythian }
+							superregion = scythia_superregion
+						}
+						add_permanent_claim = ROOT
+					}
+				}
+			}
+			every_province = {
+				limit = {
+					culture = sarmatian
+					religion = scythian_religion
+				}
+				change_religion = sarmatian_religion
+			}
+		}
+	}
+}
+
+########################################################################################
+# Sarmatians replace scythians
+########################################################################################
+province_event = {
+	id = sarmatian.2
+	title = "sarmatian.2.t"
+	desc = "sarmatian.2.d"
+	picture = parthians
+	goto = ROOT
+
+	trigger = {
+		OR = {
+			started_in = 474.1.1
+			has_global_flag = sarmatians_rising_flag
+		}
+		culture = scythian
+		owner = { primary_culture = sarmatian }
+		superregion = scythia_superregion
+	}
+
+	mean_time_to_happen = {
+		months = 600
+		modifier = {
+			factor = 0.5
+			owner = { has_reform = steppe_horde_reform }
+		}
+		modifier = {
+			factor = 0.25
+			is_year = 554
+		}
+	}
+
+	option = {
+		name = "sarmatian.2.a"
+		ai_chance = { factor = 60 }
+		change_culture = sarmatian
+		change_religion = sarmatian_religion
+	}
+}

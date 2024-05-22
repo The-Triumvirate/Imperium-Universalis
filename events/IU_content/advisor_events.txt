@@ -1,0 +1,366 @@
+namespace = advisor_event
+
+########################################################################################
+# great philosopher
+########################################################################################
+country_event = {
+	id = advisor_event.1
+	title = "advisor_event.1.t"
+	desc = "advisor_event.1.d"
+	picture = culture
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+	}
+
+	option = {
+		name = "advisor_event.1.a"
+		define_advisor = {
+			type = philosopher_adv
+			skill = 3
+			discount = yes
+		}
+		add_prestige = 10
+	}
+}
+########################################################################################
+# great mathematican
+########################################################################################
+country_event = {
+	id = advisor_event.2
+	title = "advisor_event.2.t"
+	desc = "advisor_event.2.d"
+	picture = archemedis
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+	}
+
+	option = {
+		name = "advisor_event.2.a"
+		define_advisor = {
+			type = mathematician
+			skill = 3
+			discount = yes
+		}
+		add_adm_power = 25
+	}
+}
+########################################################################################
+# great statesman
+########################################################################################
+country_event = {
+	id = advisor_event.3
+	title = "advisor_event.3.t"
+	desc = "advisor_event.3.d"
+	picture = ruler
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+	}
+
+	option = {
+		name = "advisor_event.3.a"
+		ai_chance = { factor = 50 }
+		define_advisor = {
+			type = statesman_adv
+			skill = 3
+			discount = yes
+		}
+		add_absolutism = 2
+	}
+	option = {
+		name = "advisor_event.3.b"
+		ai_chance = { factor = 50 }
+		random_owned_province = {
+			limit = {
+				is_capital = no
+			}
+			add_local_autonomy = -10
+		}
+	}
+}
+########################################################################################
+# great naval_veteran
+########################################################################################
+country_event = {
+	id = advisor_event.4
+	title = "advisor_event.4.t"
+	desc = "advisor_event.4.d"
+	picture = navy
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+		OR = {
+			num_of_light_ship = 4
+			num_of_heavy_ship = 4
+			num_of_galley = 4
+		}
+	}
+
+	option = {
+		name = "advisor_event.4.a"
+		ai_chance = { factor = 33 }
+		add_years_of_income = -0.15
+		define_advisor = {
+			type = naval_veteran
+			skill = 3
+			discount = yes
+		}
+		add_navy_tradition = 5
+	}
+	option = {
+		name = "advisor_event.4.b"
+		ai_chance = { factor = 33 }
+		add_years_of_income = -0.15
+		create_admiral = {
+			tradition = 50
+		}
+		add_navy_tradition = 5
+	}
+	option = {
+		name = "advisor_event.4.c"
+		ai_chance = { factor = 33 }
+
+		add_navy_tradition = -5
+	}
+}
+########################################################################################
+# great merchant
+########################################################################################
+country_event = {
+	id = advisor_event.5
+	title = "advisor_event.5.t"
+	desc = "advisor_event.5.d"
+	picture = trade
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+	}
+
+	option = {
+		name = "advisor_event.5.a"
+		ai_chance = { factor = 30 }
+		add_years_of_income = -0.1
+		define_advisor = {
+			type = merchant_adv
+			skill = 3
+			discount = yes
+		}
+	}
+	option = {
+		name = "advisor_event.5.b"
+		ai_chance = { factor = 70 }
+	}
+}
+########################################################################################
+# warrior princess
+########################################################################################
+country_event = {
+	id = advisor_event.6
+	title = "advisor_event.6.t"
+	desc = "advisor_event.6.d"
+	picture = surrender
+
+	is_triggered_only = yes
+
+	trigger = {
+		any_known_country = {
+			is_tribal = yes
+			OR = {
+				NOT = { border_distance = { who = ROOT distance = 800 } }
+				is_neighbor_of = ROOT
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_known_country = {
+				limit = {
+					is_tribal = yes
+					OR = {
+						NOT = { border_distance = { who = ROOT distance = 800 } }
+						is_neighbor_of = ROOT
+					}
+				}
+				save_event_target_as = foreign_warrior_origin
+			}
+			set_saved_name = {
+				key = hired_foreign_warrior_name
+				type = advisor
+				scope = event_target:foreign_warrior_origin
+			}
+		}
+	}
+
+	option = {
+		name = "advisor_event.6.a"
+		ai_chance = { factor = 70 }
+		add_prestige = -5
+		define_advisor = {
+			type = foreign_warrior
+			skill = 2
+			name = hired_foreign_warrior_name
+			culture = event_target:foreign_warrior_origin
+			religion = event_target:foreign_warrior_origin
+			discount = yes
+			female = yes
+		}
+	}
+	option = {
+		name = "advisor_event.6.b"
+		ai_chance = { factor = 30 }
+		add_prestige = 5
+	}
+
+	after = {
+		clear_saved_name = hired_foreign_warrior_name
+	}
+}
+########################################################################################
+# engineer
+########################################################################################
+country_event = {
+	id = advisor_event.7
+	title = "advisor_event.7.t"
+	desc = "advisor_event.7.d"
+	picture = defense
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+		is_nomad = no
+		OR = {
+			num_of_cities = 10
+			any_owned_province = {
+				NOT = { has_building = border_garrison }
+				num_free_building_slots = 1
+			}
+		}
+	}
+
+	option = {
+		name = "advisor_event.7.a"
+		ai_chance = { factor = 30 }
+		add_prestige = 5
+		add_years_of_income = -0.15
+		define_advisor = {
+			type = engineer
+			skill = 3
+			discount = yes
+		}
+	}
+	option = {
+		name = "advisor_event.7.b"
+
+		trigger = {
+			NOT = { num_of_cities = 10 }
+			any_province = {
+				NOT = { fort_level = 1 }
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+				}
+			}
+		}
+
+		ai_chance = { factor = 30 }
+		add_prestige = 5
+		add_treasury = -20
+		random_owned_province = {
+			limit = {
+				NOT = { has_building = border_garrison	}
+				num_free_building_slots = 1
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+				}
+			}
+			add_building = border_garrison
+		}
+	}
+	option = {
+		name = "advisor_event.7.c"
+		ai_chance = { factor = 40 }
+		add_prestige = -5
+	}
+}
+########################################################################################
+# mercenary leader
+########################################################################################
+country_event = {
+	id = advisor_event.8
+	title = "advisor_event.8.t"
+	desc = "advisor_event.8.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_mercenaries = 2
+	}
+
+	option = {
+		name = "advisor_event.8.a"
+		ai_chance = { factor = 50 }
+		define_advisor = {
+			type = mercenary_leader
+			skill = 1
+			discount = yes
+		}
+	}
+	option = {
+		name = "advisor_event.8.b"
+		ai_chance = { factor = 50 }
+		add_prestige = 5
+	}
+}
+########################################################################################
+# cartograph
+########################################################################################
+country_event = {
+	id = advisor_event.9
+	title = "advisor_event.9.t"
+	desc = "advisor_event.9.d"
+	picture = libary
+
+	is_triggered_only = yes
+
+	option = {
+		name = "advisor_event.9.a"
+		ai_chance = { factor = 50 }
+		define_advisor = {
+			type = cartograph
+			skill = 2
+			discount = yes
+		}
+	}
+	option = {
+		name = "advisor_event.9.b"
+		trigger = {
+			num_of_ports = 1
+		}
+		ai_chance = { factor = 50 }
+		define_explorer = {
+			fire = 0
+			shock = 0
+			manuever = 5
+			siege = 0
+		}
+	}
+}

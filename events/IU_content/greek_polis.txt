@@ -1,0 +1,577 @@
+namespace = greek_polis
+
+########################################################################################
+# tryrannis coup
+########################################################################################
+country_event = {
+	id = greek_polis.1
+	title = "greek_polis.1.t"
+	picture = senat
+	is_triggered_only = yes
+
+	desc = {
+		trigger = { has_country_modifier = polis_democracy_modifier }
+		desc = greek_polis.1.da
+	}
+	desc = {
+		trigger = { has_country_modifier = polis_oligarchy_modifier }
+		desc = greek_polis.1.db
+	}
+	desc = {
+		trigger = { has_ruler_flag = elcted_nobleman_flag }
+		desc = greek_polis.1.dc
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_saved_name = {
+				key = new_tyrann_name
+				type = advisor
+				scope = ROOT
+			}
+			if = {
+				limit = { has_country_modifier = polis_democracy_modifier }
+				remove_country_modifier = polis_democracy_modifier
+			}
+			if = {
+				limit = { has_country_modifier = polis_oligarchy_modifier }
+				remove_country_modifier = polis_oligarchy_modifier
+			}
+			add_country_modifier = {
+				name = polis_tyrannis_modifier
+				duration = -1
+			}
+			end_disaster = polis_tyrannis_coup_disaster
+		}
+	}
+
+	option = {
+		name = "greek_polis.1.a"
+		add_faction_influence = { faction = fac_monarchists influence = 5 }
+		add_republican_tradition = -25
+		tooltip = {
+			add_country_modifier = {
+				name = polis_tyrannis_modifier
+				duration = -1
+			}
+		}
+		if = {
+			limit = { NOT = { has_ruler_flag = elcted_nobleman_flag } }
+			define_ruler = {
+				max_random_adm = 5
+				max_random_dip = 5
+				max_random_mil = 5
+				min_age = 35
+				max_age = 50
+				name = new_tyrann_name
+			}
+		}
+
+	}
+	after = {
+		clear_saved_name = new_tyrann_name
+	}
+}
+########################################################################################
+# democratic coup
+########################################################################################
+country_event = {
+	id = greek_polis.2
+	title = "greek_polis.2.t"
+	picture = senat
+	is_triggered_only = yes
+
+	desc = {
+		trigger = { has_country_modifier = polis_tyrannis_modifier }
+		desc = greek_polis.2.da
+	}
+	desc = {
+		trigger = { has_country_modifier = polis_oligarchy_modifier }
+		desc = greek_polis.2.db
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { has_country_modifier = polis_tyrannis_modifier }
+				remove_country_modifier = polis_tyrannis_modifier
+			}
+			if = {
+				limit = { has_country_modifier = polis_oligarchy_modifier }
+				remove_country_modifier = polis_oligarchy_modifier
+			}
+			add_country_modifier = {
+				name = polis_democracy_modifier
+				duration = -1
+			}
+			end_disaster = polis_democratic_coup_disaster
+		}
+	}
+
+	option = {
+		name = "greek_polis.1.a"
+		add_faction_influence = { faction = fac_democrats influence = 5 }
+		add_republican_tradition = -25
+		tooltip = {
+			add_country_modifier = {
+				name = polis_democracy_modifier
+				duration = -1
+			}
+		}
+		define_ruler = {
+			max_random_adm = 4
+			max_random_dip = 4
+			max_random_mil = 4
+			min_age = 30
+			max_age = 45
+		}
+
+	}
+}
+########################################################################################
+# oligarchic coup
+########################################################################################
+country_event = {
+	id = greek_polis.3
+	title = "greek_polis.3.t"
+	picture = senat
+	is_triggered_only = yes
+
+	desc = {
+		trigger = { has_country_modifier = polis_tyrannis_modifier }
+		desc = greek_polis.3.da
+	}
+	desc = {
+		trigger = { has_country_modifier = polis_democracy_modifier }
+		desc = greek_polis.3.db
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { has_country_modifier = polis_tyrannis_modifier }
+				remove_country_modifier = polis_tyrannis_modifier
+			}
+			if = {
+				limit = { has_country_modifier = polis_democracy_modifier }
+				remove_country_modifier = polis_democracy_modifier
+			}
+			add_country_modifier = {
+				name = polis_oligarchy_modifier
+				duration = -1
+			}
+			end_disaster = polis_oligarchic_coup_disaster
+		}
+	}
+
+	option = {
+		name = "greek_polis.1.a"
+		add_faction_influence = { faction = fac_oligarchs influence = 5 }
+		add_republican_tradition = -25
+		tooltip = {
+			add_country_modifier = {
+				name = polis_oligarchy_modifier
+				duration = -1
+			}
+		}
+		define_ruler = {
+			max_random_adm = 4
+			max_random_dip = 4
+			max_random_mil = 4
+			min_age = 45
+			max_age = 60
+		}
+	}
+}
+
+
+########################################################################################
+# ELECTION: democratics
+########################################################################################
+country_event = {
+	id = greek_polis.400
+	title = "greek_polis.400.t"
+	desc = "greek_polis.400.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_country_modifier = polis_democracy_modifier
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.400.a" # Keep old ruler
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				NOT = { republican_tradition = 25 }
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { republican_tradition = 50 }
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { republican_tradition = 75 }
+			}
+			modifier = {
+				factor = 2.0
+				republican_tradition = 90
+			}
+		}
+		custom_tooltip = remains_ruler
+		random_list = {
+			33 = { change_adm = 1 }
+			33 = { change_dip = 1 }
+			33 = { change_mil = 1 }
+		}
+		if = {
+			limit = { NOT = { has_ruler_flag = mytilene_pittacus_the_great_flag } }
+			add_scaled_republican_tradition = -10
+		}
+		if = {
+			limit = { NOT = { has_ruler_flag = reelected_first_time_flag } }
+			set_ruler_flag = reelected_first_time_flag
+		}
+		else = { set_ruler_flag = reelected_second_time_flag }
+	}
+	option = {
+		name = "greek_polis.400.b" # A young reformer
+		add_faction_influence = { faction = fac_democrats influence = 4 }
+		define_ruler = {
+			max_random_adm = 5
+			max_random_dip = 3
+			max_random_mil = 3
+			min_age = 30
+			max_age = 40
+		}
+	}
+	option = {
+		name = "greek_polis.400.c" # Rich Merchants
+		add_faction_influence = { faction = fac_oligarchs influence = 4 }
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 5
+			max_random_mil = 3
+			min_age = 35
+			max_age = 60
+		}
+	}
+	option = {
+		name = "greek_polis.400.e" # Powerful Noble
+		add_faction_influence = { faction = fac_monarchists influence = 4 }
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 5
+			min_age = 35
+			max_age = 60
+		}
+		set_ruler_flag = elcted_nobleman_flag
+	}
+}
+########################################################################################
+# ELECTION after death: democratics
+########################################################################################
+country_event = {
+	id = greek_polis.401
+	title = "greek_polis.400.t"
+	desc = "greek_polis.401.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_country_modifier = polis_democracy_modifier
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.400.b" # A young reformer
+		add_faction_influence = { faction = fac_democrats influence = 2 }
+		define_ruler = {
+			max_random_adm = 5
+			max_random_dip = 3
+			max_random_mil = 3
+			min_age = 30
+			max_age = 40
+		}
+	}
+	option = {
+		name = "greek_polis.400.c" # Rich Merchants
+		add_faction_influence = { faction = fac_oligarchs influence = 2 }
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 5
+			max_random_mil = 3
+			min_age = 35
+			max_age = 60
+		}
+	}
+	option = {
+		name = "greek_polis.400.e" # Powerful Noble
+		add_faction_influence = { faction = fac_monarchists influence = 2 }
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 5
+			min_age = 35
+			max_age = 60
+		}
+		set_ruler_flag = elcted_nobleman_flag
+	}
+}
+########################################################################################
+# ELECTION: oligarchy
+########################################################################################
+country_event = {
+	id = greek_polis.402
+	title = "greek_polis.402.t"
+	desc = "greek_polis.402.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_country_modifier = polis_oligarchy_modifier
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.402.a" # reelect ruler
+		custom_tooltip = remains_ruler
+		add_scaled_republican_tradition = -5
+	}
+	option = {
+		name = "greek_polis.402.b" # new ruler
+		define_ruler = {
+			max_random_adm = 4
+			max_random_dip = 4
+			max_random_mil = 4
+			min_age = 40
+			max_age = 55
+		}
+	}
+}
+########################################################################################
+# ELECTION after deth: oligarchy
+########################################################################################
+country_event = {
+	id = greek_polis.403
+	title = "greek_polis.402.t"
+	desc = "greek_polis.403.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_country_modifier = polis_oligarchy_modifier
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.402.b" # new ruler
+		define_ruler = {
+			max_random_adm = 4
+			max_random_dip = 4
+			max_random_mil = 4
+			min_age = 40
+			max_age = 55
+		}
+	}
+}
+########################################################################################
+# ELECTION after death: tyrannis
+########################################################################################
+country_event = {
+	id = greek_polis.404
+	title = "greek_polis.404.t"
+	desc = "greek_polis.404.d"
+	picture = death
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_country_modifier = polis_tyrannis_modifier
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.404.a" # family member
+		add_faction_influence = { faction = fac_monarchists influence = -5 }
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 3
+			min_age = 25
+			max_age = 35
+
+			name = "lastname"
+		}
+	}
+	option = {
+		name = "greek_polis.404.b" # one of his followers
+		add_faction_influence = { faction = fac_monarchists influence = -10 }
+		define_ruler = {
+			max_random_adm = 4
+			max_random_dip = 4
+			max_random_mil = 4
+			min_age = 35
+			max_age = 60
+		}
+	}
+	option = {
+		name = "greek_polis.404.c" # a reformer
+		add_faction_influence = { faction = fac_monarchists influence = -15 }
+		define_ruler = {
+			max_random_adm = 5
+			max_random_dip = 5
+			max_random_mil = 5
+			min_age = 35
+			max_age = 45
+		}
+	}
+}
+
+
+
+########################################################################################
+# democrats gain power
+########################################################################################
+country_event = {
+	id = greek_polis.6
+	title = "greek_polis.6.t"
+	desc = "greek_polis.6.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_global_flag = birth_of_democracy
+		NOT = { faction_in_power = fac_democrats }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.6.a"
+		add_faction_influence = { faction = fac_democrats influence = 5 }
+	}
+}
+########################################################################################
+# oligarchs gain power
+########################################################################################
+country_event = {
+	id = greek_polis.7
+	title = "greek_polis.7.t"
+	desc = "greek_polis.7.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		NOT = { faction_in_power = fac_oligarchs }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.6.a"
+		add_faction_influence = { faction = fac_oligarchs influence = 5 }
+	}
+}
+########################################################################################
+# monarchists gain power
+########################################################################################
+country_event = {
+	id = greek_polis.8
+	title = "greek_polis.8.t"
+	desc = "greek_polis.8.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		NOT = { faction_in_power = fac_monarchists }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.6.a"
+		add_faction_influence = { faction = fac_monarchists influence = 5 }
+	}
+}
+########################################################################################
+# oligarchs bribed the oracle of delphi
+########################################################################################
+country_event = {
+	id = greek_polis.9
+	title = "greek_polis.9.t"
+	desc = "greek_polis.9.d"
+	picture = oracle
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		NOT = { faction_in_power = fac_oligarchs }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.9.a"
+		add_faction_influence = { faction = fac_oligarchs influence = 5 }
+	}
+}
+########################################################################################
+# citizens demand more power
+########################################################################################
+country_event = {
+	id = greek_polis.10
+	title = "greek_polis.10.t"
+	desc = "greek_polis.10.d"
+	picture = plebs
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = greek_polis_reform
+		has_faction = fac_democrats
+		NOT = { faction_in_power = fac_democrats }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "greek_polis.10.a"
+		add_faction_influence = { faction = fac_democrats influence = 5 }
+	}
+}

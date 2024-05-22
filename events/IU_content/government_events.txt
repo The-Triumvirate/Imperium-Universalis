@@ -1,0 +1,1564 @@
+namespace = government
+
+########################################################################################
+# corrupt general
+########################################################################################
+country_event = {
+	id = government.1
+	title = "government.1.t"
+	desc = "government.1.d"
+	picture = generals
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_leaders = {
+			value = 1
+			type = general
+			include_monarch = no
+			include_heir = no
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 0.5
+			NOT = { stability = 1 }
+		}
+	}
+
+	option = {
+		name = "government.1.a"
+		ai_chance = { factor = 30 }
+		add_absolutism = -1
+		kill_leader = {
+			type = general
+		}
+	}
+	option = {
+		name = "government.1.b"
+		ai_chance = { factor = 70 }
+		add_corruption = 1
+	}
+}
+########################################################################################
+# corrupt advisor
+########################################################################################
+country_event = {
+	id = government.2
+	title = "government.2.t"
+	desc = "government.2.d"
+	picture = senat_conflict
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_advisor = yes
+	}
+
+	option = {
+		name = "government.2.a"
+		ai_chance = { factor = 55 }
+		kill_advisor = random
+		add_absolutism = -2
+	}
+	option = {
+		name = "government.2.b"
+		ai_chance = { factor = 45 }
+		add_corruption = 1
+	}
+}
+########################################################################################
+# corrupt merchant
+########################################################################################
+country_event = {
+	id = government.3
+	title = "government.3.t"
+	desc = "government.3.d"
+	picture = trade
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_merchants = 2
+	}
+
+	option = {
+		name = "government.3.a"
+		ai_chance = { factor = 40 }
+		random_active_trade_node = {
+			limit = {
+				has_merchant = ROOT
+			}
+			add_trade_modifier = {
+				who = root
+				duration = 730
+				power = -20
+				key = merchant_is_arrested
+			}
+		}
+	}
+	option = {
+		name = "government.3.b"
+		ai_chance = { factor = 60 }
+		add_years_of_income = 0.05
+		add_corruption = 0.5
+	}
+}
+########################################################################################
+# advisor is careless
+########################################################################################
+country_event = {
+	id = government.4
+	title = "government.4.t"
+	desc = "government.4.d"
+	picture = guard
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_advisor = yes
+	}
+
+	option = {
+		name = "government.4.a"
+		ai_chance = { factor = 50 }
+		kill_advisor = random
+		add_absolutism = -2
+	}
+	option = {
+		name = "government.4.b"
+		ai_chance = { factor = 50 }
+		add_country_modifier = {
+			name = careless_advisor
+			duration = 1825
+		}
+		add_absolutism = -1
+	}
+}
+########################################################################################
+# good advisors
+########################################################################################
+country_event = {
+	id = government.5
+	title = "government.5.t"
+	desc = "government.5.d"
+	picture = ruler
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_advisor = yes
+	}
+
+	option = {
+		name = "government.5.a"
+		add_stability_or_adm = yes
+		add_absolutism = 2
+	}
+}
+########################################################################################
+# ruler is ill
+########################################################################################
+country_event = {
+	id = government.6
+	title = "government.6.t"
+	desc = "government.6.d"
+	picture = illness
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+	}
+
+	option = {
+		name = "government.6.a"
+		random = {
+			chance = 25
+			kill_ruler = yes
+		}
+		add_faction_influence = { faction = fac_monarch influence = -5 }
+	}
+}
+########################################################################################
+# large revolt
+########################################################################################
+country_event = {
+	id = government.7
+	title = "government.7.t"
+	desc = "government.7.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_cities = 50
+		unrest = 1
+		any_owned_province = { can_spawn_rebels = nationalist_rebels }
+	}
+
+	option = {
+		name = "government.7.a"
+
+		random_owned_province = {
+			limit = { can_spawn_rebels = nationalist_rebels }
+			spawn_rebels = {
+				type = nationalist_rebels
+				size = 3
+				win = yes
+			}
+		}
+		random_owned_province = {
+			limit = { can_spawn_rebels = nationalist_rebels }
+			spawn_rebels = {
+				type = nationalist_rebels
+				size = 3
+				win = yes
+			}
+		}
+	}
+}
+
+########################################################################################
+# mad ruler
+########################################################################################
+country_event = {
+	id = government.8
+	title = "government.8.t"
+	desc = "government.8.d"
+	picture = mad_emperor
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { has_ruler_flag = mad_ruler }
+		NOT = { adm = 5 }
+		NOT = { dip = 5 }
+		NOT = { mil = 5 }
+	}
+
+	option = {
+		name = "government.8.a"
+		add_stability = -1
+		add_faction_influence = { faction = fac_monarch influence = -5 }
+		set_ruler_flag = mad_ruler
+	}
+}
+
+########################################################################################
+# corrupt government
+########################################################################################
+country_event = {
+	id = government.9
+	title = "government.9.t"
+	desc = "government.9.d"
+	picture = city
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_cities = 3
+		is_tribal = no
+	}
+
+	option = {
+		name = "government.9.a"
+		add_corruption = 2
+	}
+	option = {
+		name = "government.9.b"
+		add_adm_power = -25
+		add_absolutism = -2
+	}
+}
+########################################################################################
+# scholars of capital
+########################################################################################
+country_event = {
+	id = government.10
+	title = "government.10.t"
+	desc = "government.10.d"
+	picture = libary
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = no
+	}
+
+	option = {
+		name = "government.10.a"
+		random_list = {
+			25 = {
+				add_adm_power = 15
+			}
+			25 = {
+				add_dip_power = 15
+			}
+			25 = {
+				add_mil_power = 15
+			}
+			25 = {
+				add_prestige = 5
+			}
+		}
+	}
+}
+########################################################################################
+# powerful militarists
+########################################################################################
+country_event = {
+	id = government.11
+	title = "government.11.t"
+	desc = "government.11.d"
+	picture = generals
+
+	is_triggered_only = yes
+
+	trigger = {
+		army_tradition = 25
+	}
+
+	option = {
+		name = "government.11.a"
+		add_absolutism = -1
+		add_army_tradition = -10
+	}
+	option = {
+		name = "government.11.b"
+		add_absolutism = -1
+		add_adm_power = -25
+	}
+}
+########################################################################################
+# merchant ship sunk
+########################################################################################
+country_event = {
+	id = government.12
+	title = "government.12.t"
+	desc = "government.12.d"
+	picture = navy2
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_ports = 1
+		num_of_light_ship = 1
+	}
+
+	option = {
+		name = "government.12.a"
+		add_years_of_income = -0.07
+	}
+}
+########################################################################################
+# local government deny support
+########################################################################################
+country_event = {
+	id = government.13
+	title = "government.13.t"
+	desc = "government.13.d"
+	picture = guard
+
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_cities = 15
+		NOT = { government = native }
+		any_owned_province = {
+			is_capital = no
+			is_state = yes
+		}
+	}
+
+	option = {
+		name = "government.13.a"
+		ai_chance = { factor = 80 }
+		random_owned_province = {
+			limit = {
+				is_capital = no
+				is_state = yes
+			}
+			area = { add_local_autonomy = 20  }
+		}
+		add_faction_influence = { faction = fac_monarch influence = -5 }
+	}
+	option = {
+		name = "government.13.b"
+		ai_chance = { factor = 20 }
+		add_stability = -1
+		add_faction_influence = { faction = fac_nobles influence = -5 }
+	}
+}
+########################################################################################
+# corrupt government
+########################################################################################
+country_event = {
+	id = government.16
+	title = "government.16.t"
+	desc = "government.16.d"
+	picture = trade
+
+	is_triggered_only = yes
+
+	option = {
+		name = "government.16.a"
+		add_corruption = 0.5
+		add_absolutism = -1
+	}
+}
+########################################################################################
+# unrest in provinces
+########################################################################################
+country_event = {
+	id = government.18
+	title = "government.18.t"
+	desc = "government.18.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	trigger = {
+		total_development = 300
+		OR = {
+			is_at_war = no
+			NOT = { manpower_percentage = 0.3 }
+		}
+	}
+
+	option = {
+		name = "government.18.a"
+		add_stability = -1
+	}
+}
+########################################################################################
+# rank upgrade
+########################################################################################
+country_event = {
+	id = government.19
+	title = "government.19.t"
+	desc = "government.19.d"
+	picture = tradecity
+
+	hidden = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				NOT = { num_of_cities = 5 }
+				NOT = { government_rank = 1 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 100
+				NOT = { total_development = 300 }
+				NOT = { government_rank = 2 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 300
+				NOT = { total_development = 500 }
+				NOT = { tag = PNC }
+				NOT = { government_rank = 3 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 500
+				NOT = { total_development = 1100 }
+				NOT = { tag = PNC }
+				NOT = { government_rank = 4 }
+			}
+			AND = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 1100
+				if = {
+					limit = {
+						has_dlc = "Emperor"
+					}
+					is_hegemon = yes
+				}
+				NOT = { government_rank = 5 }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				NOT = { num_of_cities = 5 }
+				NOT = { government_rank = 1 }
+			}
+			set_government_rank = 1
+		}
+		else_if = {
+			limit = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 100
+				NOT = { government_rank = 2 }
+			}
+			set_government_rank = 2
+		}
+		else_if = {
+			limit = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 300
+				NOT = { government_rank = 3 }
+			}
+			set_government_rank = 3
+		}
+		else_if = {
+			limit = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 500
+				NOT = { government_rank = 4 }
+			}
+			set_government_rank = 4
+		}
+		else_if = {
+			limit = {
+				NOT = { has_dlc = "Common Sense" }
+				total_development = 1100
+				is_hegemon = yes
+				NOT = { government_rank = 5 }
+			}
+			set_government_rank = 5
+		}
+		else = {
+			add_prestige = 1
+		}
+	}
+
+	option = {
+		name = "government.19.a"
+		tooltip = { set_government_rank = 1 }
+	}
+}
+########################################################################################
+# Great Power downgrade
+########################################################################################
+country_event = {
+	id = government.21
+	title = "government.20.t"
+	desc = "government.20.d"
+	picture = lostbattle
+
+	trigger = {
+		government_rank = 4
+		has_dlc = "Common Sense"
+		NOT = { total_development = 300 }
+		is_nomad = no
+		NOT = {	tag = PNC }
+		NOT = {	tag = SCY }
+		NOT = { is_emperor = yes }
+		NOT = { is_elector = yes }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_government_rank = 3 }
+	}
+
+	option = {
+		name = "government.20.a"
+		tooltip = { set_government_rank = 3 }
+	}
+}
+
+country_event = { #for panchala
+	id = government.2101
+	title = "government.20.t"
+	desc = "government.20.d"
+	picture = lostbattle
+
+	trigger = {
+		government_rank = 4
+		NOT = { total_development = 300 }
+		is_nomad = no
+		tag = PNC
+		has_global_flag = death_of_pravahana_jaivali_flag
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = { set_government_rank = 3 }
+	}
+
+	option = {
+		name = "government.20.a"
+		tooltip = { set_government_rank = 3 }
+	}
+}
+
+########################################################################################
+# Census: event to show current population changes
+########################################################################################
+country_event = {
+	id = government.22
+	title = "government.22.t"
+	desc = "government.22.d"
+	picture = forum_picture
+
+	is_triggered_only = yes
+
+	immediate = {
+		# Update slave values
+		hidden_effect = {
+			SD_slave_totaldisp_update = yes
+		}
+	}
+
+	option = {
+		name = "government.22.a"
+		hidden_effect = {
+			set_variable = { which = uppers_to_commoner_var value = 0 }
+			set_variable = { which = commoner_to_tribal_var value = 0 }
+			set_variable = { which = commoner_to_upper_var value = 0 }
+			set_variable = { which = tribal_to_commoner_var value = 0 }
+			set_variable = { which = uppers_increased_var value = 0 }
+			set_variable = { which = commoner_increased_var value = 0 }
+			set_variable = { which = tribal_increased_var value = 0 }
+		}
+	}
+}
+
+########################################################################################
+# snow falls
+########################################################################################
+country_event = {
+	id = government.26
+	title = "government.26.t"
+	desc = "government.26.d"
+	picture = soldiers_in_snow
+
+	is_triggered_only = yes
+
+	trigger = {
+		capital_scope = {
+			OR = {
+				has_winter = mild_winter
+				has_winter = normal_winter
+				has_winter = severe_winter
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 1.25
+			capital_scope = { has_winter = normal_winter }
+		}
+		modifier = {
+			factor = 1.5
+			capital_scope = { has_winter = severe_winter }
+		}
+	}
+
+	option = {
+		name = "government.26.a"
+		ai_chance = { factor = 80 }
+		add_years_of_income = -0.2
+	}
+	option = {
+		name = "government.26.b"
+		ai_chance = { factor = 20 }
+		add_yearly_manpower = -0.3
+	}
+}
+########################################################################################
+# ambitions
+########################################################################################
+country_event = {
+	id = government.27
+	title = "government.27.t"
+	desc = "government.27.d"
+	picture = military_parade
+
+	is_triggered_only = yes
+
+	trigger = {
+		luck = yes
+		total_development = 60
+	}
+
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 0.5
+			war_exhaustion = 1
+		}
+		modifier = {
+			factor = 2.0
+			MIL = 5
+		}
+		modifier = {
+			factor = 1.5
+			tag = ROM
+		}
+	}
+
+	option = {
+		name = "government.27.a"
+		add_years_of_income = -0.2
+		every_owned_province = {
+			limit = {
+				any_neighbor_province = { NOT = { owned_by = ROOT } }
+			}
+			every_neighbor_province = {
+				limit = {
+					NOT = { owned_by = ROOT }
+					NOT = { is_core = ROOT }
+					NOT = { is_claim = ROOT }
+				}
+				add_claim = ROOT
+			}
+		}
+	}
+}
+
+########################################################################################
+# Forced Heir
+########################################################################################
+country_event = {
+	id = government.28
+	title = "government.28.t"
+	desc = "government.28.d"
+	picture = "family"
+
+	trigger = {
+		OR = {
+			AND = {
+				has_reform = chinese_feudalism_reform
+				has_country_modifier = equality
+				have_had_reform = matriarchal_tribe_reform
+				has_heir = no
+				has_female_heir = no
+			}
+			AND = {
+				has_reform = ShiQing_feudalism_reform
+				has_country_modifier = equality
+				have_had_reform = matriarchal_tribe_reform
+				has_heir = no
+				has_female_heir = no
+			}
+			AND = {
+				has_reform = chinese_reform_monarchy_reform
+				has_country_modifier = equality
+				have_had_reform = matriarchal_tribe_reform
+				has_heir = no
+				has_female_heir = no
+			}
+			AND = {
+				has_reform = celestial_empire
+				have_had_reform = matriarchal_tribe_reform
+				has_heir = no
+				has_female_heir = no
+			}
+			AND = {
+				has_reform = heaven_republic_reform
+				has_heir = no
+			}
+			AND = {
+				has_reform = pirate_kingdom_reform
+				has_heir = no
+			}
+			AND = {
+				has_reform = matriarchate_reform
+				has_female_heir = no
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	option = {
+		name = "government.28.a"
+		trigger = {
+			OR = {
+				NOT = { has_reform = heaven_republic_reform }
+				AND = {
+					has_reform = pirate_kingdom_reform
+					have_had_reform = matriarchal_tribe_reform
+				}
+			}
+		}
+		custom_tooltip = matriarchate_tooltip
+		hidden_effect = {
+			random_list = {
+				#it's a girl
+				30 = {
+					define_heir = {
+						female = yes
+						dynasty = ROOT
+						age = 0
+						claim = 60
+					}
+				}
+				#waste of time
+				40 = {
+					add_legitimacy = -1
+				}
+				#bad luck, it's a boy
+				30 = {
+					define_heir = {
+						male = yes
+						dynasty = ROOT
+						age = 0
+						claim = 40
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "government.28.b"
+		trigger = {
+			NOT = { has_reform = heaven_republic_reform }
+			NOT = { has_reform = pirate_kingdom_reform }
+		}
+		define_heir = {
+			female = yes
+			dynasty = ROOT
+			age = 6
+			claim = 40
+			no_consort_with_heir = yes
+		}
+	}
+	option = {
+		name = "government.28.c"
+		trigger = {
+			OR = {
+				has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+			NOT = { republican_tradition = 30 }
+		}
+		if = {
+			limit = { has_reform = heaven_republic_reform }
+			define_ruler = {
+				culture = ROOT
+				min_age = 24
+				max_age = 35
+			}
+			add_republican_tradition = 30
+		}
+		if = {
+			limit = { has_reform = pirate_kingdom_reform }
+			add_government_reform = pirate_republic_reform
+			kill_ruler = yes
+			add_republican_tradition = 30
+		}
+		else = {
+			add_republican_tradition = 30
+		}
+	}
+	option = {
+		name = "government.28.e"
+		trigger = {
+			OR = {
+				has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+		}
+		define_heir = {
+			dynasty = ROOT
+			male = yes
+			claim = 60
+		}
+	}
+	option = {
+		name = "government.28.f"
+		trigger = {
+			OR = {
+				has_reform = heaven_republic_reform
+				has_reform = pirate_kingdom_reform
+			}
+		}
+		define_heir = {
+			dynasty = ROOT
+			male = yes
+			claim = 40
+		}
+	}
+}
+
+country_event = {
+	id = government.29
+	title = "government.29.t"
+	desc = "government.29.d"
+	picture = "forum_picture"
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			have_had_reform = matriarchal_tribe_reform
+			have_had_reform = egalitarian_tribe_reform
+		}
+		NOT = { government = native }
+		NOT = { has_reform = tribal_republic_reform }
+		NOT = { government = tribal }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "government.29.a"
+		add_legitimacy = 1
+	}
+
+	option = {
+		name = "government.29.b"
+		add_legitimacy = 1
+		add_country_modifier = {
+			name = equality
+			duration = -1
+		}
+	}
+
+	option = {
+		name = "government.29.c"
+		trigger = {
+			government = monarchy
+			NOT = { has_reform = chinese_feudalism_reform }
+			have_had_reform = matriarchal_tribe_reform
+		}
+		add_stability = -1
+		add_government_reform = matriarchate_reform
+	}
+}
+
+country_event = {
+	id = government.30
+	title = "government.30.t"
+	desc = "government.30.d"
+	picture = "archemedis"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "government.30.a"
+		set_country_flag = cfh
+	}
+
+	option = {
+		name = "government.30.b"
+	}
+}
+
+country_event = {
+	id = government.31
+	title = "government.31.t"
+	desc = "government.31.d"
+	picture = "archemedis"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "government.31.a"
+		set_country_flag = crmh
+	}
+
+	option = {
+		name = "government.30.b"
+	}
+}
+
+#province consider backing parliament debate
+country_event = {
+	id = government.32
+	title = "government.32.t"
+	desc = "government.32.d"
+	picture = "forum_picture"
+
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		government = republic
+		has_dlc = "Common Sense"
+		has_active_debate = yes
+	}
+
+	option = {
+		name = "government.32.a"
+		every_owned_province = {
+			limit = {
+				has_seat_in_parliament = yes
+			}
+			random_list = {
+				#we support ruler choice
+				20 = {
+					back_current_issue = yes
+				}
+				#we stand on our decision
+				70 = { }
+				#we do not support ruler choice
+				10 = {
+					back_current_issue = no
+				}
+			}
+		}
+	}
+}
+
+#Bank
+country_event = {
+	id = government.33
+	title = "government.33.t"
+	desc = "government.33.d"
+	picture = culture
+
+	is_triggered_only = yes
+
+	option = { #establish private banking
+		name = "government.33.a"
+		hidden_effect = {
+			set_country_flag = establish_bank_flag
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_country_modifier = {
+			name = private_banking
+			duration = -1
+		}
+	}
+
+	option = { #establish state bank
+		name = "government.33.b"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			NOT = { has_country_modifier = central_banking }
+			NOT = { religion = christian }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_stability = -1
+		add_country_modifier = {
+			name = central_banking
+			duration = -1
+		}
+	}
+
+	option = { #independent central bank
+		name = "government.33.c"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			has_country_modifier = central_banking
+			NOT = { religion = christian }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_country_modifier = {
+			name = independent_central_banking
+			duration = -1
+		}
+	}
+
+	option = { #rich people bank
+		name = "government.33.e"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			NOT = { has_country_modifier = noble_banking }
+			NOT = { has_country_modifier = merchant_banking }
+			NOT = { has_country_modifier = clergy_banking }
+			NOT = { has_country_modifier = jewish_banking }
+			NOT = { religion = christian }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_stability = -2
+		add_country_modifier = {
+			name = noble_banking
+			duration = -1
+		}
+	}
+
+	option = { #trader bank
+		name = "government.33.f"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			NOT = { has_country_modifier = noble_banking }
+			NOT = { has_country_modifier = merchant_banking }
+			NOT = { has_country_modifier = clergy_banking }
+			NOT = { has_country_modifier = jewish_banking }
+			NOT = { religion = christian }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_stability = -2
+		add_country_modifier = {
+			name = merchant_banking
+			duration = -1
+		}
+	}
+
+	option = { #clergy bank
+		name = "government.33.g"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			NOT = { has_country_modifier = noble_banking }
+			NOT = { has_country_modifier = merchant_banking }
+			NOT = { has_country_modifier = clergy_banking }
+			NOT = { has_country_modifier = jewish_banking }
+			NOT = { religion = christian }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_stability = -2
+		add_country_modifier = {
+			name = clergy_banking
+			duration = -1
+		}
+	}
+
+	option = { #jewish bank
+		name = "government.33.h"
+		trigger = {
+			has_country_flag = establish_bank_flag
+			OR = {
+				any_owned_province = { religion = jewish }
+				any_owned_province = { religion = samaritan_religion }
+				religion = christian
+			}
+			NOT = { has_country_modifier = noble_banking }
+			NOT = { has_country_modifier = merchant_banking }
+			NOT = { has_country_modifier = clergy_banking }
+			NOT = { has_country_modifier = jewish_banking }
+		}
+		hidden_effect = {
+			remove_country_modifier = private_banking
+			remove_country_modifier = central_banking
+			remove_country_modifier = independent_central_banking
+			remove_country_modifier = noble_banking
+			remove_country_modifier = merchant_banking
+			remove_country_modifier = clergy_banking
+			remove_country_modifier = jewish_banking
+		}
+		add_stability = -2
+		add_country_modifier = {
+			name = jewish_banking
+			duration = -1
+		}
+	}
+
+	option = { #exit
+		name = "government.33.i"
+	}
+}
+
+#New Age Collapse
+country_event = {
+	id = government.34
+	title = "government.34.t"
+	desc = "government.34.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	option = {
+		name = "government.34.a"
+		add_stability = -2
+		add_legitimacy = -30
+		add_republican_tradition = -30
+		add_devotion = -30
+		hidden_effect = {
+			set_country_flag = new_age_collapse_flag
+			set_ruler_flag = decadent
+		}
+	}
+}
+
+#Stood Test of Time
+country_event = {
+	id = government.35
+	title = "government.35.t"
+	desc = "government.35.d"
+	picture = aristocrats
+
+	is_triggered_only = yes
+
+	option = {
+		name = "government.35.a"
+		add_corruption = -99
+		add_legitimacy = 100
+		add_republican_tradition = 100
+		add_devotion = 100
+		add_splendor = 100
+		add_prestige = 100
+		hidden_effect = {
+			clr_country_flag = new_age_collapse_flag
+		}
+	}
+}
+
+country_event = {
+	id = government.36
+	title = "government.36.t"
+	desc = "government.36.d"
+	picture = senat
+
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		is_client_nation = yes
+		OR = {
+			NOT = { has_reform = client_state_monarchy_reform }
+			NOT = { has_reform = client_state_republic_reform }
+			NOT = { has_reform = satrapy_reform }
+			NOT = { has_reform = client_state_tribe_reform }
+			NOT = { has_reform = roman_province_reform }
+			NOT = { has_reform = tribal_republic_reform }
+			AND = {
+				OR = {
+					has_reform = client_state_tribe_reform
+					has_reform = tribal_republic_reform
+				}
+				overlord = { tribal_or_native_trigger = no }
+			}
+		}
+	}
+
+	option = {
+		name = "government.36.a"
+		if = {
+			limit = {
+				government = republic
+				overlord = {
+					NOT = {
+						OR = {
+							tag = ROM
+							tag = ROI
+							tribal_or_native_trigger = yes
+							has_reform = tribal_republic_reform
+						}
+					}
+				}
+			}
+			add_government_reform = client_state_republic_reform
+			add_republican_tradition = 40
+		}
+		if = {
+			limit = {
+				government = monarchy
+				NOT = {
+					overlord = {
+						OR = {
+							has_reform = medes_monarchy_reform
+							has_reform = persian_achaemenid_monarchy_reform
+							has_reform = parthian_monarchy_reform
+							has_reform = assyrian_administration_reform
+							tribal_or_native_trigger = yes
+						}
+					}
+				}
+			}
+			add_government_reform = client_state_monarchy_reform
+			add_legitimacy = 40
+		}
+		if = {
+			limit = {
+				government = monarchy
+				overlord = {
+					OR = {
+						has_reform = medes_monarchy_reform
+						has_reform = persian_achaemenid_monarchy_reform
+						has_reform = parthian_monarchy_reform
+						has_reform = assyrian_administration_reform
+					}
+				}
+			}
+			add_government_reform = satrapy_reform
+			add_legitimacy = 40
+		}
+		if = {
+			limit = {
+				government = republic
+				overlord = {
+					tribal_or_native_trigger = no
+					OR = {
+						tag = ROM
+						tag = ROI
+					}
+				}
+			}
+			add_government_reform = roman_province_reform
+			add_republican_tradition = 40
+		}
+		if = {
+			limit = {
+				overlord = {
+					tribal_or_native_trigger = yes
+				}
+				government = monarchy
+			}
+			change_government = tribal
+			add_government_reform = client_state_tribe_reform
+		}
+		if = {
+			limit = {
+				overlord = {
+					tribal_or_native_trigger = yes
+				}
+				government = republic
+			}
+			change_government = tribal
+			add_government_reform = tribal_republic_reform
+		}
+		if = {
+			limit = {
+				overlord = {
+					religion = roman_religion
+				}
+				religion = roman_religion
+			}
+			add_overlord_harmonized_religions_effect = yes
+		}
+	}
+}
+
+#country_event = { #coruler death
+#id = government.37
+#title = "government.37.t"
+#desc = "government.37.d"
+#picture = illness
+
+#trigger = {
+#has_ruler_modifier = heir_is_coruler
+#has_heir = no
+#}
+
+#mean_time_to_happen = {
+#months = 1
+#}
+
+#option = {
+#name = "government.37.a"
+#add_prestige = -20
+#add_stability = -1
+#remove_country_modifier = heir_is_coruler
+#country_event = {
+#	id = government.39
+#	days = 0
+#}
+#}
+#}
+
+########################################################################################
+# co-ruler personality mod add
+########################################################################################
+
+country_event = {
+	id = government.38
+	title = "government.38.t"
+	desc = "government.38.d"
+	picture = maniple
+
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = "government.38.a"
+		ai_chance = { factor = 100 }
+		if = { limit = { heir_has_personality = just_personality } add_ruler_modifier = { name = x_just_personality duration = -1 } }
+		if = { limit = { heir_has_personality = righteous_personality } add_ruler_modifier = { name = x_righteous_personality duration = -1 } }
+		if = { limit = { heir_has_personality = tolerant_personality } add_ruler_modifier = { name = x_tolerant_personality duration = -1 } }
+		if = { limit = { heir_has_personality = kind_hearted_personality } add_ruler_modifier = { name = x_kind_hearted_personality duration = -1 } }
+		if = { limit = { heir_has_personality = free_thinker_personality } add_ruler_modifier = { name = x_free_thinker_personality duration = -1 } }
+		if = { limit = { heir_has_personality = well_connected_personality } add_ruler_modifier = { name = x_well_connected_personality duration = -1 } }
+		if = { limit = { heir_has_personality = calm_personality } add_ruler_modifier = { name = x_calm_personality duration = -1 } }
+		if = { limit = { heir_has_personality = careful_personality } add_ruler_modifier = { name = x_careful_personality duration = -1 } }
+		if = { limit = { heir_has_personality = secretive_personality } add_ruler_modifier = { name = x_secretive_personality duration = -1 } }
+		if = { limit = { heir_has_personality = intricate_web_weaver_personality } add_ruler_modifier = { name = x_intricate_web_weaver_personality duration = -1 } }
+		if = { limit = { heir_has_personality = fertile_personality } add_ruler_modifier = { name = x_fertile_personality duration = -1 } }
+		if = { limit = { heir_has_personality = well_advised_personality } add_ruler_modifier = { name = x_well_advised_personality duration = -1 } }
+		if = { limit = { heir_has_personality = benevolent_personality } add_ruler_modifier = { name = x_benevolent_personality duration = -1 } }
+		if = { limit = { heir_has_personality = zealot_personality } add_ruler_modifier = { name = x_zealot_personality duration = -1 } }
+		if = { limit = { heir_has_personality = pious_personality } add_ruler_modifier = { name = x_pious_personality duration = -1 } }
+		if = { limit = { heir_has_personality = lawgiver_personality } add_ruler_modifier = { name = x_lawgiver_personality duration = -1 } }
+		if = { limit = { heir_has_personality = midas_touched_personality } add_ruler_modifier = { name = x_midas_touched_personality duration = -1 } }
+		if = { limit = { heir_has_personality = incorruptible_personality } add_ruler_modifier = { name = x_incorruptible_personality duration = -1 } }
+		if = { limit = { heir_has_personality = architectural_visionary_personality } add_ruler_modifier = { name = x_architectural_visionary_personality duration = -1 } }
+		if = { limit = { heir_has_personality = entrepreneur_personality } add_ruler_modifier = { name = x_entrepreneur_personality duration = -1 } }
+		if = { limit = { heir_has_personality = industrious_personality } add_ruler_modifier = { name = x_industrious_personality duration = -1 } }
+		if = { limit = { heir_has_personality = expansionist_personality } add_ruler_modifier = { name = x_expansionist_personality duration = -1 } }
+		if = { limit = { heir_has_personality = charismatic_negotiator_personality } add_ruler_modifier = { name = x_charismatic_negotiator_personality duration = -1 } }
+		if = { limit = { heir_has_personality = silver_tongue_personality } add_ruler_modifier = { name = x_silver_tongue_personality duration = -1 } }
+		if = { limit = { heir_has_personality = conqueror_personality } add_ruler_modifier = { name = x_conqueror_personality duration = -1 } }
+		if = { limit = { heir_has_personality = tactical_genius_personality } add_ruler_modifier = { name = x_tactical_genius_personality duration = -1 } }
+		if = { limit = { heir_has_personality = bold_fighter_personality } add_ruler_modifier = { name = x_bold_fighter_personality duration = -1 } }
+		if = { limit = { heir_has_personality = strict_personality } add_ruler_modifier = { name = x_strict_personality duration = -1 } }
+		if = { limit = { heir_has_personality = inspiring_leader_personality } add_ruler_modifier = { name = x_inspiring_leader_personality duration = -1 } }
+		if = { limit = { heir_has_personality = martial_educator_personality } add_ruler_modifier = { name = x_martial_educator_personality duration = -1 } }
+		if = { limit = { heir_has_personality = navigator_personality } add_ruler_modifier = { name = x_navigator_personality duration = -1 } }
+		if = { limit = { heir_has_personality = fierce_negotiator_personality } add_ruler_modifier = { name = x_fierce_negotiator_personality duration = -1 } }
+		if = { limit = { heir_has_personality = babbling_buffoon_personality } add_ruler_modifier = { name = x_babbling_buffoon_personality duration = -1 } }
+		if = { limit = { heir_has_personality = embezzler_personality } add_ruler_modifier = { name = x_embezzler_personality duration = -1 } }
+		if = { limit = { heir_has_personality = infertile_personality } add_ruler_modifier = { name = x_infertile_personality duration = -1 } }
+		if = { limit = { heir_has_personality = drunkard_personality } add_ruler_modifier = { name = x_drunkard_personality duration = -1 } }
+		if = { limit = { heir_has_personality = sinner_personality } add_ruler_modifier = { name = x_sinner_personality duration = -1 } }
+		if = { limit = { heir_has_personality = greedy_personality } add_ruler_modifier = { name = x_greedy_personality duration = -1 } }
+		if = { limit = { heir_has_personality = cruel_personality } add_ruler_modifier = { name = x_cruel_personality duration = -1 } }
+		if = { limit = { heir_has_personality = naive_personality } add_ruler_modifier = { name = x_naive_personality duration = -1 } }
+		if = { limit = { heir_has_personality = craven_personality } add_ruler_modifier = { name = x_craven_personality duration = -1 } }
+		if = { limit = { heir_has_personality = loose_lips_personality } add_ruler_modifier = { name = x_loose_lips_personality duration = -1 } }
+		if = { limit = { heir_has_personality = obsessive_perfectionist_personality } add_ruler_modifier = { name = x_obsessive_perfectionist_personality duration = -1 } }
+		if = { limit = { heir_has_personality = malevolent_personality } add_ruler_modifier = { name = x_malevolent_personality duration = -1 } }
+		if = { limit = { heir_has_personality = legendary_pirate_personality } add_ruler_modifier = { name = x_legendary_pirate_personality duration = -1 } }
+		if = { limit = { heir_has_personality = petty_personality } add_ruler_modifier = { name = x_petty_personality duration = -1 } }
+		if = { limit = { heir_has_personality = reformist_personality } add_ruler_modifier = { name = x_reformist_personality duration = -1 } }
+		if = { limit = { heir_has_personality = raider_personality } add_ruler_modifier = { name = x_raider_personality duration = -1 } }
+		if = { limit = { heir_has_personality = legendary_leader_personality } add_ruler_modifier = { name = x_legendary_leader_personality duration = -1 } }
+		if = { limit = { heir_has_personality = administrator_personality } add_ruler_modifier = { name = x_administrator_personality duration = -1 } }
+		if = { limit = { heir_has_personality = aggressive_personality } add_ruler_modifier = { name = x_aggressive_personality duration = -1 } }
+		if = { limit = { heir_has_personality = the_great_personality } add_ruler_modifier = { name = x_the_great_personality duration = -1 } }
+		if = { limit = { heir_has_personality = ambitious_senator } add_ruler_modifier = { name = x_ambitious_senator duration = -1 } }
+		if = { limit = { heir_has_personality = mastermind_personality } add_ruler_modifier = { name = x_mastermind_personality duration = -1 } }
+		if = { limit = { heir_has_personality = horse_lover_personality } add_ruler_modifier = { name = x_horse_lover_personality duration = -1 } }
+		if = { limit = { heir_has_personality = little_tyrant_personality } add_ruler_modifier = { name = x_little_tyrant_personality duration = -1 } }
+		if = { limit = { heir_has_personality = arbitrarily_personality } add_ruler_modifier = { name = x_arbitrarily_personality } }
+		if = { limit = { heir_has_personality = lazy_personality } add_ruler_modifier = { name = x_lazy_personality duration = -1 } }
+		if = { limit = { heir_has_personality = stubborn_personality } add_ruler_modifier = { name = x_stubborn_personality duration = -1 } }
+		if = { limit = { heir_has_personality = lunatic_personality } add_ruler_modifier = { name = x_lunatic_personality duration = -1 } }
+		if = { limit = { heir_has_personality = frail_personality } add_ruler_modifier = { name = x_frail_personality duration = -1 } }
+		if = { limit = { heir_has_personality = chauvinist_personality } add_ruler_modifier = { name = x_chauvinist_personality duration = -1 } }
+	}
+}
+
+########################################################################################
+# co-ruler personality mod remove , unnecesary since it auto clears
+########################################################################################
+
+#country_event = {
+#id = government.39
+#title = "government.39.t"
+#desc = "government.39.d"
+#picture = maniple
+#is_triggered_only = yes
+#hidden = yes
+#option = {
+#name = "government.39.a"
+#ai_chance = { factor = 100 }
+#if = { limit = { has_ruler_modifier = x_just_personality } remove_ruler_modifer = just_personality }
+#if = { limit = { has_ruler_modifier = x_righteous_personality } remove_country_modifier = righteous_personality }
+#if = { limit = { has_ruler_modifier = x_tolerant_personality } remove_country_modifier = tolerant_personality }
+#if = { limit = { has_ruler_modifier = x_kind_hearted_personality } remove_country_modifier = kind_hearted_personality }
+#if = { limit = { has_ruler_modifier = x_free_thinker_personality } remove_country_modifier = free_thinker_personality }
+#if = { limit = { has_ruler_modifier = x_well_connected_personality } remove_country_modifier = well_connected_personality }
+#if = { limit = { has_ruler_modifier = x_calm_personality } remove_country_modifier = calm_personality }
+#if = { limit = { has_ruler_modifier = x_careful_personality } remove_country_modifier = careful_personality }
+#if = { limit = { has_ruler_modifier = x_secretive_personality } remove_country_modifier = secretive_personality }
+#if = { limit = { has_ruler_modifier = x_intricate_web_weaver_personality } remove_country_modifier = intricate_web_weaver_personality }
+#if = { limit = { has_ruler_modifier = x_fertile_personality } remove_country_modifier = fertile_personality }
+#if = { limit = { has_ruler_modifier = x_well_advised_personality } remove_country_modifier = well_advised_personality }
+#if = { limit = { has_ruler_modifier = x_benevolent_personality } remove_country_modifier = benevolent_personality }
+#if = { limit = { has_ruler_modifier = x_zealot_personality } remove_country_modifier = zealot_personality }
+#if = { limit = { has_ruler_modifier = x_pious_personality } remove_country_modifier = pious_personality }
+#if = { limit = { has_ruler_modifier = x_lawgiver_personality } remove_country_modifier = lawgiver_personality }
+#if = { limit = { has_ruler_modifier = x_midas_touched_personality } remove_country_modifier = midas_touched_personality }
+#if = { limit = { has_ruler_modifier = x_incorruptible_personality } remove_country_modifier = incorruptible_personality }
+#if = { limit = { has_ruler_modifier = x_architectural_visionary_personality } remove_country_modifier = architectural_visionary_personality }
+#if = { limit = { has_ruler_modifier = x_entrepreneur_personality } remove_country_modifier = entrepreneur_personality }
+#if = { limit = { has_ruler_modifier = x_industrious_personality } remove_country_modifier = industrious_personality }
+#if = { limit = { has_ruler_modifier = x_expansionist_personality } remove_country_modifier = expansionist_personality }
+#if = { limit = { has_ruler_modifier = x_charismatic_negotiator_personality } remove_country_modifier = charismatic_negotiator_personality }
+#if = { limit = { has_ruler_modifier = x_silver_tongue_personality } remove_country_modifier = silver_tongue_personality }
+#if = { limit = { has_ruler_modifier = x_conqueror_personality } remove_country_modifier = conqueror_personality }
+#if = { limit = { has_ruler_modifier = x_tactical_genius_personality } remove_country_modifier = tactical_genius_personality }
+#if = { limit = { has_ruler_modifier = x_bold_fighter_personality } remove_country_modifier = bold_fighter_personality }
+#if = { limit = { has_ruler_modifier = x_strict_personality } remove_country_modifier = strict_personality }
+#if = { limit = { has_ruler_modifier = x_inspiring_leader_personality } remove_country_modifier = inspiring_leader_personality }
+#if = { limit = { has_ruler_modifier = x_martial_educator_personality } remove_country_modifier = martial_educator_personality }
+#if = { limit = { has_ruler_modifier = x_navigator_personality } remove_country_modifier = navigator_personality }
+#if = { limit = { has_ruler_modifier = x_fierce_negotiator_personality } remove_country_modifier = fierce_negotiator_personality }
+#if = { limit = { has_ruler_modifier = x_babbling_buffoon_personality } remove_country_modifier = babbling_buffoon_personality }
+#if = { limit = { has_ruler_modifier = x_embezzler_personality } remove_country_modifier = embezzler_personality }
+#if = { limit = { has_ruler_modifier = x_infertile_personality } remove_country_modifier = infertile_personality }
+#if = { limit = { has_ruler_modifier = x_drunkard_personality } remove_country_modifier = drunkard_personality }
+#if = { limit = { has_ruler_modifier = x_sinner_personality } remove_country_modifier = sinner_personality }
+#if = { limit = { has_ruler_modifier = x_greedy_personality } remove_country_modifier = greedy_personality }
+#if = { limit = { has_ruler_modifier = x_cruel_personality } remove_country_modifier = cruel_personality }
+#if = { limit = { has_ruler_modifier = x_naive_personality } remove_country_modifier = naive_personality }
+#if = { limit = { has_ruler_modifier = x_craven_personality } remove_country_modifier = craven_personality }
+#if = { limit = { has_ruler_modifier = x_loose_lips_personality } remove_country_modifier = loose_lips_personality }
+#if = { limit = { has_ruler_modifier = x_obsessive_perfectionist_personality } remove_country_modifier = obsessive_perfectionist_personality }
+#if = { limit = { has_ruler_modifier = x_malevolent_personality } remove_country_modifier = malevolent_personality }
+#if = { limit = { has_ruler_modifier = x_legendary_pirate_personality } remove_country_modifier = legendary_pirate_personality }
+#if = { limit = { has_ruler_modifier = x_petty_personality } remove_country_modifier = petty_personality }
+#if = { limit = { has_ruler_modifier = x_reformist_personality } remove_country_modifier = reformist_personality }
+#if = { limit = { has_ruler_modifier = x_raider_personality } remove_country_modifier = raider_personality }
+#if = { limit = { has_ruler_modifier = x_legendary_leader_personality } remove_country_modifier = legendary_leader_personality }
+#if = { limit = { has_ruler_modifier = x_administrator_personality } remove_country_modifier = administrator_personality }
+#if = { limit = { has_ruler_modifier = x_aggressive_personality } remove_country_modifier = aggressive_personality }
+#if = { limit = { has_ruler_modifier = x_the_great_personality } remove_country_modifier = the_great_personality }
+#if = { limit = { has_ruler_modifier = x_ambitious_senator } remove_country_modifier = ambitious_senator }
+#if = { limit = { has_ruler_modifier = x_mastermind_personality } remove_country_modifier = mastermind_personality }
+#if = { limit = { has_ruler_modifier = x_horse_lover_personality } remove_country_modifier = horse_lover_personality }
+#if = { limit = { has_ruler_modifier = x_little_tyrant_personality } remove_country_modifier = little_tyrant_personality }
+#if = { limit = { has_ruler_modifier = x_arbitrarily_personality } remove_country_modifier = arbitrarily_personality }
+#if = { limit = { has_ruler_modifier = x_lazy_personality } remove_country_modifier = lazy_personality }
+#if = { limit = { has_ruler_modifier = x_stubborn_personality } remove_country_modifier = stubborn_personality }
+#if = { limit = { has_ruler_modifier = x_lunatic_personality } remove_country_modifier = lunatic_personality }
+#if = { limit = { has_ruler_modifier = x_frail_personality } remove_country_modifier = frail_personality }
+#if = { limit = { has_ruler_modifier = x_chauvinist_personality } remove_country_modifier = chauvinist_personality }
+#}
+#}

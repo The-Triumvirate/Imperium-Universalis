@@ -1,0 +1,213 @@
+namespace = corinth
+
+########################################################################################
+# Periander
+########################################################################################
+country_event = {
+	id = corinth.1
+	title = "corinth.1.t"
+	desc = "corinth.1.d"
+	picture = ruler
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = COR
+		NOT = { started_in = 169.1.1 }
+		has_ruler = "Periandros"
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = { hidden_effect = { set_country_flag = periander_ruler_flag } }
+
+	option = {
+		name = "corinth.1.a"
+		ai_chance = { factor = 90 }
+		add_stability = 1
+		add_prestige = 10
+		add_ruler_modifier = { name = periander_ruler_modifier }
+	}
+}
+
+#Periander dies
+country_event = {
+	id = corinth.2
+	title = "corinth.1.t"
+	desc = "corinth.1.d"
+	picture = ruler
+
+	hidden = yes
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		tag = COR
+		has_country_flag = periander_ruler_flag
+	}
+
+	option = {
+		name = "corinth.1.a"
+		clr_country_flag = periander_ruler_flag
+		set_country_flag = corinth_end_monarchy_flag
+	}
+}
+
+########################################################################################
+# End of Cypselid dynasty
+########################################################################################
+country_event = {
+	id = corinth.3
+	title = "corinth.3.t"
+	desc = "corinth.3.d"
+	picture = assassination_noble
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = COR
+		NOT = { started_in = 172.1.1 }
+		government = monarchy
+		had_country_flag = {
+			flag = corinth_end_monarchy_flag
+			days = 1095
+		}
+		NOT = {
+			AND = {
+				adm = 6
+				mil = 6
+				dip = 6
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = { hidden_effect = { clr_country_flag = corinth_end_monarchy_flag } }
+
+	option = {
+		name = "corinth.3.a"
+		kill_heir = { allow_new_heir = no }
+		kill_ruler = yes
+		change_government = republic
+		add_government_reform = greek_polis_reform
+		add_faction = fac_oligarchs
+		add_faction_influence = {
+			faction = fac_oligarchs
+			influence = 50
+		}
+		add_country_modifier = {
+			name = polis_oligarchy_modifier
+			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# Corinthian Art
+########################################################################################
+country_event = {
+	id = corinth.4
+	title = "corinth.4.t"
+	desc = "corinth.4.d"
+	picture = assassination
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = COR
+		is_year = 240
+		NOT = { current_age = hellenistic_age }
+		NOT = { has_country_modifier = corinthian_art_modifier }
+		neither_tribal_nor_native_trigger = yes
+		prestige = 30
+		stability = 1
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "corinth.4.a"
+		ai_chance = { factor = 90 }
+		add_splendor = 60
+		add_country_modifier = {
+			name = corinthian_art_modifier
+			duration = 14600
+		}
+	}
+}
+
+########################################################################################
+# Corinth - Corcyra relation
+########################################################################################
+country_event = {
+	id = corinth.5
+	title = "corinth.5.t"
+	desc = "corinth.5.d"
+	picture = oracle_meeting
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = COR
+		exists = COC
+		COC = { is_subject_of = COR }
+		is_year = 180
+		NOT = { started_in = 195.1.1 }
+		NOT = { historical_rival_with = COC }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "corinth.5.a"
+		ai_chance = { factor = 5 }
+		add_historical_rival = COC
+		add_truce_with = COC
+		COC = {
+			grant_independence = yes
+			add_historical_rival = COR
+			if = {
+				limit = { exists = ATH }
+				create_alliance = ATH
+			}
+		}
+	}
+
+	option = {
+		name = "corinth.5.b"
+		ai_chance = { factor = 5 }
+		trigger = { mil_power = 100 }
+		add_mil_power = -100
+		add_stability = -1
+		COC = { add_liberty_desire = 20 }
+	}
+
+	option = {
+		name = "corinth.5.c"
+		ai_chance = { factor = 90 }
+		add_prestige = -10
+		add_historical_rival = COC
+		COC = {
+			grant_independence = yes
+			add_historical_rival = COR
+			if = {
+				limit = { exists = ATH }
+				create_alliance = ATH
+			}
+			every_owned_province = {
+				limit = { is_core = COC }
+				add_permanent_claim = COR
+			}
+		}
+	}
+}

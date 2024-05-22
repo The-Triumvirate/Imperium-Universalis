@@ -1,0 +1,319 @@
+namespace = samnites
+
+########################################################################################
+# samnite leage
+########################################################################################
+country_event = {
+	id = samnites.1
+	title = "samnites.1.t"
+	desc = "samnites.1.d"
+	picture = senat
+	major = yes
+
+	trigger = {
+		NOT = { has_global_flag = sam_happened }
+		primary_culture = samnitic
+		NOT = { tag = FRE }
+		capital_scope = {
+			OR = {
+				area = frentania_area
+				area = samnium_area
+			}
+		}
+		is_subject = no
+		NOT = {
+			alliance_with = ROM
+		}
+		OR = {
+			ROM = {
+				exists = yes
+				OR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 3
+						OR = {
+							area = frentania_area
+							area = samnium_area
+						}
+					}
+					total_development = 40
+					socii_subject = 6
+					has_country_flag = latin_war_won_flag
+					has_country_flag = force_publica
+				}
+			}
+			ETR = {
+				exists = yes
+				total_development = 65
+			}
+			CAR = {
+				exists = yes
+				total_development = 100
+				OR = {
+					any_owned_province = { region = italian_region }
+					any_owned_province = { region = gallia_cisalpina }
+				}
+			}
+		}
+
+		NOT = { exists = ISM }
+
+		OR = {
+			AND = {
+				ai = yes
+				NOT = {
+					any_country = {
+						ai = no
+						primary_culture = samnitic
+						capital_scope = {
+							OR = {
+								area = frentania_area
+								area = samnium_area
+							}
+						}
+					}
+				}
+			}
+			ai = no
+		}
+
+		calc_true_if = {
+			all_country = {
+				primary_culture = samnitic
+				capital_scope = {
+					OR = {
+						area = frentania_area
+						area = samnium_area
+					}
+				}
+				is_subject = no
+				has_opinion = {
+					who = ROOT
+					value = -25
+				}
+			}
+			amount = 4
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 8
+		modifier = {
+			factor = 4
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 0.5
+			ROM = {
+				OR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 4
+						OR = {
+							area = frentania_area
+							area = samnium_area
+						}
+					}
+					has_country_flag = force_publica
+				}
+			}
+		}
+	}
+
+	option = {
+		ai_chance = {
+			factor = 90
+		}
+		name = "samnites.1.a"
+		hidden_effect = {
+			set_global_flag = sam_happened
+			every_country = {
+				limit = {
+					primary_culture = samnitic
+					capital_scope = {
+						OR = {
+							area = frentania_area
+							area = samnium_area
+						}
+					}
+					NOT = { tag = FRE }
+					is_subject = no
+					has_opinion = {
+						who = ROOT
+						value = -25
+					}
+				}
+				country_event = {
+					id = samnites.2
+					days = 1
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					primary_culture = samnitic
+					capital_scope = {
+						OR = {
+							area = frentania_area
+							area = samnium_area
+						}
+					}
+					is_subject = yes
+				}
+				add_liberty_desire = 50
+				set_country_flag = sam_desire_for_unification
+			}
+		}
+		if = {
+			limit = {
+				ai = yes
+			}
+			add_country_modifier = {
+				name = sam_ai_recently_formed
+				duration = 365
+			}
+			country_event = {
+				id = samnites.3
+				days = 7
+			}
+		}
+		add_country_modifier = {
+			name = sam_league_unified
+			duration = 3650
+		}
+		custom_tooltip = samnites.1.tt
+		change_tag = ISM
+		change_government = republic
+		add_government_reform = league_reform
+		if = {
+			limit = { NOT = { government_rank = 2 } }
+			set_government_rank = 2
+		}
+		frentania_area = {
+			limit = {
+				NOT = { owned_by = FRE }
+			}
+			add_core = ISM
+		}
+		samnium_area = {
+			add_core = ISM
+		}
+		campania_area = {
+			add_claim = ISM
+		}
+		5666 = {
+			add_claim = ISM
+		}
+		add_historical_rival = ROM
+		ROM = {
+			add_historical_rival = ISM
+		}
+		add_historical_rival = CPU
+		CPU = {
+			add_historical_rival = ISM
+		}
+		add_historical_rival = I21
+		I21 = {
+			add_historical_rival = ISM
+		}
+		add_historical_rival = I22
+		I22 = {
+			add_historical_rival = ISM
+		}
+		set_global_flag = ISM_unified
+	}
+	option = {
+		ai_chance = {
+			factor = 10
+		}
+		name = "samnites.1.b"
+		add_stability = 1
+	}
+}
+########################################################################################
+# join samnite league
+########################################################################################
+country_event = {
+	id = samnites.2
+	title = "samnites.1.t"
+	desc = "samnites.1.d"
+	picture = senat
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { tag = ISM }
+	}
+
+	option = {
+		name = "samnites.2.a"
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 5
+				ISM = { ai = yes }
+			}
+			modifier = {
+				factor = 0.8
+				num_of_cities = 3
+			}
+			modifier = {
+				factor = 0.6
+				num_of_cities = 6
+			}
+			modifier = {
+				factor = 0.4
+				num_of_cities = 9
+			}
+			modifier = {
+				factor = 0.8
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 0.6
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 3.0
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+		}
+		ISM = { inherit = ROOT }
+	}
+	option = {
+		name = "samnites.1.b"
+		ai_chance = { factor = 10 }
+		add_stability = -1
+	}
+}
+
+
+########################################################################################
+# etruria non-implosion failsafe
+########################################################################################
+
+country_event = {
+	id = samnites.3
+	title = "samnites.3.t"
+	desc = "samnites.3.d"
+	picture = senat
+	is_triggered_only = yes
+	option = {
+		name = "samnites.3.a"
+		disband_all_units = yes
+	}
+	after = {
+		stabilize_country_effect = yes
+	}
+}

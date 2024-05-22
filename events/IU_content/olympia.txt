@@ -1,0 +1,525 @@
+namespace = olympia
+
+########################################################################################
+#  Olympic Games hosted
+########################################################################################
+country_event = {
+	id = olympia.1
+	title = "olympia.1.t"
+	desc = "olympia.1.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	trigger = {
+		owns = 941
+		controls = 941
+		941 = {
+			NOT = { has_siege = yes }
+		}
+		is_month = 4
+		religion_group = pagan_group
+		culture_group = hellenic_group
+		calc_true_if = {
+			all_country = {
+				culture_group = hellenic_group
+				religion_group = pagan_group
+				NOT = { war_with = ROOT }
+				capital_scope = {
+					OR = {
+						region = italian_region
+						region = magna_graecia
+						region = illyria_region
+						region = thracia_region
+						region = dacia_region
+						region = greek_region
+						region = macedonia_region
+						region = mare_aegaeum_islands_region
+						region = asia_minor
+						region = ionia_region
+						region = bithynia_et_pontus
+						region = lower_egypt_region
+					}
+				}
+			}
+			amount = 8
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	# Host the games!
+	option = {
+		name = "olympia.1.a"
+		ai_chance = { factor = 100 }
+		trigger = { 941 = { controlled_by = OWNER } }
+		add_prestige = 4
+		add_patriarch_authority = 0.025
+		add_adm_power = -15
+		add_dip_power = -15
+		hidden_effect = {
+			every_country = {
+				limit = {
+					NOT = { war_with = ROOT }
+					OR = {
+						AND = {
+							culture_group = hellenic_group
+							religion = greek_religion
+							NOT = { primary_culture = epirot }
+							capital_scope = {
+								OR = {
+									superregion = italia_superregion
+									superregion = haemusia_superregion
+									superregion = macedonia_superregion
+									superregion = syria_superregion
+									superregion = asia_superregion
+									region = lower_egypt_region
+								}
+							}
+						}
+						AND = {
+							owns = 941
+							religion_group = pagan_group
+						}
+						AND = {
+							primary_culture = epirot
+							is_tribal = no
+						}
+					}
+				}
+				country_event = {
+					id = olympia.2
+					days = 5
+				}
+			}
+			country_event = {
+				id = olympia.3
+				days = 45
+			}
+		}
+	}
+	# Don't host them
+	option = {
+		name = "olympia.1.b"
+		ai_chance = { factor = 0 }
+		if = {
+			limit = { religion = greek_religion }
+			add_prestige = -30
+			add_patriarch_authority = -0.10
+		}
+		if = {
+			limit = { NOT = { religion = greek_religion } }
+			add_prestige = -10
+		}
+	}
+}
+
+########################################################################################
+#  Send Athlets to the games
+########################################################################################
+country_event = {
+	id = olympia.2
+	title = "olympia.2.t"
+	desc = "olympia.2.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	# send athlets
+	option = {
+		name = "olympia.2.a"
+		ai_chance = { factor = 70 }
+		add_prestige = 1.5
+		add_dip_power = -5
+		add_patriarch_authority = 0.01
+		add_country_modifier = {
+			name = athlets_send_to_olympia
+			duration = 90
+		}
+	}
+	option = {
+		name = "olympia.2.c"
+		ai_chance = { factor = 20 }
+		add_prestige = 3
+		add_dip_power = -20
+		add_patriarch_authority = 0.02
+		add_country_modifier = {
+			name = best_athlets_send_to_olympia
+			duration = 90
+		}
+	}
+	# dont send athlets
+	option = {
+		name = "olympia.2.b"
+		ai_chance = { factor = 10 }
+		add_prestige = -5
+		add_patriarch_authority = -0.02
+
+	}
+}
+
+########################################################################################
+#  Games hosted
+########################################################################################
+country_event = {
+	id = olympia.3
+	title = "olympia.3.t"
+	desc = "olympia.3.d"
+	picture = olympia
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	# send athlets
+	option = {
+		name = "olympia.3.a"
+		hidden_effect = {
+			##################################### Stadion Race Winner
+			if = {
+				limit = { any_country = { has_country_modifier = best_athlets_send_to_olympia } }
+
+				random_list = {
+					75 = {
+						random_country = {
+							limit = {	has_country_modifier = best_athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.4 # Stadion Race Winner
+								days = 5
+							}
+						}
+					}
+					25 = {
+						random_country = {
+							limit = {	has_country_modifier = athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.4 # Stadion Race Winner
+								days = 5
+							}
+						}
+					}
+				}
+
+				else = {
+					random_country = {
+						limit = {	has_country_modifier = athlets_send_to_olympia
+						}
+						country_event = {
+							id = olympia.4 # Stadion Race Winner
+							days = 5
+						}
+					}
+				}
+			}
+
+			#################################################
+			if = {
+				limit = { any_country = { has_country_modifier = best_athlets_send_to_olympia } }
+
+				random_list = {
+					75 = {
+						random_country = {
+							limit = {	has_country_modifier = best_athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.5 #
+								days = 5
+							}
+						}
+					}
+					25 = {
+						random_country = {
+							limit = {	has_country_modifier = athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.5
+								days = 5
+							}
+						}
+					}
+				}
+
+				else = {
+					random_country = {
+						limit = {	has_country_modifier = athlets_send_to_olympia
+						}
+						country_event = {
+							id = olympia.5
+							days = 5
+						}
+					}
+				}
+			}
+
+			#################################################
+			if = {
+				limit = { any_country = { has_country_modifier = best_athlets_send_to_olympia } }
+
+				random_list = {
+					75 = {
+						random_country = {
+							limit = {	has_country_modifier = best_athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.6
+								days = 5
+							}
+						}
+					}
+					25 = {
+						random_country = {
+							limit = {	has_country_modifier = athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.6
+								days = 5
+							}
+						}
+					}
+				}
+
+				else = {
+					random_country = {
+						limit = {	has_country_modifier = athlets_send_to_olympia
+						}
+						country_event = {
+							id = olympia.6
+							days = 5
+						}
+					}
+				}
+			}
+
+			#################################################
+			if = {
+				limit = { any_country = { has_country_modifier = best_athlets_send_to_olympia } }
+
+				random_list = {
+					75 = {
+						random_country = {
+							limit = {	has_country_modifier = best_athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.7
+								days = 5
+							}
+						}
+					}
+					25 = {
+						random_country = {
+							limit = {	has_country_modifier = athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.7
+								days = 5
+							}
+						}
+					}
+				}
+
+				else = {
+					random_country = {
+						limit = {	has_country_modifier = athlets_send_to_olympia
+						}
+						country_event = {
+							id = olympia.7
+							days = 5
+						}
+					}
+				}
+			}
+			#################################################
+			if = {
+				limit = { any_country = { has_country_modifier = best_athlets_send_to_olympia } }
+
+				random_list = {
+					75 = {
+						random_country = {
+							limit = {	has_country_modifier = best_athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.8
+								days = 5
+							}
+						}
+					}
+					25 = {
+						random_country = {
+							limit = {	has_country_modifier = athlets_send_to_olympia
+							}
+							country_event = {
+								id = olympia.8
+								days = 5
+							}
+						}
+					}
+				}
+
+				else = {
+					random_country = {
+						limit = {	has_country_modifier = athlets_send_to_olympia
+						}
+						country_event = {
+							id = olympia.8
+							days = 5
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+#  Stadion Race Winner
+########################################################################################
+country_event = {
+	id = olympia.4
+	title = "olympia.4.t"
+	desc = "olympia.4.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	# send athlets
+	option = {
+		name = "olympia.4.a"
+		add_prestige = 5
+		add_splendor = 10
+		if = {
+			limit = { NOT = { has_country_flag = won_olympics_1_times } }
+			set_country_flag = won_olympics_1_times
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = won_olympics_2_times } }
+					set_country_flag = won_olympics_2_times
+					else = { set_country_flag = won_olympics_3_times }
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+#  Wrestling Winner
+########################################################################################
+country_event = {
+	id = olympia.5
+	title = "olympia.5.t"
+	desc = "olympia.5.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	# send athlets
+	option = {
+		name = "olympia.4.a"
+		add_prestige = 5
+		add_splendor = 10
+		if = {
+			limit = { NOT = { has_country_flag = won_olympics_1_times } }
+			set_country_flag = won_olympics_1_times
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = won_olympics_2_times } }
+					set_country_flag = won_olympics_2_times
+					else = { set_country_flag = won_olympics_3_times }
+				}
+			}
+		}
+	}
+}
+########################################################################################
+#  Boxing Winner
+########################################################################################
+country_event = {
+	id = olympia.6
+	title = "olympia.6.t"
+	desc = "olympia.6.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	# send athlets
+	option = {
+		name = "olympia.4.a"
+		add_prestige = 5
+		add_splendor = 10
+		if = {
+			limit = { NOT = { has_country_flag = won_olympics_1_times } }
+			set_country_flag = won_olympics_1_times
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = won_olympics_2_times } }
+					set_country_flag = won_olympics_2_times
+					else = { set_country_flag = won_olympics_3_times }
+				}
+			}
+		}
+	}
+}
+########################################################################################
+#  Hoplitodromos Winner
+########################################################################################
+country_event = {
+	id = olympia.7
+	title = "olympia.7.t"
+	desc = "olympia.7.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	# send athlets
+	option = {
+		name = "olympia.4.a"
+		add_prestige = 5
+		add_splendor = 10
+		if = {
+			limit = { NOT = { has_country_flag = won_olympics_1_times } }
+			set_country_flag = won_olympics_1_times
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = won_olympics_2_times } }
+					set_country_flag = won_olympics_2_times
+					else = { set_country_flag = won_olympics_3_times }
+				}
+			}
+		}
+	}
+}
+########################################################################################
+#  Chariot racing Winner
+########################################################################################
+country_event = {
+	id = olympia.8
+	title = "olympia.8.t"
+	desc = "olympia.8.d"
+	picture = olympia
+	is_triggered_only = yes
+
+	# send athlets
+	option = {
+		name = "olympia.4.a"
+		add_prestige = 5
+		add_splendor = 10
+		if = {
+			limit = { NOT = { has_country_flag = won_olympics_1_times } }
+			set_country_flag = won_olympics_1_times
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = won_olympics_2_times } }
+					set_country_flag = won_olympics_2_times
+					else = { set_country_flag = won_olympics_3_times }
+				}
+			}
+		}
+	}
+}

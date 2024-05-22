@@ -1,0 +1,270 @@
+
+namespace = religion_christian
+########################################################################################
+# Jesus of nazareth
+########################################################################################
+country_event = {
+	id = religion_christian.1
+	title = "religion_christian.1.t"
+	desc = "religion_christian.1.d"
+	picture = crucify
+
+	major = yes
+
+	trigger = {
+		owns = 2288 #Sephoris in mod, location of Nazareth
+		is_year = 780
+		2288 = {
+			OR = {
+				religion = jewish
+				religion = samaritan_religion
+			}
+		}
+		NOT = { has_global_flag = christ_beginn }
+	}
+
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "religion_christian.1.a"
+		set_global_flag = christ_beginn
+		enable_religion = christian
+		2288 = {
+			change_religion = christian
+			add_reform_center = christian
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+########################################################################################
+# spread of christians
+########################################################################################
+province_event = {
+	id = religion_christian.2
+	title = "religion_christian.2.t"
+	desc = "religion_christian.2.d"
+	picture = crucify
+
+	trigger = {
+		has_global_flag = christ_beginn
+		OR = {
+			has_province_modifier = christen_gemeinde
+			AND = {
+				province_has_center_of_trade_of_level = 1
+				any_trade_node_member_province = {
+					religion = christian
+				}
+			}
+			any_province = {
+				region = FROM
+				religion = christian
+			}
+		}
+		NOT = { religion = christian }
+	}
+
+	mean_time_to_happen = {
+		months = 1800
+		modifier = {
+			factor = 0.7
+			religion = punic_religion
+		}
+		modifier = {
+			factor = 0.7
+			religion = mesopotamian_religion
+		}
+		modifier = {
+			factor = 0.7
+			religion = luwian_religion
+		}
+		modifier = {
+			factor = 0.7
+			religion = egyptian_religion
+		}
+		modifier = {
+			factor = 0.7
+			religion = armenian_religion
+		}
+		modifier = {
+			factor = 0.8
+			religion = numidian_religion
+		}
+		modifier = {
+			factor = 0.9
+			religion = arab_religion
+		}
+		modifier = {
+			factor = 0.75
+			region = canaan_region
+		}
+		modifier = {
+			factor = 0.85
+			region = armenia_region
+		}
+		modifier = {
+			factor = 1.05
+			NOT = { culture_group = semitic }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { religion_years = { christian = 25 } }
+		}
+		modifier = {
+			factor = 0.75
+			religion_years = { christian = 75 }
+		}
+		modifier = {
+			factor = 0.33
+			has_province_modifier = christen_gemeinde
+		}
+		modifier = {
+			factor = 1.1
+			tolerance_to_this = 3
+		}
+		modifier = {
+			factor = 1.25
+			is_capital = yes
+		}
+		modifier = {
+			factor = 0.9
+			has_port = yes
+		}
+		modifier = {
+			factor = 0.9
+			has_owner_accepted_culture = no
+		}
+		modifier = {
+			factor = 0.9
+			unrest = 3
+		}
+		modifier = {
+			factor = 0.8
+			local_autonomy = 50
+		}
+		modifier = {
+			factor = 1.1
+			NOT = { local_autonomy = 1 }
+		}
+		modifier = {
+			factor = 4.5
+			religion = jewish
+		}
+		modifier = {
+			factor = 4.0
+			religion = samaritan_religion
+		}
+		modifier = {
+			factor = 3.0
+			OR = {
+				religion_group = brahmin_group
+				religion = zoroastrianism
+				religion = zurvanism
+			}
+		}
+		modifier = {
+			factor = 0.75
+			any_neighbor_province = { religion = christian }
+		}
+		modifier = {
+			factor = 0.75
+			owner = { has_country_modifier = christians_welcomed }
+		}
+		modifier = {
+			factor = 2.5
+			owner = { has_country_modifier = christian_progroms }
+		}
+	}
+
+	option = {
+		name = "religion_christian.2.a"
+		if =  {
+			limit = { NOT = { has_province_modifier = christen_gemeinde } }
+			add_province_modifier = {
+				name = "christen_gemeinde"
+				duration = -1
+			}
+		}
+		else = {
+			remove_province_modifier = christen_gemeinde
+			change_religion = christian
+		}
+	}
+}
+########################################################################################
+# Paulus
+########################################################################################
+country_event = {
+	id = religion_christian.3
+	title = "religion_christian.3.t"
+	desc = "religion_christian.3.d"
+	picture = paulus
+
+	trigger = {
+		owns = 2302
+		religion_years = { christian = 5 }
+		has_global_flag = christ_beginn
+		NOT = { has_country_flag = christians_in_capital }
+		total_development = 350
+	}
+
+	mean_time_to_happen = {
+		months = 32
+	}
+
+	option = {
+		name = "religion_christian.3.a"
+		set_country_flag = christians_in_capital
+		2302 = { #Paulus vision of Christ was while he was going to Damascus
+			change_religion = christian
+			add_reform_center = christian
+			set_province_flag = reform_center_ticking_flag
+		}
+		2334 = { #Paulus was from Tarsus, just to expand range of Christianity in Anatolia
+			change_religion = christian
+		}
+	}
+}
+
+########################################################################################
+# progroms against christians
+########################################################################################
+country_event = {
+	id = religion_christian.4
+	title = "religion_christian.4.t"
+	desc = "religion_christian.4.d"
+	picture = crucify
+
+	trigger = {
+		has_global_flag = christ_beginn
+		NOT = { has_country_flag = christian_progrom_flag }
+		OR = {
+			any_owned_province = { religion = christian }
+			any_owned_province = { has_province_modifier = christen_gemeinde }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "religion_christian.4.a"
+		ai_chance = { factor = 70 }
+		set_country_flag = christian_progrom_flag
+		add_country_modifier = {
+			name = "christian_progroms"
+			duration = 3650
+		}
+	}
+	option = {
+		name = "religion_christian.4.b"
+		ai_chance = { factor = 30 }
+		set_country_flag = christian_progrom_flag
+		add_country_modifier = {
+			name = "christians_welcomed"
+			duration = 3650
+		}
+	}
+}

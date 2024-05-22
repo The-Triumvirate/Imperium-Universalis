@@ -1,0 +1,516 @@
+namespace = buddhism
+
+########################################################################################
+# birth of buddha
+########################################################################################
+
+province_event  = {
+	id = buddhism.1
+	title = "buddhism.1.t"
+	desc = "buddhism.1.d"
+	picture = family
+
+	fire_only_once = yes
+	hidden = yes
+
+	trigger = {
+		OR = {
+			3643 = {
+				religion = sramana
+			}
+			3645 = {
+				religion = sramana
+			}
+		}
+		is_year = 188
+		NOT = { is_religion_enabled = buddhism }
+	}
+
+	mean_time_to_happen = {
+		days = 150
+	}
+
+	option = {
+		name = "buddhism.1.a"
+		set_global_flag = buddha_is_born
+	}
+}
+
+########################################################################################
+# buddha achieves nirvana
+########################################################################################
+
+country_event  = {
+	id = buddhism.2
+	title = "buddhism.2.t"
+	desc = "buddhism.2.d"
+	picture = religious
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		is_year = 223
+		owns = 3029
+		has_global_flag = buddha_is_born
+	}
+
+	mean_time_to_happen = {
+		days = 190
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = buddha_achieves_illumination
+			clr_global_flag = buddha_is_born
+		}
+	}
+
+	option = {
+		name = "buddhism.2.a"
+		ai_chance = { factor = 50 }
+		add_prestige = 5
+	}
+}
+
+########################################################################################
+# the sangha is formed
+########################################################################################
+
+country_event  = {
+	id = buddhism.3
+	title = "buddhism.3.t"
+	desc = "buddhism.3.d"
+	picture = religious
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		is_year = 224
+		owns = 3617
+		has_global_flag = buddha_achieves_illumination
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = the_sangha_is_formed
+			clr_global_flag = buddha_achieves_illumination
+		}
+	}
+
+	option = {
+		name = "buddhism.3.a"
+		ai_chance = { factor = 50 }
+		enable_religion = buddhism
+		3617 = {
+			change_religion = buddhism
+			add_reform_center = buddhism
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# Buddha preaches in province
+########################################################################################
+
+country_event = {
+	id = buddhism.4
+	title = "buddhism.4.t"
+	desc = "buddhism.4.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = sramana
+		OR = {
+			AND = {
+				is_month = 1
+				NOT = { is_month = 7 }
+			}
+			is_month = 11
+		}
+		capital_scope = {
+			region = northern_india_region
+		}
+		has_global_flag = the_sangha_is_formed
+		any_owned_province = {
+			religion = sramana
+		}
+	}
+
+	option = {
+		name = "buddhism.4.a"
+		ai_chance = { factor = 50 }
+		random_owned_province = {
+			limit = {
+				religion = sramana
+				region = northern_india_region
+			}
+			change_religion = buddhism
+		}
+	}
+}
+
+########################################################################################
+# Anathapindika's charity
+########################################################################################
+
+province_event = {
+	id = buddhism.5
+	title = "buddhism.5.t"
+	desc = "buddhism.5.d"
+	picture = forum_picture
+
+	fire_only_once = yes
+
+	trigger = {
+		province_id = 3642
+		3642 = { religion = sramana }
+		has_global_flag = the_sangha_is_formed
+		is_year = 234
+	}
+
+	mean_time_to_happen = {
+		days = 40
+	}
+
+	option = {
+		name = "buddhism.5.a"
+		ai_chance = { factor = 50 }
+		3642 = {
+			change_religion = buddhism
+			add_reform_center = buddhism
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# Death of Buddha
+########################################################################################
+
+country_event = {
+	id = buddhism.6
+	title = "buddhism.6.t"
+	desc = "buddhism.6.d"
+	picture = priest
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		owns = 3644
+		has_global_flag = the_sangha_is_formed
+		is_year = 268
+		is_month = 2
+	}
+
+	mean_time_to_happen = {
+		days = 15
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = buddha_parinirvana
+			set_global_flag = built_ramabhar_stupa_flag
+			clr_global_flag = the_sangha_is_formed
+		}
+	}
+
+	option = {
+		name = "buddhism.6.a"
+		ai_chance = { factor = 50 }
+		3644 = {
+			change_religion = buddhism
+			#set_province_flag = reform_center_ticking_flag
+			add_great_project = {
+				type = ramabhar_stupa
+				instant = yes
+			}
+		}
+		5494 = {
+			change_religion = buddhism
+			add_reform_center = buddhism
+			set_province_flag = reform_center_ticking_flag
+		}
+		3029 = {
+			change_religion = buddhism
+			#set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# first buddhist council
+########################################################################################
+
+country_event = {
+	id = buddhism.7
+	title = "buddhism.7.t"
+	desc = "buddhism.7.d"
+	picture = archemedis
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		owns = 3028
+		has_global_flag = buddha_parinirvana
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = first_buddhist_council
+			clr_global_flag = buddha_parinirvana
+		}
+	}
+
+	option = {
+		name = "buddhism.7.a"
+		ai_chance = { factor = 50 }
+		add_prestige = 5
+	}
+}
+
+########################################################################################
+# second buddhist council
+########################################################################################
+
+country_event = {
+	id = buddhism.8
+	title = "buddhism.8.t"
+	desc = "buddhism.8.d"
+	picture = archemedis
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		owns = 3000
+		has_global_flag = first_buddhist_council
+		is_year = 371
+		NOT = { started_in = 371.1.1 }
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = second_buddhist_council
+		}
+	}
+
+	option = {
+		name = "buddhism.8.a"
+		ai_chance = { factor = 50 }
+		custom_tooltip = first_buddhist_schism_tooltip
+		add_prestige = 5
+		hidden_effect = {
+			every_country = {
+				limit = { religion = buddhism }
+				country_event = { id = buddhism.8001 }
+			}
+		}
+	}
+}
+
+#Aftermath of Second Council
+country_event = {
+	id = buddhism.8001
+	title = "buddhism.8001.t"
+	desc = "buddhism.8001.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	option = {
+		name = "buddhism.8001.a"
+		ai_chance = {
+			factor = 60 #Mahasamghika was more popular
+			modifier = {
+				factor = 2
+				NOT = { prestige = 50 }
+			}
+			modifier = {
+				factor = 2
+				NOT = { ruler_age = 30 }
+			}
+		}
+		set_religious_school = {
+			group = brahmin_group
+			school = mahasamghika_school
+		}
+	}
+
+	option = {
+		name = "buddhism.8001.b"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				prestige = 50
+			}
+			modifier = {
+				factor = 2
+				ruler_age = 50
+			}
+		}
+		set_religious_school = {
+			group = brahmin_group
+			school = sthavira_school
+		}
+	}
+}
+
+########################################################################################
+# Third Buddhist Council
+########################################################################################
+
+country_event  = {
+	id = buddhism.9
+	title = "buddhism.9.t"
+	desc = "buddhism.9.d"
+	picture = religious
+
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		has_global_flag = second_buddhist_council
+		religion = buddhism
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = third_buddhist_council_flag
+		}
+	}
+
+	option = {
+		name = "buddhism.9.a"
+		custom_tooltip = second_buddhist_schism_tooltip
+		set_religious_school = {
+			group = brahmin_group
+			school = svetambara_school
+		}
+		every_country = {
+			limit = { religion = buddhism }
+			add_country_modifier = {
+				name = buddhist_missionary_work_modifier
+				duration = 10950
+			}
+		}
+	}
+}
+
+#Buddhist missionary work in Kashmir
+province_event  = {
+	id = buddhism.10
+	title = "buddhism.10.t"
+	desc = "buddhism.10.d"
+	picture = religious
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		area = kasmira_area
+		has_global_flag = third_buddhist_council_flag
+		calc_true_if = {
+			all_country = {
+				religion = buddhism
+			}
+			amount = 1
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "buddhism.10.a"
+		kasmira_area = { change_religion = buddhism }
+		darada_area = { change_religion = buddhism }
+		ladakh_area = { change_religion = buddhism }
+	}
+}
+
+#Buddhist missionary work in Lanka
+province_event  = {
+	id = buddhism.11
+	title = "indian.47.t"
+	desc = "indian.47.d"
+	picture = religious
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		region = lanka_region
+		has_global_flag = third_buddhist_council_flag
+		calc_true_if = {
+			all_country = {
+				religion = buddhism
+			}
+			amount = 1
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 32
+	}
+
+	option = {
+		name = "buddhism.10.a"
+		lanka_region = { change_religion = buddhism }
+	}
+}
+
+#Buddhist missionary work in Burma
+province_event  = {
+	id = buddhism.12
+	title = "buddhism.12.t"
+	desc = "buddhism.12.d"
+	picture = religious
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			region = burma_region
+			region = upper_burma_region
+		}
+		has_global_flag = third_buddhist_council_flag
+		calc_true_if = {
+			all_country = {
+				religion = buddhism
+			}
+			amount = 1
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "buddhism.10.a"
+		burma_region = { change_religion = buddhism }
+		upper_burma_region = { change_religion = buddhism }
+	}
+}

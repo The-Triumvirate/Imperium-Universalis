@@ -1,0 +1,255 @@
+namespace = jainism
+
+########################################################################################
+# Birth of Mahavira
+########################################################################################
+
+country_event = {
+	id = jainism.1
+	title = "jainism.1.t"
+	desc = "jainism.1.d"
+	picture = family
+
+	fire_only_once = yes
+	hidden = yes
+
+	trigger = {
+		owns = 3000
+		3000 = {
+			OR = {
+				religion = sramana
+				religion = buddhism
+				religion = ajivika
+			}
+		}
+		is_year = 254
+		NOT = { is_religion_enabled = jain }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "jainism.1.a"
+		ai_chance = { factor = 50 }
+		set_global_flag = birth_of_mahavira
+	}
+}
+
+########################################################################################
+# Mahavira gains omniscience
+########################################################################################
+
+country_event = {
+	id = jainism.2
+	title = "jainism.2.t"
+	desc = "jainism.2.d"
+	picture = priest
+
+	fire_only_once = yes
+
+	trigger = {
+		owns = 3522
+		is_year = 297
+		has_global_flag = birth_of_mahavira
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = mahaviras_omniscience
+			clr_global_flag = birth_of_mahavira
+		}
+	}
+
+	option = {
+		name = "jainism.2.a"
+		ai_chance = { factor = 50 }
+		enable_religion = jain
+		3522 = {
+			change_religion = jain
+			add_reform_center = jain
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# Mahavira teaches in Girivraja
+########################################################################################
+
+country_event = {
+	id = jainism.3
+	title = "jainism.3.t"
+	desc = "jainism.3.d"
+	picture = religious
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		owns = 3028
+		is_year = 298
+		has_global_flag = mahaviras_omniscience
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = mahavira_first_sermon
+			clr_global_flag = mahaviras_omniscience
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	option = {
+		name = "jainism.3.a"
+		ai_chance = { factor = 50 }
+		3028 = {
+			change_religion = jain
+			add_reform_center = jain
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# Mahavira teaches in province
+########################################################################################
+
+country_event = {
+	id = jainism.4
+	title = "jainism.4.t"
+	desc = "jainism.4.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_heterodox_trigger = yes
+		capital_scope = {
+			region = northern_india_region
+		}
+		has_global_flag = mahavira_first_sermon
+		any_owned_province = {
+			is_heterodox_trigger = yes
+		}
+		NOT = { is_month = 7 }
+		OR = {
+			is_month = 11
+			is_month = 1
+		}
+	}
+
+	option = {
+		name = "jainism.4.a"
+		random_owned_province = {
+			limit = {
+				is_heterodox_trigger = yes
+				region = northern_india_region
+			}
+			change_religion = jain
+		}
+	}
+}
+
+########################################################################################
+# Death of Mahavira
+########################################################################################
+
+country_event  = {
+	id = jainism.5
+	title = "jainism.5.t"
+	desc = "jainism.5.d"
+	picture = priest
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		owns = 3817
+		is_year = 326
+		has_global_flag = mahavira_first_sermon
+		is_month = 10
+	}
+
+	mean_time_to_happen = {
+		days = 18
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = mahavira_gains_nirvana
+			clr_global_flag = mahavira_first_sermon
+		}
+	}
+
+	option = {
+		name = "jainism.5.a"
+		ai_chance = { factor = 50 }
+		3000 = {
+			change_religion = jain
+			add_reform_center = jain
+			set_province_flag = reform_center_ticking_flag
+		}
+	}
+}
+
+########################################################################################
+# Jain missionaries
+########################################################################################
+
+#Jain missionary work in Karanataka
+province_event  = {
+	id = jainism.6
+	title = "jainism.6.t"
+	desc = "jainism.6.d"
+	picture = religious
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 404
+		OR = {
+			area = konkana_area
+			area = gomanta_area
+			area = karanataka_area
+			area = kadamba_nadu_area
+			area = idaichehura_nadu_area
+			area = kishkindha_area
+			area = kolhapuri_area
+			area = asika_area
+		}
+		is_religion_enabled = jain
+		NOT = { started_in = 455.1.1 }
+		calc_true_if = {
+			all_country = {
+				religion = jain
+			}
+			amount = 1
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	option = {
+		name = "jainism.6.a"
+		konkana_area = { change_religion = jain }
+		gomanta_area = { change_religion = jain }
+		karanataka_area = { change_religion = jain }
+		kadamba_nadu_area = { change_religion = jain }
+		idaichehura_nadu_area = { change_religion = jain }
+		kishkindha_area = { change_religion = jain }
+		kolhapuri_area = { change_religion = jain }
+		asika_area = { change_religion = jain }
+	}
+}

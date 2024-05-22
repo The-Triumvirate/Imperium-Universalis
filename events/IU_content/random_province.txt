@@ -1,0 +1,884 @@
+namespace = randomprovince
+
+########################################################################################
+# people move into the east (1/2)
+########################################################################################
+province_event = {
+	id = randomprovince.10
+	title = "randomprovince.10.t"
+	desc = "randomprovince.10.d"
+	picture = forum_picture
+	goto = ROOT
+
+	trigger = {
+		culture_group = hellenic_group
+		development = 6
+		is_year = 430
+		NOT = { is_year = 650 }
+		OR = {
+			region = thracia_region
+			region = greek_region
+			region = macedonia_region
+			region = ionia_region
+			region = mare_aegaeum_islands_region }
+		any_country = {
+			culture_group = hellenic_group
+			OR = {
+				capital_scope = { region = canaan_region	}
+				capital_scope = { region = lower_egypt_region	}
+				capital_scope = { region = syria_region	}
+				capital_scope = { region = mesopotamia_region	}
+				capital_scope = { region = persis_region	}
+				capital_scope = { region = media_region	}
+				capital_scope = { region = parthia_region	}
+				capital_scope = { region = arachosia_region	}
+				capital_scope = { region = baktria_region	}
+				capital_scope = { region = ariana_region }
+				capital_scope = { region = gedrosia_region }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 4800
+
+		modifier = {
+			factor = 0.9
+			NOT = { culture = owner }
+		}
+		modifier = {
+			factor = 0.9
+			development = 16
+		}
+		modifier = {
+			factor = 1.25
+			is_year = 475
+		}
+		modifier = {
+			factor = 1.25
+			is_year = 500
+		}
+		modifier = {
+			factor = 1.5
+			is_year = 550
+		}
+		modifier = {
+			factor = 1.75
+			is_year = 600
+		}
+		modifier = {
+			factor = 2.0
+			culture = epirot
+		}
+		modifier = {
+			factor = 0.9
+			is_capital = yes
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				is_blockaded = yes
+				is_looted = yes
+			}
+		}
+		modifier = {
+			factor = 1.25
+			owner = {	stability = 1	}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {	NOT = { stability = 0 }	}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {	is_subject = yes	}
+		}
+	}
+	option = {
+		name = "randomprovince.10.a"
+		ai_chance = { factor = 20 }
+		random_list = {
+			66 = {
+				add_base_production = -1
+				change_variable = { PS_urb_evtd = 1 }
+			}
+			33 = {
+				add_base_tax = -1
+				change_variable = { PS_upp_evtd = 1 }
+			}
+
+		}
+
+		random_country = {
+			limit = {	culture_group = hellenic_group
+				num_of_cities = 5
+				OR = {
+					capital_scope = { region = canaan_region	}
+					capital_scope = { region = lower_egypt_region	}
+					capital_scope = { region = syria_region	}
+					capital_scope = { region = mesopotamia_region	}
+					capital_scope = { region = persis_region	}
+					capital_scope = { region = media_region	}
+					capital_scope = { region = parthia_region	}
+					capital_scope = { region = arachosia_region	}
+					capital_scope = { region = baktria_region	}
+					capital_scope = { region = ariana_region }
+					capital_scope = { region = gedrosia_region }
+				}
+			}
+			country_event = {
+				id = randomprovince.11
+				days = 30
+			}
+		}
+	}
+
+}
+########################################################################################
+# settlers arrived
+########################################################################################
+country_event = {
+	id = randomprovince.11
+	title = "randomprovince.11.t"
+	desc = "randomprovince.11.d"
+	picture = forum_picture
+
+	is_triggered_only = yes
+
+	option = {
+		name = "randomprovince.11.a"
+		trigger = {
+			capital_scope = { has_owner_culture = yes }
+		}
+		ai_chance = { factor = 30 }
+
+		random_owned_province = {
+			limit = {	culture = ROOT
+				is_capital = yes
+			}
+			random_list = {
+				66 = {
+					add_base_production = 1
+					change_variable = { PS_urb_evtu = 1 }
+				}
+				33 = {
+					add_base_tax = 1
+					change_variable = { PS_upp_evtu = 1 }
+				}
+			}
+		}
+		add_manpower = 1
+	}
+
+	option = {
+		name = "randomprovince.11.b"
+		trigger = {
+			any_owned_province = {
+				culture = ROOT
+				is_capital = no
+			}
+		}
+		ai_chance = { factor = 30 }
+
+		random_owned_province = {
+			limit = {	culture = ROOT
+				is_capital = no
+			}
+			random_list = {
+				66 = {
+					add_base_production = 1
+					change_variable = { PS_urb_evtu = 1 }
+				}
+				33 = {
+					add_base_tax = 1
+					change_variable = { PS_upp_evtu = 1 }
+				}
+			}
+		}
+		add_manpower = 1
+	}
+}
+
+########################################################################################
+# revolt
+########################################################################################
+country_event = {
+	id = randomprovince.13
+	title = "randomprovince.13.t"
+	desc = "randomprovince.13.d"
+	picture = civilwar
+	is_triggered_only = yes
+
+	trigger = {
+		num_of_cities = 5
+		any_owned_province = {
+			is_in_capital_area = no
+			has_owner_culture = no
+			can_spawn_rebels = nationalist_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_in_capital_area = no
+					has_owner_culture = no
+					can_spawn_rebels = nationalist_rebels
+				}
+				save_event_target_as = revolt_province
+			}
+		}
+	}
+
+	option = {
+		name = "randomprovince.13.a"
+		event_target:revolt_province = {
+			spawn_rebels = {
+				type = nationalist_rebels
+				size = 3
+				win = yes
+			}
+		}
+	}
+}
+########################################################################################
+# vesuv ausbruch
+########################################################################################
+country_event = {
+	id = randomprovince.14
+	title = "randomprovince.14.t"
+	desc = "randomprovince.14.d"
+	picture = vesuv
+	major = yes
+
+	trigger = {
+		owns = 174
+		is_year = 400
+	}
+
+	mean_time_to_happen = {
+		months = 9000
+
+	}
+	option = {
+		name = "randomprovince.14.a"
+		random_list = {
+			50 = {
+				174 = {
+					add_base_production = -1	change_variable = { PS_urb_evtd = 1 }
+					add_base_tax = -1 			change_variable = { PS_upp_evtd = 1 }
+				}
+				227 = {
+					add_base_production = -1	change_variable = { PS_urb_evtd = 1 }
+					add_base_tax = -1 			change_variable = { PS_upp_evtd = 1 }
+				}
+			}
+			50 = {
+				225 = {
+					add_base_production = -1	change_variable = { PS_urb_evtd = 1 }
+					add_base_tax = -1 			change_variable = { PS_upp_evtd = 1 }
+				}
+				174 = {
+					add_base_production = -1	change_variable = { PS_urb_evtd = 1 }
+					add_base_tax = -1 			change_variable = { PS_upp_evtd = 1 }
+				}
+
+			}
+		}
+
+	}
+}
+########################################################################################
+# culture converted
+########################################################################################
+province_event = {
+	id = randomprovince.15
+	title = "randomprovince.15.t"
+	desc = "randomprovince.15.d"
+	picture = forum_picture
+	goto = ROOT
+
+	trigger = {
+		is_core = ROOT
+		any_neighbor_province = {
+			has_owner_culture = yes
+			owned_by = ROOT
+		}
+		has_owner_culture = no
+		development = 3
+		NOT = { owner = { primary_culture = latin } }
+		NOT = {	has_construction = culture }
+	}
+
+	mean_time_to_happen = {
+		months = 90000
+		modifier = {
+			factor = 0.75
+			is_state = yes
+		}
+		modifier = {
+			factor = 0.8
+			has_owner_accepted_culture = yes
+		}
+		modifier = {
+			factor = 0.85
+			NOT = { unrest = 1 }
+		}
+		modifier = {
+			factor = 1.5
+			unrest = 5
+		}
+		modifier = {
+			factor = 2.0
+			unrest = 10
+		}
+		modifier = {
+			factor = 3.0
+			unrest = 15
+		}
+		modifier = {
+			factor = 1.25
+			nationalism = 1
+		}
+		modifier = {
+			factor = 1.25
+			nationalism = 5
+		}
+		modifier = {
+			factor = 0.75
+			NOT = { local_autonomy = 20 }
+		}
+		modifier = {
+			factor = 0.95
+			local_autonomy = 20
+			NOT = { local_autonomy = 40 }
+		}
+		modifier = {
+			factor = 1.15
+			local_autonomy = 40
+			NOT = { local_autonomy = 60 }
+		}
+		modifier = {
+			factor = 1.5
+			local_autonomy = 60
+			NOT = { local_autonomy = 80 }
+		}
+		modifier = {
+			factor = 2.5
+			local_autonomy = 80
+		}
+		modifier = {
+			factor = 0.8
+			tolerance_to_this = 2
+		}
+		modifier = {
+			factor = 0.75
+			any_neighbor_province = { has_owner_culture = yes }
+			culture_group = ROOT
+		}
+		modifier = {
+			factor = 0.65
+			culture_group = iberian_group
+			owner = { tag = CAR }
+		}
+		modifier = {
+			factor = 2.0
+			devastation = 1
+		}
+		modifier = {
+			factor = 2.0
+			devastation = 5
+		}
+		modifier = {
+			factor = 5.0
+			devastation = 10
+		}
+	}
+
+	option = {
+		name = "randomprovince.15.a"
+
+		if = {
+			limit = {
+				NOT = {
+					OR = {
+						AND = {
+							culture_group = iberian_group
+							owner = { tag = CAR }
+
+						}
+						AND = {
+							culture_group = semitic
+							owner = { culture_group = hellenic_group }
+
+						}
+						AND = {
+							culture_group = akkadian_group
+							owner = { culture_group = hellenic_group }
+
+						}
+						AND = {
+							culture_group = egyptian_group
+							owner = { culture_group = hellenic_group }
+
+						}
+						AND = {
+							culture_group = western_iranian
+							owner = { culture_group = hellenic_group }
+
+						}
+						AND = {
+							culture_group = eastern_iranian_group
+							owner = { culture_group = hellenic_group }
+
+						}
+						AND = {
+							OR = {
+								culture_group = dravidian_group
+								culture_group = indian_group
+							}
+							owner = { culture_group = hellenic_group }
+
+						}
+					}
+				}
+			}
+			change_culture = OWNER
+		}
+		if = {
+			limit = {
+				culture_group = iberian_group
+				owner = { tag = CAR }
+			}
+			change_culture = ibero_phoenician
+		}
+		if = {
+			limit = {
+				culture_group = semitic
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = greco_semitic
+		}
+		if = {
+			limit = {
+				OR = {
+					culture = medians
+					culture = amard
+					culture = baloch
+					culture = caspian
+					culture = cadusian
+					culture = persian
+					culture = parthian
+					culture = karamanian
+					culture = pashtuns
+					culture = drangian
+					culture = arian
+					culture = paropamisadae
+				}
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = greco_persian
+		}
+		if = {
+			limit = {
+				culture_group = egyptian_group
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = ptolemaic
+		}
+		if = {
+			limit = {
+				OR = {
+					culture_group = akkadian_group
+					culture = elymaite
+				}
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = seleucid
+		}
+		if = {
+			limit = {
+				OR = {
+					culture = margianan
+					culture = bactrian
+					culture = sogdian
+				}
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = greco_bactrian
+		}
+		if = {
+			limit = {
+				OR = {
+					culture_group = indian_group
+					culture_group = dravidian_group
+				}
+				owner = { culture_group = hellenic_group }
+			}
+			change_culture = greco_indian
+		}
+	}
+}
+
+########################################################################################
+#
+########################################################################################
+province_event = {
+	id = randomprovince.16
+	title = "randomprovince.16.t"
+	desc = "randomprovince.16.d"
+	picture = forum_picture
+	goto = ROOT
+
+	trigger = {
+		always = no
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "randomprovince.16.a"
+		ai_chance = { factor = 30 }
+		owner = {
+			random_owned_province = {
+				add_base_manpower = -1
+				change_variable = { PS_rur_evtd = 1 }
+			}
+		}
+		add_base_production = 1
+		change_variable = { PS_urb_evtu = 1 }
+		add_province_modifier = {
+			name = "slums"
+			duration = 1825
+		}
+	}
+}
+
+
+########################################################################################
+# defenders run away
+########################################################################################
+province_event = {
+	id = randomprovince.17
+	title = "randomprovince.17.t"
+	desc = "randomprovince.17.d"
+	picture = surrender
+	goto = ROOT
+
+	trigger = {
+		OR = {
+			unrest = 5
+			nationalism = 5
+		}
+		fort_level = 1
+		has_siege = yes
+		NOT = { sieged_by = OWNER }
+	}
+
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 1.3
+			has_owner_culture = yes
+		}
+		modifier = {
+			factor = 1.25
+			has_owner_accepted_culture = yes
+		}
+	}
+
+	option = {
+		name = "randomprovince.17.a"
+		change_siege = 25
+	}
+}
+
+########################################################################################
+# massacre
+########################################################################################
+province_event = {
+	id = randomprovince.20
+	title = "randomprovince.20.t"
+	desc = "randomprovince.20.d"
+	picture = civilwar
+	goto = ROOT
+
+	trigger = {
+		development = 14
+		has_owner_culture = no
+		is_capital = no
+		OR = {
+			unrest = 1
+			nationalism = 5
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12000
+		modifier = {
+			factor = 2.0
+			has_owner_accepted_culture = yes
+		}
+		modifier = {
+			factor = 2.0
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 1.5
+			has_owner_religion = yes
+		}
+		modifier = {
+			factor = 0.75
+			unrest = 5
+		}
+		modifier = {
+			factor = 0.5
+			is_territory = yes
+		}
+		modifier = {
+			factor = 0.75
+			has_missionary = yes
+		}
+		modifier = {
+			factor = 0.5
+			nationalism = 10
+		}
+		modifier = {
+			factor = 0.9
+			devastation = 1
+		}
+		modifier = {
+			factor = 0.8
+			devastation = 5
+		}
+		modifier = {
+			factor = 0.7
+			devastation = 10
+		}
+	}
+
+	option = {
+		name = "randomprovince.20.a"
+		add_base_tax = -1
+		add_base_production = -1
+		change_variable = { PS_urb_evtd = 1 }	change_variable = { PS_upp_evtd = 1 }
+		owner = {
+			add_country_modifier = {
+				name = "revenge_for_massacre_taken"
+				duration = 1825
+			}
+		}
+
+	}
+
+	option = {
+		name = "randomprovince.20.b"
+		owner = { add_stability = -1 }
+	}
+}
+
+########################################################################################
+# ships burned down
+########################################################################################
+province_event = {
+	id = randomprovince.21
+	title = "randomprovince.21.t"
+	desc = "randomprovince.21.d"
+	picture = navy
+	goto = ROOT
+
+	trigger = {
+		has_port = yes
+		is_city = yes
+		OR = {
+			num_of_units_in_province = {
+				who = owner
+				type = heavy_ship
+				amount = 3
+			}
+			num_of_units_in_province = {
+				who = owner
+				type = galley
+				amount = 3
+			}
+		}
+		has_siege = no
+	}
+
+	mean_time_to_happen = {
+		months = 26000
+		modifier = {
+			factor = 1.5
+			has_owner_accepted_culture = yes
+		}
+		modifier = {
+			factor = 1.25
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 1.25
+			has_owner_religion = yes
+		}
+		modifier = {
+			factor = 1.25
+			has_owner_religion = yes
+		}
+		modifier = {
+			factor = 0.75
+			unrest = 5
+		}
+		modifier = {
+			factor = 0.5
+			is_territory = yes
+		}
+		modifier = {
+			factor = 0.75
+			has_missionary = yes
+		}
+		modifier = {
+			factor = 0.5
+			nationalism = 10
+		}
+		modifier = {
+			factor = 0.9
+			devastation = 1
+		}
+		modifier = {
+			factor = 0.8
+			devastation = 5
+		}
+		modifier = {
+			factor = 0.7
+			devastation = 10
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { heavy_ships_in_province = 3 }
+				kill_units = {
+					who = OWNER
+					type = heavy_ship
+					amount = 3
+				}
+			}
+			if = {
+				limit = { NOT = { heavy_ships_in_province = 3 } }
+				kill_units = {
+					who = OWNER
+					type = galley
+					amount = 3
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "randomprovince.21.a"
+
+		if = {
+			limit = { heavy_ships_in_province = 3 }
+			custom_tooltip = randomprovince.21.tta
+		}
+		if = {
+			limit = { NOT = { heavy_ships_in_province = 3 } }
+			custom_tooltip = randomprovince.21.ttb
+		}
+	}
+}
+
+########################################################################################
+# nomad raiders
+########################################################################################
+province_event = {
+	id = randomprovince.22
+	title = "randomprovince.22.t"
+	desc = "randomprovince.22.d"
+	picture = parthians
+	goto = ROOT
+
+	trigger = {
+		any_neighbor_province = {
+			owner = {
+				government = native
+				NOT = { alliance_with = ROOT }
+				NOT = {
+					has_opinion = {
+						who = ROOT
+						value = 25
+					}
+				}
+				is_at_war = no
+				has_any_disaster = no
+				is_subject_of = ROOT
+			}
+		}
+		owner = { NOT = { government = native } }
+	}
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.5
+			owner = {	has_any_disaster = yes	}
+		}
+		modifier = {
+			factor = 0.75
+			owner = {	is_at_war = yes	}
+		}
+		modifier = {
+			factor = 0.75
+			OR = {
+				has_terrain = steppe
+				has_terrain = desert
+			}
+		}
+		modifier = {
+			factor = 1.15
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 1.25
+			units_in_province = 3
+		}
+		modifier = {
+			factor = 1.35
+			units_in_province = 6
+		}
+		modifier = {
+			factor = 2.0
+			garrison = 1000
+		}
+		modifier = {
+			factor = 4.0
+			garrison = 2000
+		}
+		modifier = {
+			factor = 2.0
+			has_influencing_fort = yes
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			spawn_rebels = {
+				size = 3
+				type = nomad_raiders
+				win = yes
+			}
+			add_devastation = 25
+		}
+	}
+
+	option = {
+		name = "randomprovince.22.a"
+		tooltip = {
+			nomad_raiders = 2
+		}
+	}
+}

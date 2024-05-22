@@ -1,0 +1,722 @@
+namespace = etruscans
+
+########################################################################################
+# Etruscan leage
+########################################################################################
+country_event = {
+	id = etruscans.1
+	title = "etruscans.1.t"
+	desc = "etruscans.1.d"
+	picture = senat
+
+	major = yes
+
+	trigger = {
+		primary_culture = etruscan
+		NOT = { has_global_flag = etr_happened }
+		capital_scope = {
+			OR = {
+				area = etruria_east
+				area = etruria_west
+				area = etruria_maritima_area
+				area = etruria_centralis_area
+			}
+		}
+		is_subject = no
+		NOT = {
+			alliance_with = ROM
+		}
+		OR = {
+			ROM = {
+				exists = yes
+				OR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 4
+						OR = {
+							area = etruria_east
+							area = etruria_west
+							area = etruria_maritima_area
+							area = etruria_centralis_area
+						}
+					}
+					total_development = 90
+					socii_subject = 8
+					has_country_flag = force_publica
+				}
+			}
+			ISM = {
+				exists = yes
+				total_development = 75
+			}
+			CAR = {
+				exists = yes
+				total_development = 100
+				OR = {
+					any_owned_province = { region = italian_region }
+					any_owned_province = { region = gallia_cisalpina }
+				}
+			}
+		}
+
+		NOT = { exists = ETR }
+
+		OR = {
+			AND = {
+				ai = yes
+				NOT = {
+					any_country = {
+						ai = no
+						primary_culture = etruscan
+						capital_scope = {
+							OR = {
+								area = etruria_east
+								area = etruria_west
+								area = etruria_maritima_area
+								area = etruria_centralis_area
+							}
+						}
+					}
+				}
+			}
+			ai = no
+		}
+
+		calc_true_if = {
+			all_country = {
+				primary_culture = etruscan
+				capital_scope = {
+					OR = {
+						area = etruria_east
+						area = etruria_west
+						area = etruria_maritima_area
+						area = etruria_centralis_area
+					}
+				}
+				is_subject = no
+				has_opinion = {
+					who = ROOT
+					value = -25
+				}
+			}
+			amount = 4
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 48
+		modifier = {
+			factor = 4
+			is_at_war = yes
+		}
+		modifier = {
+			factor = 0.5
+			ROM = {
+				OR = {
+					num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+						value = 4
+						OR = {
+							area = etruria_east
+							area = etruria_west
+							area = etruria_maritima_area
+							area = etruria_centralis_area
+						}
+					}
+					has_country_flag = force_publica
+				}
+			}
+		}
+	}
+
+	option = {
+		ai_chance = {
+			factor = 90
+		}
+		name = "etruscans.1.a"
+		hidden_effect = {
+			set_global_flag = etr_happened
+			every_country = {
+				limit = {
+					primary_culture = etruscan
+					capital_scope = {
+						OR = {
+							area = etruria_east
+							area = etruria_west
+							area = etruria_maritima_area
+							area = etruria_centralis_area
+						}
+					}
+					is_subject = no
+					has_opinion = {
+						who = ROOT
+						value = -25
+					}
+				}
+				country_event = {
+					id = etruscans.2
+					days = 1
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					primary_culture = etruscan
+					capital_scope = {
+						OR = {
+							area = etruria_east
+							area = etruria_west
+							area = etruria_maritima_area
+							area = etruria_centralis_area
+						}
+					}
+					is_subject = yes
+				}
+				add_liberty_desire = 50
+				set_country_flag = etr_desire_for_unification
+			}
+		}
+		if = {
+			limit = {
+				ai = yes
+			}
+			add_country_modifier = {
+				name = etr_ai_recently_formed
+				duration = 365
+			}
+			country_event = {
+				id = etruscans.3
+				days = 7
+			}
+		}
+		add_country_modifier = {
+			name = etr_league_unified
+			duration = 7300
+		}
+		custom_tooltip = etruscans.1.tt
+		change_tag = ETR
+		change_government = republic
+		add_government_reform = etruscan_league_reform
+		if = {
+			limit = { NOT = { government_rank = 2 } }
+			set_government_rank = 2
+		}
+		etruria_east = {
+			add_core = ETR
+		}
+		etruria_west = {
+			add_core = ETR
+		}
+		etruria_maritima_area = {
+			add_core = ETR
+		}
+		etruria_centralis_area = {
+			add_core = ETR
+		}
+		add_historical_rival = ROM
+		ROM = {
+			add_historical_rival = ETR
+			add_truce_with = ETR
+		}
+		set_global_flag = etr_unified
+	}
+	option = {
+		ai_chance = {
+			factor = 10
+		}
+		name = "etruscans.1.b"
+		add_stability = 1
+	}
+}
+########################################################################################
+# join etruscan league
+########################################################################################
+country_event = {
+	id = etruscans.2
+	title = "etruscans.1.t"
+	desc = "etruscans.1.d"
+	picture = senat
+
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { tag = ETR }
+	}
+
+	option = {
+		name = "etruscans.2.a"
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 4.0
+				ETR = { ai = yes }
+				ROM = { ai = no }
+			}
+			modifier = {
+				factor = 0.75
+				num_of_cities = 3
+			}
+			modifier = {
+				factor = 0.5
+				num_of_cities = 6
+			}
+			modifier = {
+				factor = 0.25
+				num_of_cities = 9
+			}
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 10
+					}
+				}
+			}
+			modifier = {
+				factor = 2.0
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+		}
+		ETR = { inherit = ROOT }
+	}
+	option = {
+		name = "etruscans.1.b"
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 4
+				ETR = { ai = yes }
+				ROM = { ai = yes }
+			}
+		}
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# etruria non-implosion failsafe
+########################################################################################
+
+country_event = {
+	id = etruscans.3
+	title = "etruscans.3.t"
+	desc = "etruscans.3.d"
+	picture = senat
+
+	is_triggered_only = yes
+
+	immediate = {
+		if = {
+			limit = {
+				I23 = {
+					exists = yes
+					is_subject_of = ETR
+				}
+			}
+			inherit = I23 #veii's vassal at start (wont normally get integrated)
+		}
+	}
+
+	option = {
+		name = "etruscans.3.a"
+		disband_all_units = yes
+	}
+
+	after = {
+		stabilize_country_effect = yes
+	}
+}
+
+########################################################################################
+# etruria culture expansion
+########################################################################################
+
+province_event = {
+	id = etruscans.4
+	title = etruscans.4.t
+	desc = etruscans.4.d
+	picture = forum_picture
+
+	trigger = {
+		is_year = 200
+		owner = {
+			primary_culture = etruscan
+		}
+		is_state_core = owner
+		NOT = {
+			OR = {
+				local_autonomy = 50
+				unrest = 1
+			}
+		}
+		OR = {
+			area = aemilia_area
+			province_id = 89
+			province_id = 88
+			province_id = 6867
+			province_id = 108
+			province_id = 87
+			province_id = 84
+			province_id = 6870
+			province_id = 6868
+			province_id = 6889
+			province_id = 6866
+			province_id = 86
+			province_id = 85
+			province_id = 92
+			province_id = 121
+			province_id = 120
+		}
+	}
+
+	mean_time_to_happen = {
+		years = 20
+	}
+
+	option = {
+		name = etruscans.4.a
+		change_culture = etruscan
+	}
+}
+
+########################################################################################
+# etrurian colonies
+########################################################################################
+
+country_event = { #spina
+	id = etruscans.5
+	title = "etruscans.5.t"
+	desc = "etruscans.5.d"
+	picture = alexandria
+
+	fire_only_once = yes
+	goto = 6866
+
+	trigger = {
+		is_year = 229
+		or = {
+			owns_core_province = 83
+			owns_core_province = 84
+			owns_core_province = 88
+		}
+		culture_group = etruscan_culture_group
+		has_discovered = 6866
+		NOT = {	exists = I08  }
+		NOT = { started_in = 229.1.1 }
+		NOT = { has_global_flag = blocked_greek_colonization_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "etruscans.5.a"
+		ai_chance = {
+			factor = 99
+		}
+		custom_tooltip = grk_col_ct.1
+		add_prestige = 5
+		hidden_effect = {
+			6866 = {
+				add_core = I08
+				change_culture = etruscan
+				change_religion = etruscan_religion
+				add_base_tax = 1
+				add_base_manpower = 2
+				add_base_production = 2
+				change_variable = { PS_rur_evtu = 2 }	change_variable = { PS_urb_evtu = 2 }	change_variable = { PS_upp_evtu = 1 }
+				save_event_target_as = etruscan_colony_province
+				owner = { country_event = { id = etruscans.6 } }
+			}
+		}
+	}
+
+	option = {
+		name = "etruscans.5.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -1
+		capital_scope = {
+			add_base_production = 1
+			change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+country_event = {
+	id = etruscans.6
+	title = "etruscans.6.t"
+	desc = {
+		trigger = { culture_group = etruscan_culture_group }
+		desc = etruscans.6.dd
+	}
+	desc = "etruscans.6.d"
+	picture = hoplites
+	is_triggered_only = yes
+	goto = etruscan_colony_province
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					province_id = event_target:etruscan_colony_province
+				}
+				random_core_country = {
+					limit = {
+						exists = no
+						culture_group = etruscan_culture_group
+					}
+					save_event_target_as = etruscan_colony_country
+				}
+			}
+		}
+	}
+
+	#Releases colony
+	option = {
+		name = "etruscans.6.a"
+		ai_chance = {
+			factor = 99
+		}
+		custom_tooltip = grk_col_ct.0
+		hidden_effect = {
+			event_target:etruscan_colony_country = {
+				ROOT = {
+					release = PREV
+					add_prestige = -5
+					add_opinion = {
+						who = PREV
+						modifier = greek_colonisation_allowed_native
+					}
+					if = {
+						limit = { culture_group = etruscan_culture_group }
+						create_subject = {
+							subject_type = vassal
+							subject = PREV
+						}
+					}
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = greek_colonisation_allowed_colony
+				}
+				add_truce_with = ROOT
+				create_alliance = FROM
+				every_neighbor_country = { add_truce_with = PREV }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = theocracy
+				add_government_reform = oligarchy_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+			event_target:etruscan_colony_province = { remove_core = ROOT }
+		}
+	}
+
+	#Does not release the colony
+	option = {
+		name = "etruscans.6.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_prestige = 4
+		event_target:etruscan_colony_country = {
+			spawn_rebels = {
+				size = 2
+				type = nationalist_rebels
+			}
+			add_named_unrest = {
+				name = greek_colonists_oppressed
+				value = 5
+			}
+			add_nationalism	= 20
+		}
+	}
+
+	#player only
+	option = {
+		name = "etruscans.6.c"
+		trigger = {
+			ai = no
+		}
+		custom_tooltip = grk_col_ct.2
+		hidden_effect = {
+			event_target:etruscan_colony_country = {
+				ROOT = {
+					release = PREV
+					add_prestige = -5
+					add_opinion = {
+						who = PREV
+						modifier = greek_colonisation_allowed_native
+					}
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = greek_colonisation_allowed_colony
+				}
+				add_truce_with = ROOT
+				create_alliance = FROM
+				every_neighbor_country = { add_truce_with = ROOT }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = theocracy
+				add_government_reform = oligarchy_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+			event_target:etruscan_colony_province = { remove_core = ROOT }
+		}
+		switch_tag = event_target:etruscan_colony_country
+	}
+}
+
+country_event = { #atria
+	id = etruscans.7
+	title = "etruscans.5.t"
+	desc = "etruscans.5.d"
+	picture = alexandria
+
+	fire_only_once = yes
+	goto = 85
+
+	trigger = {
+		is_year = 229
+		or = {
+			owns_core_province = 83
+			owns_core_province = 84
+			owns_core_province = 88
+		}
+		culture_group = etruscan_culture_group
+		has_discovered = 85
+		NOT = {	exists = I06 }
+		NOT = { started_in = 229.1.1 }
+		NOT = { has_global_flag = blocked_greek_colonization_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "etruscans.5.a"
+		ai_chance = {
+			factor = 99
+		}
+		custom_tooltip = grk_col_ct.1
+		add_prestige = 5
+		hidden_effect = {
+			85 = {
+				add_core = I06
+				change_culture = etruscan
+				change_religion = etruscan_religion
+				add_base_tax = 1
+				add_base_manpower = 2
+				add_base_production = 2
+				change_variable = { PS_rur_evtu = 2 }	change_variable = { PS_urb_evtu = 2 }	change_variable = { PS_upp_evtu = 1 }
+				save_event_target_as = etruscan_colony_province
+				owner = { country_event = { id = etruscans.6 } }
+			}
+		}
+	}
+
+	option = {
+		name = "etruscans.5.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -1
+		capital_scope = {
+			add_base_production = 1
+			change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+country_event = { #muthna
+	id = etruscans.8
+	title = "etruscans.5.t"
+	desc = "etruscans.5.d"
+	picture = alexandria
+
+	fire_only_once = yes
+	goto = 6867
+
+	trigger = {
+		is_year = 229
+		or = {
+			owns_core_province = 83
+			owns_core_province = 84
+			owns_core_province = 88
+		}
+		culture_group = etruscan_culture_group
+		has_discovered = 6867
+		NOT = {	exists = I11 }
+		NOT = { started_in = 229.1.1 }
+		NOT = { has_global_flag = blocked_greek_colonization_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "etruscans.5.a"
+		ai_chance = {
+			factor = 99
+		}
+		custom_tooltip = grk_col_ct.1
+		add_prestige = 5
+		hidden_effect = {
+			108 = { add_core = I11 }
+			107 = { add_core = I11 }
+			6867 = {
+				add_core = I11
+				change_culture = etruscan
+				change_religion = etruscan_religion
+				add_base_tax = 1
+				add_base_manpower = 2
+				add_base_production = 2
+				change_variable = { PS_rur_evtu = 2 }	change_variable = { PS_urb_evtu = 2 }	change_variable = { PS_upp_evtu = 1 }
+				save_event_target_as = etruscan_colony_province
+				owner = { country_event = { id = etruscans.6 } }
+			}
+		}
+	}
+
+	option = {
+		name = "etruscans.5.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -1
+		capital_scope = {
+			add_base_production = 1
+			change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}

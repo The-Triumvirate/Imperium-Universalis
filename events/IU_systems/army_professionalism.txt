@@ -1,0 +1,558 @@
+namespace = army_professionalism
+
+########################################################################################
+# Following events are meant to debuff large armies when low army professionalism
+########################################################################################
+
+#Army too large, low professionalism
+country_event = {
+	id = army_professionalism.1
+	title = "army_professionalism.1.t"
+	desc = "army_professionalism.1.d"
+	picture = looting
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		NOT = { army_professionalism = 0.35 }
+		army_size = 150
+		neither_tribal_nor_native_trigger = yes
+		NOT = { has_country_modifier = large_unprofessional_army_modifier }
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.1.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_country_modifier = {
+			name = large_unprofessional_army_modifier
+			duration = -1
+		}
+	}
+}
+
+#Army is now professional
+
+country_event = {
+	id = army_professionalism.101
+	title = "army_professionalism.101.t"
+	desc = "army_professionalism.101.d"
+	picture = training
+
+	trigger = {
+		has_country_modifier = large_unprofessional_army_modifier
+		OR = {
+			NOT = { army_size = 100 }
+			army_professionalism = 0.35
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.101.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		remove_country_modifier = large_unprofessional_army_modifier
+	}
+}
+
+#manpower pool too large, low professionalism
+country_event = {
+	id = army_professionalism.2
+	title = "army_professionalism.2.t"
+	desc = "army_professionalism.2.d"
+	picture = execution
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		NOT = { army_professionalism = 0.35 }
+		neither_tribal_nor_native_trigger = yes
+		NOT = { has_country_modifier = poor_recruitment_standards_modifier }
+		NOT = { has_country_modifier = imposing_harsher_recruitment_standards_modifier }
+		max_manpower = 200
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.2.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_country_modifier = {
+			name = poor_recruitment_standards_modifier
+			duration = -1
+		}
+	}
+}
+
+#recruitment standards restored
+
+country_event = {
+	id = army_professionalism.201
+	title = "army_professionalism.201.t"
+	desc = "army_professionalism.201.d"
+	picture = training
+
+	trigger = {
+		has_country_modifier = poor_recruitment_standards_modifier
+		OR = {
+			NOT = { max_manpower = 125 }
+			army_professionalism = 0.5
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.201.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		remove_country_modifier = poor_recruitment_standards_modifier
+	}
+}
+
+#too low quality controls for generals
+
+country_event = {
+	id = army_professionalism.3
+	title = "army_professionalism.3.t"
+	desc = "army_professionalism.3.d"
+	picture = arrested_person
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		NOT = { army_professionalism = 0.35 }
+		NOT = { army_tradition = 50 }
+		NOT = { has_country_modifier = low_quality_generals_modifier }
+		corruption = 10
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.3.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+		add_army_tradition = -5
+		add_country_modifier = {
+			name = low_quality_generals_modifier
+			duration = -1
+		}
+	}
+}
+
+#low corruption and professionalism restores generals
+
+country_event = {
+	id = army_professionalism.301
+	title = "army_professionalism.301.t"
+	desc = "army_professionalism.301.d"
+	picture = generals
+
+	trigger = {
+		has_country_modifier = low_quality_generals_modifier
+		OR = {
+			army_tradition = 50
+			army_professionalism = 0.5
+			ai = yes
+		}
+		OR = {
+			NOT = { corruption = 4 }
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.301.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		add_army_tradition = 2
+		remove_country_modifier = low_quality_generals_modifier
+	}
+}
+
+#low government organization and large army would cause bad supplies
+
+country_event = {
+	id = army_professionalism.4
+	title = "army_professionalism.4.t"
+	desc = "army_professionalism.4.d"
+	picture = army_construction
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		NOT = { absolutism = 20 }
+		NOT = { army_professionalism = 0.45 }
+		NOT = { has_country_modifier = poorly_supplied_army_modifier }
+		if = {
+			limit = { has_idea_group = logistic_ideas }
+			army_size = 250
+		}
+		else = { army_size = 125 }
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.4.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -5
+		add_yearly_manpower = -0.25
+		add_army_tradition = -5
+		add_country_modifier = {
+			name = poorly_supplied_army_modifier
+			duration = -1
+		}
+	}
+}
+
+country_event = {
+	id = army_professionalism.401
+	title = "army_professionalism.401.t"
+	desc = "army_professionalism.401.d"
+	picture = army_construction
+
+	trigger = {
+		has_country_modifier = poorly_supplied_army_modifier
+		OR = {
+			AND = {
+				absolutism = 25
+				army_professionalism = 0.65
+			}
+			if = {
+				limit = { has_idea_group = logistic_ideas }
+				NOT = { army_size = 200 }
+			}
+			else = { NOT = { army_size = 90 } }
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.401.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 2
+		add_army_tradition = 2
+		remove_country_modifier = poorly_supplied_army_modifier
+	}
+}
+
+#low professionalism and army tradition causes disrespect towards the army
+
+country_event = {
+	id = army_professionalism.5
+	title = "army_professionalism.5.t"
+	desc = "army_professionalism.5.d"
+	picture = senat_conflict
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		neither_tribal_nor_native_trigger = yes
+		NOT = { army_tradition = 40 }
+		NOT = { army_professionalism = 0.30 }
+		NOT = { has_country_modifier = no_respect_for_army_modifier }
+		NOT = { has_country_flag = held_recent_military_parade }
+		land_forcelimit = 100
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.5.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -5
+		add_mil_power = -60
+		add_yearly_manpower = -0.2
+		add_country_modifier = {
+			name = no_respect_for_army_modifier
+			duration = -1
+		}
+	}
+}
+
+#faith in army restored
+country_event = {
+	id = army_professionalism.501
+	title = "army_professionalism.501.t"
+	desc = "army_professionalism.501.d"
+	picture = rivercrossing
+
+	trigger = {
+		has_country_modifier = no_respect_for_army_modifier
+		OR = {
+			AND = {
+				army_tradition = 40
+				army_professionalism = 0.4
+			}
+			NOT = { land_forcelimit = 100 }
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.501.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 2
+		add_mil_power = 30
+		remove_country_modifier = no_respect_for_army_modifier
+	}
+}
+
+#large country with very few conscription centers and low absolutism results in poor recruitment
+
+country_event = {
+	id = army_professionalism.6
+	title = "army_professionalism.6.t"
+	desc = "army_professionalism.6.d"
+	picture = training
+
+	trigger = {
+		ai = no
+		has_dlc = "Cradle of Civilization"
+		num_of_cities = 100
+		neither_tribal_nor_native_trigger = yes
+		mil_tech = 10
+		NOT = { absolutism = 20 }
+		NOT = { army_professionalism = 0.30 }
+		NOT = { has_country_modifier = poor_recruitment_modifier }
+		if = {
+			limit = { num_of_cities = 500 }
+			NOT = { small_conscription_center = 50 }
+		}
+		else_if = {
+			limit = { num_of_cities = 400 }
+			NOT = { small_conscription_center = 40 }
+		}
+		else_if = {
+			limit = { num_of_cities = 300 }
+			NOT = { small_conscription_center = 30 }
+		}
+		else_if = {
+			limit = { num_of_cities = 200 }
+			NOT = { small_conscription_center = 20 }
+		}
+		else_if = {
+			limit = { num_of_cities = 100 }
+			NOT = { small_conscription_center = 10 }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.6.a"
+		ai_chance = { factor = 99 }
+		add_yearly_manpower = -0.33
+		add_mil_power = -50
+		add_country_modifier = {
+			name = poor_recruitment_modifier
+			duration = -1
+		}
+	}
+}
+
+country_event = {
+	id = army_professionalism.601
+	title = "army_professionalism.601.t"
+	desc = "army_professionalism.601.d"
+	picture = training
+
+	trigger = {
+		has_country_modifier = poor_recruitment_modifier
+		OR = {
+			mil_tech = 10
+			ai = yes
+		}
+		OR = {
+			AND = {
+				absolutism = 20
+				army_professionalism = 0.4
+			}
+			if = {
+				limit = { num_of_cities = 500 }
+				small_conscription_center = 50
+			}
+			else_if = {
+				limit = { num_of_cities = 400 }
+				small_conscription_center = 40
+			}
+			else_if = {
+				limit = { num_of_cities = 300 }
+				small_conscription_center = 30
+			}
+			else_if = {
+				limit = { num_of_cities = 200 }
+				small_conscription_center = 20
+			}
+			else_if = {
+				limit = { num_of_cities = 100 }
+				small_conscription_center = 10
+			}
+			ai = yes
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "army_professionalism.601.a"
+		ai_chance = { factor = 99 }
+		remove_country_modifier = poor_recruitment_modifier
+		add_mil_power = 40
+	}
+}
+
+#Clears a decision flag
+country_event = {
+	id = army_professionalism.7
+	title = "army_professionalism.1.t"
+	desc = "army_professionalism.1.d"
+	picture = looting
+	hidden = yes
+
+	trigger = {
+		ai = no
+		had_country_flag = {
+			flag = held_recent_military_parade
+			days = 1825
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		clr_country_flag = held_recent_military_parade
+	}
+}
+
+country_event = {
+	id = army_professionalism.8
+	title = "army_professionalism.8.t"
+	desc = "army_professionalism.8.d"
+	picture = roman_road
+
+	trigger = {
+		has_dlc = "Cradle of Civilization"
+		any_owned_province = {
+			AND = {
+				has_supply_depot = ROOT
+				units_in_province = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					has_supply_depot = ROOT
+					controlled_by = ROOT
+					units_in_province = 1
+					NOT = {
+						OR = {
+							has_building = gravel_road
+							has_building = paved_road
+						}
+					}
+				}
+				save_event_target_as = military_road_province
+			}
+		}
+	}
+	option = {
+		name = "army_professionalism.8.a"
+		ai_chance = { factor = 100 }
+		event_target:military_road_province = {
+			if = {
+				limit = {
+					owner = {
+						adm_tech = 36
+					}
+				}
+				add_building_construction = {
+					building = imperial_road
+					speed = 0.75
+					cost = 0.33
+				}
+				add_province_modifier = {
+					name = "mil_road_building_resource_depleted_modifier"
+					duration = 1825
+				}
+			}
+			else_if = {
+				limit = {
+					owner = {
+						adm_tech = 15
+					}
+				}
+				add_building_construction = {
+					building = paved_road
+					speed = 0.5
+					cost = 0.25
+				}
+				add_province_modifier = {
+					name = "mil_road_building_resource_depleted_modifier"
+					duration = 1825
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = gravel_road
+					speed = 0.33
+					cost = 0.2
+				}
+				add_province_modifier = {
+					name = "mil_road_building_resource_depleted_modifier"
+					duration = 1825
+				}
+			}
+		}
+	}
+}

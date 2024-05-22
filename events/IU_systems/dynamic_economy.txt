@@ -1,0 +1,154 @@
+namespace = dyneconomy
+
+
+province_event = {
+	id = dyneconomy.1
+	title = "dyneconomy.1.t"
+	desc = "dyneconomy.1.d"
+	picture = construction
+
+	is_triggered_only = yes		# will fire only by province interaction, or random event (for AI countries)
+
+
+
+	immediate = {
+		# Check how many CoTs are in this area
+		hidden_effect = {
+			if = {
+				limit = {
+					calc_true_if = {
+						area_for_scope_province = {
+							type = all							# type = all forces into every province, otherwise doesn't get up of 1.
+							province_has_center_of_trade_of_level = 1
+						}
+						amount = 4
+					}
+				}
+				set_variable = { which = DE_area_prov_cot value = 4 }
+			}
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 3 } }
+				set_variable = { which = DE_area_prov_cot value = 3 }
+			}
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 2 } }
+				set_variable = { which = DE_area_prov_cot value = 2 }
+			}
+			else_if = {
+				limit = { calc_true_if = { area_for_scope_province = { type = all province_has_center_of_trade_of_level = 1 } amount = 1 } }
+				set_variable = { which = DE_area_prov_cot value = 1 }
+			}
+			else = { set_variable = { which = DE_area_prov_cot value = 0 } }
+		}
+	}
+
+	option = {
+		name = "dyneconomy.1.1"		# First trade center
+		trigger = { NOT = { check_variable = { DE_area_prov_cot = 1 } } owner = { dip_power = 100 } }
+		owner = { add_dip_power = -100 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			if = {
+				limit = { has_global_flag = popgrowth_v5capacities }
+				province_event = { id = population_capacity.15 }
+			}
+			else = { province_event = { id = population_capacity.4 } }
+		}
+	}
+	option = {
+		name = "dyneconomy.1.2"		# Second trade center
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 1 } owner = { dip_power = 200 } }
+		owner = { add_dip_power = -200 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			if = {
+				limit = { has_global_flag = popgrowth_v5capacities }
+				province_event = { id = population_capacity.15 }
+			}
+			else = { province_event = { id = population_capacity.4 } }
+		}
+	}
+	option = {
+		name = "dyneconomy.1.3"		# Third trade center
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 2 } owner = { dip_power = 400 } }
+		owner = { add_dip_power = -400 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			if = {
+				limit = { has_global_flag = popgrowth_v5capacities }
+				province_event = { id = population_capacity.15 }
+			}
+			else = { province_event = { id = population_capacity.4 } }
+		}
+	}
+	option = {
+		name = "dyneconomy.1.4"		# Fourth trade center (come on..)
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 3 } owner = { dip_power = 800 } }
+		owner = { add_dip_power = -800 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			if = {
+				limit = { has_global_flag = popgrowth_v5capacities }
+				province_event = { id = population_capacity.15 }
+			}
+			else = { province_event = { id = population_capacity.4 } }
+		}
+	}
+	option = {
+		name = "dyneconomy.1.5"		# Fifth trade center (hah, you better use console commands)
+		trigger = { is_variable_equal = { which = DE_area_prov_cot value = 4 } owner = { dip_power = 1500 } }
+		owner = { add_dip_power = -1500 }
+		custom_tooltip = DE_new_cot_key
+		hidden_effect = {
+			center_of_trade = 2
+			add_province_modifier = { name = DE_new_cot duration = 730 }
+			if = {
+				limit = { has_global_flag = popgrowth_v5capacities }
+				province_event = { id = population_capacity.15 }
+			}
+			else = { province_event = { id = population_capacity.4 } }
+		}
+	}
+	option = {
+		name = "dyneconomy.1.99"
+		if = {
+			limit = { NOT = { check_variable = { DE_area_prov_cot = 1 } } NOT = { owner = { dip_power = 100 } } }
+			custom_tooltip = DE_cot1_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 1 } NOT = { owner = { dip_power = 200 } } }
+			custom_tooltip = DE_cot2_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 2 } NOT = { owner = { dip_power = 400 } } }
+			custom_tooltip = DE_cot3_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 3 } NOT = { owner = { dip_power = 800 } } }
+			custom_tooltip = DE_cot4_lacks_dip
+		}
+		if = {
+			limit = { is_variable_equal = { which = DE_area_prov_cot value = 4 } NOT = { owner = { dip_power = 1500 } } }
+			custom_tooltip = DE_cot5_lacks_dip
+		}
+
+	}
+
+	after = { set_variable = { which = DE_area_prov_cot value = 0 } }
+
+}
+
+
+
+
+
+
+

@@ -1,0 +1,364 @@
+namespace = forced_migration
+
+########################################################################################
+# start of the migration
+########################################################################################
+country_event = {
+	id = forced_migration.1
+	title = "new_ideas.1.t"
+	desc = "new_ideas.1.d"
+	picture = city
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		tribal_or_native_trigger = yes
+		NOT = { indian_tribal_trigger = yes }
+		NOT = { primary_culture = FROM }
+		NOT = { accepted_culture = FROM }
+		FROM = {
+			tribal_or_native_trigger = yes
+			if = {
+				limit = { has_country_flag = forced_migration_cooldown_flag }
+				had_country_flag = {
+					flag = forced_migration_cooldown_flag
+					days = 18250
+				}
+			}
+			if = {
+				limit = { government = native }
+				OR = {
+					has_reform = korean_tribal_statelet_reform
+					has_reform = start_sedentarization_reform
+				}
+			}
+			NOT = { indian_tribal_trigger = yes }
+			capital_scope = {
+				OR = {
+					superregion = germania_superregion
+					superregion = scythia_superregion
+					superregion = turan_superregion
+					superregion = sakastan_superregion
+					region = dahaestan_region
+					region = buyeo_region
+					region = sushen_region
+				}
+			}
+		}
+		any_province = {
+			province_distance = {
+				who = event_target:forced_migratory_home
+				distance = 100
+			}
+			NOT = {
+				province_distance = {
+					who = event_target:forced_migratory_home
+					distance = 300
+				}
+			}
+			OR = {
+				is_empty = yes
+				AND = {
+					NOT = { owned_by = ROOT }
+					NOT = { owned_by = event_target:conqueror_migratorytag_relation }
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		FROM = {
+			capital_scope = { save_event_target_as = forced_migratory_home }
+			if = {
+				limit = { has_country_flag = forced_migration_cooldown_flag }
+				clr_country_flag = forced_migration_cooldown_flag
+			}
+		}
+		every_country = {
+			limit = {
+				OR = {
+					is_subject_of = ROOT
+					alliance_with = ROOT
+					marriage_with = ROOT
+					truce_with = FROM
+				}
+			}
+			save_event_target_as = conqueror_migratorytag_relation
+		}
+		random_province = {
+			if = {
+				limit = {
+					is_empty = yes
+					province_distance = {
+						who = event_target:forced_migratory_home
+						distance = 100
+					}
+					NOT = {
+						province_distance = {
+							who = event_target:forced_migratory_home
+							distance = 300
+						}
+					}
+				}
+				save_event_target_as = new_forced_migratory_emptyhome
+			}
+			else_if = {
+				limit = {
+					province_distance = {
+						who = event_target:forced_migratory_home
+						distance = 100
+					}
+					NOT = {
+						province_distance = {
+							who = event_target:forced_migratory_home
+							distance = 300
+						}
+					}
+					NOT = { owned_by = ROOT }
+					NOT = { owned_by = event_target:conqueror_migratorytag_relation }
+					owner = { num_of_cities = 2 } # So as to not insta kill opms
+				}
+				save_event_target_as = new_forced_migratory_home
+				owner = { save_event_target_as = newhome_original_owner }
+			}
+		}
+	}
+
+	option = {
+		name = "new_ideas.1.a"
+		if = {
+			limit = { has_saved_event_target = new_forced_migratory_home }
+			event_target:new_forced_migratory_home = {
+				area = {
+					limit = {
+						OR = {
+							owned_by = event_target:newhome_original_owner
+							is_empty = yes
+						}
+					}
+					add_core = FROM
+					cede_province = FROM
+					change_culture = FROM
+					change_religion = FROM
+					add_unrest = -20
+					add_nationalism = -30
+				}
+			}
+		}
+		else = {
+			event_target:new_forced_migratory_emptyhome = {
+				area = {
+					limit = { is_empty = yes }
+					add_core = FROM
+					cede_province = FROM
+					change_culture = FROM
+					change_religion = FROM
+					add_unrest = -20
+					add_nationalism = -30
+				}
+			}
+		}
+		FROM = {
+			change_government = tribal
+			if = {
+				limit = {
+					OR = {
+						culture_group = steppe_people
+						culture_group = tocharian_group
+						culture_group = xiongnu_group
+						culture_group = turkic_group
+						culture_group = mongolic_group
+						culture_group = tungusic_group
+					}
+				}
+				add_government_reform = steppe_horde_reform
+			}
+			else = { add_government_reform = tribal_federation_reform }
+			if = {
+				limit = { has_saved_event_target = new_forced_migratory_home }
+				set_capital = event_target:new_forced_migratory_home
+				country_event = { id = forced_migration.2 } #First movement of the migratory tag in occupied land
+			}
+			else = { set_capital = event_target:new_forced_migratory_emptyhome }
+			define_ruler = {
+				adm = 3
+				dip = 3
+				mil = 5
+			}
+			add_country_modifier = {
+				name = newhomeland_modifier
+				duration = 7300
+			}
+			stabilize_country_effect = yes
+			add_manpower = 5
+			set_country_flag = forced_migration_cooldown_flag
+		}
+	}
+}
+
+########################################################################################
+# options when tribe migrates to already occupy land
+########################################################################################
+country_event = {
+	id = forced_migration.2
+	title = "forced_migration.1.t"
+	desc = "forced_migration.1.d"
+	picture = city
+	is_triggered_only = yes
+	major = yes
+
+	immediate = {
+		hidden_effect = {
+			every_core_province = {
+				limit = { NOT = { owned_by = ROOT } }
+				remove_core = ROOT
+			}
+		}
+	}
+
+	option = { #Invade former owner
+		name = "forced_migration.1.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 5
+				event_target:newhome_original_owner = { NOT = { army_size = ROOT } }
+			}
+			modifier = {
+				factor = 5
+				event_target:newhome_original_owner = { NOT = { total_development = ROOT } }
+			}
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { personality = ai_militarist }
+			}
+			modifier = {
+				factor = 0.2
+				personality = ai_diplomat
+			}
+		}
+		declare_war_with_cb = {
+			casus_belli = cb_invasion
+			who = event_target:newhome_original_owner
+		}
+	}
+	option = { #Offer vassalization
+		name = "forced_migration.1.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				NOT = { army_size = event_target:newhome_original_owner }
+			}
+			modifier = {
+				factor = 0
+				NOT = { total_development = event_target:newhome_original_owner }
+			}
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { personality = ai_diplomat }
+			}
+			modifier = {
+				factor = 0.2
+				personality = ai_militarist
+			}
+		}
+		add_prestige = -5
+		event_target:newhome_original_owner = {
+			country_event = { id = forced_migration.3 } # How the old owner would react
+		}
+	}
+}
+
+########################################################################################
+# Reaction of the former owner of the land
+########################################################################################
+country_event = {
+	id = forced_migration.3
+	title = "forced_migration.3.t"
+	desc = "forced_migration.3.d"
+	picture = city
+	is_triggered_only = yes
+	goto = new_forced_migratory_home
+
+	option = {
+		name = "forced_migration.3.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 4
+				army_strength = {
+					who = FROM
+					value = 2
+				}
+			}
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 2
+				mil = 6
+			}
+			modifier = {
+				factor = 2
+				NOT = { war_exhaustion = 1 }
+			}
+			modifier = {
+				factor = 1.5
+				is_at_war = no
+			}
+		}
+		add_prestige = 5
+		declare_war_with_cb = {
+			casus_belli = cb_invasion
+			who = FROM
+		}
+	}
+	option = {
+		name = "forced_migration.3.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 10
+				OR = {
+					is_bankrupt = yes
+					is_in_large_debt = yes
+					is_in_deficit = yes
+					has_any_disaster = yes
+				}
+			}
+			modifier = {
+				factor = 1.5
+				is_at_war = yes
+			}
+			modifier = {
+				factor = 2
+				war_exhaustion = 8
+			}
+		}
+		add_prestige = -10
+		create_subject = {
+			subject_type = tributary_state
+			subject = FROM
+		}
+		add_truce_with = FROM
+		create_guarantee = FROM
+	}
+}

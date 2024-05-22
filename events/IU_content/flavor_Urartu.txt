@@ -1,0 +1,536 @@
+namespace = urartu
+
+#######################################################################################
+# revolt of the armenians
+########################################################################################
+country_event = {
+	id = urartu.1
+	title = "urartu.1.t"
+	desc = "urartu.1.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+	}
+
+	immediate = {
+		hidden_effect = {
+			release = ARM
+			set_country_flag = urartu_fights_armenia_flag
+			ARM = {
+				define_ruler = {
+					name = "Orontes I Sakavakyats"
+					dynasty = "Orontid"
+					dip = 3
+					adm = 3
+					mil = 4
+					age = 25
+					claim = 100
+				}
+				define_heir = {
+					name = "Tigranes I"
+					dynasty = "Orontid"
+					dip = 3
+					adm = 2
+					mil = 4
+					age = 0
+					claim = 100
+				}
+			}
+		}
+	}
+
+	# Armenian buffs, mede event
+	option = {
+		name = "urartu.1.a"
+		custom_tooltip = ARMENIANS_RISE_UP_CT
+		hidden_effect = {
+			every_owned_province = {
+				add_core = ARM
+			}
+			MDI = {
+				country_event = {
+					id = urartu.102
+					days = 3
+				}
+			}
+			ARM = {
+				add_stability = 1
+				add_legitimacy = 100
+				declare_war_with_cb = {
+					casus_belli = cb_mission_invasion
+					who = URT
+				}
+			}
+		}
+	}
+}
+
+#Mede pressure of Urartu
+country_event = {
+	id = urartu.101
+	title = "urartu.101.t"
+	desc = "urartu.101.d"
+	picture = rivercrossing
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = URT
+		NOT = { exists = ASY }
+		MDI = { total_development = 300 }
+		NOT = { is_year = 200 }
+	}
+
+	mean_time_to_happen = {
+		days = 365
+	}
+
+	option = {
+		name = "urartu.101.a"
+		add_stability = -1
+		add_legitimacy = -15
+		add_mil_power = -100
+	}
+}
+
+#rebellion of the armenians for Media, decides if support or not
+country_event = {
+	id = urartu.102
+	title = "urartu.102.t"
+	desc = "urartu.102.d"
+	picture = capture_of_gods
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		tag = MDI
+	}
+
+	option = {
+		name = "urartu.102.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		ARM = {
+			country_event = {
+				id = urartu.2
+				days = 3
+			}
+		}
+	}
+
+	option = {
+		name = "urartu.102.b"
+		ai_chance = { factor = 1 }
+	}
+}
+
+#######################################################################################
+# Armenia declares war on Urartu, decides if it wants mede support
+########################################################################################
+country_event = {
+	id = urartu.2
+	title = "urartu.2.t"
+	desc = "urartu.2.d"
+	picture = plundering
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = ARM
+	}
+
+	#Armenia accepts mede support
+	option = {
+		name = "urartu.2.a"
+		ai_chance = { factor = 99 }
+		add_mil_power = 100
+		capital_scope = {
+			build_to_forcelimit = {
+				cavalry = 0.5
+				infantry = 0.5
+			}
+		}
+		hidden_effect = { set_country_flag = armenia_accepts_mede_offer_flag }
+		MDI = { join_all_offensive_wars_of = ARM }
+	}
+
+	#Armenia rejects mede support
+	option = {
+		name = "urartu.2.b"
+		ai_chance = { factor = 1 }
+		add_prestige = 5
+		add_army_tradition = 5
+		hidden_effect = { set_country_flag = armenia_rejects_mede_offer_flag }
+		add_country_modifier = {
+			name = armenia_lack_of_support
+			duration = 1825
+		}
+		MDI = {
+			add_prestige = -5
+			add_opinion = {
+				who = ROOT
+				modifier = armenia_rejects_our_offer
+			}
+		}
+	}
+}
+
+#######################################################################################
+# Armenian victory, decide if to continue with mede promise
+########################################################################################
+country_event = {
+	id = urartu.3
+	title = "urartu.3.t"
+	desc = "urartu.3.d"
+	picture = military_parade
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = ARM
+		FROM = { tag = URT }
+		has_country_flag = armenia_accepts_mede_offer_flag
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = armenia_accepts_mede_offer_flag
+			URT = { clr_country_flag = urartu_fights_armenia_flag }
+			every_subject_country = {
+				limit = { NOT = { is_subject_of_type = tributary_state } }
+				ROOT = { inherit = PREV }
+			}
+		}
+	}
+
+	#keeps promise
+	option = {
+		name = "urartu.3.a"
+		ai_chance = { factor = 99 }
+		if = {
+			limit = { owns = 2391 }
+			set_capital = 2391
+			2391 = {
+				change_culture = ROOT
+				change_religion = ROOT
+			}
+		}
+		add_prestige = 5
+		add_stability = 1
+		MDI = {
+			create_subject = {
+				subject_type = vassal
+				subject = ARM
+			}
+			create_marriage = ARM
+			if = {
+				limit = { has_consort = no }
+				define_consort = {
+					name = "Tigrahuni"
+					dynasty = "Orontid"
+					country_of_origin = ARM
+					religion = armenian_religion
+					culture = armenian
+					female = yes
+				}
+			}
+		}
+	}
+
+	#doesn't keep promise
+	option = {
+		name = "urartu.3.b"
+		ai_chance = { factor = 1 }
+		if = {
+			limit = { owns = 2391 }
+			set_capital = 2391
+			2391 = {
+				change_culture = ROOT
+				change_religion = ROOT
+			}
+		}
+		add_prestige = 25
+		add_stability = -2
+		add_legitimacy = -10
+		add_army_tradition = 10
+		add_country_modifier = {
+			name = armenia_lying_promises
+			duration = 7300
+		}
+		MDI = {
+			add_opinion = {
+				who = ROOT
+				modifier = armenia_broke_promise_opinion
+			}
+			country_event = {
+				id = urartu.303
+			}
+		}
+	}
+}
+
+#mede reaction to Armenia breaking promise
+
+country_event = {
+	id = urartu.303
+	title = "urartu.303.t"
+	desc = "urartu.303.d"
+	picture = invasion
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = MDI
+	}
+
+	#declare war
+	option = {
+		name = "urartu.303.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_at_war = yes
+			}
+		}
+		add_army_tradition = 5
+		declare_war_with_cb = {
+			casus_belli = cb_vassalize_mission
+			who = ARM
+		}
+	}
+
+	#don't declare war
+	option = {
+		name = "urartu.303.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				is_at_war = yes
+			}
+		}
+		add_prestige = -10
+		add_army_tradition = -5
+		add_casus_belli = {
+			type = cb_vassalize_mission
+			target = ARM
+			months = 60
+		}
+	}
+}
+
+#######################################################################################
+# Armenian victory, medes try to invade if Armenia declined offer
+########################################################################################
+country_event = {
+	id = urartu.302
+	title = "urartu.301.t"
+	desc = "urartu.301.d"
+	picture = rivercrossing
+
+	is_triggered_only = yes
+	fire_only_once = yes
+	hidden = yes
+
+	trigger = {
+		tag = ARM
+		FROM = { tag = URT }
+		has_country_flag = armenia_rejects_mede_offer_flag
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = armenia_rejects_mede_offer_flag
+			URT = { clr_country_flag = urartu_fights_armenia_flag }
+			MDI = {
+				country_event = {
+					id = urartu.301
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "urartu.301.a"
+	}
+}
+
+#mede decision
+
+country_event = {
+	id = urartu.301
+	title = "urartu.301.t"
+	desc = "urartu.301.d"
+	picture = siege_picture
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = MDI
+	}
+
+	#declare war
+	option = {
+		name = "urartu.301.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_at_war = yes
+			}
+		}
+		add_prestige = 5
+		add_army_tradition = 5
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = ARM
+		}
+	}
+
+	#don't declare war
+	option = {
+		name = "urartu.301.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				is_at_war = yes
+			}
+		}
+		add_prestige = -5
+		add_army_tradition = -5
+		add_casus_belli = {
+			type = cb_mission_invasion
+			target = ARM
+			months = 60
+		}
+	}
+}
+
+#######################################################################################
+# Urartian victory, no mede support for Armenia
+########################################################################################
+#Urartu decides if vassalize or annex Armenia
+country_event = {
+	id = urartu.4
+	title = "urartu.4.t"
+	desc = "urartu.4.d"
+	picture = elamite_soldiers
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = URT
+		FROM = { tag = ARM }
+		has_country_flag = urartu_fights_armenia_flag
+		ARM = {
+			OR = {
+				NOT = { has_country_flag = armenia_accepts_mede_offer_flag }
+				has_country_flag = armenia_rejects_mede_offer_flag
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = urartu_fights_armenia_flag
+			if = {
+				limit = { ARM = { has_country_flag = armenia_rejects_mede_offer_flag } }
+				ARM = { clr_country_flag = armenia_rejects_mede_offer_flag }
+			}
+		}
+	}
+
+	#Annex Armenia
+	option = {
+		name = "urartu.4.a"
+		ai_chance = { factor = 99 }
+		add_stability = 1
+		add_legitimacy = 100
+		add_adm_power = 75
+		add_dip_power = 75
+		add_mil_power = 75
+		inherit = ARM
+	}
+
+	#Vassalize Armenia
+	option = {
+		name = "urartu.4.b"
+		ai_chance = { factor = 1 }
+		add_stability = 1
+		add_legitimacy = 100
+		add_adm_power = 125
+		add_dip_power = 125
+		add_mil_power = 125
+		create_subject = {
+			subject_type = non_autonomous_vassal
+			subject = ARM
+		}
+	}
+}
+
+#######################################################################################
+# Urartian victory, mede support for Armenia
+########################################################################################
+#Urartu decides if vassalize or annex Armenia
+country_event = {
+	id = urartu.5
+	title = "urartu.5.t"
+	desc = "urartu.5.d"
+	picture = siege_picture
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = URT
+		has_country_flag = urartu_fights_armenia_flag
+		ARM = { has_country_flag = armenia_accepts_mede_offer_flag }
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = urartu_fights_armenia_flag
+			ARM = { clr_country_flag = armenia_accepts_mede_offer_flag }
+		}
+	}
+
+	#Armenia goes to Media
+	option = {
+		name = "urartu.5.a"
+		add_stability = 1
+		add_legitimacy = 100
+		add_adm_power = 75
+		add_dip_power = 75
+		add_mil_power = 75
+		add_army_tradition = 10
+		add_prestige = 10
+		add_casus_belli = {
+			type = cb_mission_invasion
+			target = ARM
+			months = 120
+		}
+		ARM = {
+			every_owned_province = {
+				add_permanent_claim = URT
+			}
+		}
+		MDI = {
+			create_subject = {
+				subject_type = vassal
+				subject = ARM
+			}
+			add_stability = -1
+		}
+	}
+}

@@ -1,0 +1,351 @@
+namespace = nomad_plunder
+
+#�����¼�����¼����ʡ��
+province_event = {
+	id = nomad_plunder.0
+	title = nomad_plunder.0.t
+	desc = nomad_plunder.0.d
+	picture = ruler
+
+	hidden = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTAnomad_plunder.1"
+		FROM = {
+			if = {
+				limit = {
+					NOT = { has_influencing_fort = yes }
+					num_of_units_in_province = {
+						who = owner
+						amount = 1
+					}
+				}
+				random_list = {
+					40 = { country_event = { id = nomad_plunder.2 } } #˳���ִ�
+					5 = { country_event = { id = nomad_plunder.5 } } #��·
+					5 = { country_event = { id = nomad_plunder.6 } } #��������
+				}
+			}
+			if = {
+				limit = {
+					OR = {
+						has_influencing_fort = yes
+						NOT = {
+							num_of_units_in_province = {
+								who = owner
+								amount = 1
+							}
+						}
+					}
+				}
+				country_event = { id = nomad_plunder.3 }
+				#33 = { country_event = { id = nomad_plunder.4 } } #��������
+			}
+		}
+	}
+}
+
+#�����¼�����¼����ʡ��
+province_event = {
+	id = nomad_plunder.101
+	title = nomad_plunder.101.t
+	desc = nomad_plunder.0.d
+	picture = ruler
+
+	hidden = yes
+	is_triggered_only = yes
+
+	immediate = {
+		#�����ξ�
+		FROM = {
+			random_list = {
+				33 = {
+					set_country_flag = nomad_plunder.3.gw
+					country_event = { id = nomad_plunder.2 }
+				} #��ʤ
+				33 = { country_event = { id = nomad_plunder.7  } } #��ʤ-�öԷ�����
+				33 = {
+					set_country_flag = nomad_plunder.3.bl
+					country_event = { id = nomad_plunder.99 }
+				} #�Ұ�
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTAnomad_plunder.1"
+
+	}
+}
+#׼������
+country_event = {
+	id = nomad_plunder.1
+	title = nomad_plunder.1.t
+	desc = nomad_plunder.1.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+
+	immediate = {
+		set_country_flag = nomad_plunder.1
+	}
+
+	option = {
+		name = "nomad_plunder.1.a"
+		#С��ģ����
+		FROM = { province_event = { id = nomad_plunder.0 } }
+	}
+	option = {
+		name = "nomad_plunder.1.b"
+		#�й�ģ����
+		FROM = { province_event = { id = nomad_plunder.0 } }
+	}
+	option = {
+		name = "nomad_plunder.1.c"
+		#���ģ����
+		FROM = { province_event = { id = nomad_plunder.0 } }
+	}
+}
+#�ִ�Ŀ�ĵ�
+country_event = {
+	id = nomad_plunder.2
+	title = nomad_plunder.2.t
+	desc = {
+		trigger = {
+			NOT = { has_country_flag = nomad_plunder.3.gw  }
+		}
+		desc = nomad_plunder.2.d.1
+	}
+	desc = {
+		trigger = {
+			has_country_flag = nomad_plunder.3.gw
+		}
+		desc = nomad_plunder.2.d.2
+	}
+
+	picture = ruler
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			FROM = { country_event = { id = nomad_plunder.100 } }
+		}
+	}
+
+
+	option = {
+		name = "nomad_plunder.2.a" #°��ū��
+		FROM = {
+			random_list = {
+				20 = { add_base_tax = -1 }
+				30 = { add_base_production = -1 }
+				50 = { add_base_manpower = -1 }
+			}
+		}
+		capital_scope = {
+			add_base_manpower = 1
+		}
+		add_years_of_income = 5
+		capital_scope = {
+			add_scaled_local_adm_power = 5
+			add_scaled_local_dip_power = 5
+			add_scaled_local_mil_power = 5
+		}
+	}
+	option = {
+		name = "nomad_plunder.2.b" #°�ӲƸ�
+		FROM = {
+			random_list = {
+				20 = { add_devastation = 10 }
+				30 = { add_devastation = 5 }
+				50 = { add_devastation = 3 }
+			}
+		}
+		add_years_of_income = 10
+		capital_scope = {
+			add_scaled_local_adm_power = 3
+			add_scaled_local_dip_power = 3
+			add_scaled_local_mil_power = 3
+		}
+	}
+	option = {
+		name = "nomad_plunder.2.c" #°�ӹ���
+		FROM = {
+			add_scaled_local_adm_power = -5
+			add_scaled_local_dip_power = -5
+			add_scaled_local_mil_power = -5
+		}
+		add_years_of_income = 3
+		capital_scope = {
+			add_scaled_local_adm_power = 10
+			add_scaled_local_dip_power = 10
+			add_scaled_local_mil_power = 10
+		}
+	}
+}
+#�����ξ�
+country_event = {
+	id = nomad_plunder.3
+	title = nomad_plunder.3.t
+	desc = nomad_plunder.3.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	immediate = { set_country_flag = nomad_plunder.3 }
+
+
+	option = {
+		name = "nomad_plunder.3.a" #��ս
+		FROM = { province_event = { id = nomad_plunder.101 } }
+		set_country_flag = nomad_plunder.3.a
+	}
+	#option = {
+	#	name = "EVTOPTBnomad_plunder.3.b" #�ر�
+	#	FROM = { province_event = { id = nomad_plunder.0 } }
+	#	set_country_flag = nomad_plunder.3.b
+	#}
+	option = {
+		name = "EVTOPTBnomad_plunder.3.c" #����
+		country_event = { id = nomad_plunder.99 }
+	}
+}
+
+#�����ξ�-��ʤ
+country_event = {
+	id = nomad_plunder.7
+	title = nomad_plunder.7.t
+	desc = nomad_plunder.7.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.7.a" #��ս
+		FROM = {
+			owner = { country_event = { id = nomad_plunder.8 } }
+		}
+		clr_country_flag = nomad_plunder.1
+	}
+}
+
+#�ֵ�����
+country_event = {
+	id = nomad_plunder.8
+	title = nomad_plunder.8.t
+	desc = nomad_plunder.8.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.8.a" #��ս
+		if = {
+			limit = {
+				is_subject = yes
+			}
+			overlord = {
+				declare_war_with_cb = {
+					who = FROM
+					casus_belli = cb_border_war
+				}
+			}
+		}
+		if = {
+			limit = {
+				is_subject = no
+			}
+			declare_war_with_cb = {
+				who = FROM
+				casus_belli = cb_border_war
+			}
+		}
+	}
+
+	option = {
+		name = "nomad_plunder.8.a" #����
+		trigger = { is_subject = no }
+		add_prestige = -10
+	}
+
+	option = {
+		name = "nomad_plunder.8.c" #����
+		trigger = { is_subject = yes }
+	}
+}
+
+#��·
+country_event = {
+	id = nomad_plunder.5
+	title = nomad_plunder.5.t
+	desc = nomad_plunder.5.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.5.a" #��ս
+		country_event = { id = nomad_plunder.99 }
+		add_prestige = -5
+	}
+}
+
+#��������
+country_event = {
+	id = nomad_plunder.6
+	title = nomad_plunder.6.t
+	desc = nomad_plunder.6.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.6.a" #��ս
+		country_event = { id = nomad_plunder.99 }
+		add_manpower = -1
+	}
+}
+
+#����
+country_event = {
+	id = nomad_plunder.99
+	title = nomad_plunder.99.t
+	desc = {
+		trigger = {
+			NOT = { has_country_flag = nomad_plunder.3.bl }
+		}
+		desc = nomad_plunder.99.d.1
+	}
+	desc = {
+		trigger = {
+			has_country_flag = nomad_plunder.3.bl
+		}
+		desc = nomad_plunder.99.d.2
+	}
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.99.a" #��ս
+
+	}
+}
+
+#�������
+country_event = {
+	id = nomad_plunder.100
+	title = nomad_plunder.100.t
+	desc = nomad_plunder.100.d
+	picture = ruler
+
+	is_triggered_only = yes
+
+	option = {
+		name = "nomad_plunder.99.a" #��ս
+		add_prestige = -5
+	}
+}

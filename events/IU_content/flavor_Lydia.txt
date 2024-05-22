@@ -1,0 +1,253 @@
+namespace = lydia
+
+########################################################################################
+# Alyattes (or Croesus) starts conquests
+########################################################################################
+country_event = {
+	id = lydia.1
+	title = "lydia.1.t"
+	desc = "lydia.1.d"
+	picture = battle
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = LYD
+		is_year = 143
+		NOT = { is_year = 208 }
+		NOT = { exists = CYM }
+		#has_ruler = "Krowishash"
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_ai_personality = {
+				personality = ai_militarist
+				locked = yes
+			}
+			bithynia_region = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+			asia_minor = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+			ionia_region = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+			propontis_region = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+			lycia_pamphylia_region = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+			galatia_region = {
+				limit = {
+					NOT = { is_core = LYD }
+					NOT = { is_claim = LYD }
+				}
+				add_permanent_claim = LYD
+			}
+		}
+	}
+
+	option = {
+		name = "lydia.1.a"
+		ai_chance = { factor = 100 }
+		add_yearly_manpower = 10
+		add_country_modifier = {
+			name = lydian_expansionism_modifier
+			duration = 9600
+		}
+	}
+}
+
+########################################################################################
+# Lydian artstyle
+########################################################################################
+country_event = {
+	id = lydia.2
+	title = "lydia.2.t"
+	desc = "lydia.2.d"
+	picture = construction
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = LYD
+		owns_all_provinces = { area = ionia_area }
+		owns_all_provinces = { area = doris_area }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "lydia.2.a"
+		ai_chance = { factor = 100 }
+		add_prestige = 10
+		add_splendor = 100
+		change_innovativeness = 2
+	}
+}
+########################################################################################
+# Alyattes starts conquest of dying Phrygia remnants
+########################################################################################
+country_event = {
+	id = lydia.3
+	title = "lydia.3.t"
+	desc = "lydia.3.d"
+	picture = cavalry
+
+	is_triggered_only = yes
+
+	option = {
+		name = "lydia.3.a"
+		LYD = {
+			if = {
+				limit = {
+					NOT = {
+						war_with = PHR
+					}
+				}
+				declare_war_with_cb = {
+					who = PHR
+					casus_belli = cb_invasion
+				}
+				set_country_flag = phrygia_conquest
+			}
+			else = {
+				add_casus_belli = {
+					type = cb_invasion
+					target = PHR
+					months = 120
+				}
+			}
+		}
+	}
+
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = LYD
+		}
+	}
+}
+
+########################################################################################
+# releasing phrygian vassals around Pteria after war
+########################################################################################
+country_event = {
+	id = lydia.4
+	title = "lydia.4.t"
+	desc = "lydia.4.d"
+	picture = ruler
+
+	is_triggered_only = yes
+
+	trigger = {
+		tag = LYD
+		NOT = {
+			exists = PHR
+		}
+		has_country_flag = phrygia_conquest
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "lydia.4.a"
+		ai_chance = { factor = 100 }
+		add_prestige = 10
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = galatia_area
+					area = chammanene_area
+					area = pontus_galaticus_area
+				}
+			}
+			cede_province = PHR
+		}
+		2226 = { cede_province = PHR }
+		5757 = { cede_province = PHR }
+		create_subject = {
+			subject_type = half_autonomous_vassal
+			subject = PHR
+		}
+		PHR = {	add_liberty_desire = -40 }
+	}
+}
+########################################################################################
+# betray the Caria?
+########################################################################################
+country_event = {
+	id = lydia.5
+	title = "lydia.5.t"
+	desc = "lydia.5.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = LYD
+		exists = CRI
+		CRI = {
+			is_subject = no
+		}
+		NOT = {
+			has_country_flag = caria_betrayal_flag
+		}
+		is_year = 176
+		is_at_war = no
+	}
+
+	mean_time_to_happen = {
+		days = 5
+	}
+
+	option = {
+		name = "lydia.5.a"
+		ai_chance = { factor = 90 }
+		add_prestige = -5
+		set_country_flag = caria_betrayal_flag
+		declare_war_with_cb = {
+			who = CRI
+			casus_belli = cb_vassalize_mission
+		}
+	}
+	option = {
+		name = "lydia.5.b"
+		ai_chance = { factor = 10 }
+		add_prestige = 5
+		set_country_flag = caria_betrayal_flag
+		add_truce_with = CRI
+	}
+}

@@ -1,0 +1,2782 @@
+namespace = danda_niti
+
+########################################################################################
+# Loss of Danda Niti disaster
+########################################################################################
+
+#Start of the disaster
+
+country_event = {
+	id = danda_niti.1
+	title = "danda_niti.1.t"
+	desc = "danda_niti.1.d"
+	picture = civilwar
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "danda_niti.1.a"
+		kill_ruler = yes
+		add_prestige = -50
+		every_owned_province = {
+			add_local_autonomy = 10
+			add_named_unrest = {
+				name = danda_niti_unrest
+				value = 5
+			}
+		}
+		hidden_effect = { set_country_flag = lost_danda_niti_flag }
+	}
+
+	after = {
+		hidden_effect = {
+			capital_scope = {
+				if = {
+					limit = { owner = { government = monarchy } }
+					spawn_rebels = {
+						type = pretender_rebels
+						size = 4
+					}
+				}
+				else_if = {
+					limit = { owner = { government = republic } }
+					spawn_rebels = {
+						type = republican_rebels
+						size = 4
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { num_of_cities = 100 } }
+				every_owned_province = {
+					if = {
+						limit = {
+							can_spawn_rebels = nationalist_rebels
+							unrest = 10
+							local_autonomy = 20
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+					}
+					if = {
+						limit = {
+							can_spawn_rebels = leadered_peasant_rebels
+							unrest = 10
+							local_autonomy = 20
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = leadered_peasant_rebels
+						}
+					}
+				}
+			}
+			else = {
+				every_owned_province = {
+					if = {
+						limit = {
+							can_spawn_rebels = nationalist_rebels
+							unrest = 10
+							local_autonomy = 35
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = nationalist_rebels
+						}
+					}
+					if = {
+						limit = {
+							can_spawn_rebels = leadered_peasant_rebels
+							unrest = 10
+							local_autonomy = 35
+							NOT = { owner = { num_of_rebel_armies = 15 } }
+						}
+						spawn_rebels = {
+							size = 1
+							type = leadered_peasant_rebels
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#End of the disaster
+
+country_event = {
+	id = danda_niti.2
+	title = "danda_niti.2.t"
+	desc = "danda_niti.2.d"
+	picture = generals
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "danda_niti.2.a"
+		add_prestige = 10
+		change_adm = 1
+		change_dip = 1
+		change_mil = 1
+		hidden_effect = {
+			clr_country_flag = lost_danda_niti_flag
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				clear_rebels = yes
+				add_unrest = -5
+			}
+			set_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+}
+
+#Great ruler ends disaster
+
+country_event = {
+	id = danda_niti.3
+	title = "danda_niti.3.t"
+	desc = "danda_niti.3.d"
+	picture = ruler
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		adm = 5
+		mil = 5
+	}
+
+	option = {
+		name = "danda_niti.3.a"
+		end_disaster = loss_of_danda_niti
+		add_prestige = 20
+		add_stability = 6
+		add_legitimacy = 100
+		add_republican_tradition = 100
+		hidden_effect = {
+			clr_country_flag = lost_danda_niti_flag
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				clear_rebels = yes
+				add_unrest = -5
+			}
+		}
+	}
+}
+
+########################################################################################
+# Random revolts
+########################################################################################
+
+#peasant revolt
+
+country_event = {
+	id = danda_niti.4
+	title = "danda_niti.4.t"
+	desc = "danda_niti.4.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_peasant_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		any_owned_province = {
+			unrest = 2
+			is_prosperous = no
+			NOT = { can_spawn_rebels = nationalist_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					is_prosperous = no
+					NOT = { can_spawn_rebels = nationalist_rebels }
+				}
+				save_event_target_as = danda_niti_peasant_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_peasant_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = peasant_rebels
+			}
+			add_devastation = 30
+		}
+	}
+}
+
+#zealots revolt
+
+country_event = {
+	id = danda_niti.5
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = buddhism_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = buddhism_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = buddhism_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.501
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = ajivika_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = ajivika_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = ajivika_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.502
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = jain_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = jain_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = jain_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.503
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = hinduism_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = hinduism_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = hinduism_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.504
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = brahmin_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = brahmin_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = brahmin_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.505
+	title = "danda_niti.5.t"
+	desc = "danda_niti.5.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_zealot_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_priesthood
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = sramana_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = sramana_rebels
+				}
+				save_event_target_as = danda_niti_zealot_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_zealot_rebel = {
+			spawn_rebels = {
+				size = 2
+				type = sramana_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+#Nobles revolt
+
+country_event = {
+	id = danda_niti.6
+	title = "danda_niti.6.t"
+	desc = "danda_niti.6.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_noble_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		estate_territory = {
+			estate = estate_nobility
+			territory = 10
+		}
+		any_owned_province = {
+			unrest = 2
+			can_spawn_rebels = noble_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					can_spawn_rebels = noble_rebels
+				}
+				save_event_target_as = danda_niti_noble_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_noble_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = noble_rebels
+			}
+			add_devastation = 20
+		}
+	}
+}
+
+#Separatists revolt
+
+country_event = {
+	id = danda_niti.7
+	title = "danda_niti.7.t"
+	desc = "danda_niti.7.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_separatist_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			can_spawn_rebels = nationalist_rebels
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					can_spawn_rebels = nationalist_rebels
+				}
+				save_event_target_as = danda_niti_separatist_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_separatist_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = nationalist_rebels
+			}
+			add_devastation = 20
+		}
+	}
+}
+
+#Democratic revolt
+
+country_event = {
+	id = danda_niti.8
+	title = "danda_niti.8.t"
+	desc = "danda_niti.8.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_democratic_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		government = republic
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			NOT = { can_spawn_rebels = nationalist_rebels }
+			NOT = { can_spawn_rebels = peasant_rebels }
+			NOT = { can_spawn_rebels = noble_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					NOT = { can_spawn_rebels = nationalist_rebels }
+					NOT = { can_spawn_rebels = peasant_rebels }
+					NOT = { can_spawn_rebels = noble_rebels }
+				}
+				save_event_target_as = danda_niti_democratic_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_democratic_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = republican_rebels
+			}
+			add_devastation = 10
+		}
+	}
+}
+
+#Pretender revolt
+
+country_event = {
+	id = danda_niti.9
+	title = "danda_niti.9.t"
+	desc = "danda_niti.9.d"
+	picture = battle
+	is_triggered_only = yes
+	goto = danda_niti_pretender_rebel
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		government = monarchy
+		any_owned_province = {
+			unrest = 2
+			local_autonomy = 10
+			NOT = { can_spawn_rebels = nationalist_rebels }
+			NOT = { can_spawn_rebels = peasant_rebels }
+			NOT = { can_spawn_rebels = noble_rebels }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					unrest = 2
+					local_autonomy = 10
+					NOT = { can_spawn_rebels = nationalist_rebels }
+					NOT = { can_spawn_rebels = peasant_rebels }
+					NOT = { can_spawn_rebels = noble_rebels }
+				}
+				save_event_target_as = danda_niti_pretender_rebel
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.4.a"
+		event_target:danda_niti_pretender_rebel = {
+			spawn_rebels = {
+				size = 3
+				type = pretender_rebels
+			}
+			add_devastation = 10
+		}
+		random_owned_province = {
+			spawn_rebels = {
+				size = 2
+				type = pretender_rebels
+			}
+		}
+	}
+}
+
+#Ruler is killed
+
+country_event = {
+	id = danda_niti.10
+	title = "danda_niti.10.t"
+	desc = "danda_niti.10.d"
+	picture = death
+	is_triggered_only = yes
+
+	trigger = {
+		has_disaster = loss_of_danda_niti
+		NOT = { adm = 5 }
+		NOT = { mil = 5 }
+	}
+
+	option = {
+		name = "danda_niti.10.a"
+		ai_chance = {
+			factor = 30
+		}
+		kill_ruler = yes
+	}
+	option = {
+		name = "danda_niti.10.b"
+		ai_chance = {
+			factor = 70
+		}
+		trigger = {
+			government = monarchy
+			has_heir = yes
+		}
+		kill_ruler = yes
+		kill_heir = {}
+	}
+}
+
+########################################################################################
+# Matsya Nyaya disaster
+########################################################################################
+
+#Start of the disaster
+
+country_event = {
+	id = danda_niti.11
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "danda_niti.11.a"
+		kill_ruler = yes
+		collapse_nation = yes
+		release_all_subjects = yes
+		if = {
+			limit = { has_heir = yes }
+			kill_heir = {}
+		}
+		hidden_effect = {
+			clr_country_flag = lost_danda_niti_flag
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				add_unrest = 5
+				add_local_autonomy = 50
+			}
+			set_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+}
+
+#End of the disaster
+
+country_event = {
+	id = danda_niti.12
+	title = "danda_niti.12.t"
+	desc = "danda_niti.12.d"
+	picture = civilwar
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "danda_niti.12.a"
+		add_stability = 6
+		add_legitimacy = 100
+		add_republican_tradition = 100
+		add_prestige = 25
+	}
+
+	after = {
+		hidden_effect = {
+			every_owned_province = {
+				add_unrest = -5
+				add_local_autonomy = -50
+			}
+		}
+	}
+}
+
+########################################################################################
+# Danda Niti Variables
+########################################################################################
+
+#Starts Danda Niti count
+country_event = {
+	id = danda_niti.13
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		NOT = { has_country_flag = danda_niti_disaster_target }
+		OR = {
+			has_reform = indian_common_monarchy
+			has_reform = indian_republic_reform
+			has_reform = martial_republic_reform
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = danda_niti_disaster_target
+		set_variable = {
+			which = danda_niti_disaster_progress
+			value = 1
+		}
+	}
+}
+
+#Removes Danda Niti flag
+
+country_event = {
+	id = danda_niti.1301
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_reform = indian_common_monarchy }
+		NOT = { has_reform = indian_republic_reform }
+		NOT = { has_reform = martial_republic_reform }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		clr_country_flag = danda_niti_disaster_target
+		set_variable = {
+			which = danda_niti_disaster_progress
+			value = 0
+		}
+	}
+}
+
+##########Personality Penalties/These are one time per Ruler
+
+#Greedy
+country_event = {
+	id = danda_niti.14
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_greedy_flag }
+		ruler_has_personality = greedy_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_greedy_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Cruel
+country_event = {
+	id = danda_niti.1401
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_cruel_flag }
+		ruler_has_personality = cruel_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_cruel_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 20
+		}
+	}
+}
+
+#Malevolent
+country_event = {
+	id = danda_niti.1402
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_malevolent_flag }
+		ruler_has_personality = malevolent_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_malevolent_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Craven
+country_event = {
+	id = danda_niti.1403
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_craven_flag }
+		ruler_has_personality = craven_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_craven_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Sinner
+country_event = {
+	id = danda_niti.1404
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_sinner_flag }
+		ruler_has_personality = sinner_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_sinner_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 20
+		}
+	}
+}
+
+#Embezzler
+country_event = {
+	id = danda_niti.1405
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_embezzler_flag }
+		ruler_has_personality = embezzler_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_embezzler_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Indulgent
+country_event = {
+	id = danda_niti.1406
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_indulgent_flag }
+		ruler_has_personality = drunkard_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_indulgent_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Naive
+country_event = {
+	id = danda_niti.1407
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_naive_flag }
+		ruler_has_personality = naive_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_naive_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 5
+		}
+	}
+}
+
+#Arbitrary
+country_event = {
+	id = danda_niti.1408
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_arbitrary_flag }
+		ruler_has_personality = arbitrarily_personality
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_arbitrary_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+##########Personality Positives/These are one time per ruler
+
+#Pious
+country_event = {
+	id = danda_niti.15
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_pious_flag }
+		ruler_has_personality = pious_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_pious_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+#Well Advised
+country_event = {
+	id = danda_niti.1501
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_well_advised_flag }
+		ruler_has_personality = well_advised_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_well_advised_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Righteous
+country_event = {
+	id = danda_niti.1502
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_righteous_flag }
+		ruler_has_personality = righteous_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_righteous_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+#Tolerant
+country_event = {
+	id = danda_niti.1503
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_tolerant_flag }
+		ruler_has_personality = tolerant_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_tolerant_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 5
+		}
+	}
+}
+
+#Lawgiver
+country_event = {
+	id = danda_niti.1504
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_lawgiver_flag }
+		ruler_has_personality = lawgiver_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_lawgiver_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Incorruptible
+country_event = {
+	id = danda_niti.1505
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_incorruptible_flag }
+		ruler_has_personality = incorruptible_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_incorruptible_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+#Inspiring Leader
+country_event = {
+	id = danda_niti.1506
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_is_inspiring_leader_flag }
+		ruler_has_personality = inspiring_leader_personality
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_is_inspiring_leader_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 5
+		}
+	}
+}
+
+##########Stability Values/Every four years
+
+country_event = {
+	id = danda_niti.16
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_stability_danda_niti_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_stability_danda_niti_flag
+		set_variable = {
+			which = danda_niti_stability
+			value = 1
+		}
+	}
+}
+
+#Positive Stability
+country_event = {
+	id = danda_niti.1601
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_stability_danda_niti_flag
+		stability = 1
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_stability
+			value = trigger_value:stability
+			who = ROOT
+		}
+		multiply_variable = {
+			which = danda_niti_stability
+			value = 20
+		}
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_stability
+		}
+		set_variable = {
+			which = danda_niti_stability
+			value = 1
+		}
+	}
+}
+
+#Negative Stability
+country_event = {
+	id = danda_niti.1602
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_stability_danda_niti_flag
+		NOT = { stability = 0 }
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_stability
+			value = trigger_value:stability
+			who = ROOT
+		}
+		multiply_variable = {
+			which = danda_niti_stability
+			value = -20
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_stability
+		}
+		set_variable = {
+			which = danda_niti_stability
+			value = 1
+		}
+	}
+}
+
+##########Economy/Every four years
+
+#Indebted
+country_event = {
+	id = danda_niti.17
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		is_in_large_debt = yes
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		multiply_variable = {
+			which = danda_niti_disaster_progress
+			value = 1.15
+		}
+	}
+}
+
+#Bankrupt
+country_event = {
+	id = danda_niti.1701
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		is_bankrupt = yes
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		multiply_variable = {
+			which = danda_niti_disaster_progress
+			value = 1.5
+		}
+	}
+}
+
+#Deficit
+country_event = {
+	id = danda_niti.1702
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		is_in_deficit = yes
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		multiply_variable = {
+			which = danda_niti_disaster_progress
+			value = 1.25
+		}
+	}
+}
+
+##########Corruption
+
+country_event = {
+	id = danda_niti.18
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_corruption_danda_niti_flag }
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_corruption_danda_niti_flag
+		set_variable = {
+			which = danda_niti_corruption
+			value = 1
+		}
+	}
+}
+
+
+country_event = {
+	id = danda_niti.1801
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_corruption_danda_niti_flag
+		corruption = 10
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_corruption
+			value = trigger_value:corruption
+			who = ROOT
+		}
+		multiply_variable = {
+			which = danda_niti_corruption
+			value = 2
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_corruption
+		}
+		set_variable = {
+			which = danda_niti_corruption
+			value = 1
+		}
+	}
+}
+
+##########Legitimacy
+
+country_event = {
+	id = danda_niti.19
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_legitimacy_danda_niti_flag }
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_legitimacy_danda_niti_flag
+		set_variable = {
+			which = danda_niti_legitimacy
+			value = 1
+		}
+	}
+}
+
+#Positive
+
+country_event = {
+	id = danda_niti.1901
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_legitimacy_danda_niti_flag
+		legitimacy_equivalent = 50
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_legitimacy
+			value = trigger_value:legitimacy_equivalent
+			who = ROOT
+		}
+		divide_variable = {
+			which = danda_niti_legitimacy
+			value = 2
+		}
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_legitimacy
+		}
+		set_variable = {
+			which = danda_niti_legitimacy
+			value = 1
+		}
+	}
+}
+
+#Negative
+
+country_event = {
+	id = danda_niti.1902
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_legitimacy_danda_niti_flag
+		NOT = { legitimacy_equivalent = 50 }
+		legitimacy_equivalent = 40
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_legitimacy
+			value = trigger_value:legitimacy_equivalent
+			who = ROOT
+		}
+		if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 40
+				}
+			}
+			divide_variable = {
+				which = danda_niti_legitimacy
+				value = 5
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 30
+				}
+			}
+			divide_variable = {
+				which = danda_niti_legitimacy
+				value = 3
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 20
+				}
+			}
+			divide_variable = {
+				which = danda_niti_legitimacy
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 10
+				}
+			}
+			multiply_variable = {
+				which = danda_niti_legitimacy
+				value = 3
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 4
+				}
+			}
+			multiply_variable = {
+				which = danda_niti_legitimacy
+				value = 10
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 3
+				}
+			}
+			multiply_variable = {
+				which = danda_niti_legitimacy
+				value = 14
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 2
+				}
+			}
+			multiply_variable = {
+				which = danda_niti_legitimacy
+				value = 25
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 1
+				}
+			}
+			multiply_variable = {
+				which = danda_niti_legitimacy
+				value = 60
+			}
+		}
+		else_if = {
+			limit = {
+				check_variable = {
+					which = danda_niti_legitimacy
+					value = 0
+				}
+			}
+			change_variable = {
+				which = danda_niti_legitimacy
+				value = 100
+			}
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_legitimacy
+		}
+		set_variable = {
+			which = danda_niti_legitimacy
+			value = 1
+		}
+	}
+}
+
+##########Ruler Skills/These are one time per Ruler
+
+#ADM
+country_event = {
+	id = danda_niti.20
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_6_adm_flag }
+		adm = 6
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_6_adm_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 40
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2001
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_5_adm_flag }
+		NOT = { adm = 6 }
+		adm = 5
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_5_adm_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 25
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2002
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_4_adm_flag }
+		NOT = { adm = 5 }
+		adm = 4
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_4_adm_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2003
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_2_adm_flag }
+		NOT = { adm = 3 }
+		adm = 2
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_2_adm_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2004
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_1_adm_flag }
+		NOT = { adm = 2 }
+		adm = 1
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_1_adm_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 30
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2005
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_0_adm_flag }
+		NOT = { adm = 1 }
+		adm = 0
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_0_adm_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 50
+		}
+	}
+}
+
+#DIP
+country_event = {
+	id = danda_niti.21
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_6_dip_flag }
+		dip = 6
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_6_dip_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 40
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2101
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_5_dip_flag }
+		NOT = { dip = 6 }
+		dip = 5
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_5_dip_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 25
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2102
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_4_dip_flag }
+		NOT = { dip = 5 }
+		dip = 4
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_4_dip_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2103
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_2_dip_flag }
+		NOT = { dip = 3 }
+		dip = 2
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_2_dip_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2104
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_1_dip_flag }
+		NOT = { dip = 2 }
+		dip = 1
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_1_dip_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 30
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2105
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_0_dip_flag }
+		NOT = { dip = 1 }
+		dip = 0
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_0_dip_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 50
+		}
+	}
+}
+
+#MIL
+country_event = {
+	id = danda_niti.22
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_6_mil_flag }
+		mil = 6
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_6_mil_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 40
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2201
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_5_mil_flag }
+		NOT = { mil = 6 }
+		mil = 5
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_5_mil_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 25
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2202
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_4_mil_flag }
+		NOT = { mil = 5 }
+		mil = 4
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_4_mil_flag
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 10
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2203
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_2_mil_flag }
+		NOT = { mil = 3 }
+		mil = 2
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_2_mil_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 15
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2204
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_1_mil_flag }
+		NOT = { mil = 2 }
+		mil = 1
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_1_mil_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 30
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2205
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = indian_ruler_0_mil_flag }
+		NOT = { mil = 1 }
+		mil = 0
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_ruler_flag = indian_ruler_0_mil_flag
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 50
+		}
+	}
+}
+
+##########Unrest
+
+country_event = {
+	id = danda_niti.23
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_unrest_danda_niti_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_unrest_danda_niti_flag
+		set_variable = {
+			which = danda_niti_average_unrest
+			value = 1
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2301
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_unrest_danda_niti_flag
+		average_unrest = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_average_unrest
+			value = trigger_value:average_unrest
+			who = ROOT
+		}
+		multiply_variable = {
+			which = danda_niti_average_unrest
+			value = 8
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_average_unrest
+		}
+		set_variable = {
+			which = danda_niti_average_unrest
+			value = 1
+		}
+	}
+}
+
+##########Absolutism
+
+country_event = {
+	id = danda_niti.24
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_absolutism_danda_niti_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_absolutism_danda_niti_flag
+		set_variable = {
+			which = danda_niti_absolutism
+			value = 1
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2401
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_absolutism_danda_niti_flag
+		absolutism = 20
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_absolutism
+			value = trigger_value:absolutism
+			who = ROOT
+		}
+		subtract_variable  = {
+			which = danda_niti_absolutism
+			value = 15
+		}
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_absolutism
+		}
+		set_variable = {
+			which = danda_niti_absolutism
+			value = 1
+		}
+	}
+}
+
+##########Autonomy
+
+country_event = {
+	id = danda_niti.25
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_autonomy_danda_niti_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_autonomy_danda_niti_flag
+		set_variable = {
+			which = danda_niti_average_autonomy
+			value = 1
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2501
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_autonomy_danda_niti_flag
+		average_autonomy = 35
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_average_autonomy
+			value = trigger_value:average_autonomy
+			who = ROOT
+		}
+		subtract_variable  = {
+			which = danda_niti_average_autonomy
+			value = 20
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_average_autonomy
+		}
+		set_variable = {
+			which = danda_niti_average_autonomy
+			value = 1
+		}
+	}
+}
+
+##########Army Tradition
+
+country_event = {
+	id = danda_niti.26
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_country_flag = counting_army_tradition_danda_niti_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_country_flag = counting_army_tradition_danda_niti_flag
+		set_variable = {
+			which = danda_niti_army_tradition
+			value = 1
+		}
+	}
+}
+
+country_event = {
+	id = danda_niti.2601
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = counting_army_tradition_danda_niti_flag
+		army_tradition = 50
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_army_tradition
+			value = trigger_value:army_tradition
+			who = ROOT
+		}
+		subtract_variable  = {
+			which = danda_niti_army_tradition
+			value = 40
+		}
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_army_tradition
+		}
+		set_variable = {
+			which = danda_niti_army_tradition
+			value = 1
+		}
+	}
+}
+
+##########Total Development/Once every Ruler
+
+country_event = {
+	id = danda_niti.27
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_ruler_flag = counting_development_danda_niti_flag }
+		total_development = 100
+	}
+
+	immediate = {
+		set_ruler_flag = counting_development_danda_niti_flag
+		set_variable = {
+			which = danda_niti_development
+			value = 1
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		export_to_variable = {
+			which = danda_niti_development
+			value = trigger_value:total_development
+			who = ROOT
+		}
+		divide_variable = {
+			which = danda_niti_development
+			value = 100
+		}
+		change_variable = {
+			which = danda_niti_disaster_progress
+			which = danda_niti_development
+		}
+		set_variable = {
+			which = danda_niti_development
+			value = 1
+		}
+	}
+}
+
+##########If Child King/Once every Ruler
+
+country_event = {
+	id = danda_niti.28
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		has_regency = yes
+		num_of_cities = 20
+		government = monarchy
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		change_variable = {
+			which = danda_niti_disaster_progress
+			value = 80
+		}
+	}
+}
+
+##########natural Decay
+
+country_event = {
+	id = danda_niti.29
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_disaster = loss_of_danda_niti }
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		subtract_variable = {
+			which = danda_niti_disaster_progress
+			value = 2
+		}
+	}
+}
+
+##########Clears Danda Niti each time a new ruler dies if Danda Niti is negative
+
+country_event = {
+	id = danda_niti.30
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_disaster = loss_of_danda_niti }
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_variable = {
+			which = danda_niti_disaster_progress
+			value = 1
+		}
+		country_event = { id = danda_niti.27 }
+		country_event = { id = danda_niti.28 }
+	}
+}
+
+#######Yearly check for Danda Niti to not be negative
+
+country_event = {
+	id = danda_niti.31
+	title = "danda_niti.11.t"
+	desc = "danda_niti.11.d"
+	picture = civilwar
+	hidden = yes
+
+	trigger = {
+		has_country_flag = danda_niti_disaster_target
+		NOT = { has_disaster = loss_of_danda_niti }
+		NOT = {
+			check_variable = {
+				which = danda_niti_disaster_progress
+				value = 1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "danda_niti.11.a"
+		set_variable = {
+			which = danda_niti_disaster_progress
+			value = 1
+		}
+	}
+}

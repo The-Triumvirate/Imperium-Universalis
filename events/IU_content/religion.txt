@@ -1,0 +1,486 @@
+namespace = religion
+
+########################################################################################
+# bad omen
+########################################################################################
+country_event = {
+	id = religion.1
+	title = "religion.1.t"
+	desc = "religion.1.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		uses_patriarch_authority = yes
+		stability = 1
+	}
+
+	option = { # yes
+		name = "religion.1.a"
+		ai_chance = { factor = 20 }
+		add_stability = -1
+		add_patriarch_authority = 0.15
+	}
+
+	option = { # no
+		ai_chance = { factor = 80 }
+		name = "religion.1.b"
+		add_patriarch_authority = -0.05
+	}
+}
+########################################################################################
+# festival
+########################################################################################
+country_event = {
+	id = religion.2
+	title = "religion.2.t"
+	desc = "religion.2.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		uses_patriarch_authority = yes
+		stability = 1
+	}
+
+	option = {
+		name = "religion.2.a"
+		add_patriarch_authority = 0.05
+	}
+}
+
+########################################################################################
+# kill advisor
+########################################################################################
+country_event = {
+	id = religion.3
+	title = "religion.3.t"
+	desc = "religion.3.d"
+	picture = ruler
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_advisor = yes
+		uses_patriarch_authority = yes
+	}
+
+	option = {
+		name = "religion.3.a"
+		add_patriarch_authority = 0.05
+		kill_advisor = random
+	}
+	option = {
+		name = "religion.3.b"
+		add_patriarch_authority = -0.05
+	}
+}
+
+########################################################################################
+# cult of cybele spread
+########################################################################################
+country_event = {
+	id = religion.4
+	title = "religion.4.t"
+	desc = "religion.4.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			religion = greek_religion
+			religion = roman_religion
+			religion = veneti_religion
+			religion = helleno_scythian
+		}
+		any_neighbor_country = {
+			religion = cybele
+		}
+		NOT = { religion = cybele }
+		num_of_cities = 10
+	}
+
+	option = {
+		name = "religion.4.a"
+		random_province = {
+			limit = {
+				NOT = { religion = cybele }
+			}
+			change_religion = cybele
+		}
+	}
+}
+########################################################################################
+# New Shrine
+########################################################################################
+country_event = {
+    id = religion.8
+    title = "religion.8.t"
+    desc = "religion.8.d"
+    picture = religious
+
+	is_triggered_only = yes
+
+	goto = random_prov_add_shrine
+
+    trigger = {
+        uses_patriarch_authority = yes
+		NOT = { num_of_cities = 10 }
+		treasury = 100
+		NOT = { government = native }
+		adm_tech = 2
+        any_owned_province = {
+            num_free_building_slots = 1
+            NOT = { has_building = shrine }
+            NOT = { has_building = small_temple }
+            NOT = { has_building = great_temple }
+        }
+    }
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_building = shrine }
+					NOT = { has_building = small_temple }
+					NOT = { has_building = great_temple }
+					num_free_building_slots = 1
+				}
+				save_event_target_as = random_prov_add_shrine
+			}
+		}
+	}
+
+    option = {
+        name = "religion.8.a"
+		if = {
+			limit = { adm_tech = 19 }
+			event_target:random_prov_add_shrine = {
+				add_building = great_temple
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 6 }
+			event_target:random_prov_add_shrine = {
+				add_building = small_temple
+			}
+		}
+		else_if = {
+			limit = { adm_tech = 2 }
+        	event_target:random_prov_add_shrine = {
+				add_building = shrine
+			}
+		}
+        add_treasury = -100
+        add_patriarch_authority = 0.05
+		add_adm_power = 75
+   	}
+
+    option = {
+        name = "religion.8.b"
+        add_patriarch_authority = -0.05
+        add_stability = -1
+    }
+}
+
+########################################################################################
+# ruler follows new cult
+########################################################################################
+country_event = {
+    id = religion.9
+    title = "religion.9.t"
+    desc = "religion.9.d"
+    picture = religious
+
+	is_triggered_only = yes
+
+    trigger = {
+        OR = {
+			uses_patriarch_authority = yes
+		}
+		NOT = { religious_unity = 0.85 }
+    }
+
+    option = {
+        name = "religion.9.a"
+        if = {
+			limit = {  uses_patriarch_authority = yes }
+			add_patriarch_authority = 0.05
+		}
+		add_legitimacy = -5
+		add_prestige = -5
+    }
+
+    option = {
+        name = "religion.9.b"
+        if = {
+			limit = {  uses_patriarch_authority = yes }
+			add_patriarch_authority = -0.05
+		}
+		add_legitimacy = 5
+		add_prestige = 5
+    }
+}
+########################################################################################
+# mithra cult spread
+########################################################################################
+country_event = {
+	id = religion.10
+	title = "religion.10.t"
+	desc = "religion.10.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			religion_group = pagan_group
+			religion_group = persian_group
+		}
+		capital_scope = {
+			continent = asia
+		}
+		NOT = { religion = iranian_religion }
+		num_of_cities = 10
+		OR = {
+			any_neighbor_country = {
+				religion = iranian_religion
+			}
+			any_owned_province = {
+				religion = iranian_religion
+			}
+		}
+	}
+
+	option = {
+		name = "religion.10.a"
+		random_province = {
+			limit = {
+				NOT = { religion = iranian_religion }
+			}
+			change_religion = iranian_religion
+		}
+	}
+}
+
+########################################################################################
+# religion spreads
+########################################################################################
+province_event = {
+	id = religion.11
+	title = "religion.11.t"
+	desc = "religion.11.d"
+	picture = religious
+
+	hidden = yes
+
+	trigger = {
+		NOT = { religion = ROOT }
+		religion_group = pagan_group
+		any_neighbor_province = {
+			owner = { NOT = { patriarch_authority = 0.25 } }
+		}
+		OR = {
+			owner = { patriarch_authority = 0.25 }
+			owner = { uses_patriarch_authority = no }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 65000
+		modifier = {
+			factor = 2.0
+			owner = { is_tribal = yes }
+		}
+		modifier = {
+			factor = 2.0
+			owner = { NOT = { patriarch_authority = 0.4 } }
+		}
+		modifier = {
+			factor = 1.5
+			owner = { NOT = { patriarch_authority = 0.6 } }
+		}
+		modifier = {
+			factor = 0.85
+			owner = { patriarch_authority = 0.8 }
+		}
+		modifier = {
+			factor = 0.9
+			owner = { DIP = 4 }
+		}
+		modifier = {
+			factor = 1.25
+			owner = { full_idea_group = syncretism_ideas }
+		}
+	}
+
+	immediate = {
+		random_neighbor_province = {
+			limit = {
+				religion_group = pagan_group
+				NOT = { religion = ROOT }
+				owner = { NOT = { patriarch_authority = 0.25 }
+				}
+			}
+			change_religion = ROOT
+			province_event = {
+				id = religion.12
+				days = 1
+			}
+		}
+	}
+
+	option = {
+		name = "religion.11.a"
+	}
+}
+
+########################################################################################
+# religion spreads
+########################################################################################
+province_event = {
+	id = religion.12
+	title = "religion.12.t"
+	desc = "religion.12.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	option = {
+		name = "religion.12.a"
+	}
+}
+########################################################################################
+# center removed
+########################################################################################
+province_event = {
+	id = religion.13
+	title = "religion.13.t"
+	desc = "religion.13.d"
+	picture = religious
+
+	trigger = {
+		is_reformation_center = yes
+		had_province_flag = {
+			flag = reform_center_ticking_flag
+			days = 36500
+		}
+		if = {
+			limit = { has_province_flag = reform_center_one_time_flag }
+			had_province_flag = {
+				flag = reform_center_one_time_flag
+				days = 18250
+			}
+		}
+	}
+
+	is_mtth_scaled_to_size = 2
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "religion.13.a"
+		ai_chance = { factor = 99 }
+		tooltip = {
+			remove_reform_center = zoroastrianism
+			remove_reform_center = zurvanism
+			remove_reform_center = buddhism
+			remove_reform_center = jain
+			remove_reform_center = ajivika
+		}
+		hidden_effect = {
+			remove_reform_center = zoroastrianism
+			remove_reform_center = zurvanism
+			remove_reform_center = buddhism
+			remove_reform_center = jain
+			remove_reform_center = ajivika
+		}
+	}
+
+	option = {
+		name = "religion.13.b"
+		ai_chance = { factor = 1 }
+		trigger = {
+			NOT = { has_province_flag = reform_center_one_time_flag }
+			owner = {
+				religion = ROOT
+				has_friendly_reformation_center = yes
+			}
+		}
+		owner =	{
+			add_years_of_income = -0.35
+			add_dip_power = -250
+			add_adm_power = -250
+		}
+		hidden_effect = { set_province_flag = reform_center_one_time_flag }
+	}
+}
+########################################################################################
+# Generic Festival
+########################################################################################
+country_event = {
+	id = religion.14
+	title = "religion.14.t"
+	desc = "religion.14.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		uses_patriarch_authority = yes
+		NOT = { patriarch_authority = 0.4 }
+	}
+
+	option = {
+		name = "religion.14.a"
+		add_patriarch_authority = 0.05
+	}
+}
+########################################################################################
+# Temple Sacrifice
+########################################################################################
+country_event = {
+	id = religion.15
+	title = "religion.15.t"
+	desc = "religion.15.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		uses_patriarch_authority = yes
+		patriarch_authority = 0.4
+	}
+
+	option = {
+		name = "religion.15.a"
+		add_treasury = -25
+		add_patriarch_authority = 0.02
+	}
+}
+########################################################################################
+# Devotion Collapse
+########################################################################################
+country_event = {
+	id = religion.16
+	title = "religion.16.t"
+	desc = "religion.16.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		uses_patriarch_authority = yes
+		patriarch_authority = 0.8
+	}
+
+	option = {
+		name = "religion.16.a"
+		add_patriarch_authority = -0.1
+	}
+}

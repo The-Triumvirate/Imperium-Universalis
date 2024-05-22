@@ -1,0 +1,889 @@
+namespace = tribal
+
+########################################################################################
+# white stag
+########################################################################################
+#country_event = {
+#	id = tribal.1
+#	title = "tribal.1.t"
+#	desc = "tribal.1.d"
+#	picture = stag
+#
+#	is_triggered_only = yes
+#
+#	trigger = {
+#		always = no
+#		OR = {
+#			government = tribal
+#			government = native
+#		}
+#	}
+#
+#	option = {
+#		name = "tribal.1.a"
+#		ai_chance = { factor = 30 }
+#			add_prestige = 5
+#	}
+#}
+
+########################################################################################
+# the deligation (1/4)
+########################################################################################
+country_event = {
+	id = tribal.2
+	title = "tribal.2.t"
+	desc = "tribal.2.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	trigger = {
+		government = tribal
+		any_neighbor_country = {
+			NOT = { is_tribal = yes }
+			total_development = 30
+			NOT = { is_rival = ROOT }
+			tech_difference = 3
+			NOT = { war_with = ROOT }
+		}
+	}
+
+	option = {
+		name = "tribal.2.a"
+		ai_chance = { factor = 80 }
+		add_prestige = -5
+		random_neighbor_country = {
+			limit = {
+				NOT = { is_tribal = yes }
+				total_development = 30
+			}
+			country_event = {
+				id = tribal.3
+				days = 30
+			}
+		}
+	}
+	option = {
+		name = "tribal.2.b"
+		ai_chance = { factor = 20 }
+		add_prestige = 5
+	}
+}
+
+########################################################################################
+# the deligation (2/4)
+########################################################################################
+country_event = {
+	id = tribal.3
+	title = "tribal.3.t"
+	desc = "tribal.3.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	option = {
+		name = "tribal.3.a"
+		ai_chance = { factor = 65 }
+		add_adm_power = -20
+		add_dip_power = -20
+		add_mil_power = -20
+		tooltip = {
+			FROM = {
+				add_adm_power = 60
+				add_dip_power = 60
+				add_mil_power = 60
+				add_opinion = {
+					who = ROOT
+					modifier = opinion_sent_help
+				}
+			}
+		}
+		FROM = {
+			country_event = {
+				id = tribal.4
+				days = 30
+			}
+		}
+	}
+	option = {
+		name = "tribal.3.b"
+		ai_chance = { factor = 35 }
+		FROM = {
+			country_event = {
+				id = tribal.5
+				days = 30
+			}
+		}
+	}
+}
+########################################################################################
+# the deligation (3/4)
+########################################################################################
+country_event = {
+	id = tribal.4
+	title = "tribal.4.t"
+	desc = "tribal.4.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	option = {
+		name = "tribal.4.a"
+		add_adm_power = 60
+		add_dip_power = 60
+		add_mil_power = 60
+		add_opinion = {
+			who = FROM
+			modifier = opinion_sent_help
+		}
+	}
+}
+########################################################################################
+# the deligation (4/4)
+########################################################################################
+country_event = {
+	id = tribal.5
+	title = "tribal.5.t"
+	desc = "tribal.5.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	option = {
+		name = "tribal.5.a"
+		add_prestige = -5
+	}
+}
+########################################################################################
+# tribal volenteers
+########################################################################################
+country_event = {
+	id = tribal.6
+	title = "tribal.6.t"
+	desc = "tribal.6.d"
+	picture = raid_on_romans_2
+
+	trigger = {
+		is_tribal = yes
+		is_at_war = yes
+		NOT = { war_score = 0 }
+		any_enemy_country = { army_size = ROOT }
+	}
+
+	mean_time_to_happen = {
+		months = 32
+	}
+
+	option = {
+		name = "tribal.6.a"
+		random_owned_province = {
+			limit = {
+				controlled_by = ROOT
+				has_siege = no
+			}
+			owner = { add_yearly_manpower = 1.5 }
+		}
+	}
+}
+########################################################################################
+# tribal gathering
+########################################################################################
+country_event = {
+	id = tribal.8
+	title = "tribal.8.t"
+	desc = "tribal.8.d"
+	picture = tribemen
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = yes
+	}
+
+	option = {
+		name = "tribal.8.a"
+		ai_chance = { factor = 30 }
+		add_adm_power = 30
+	}
+	option = {
+		name = "tribal.8.b"
+		ai_chance = { factor = 30 }
+		add_dip_power = 30
+	}
+	option = {
+		name = "tribal.8.c"
+		ai_chance = { factor = 30 }
+		add_mil_power = 30
+	}
+}
+########################################################################################
+# druids predict the future
+########################################################################################
+country_event = {
+	id = tribal.9
+	title = "tribal.9.t"
+	desc = "tribal.9.d"
+	picture = druids
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = celtic_religion
+		NOT = { stability = 3 }
+	}
+
+	option = {
+		name = "tribal.9.a"
+		ai_chance = { factor = 60 }
+		random_list = {
+			75 = {
+				add_stability = 1
+			}
+			25 = {
+				add_stability = -1
+			}
+		}
+	}
+	option = {
+		name = "tribal.9.b"
+		ai_chance = { factor = 40 }
+	}
+}
+########################################################################################
+# migrating families
+########################################################################################
+country_event = {
+	id = tribal.10
+	title = "tribal.10.t"
+	desc = "tribal.10.d"
+	picture = houses
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = yes
+		num_of_cities = 3
+		NOT = { num_of_cities = 10 }
+		any_owned_province = { base_manpower = 2 }
+	}
+
+	option = {
+		name = "tribal.10.a"
+		ai_chance = { factor = 80 }
+		random_owned_province = {
+			limit = { base_manpower = 2 }
+			add_base_manpower = -1
+			change_variable = { PS_rur_evtd = 1 }
+		}
+		random_owned_province = {
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }
+		}
+	}
+	option = {
+		name = "tribal.10.b"
+		ai_chance = { factor = 20 }
+		add_adm_power = -10
+	}
+}
+########################################################################################
+# good hunt
+########################################################################################
+country_event = {
+	id = tribal.11
+	title = "tribal.11.t"
+	desc = "tribal.11.d"
+	picture = stag
+
+	is_triggered_only = yes
+
+	trigger = {
+		government = native
+		NOT = { num_of_cities = 4 }
+		NOT = { has_country_modifier = good_hunt_mod }
+		NOT = { has_country_modifier = bad_hunt_mod }
+	}
+
+	option = {
+		name = "tribal.11.a"
+		add_country_modifier = {
+			name = good_hunt_mod
+			duration = 365
+		}
+	}
+}
+########################################################################################
+# bad hunt
+########################################################################################
+country_event = {
+	id = tribal.12
+	title = "tribal.12.t"
+	desc = "tribal.12.d"
+	picture = stag
+
+	is_triggered_only = yes
+
+	trigger = {
+		government = native
+		NOT = { num_of_cities = 4 }
+		NOT = { has_country_modifier = good_hunt_mod }
+		NOT = { has_country_modifier = bad_hunt_mod }
+	}
+
+	option = {
+		name = "tribal.12.a"
+		add_country_modifier = {
+			name = bad_hunt_mod
+			duration = 365
+		}
+	}
+}
+########################################################################################
+# ...
+########################################################################################
+country_event = {
+	id = tribal.13
+	title = "tribal.13.t"
+	desc = "tribal.13.d"
+	picture = sacrifice
+
+	is_triggered_only = yes
+
+	trigger = {
+		is_tribal = yes
+		num_of_cities = 3
+	}
+
+	option = {
+		name = "tribal.13.a"
+		ai_chance = { factor = 80 }
+		add_army_tradition = -5
+		add_navy_tradition = -5
+	}
+	option = {
+		name = "tribal.13.b"
+		ai_chance = { factor = 20 }
+		add_adm_power = -15
+		add_dip_power = -15
+		add_mil_power = -15
+	}
+}
+########################################################################################
+# raid
+########################################################################################
+country_event = {
+    id = tribal.14
+    title = "tribal.14.t"
+    desc = "tribal.14.d"
+    picture = parthians
+
+	is_triggered_only = yes
+
+    trigger = {
+        government = native
+        is_at_war = no
+        any_neighbor_country = {
+			NOT = { has_opinion = { who = ROOT value = 75 } }
+		}
+    }
+
+	option = {
+        name = "tribal.14.a"
+        random_list = {
+            50 = {
+                add_yearly_manpower = -1
+                add_prestige = -5
+                add_horde_unity = -5
+            }
+            50 = {
+                add_years_of_income = 0.25
+                add_prestige = 5
+                add_horde_unity = 5
+            }
+        }
+    }
+}
+########################################################################################
+# Young rebels
+########################################################################################
+country_event = {
+    id = tribal.15
+    title = "tribal.15.t"
+    desc = "tribal.15.d"
+    picture = workingmen
+
+	is_triggered_only = yes
+
+    trigger = {
+        is_tribal = yes
+		NOT = { num_of_cities = 4 }
+    }
+
+    option = {
+        name = "tribal.15.a"
+        ai_chance = { factor = 60 }
+		add_prestige = 5
+		add_horde_unity = 5
+    }
+    option = {
+        name = "tribal.15.b"
+        ai_chance = { factor = 20 }
+    	add_mil_power = 20
+    	add_horde_unity = -5
+    }
+    option = {
+        name = "tribal.15.c"
+        ai_chance = { factor = 20 }
+        add_dip_power = 20
+        add_horde_unity = -5
+    }
+}
+
+####################################################################################
+# benefits from trade outpost
+########################################################################################
+country_event = {
+    id = tribal.18
+    title = "tribal.18.t"
+    desc = "tribal.18.d"
+    picture = tradecity
+
+	is_triggered_only = yes
+
+    trigger = {
+		is_tribal = yes
+		any_owned_province = {
+			OR = {
+				has_province_modifier = greek_trade_outpost
+				has_province_modifier = phoenician_trade_outpost
+			}
+		}
+    }
+
+    option = {
+		name = "tribal.18.a"
+		add_adm_power = 20
+		add_dip_power = 20
+		add_mil_power = 20
+    }
+}
+########################################################################################
+# clans seek for more autonomy
+########################################################################################
+country_event = {
+    id = tribal.19
+    title = "tribal.19.t"
+    desc = "tribal.19.d"
+    picture = senat
+
+	is_triggered_only = yes
+
+    trigger = {
+		is_tribal = yes
+		absolutism = 5
+		NOT = { stability = 1 }
+		NOT = { legitimacy = 75 }
+    }
+
+    option = {
+        name = "tribal.19.a"
+		add_absolutism = -3
+		kill_ruler = yes
+	}
+    option = {
+        name = "tribal.19.b"
+		add_stability = -1
+		kill_ruler = yes
+    }
+}
+########################################################################################
+# competition
+########################################################################################
+country_event = {
+    id = tribal.20
+    title = "tribal.20.t"
+    desc = "tribal.20.d"
+    picture = horserace
+
+	is_triggered_only = yes
+
+    trigger = {
+		is_tribal = yes
+    }
+
+    option = {
+        name = "tribal.20.a"
+		add_absolutism = -2
+		add_years_of_income = -0.1
+		add_legitimacy = 10
+		add_horde_unity = 10
+		define_advisor = {
+			type = army_veteran
+			skill = 1
+			discount = yes
+		}
+	}
+    option = {
+        name = "tribal.20.b"
+		add_absolutism = -2
+		add_years_of_income = -0.1
+		add_legitimacy = 10
+		add_horde_unity = 10
+		define_advisor = {
+			type = cavalry_leader
+			skill = 1
+			discount = yes
+		}
+    }
+    option = {
+		name = "tribal.20.c"
+		add_absolutism = -2
+		add_years_of_income = -0.1
+		add_legitimacy = 10
+		add_horde_unity = 10
+		define_advisor = {
+			type = armor_smith
+			skill = 1
+			discount = yes
+		}
+    }
+    option = {
+        name = "tribal.20.e"
+		trigger = { num_of_ports = 1 }
+		add_absolutism = -2
+		add_years_of_income = -0.1
+		add_legitimacy = 10
+		add_horde_unity = 10
+		define_advisor = {
+			type = naval_veteran
+			skill = 1
+			discount = yes
+		}
+    }
+    option = {
+        name = "tribal.20.f"
+		add_absolutism = 1
+    }
+}
+########################################################################################
+# tribal landscape
+########################################################################################
+country_event = {
+    id = tribal.21
+    title = "tribal.21.t"
+    desc = "tribal.21.d"
+    picture = forum_picture
+
+	is_triggered_only = yes
+
+    trigger = {
+		is_tribal = yes
+		NOT = { capital_scope = { base_production = 2 } }
+		any_owned_province = { base_manpower = 3 }
+    }
+
+    option = {
+        name = "tribal.21.a"
+		add_absolutism = -1
+		add_adm_power = -10
+	}
+    option = {
+        name = "tribal.21.b"
+		ai_chance = { factor = 100 }
+		highlight = yes
+		trigger = { ruler_has_personality = mastermind_personality }
+		add_absolutism = -5
+		add_adm_power = -50
+		random_owned_province = {
+			limit = { base_manpower = 3 }
+			add_base_manpower = -1
+			change_variable = { PS_rur_evtd = 1 }
+		}
+		capital_scope = { add_base_production = 1 change_variable = { PS_urb_evtu = 1 } }
+    }
+}
+########################################################################################
+# tribal trade
+########################################################################################
+country_event = {
+    id = tribal.22
+    title = "tribal.22.t"
+    desc = "tribal.22.d"
+    picture = tradecity
+
+	is_triggered_only = yes
+
+    trigger = {
+		is_tribal = yes
+		mercantilism = 50
+		NOT = { capital_scope = { base_production = 2 } }
+		any_owned_province = { base_manpower = 3 }
+    }
+
+    option = {
+        name = "tribal.22.a"
+		add_mercantilism = -1
+		add_dip_power = -10
+	}
+    option = {
+        name = "tribal.22.b"
+		ai_chance = { factor = 100 }
+		highlight = yes
+		trigger = { ruler_has_personality = entrepreneur_personality  }
+		add_absolutism = -5
+		add_dip_power = -50
+		random_owned_province = {
+			limit = { base_manpower = 3 }
+			add_base_manpower = -1
+			change_variable = { PS_rur_evtd = 1 }
+		}
+		capital_scope = { add_base_production = 1 change_variable = { PS_urb_evtu = 1 } }
+    }
+}
+########################################################################################
+# tribal army
+########################################################################################
+country_event = {
+    id = tribal.23
+    title = "tribal.23.t"
+    desc = "tribal.23.d"
+    picture = battle
+
+	is_triggered_only = yes
+
+    trigger = {
+		tribal_or_native_trigger = yes
+		has_dlc = "Cradle of Civilization"
+    }
+
+    option = {
+        name = "tribal.23.a"
+		add_army_professionalism = -0.02
+		add_mil_power = -10
+	}
+    option = {
+        name = "tribal.23.b"
+		ai_chance = { factor = 100 }
+		highlight = yes
+		trigger = { ruler_has_personality = martial_educator_personality }
+		add_army_professionalism = 0.025
+		add_army_tradition = -10
+		add_yearly_manpower = -1
+    }
+}
+########################################################################################
+# no will for reforms
+########################################################################################
+country_event = {
+    id = tribal.24
+    title = "tribal.24.t"
+    desc = "tribal.24.d"
+    picture = battle
+
+	is_triggered_only = yes
+
+    trigger = {
+		government = tribal
+    }
+
+    option = {
+        name = "tribal.24.a"
+		add_stability = -1
+	}
+    option = {
+        name = "tribal.24.b"
+		add_country_modifier = {
+			name = no_wil_for_reforms_modifier
+			duration = 3650
+		}
+	}
+}
+
+country_event = { #unciv vs civ
+    id = tribal.25
+	title = "tribal.25.t"
+	desc = "tribal.25.d"
+	picture = battle
+
+	hidden = yes
+
+	trigger = {
+		OR = {
+			government = tribal
+			has_reform = tribal_republic_reform
+		}
+		NOT = { has_country_modifier = tribal_army_mod }
+		any_country = {
+			offensive_war_with = ROOT
+		    NOT = { tag = ROOT }
+			total_development = 300
+			OR = {
+				government = monarchy
+			    government = republic
+			    government = theocracy
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+	    name = "tribal.25.a"
+		add_country_modifier = {
+		    name = tribal_army_mod
+			duration = -1
+		}
+	}
+}
+
+country_event = { #remove buff
+    id = tribal.26
+	title = "tribal.26.t"
+	desc = "tribal.26.d"
+	picture = battle
+
+	hidden = yes
+
+    trigger = {
+        has_country_modifier = tribal_army_mod
+        NOT = {
+		    any_country = {
+				offensive_war_with = ROOT
+		    	NOT = { tag = ROOT }
+				OR = {
+					government = monarchy
+				    government = republic
+				    government = theocracy
+				}
+		    }
+		}
+    }
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+    option = {
+        name = "tribal.26.a"
+        remove_country_modifier = tribal_army_mod
+    }
+}
+
+country_event = { #ai horde buff
+    id = tribal.27
+	title = "tribal.27.t"
+	desc = "tribal.27.d"
+	picture = battle
+	hidden = yes
+
+	trigger = {
+		has_reform = steppe_horde_reform
+	    ai = yes
+		NOT = { has_country_modifier = ai_horde_buff }
+		is_in_war = { attacker_leader = ROOT }
+    }
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+    option = {
+        name = "tribal.27.a"
+        add_country_modifier = {
+            name = ai_horde_buff
+            duration = -1
+        }
+    }
+}
+
+country_event = { #remove buff
+    id = tribal.28
+	title = "tribal.28.t"
+	desc = "tribal.28.d"
+	picture = battle
+
+	hidden = yes
+
+	trigger = {
+		has_reform = steppe_horde_reform
+		has_country_modifier = ai_horde_buff
+		is_at_war = no
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+	    name = "tribal.28.a"
+		remove_country_modifier = ai_horde_buff
+	}
+}
+
+country_event = { #tribal separatism
+    id = tribal.29
+	title = "tribal.29.t"
+	desc = "tribal.29.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+	    OR = {
+	        government = tribal
+			has_reform = tribal_republic_reform
+		}
+	}
+
+	option = {
+	    name = "tribal.29.a"
+		add_stability = -2
+	}
+}
+
+country_event = { #pacified separatism
+    id = tribal.30
+	title = "tribal.30.t"
+	desc = "tribal.30.d"
+	picture = culture
+
+	is_triggered_only = yes
+
+	trigger = {
+	    OR = {
+		    government = tribal
+			has_reform = tribal_republic_reform
+		}
+	}
+
+	option = {
+	    name = "tribal.30.a"
+		add_legitimacy = 30
+		add_republican_tradition = 20
+		add_horde_unity = 30
+	}
+}
+
+province_event = {
+    id = tribal.31
+	title = "tribal.31.t"
+	desc = "tribal.31.d"
+	picture = culture
+
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		owner = {
+			tribal_or_native_trigger = yes
+			NOT = { has_country_flag = tribal_can_use_all_buildings_flag }
+		}
+	}
+
+	option = {
+	    name = "tribal.31.a"
+		destroy_non_tribal_group_buildings = yes
+	}
+}

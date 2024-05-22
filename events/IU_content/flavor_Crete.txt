@@ -1,0 +1,1125 @@
+namespace = crete
+
+########################################################################################
+# Cretan Wars
+########################################################################################
+
+###Start
+
+country_event = {
+	id = crete.1
+	title = "crete.1.t"
+	desc = "crete.1.d"
+	picture = city
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		exists = POL
+		exists = KNO
+		is_year = 150
+		POL = {
+			is_at_war = no
+		}
+		KNO = {
+			is_at_war = no
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.5
+			NOT = {
+				KNO = {
+					army_size_percentage = 0.5
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_global_flag = cretan_wars_main_flag
+	}
+
+	option = {
+		name = crete.1.a
+
+		hidden_effect = {
+			POL = {
+				add_country_modifier = {
+					name = "KNO_POL_cretan_wars"
+					duration = -1
+				}
+			}
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_cretan_wars"
+					duration = -1
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+				NOT = { tag = POL }
+				NOT = { tag = KNO }
+			}
+			country_event = { id = crete.2 }
+		}
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+				OR = {
+					is_rival = POL
+					is_enemy = POL
+					is_rival = KNO
+					is_enemy = KNO
+				}
+			}
+			if = {
+				limit = {
+					is_rival = POL
+				}
+				remove_rival = POL
+			}
+			if = {
+				limit = {
+					is_enemy = POL
+				}
+				POL = { remove_rival = PREV }
+			}
+			if = {
+				limit = {
+					is_rival = KNO
+				}
+				remove_rival = KNO
+			}
+			if = {
+				limit = {
+					is_enemy = KNO
+				}
+				KNO = { remove_rival = PREV }
+			}
+		}
+	}
+}
+######Sides are Chosen
+country_event = {
+	id = crete.2
+	title = "crete.2.t"
+	desc = "crete.2.d"
+	picture = city
+
+	is_triggered_only = yes
+
+	option = { #Side with Knossos
+		name = crete.2.a
+
+		ROOT = {
+			create_alliance = KNO
+			add_historical_friend = KNO
+			add_historical_rival = POL
+
+			add_trust = {
+				who = KNO
+				value = 30
+				mutual = yes
+			}
+			add_trust = {
+				who = POL
+				value = -30
+				mutual = yes
+			}
+		}
+
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = KNO
+						value = 100
+					}
+				}
+			}
+			modifier = {
+				factor = 0.3
+				OR = {
+					tag = OLU
+					tag = LYT
+					tag = RHI
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = KNO
+						value = 75
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					trust = {
+						who = KNO
+						value = 50
+					}
+				}
+			}
+			modifier = {
+				factor = 1.7
+				primary_culture = eteocretan
+			}
+		}
+	}
+
+	option = { #side with Polyrrhenia
+		name = crete.2.b
+
+		ROOT = {
+			create_alliance = POL
+			add_historical_friend = POL
+			add_historical_rival = KNO
+
+			add_trust = {
+				who = KNO
+				value = -30
+				mutual = yes
+			}
+			add_trust = {
+				who = POL
+				value = 30
+				mutual = yes
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0.75
+				NOT = {
+					has_opinion = {
+						who = POL
+						value = 100
+					}
+				}
+			}
+			modifier = {
+				factor = 0.3
+				tag = GOR
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					has_opinion = {
+						who = POL
+						value = 75
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					trust = {
+						who = POL
+						value = 50
+					}
+				}
+			}
+		}
+	}
+}
+
+#####The War Starts
+country_event = {
+	id = crete.3
+	title = "crete.3.t"
+	desc = "crete.3.d"
+	picture = city
+
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = POL
+		has_global_flag = cretan_wars_main_flag
+		exists = KNO
+	}
+
+	mean_time_to_happen = {
+		months = 360
+		modifier = {
+			factor = 1.1
+			has_global_flag = cretan_wars_trade_friendly_flag
+		}
+		modifier = {
+			factor = 0.9
+			has_global_flag = cretan_wars_trade_hostile_flag
+		}
+		modifier = {
+			factor = 1.2
+			has_global_flag = cretan_wars_dominance_eased_flag
+		}
+		modifier = {
+			factor = 0.8
+			has_global_flag = cretan_wars_dominance_asserted_flag
+		}
+		modifier = {
+			factor = 0.9
+			has_global_flag = cretan_wars_olive_crisis_rhi_promoted_flag
+		}
+		modifier = {
+			factor = 0.75
+			has_global_flag = cretan_wars_olive_crisis_pol_promoted_flag
+		}
+		modifier = {
+			factor = 0.9
+			OR = {
+				has_global_flag = cretan_wars_pol_help_macedon_flag
+				has_global_flag = cretan_wars_pol_help_sparta_flag
+			}
+		}
+		modifier = {
+			factor = 1.4
+			has_global_flag = cretan_wars_culture_schism_cretans_flag
+		}
+		modifier = {
+			factor = 0.6
+			has_global_flag = cretan_wars_culture_schism_factions_flag
+		}
+
+		modifier = {
+			factor = 1.4
+			has_global_flag = cretan_wars_defector_returned_flag
+		}
+		modifier = {
+			factor = 1.2
+			has_global_flag = cretan_wars_defector_executed_flag
+		}
+		modifier = {
+			factor = 0.8
+			has_global_flag = cretan_wars_defector_harbored_flag
+		}
+		modifier = {
+			factor = 0.6
+			has_global_flag = cretan_wars_defector_employed_flag
+		}
+	}
+
+	immediate = {
+		clr_global_flag = cretan_wars_main_flag
+		set_global_flag = cretan_wars_war_in_progress
+	}
+
+	option = {
+		name = crete.3.a
+		POL = {
+			declare_war = KNO
+		}
+	}
+
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = POL
+		}
+	}
+}
+
+####Events that affect the MTTH until war
+###Trade Incident
+country_event = {
+	id = crete.4
+	title = "crete.4.t"
+	desc = "crete.4.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		has_global_flag = cretan_wars_main_flag
+		tag = POL
+		NOT = { KNO = { has_country_modifier = KNO_POL_event_fired } }
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_ally = {
+				save_event_target_as = offended_ally
+			}
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = crete.4.a
+		set_country_flag = cretan_wars_trade_friendly_flag
+		KNO = {
+			add_country_modifier = {
+				name = "KNO_POL_friendly_trade"
+				duration = 1825
+			}
+		}
+		POL = {
+			add_country_modifier = {
+				name = "KNO_POL_friendly_trade"
+				duration = 1825
+			}
+		}
+		event_target:offended_ally = {
+			add_opinion = {
+				who = POL
+				modifier = KNO_POL_didnt_defend_us
+			}
+		}
+		add_prestige = -20
+	}
+
+	option = {
+		name = crete.4.b
+		set_global_flag = cretan_wars_trade_hostile_flag
+		KNO = {
+			add_country_modifier = {
+				name = "KNO_POL_hostile_trade"
+				duration = 1825
+			}
+		}
+		POL = {
+			add_country_modifier = {
+				name = "KNO_POL_hostile_trade"
+				duration = 1825
+			}
+		}
+		event_target:offended_ally = {
+			add_opinion = {
+				who = POL
+				modifier = KNO_POL_defended_us
+			}
+		}
+		add_prestige = 20
+	}
+}
+
+####Knossos Dominance
+country_event = {
+	id = crete.5
+	title = "crete.5.t"
+	desc = "crete.5.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = KNO
+		has_global_flag = cretan_wars_main_flag
+		owns_core_province = 1005
+		NOT = { KNO = { has_country_modifier = KNO_POL_event_fired } }
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #assert dominance
+		name = crete.5.a
+		set_global_flag = cretan_wars_dominance_asserted_flag
+
+		add_country_modifier = {
+			name = "KNO_POL_hegemon_crete"
+			duration = 7300
+		}
+		every_ally = {
+			add_opinion = {
+				who = KNO
+				modifier = KNO_POL_knossos_asserted
+			}
+		}
+		add_prestige = 25
+	}
+
+	option = { #ease tentions
+		name = crete.5.b
+		set_global_flag = cretan_wars_dominance_eased_flag
+
+		add_country_modifier = {
+			name = "KNO_POL_knossos_is_friend"
+			duration = 7300
+		}
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+				NOT = { tag = KNO }
+			}
+			add_opinion = {
+				who = KNO
+				modifier = KNO_POL_knossos_eased
+			}
+		}
+	}
+
+	option = { #focus internally
+		name = crete.5.c
+
+		add_stability = 1
+	}
+}
+
+####Olive Crisis
+
+country_event = {
+	id = crete.6
+	title = "crete.6.t"
+	desc = "crete.6.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POL
+		has_global_flag = cretan_wars_main_flag
+		POL = {
+			owns_core_province = 1000
+		}
+		RHI = {
+			owns_core_province = 5575
+		}
+		KNO = {
+			owns_core_province = 1005
+		}
+		NOT = {
+			KNO = {
+				has_country_modifier = KNO_POL_event_fired
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #embargo knossos, pomote RHI
+		name = crete.6.a
+		set_global_flag = cretan_wars_olive_crisis_rhi_promoted_flag
+		1005 = {
+			add_province_modifier = {
+				name = "KNO_POL_prov_embargo_olives"
+				duration = 3650
+			}
+		}
+		5575 = {
+			add_province_modifier = {
+				name = "KNO_POL_prov_promoted_olives"
+				duration = 3650
+			}
+		}
+		reverse_add_opinion = {
+			who = KNO
+			modifier = KNO_POL_embargoed_us
+		}
+		add_opinion = {
+			who = RHI
+			modifier = KNO_POL_promoted_our_olives
+		}
+		add_country_modifier = {
+			name = "KNO_POL_embargoes_knossos"
+			duration = 3650
+		}
+		change_price = {
+			trade_goods = olive
+			key = OLIVE_SHORTAGE
+			value = 0.1
+			duration = 3650
+		}
+	}
+
+	option = { #embargo knossos, promote polyrrhenia
+		name = crete.6.b
+		set_global_flag = cretan_wars_olive_crisis_pol_promoted_flag
+
+		1005 = {
+			add_province_modifier = {
+				name = "KNO_POL_prov_embargo_olives"
+				duration = 3650
+			}
+		}
+		1000 = {
+			add_province_modifier = {
+				name = "KNO_POL_prov_promoted_olives"
+				duration = 3650
+			}
+		}
+		reverse_add_opinion = {
+			who = KNO
+			modifier = KNO_POL_embargoed_us
+		}
+		POL = {
+			add_country_modifier = {
+				name = "KNO_POL_embargoes_knossos"
+				duration = 3650
+			}
+		}
+		change_price = {
+			trade_goods = olive
+			key = OLIVE_SHORTAGE
+			value = 0.1
+			duration = 3650
+		}
+	}
+
+	option = { #no embargo
+		name = crete.6.c
+
+		add_stability = 1
+	}
+}
+
+###Polyrrhenia seeks Macedonian aid
+
+country_event = {
+	id = crete.7
+	title = "crete.7.t"
+	desc = "crete.7.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POL
+		exists = MAC
+		exists = SP1
+		NOT = {
+			KNO = {
+				has_country_modifier = KNO_POL_event_fired
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #asking for help
+		name = crete.7.a
+		set_global_flag = cretan_wars_pol_help_macedon_flag
+		create_alliance = MAC
+
+		add_country_modifier = {
+			name = "KNO_POL_macedonian_help"
+			duration = 9125
+		}
+		add_prestige = -30
+	}
+
+	option = { #Sparta is closer
+		name = crete.7.b
+		set_global_flag = cretan_wars_pol_help_sparta_flag
+		create_alliance = SP1
+		add_country_modifier = {
+			name = "KNO_POL_spartan_help"
+			duration = 9125
+		}
+		add_prestige = -30
+	}
+
+	option = { #we can do this alone
+		name = crete.7.c
+
+		add_prestige = 30
+		add_stability = 1
+		add_absolutism = 5
+	}
+}
+
+####Cultural Schism
+
+country_event = {
+	id = crete.8
+	title = "crete.8.t"
+	desc = "crete.8.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = KNO
+		NOT = {
+			KNO = {
+				has_country_modifier = KNO_POL_event_fired
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #Schism too deep to mend
+		name = crete.8.a
+		set_global_flag = cretan_wars_culture_schism_factions_flag
+		hidden_effect = {
+			every_country = {
+				limit = {
+					AND = {
+						capital_scope = {
+							OR = {
+								area = polyrrenia_area
+								area = gortyn_area
+								area = knossos_area
+								area = hierapytna_area
+							}
+						}
+						primary_culture = doric
+						OR = {
+							alliance_with = POL
+							tag = POL
+						}
+					}
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = polyrrenia_area
+							area = gortyn_area
+							area = knossos_area
+							area = hierapytna_area
+						}
+						culture = doric
+					}
+					change_culture = lyttian
+				}
+				change_primary_culture = lyttian
+			}
+
+			every_country = {
+				limit = {
+					AND = {
+						capital_scope = {
+							OR = {
+								area = polyrrenia_area
+								area = gortyn_area
+								area = knossos_area
+								area = hierapytna_area
+							}
+						}
+						primary_culture = doric
+						OR = {
+							alliance_with = KNO
+							tag = KNO
+						}
+					}
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = polyrrenia_area
+							area = gortyn_area
+							area = knossos_area
+							area = hierapytna_area
+						}
+					}
+					change_culture = knossian_culture
+				}
+				change_primary_culture = knossian_culture
+			}
+		}
+
+		POL = {
+			every_ally = {
+				add_opinion = {
+					who = KNO
+					modifier = KNO_POL_cultural_differences
+				}
+			}
+		}
+
+		every_ally = {
+			add_opinion = {
+				who = KNO
+				modifier = KNO_POL_cultural_kin
+			}
+		}
+	}
+
+	option = { #doric culture
+		name = crete.8.b
+
+		add_stability = 2
+	}
+
+	option = { #we are all cretans
+		name = crete.8.c
+		set_global_flag = cretan_wars_culture_schism_cretans_flag
+
+		hidden_effect = {
+			every_province = {
+				limit = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+					culture = doric
+				}
+				change_culture = cretan_culture
+			}
+		}
+		every_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						area = polyrrenia_area
+						area = gortyn_area
+						area = knossos_area
+						area = hierapytna_area
+					}
+				}
+			}
+			add_opinion = {
+				who = KNO
+				modifier = KNO_POL_cultural_union
+			}
+		}
+	}
+}
+
+###Knossian Defector
+
+country_event = {
+	id = crete.9
+	title = "crete.9.t"
+	desc = "crete.9.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POL
+		NOT = {
+			KNO = {
+				has_country_modifier = KNO_POL_event_fired
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #turn him over
+		name = crete.9.a
+		set_global_flag = cretan_wars_defector_returned_flag
+
+		add_opinion = {
+			who = KNO
+			modifier = KNO_POL_defector_returned
+		}
+		add_stability = -1
+		add_absolutism = -10
+	}
+
+	option = { #execute him
+		name = crete.9.b
+		set_global_flag = cretan_wars_defector_executed_flag
+
+		add_opinion = {
+			who = KNO
+			modifier = KNO_POL_defector_executed
+		}
+		add_stability = -1
+	}
+
+	option = { #we have seen no traitor
+		name = crete.9.c
+		add_prestige = -5
+	}
+
+	option = { #refuse to return him
+		name = crete.9.d
+		set_global_flag = cretan_wars_defector_harbored_flag
+
+		add_stability = 1
+
+		add_opinion = {
+			who = KNO
+			modifier = KNO_POL_defector_harbored
+		}
+	}
+
+	option = { #employ him
+		name = crete.9.e
+		set_global_flag = cretan_wars_defector_employed_flag
+
+		define_advisor = {
+			culture = ROOT
+			type = foreign_advisor
+			skill = 1
+			cost_multiplier = 0.25
+		}
+		add_opinion = {
+			who = KNO
+			modifier = KNO_POL_defector_employed
+		}
+		add_dip_power = 100
+	}
+}
+
+####Philopoemen for Polyrrhenia
+
+country_event = {
+	id = crete.10
+	title = "crete.10.t"
+	desc = "crete.10.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POL
+		NOT = {
+			KNO = {
+				has_country_modifier = KNO_POL_event_fired
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 10
+	}
+
+	immediate = {
+		hidden_effect = {
+			KNO = {
+				add_country_modifier = {
+					name = "KNO_POL_event_fired"
+					duration = 200
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = { #Polyrrhenia employs the general
+		name = crete.10.a
+
+		define_general = {
+			name = "Philopoemen"
+			shock = 7
+			fire = 2
+			manuever = 1
+			siege = 4
+		}
+	}
+}
+
+####End of War
+country_event = {
+	id = crete.11
+	title = "crete.11.t"
+	desc = "crete.11.d"
+	picture = exploration
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			tag = POL
+			tag = KNO
+		}
+		has_global_flag = cretan_wars_war_in_progress
+		OR = {
+			has_won_war_against = {
+				who = KNO
+				max_years_since = 5
+			}
+			has_won_war_against = {
+				who = POL
+				max_years_since = 5
+			}
+		}
+		is_at_war = no
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		clr_global_flag = cretan_wars_war_in_progress
+	}
+
+	option = { #Polyrrhenia wins
+		name = crete.11.a
+		trigger = { tag = POL }
+		hidden_effect = {
+			every_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = polyrrenia_area
+							area = gortyn_area
+							area = knossos_area
+							area = hierapytna_area
+						}
+					}
+					NOT = { tag = POL }
+				}
+				country_event = { id = crete.12 }
+			}
+		}
+	}
+
+	option = { #Knossos wins
+		name = crete.11.b
+		trigger = { tag = KNO }
+		hidden_effect = {
+			every_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = polyrrenia_area
+							area = gortyn_area
+							area = knossos_area
+							area = hierapytna_area
+						}
+					}
+					NOT = { tag = KNO }
+				}
+				country_event = { id = crete.12 }
+			}
+		}
+	}
+}
+
+####End of War 2
+
+country_event = {
+	id = crete.12
+	title = "crete.12.t"
+	desc = "crete.12.d"
+	picture = exploration
+
+	is_triggered_only = yes
+
+	option = { #Agree
+		name = crete.12.a
+		FROM = {
+			inherit = ROOT
+		}
+		ai_chance = { factor = 40 }
+	}
+
+	option = { #League
+		name = crete.12.b
+		add_prestige = 15
+		FROM = {
+			create_subject = {
+				subject_type = league_member_subject
+				subject = ROOT
+			}
+		}
+		ai_chance = { factor = 30 }
+	}
+
+	option = { #Rebellious
+		name = crete.12.c
+		add_prestige = 30
+		break_marriage = FROM
+		add_stability = -2
+		ai_chance = { factor = 30 }
+	}
+}

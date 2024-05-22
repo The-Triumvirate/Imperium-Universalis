@@ -1,0 +1,326 @@
+namespace = judah
+
+########################################################################################
+# attack the egyptian army  1/2
+########################################################################################
+#country_event = {
+#	id = judah.1
+#	title = "judah.1.t"
+#	desc = "judah.1.d"
+#	picture = rivercrossing
+#
+#	fire_only_once = yes
+#
+#	trigger = {
+#		always = no
+#	}
+#
+#	option = {
+#		name = "judah.1.a"
+#		ai_chance = { factor = 99  }
+#		set_country_flag = egyptian_army_passed_throught
+#		add_prestige = 10
+#		tooltip = {
+#			EGY = {
+#				declare_war_with_cb = {
+#					who = JUD
+#					casus_belli = cb_vassalize_mission
+#				}
+#			}
+#		}
+#		hidden_effect = {
+#			EGY = {
+#				country_event = {
+#					id = judah.2
+#				}
+#			}
+#		}
+#	}
+#	option = {
+#		name = "judah.1.b"
+#		ai_chance = { factor = 1  }
+#		add_stability = -1
+#		set_country_flag = egyptian_army_passed_throught
+#	}
+#}
+
+########################################################################################
+# attack the egyptian army 2/2
+########################################################################################
+country_event = {
+	id = judah.2
+	title = "judah.2.t"
+	desc = "judah.2.d"
+	picture = rivercrossing
+
+	is_triggered_only = yes
+
+	option = {
+		name = "judah.2.a"
+		ai_chance = { factor = 99  }
+		declare_war_with_cb = {
+			who = JUD
+			casus_belli = cb_vassalize_mission
+		}
+	}
+}
+
+########################################################################################
+# jews revolt when second temple destroyed
+########################################################################################
+country_event = {
+	id = judah.3
+	title = "judah.3.t"
+	desc = "judah.3.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	option = {
+		name = "judah.3.a"
+		ai_chance = { factor = 99  }
+		every_owned_province = {
+			limit = {
+				OR = {
+					religion = jewish
+					religion = samaritan_religion
+				}
+				NOT = { province_id = 2277 }
+			}
+			spawn_rebels = {
+				type = jewish_rebels
+				size = 3
+			}
+			add_devastation = 10
+			add_unrest = 10
+			add_nationalism = 10
+		}
+	}
+}
+
+########################################################################################
+# Make Judah or Israel jewish
+########################################################################################
+country_event = {
+	id = judah.4
+	title = "judah.4.t"
+	desc = "judah.4.d"
+	picture = temple
+
+	trigger = {
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		primary_culture = hebrew
+		NOT = { religion = jewish }
+		NOT = { has_country_flag = jewish_samaritan_conversion_event_once_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ai = no }
+				set_country_flag = jewish_samaritan_conversion_event_once_flag
+			}
+		}
+	}
+
+	option = {
+		name = "judah.4.a"
+		ai_chance = { factor = 99 }
+		change_religion = jewish
+		every_owned_province = {
+			limit = { culture = hebrew }
+			change_religion = jewish
+		}
+		add_stability = 1
+		add_legitimacy = 50
+		add_republican_tradition = 50
+		add_devotion = 50
+	}
+
+	option = {
+		name = "judah.4.b"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_legitimacy = -50
+		add_republican_tradition = -50
+		add_devotion = -50
+	}
+}
+
+country_event = {
+	id = judah.401
+	title = "judah.401.t"
+	desc = "judah.401.d"
+	picture = forum_picture
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			tag = JUD
+			AND = {
+				tag = ISR
+				was_tag = JUD
+			}
+		}
+		NOT = { primary_culture = hebrew }
+		NOT = { has_country_flag = jewish_samaritan_culture_event_once_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ai = no }
+				set_country_flag = jewish_samaritan_culture_event_once_flag
+			}
+		}
+	}
+
+	option = {
+		name = "judah.401.a"
+		ai_chance = { factor = 99 }
+		change_primary_culture = hebrew
+		capital_scope = {
+			if = {
+				limit = { NOT = { culture = hebrew } }
+				change_culture = hebrew
+			}
+		}
+		add_stability = 1
+		add_legitimacy = 50
+		add_republican_tradition = 50
+		add_devotion = 50
+	}
+
+	option = {
+		name = "judah.401.b"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_legitimacy = -50
+		add_republican_tradition = -50
+		add_devotion = -50
+	}
+}
+
+########################################################################################
+# Make Judah or Israel samaritan
+########################################################################################
+country_event = {
+	id = judah.5
+	title = "judah.4.t"
+	desc = "judah.4.d"
+	picture = temple
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		primary_culture = samaritan
+		NOT = { religion = samaritan_religion }
+		NOT = { has_country_flag = jewish_samaritan_conversion_event_once_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ai = no }
+				set_country_flag = jewish_samaritan_conversion_event_once_flag
+			}
+		}
+	}
+
+	option = {
+		name = "judah.4.a"
+		ai_chance = { factor = 99 }
+		change_religion = samaritan_religion
+		every_owned_province = {
+			limit = { culture = samaritan }
+			change_religion = samaritan_religion
+		}
+		add_stability = 1
+		add_legitimacy = 50
+		add_republican_tradition = 50
+		add_devotion = 50
+	}
+
+	option = {
+		name = "judah.4.b"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_legitimacy = -50
+		add_republican_tradition = -50
+		add_devotion = -50
+	}
+}
+
+country_event = {
+	id = judah.501
+	title = "judah.401.t"
+	desc = "judah.401.d"
+	picture = forum_picture
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ISR
+		NOT = { was_tag = JUD }
+		NOT = { primary_culture = samaritan }
+		NOT = { has_country_flag = jewish_samaritan_culture_event_once_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ai = no }
+				set_country_flag = jewish_samaritan_culture_event_once_flag
+			}
+		}
+	}
+
+	option = {
+		name = "judah.401.a"
+		ai_chance = { factor = 99 }
+		change_primary_culture = samaritan
+		capital_scope = {
+			if = {
+				limit = { NOT = { culture = samaritan } }
+				change_culture = samaritan
+			}
+		}
+		add_stability = 1
+		add_legitimacy = 50
+		add_republican_tradition = 50
+		add_devotion = 50
+	}
+
+	option = {
+		name = "judah.401.b"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_legitimacy = -50
+		add_republican_tradition = -50
+		add_devotion = -50
+	}
+}

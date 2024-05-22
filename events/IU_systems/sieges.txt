@@ -1,0 +1,1013 @@
+namespace = sieges
+
+##########
+#	SACK OF CITIES events
+#	Flowchart is as follows
+#
+#########
+
+country_event = {		# Activated by the on-action. FROM = province, ROOT = attacker counry, owner = defender country
+	id = sieges.1
+	title = "sieges.1.t"
+	desc = "sieges.1.d"
+	picture = looting
+	is_triggered_only = yes
+
+	trigger = {
+		# Province
+		FROM = {
+			development = 3		# for unrestricted, at least dev 3
+			NOT = { SD_trigger_recently_attacked = yes }
+			NOT = { owned_by = ROOT }		# Avoids sacking previously occupied owned provinces
+			OR = {
+				owner = { is_in_war = { attackers = ROOT } }	# checks the owner is at war with the besieger.
+				owner = { is_in_war = { defenders = ROOT } }	# this way it only works for wars, not for rebels
+			}
+		}
+		# Siege rules
+		OR = {
+			has_global_flag = siege_unrestricted
+			AND = { has_global_flag = siege_cities_15 FROM = { development = 15 } }
+			AND = { has_global_flag = siege_cities_12 FROM = { development = 12 } }
+			AND = { has_global_flag = siege_cities_10 FROM = { development = 10 } }
+			AND = { has_global_flag = siege_cities_8 FROM = { development = 8 } }
+			AND = { has_global_flag = siege_cities_6 FROM = { development = 6 } }
+		}
+
+
+	}
+
+
+	immediate = {
+		# Both sack (this event) and raid (simplified) will have the same structure:
+		#	A) Define the attacking force: number of soldiers and "ferocity" (base value + several national ideas)
+		#	B) Calculate lootable amount (fixed value for each building) and "available" population to be taken away
+		#	C) Several options, each with different amount of intensity and destruction
+
+		#	Depending on the option, there will be collateral damage; always tied to the size of the attacking force. This means that sometime you will have won the siege, but the sacking force is too small to destroy anything significant
+
+		hidden_effect = {
+			FROM = {
+				# Initial cleanup, to remove variables stored in the province modifiers
+				# Pending to be updated, at the end
+				set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 }
+				set_variable = { which = SS_blds value = 0 } set_variable = { which = SS_blds value = 0 }
+				set_variable = { which = SS_blds value = 0 } set_variable = { which = SS_blds value = 0 }
+
+				# define basics: the owner of the province (the country being besieged), province id
+				owner = { save_event_target_as = SD_besieged_owner }
+				if = { limit = { has_province_modifier = SD_enslv_there_hostile } remove_province_modifier = SD_enslv_there_hostile }
+				set_variable = { which = prov_id which = prov_id_base }
+
+				# Siege Power and Siege Destruction: how much is being taken, and how much is being destroyed. 1)size, 2)ferocity, 3)limit
+				set_variable = { which = SD_siege_power value = 0 }
+				export_to_variable = { which = SD_ferocity value = trigger_value:infantry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:cavalry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:artillery_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				set_variable = { which = SD_looted which = SD_siege_power }
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }	# repurposed modifier
+				#set_variable = { which = SD_ferocity value = 5 }					# until this max revolutionary zeal is added to mechanics
+				multiply_variable = { which = SD_siege_power which = SD_ferocity }
+
+				export_to_variable = { which = SD_ferocity value = development } 	# repurposed variables, the least the better
+				multiply_variable = { SD_ferocity = 10 }	divide_variable = { which = SD_siege_power which = SD_ferocity }
+
+				set_variable = { which = SD_destruction which = SD_siege_power }	# power = what is being taken. Destruction = collateral damage
+				set_variable = { which = SD_ratio_display which = SD_siege_power }	multiply_variable = { SD_ratio_display = 100 }
+
+				if = { limit = { check_variable = { SD_siege_power = 1 } } 	set_variable = { which = SD_siege_power value = 1 } }	# max 100%
+				if = { limit = { check_variable = { SD_destruction = 2 } } 	set_variable = { which = SD_destruction value = 2 } }	# max 200%
+
+
+				# The factors to have in mind in a siege is: 1) ratio army/population, 2) ferocity (base 5), and 3) sack value
+
+				# At base values, imagine city of 12 dev, army of 8 thousand: 8 x 5 / 12 x 10 = 40/120 = 0.33. 1 regiment = 5.000 civilians
+				# As you can see, it will be difficult to have a 100% efficiency without a big army, so you won't be able to carpet-siege fast and expect to earn much. It should, at least for the human player, slow down their wartime expansion.
+				##
+				# LOOT: Calculate lootable amount (buildings). Max amount: 33% of build cost. Affected by siege % ratio
+
+				# Loot itself
+				set_variable = { which = SD_loot value = 0 }
+				SD_find_total_loot = yes
+				multiply_variable = { which = SD_loot which = SD_siege_power }
+
+				# Inflation, see common/scripted effects/inflation_effect. Has two parts, one in inmediate and another in the options.
+				SD_inflation_prepare = { var = SD_loot strength = 8 }	# 4x inflation from peace deals, and x2 from the Inflation from Peace Gold formula.
+
+				##
+				# ENSLAVEMENT
+				# Find suitable population to be enslaved/killed (explanation)
+				export_to_variable = { which = SD_slave_eff value = modifier:enslavement_efficiency who = ROOT }
+				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
+
+				export_to_variable = { which = SD_t_lost value = base_manpower }
+				export_to_variable = { which = SD_c_lost value = base_production }
+				export_to_variable = { which = SD_u_lost value = base_tax }
+
+				if = {
+					limit = { has_global_flag = popgrowth_vanilla }		# "Vanilla" events: no Popgrowth Mechanics. Loss of 20%/40%/75% pops.
+					multiply_variable = { SD_t_lost = 0.2 } multiply_variable = { SD_c_lost = 0.4 } multiply_variable = { SD_u_lost = 0.75 }
+				}
+				else = {
+					set_variable = { which = SD_t_slave which = PG_trb_cap } multiply_variable = { SD_t_slave = 0.6 }	# min 60% rural cap
+					set_variable = { which = SD_c_slave which = PG_com_cap } multiply_variable = { SD_c_slave = 0.4 }	# min 40% urban cap
+					set_variable = { which = SD_u_slave which = PG_upp_cap } multiply_variable = { SD_u_slave = 0.3 }	# min 30% upper cap
+
+					# if to lose > min capacity, lose the excess. If not, minimum prize of 0.45 (x% enslaved), no pop will be lost
+					if = { 		limit = { check_variable = { which = SD_t_lost which = SD_t_slave } }
+					subtract_variable = { which = SD_t_lost which = SD_t_slave } }
+					else = { 	set_variable = { which = SD_t_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_c_lost which = SD_c_slave } }
+					subtract_variable = { which = SD_c_lost which = SD_c_slave } }
+					else = { 	set_variable = { which = SD_c_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_u_lost which = SD_u_slave } }
+					subtract_variable = { which = SD_u_lost which = SD_u_slave } }
+					else = { 	set_variable = { which = SD_u_lost value = 0.45 } }
+
+				}
+				# First separation: enslavement % from total lost
+				set_variable = { which = SD_t_slave which = SD_t_lost } multiply_variable = { which = SD_t_slave which = SD_slave_eff }
+				set_variable = { which = SD_c_slave which = SD_c_lost } multiply_variable = { which = SD_c_slave which = SD_slave_eff }
+				set_variable = { which = SD_u_slave which = SD_u_lost } multiply_variable = { which = SD_u_slave which = SD_slave_eff }
+
+				# Split enslave/lost, and
+				subtract_variable = { which = SD_t_lost which = SD_t_slave }
+				subtract_variable = { which = SD_c_lost which = SD_c_slave }
+				subtract_variable = { which = SD_u_lost which = SD_u_slave }
+
+				# Siege ratio % applied: up to 100% in enslavements and up to 200% in losses (loss = 50% killed, 50% escaped)
+				multiply_variable = { which = SD_t_lost which = SD_destruction } multiply_variable = { which = SD_t_slave which = SD_siege_power }
+				multiply_variable = { which = SD_c_lost which = SD_destruction } multiply_variable = { which = SD_c_slave which = SD_siege_power }
+				multiply_variable = { which = SD_u_lost which = SD_destruction } multiply_variable = { which = SD_u_slave which = SD_siege_power }
+
+				multiply_variable = { SD_t_lost = 0.001 } multiply_variable = { SD_t_lost = 1000 }
+				multiply_variable = { SD_c_lost = 0.001 } multiply_variable = { SD_c_lost = 1000 }
+				multiply_variable = { SD_u_lost = 0.001 } multiply_variable = { SD_u_lost = 1000 }
+
+
+
+				# From now on, these values on Enslave and Lost can be applied fully or partially in every option.
+
+
+				##
+				# Leave used variables ready to be displayed in the event localization:
+				set_variable = { which = SD_total_lost which = SD_t_lost } 		set_variable = { which = SD_total_slaves which = SD_t_slave }
+				change_variable = { which = SD_total_lost which = SD_c_lost }	change_variable = { which = SD_total_slaves which = SD_c_slave }
+				change_variable = { which = SD_total_lost which = SD_u_lost }	change_variable = { which = SD_total_slaves which = SD_u_slave }
+				multiply_variable = { SD_total_slaves = 10 }
+				# Careful, these Totals are just for the event and tooltips. The actual values, to show in the prov modifier, will be defined in the scripted eff.
+
+				set_variable = { which = SD_loot_25 which = SD_loot } 		multiply_variable = { SD_loot_25 = 0.25 }
+				set_variable = { which = SD_infl_25 which = SD_inflation } 	multiply_variable = { SD_infl_25 = 0.25 }
+				set_variable = { which = SD_lost_25 which = SD_total_lost } multiply_variable = { SD_lost_25 = 0.25 }
+
+
+				export_to_variable = { which = SD_devast value = development }
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }
+
+
+			}
+		}
+		# Basically this is what will be explained in the DD
+
+		### Enslavement
+		# The army, during their sacking / raid, has been instructed to "prioritize" leaving the population alive. Still, it will not always be possible. Also, it is documented in primary sources that many enslavements in Antiquity had first the adult male population slain, and then most women and children were sold to slavery. Therefore, even if the goal of the besieging army is to take as many people alive as possible, many will resist and perish in the process. That's why we have separated Enslave into two options, whether the besieging army will be more "efficient" executing this task.
+		# The maximum amount of population to be enslaved is determined by maximum capacity of the province (or, if the Popgrowth mechanics are not toggled, by a simple % of current population). Rural/tribal populations will be the most spared, and upper pops the most affected. Remember, this is all the population RELATIVE TO THE CAPACITY LIMIT, so if a province has 5 rural pops but a rural capacity of 15, it is already under
+		# Values for each pop type. It's always 40% enslaved / 60% killed in Soft, and 80% s / 20% k in Hard. If less than 1 pop, won't be taken out. Remember that there will be simplified, automatic and hidden version of this event if the province has low development
+		# Rural/tribal pops:	min 60% capacity, or max 20% if no Popgrowth mechanics enabled
+		# Urban/common pops: 	min 40% capacity, or max 40% ....
+		# Upper pops:			min 20% capacity, or max 75% .... (it's higher, as it gets promoted faster)
+
+		# An example for this: a city with 15 commoners and 5 tribals, with capacities of 15 and 10. Minimums of 15x0.4 & 10x0.6 = 6 & 6. Current pops and minimums are 15 / 6, 5 / 6 -> possible 9 commoners and 0 tribals will be enslaved. If soft enslave, 9 x 0.4 = 36 thousand slaves, and 9 x 0.25 = 2.25 killed. Total population lost: 9 x (0.4 + 0.25) = 5.85 -> 5 pops lost.
+
+		# To end this section, remember that enslavement is a process that takes A LOT of time and therefore some province modifiers will appear in every neighbor province that is either yours or the enemy's, and your army will be almost inmobile, and susceptible to attacks by the enemy. This is 2 months for light enslavement and 3 months for hard enslavement. So you better avoid doing this unless you have a complete control of the possible enemy's armies...
+		# By the way, it is needed to add this modifier in both the current province and those nearby, because if done only in the current province, it just impedes armies to ENTER the province, but they can LEAVE it. Not fair, really
+
+		### Colateral damage
+		# value depending on how much money is being taken out. You take 1000, you may destroy up to 1000 in value. Devastation is the impact over things other than in buildings, and it will take some time to go away. Also, notice that as long as there is some value to be taken, ANY building is eligible to be hit. So don't think that because you won't cause 500 of value you can't hit a building valued 500 or higher.
+		# Its formula is Devastation % = sack ratio x type of damage done.
+
+
+
+	}
+	#############
+	# Options: table of content, for quick reference
+	#############
+	# 	Name			MIl power    % Loot   % devst 		% population loss
+	# Ask Tribute		  -5   |	25%	|	10%	 		|	0
+	# Sack city			 -20   |   100%	|	40%	 		|	1/4 of lost
+	# Enslave 	 		 -20   |	25%	|	20%	 		|	1/4 of lost + enslave
+	# Destroy city		 -50   |   100% |	40%/60bld	|	minimum capacity + enslave
+	# Delenda Est	    -150   |   100%	|  100%/100bld  |	all + enslave
+	# nothing			   0
+	# Liberate (TBD)
+
+	# 1: TRIBUTE (25% loot value, 10% devastation, no pops lost or enslaved)
+	option = {
+		name = "sieges.1.1"
+
+		ai_chance = {			# AI chance: will do if lacks military power
+			factor = 30
+			modifier = {	factor = 2.0	NOT = { mil_power = 50 } }
+			modifier = {	factor = 1.5	NOT = { mil_power = 500 } }
+		}
+		trigger = {
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+		}
+		custom_tooltip = SD_SIEGES_TRIBUTE
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 25	devst = 10 }
+				SD_population_loss = { loss = 0 enslave = 0 }
+				collateral_damage_eff = { hd = 10 size = 100 }	# See Scripted Effects, very cool
+				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
+				add_province_modifier = { name = SD_was_tributed duration = 365 }	# Shows what happened in the siege
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+
+		}
+		add_mil_power = -5
+	}
+
+	# 2: SACK (100% loot value, 40% devastation, 1/4 pops lost, no enslaved)
+	option = {
+		name = "sieges.1.2"
+
+		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low siege power, to economize mil power
+			factor = 30
+			modifier = { factor = 0.5 mil_power = 50 }
+			modifier = { factor = 2.0 FROM = { NOT = { check_variable = { SD_siege_power = 0.6 } } } }
+			modifier = { factor = 2.0 check_variable = { var_slaves_pop_ratio = 50 } }
+		}
+		trigger = {
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+		}
+		custom_tooltip = SD_SIEGES_SACK
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 100	devst = 40 }
+				SD_population_loss = { loss = 25 enslave = 0 }
+				collateral_damage_eff = { hd = 40 size = 100 }
+				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
+				add_province_modifier = { name = SD_was_sacked duration = 730 }	# this modifier allows us to see that happened in the siege
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+		}
+		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
+		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -20 }
+		else = { add_mil_power = -10 }
+	}
+
+	# 3: ENSLAVE (25% value, 20% devastation, pops above 60/40/20% capacity will be lost or enslaved)
+	option = {
+		name = "sieges.1.3"
+
+		ai_chance = {			# AI chance: will do if needs money but not slaves. Main AI option if it has a low sack ratio, to economize mil power
+			factor = 40
+			modifier = { factor = 0.5 mil_power = 50 }
+			modifier = { factor = 0.7 FROM = { NOT = { check_variable = { SD_siege_power = 0.6 } } } }
+			modifier = { factor = 4.0 NOT = { check_variable = { var_slaves_pop_ratio = 40 } } }	# priority to enslave, unless it can destroy
+		}
+		trigger = {
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+			NOT = { has_country_modifier = slavery_abolished }
+		}
+		custom_tooltip = SD_SIEGES_ENSLAVE
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 25 devst = 20 }	# in %
+				SD_population_loss = { loss = 25 enslave = 100 }
+				collateral_damage_eff = { hd = 20 size = 100 }
+				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
+				SD_slave_prov_modifiers = { days = 60 }
+				add_province_modifier = { name = SD_was_enslaved duration = 1825 }	# this modifier allows us to see that happened in the siege
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+
+		}
+		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
+		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -20 }
+		else = { add_mil_power = -10 }
+	}
+
+	# 4: DESTROY (100% loot value, 40% devastation with 2x loot size, same slaves as before)
+	option = {
+		name = "sieges.1.4"
+
+		ai_chance = {			# AI chance: will do if has enough power, and the sack ratio is high. It will "aim to kill"
+			factor = 30
+			modifier = { factor = 2.5 mil_power = 75 }
+			modifier = { factor = 2.5 FROM = { check_variable = { SD_siege_power = 0.6 } } }
+		}
+		trigger = {
+			NOT = { FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } }	# in case Delenda Est is active
+			OR = {
+				NOT = {	FROM = { owner = { reverse_has_opinion = { who = ROOT value = -100 } } } }	# less than -100 opinion, or rival
+				FROM = { owner = { is_rival = ROOT } }
+			}
+		}
+		custom_tooltip = SD_SIEGES_DESTROY
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 100	devst = 40 }
+				SD_population_loss = { loss = 25 enslave = 100 }
+				collateral_damage_eff = { hd = 60 size = 200 }	SD_slave_prov_modifiers = { days = 60 }
+				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
+				add_province_modifier = { name = SD_was_destroyed duration = 1825 }	# this modifier allows us to see that happened in the siege
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+		}
+		# Mil power cost, scaled a bit. In case you don't get to 50%, only half the cost
+		if = { limit = { FROM = { check_variable = { SD_siege_power = 0.51 } } } add_mil_power = -50 }
+		else = { add_mil_power = -25 }
+	}
+
+	# 5: DELENDA EST (100% value, 100% devastation, all pops lost but one tribal, 50% enslaved
+	option = {
+		name = "sieges.1.5"
+		ai_chance = {			# AI chance: ALWAYS
+			factor = 100
+			modifier = { factor = 5.0 FROM = { check_variable = { SD_siege_power = 0.6 } } }
+		}
+		trigger = {
+			#FROM = { is_capital = yes  development = 20 owner = { is_rival = ROOT } } 	# upped development to 20, only for real capitals
+		}
+		custom_tooltip = SD_SIEGES_DELENDA
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 150	devst = 90 }
+				SD_population_loss = { loss = 300 enslave = 100 }	# absolutely everyone
+				collateral_damage_eff = { hd = 80 size = 300 }	SD_slave_prov_modifiers = { days = 120 }
+				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
+				if = {
+					limit = { FROM = { check_variable = { SD_siege_power = 0.80 } } }
+					add_province_modifier = { name = SD_was_delenda duration = 18250 } # 50 years, devastation will START to go down in two generations
+				}
+				else_if = {
+					limit = { FROM = { check_variable = { SD_siege_power = 0.40 } } }
+					add_province_modifier = { name = SD_was_delenda duration = 9000 } # 25 years
+				}
+				else = {
+					add_province_modifier = { name = SD_was_delenda duration = 4500 } # 12 years
+				}
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+		}
+		add_mil_power = -150	# not added to trigger, so you can go negative for this very deserving reason
+	}
+
+	# Leave them be
+	option = {
+		name = "sieges.1.6"
+		ai_chance = {
+			factor = 10
+		}
+
+	}
+
+
+	after = {
+		FROM = {
+
+			if = {
+				limit = { OR = {
+					has_province_flag = small_bath_lost				has_province_flag = big_bath_lost			has_province_flag = mathematician_academy_lost
+					has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost
+					has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+					has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+					has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+					has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+					has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+					has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+					has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+					has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+					has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+					has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+					has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+					has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+					has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+					has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+					has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+					has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+					has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+					has_province_flag = hospital_lost
+				} }
+				add_building = building_ruins
+			}
+		}
+
+	}
+
+}
+
+country_event = {			# Simplified event, when under X value. By on-action. FROM = province, ROOT = attacker country, owner = defender country
+	id = sieges.2
+	title = "sieges.2.t"
+	desc = "sieges.2.d"
+	picture = looting
+	hidden = yes				# Hidden! only one option
+	is_triggered_only = yes
+	trigger = {
+		FROM = {
+			development = 3		# limited for btw 3 and X (6, 8, 10, etc)
+			NOT = { SD_trigger_recently_attacked = yes }
+			NOT = { owned_by = ROOT }		# Avoids sacking previously occupied owned provinces
+			OR = {
+				owner = { is_in_war = { attackers = ROOT } }	# checks the owner is at war with the besieger.
+				owner = { is_in_war = { defenders = ROOT } }	# this way it only works for wars, not for rebels
+			}
+		}
+		OR = {
+			AND = { has_global_flag = siege_cities_15 	FROM = { NOT = { development = 15 } } }
+			AND = { has_global_flag = siege_cities_12 	FROM = { NOT = { development = 12 } } }
+			AND = { has_global_flag = siege_cities_10 	FROM = { NOT = { development = 10 } } }
+			AND = { has_global_flag = siege_cities_8 	FROM = { NOT = { development = 8 } } }
+			AND = { has_global_flag = siege_cities_6 	FROM = { NOT = { development = 6 } } }
+		}
+
+	}
+
+
+	immediate = {
+
+		hidden_effect = {
+
+
+			FROM = {
+				# Initial cleanup, to remove variables stored in the province modifiers
+				#set_variable = { which = SS_looted_value value = 0 } set_variable = { which = SS_devastation_done value = 0 }
+
+				# Sack efficiency (army, ferocity, ratio)
+				set_variable = { which = SD_siege_power value = 0 }
+				export_to_variable = { which = SD_ferocity value = trigger_value:infantry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:cavalry_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				export_to_variable = { which = SD_ferocity value = trigger_value:artillery_in_province }
+				change_variable = { which = SD_siege_power which = SD_ferocity }
+				set_variable = { which = SD_looted which = SD_siege_power }
+
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }	# repurposed modifier
+				multiply_variable = { which = SD_siege_power which = SD_ferocity }
+
+				export_to_variable = { which = SD_ferocity value = development } 	# repurposed variables, the least the better
+				multiply_variable = { SD_ferocity = 10 }	divide_variable = { which = SD_siege_power which = SD_ferocity }
+				set_variable = { which = SD_destruction which = SD_siege_power }	# power = what is being taken. Destruction = collateral damage
+				if = { limit = { check_variable = { SD_siege_power = 1 } } 	set_variable = { which = SD_siege_power value = 1 } }	# max 100%
+				if = { limit = { check_variable = { SD_destruction = 3 } } 	set_variable = { which = SD_destruction value = 3 } }	# max 300% in limited
+
+				# Inflation, first part
+				export_to_variable = { which = SD_loot value = trigger_value:monthly_income who = ROOT }
+				set_variable = { which = SD_inflation value = 100 }
+				if = { limit = { NOT = { check_variable = { SD_loot = 1 } } } set_variable = { which = SD_loot value = 1 } }
+				divide_variable = { which = SD_inflation which = SD_loot }
+
+				# Loot itself
+				set_variable = { which = SD_loot value = 0 }
+				SD_find_total_loot = yes
+				multiply_variable = { which = SD_loot which = SD_siege_power }
+
+				# Inflation, second part
+				multiply_variable = { which = SD_inflation which = SD_loot } 	multiply_variable = { SD_inflation = 0.01 }	# 100 back
+				multiply_variable = { SD_inflation = 0.12 }	# 4x the inflation gotten from peace deals (0,015 x 4), and x2 from the Inflation from Peace Gold formula.
+
+				##
+				# ENSLAVEMENT
+				# Find suitable population to be enslaved/killed (explanation)
+				export_to_variable = { which = SD_slave_eff value = modifier:enslavement_efficiency who = ROOT }
+				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
+
+				export_to_variable = { which = SD_t_lost value = base_manpower }
+				export_to_variable = { which = SD_c_lost value = base_production }
+				export_to_variable = { which = SD_u_lost value = base_tax }
+
+				if = {
+					limit = { has_global_flag = popgrowth_vanilla }		# "Vanilla" events: no Popgrowth Mechanics. Loss of 20%/40%/75% pops.
+					multiply_variable = { SD_t_lost = 0.2 } multiply_variable = { SD_c_lost = 0.4 } multiply_variable = { SD_u_lost = 0.75 }
+				}
+				else = {
+					set_variable = { which = SD_t_slave which = PG_trb_cap } multiply_variable = { SD_t_slave = 0.6 }	# min 60% rural cap
+					set_variable = { which = SD_c_slave which = PG_com_cap } multiply_variable = { SD_c_slave = 0.4 }	# min 40% urban cap
+					set_variable = { which = SD_u_slave which = PG_upp_cap } multiply_variable = { SD_u_slave = 0.3 }	# min 30% upper cap
+
+					# if to lose > min capacity, lose the excess. If not, minimum prize of 0.45 (x% enslaved), no pop will be lost
+					if = { 		limit = { check_variable = { which = SD_t_lost which = SD_t_slave } }
+					subtract_variable = { which = SD_t_lost which = SD_t_slave } }
+					else = { 	set_variable = { which = SD_t_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_c_lost which = SD_c_slave } }
+					subtract_variable = { which = SD_c_lost which = SD_c_slave } }
+					else = { 	set_variable = { which = SD_c_lost value = 0.45 } }
+					if = { 		limit = { check_variable = { which = SD_u_lost which = SD_u_slave } }
+					subtract_variable = { which = SD_u_lost which = SD_u_slave } }
+					else = { 	set_variable = { which = SD_u_lost value = 0.45 } }
+
+				}
+				# First separation: enslavement % from total lost
+				set_variable = { which = SD_t_slave which = SD_t_lost } multiply_variable = { which = SD_t_slave which = SD_slave_eff }
+				set_variable = { which = SD_c_slave which = SD_c_lost } multiply_variable = { which = SD_c_slave which = SD_slave_eff }
+				set_variable = { which = SD_u_slave which = SD_u_lost } multiply_variable = { which = SD_u_slave which = SD_slave_eff }
+
+				# Split enslave/lost, and
+				subtract_variable = { which = SD_t_lost which = SD_t_slave }
+				subtract_variable = { which = SD_c_lost which = SD_c_slave }
+				subtract_variable = { which = SD_u_lost which = SD_u_slave }
+
+				# Siege ratio % applied: up to 100% in enslavements and up to 300% in losses (loss = 50% killed, 50% escaped)
+				multiply_variable = { which = SD_t_lost which = SD_destruction } multiply_variable = { which = SD_t_slave which = SD_siege_power }
+				multiply_variable = { which = SD_c_lost which = SD_destruction } multiply_variable = { which = SD_c_slave which = SD_siege_power }
+				multiply_variable = { which = SD_u_lost which = SD_destruction } multiply_variable = { which = SD_u_slave which = SD_siege_power }
+
+				multiply_variable = { SD_t_lost = 0.001 } multiply_variable = { SD_t_lost = 1000 }
+				multiply_variable = { SD_c_lost = 0.001 } multiply_variable = { SD_c_lost = 1000 }
+				multiply_variable = { SD_u_lost = 0.001 } multiply_variable = { SD_u_lost = 1000 }
+
+
+			}
+		}
+
+	}
+
+
+	option = {
+		name = "sieges.2.1"	# Automatic option, direct
+		ai_chance = {
+			factor = 100
+		}
+
+		hidden_effect = {
+			# Province effect
+			FROM = {
+				SD_sack_devastation = {	lootvalue = 10	devst = 10 }		set_variable = { which = SD_colat value = 0 }
+				SD_population_loss = { loss = 10 enslave = 10 }
+				ROOT = {
+					set_variable = { which = SD_looted which = PREV } 	set_variable = { which = SD_inflation which = PREV }
+					set_country_flag = SD_recent_captives
+				}
+				add_province_modifier = { name = SD_was_raided duration = 730 }	# Shows what happened in the siege
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+			# Country, besieger effect
+			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
+
+
+		}
+	}
+
+
+	after = {
+		FROM = {
+			set_variable = { which = SD_t_slave value = 0 } 	set_variable = { which = SD_c_slave value = 0 }
+			set_variable = { which = SD_u_slave value = 0 } 	set_variable = { which = SD_slave_eff value = 0 }
+			set_variable = { which = SD_destruction value = 0 } set_variable = { which = SD_siege_power value = 0 }
+			set_variable = { which = SD_ferocity value = 0 } 	set_variable = { which = SD_loot value = 0 }
+
+		}
+
+	}
+
+}
+
+country_event = {
+	id = sieges.3
+	title = "sieges.3.t"
+	desc = "sieges.3.d"
+	picture = column_trajan_1
+	is_triggered_only = yes
+
+	option = {
+		name = "sieges.3.1"	# Limit 10 development. Default value at startup
+		ai_chance = { factor = 100 }
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag	= siege_cities_12
+		set_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+		if = {
+			limit = {
+				ai = no
+			}
+			set_country_flag = coloredvassals_yes
+		}
+	}
+}
+
+country_event = {	# EXPLANATION
+	id = sieges.4
+	title = "sieges.4.t"
+	desc = "sieges.4.d"
+	picture = column_trajan_1
+	is_triggered_only = yes
+
+
+	option = {
+		name = "sieges.4.1"	# Explains how this mechanics work.
+
+
+	}
+
+}
+
+country_event = {	# REPAIR EVENT, happens once the "repairs planned" buildings have been used.
+	id = sieges.5
+	title = "sieges.5.t"
+	desc = "sieges.5.d"
+	picture = wall_rebuilding
+	is_triggered_only = yes
+
+	# Some introduction
+	# In the event of a siege, several buildings may be colaterally destroyed. These will add a province flag into that province, and, as long as there is one such flags present, it will show a "building" called "Ruins". If you click on it (so, "upgrade" the ruins), the Repairs Planned building appears. This Repairs Planned building marks every province that will be repaired through this decision. So if you want to just repair the production buildings of your richest provinces, then build that just there, and then re-do this into another building, etc.
+	# Remember that these flags and the ruins last for only FIVE years, after that the ruins are beyond repair and will be lost.
+	# The cost of repairing such buildings is 75% of the original price, without any added cost modifiers.
+
+	option = {
+		name = "sieges.5.1"		# TRADE AND ROADS
+
+		trigger = {		# will affect all provinces with markets and roads. ALWAYS destroys the building repairs planned; ruins are added later
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = small_market_lost	has_province_flag = medium_market_lost	has_province_flag = great_market_lost
+					has_province_flag = gravel_road_lost	has_province_flag = paved_road_lost		has_province_flag = imperial_road_lost
+					has_province_flag = small_harbor_lost 	has_province_flag = big_harbor_lost 	has_province_flag = harbor_district_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_trade_roads_harbor = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.2"		# TEMPLES
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = { has_province_flag = shrine_lost	has_province_flag = small_temple_lost	has_province_flag = great_temple_lost }
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_temples = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.3"		# HEALTH AND PRODUCTION
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+					has_province_flag = small_water_irrigation_lost	has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+					has_province_flag = craftsman_lost 	has_province_flag = small_workshop_lost has_province_flag = artisan_district_lost
+					has_province_flag = quarry_lost 	has_province_flag = small_mine_lost 	has_province_flag = big_mine_lost
+					has_province_flag = herbalist_lost 	has_province_flag = medicus_lost 		has_province_flag = hospital_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_health_industry = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.4"		# MILITARY: army camps, conscription, and shipyards
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = small_conscription_center_lost	has_province_flag = small_army_camp_lost
+					has_province_flag = small_military_settlement_lost	has_province_flag = big_military_settlement_lost
+					has_province_flag = small_shipyard_lost 			has_province_flag = big_shipyard_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_military_shipyards = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.5"		# GOVERNMENT: governor offices, tax collector, embassies
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = small_townhall_lost		has_province_flag = big_townhall_lost
+					has_province_flag = government_palace_lost	has_province_flag = government_district_lost
+					has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+					has_province_flag = embassy_lost 			has_province_flag = diplomats_quarter_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_government = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.6"		# EDUCATION AND LESIURE
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost
+					has_province_flag = imperial_palace_lost		has_province_flag = palace_garden_lost
+					has_province_flag = small_theater_lost			has_province_flag = big_theater_lost
+					has_province_flag = great_theater_lost 			has_province_flag = huge_theater_lost
+					has_province_flag = mathematician_academy_lost 	has_province_flag = philosophers_academy_lost
+					has_province_flag = military_academy_lost 	has_province_flag = great_library_lost has_province_flag = library_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_leisure_education = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.7"		# EVERYTHING
+		ai_chance = { factor = 100 }
+
+		trigger = {
+			any_owned_province = {
+				has_building = repairs_planned
+				OR = {
+					has_province_flag = small_bath_lost				has_province_flag = big_bath_lost		has_province_flag = mathematician_academy_lost
+					has_province_flag = philosophers_academy_lost	has_province_flag = military_academy_lost	has_province_flag = great_library_lost
+					has_province_flag = library_lost 				has_province_flag = embassy_lost			has_province_flag = diplomats_quarter_lost
+					has_province_flag = small_townhall_lost			has_province_flag = big_townhall_lost		has_province_flag = government_palace_lost
+					has_province_flag = government_district_lost	has_province_flag = small_grain_depot_lost	has_province_flag = big_grain_depot_lost
+					has_province_flag = small_market_lost			has_province_flag = medium_market_lost		has_province_flag = great_market_lost
+					has_province_flag = small_harbor_lost			has_province_flag = big_harbor_lost			has_province_flag = harbor_district_lost
+					has_province_flag = small_army_camp_lost			has_province_flag = small_military_settlement_lost
+					has_province_flag = big_military_settlement_lost	has_province_flag = small_conscription_center_lost
+					has_province_flag = small_water_irrigation_lost has_province_flag = big_water_irrigation_lost has_province_flag = big_estate_lost
+					has_province_flag = craftsman_lost 				has_province_flag = small_workshop_lost 	has_province_flag = artisan_district_lost
+					has_province_flag = quarry_lost					has_province_flag = small_mine_lost			has_province_flag = big_mine_lost
+					has_province_flag = small_shipyard_lost			has_province_flag = big_shipyard_lost
+					has_province_flag = military_monument_lost		has_province_flag = naval_monument_lost		has_province_flag = imperial_palace_lost
+					has_province_flag = palace_garden_lost			has_province_flag = taxman_lost				has_province_flag = tax_collector_lost
+					has_province_flag = shrine_lost					has_province_flag = small_temple_lost		has_province_flag = great_temple_lost
+					has_province_flag = small_theater_lost			has_province_flag = big_theater_lost		has_province_flag = great_theater_lost
+					has_province_flag = huge_theater_lost			has_province_flag = gravel_road_lost		has_province_flag = paved_road_lost
+					has_province_flag = imperial_road_lost			has_province_flag = herbalist_lost			has_province_flag = medicus_lost
+					has_province_flag = hospital_lost
+				}
+			}
+		}
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_repair_trade_roads_harbor = yes
+			SS_repair_temples = yes
+			SS_repair_health_industry = yes
+			SS_repair_military_shipyards = yes
+			SS_repair_government = yes
+			SS_repair_leisure_education = yes
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+
+	option = {
+		name = "sieges.5.8"		# Tear down repairs and clean lots. 5% cost of everything, and 0.5% in ADM points.
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			SS_clear_land_cost = yes
+			if = { 	limit = { devastation = 50 } add_province_modifier = { name = SS_cleaning_2 duration = 2920 } }
+			else = { 							 add_province_modifier = { name = SS_cleaning_1 duration = 1460 } }
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+	}
+	option = {
+		name = "sieges.5.9"	# Nothing, go back
+		every_owned_province = {
+			limit = { has_building = repairs_planned }
+			hidden_effect = { remove_building = repairs_planned }
+		}
+
+
+	}
+
+	after = {
+		# resets the ruins building, in case something is yet to be repaired.
+		# Remember that in the next pop capacity event, if they have more than 5 years, they will be gone
+		every_owned_province = {
+			SS_find_existing_ruins = yes
+
+		}
+
+	}
+}
+
+country_event = {
+	id = sieges.6
+	title = "sieges.6.t"
+	desc = "sieges.6.d"
+	picture = shambhala
+	is_triggered_only = yes
+
+	option = {
+		name = "sieges.6.1"	# Moves all buildings to flags. Also DESTROYS them, to prepare for the new version
+		every_province = {
+			SS_store_building_to_flag = yes
+		}
+
+	}
+	option = {
+		name = "sieges.6.2"	# No, go back
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = sieges.7
+	title = "sieges.7.t"
+	desc = "sieges.7.d"
+	picture = column_trajan_1
+	is_triggered_only = yes
+
+	option = {
+		name = "sieges.7.1"	# Change starting point
+		country_event = { id = sieges.8 }
+
+	}
+	option = {
+		name = "sieges.7.2"	# Explain me more -> event with a quick explanation
+		country_event = { id = sieges.4 }
+
+	}
+	option = {
+		name = "sieges.7.99"	# go back
+
+	}
+
+}
+
+country_event = {
+	id = sieges.8
+	title = "sieges.8.t"
+	desc = "sieges.8.d"
+	picture = column_trajan_1
+	is_triggered_only = yes
+
+	option = {
+		name = "sieges.8.1"	# Allow siege event in ALL places, starting dev 3. Not supposed to be done, but it's your save game, do what you want
+		set_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag = siege_cities_12
+		clr_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+
+	}
+	option = {
+		name = "sieges.8.2"	# Limit 15 development. Low impact event in provs with at least 3
+		clr_global_flag = siege_unrestricted
+		set_global_flag	= siege_cities_15
+		clr_global_flag = siege_cities_12
+		clr_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.3"	# Limit 12 development. Low impact event in provs with at least 3
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		set_global_flag = siege_cities_12
+		clr_global_flag	= siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.4"	# Limit 10 development. Low impact event in provs with at least 3
+		ai_chance = { factor = 100 }
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag	= siege_cities_12
+		set_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.5"	# Limit 8 development. Low impact event in provs with at least 3
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag	= siege_cities_12
+		clr_global_flag = siege_cities_10
+		set_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.6"	# Limit 6 development. Low impact event in provs with at least 3
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag	= siege_cities_12
+		clr_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		set_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.7"	# Remove everything, no events will fire. There will not be any continous source of slaves, and will decrease every year.
+		custom_tooltip = SLAVES_NO_SIEGES
+		clr_global_flag = siege_unrestricted
+		clr_global_flag	= siege_cities_15
+		clr_global_flag	= siege_cities_12
+		clr_global_flag = siege_cities_10
+		clr_global_flag	= siege_cities_8
+		clr_global_flag	= siege_cities_6
+	}
+	option = {
+		name = "sieges.8.8"	# Explain me more -> event with a quick explanation
+		country_event = { id = sieges.4 }
+
+	}
+	option = {
+		name = "sieges.8.99"	# go back
+
+	}
+
+}
+
+
+country_event = {		# Experimental
+	id = sieges.45
+	title = "sieges.45.t"
+	desc = "sieges.45.d"
+	picture = shambhala
+	is_triggered_only = yes
+
+	immediate = {
+
+	}
+	option = {
+		name = "sieges.6.2"	# No, go back
+		ai_chance = { factor = 100 }
+
+	}
+
+}

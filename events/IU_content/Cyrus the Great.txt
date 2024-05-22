@@ -1,0 +1,294 @@
+namespace = cyrus_scenario
+
+########################################################################################
+# Madness of Astyages
+########################################################################################
+country_event = {
+	id = cyrus_scenario.1
+	title = "cyrus_scenario.1.t"
+	desc = "cyrus_scenario.1.d"
+	picture = mad_emperor
+
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = MDI
+		start_date = 195.1.1
+		NOT = { started_in = 205.1.1 }
+		NOT = { is_year = 205 }
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = astyages_madness_flag
+			remove_historical_friend = BAB
+			BAB = {
+				remove_historical_friend = MDI
+			}
+			add_stability = -1
+			add_legitimacy = -25
+			add_prestige = -20
+			add_yearly_manpower = -1.0
+			add_years_of_income = 1.0
+			LYD = {
+				add_years_of_income = 5
+			}
+		}
+	}
+
+	option = {
+		name = "cyrus_scenario.1.a"
+		ANH = {
+			add_ruler_modifier = {
+				name = cyrus_the_great_leadership_modifier
+			}
+		}
+		add_ruler_modifier = {
+			name = astyages_madness_modifier
+		}
+	}
+}
+
+########################################################################################
+# Cyrus attacks Astyages
+########################################################################################
+country_event = {
+	id = cyrus_scenario.2
+	title = "cyrus_scenario.2.t"
+	desc = "cyrus_scenario.2.d"
+	picture = battle
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		OR = {
+			tag = ANH
+			tag = PSE
+		}
+		has_ruler = "Koroush II the Great"
+		is_year = 200
+		start_date = 195.1.1
+		had_global_flag = {
+			flag = astyages_madness_flag
+			days = 1825
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	immediate = {
+		hidden_effect = {
+			MDI = {
+				every_subject_country = {
+					limit = { is_subject_of = MDI }
+					save_event_target_as = media_vassals_to_inherit
+				}
+				release_all_subjects = yes
+				every_owned_province = {
+					limit = {
+						OR = {
+							culture = persian
+							culture = karamanian
+						}
+					}
+					cede_province = ANH
+					add_core = ANH
+				}
+				reverse_add_casus_belli = {
+					type = cb_mission_invasion
+					target = ANH
+				}
+			}
+			if = {
+				limit = {
+					exists = PRS
+					PRS = { ai = yes }
+				}
+				inherit = PRS
+			}
+		}
+	}
+
+	option = {
+		name = "cyrus_scenario.2.a"
+		capital_scope = {
+			build_to_forcelimit = {
+				infantry = 0.25
+				cavalry = 0.5
+				artillery = 0.25
+			}
+		}
+		add_yearly_manpower = 0.5
+		add_army_tradition = 10
+		add_prestige = 10
+		custom_tooltip = cyrus_tooltip
+		declare_war_with_cb = {
+			who = MDI
+			casus_belli = cb_mission_invasion
+		}
+	}
+}
+
+########################################################################################
+# Makes Cyrus annex Media regardless of outcomes
+########################################################################################
+country_event = {
+	id = cyrus_scenario.3
+	title = "cyrus_scenario.2.t"
+	desc = "cyrus_scenario.2.d"
+	picture = battle
+
+	fire_only_once = yes
+	hidden = yes
+
+	trigger = {
+		OR = {
+			tag = ANH
+			tag = PSE
+		}
+		start_date = 195.1.1
+		has_ruler = "Koroush II the Great"
+		has_global_flag = astyages_madness_flag
+		war_with = MDI
+		MDI = { ai = yes }
+		ai = yes
+	}
+
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	immediate = {
+		hidden_effect = { white_peace = MDI }
+	}
+
+	option = {
+		name = "cyrus_scenario.2.a"
+		add_stability = 3
+		inherit = MDI
+		event_target:media_vassals_to_inherit = { ROOT = { inherit = PREV } }
+	}
+}
+
+########################################################################################
+# Armenia alliance with Cyrus
+########################################################################################
+country_event = {
+	id = cyrus_scenario.4
+	title = "cyrus_scenario.4.t"
+	desc = "cyrus_scenario.4.d"
+	picture = civilwar
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ARM
+		start_date = 195.1.1
+		is_subject = no
+		OR = {
+			AND = {
+				ANH = {
+					war_with = MDI
+					has_ruler = "Koroush II the Great"
+				}
+				exists = ANH
+			}
+			AND = {
+				PSE = {
+					war_with = MDI
+					has_ruler = "Koroush II the Great"
+				}
+				exists = PSE
+			}
+		}
+		has_global_flag = astyages_madness_flag
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	option = {
+		name = "cyrus_scenario.4.a"
+		ai_chance = { factor = 99 }
+		if = {
+			limit = { exists = PSE }
+			join_all_offensive_wars_of = PSE
+			PSE = { country_event = { id = cyrus_scenario.5 } }
+		}
+		else = {
+			join_all_offensive_wars_of = ANH
+			ANH = { country_event = { id = cyrus_scenario.5 } }
+		}
+		hidden_effect = {
+			set_country_flag = arm_annex_cyrus_flag
+		}
+	}
+
+	option = {
+		name = "cyrus_scenario.4.b"
+		ai_chance = { factor = 1 }
+		add_prestige = 5
+	}
+}
+
+#Notification
+
+country_event = {
+	id = cyrus_scenario.5
+	title = "cyrus_scenario.5.t"
+	desc = "cyrus_scenario.5.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	option = {
+		name = "cyrus_scenario.5.a"
+		add_yearly_manpower = 5
+		add_years_of_income = 1
+	}
+}
+
+########################################################################################
+# Cyrus annexes Armenia
+########################################################################################
+country_event = {
+	id = cyrus_scenario.6
+	title = "cyrus_scenario.2.t"
+	desc = "cyrus_scenario.2.d"
+	picture = battle
+
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		OR = {
+			tag = ANH
+			tag = PSE
+		}
+		start_date = 195.1.1
+		has_ruler = "Koroush II the Great"
+		has_global_flag = astyages_madness_flag
+		NOT = { exists = MDI }
+		ARM = {
+			exists = yes
+			has_country_flag = arm_annex_cyrus_flag
+		}
+	}
+
+	immediate = {
+		ARM = { clr_country_flag = arm_annex_cyrus_flag }
+		clr_global_flag = astyages_madness_flag
+	}
+
+	option = {
+		name = "cyrus_scenario.2.a"
+		inherit = ARM
+	}
+}

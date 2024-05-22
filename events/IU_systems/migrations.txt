@@ -1,0 +1,685 @@
+namespace = migrations
+
+########################################################################################
+# MIGRATIONS, what keeps the world moving
+########################################################################################
+
+province_event = {
+	id = migrations.1
+	title = "migrations.1.t"
+	desc = "migrations.1.d"
+	picture = peasant_woman
+	hidden = yes
+
+	trigger = {
+		base_manpower = 2 									# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running					# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { PG_trb_grow = 100 } }	# negative growth, anything under 1.00 (100%)
+		NOT = { has_province_modifier = rural_pause }		# condition that initial values are kept for 100 years
+
+	}
+
+
+	mean_time_to_happen = {
+		months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+
+		# Reasons to leave. Devastation will NOT appear here, since it already influences growth.
+		modifier = { 	factor = 5.0 	check_variable = { PG_com_grow = 110 } } 			# not if there's work in the city, same province
+		modifier = {	factor = 0.65	check_variable = { PG_trb_grow = 60 }	NOT = { check_variable = { PG_trb_grow = 80 } }	}
+		modifier = {	factor = 0.40	check_variable = { PG_trb_grow = 50 }	NOT = { check_variable = { PG_trb_grow = 60 } }	}
+		modifier = {	factor = 0.25	check_variable = { PG_trb_grow = 40 }	NOT = { check_variable = { PG_trb_grow = 50 } }	}
+		modifier = { 	factor = 0.05 	NOT = { check_variable = { PG_trb_grow = 40 } } } 	# they must be really miserable...
+
+	}
+
+	immediate = {
+		hidden_effect = {
+			# BLOCK 1: define migration size.
+			# Roughly 20% of rural pops, enough to change the rural_capacity. 1 if under 5, 2 up to 10, 3 after 10.
+			if = { 		limit = { base_manpower = 10 }	set_variable = { which = PG_trb_migsize value = 3 } }
+			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = PG_trb_migsize value = 2 } }
+			else = {									set_variable = { which = PG_trb_migsize value = 1 } }
+
+			# BLOCK 2: Discover which provinces it may go.
+			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
+			#	A high center of trade, then a lower one (lv2), then culture/religion, owned by same, then any other both tribal and common.
+			# 	Affected by prosperity/devastation, meaning the wealth of the province (poor citizens can't afford to travel far)
+			#	Recent tweak: only within active trade nodes, to avoid traveling in a disorganized way
+
+			set_variable = { which = PG_travel_range which = PG_info_range }
+			if = {
+				limit = { devastation = 1 }
+				trigger_switch = {
+					on_trigger = devastation
+					50 = { multiply_variable = { PG_travel_range = 0.10 } }
+					30 = { multiply_variable = { PG_travel_range = 0.20 } }
+					20 = { multiply_variable = { PG_travel_range = 0.40 } }
+					10 = { multiply_variable = { PG_travel_range = 0.60 } }
+				}
+			}
+			else = {
+				trigger_switch = {
+					on_trigger = prosperity
+					99 = { multiply_variable = { PG_travel_range = 1.50 } }	# will be able to travel further
+					50 = { multiply_variable = { PG_travel_range = 1.25 } }
+					25 = { multiply_variable = { PG_travel_range = 1.01 } }
+					0 = { multiply_variable = { PG_travel_range = 0.70 } }
+				}
+			}
+
+			# Get an event target for the current owner, to check triggers "owned by" or "active merchant"
+			owner = { save_event_target_as = PG_migr_start_owner }
+			save_event_target_as = PG_migr_origin_prov
+
+			# Find the provinces, with Travel Range = info range x %wealth (devastation or prosperity)
+			if = { 		limit = { check_variable = { PG_travel_range = 100 } } 	PG_find_target_province_2 = { range = 1500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 75 } } 	PG_find_target_province_2 = { range = 1000 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 50 } } 	PG_find_target_province_2 = { range = 700 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 30 } } 	PG_find_target_province_2 = { range = 500 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 20 } } 	PG_find_target_province_2 = { range = 350 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 10 } } 	PG_find_target_province_2 = { range = 200 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  	PG_find_target_province_2 = { range = 100 } }
+			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  	PG_find_target_province_2 = { range = 50 } }
+			else = { 														  	PG_find_target_province_2 = { range = 25 } }
+
+		}
+		if = { 		limit = { has_province_flag = PG_starvation_start } custom_tooltip = PG_MIGR_STARVATION }
+		else_if = { limit = { has_province_flag = PG_target_success } 	custom_tooltip = PG_MIGR_TARGETINFO }
+
+		if = { limit = { has_province_flag = PG_provtarget_highcot } 	custom_tooltip = PG_MIGR_REASON_HIGHCOT }
+		if = { limit = { has_province_flag = PG_provtarget_lowcot } 	custom_tooltip = PG_MIGR_REASON_LOWCOT }
+		if = { limit = { has_province_flag = PG_provtarget_samecult } 	custom_tooltip = PG_MIGR_REASON_CULTURE }
+		if = { limit = { has_province_flag = PG_provtarget_samegroup } 	custom_tooltip = PG_MIGR_REASON_GROUP }
+		if = { limit = { has_province_flag = PG_provtarget_samerel  } 	custom_tooltip = PG_MIGR_REASON_RELIGION }
+		if = { limit = { has_province_flag = PG_provtarget_other } 		custom_tooltip = PG_MIGR_REASON_OTHER }
+
+	}
+
+	option = {
+		name = "migrations.1.1"
+		# nothing, it's hidden
+		# will nonetheless show the variables in the text, to help in debug mode
+	}
+	after = {
+		event_target:PG_prov_targeted = {
+			clr_province_flag = PG_trib_migr_target
+		}
+		clr_province_flag = PG_provtarget_highcot
+		clr_province_flag = PG_provtarget_lowcot
+		clr_province_flag = PG_provtarget_samecult
+		clr_province_flag = PG_provtarget_samegroup
+		clr_province_flag = PG_provtarget_samerel
+		clr_province_flag = PG_provtarget_other
+		clr_province_flag = PG_target_success
+	}
+
+}
+
+country_event = {		# 1st Country Event: tribal population want to leave. The country decides at a regional level
+	id = migrations.2
+	title = "migrations.2.t"
+	desc = "migrations.2.d"
+	picture = peasant_woman
+	#hidden = no
+
+	trigger = {
+		has_global_flag = popgrowth_running			# Only if popgrowth running
+		any_owned_province = {
+			has_province_flag = PG_trib_migr_start
+
+		}
+
+	}
+
+	mean_time_to_happen = {
+		months = 48				# remember, this is a country event. Won't fire that much anyway
+		modifier = {
+			factor = 0.65
+			calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 5 }
+		}
+		modifier = {
+			factor = 0.65	# added to the prior one
+			calc_true_if = { any_owned_province = { base_manpower = 2	has_province_flag = PG_trib_migr_start } amount = 10 }
+		}
+
+	}
+
+	immediate = {
+		# Find which region we are talking about. First it will force for a region with a lot of the same flag; otherwise redirect to any one.
+		# later, that one
+		hidden_effect = {
+			random_owned_province = {
+				limit = { has_province_flag = PG_trib_migr_start }
+				save_event_target_as = PG_region_pinned				# need to save this region with this method
+			}
+			set_variable = { which = PG_trb_migsize value = 0 }		# reset country-level variables, to show int the event localization
+			set_variable = { which = PG_enslave_milcost value = 0 }
+			set_variable = { which = PG_mig_budget1 value = 0 }
+			set_variable = { which = PG_mig_budget2 value = 0 }
+			set_variable = { which = PG_move_own_mana value = 0 }
+			set_variable = { which = PG_move_other_mana value = 0 }
+
+			every_owned_province = {
+				limit = { region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start }
+
+				# Prepare the values for each type of option.
+				# We already have the Base province to move, now let's add targets for Own Region, Own country, and Enslavement
+				set_variable = { which = prov_id which = PG_migration_to }
+
+				# Targets within the same region
+				if = {
+					limit = {
+						any_province = {
+							region = event_target:PG_region_pinned
+							OR = { owned_by = ROOT owner = { is_subject_of = ROOT } }
+							OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+							NOT = { OR = { has_province_modifier = PG_new_pop	has_province_flag = PG_migr_owntarget } }
+							province_distance = {
+								who = event_target:PG_region_pinned
+								distance = 300 #Enough?
+							}
+						}
+					}
+					random_province = {
+						limit = {
+							region = event_target:PG_region_pinned
+							OR = { owned_by = ROOT owner = { is_subject_of = ROOT } }
+							OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+							NOT = { OR = { has_province_modifier = PG_new_pop	has_province_flag = PG_migr_owntarget } }
+						}
+						set_variable = { which = PG_migr_ownregion which = prov_id }
+						set_province_flag = PG_migr_owntarget
+						PREV = {
+							set_variable = { which = PG_migr_ownregion which = PREV }
+							set_variable = { which = PG_move_own_mana which = PG_trb_migsize }
+						}
+						mig_dist_budget1 = yes
+
+					}
+
+				}
+				else = { set_variable = { which = PG_migr_ownregion value = 0 } }
+
+				# Targets outside the region (but within the same owner)
+				if = {
+					limit = {
+						any_province = {
+							NOT = { region = event_target:PG_region_pinned }
+							OR = { owned_by = ROOT owner = { is_subject_of = ROOT } }
+							OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+							NOT = { OR = { has_province_modifier = PG_new_pop	has_province_flag = PG_migr_owntarget } }
+							province_distance = {
+								who = event_target:PG_region_pinned
+								distance = 300 #Enough?
+							}
+						}
+					}
+					random_province = {
+						limit = {
+							NOT = { region = event_target:PG_region_pinned }
+							OR = { owned_by = ROOT owner = { is_subject_of = ROOT } }
+							OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+							NOT = { OR = { has_province_modifier = PG_new_pop	has_province_flag = PG_migr_owntarget } }
+						}
+						set_variable = { which = PG_migr_otherregion which = prov_id }
+						set_province_flag = PG_migr_owntarget
+						PREV = {
+							set_variable = { which = PG_migr_otherregion which = PREV }
+							set_variable = { which = PG_move_other_mana which = PG_trb_migsize }
+						}
+						mig_dist_budget2 = yes
+					}
+				}
+				else = { set_variable = { which = PG_migr_otherregion value = 0 } }
+
+				# Migration size + costs, sent to the country level
+				owner = {
+					change_variable = { which = PG_trb_migsize which = PREV }
+					change_variable = { which = PG_mig_budget1 which = PREV }
+					change_variable = { which = PG_mig_budget2 which = PREV }
+					change_variable = { which = PG_move_own_mana which = PREV }
+					change_variable = { which = PG_move_other_mana which = PREV }
+				}
+
+			}
+			set_variable = { which = PG_enslave_milcost which = PG_trb_migsize } multiply_variable = { PG_enslave_milcost = 3 }
+			multiply_variable = { PG_move_own_mana = 2 }	multiply_variable = { PG_move_other_mana = 3 }
+			# stored: budget 1 (if moving within the region)
+			# stored: budget 2 (moving outside the region) -> will later be adapted to choose the region, etc.
+		}
+	}
+
+	###
+	#	REGULAR OPTIONS
+	###
+
+	option = {
+		name = "migrations.2.1"		# This one if there is up to 10 provinces. If not, then move to the simplified version above
+		trigger = { NOT = { calc_true_if = {
+			all_owned_province = { region = event_target:PG_region_pinned 	has_province_flag = PG_trib_migr_start }
+			amount = 10
+		} } }
+		every_owned_province = {
+			limit = {
+				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
+			}
+			hidden_effect = { save_event_target_as = PG_origin_prov }
+			random_province = {
+				limit = {
+					is_variable_equal = { which = prov_id which = PREV }
+					NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+				}
+				custom_tooltip = PG_MIGRATION_BASE
+				hidden_effect = {
+					# here goes the scripted effect with everything it means to migrate
+					if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+					else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+					else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+					if = {
+						limit = { has_global_flag = popgrowth_v5capacities }
+						province_event = { id = population_capacity.15 }
+					}
+					else = { province_event = { id = population_capacity.4 } }
+				}
+			}
+			hidden_effect = {
+				clr_province_flag = PG_trib_migr_start
+				add_province_modifier = { name = PG_migr_trib_left duration = 730 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+
+	}
+
+	option = {
+		name = "migrations.2.2"
+		trigger = { calc_true_if = {				# Won't show options if there is more than 10 effects
+			all_owned_province = { region = event_target:PG_region_pinned 	has_province_flag = PG_trib_migr_start }
+			amount = 10
+		} }
+		custom_tooltip = PG_MIGRATION_REGION
+		event_target:PG_region_pinned = {
+			region = {
+				limit = { has_province_flag = PG_trib_migr_start }
+
+				random_province = {
+					limit = {
+						is_variable_equal = { which = prov_id which = PREV }
+						NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+					}
+					hidden_effect = {
+						# here goes the scripted effect with everything it means to migrate
+						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = {
+							limit = { has_global_flag = popgrowth_v5capacities }
+							province_event = { id = population_capacity.15 }
+						}
+						else = { province_event = { id = population_capacity.4 } }
+					}
+				}
+				hidden_effect = {
+					clr_province_flag = PG_trib_migr_start
+					add_province_modifier = { name = PG_migr_trib_left duration = 730 }
+					if = {
+						limit = { has_global_flag = popgrowth_v5capacities }
+						province_event = { id = population_capacity.15 }
+					}
+					else = { province_event = { id = population_capacity.4 } }
+				}
+
+			}
+		}
+
+	}
+
+	option = {
+		name = "migrations.2.3"		# STAY, pay diplo power to keep the status quo
+		every_owned_province = {
+			limit = {
+				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
+			}
+			if = {
+				limit = { check_variable = { PG_trb_migsize = 3 } }
+				custom_tooltip = PG_MIGR_STAY
+				hidden_effect = { 	owner = { add_dip_power = -9 }	}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 2 } }
+				custom_tooltip = PG_MIGR_STAY
+				hidden_effect = {	owner = { add_dip_power = -6 }	}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 1 } }
+				custom_tooltip = PG_MIGR_STAY
+				hidden_effect = {	owner = { add_dip_power = -3 }	}
+			}
+			hidden_effect = {
+				clr_province_flag = PG_trib_migr_start
+				#add_province_modifier = { name = popgrowth_debug_build duration = 100 }
+
+			}
+		}
+
+	}
+
+	option = {
+		name = "migrations.2.4"		# ENSLAVE! 4 unrest per pop, and risk of revolt if there's already unrest
+		every_owned_province = {
+			limit = {
+				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
+			}
+			if = {
+				limit = { check_variable = { PG_trb_migsize = 3 } NOT = { unrest = 3 } }
+				custom_tooltip = PG_MIGR_ENSL3_CALM
+				hidden_effect = {
+					add_base_manpower = -3		owner = { change_variable = { slaves = 30 } }	owner = { add_mil_power = -9 }
+					add_province_modifier = { name = PG_enslaved_3 duration = 720 }
+				}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 3 } unrest = 3 }
+				custom_tooltip = PG_MIGR_ENSL3_REVOLT
+				hidden_effect = {
+					add_base_manpower = -3		owner = { change_variable = { slaves = 24 } }	owner = { add_mil_power = -9 }
+					add_province_modifier = { name = PG_enslave_revolted duration = 720 }
+					spawn_rebels = { size = 1	type = peasant_rebels }
+				}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 2 } NOT = { unrest = 3 } }
+				custom_tooltip = PG_MIGR_ENSL2_CALM
+				hidden_effect = {
+					add_base_manpower = -2		owner = { change_variable = { slaves = 20 } }	owner = { add_mil_power = -6 }
+					add_province_modifier = { name = PG_enslaved_2 duration = 720 }
+				}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 2 } unrest = 3 }
+				custom_tooltip = PG_MIGR_ENSL2_REVOLT
+				hidden_effect = {
+					add_base_manpower = -2		owner = { change_variable = { slaves = 16 } }	owner = { add_mil_power = -6 }
+					add_province_modifier = { name = PG_enslave_revolted duration = 720 }
+					spawn_rebels = { size = 1	type = peasant_rebels }
+				}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 1 } NOT = { unrest = 3 } }
+				custom_tooltip = PG_MIGR_ENSL1_CALM
+				hidden_effect = {
+					add_base_manpower = -1		owner = { change_variable = { slaves = 10 } }	owner = { add_mil_power = -3 }
+					add_province_modifier = { name = PG_enslaved_1 duration = 720 }
+				}
+			}
+			else_if = {
+				limit = { check_variable = { PG_trb_migsize = 1 } unrest = 3 }
+				custom_tooltip = PG_MIGR_ENSL1_REVOLT
+				hidden_effect = {
+					add_base_manpower = -1		owner = { change_variable = { slaves = 8 } }	owner = { add_mil_power = -3 }
+					add_province_modifier = { name = PG_enslave_revolted duration = 720 }
+					spawn_rebels = { size = 1	type = peasant_rebels }
+				}
+			}
+
+
+			hidden_effect = {
+				clr_province_flag = PG_trib_migr_start
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+
+	}
+
+	##
+	#	"INTERVENTIONIST" OPTIONS
+	##
+
+	option = {
+		name = "migrations.2.5"		# Propose to move them within the same region. The best option for the ruler, both cheap and peaceful
+		# Trigger: any province with enough space in the region, must be owned or vassals
+		every_owned_province = {
+			limit = {
+				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
+			}
+
+			if = {
+				limit = { check_variable = { PG_migr_ownregion = 1 } } 	# as long as there is some destination province defined
+				random_province = {
+					limit = {
+						is_variable_equal = { which = PG_migr_ownregion which = PREV }
+						NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+					}
+					custom_tooltip = PG_MIGRATION_OWNREGION
+					hidden_effect = {
+						# here goes the scripted effect with everything it means to migrate
+						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						mig_dist_cost = yes
+						if = {
+							limit = { has_global_flag = popgrowth_v5capacities }
+							province_event = { id = population_capacity.15 }
+						}
+						else = { province_event = { id = population_capacity.4 } }
+
+					}
+				}
+				# adm cost. Within this if clause, to only affect if it found an eligible province
+				hidden_effect = {
+					if = { 		limit = { check_variable = { PG_trb_migsize = 3 } } owner = { add_adm_power = -6 } }
+					else_if = { limit = { check_variable = { PG_trb_migsize = 2 } } owner = { add_adm_power = -4 } }
+					else_if = { limit = { check_variable = { PG_trb_migsize = 1 } } owner = { add_adm_power = -2 } }
+				}
+			}
+
+			else_if = {
+				limit = { NOT = { check_variable = { PG_migr_ownregion = 1 } } }
+				# Leave as usual, copy the previous code
+				random_province = {
+					limit = {
+						is_variable_equal = { which = prov_id which = PREV }
+						NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+					}
+					custom_tooltip = PG_MIGRATION_ALTERNATIVE
+					hidden_effect = {
+						# here goes the scripted effect with everything it means to migrate
+						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = {
+							limit = { has_global_flag = popgrowth_v5capacities }
+							province_event = { id = population_capacity.15 }
+						}
+						else = { province_event = { id = population_capacity.4 } }
+					}
+				}
+
+			}
+			hidden_effect = {
+				clr_province_flag = PG_trib_migr_start
+				add_province_modifier = { name = PG_migr_trib_left duration = 730 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+
+	}
+	option = {
+		name = "migrations.2.6"		# Propose to move them to another region. Expensive (will be tweaked later) but useful to colonize
+		# Trigger: any province with enough space in the region, must be owned or vassals
+		every_owned_province = {
+			limit = {
+				region = event_target:PG_region_pinned	has_province_flag = PG_trib_migr_start
+			}
+
+			if = {
+				limit = { check_variable = { PG_migr_otherregion = 1 } } 	# as long as there is some destination province defined
+				random_province = {
+					limit = {
+						is_variable_equal = { which = PG_migr_otherregion which = PREV }
+						NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+					}
+					custom_tooltip = PG_MIGRATION_OTHERREGION
+					hidden_effect = {
+						# here goes the scripted effect with everything it means to migrate
+						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						mig_dist_cost = yes
+						if = {
+							limit = { has_global_flag = popgrowth_v5capacities }
+							province_event = { id = population_capacity.15 }
+						}
+						else = { province_event = { id = population_capacity.4 } }
+
+					}
+				}
+				# adm cost. Within this if clause, to only affect if it found an eligible province
+				hidden_effect = {
+					if = { 		limit = { check_variable = { PG_trb_migsize = 3 } } owner = { add_adm_power = -9 } }
+					else_if = { limit = { check_variable = { PG_trb_migsize = 2 } } owner = { add_adm_power = -6 } }
+					else_if = { limit = { check_variable = { PG_trb_migsize = 1 } } owner = { add_adm_power = -3 } }
+				}
+
+			}
+			else_if = {
+				limit = { NOT = { check_variable = { PG_migr_otherregion = 1 } } }
+				# Leave as usual, copy the previous code
+				random_province = {
+					limit = {
+						is_variable_equal = { which = prov_id which = PREV }
+						NOT = { is_variable_equal = { which = prov_id_base which = PREV } }
+					}
+					custom_tooltip = PG_MIGRATION_ALTERNATIVE
+					hidden_effect = {
+						# here goes the scripted effect with everything it means to migrate
+						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = {
+							limit = { has_global_flag = popgrowth_v5capacities }
+							province_event = { id = population_capacity.15 }
+						}
+						else = { province_event = { id = population_capacity.4 } }
+					}
+				}
+
+			}
+			hidden_effect = {
+				clr_province_flag = PG_trib_migr_start
+				add_province_modifier = { name = PG_migr_trib_left duration = 730 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+
+	}
+
+
+	after = {
+		# Remove the variables and flags created
+		every_province = {
+			limit = { has_province_flag = PG_migr_owntarget }
+			clr_province_flag = PG_migr_owntarget
+
+		}
+
+	}
+
+}
+
+
+# experimental events, do not activate
+province_event = {
+	id = migrations.38
+	title = "migrations.38.t"
+	desc = "migrations.38.d"
+	picture = peasant_woman
+	#hidden = no
+	is_triggered_only = yes
+
+	trigger = {
+		base_manpower = 2 												# does not let the last rural pop to leave, obviously
+		has_global_flag = popgrowth_running								# to only affect if the popgrowth mechanic is active
+		NOT = { check_variable = { which = PG_trb_grow value = 100 } }	# negative growth, anything under 1.00 (100%)
+		NOT = { has_province_modifier = rural_pause }					# that condition that initial values are kept for 100 years
+		owner = { has_country_flag = PG_migration_manual }				# new, to allow the automatic event happening
+	}
+
+
+	# mean_time_to_happen = {
+	# 	months = 240 	# twenty years to move for a stabilized population, will be affected by modifiers
+	# }
+
+	immediate = {
+		hidden_effect = {
+
+
+
+		}
+
+	}
+
+	option = {
+		name = "population_capacity.4.1"
+		#set_base_manpower = 0
+		#set_base_production = 0
+		#set_base_tax = 0
+		#SD_update_provslots = yes
+		#SD_update_prov_output = yes
+
+
+
+	}
+
+
+	after = {
+
+	}
+
+}
+
+country_event = {
+	id = migrations.86
+	title = "migrations.86.t"
+	desc = "migrations.86.d"
+	picture = peasant_woman
+	#hidden = no
+	is_triggered_only = yes
+
+
+	immediate = {
+
+	}
+
+	option = {
+		name = "population_capacity.4.1"
+		add_country_modifier = { name = popgrowth_debug_build duration = 100 }
+	}
+	option = {
+		name = "population_capacity.4.1"
+		set_country_flag = SD_auto_assign_slaves
+	}
+
+
+	after = {
+
+	}
+
+}
+

@@ -1,0 +1,772 @@
+namespace = alalia
+
+########################################################################################
+# Phocaean refugees
+########################################################################################
+country_event = {
+	id = alalia.1
+	title = "alalia.1.t"
+	desc = "alalia.1.d"
+	picture = deligation
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ALE
+		culture_group = hellenic_group
+		is_year = 208
+		NOT = { started_in = 214.1.1 }
+		owns_core_province = 121
+		KYM = {
+			OR = {
+				exists = no
+				NOT = { owns = 2123 }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "alalia.1.a"
+		ai_chance = { factor = 99 }
+		121 = { add_base_production = 1 }
+		hidden_effect = {
+			set_global_flag = started_alalia_conflict_flag
+			country_event = {
+				id = alalia.2
+				days = 5
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.1.b"
+		ai_chance = { factor = 1 }
+		add_prestige = -5
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# Phocaean fleet joins Alalia
+########################################################################################
+country_event = {
+	id = alalia.2
+	title = "alalia.2.t"
+	desc = "alalia.2.d"
+	picture = navy2
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		owns = 121
+		has_global_flag = started_alalia_conflict_flag
+	}
+
+	option = {
+		name = "alalia.2.a"
+		ai_chance = { factor = 99 }
+		add_country_modifier = {
+			name = phocean_fleet_modifier
+			duration = 9125
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			add_sailors = 121
+			121 = { build_to_forcelimit = { galley = 1 } }
+		}
+	}
+}
+
+########################################################################################
+# Alalia preys on Corsican trade
+########################################################################################
+country_event = {
+	id = alalia.3
+	title = "alalia.3.t"
+	desc = "alalia.3.d"
+	picture = navy3
+
+	fire_only_once = yes
+
+	trigger = {
+		had_global_flag = {
+			flag = started_alalia_conflict_flag
+			days = 730
+		}
+		owns = 121
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "alalia.3.a"
+		ai_chance = { factor = 99 }
+		add_mercantilism = 2
+		add_country_modifier = {
+			name = rising_alalia_trade_modifier
+			duration = 5475
+		}
+		121 = {
+			add_trade_modifier = {
+				who = ROOT
+				duration = 5475
+				power = 25
+				key = ALALIA_TRADE_MODIFIER
+			}
+		}
+	}
+}
+
+########################################################################################
+# Etruscans concerned over Alalia power
+########################################################################################
+country_event = {
+	id = alalia.4
+	title = "alalia.4.t"
+	desc = "alalia.4.d"
+	picture = senat_conflict
+
+	fire_only_once = yes
+
+	trigger = {
+		primary_culture = etruscan
+		has_global_flag = started_alalia_conflict_flag
+		is_year = 214
+		num_of_ports = 1
+		exists = CAR
+		capital_scope = {
+			OR = {
+				area = etruria_west
+				area = etruria_maritima_area
+				area = etruria_east
+				area = liguria_area
+			}
+		}
+		ALE = {
+			exists = yes
+			owns = 121
+		}
+		is_at_war = no
+		has_any_disaster = no
+	}
+
+	mean_time_to_happen = {
+		months = 2
+		modifier = {
+			factor = 0.5
+			tag = I01
+		}
+	}
+
+	option = {
+		name = "alalia.4.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 0
+				OR = {
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		CAR = {
+			country_event = {
+				id = alalia.5
+				days = 7
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.4.b"
+		ai_chance = { factor = 40 }
+		add_prestige = -5
+		add_army_tradition = -5
+		add_navy_tradition = -5
+	}
+}
+
+#In case carthage does not exist
+country_event = {
+	id = alalia.401
+	title = "alalia.4.t"
+	desc = "alalia.401.d"
+	picture = senat_conflict
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		primary_culture = etruscan
+		has_global_flag = started_alalia_conflict_flag
+		is_year = 214
+		num_of_ports = 1
+		NOT = { exists = CAR }
+		capital_scope = {
+			OR = {
+				area = etruria_west
+				area = etruria_maritima_area
+				area = etruria_east
+				area = liguria_area
+			}
+		}
+		ALE = {
+			exists = yes
+			owns = 121
+		}
+		has_any_disaster = no
+		is_at_war = no
+	}
+
+	mean_time_to_happen = {
+		months = 2
+		modifier = {
+			factor = 0.5
+			tag = I01
+		}
+	}
+
+	option = {
+		name = "alalia.401.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 0
+				OR = {
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_prestige = 5
+		add_army_tradition = 5
+		add_navy_tradition = 5
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = ALE
+		}
+		hidden_effect = {
+			clr_global_flag = started_alalia_conflict_flag
+			set_country_flag = etruscan_alalia_battle_flag
+			ALE = { set_country_flag = greek_alalia_battle_flag }
+			every_ally = {
+				limit = { primary_culture = etruscan }
+				join_all_offensive_wars_of = ROOT
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.401.b"
+		ai_chance = { factor = 40 }
+		add_prestige = -5
+		add_army_tradition = -5
+		add_navy_tradition = -5
+	}
+}
+
+########################################################################################
+# Etruscan-Carthaginian Alliance
+########################################################################################
+country_event = {
+	id = alalia.5
+	title = "alalia.5.t"
+	desc = "alalia.5.d"
+	picture = deligation
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		tag = CAR
+		has_global_flag = started_alalia_conflict_flag
+	}
+
+	option = {
+		name = "alalia.5.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 0
+				OR = {
+					has_any_disaster = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+			modifier = {
+				factor = 0
+				war_exhaustion = 10
+			}
+		}
+		create_alliance = FROM
+		add_prestige = 5
+		add_navy_tradition = 5
+		FROM = {
+			country_event = {
+				id = alalia.6
+				days = 7
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.5.b"
+		ai_chance = { factor = 40 }
+		add_prestige = -10
+		add_navy_tradition = -5
+		FROM = {
+			country_event = {
+				id = alalia.601
+				days = 7
+			}
+		}
+	}
+}
+
+########################################################################################
+# Carthage response to etruscans
+########################################################################################
+#Alliance accepted
+country_event = {
+	id = alalia.6
+	title = "alalia.6.t"
+	desc = "alalia.6.d"
+	picture = naval_battle
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = started_alalia_conflict_flag
+	}
+
+	option = {
+		name = "alalia.6.a"
+		ai_chance = { factor = 40 }
+		add_prestige = 5
+		add_army_tradition = 5
+		add_navy_tradition = 5
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = ALE
+		}
+		hidden_effect = {
+			clr_global_flag = started_alalia_conflict_flag
+			set_country_flag = etruscan_alalia_battle_flag
+			ALE = { set_country_flag = greek_alalia_battle_flag }
+			every_ally = {
+				limit = { primary_culture = etruscan }
+				join_all_offensive_wars_of = ROOT
+			}
+		}
+	}
+}
+
+#Alliance rejected
+country_event = {
+	id = alalia.601
+	title = "alalia.601.t"
+	desc = "alalia.601.d"
+	picture = surrender
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = started_alalia_conflict_flag
+	}
+
+	option = {
+		name = "alalia.601.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 0
+				OR = {
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_prestige = 5
+		add_army_tradition = 5
+		add_navy_tradition = 5
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = ALE
+		}
+		hidden_effect = {
+			clr_global_flag = started_alalia_conflict_flag
+			set_country_flag = etruscan_alalia_battle_flag
+			ALE = { set_country_flag = greek_alalia_battle_flag }
+			every_ally = {
+				limit = { primary_culture = etruscan }
+				join_all_offensive_wars_of = ROOT
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.601.b"
+		ai_chance = { factor = 40 }
+		add_prestige = -5
+		add_army_tradition = -5
+		add_navy_tradition = -5
+	}
+}
+
+########################################################################################
+# Etruscan victory against Alalia
+########################################################################################
+country_event = {
+	id = alalia.7
+	title = "alalia.7.t"
+	desc = "alalia.7.d"
+	picture = naval_battle
+
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		has_country_flag = etruscan_alalia_battle_flag
+		primary_culture = etruscan
+		owns = 121
+		FROM = { tag = ALE }
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = etruscan_alalia_battle_flag
+			ALE = { clr_country_flag = greek_alalia_battle_flag }
+		}
+	}
+
+	option = {
+		name = "alalia.7.a"
+		ai_chance = { factor = 90 }
+		custom_tooltip = alalia.ct.1
+		release = ALE
+		add_historical_friend = ALE
+		create_alliance = ALE
+		ALE = { add_historical_friend = ROOT }
+		add_country_modifier = {
+			name = etruscan_alalia_victory_modifier
+			duration = 10950
+		}
+		hidden_effect = {
+			add_truce_with = ALE
+			ALE = {
+				change_primary_culture = etruscan
+				change_religion = etruscan_religion
+			}
+			121 = {
+				change_culture = etruscan
+				change_religion = etruscan_religion
+				add_base_production = 1
+			}
+			every_ally = {
+				limit = { primary_culture = etruscan }
+				add_country_modifier = {
+					name = etruscan_alalia_victory_modifier
+					duration = 7300
+				}
+			}
+			every_known_country = {
+				limit = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							superregion = italia_superregion
+							superregion = celtica_superregion
+							superregion = hispania_superregion
+						}
+					}
+				}
+				add_country_modifier = {
+					name = greek_lost_alalia_modifier
+					duration = 7300
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.7.b"
+		ai_chance = { factor = 10 }
+		custom_tooltip = alalia.ct.1
+		add_country_modifier = {
+			name = etruscan_alalia_victory_modifier
+			duration = 10950
+		}
+		121 = {
+			add_base_tax = -1
+			add_base_production = -2
+			add_center_of_trade_level = -1
+			change_culture = corsi
+			change_religion = ligurian_religion
+		}
+		hidden_effect = {
+			every_ally = {
+				limit = { primary_culture = etruscan }
+				add_country_modifier = {
+					name = etruscan_alalia_victory_modifier
+					duration = 3650
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = direct_control_alalia_opinion
+				}
+			}
+			every_known_country = {
+				limit = {
+					culture_group = hellenic_group
+					num_of_ports = 1
+					capital_scope = {
+						OR = {
+							superregion = italia_superregion
+							superregion = celtica_superregion
+							superregion = hispania_superregion
+						}
+					}
+				}
+				add_country_modifier = {
+					name = greek_lost_alalia_modifier
+					duration = 7300
+				}
+			}
+		}
+	}
+
+	after = {
+		5654 = {
+			province_event = {
+				id = alalia.9
+				days = 7
+			}
+		}
+	}
+}
+
+########################################################################################
+# Alalian victory
+########################################################################################
+country_event = {
+	id = alalia.8
+	title = "alalia.8.t"
+	desc = "alalia.8.d"
+	picture = oracle_meeting
+
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		tag = ALE
+		has_country_flag = greek_alalia_battle_flag
+		owns = 121
+		FROM = { has_country_flag = etruscan_alalia_battle_flag }
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = greek_alalia_battle_flag
+			FROM = { clr_country_flag = etruscan_alalia_battle_flag }
+		}
+	}
+
+	option = {
+		name = "alalia.8.a"
+		ai_chance = { factor = 90 }
+		custom_tooltip = alalia.ct.2
+		add_mercantilism = 5
+		add_stability = 1
+		add_country_modifier = {
+			name = greek_alalia_victory_modifier
+			duration = 10950
+		}
+		121 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_center_of_trade_level = 1
+		}
+		hidden_effect = {
+			every_known_country = {
+				if = {
+					limit = {
+						culture_group = hellenic_group
+						num_of_ports = 1
+						capital_scope = {
+							OR = {
+								superregion = italia_superregion
+								superregion = celtica_superregion
+								superregion = hispania_superregion
+							}
+						}
+					}
+					add_country_modifier = {
+						name = greek_alalia_victory_modifier
+						duration = 7300
+					}
+				}
+				else_if = {
+					limit = {
+						OR = {
+							culture_group = semitic
+							primary_culture = etruscan
+						}
+						num_of_ports = 1
+						capital_scope = {
+							OR = {
+								superregion = italia_superregion
+								superregion = celtica_superregion
+								superregion = hispania_superregion
+								superregion = western_africa_superregion
+							}
+						}
+					}
+					add_country_modifier = {
+						name = etruscan_lost_alalia_modifier
+						duration = 7300
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Alalian refugees in Elea
+########################################################################################
+province_event = {
+	id = alalia.9
+	title = "alalia.9.t"
+	desc = "alalia.9.d"
+	picture = plebs
+
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+	goto = 5654
+
+	trigger = {
+		province_id = 5654
+	}
+
+	immediate = {
+		hidden_effect = {
+			5654 = {
+				add_core = I16
+				change_culture = italiote
+				change_religion = greek_religion
+				add_base_tax = 1
+				add_base_production = 2
+				add_base_manpower = -1
+				change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtu = 2 }	change_variable = { PS_upp_evtu = 1 }
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.9.a"
+		ai_chance = { factor = 99 }
+		remove_core = ROOT
+		owner = {
+			release = I16
+			add_truce_with = I16
+			add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_native
+			}
+			reverse_add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_colony
+			}
+			if = {
+				limit = { culture_group = hellenic_group }
+				create_alliance = I16
+			}
+		}
+		hidden_effect = {
+			I16 = {
+				every_neighbor_country = { add_truce_with = PREV }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = republic
+				add_government_reform = greek_polis_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "alalia.9.b"
+		ai_chance = { factor = 1 }
+		spawn_rebels = {
+			size = 2
+			type = nationalist_rebels
+		}
+		add_named_unrest = {
+			name = greek_colonists_oppressed
+			value = 5
+		}
+		add_nationalism	= 20
+	}
+
+	#Player only
+	option = {
+		name = "alalia.9.c"
+		trigger = { owner = { ai = no } }
+		remove_core = ROOT
+		owner = {
+			release = I16
+			add_truce_with = I16
+			add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_native
+			}
+			reverse_add_opinion = {
+				who = I16
+				modifier = greek_colonisation_allowed_colony
+			}
+			switch_tag = I16
+			if = {
+				limit = { culture_group = hellenic_group }
+				create_alliance = I16
+			}
+		}
+		hidden_effect = {
+			I16 = {
+				every_neighbor_country = { add_truce_with = PREV }
+				add_treasury = 50
+				add_manpower = 3
+				change_government = republic
+				add_government_reform = greek_polis_reform
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 1
+						heavy_ship = 0.5
+						transport = 0.5
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,873 @@
+namespace = punic_canaanite_spread
+
+# When converting culture
+province_event = {
+	id = punic_canaanite_spread.1
+	title = "punic_canaanite_spread.1.t"
+	desc = "punic_canaanite_spread.1.d"
+	picture = punicgfx_sacrifice
+	hidden = yes
+
+	trigger = {
+		owner = {
+			OR = {
+				primary_culture = punic
+				primary_culture = sardo_phoenician
+				primary_culture = ibero_phoenician
+				primary_culture = sicelian_punic
+				primary_culture = lybo_punic
+			}
+		}
+		has_construction = culture
+		construction_progress = 0.1
+		OR = {
+			superregion = hispania_superregion
+			region = sardinia_corsica_region
+			sicilia_west = {
+				NOT = { has_port = yes }
+			}
+			sicilia_est = {
+				NOT = { has_port = yes }
+			}
+			syracuse_area = {
+				NOT = { has_port = yes }
+			}
+			sicelia_area = {
+				NOT = { has_port = yes }
+			}
+			sicani_area = {
+				NOT = { has_port = yes }
+			}
+			western_africa_superregion = {
+				NOT = { has_port = yes }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				superregion = hispania_superregion
+				NOT = { area = baleares_area }
+				}
+			set_province_flag = ibero_phoenician_converting
+		}
+		if = {
+			limit = {
+				OR = {
+					region = sardinia_corsica_region
+					area = baleares_area
+				}
+			}
+			set_province_flag = sardo_phoenician_converting
+		}
+		if = {
+			limit = {
+				OR = {
+					sicilia_west = {
+						NOT = { has_port = yes }
+					}
+					sicilia_est = {
+						NOT = { has_port = yes }
+					}
+					syracuse_area = {
+						NOT = { has_port = yes }
+					}
+					sicelia_area = {
+						NOT = { has_port = yes }
+					}
+					sicani_area = {
+						NOT = { has_port = yes }
+					}
+				}
+			}
+			set_province_flag = sicelian_punic_converting
+		}
+		if = {
+			limit = {
+				western_africa_superregion = {
+					NOT = { has_port = yes }
+				}
+			}
+			set_province_flag = lybo_punic_converting
+		}
+	}
+
+	option = {
+		name = "punic_canaanite_spread.1.a"
+	}
+}
+
+# When converting culture is finished
+province_event = {
+	id = punic_canaanite_spread.2
+	title = "punic_canaanite_spread.1.t"
+	desc = "punic_canaanite_spread.1.d"
+	picture = punicgfx_sacrifice
+	hidden = yes
+	is_triggered_only = yes
+
+	trigger = {
+		owner = {
+			OR = {
+				primary_culture = punic
+				primary_culture = sardo_phoenician
+				primary_culture = ibero_phoenician
+				primary_culture = sicelian_punic
+				primary_culture = lybo_punic
+			}
+		}
+		OR = {
+			superregion = hispania_superregion
+			region = sardinia_corsica_region
+			sicilia_west = {
+				NOT = { has_port = yes }
+			}
+			sicilia_est = {
+				NOT = { has_port = yes }
+			}
+			syracuse_area = {
+				NOT = { has_port = yes }
+			}
+			sicelia_area = {
+				NOT = { has_port = yes }
+			}
+			sicani_area = {
+				NOT = { has_port = yes }
+			}
+			western_africa_superregion = {
+				NOT = { has_port = yes }
+			}
+		}
+		OR = {
+			has_province_flag = ibero_phoenician_converting
+			has_province_flag = sardo_phoenician_converting
+			has_province_flag = sicelian_punic_converting
+			has_province_flag = lybo_punic_converting
+		}
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				has_province_flag = ibero_phoenician_converting
+			}
+			change_culture = ibero_phoenician
+		}
+		if = {
+			limit = {
+				has_province_flag = sardo_phoenician_converting
+			}
+			change_culture = sardo_phoenician
+		}
+		if = {
+			limit = {
+				has_province_flag = sicelian_punic_converting
+			}
+			change_culture = sicelian_punic
+		}
+		if = {
+			limit = {
+				has_province_flag = lybo_punic_converting
+			}
+			change_culture = lybo_punic
+		}
+	}
+
+	after = {
+		clr_province_flag = ibero_phoenician_converting
+		clr_province_flag = sardo_phoenician_converting
+		clr_province_flag = sicelian_punic_converting
+		clr_province_flag = lybo_punic_converting
+	}
+
+	option = {
+		name = "punic_canaanite_spread.1.a"
+	}
+}
+
+# Event for culture change
+province_event = {
+	id = punic_canaanite_spread.3
+	title = "punic_canaanite_spread.3.t"
+	desc = "punic_canaanite_spread.3.d"
+	picture = punicgfx_sacrifice
+	goto = ROOT
+
+	trigger = {
+		owner = {
+			OR = {
+				primary_culture = punic
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+				primary_culture = sicelian_punic
+				primary_culture = lybo_punic
+			}
+			absolutism = 15
+			stability = 0
+		}
+		NOT = { unrest = 3 }
+		NOT = { devastation = 1 }
+		development = 2
+		is_state = yes
+		writing_system = 100
+		OR = {
+			superregion = hispania_superregion
+			superregion = western_africa_superregion
+			region = sardinia_corsica_region
+			area = sicilia_west
+			area = sicilia_est
+			area = syracuse_area
+			area = sicelia_area
+			area = sicani_area
+		}
+		OR = {
+			any_neighbor_province = {
+				culture = punic
+				culture = ibero_phoenician
+				culture = sardo_phoenician
+				culture = sicelian_punic
+			}
+			has_port = yes
+		}
+		NOT = {
+			culture = punic
+			culture = ibero_phoenician
+			culture = sardo_phoenician
+			culture = sicelian_punic
+			culture = lybo_punic
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 3600
+		modifier = {
+			factor = 0.95
+			base_tax = 1
+			NOT = { base_tax = 3 }
+		}
+		modifier = {
+			factor = 0.9
+			base_tax = 3
+			NOT = { base_tax = 5 }
+		}
+		modifier = {
+			factor = 0.85
+			base_tax = 5
+		}
+		modifier = {
+			factor = 0.95
+			base_production = 3
+			NOT = { base_tax = 5 }
+		}
+		modifier = {
+			factor = 0.9
+			base_production = 5
+			NOT = { base_tax = 7 }
+		}
+		modifier = {
+			factor = 0.85
+			base_production = 7
+			NOT = { base_tax = 9 }
+		}
+		modifier = {
+			factor = 0.8
+			base_production = 9
+		}
+		modifier = {
+			factor = 1.1
+			base_manpower = 4
+			NOT = { base_manpower = 6 }
+		}
+		modifier = {
+			factor = 1.15
+			base_manpower = 6
+			NOT = { base_manpower = 8 }
+		}
+		modifier = {
+			factor = 1.2
+			base_manpower = 8
+			NOT = { base_manpower = 10 }
+		}
+		modifier = {
+			factor = 1.25
+			base_manpower = 10
+		}
+		modifier = {
+			factor = 0.75
+			OR = {
+				has_building = mathematician_academy
+				has_building = philosophers_academy
+				has_building = military_academy
+				has_building = library
+				has_building = great_library
+			}
+		}
+		modifier = {
+			factor = 0.95
+			OR = {
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
+			}
+		}
+		modifier = {
+			factor = 0.95
+			OR = {
+				has_building = small_bath
+				has_building = big_bath
+			}
+		}
+		modifier = {
+			factor = 0.9
+			OR = {
+				has_building = small_theater
+				has_building = big_theater
+				has_building = great_theater
+				has_building = huge_theater
+			}
+		}
+		modifier = {
+			factor = 0.9
+			OR = {
+				has_building = paved_road
+				has_building = imperial_road
+			}
+		}
+		modifier = {
+			factor = 1.25
+			base_manpower = 10
+		}
+		modifier = {
+			factor = 0.95
+			owner = {
+				absolutism = 20
+				NOT = { absolutism = 30 }
+			}
+		}
+		modifier = {
+			factor = 0.9
+			owner = {
+				absolutism = 30
+				NOT = { absolutism = 40 }
+			}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {
+				absolutism = 40
+				NOT = { absolutism = 50 }
+			}
+		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				absolutism = 50
+				NOT = { absolutism = 60 }
+			}
+		}
+		modifier = {
+			factor = 0.75
+			owner = {
+				absolutism = 60
+			}
+		}
+		modifier = {
+			factor = 0.9
+			owner = {
+				stability = 1
+				NOT = { stability = 2 }
+			}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {
+				stability = 2
+				NOT = { stability = 3 }
+			}
+		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				stability = 3
+			}
+		}
+		modifier = {
+			factor = 0.75
+			is_prosperous = yes
+		}
+		modifier = {
+			factor = 0.75
+			province_has_center_of_trade_of_level = 1
+		}
+		modifier = {
+			factor = 0.5
+			owner = { religion = ROOT }
+		}
+		modifier = {
+			factor = 0.7
+			any_neighbor_province = {
+				culture = punic
+				culture = ibero_phoenician
+				culture = sardo_phoenician
+				culture = sicelian_punic
+				culture = lybo_punic
+			}
+		}
+		modifier = {
+			factor = 1.15
+			local_autonomy = 25
+			NOT = { local_autonomy = 35 }
+		}
+		modifier = {
+			factor = 1.25
+			local_autonomy = 35
+			NOT = { local_autonomy = 45 }
+		}
+		modifier = {
+			factor = 1.35
+			local_autonomy = 45
+			NOT = { local_autonomy = 55 }
+		}
+		modifier = {
+			factor = 1.45
+			local_autonomy = 55
+			NOT = { local_autonomy = 65 }
+		}
+		modifier = {
+			factor = 1.55
+			local_autonomy = 65
+			NOT = { local_autonomy = 75 }
+		}
+		modifier = {
+			factor = 1.65
+			local_autonomy = 75
+		}
+		modifier = {
+			factor = 1.5
+			has_port = yes
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					superregion = hispania_superregion
+					NOT = { area = baleares_area }
+				}
+				change_culture = ibero_phoenician
+			}
+			if = {
+				limit = {
+					OR = {
+						region = sardinia_corsica_region
+						area = baleares_area
+					}
+				}
+				change_culture = sardo_phoenician
+			}
+			if = {
+				limit = {
+					has_port = yes
+					OR = {
+						area = sicilia_west
+						area = sicilia_est
+						area = syracuse_area
+						area = sicani_area
+						area = sicelia_area
+					}
+				}
+				change_culture = punic
+			}
+			if = {
+				limit = {
+					NOT = { has_port = yes }
+					OR = {
+						area = sicilia_west
+						area = sicilia_est
+						area = syracuse_area
+						area = sicani_area
+						area = sicelia_area
+					}
+				}
+				change_culture = sicelian_punic
+			}
+			if = {
+				limit = {
+					has_port = yes
+					superregion = western_africa_superregion
+				}
+				change_culture = punic
+			}
+			if = {
+				limit = {
+					NOT = { has_port = yes }
+					superregion = western_africa_superregion
+				}
+				change_culture = lybo_punic
+			}
+		}
+	}
+
+	option = {
+		name = "punic_canaanite_spread.3.a"
+		custom_tooltip = punic_canaanite_spread.3.tt
+	}
+}
+
+#When colonizing
+province_event = {
+	id = punic_canaanite_spread.4
+	title = "punic_canaanite_spread.1.t"
+	desc = "punic_canaanite_spread.1.d"
+	picture = punicgfx_sacrifice
+	hidden = yes
+
+	trigger = {
+		owner = {
+			OR = {
+				primary_culture = punic
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+				primary_culture = sicelian_punic
+				primary_culture = lybo_punic
+			}
+		}
+		is_colony = yes
+		colonysize = 800
+		native_size = 10
+		OR = {
+			superregion = hispania_superregion
+			superregion = western_africa_superregion
+			region = sardinia_corsica_region
+			area = sicilia_west
+			area = sicilia_est
+			area = syracuse_area
+			area = sicani_area
+			area = sicelia_area
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				superregion = hispania_superregion
+				NOT = { area = baleares_area }
+			}
+			change_culture = ibero_phoenician
+		}
+		if = {
+			limit = {
+				OR = {
+					region = sardinia_corsica_region
+					area = baleares_area
+				}
+			}
+			change_culture = sardo_phoenician
+		}
+		if = {
+			limit = {
+				has_port = yes
+				OR = {
+					area = sicilia_west
+					area = sicilia_est
+					area = syracuse_area
+					area = sicani_area
+					area = sicelia_area
+				}
+			}
+			change_culture = punic
+		}
+		if = {
+			limit = {
+				NOT = { has_port = yes }
+				OR = {
+					area = sicilia_west
+					area = sicilia_est
+					area = syracuse_area
+					area = sicani_area
+					area = sicelia_area
+				}
+			}
+			change_culture = sicelian_punic
+		}
+		if = {
+			limit = {
+				superregion = western_africa_superregion
+				has_port = yes
+			}
+			change_culture = punic
+		}
+		if = {
+			limit = {
+				superregion = western_africa_superregion
+				NOT = { has_port = yes }
+			}
+			change_culture = lybo_punic
+		}
+	}
+
+	option = {
+		name = "punic_canaanite_spread.1.a"
+	}
+}
+
+# Event for religion change
+province_event = {
+	id = punic_canaanite_spread.5
+	title = "punic_canaanite_spread.5.t"
+	desc = "punic_canaanite_spread.5.d"
+	picture = punicgfx_sacrifice
+	goto = ROOT
+
+	trigger = {
+		owner = {
+			OR = {
+				primary_culture = punic
+				primary_culture = ibero_phoenician
+				primary_culture = sardo_phoenician
+				primary_culture = sicelian_punic
+				primary_culture = lybo_punic
+			}
+			absolutism = 15
+			stability = 0
+		}
+		NOT = { unrest = 3 }
+		NOT = { devastation = 1 }
+		development = 2
+		is_state = yes
+		writing_system = 100
+		OR = {
+			superregion = hispania_superregion
+			superregion = western_africa_superregion
+			region = sardinia_corsica_region
+			area = sicilia_west
+			area = sicilia_est
+			area = syracuse_area
+			area = sicelia_area
+			area = sicani_area
+		}
+		has_port = yes
+		OR = {
+			culture = punic
+			culture = ibero_phoenician
+			culture = sardo_phoenician
+			culture = sicelian_punic
+			culture = lybo_punic
+		}
+		NOT = { has_owner_religion = yes }
+	}
+
+	mean_time_to_happen = {
+		months = 3600
+		modifier = {
+			factor = 0.95
+			base_tax = 1
+			NOT = { base_tax = 3 }
+		}
+		modifier = {
+			factor = 0.9
+			base_tax = 3
+			NOT = { base_tax = 5 }
+		}
+		modifier = {
+			factor = 0.85
+			base_tax = 5
+		}
+		modifier = {
+			factor = 0.95
+			base_production = 3
+			NOT = { base_tax = 5 }
+		}
+		modifier = {
+			factor = 0.9
+			base_production = 5
+			NOT = { base_tax = 7 }
+		}
+		modifier = {
+			factor = 0.85
+			base_production = 7
+			NOT = { base_tax = 9 }
+		}
+		modifier = {
+			factor = 0.8
+			base_production = 9
+		}
+		modifier = {
+			factor = 1.1
+			base_manpower = 4
+			NOT = { base_manpower = 6 }
+		}
+		modifier = {
+			factor = 1.15
+			base_manpower = 6
+			NOT = { base_manpower = 8 }
+		}
+		modifier = {
+			factor = 1.2
+			base_manpower = 8
+			NOT = { base_manpower = 10 }
+		}
+		modifier = {
+			factor = 1.25
+			base_manpower = 10
+		}
+		modifier = {
+			factor = 0.95
+			OR = {
+				has_building = small_townhall
+				has_building = big_townhall
+				has_building = government_palace
+				has_building = government_district
+			}
+		}
+		modifier = {
+			factor = 0.95
+			OR = {
+				has_building = small_bath
+				has_building = big_bath
+			}
+		}
+		modifier = {
+			factor = 0.9
+			OR = {
+				has_building = paved_road
+				has_building = imperial_road
+			}
+		}
+		modifier = {
+			factor = 1.25
+			base_manpower = 10
+		}
+		modifier = {
+			factor = 0.95
+			owner = {
+				absolutism = 20
+				NOT = { absolutism = 30 }
+			}
+		}
+		modifier = {
+			factor = 0.9
+			owner = {
+				absolutism = 30
+				NOT = { absolutism = 40 }
+			}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {
+				absolutism = 40
+				NOT = { absolutism = 50 }
+			}
+		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				absolutism = 50
+				NOT = { absolutism = 60 }
+			}
+		}
+		modifier = {
+			factor = 0.75
+			owner = {
+				absolutism = 60
+			}
+		}
+		modifier = {
+			factor = 0.9
+			owner = {
+				stability = 1
+				NOT = { stability = 2 }
+			}
+		}
+		modifier = {
+			factor = 0.85
+			owner = {
+				stability = 2
+				NOT = { stability = 3 }
+			}
+		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				stability = 3
+			}
+		}
+		modifier = {
+			factor = 0.75
+			is_prosperous = yes
+		}
+		modifier = {
+			factor = 0.75
+			province_has_center_of_trade_of_level = 1
+		}
+		modifier = {
+			factor = 0.75
+			any_neighbor_province = {
+				has_owner_religion = yes
+			}
+		}
+		modifier = {
+			factor = 1.15
+			local_autonomy = 25
+			NOT = { local_autonomy = 35 }
+		}
+		modifier = {
+			factor = 1.25
+			local_autonomy = 35
+			NOT = { local_autonomy = 45 }
+		}
+		modifier = {
+			factor = 1.35
+			local_autonomy = 45
+			NOT = { local_autonomy = 55 }
+		}
+		modifier = {
+			factor = 1.45
+			local_autonomy = 55
+			NOT = { local_autonomy = 65 }
+		}
+		modifier = {
+			factor = 1.55
+			local_autonomy = 65
+			NOT = { local_autonomy = 75 }
+		}
+		modifier = {
+			factor = 1.65
+			local_autonomy = 75
+		}
+		modifier = {
+			factor = 0.75
+			OR = {
+				has_building = shrine
+				has_building = small_temple
+				has_building = great_temple
+			}
+		}
+		modifier = {
+			factor = 0.5
+			has_building = oracle
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			change_religion = owner
+		}
+	}
+
+	option = {
+		name = "punic_canaanite_spread.5.a"
+		custom_tooltip = punic_canaanite_spread.5.tt
+	}
+}

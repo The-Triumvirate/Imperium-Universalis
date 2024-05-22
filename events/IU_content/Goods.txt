@@ -1,0 +1,78 @@
+namespace = goods
+
+########################################################################################
+# debuff to iron related provinces but no iron age tech
+########################################################################################
+province_event = {
+	id = goods.1
+	title = "new_ideas.1.t"
+	desc = "new_ideas.1.d"
+	picture = city
+	hidden = yes
+
+	trigger = {
+		OR = {
+			trade_goods = iron
+			trade_goods = metalware
+		}
+		NOT = { iron_age = 100 }
+		if = {
+			limit = { trade_goods = iron }
+			NOT = { has_province_modifier = no_iron_age_iron_prov_modifier }
+		}
+		else = { NOT = { has_province_modifier = no_iron_age_metalware_prov_modifier } }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "new_ideas.1.a"
+		if = {
+			limit = { trade_goods = iron }
+			add_permanent_province_modifier = {
+				name = no_iron_age_iron_prov_modifier
+				duration = -1
+			}
+		}
+		else = {
+			add_permanent_province_modifier = {
+				name = no_iron_age_metalware_prov_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+########################################################################################
+# removes previous debuff
+########################################################################################
+province_event = {
+	id = goods.2
+	title = "new_ideas.1.t"
+	desc = "new_ideas.1.d"
+	picture = city
+	hidden = yes
+
+	trigger = {
+		iron_age = 100
+		OR = {
+			has_province_modifier = no_iron_age_iron_prov_modifier
+			has_province_modifier = no_iron_age_metalware_prov_modifier
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "new_ideas.1.a"
+		if = {
+			limit = { has_province_modifier = no_iron_age_iron_prov_modifier }
+			remove_province_modifier = no_iron_age_iron_prov_modifier
+		}
+		else = { remove_province_modifier = no_iron_age_metalware_prov_modifier }
+	}
+}

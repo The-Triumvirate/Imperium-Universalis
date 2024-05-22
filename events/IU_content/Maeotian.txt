@@ -1,0 +1,489 @@
+
+namespace = maeotian
+
+########################################################################################
+# Sindi hellenizes
+########################################################################################
+country_event = {
+	id = maeotian.1
+	title = "maeotian.1.t"
+	desc = "maeotian.1.d"
+	picture = hellenistic_temple
+	fire_only_once = yes
+
+	trigger = {
+		tag = AB6
+		is_year = 364
+		NOT = { is_year = 405 }
+		NOT = { started_in = 364.1.1 }
+		any_ally = {
+			culture_group = hellenic_group
+			is_tribal = no
+		}
+		NOT = { government = republic }
+		NOT = { is_republican_tribe = yes }
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.75
+			OR = {
+				exists = BOS
+				exists = PNK
+				exists = MYR
+			}
+		}
+		modifier = {
+			factor = 0.75
+			OR = {
+				alliance_with = BOS
+				alliance_with = PNK
+				alliance_with = MYR
+			}
+		}
+	}
+
+	option = {
+		name = "maeotian.1.a"
+		ai_chance = { factor = 90 }
+		if = {
+			limit = { is_tribal = yes }
+			change_government = monarchy
+			add_government_reform = despotism_reform
+		}
+		override_country_name = "SINDIKE_KINGDOM"
+		add_adm_power = 100
+		add_dip_power = 100
+		change_religion = greek_religion
+		hidden_effect = {
+			every_owned_province = {
+				limit = {
+					culture = maeotian
+					is_core = AB6
+				}
+				change_religion = greek_religion
+			}
+		}
+	}
+
+	option = {
+		name = "maeotian.1.b"
+		ai_chance = { factor = 10 }
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# Queen Tirgatao
+########################################################################################
+country_event = {
+	id = maeotian.2
+	title = "maeotian.2.t"
+	desc = "maeotian.2.d"
+	picture = saka
+	fire_only_once = yes
+
+	trigger = {
+		tag = MA9
+		is_year = 334
+		NOT = { is_year = 340 }
+		NOT = { started_in = 334.1.1 }
+		NOT = { government = republic }
+		NOT = { is_republican_tribe = yes }
+	}
+
+	mean_time_to_happen = {
+		months = 9
+	}
+
+	option = {
+		name = "maeotian.2.a"
+		ai_chance = { factor = 90 }
+		add_prestige = 5
+		if = {
+			limit = { has_heir = yes }
+			kill_heir = { allow_new_heir = no }
+			define_heir = {
+				name = "Tirgatao Iaxamatai"
+				female = yes
+				adm = 3
+				dip = 6
+				mil = 6
+			}
+		}
+		else = {
+			define_heir = {
+				name = "Tirgatao Iaxamatai"
+				female = yes
+				adm = 3
+				dip = 6
+				mil = 6
+			}
+		}
+		hidden_effect = { set_country_flag = tirgatao_queen_flag }
+	}
+
+	option = {
+		name = "maeotian.2.b"
+		ai_chance = { factor = 10 }
+		trigger = { has_heir = yes }
+		add_legitimacy = 10
+	}
+}
+#Adds Amazon modifier
+country_event = {
+	id = maeotian.201
+	title = "maeotian.2.t"
+	desc = "maeotian.2.d"
+	picture = saka
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		tag = MA9
+		has_country_flag = tirgatao_queen_flag
+		has_ruler = "Tirgatao Iaxamatai"
+	}
+
+	option = {
+		name = "maeotian.2.a"
+		ai_chance = { factor = 90 }
+		clr_country_flag = tirgatao_queen_flag
+		add_army_tradition = 10
+		add_mil_power = 70
+		add_stability = 1
+		add_ruler_modifier = { name = amazon_queen_modifier }
+	}
+}
+
+########################################################################################
+# Maeotian Confederation
+########################################################################################
+country_event = {
+	id = maeotian.3
+	title = "maeotian.3.t"
+	desc = "maeotian.3.d"
+	picture = soldiers_in_snow
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		primary_culture = maeotian
+		NOT = { tag = AB6 }
+		NOT = { exists = MAI }
+		prestige = 0
+		mil = 3
+		started_in = 142.8.10
+		NOT = { started_in = 375.1.1 }
+		NOT = {
+			any_country = {
+				primary_culture = maeotian
+				total_development = 100
+			}
+		}
+		any_known_country = {
+			culture_group = hellenic_group
+			capital_scope = {
+				OR = {
+					region = cimmeria_region
+					region = tanaica_region
+					region = maeotis_region
+					region = caucasia_region
+				}
+			}
+			total_development = 30
+			ROOT = { NOT = { total_development = PREV } }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.4
+			exists = BOS
+		}
+		modifier = {
+			factor = 0.5
+			tag = MA9
+		}
+	}
+
+	option = {
+		name = "maeotian.3.a"
+		ai_chance = { factor = 90 }
+		add_prestige = 5
+		add_army_tradition = 8
+		if = {
+			limit = { government = tribal }
+			add_government_reform = tribal_federation_reform
+		}
+		else_if = {
+			limit = { government = republic }
+			add_government_reform = league_reform
+		}
+		every_known_country = {
+			limit = {
+				primary_culture = maeotian
+				NOT = { war_with = ROOT }
+			}
+			country_event = {
+				id = maeotian.4
+				days = 5
+			}
+		}
+	}
+
+	option = {
+		name = "maeotian.3.b"
+		ai_chance = { factor = 10 }
+		add_prestige = -5
+	}
+}
+
+########################################################################################
+# Join the confederation
+########################################################################################
+country_event = {
+	id = maeotian.4
+	title = "maeotian.4.t"
+	desc = "maeotian.4.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	trigger = {
+		primary_culture = maeotian
+		NOT = { exists = MAI }
+		started_in = 142.8.10
+		NOT = { started_in = 375.1.1 }
+	}
+
+	option = {
+		name = "maeotian.4.a"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 10
+				any_known_country = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							region = cimmeria_region
+							region = tanaica_region
+							region = maeotis_region
+							region = caucasia_region
+						}
+					}
+					total_development = 100
+				}
+			}
+			modifier = {
+				factor = 0.5
+				army_strength = {
+					who = FROM
+					value = 1
+				}
+			}
+			modifier = {
+				factor = 0.5
+				total_development = FROM
+			}
+			modifier = {
+				factor = 2
+				exists = BOS
+			}
+			modifier = {
+				factor = 4
+				any_neighbor_country = {
+					culture_group = hellenic_group
+					ROOT = { NOT = { army_size = PREV } }
+				}
+			}
+			modifier = {
+				factor = 3
+				is_neighbor_of = FROM
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					historical_rival_with = FROM
+					is_rival = FROM
+				}
+			}
+			modifier = {
+				factor = 4
+				has_opinion = {
+					who = FROM
+					value = 150
+				}
+			}
+			modifier = {
+				factor = 3
+				alliance_with = FROM
+			}
+		}
+		FROM = { inherit = ROOT }
+	}
+
+	option = {
+		name = "maeotian.4.b"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 0.5
+				any_known_country = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							region = cimmeria_region
+							region = tanaica_region
+							region = maeotis_region
+							region = caucasia_region
+						}
+					}
+					total_development = 100
+				}
+			}
+			modifier = {
+				factor = 10
+				any_known_country = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							region = cimmeria_region
+							region = tanaica_region
+							region = maeotis_region
+							region = caucasia_region
+						}
+					}
+					NOT = { total_development = 100 }
+					total_development = 50
+				}
+			}
+			modifier = {
+				factor = 0.75
+				army_strength = {
+					who = FROM
+					value = 1
+				}
+			}
+			modifier = {
+				factor = 0.75
+				total_development = FROM
+			}
+			modifier = {
+				factor = 1.5
+				exists = BOS
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					historical_rival_with = FROM
+					is_rival = FROM
+				}
+			}
+			modifier = {
+				factor = 4
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 150
+					}
+				}
+				has_opinion = {
+					who = FROM
+					value = 50
+				}
+			}
+			modifier = {
+				factor = 2
+				alliance_with = FROM
+			}
+			modifier = {
+				factor = 3
+				any_neighbor_country = { culture_group = hellenic_group }
+			}
+			modifier = {
+				factor = 2
+				NOT = { is_neighbor_of = FROM }
+			}
+		}
+		FROM = {
+			create_subject = {
+				subject_type = vassal
+				subject = ROOT
+			}
+		}
+	}
+
+	option = {
+		name = "maeotian.4.c"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				any_known_country = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							region = cimmeria_region
+							region = tanaica_region
+							region = maeotis_region
+							region = caucasia_region
+						}
+					}
+					ROOT = { total_development = PREV }
+				}
+			}
+			modifier = {
+				factor = 3
+				NOT = { alliance_with = FROM }
+			}
+			modifier = {
+				factor = 1.5
+				army_strength = {
+					who = FROM
+					value = 1
+				}
+			}
+			modifier = {
+				factor = 1.5
+				total_development = FROM
+			}
+			modifier = {
+				factor = 2
+				NOT = { exists = BOS }
+			}
+			modifier = {
+				factor = 4
+				OR = {
+					historical_rival_with = FROM
+					is_rival = FROM
+				}
+			}
+			modifier = {
+				factor = 3
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 0
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				alliance_with = FROM
+			}
+			modifier = {
+				factor = 2
+				NOT = { any_neighbor_country = { culture_group = hellenic_group } }
+			}
+			modifier = {
+				factor = 2
+				NOT = { is_neighbor_of = FROM }
+			}
+		}
+		FROM = { add_prestige = -2 }
+	}
+}

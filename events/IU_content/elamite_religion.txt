@@ -1,0 +1,1203 @@
+namespace = elamite_religion
+
+########################################################################################
+# Procession for Humban
+########################################################################################
+
+country_event = {
+	id = elamite_religion.1
+	title = "elamite_religion.1.t"
+	desc = "elamite_religion.1.d"
+	picture = senat
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = elamite_religion
+		years_of_income = 0.4
+		NOT = { stability = 3 }
+	}
+
+	option = {
+		name = "elamite_religion.1.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				years_of_income = 1
+			}
+		}
+		add_years_of_income = -0.4
+		add_stability = 1
+		add_prestige = 4
+	}
+
+	option = {
+		name = "elamite_religion.1.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.4 }
+			}
+		}
+		add_prestige = -4
+		add_adm_power = -30
+	}
+}
+
+########################################################################################
+# Queen asks to become priestess
+########################################################################################
+
+country_event = {
+	id = elamite_religion.2
+	title = "elamite_religion.2.t"
+	desc = "elamite_religion.2.d"
+	picture = family
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = elamite_religion
+		has_female_consort = yes
+		NOT = { has_ruler_flag = elamite_consort_ask_priest_flag }
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = elamite_consort_ask_priest_flag }
+	}
+
+	option = {
+		name = "elamite_religion.2.a"
+		ai_chance = {
+			factor = 99
+		}
+		kill_consort = yes
+		add_dip_power = 20
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 6
+		}
+	}
+
+	option = {
+		name = "elamite_religion.2.b"
+		ai_chance = {
+			factor = 1
+		}
+		add_dip_power = -40
+		add_absolutism = -1
+	}
+}
+
+########################################################################################
+# Radicalized Kiririsha followers
+########################################################################################
+
+country_event = {
+	id = elamite_religion.3
+	title = "elamite_religion.3.t"
+	desc = "elamite_religion.3.d"
+	picture = family_conflict
+
+	is_triggered_only = yes
+
+	trigger = {
+		neither_tribal_nor_native_trigger = yes
+		religion = elamite_religion
+		any_neighbor_country = {
+			NOT = { religion = elamite_religion }
+		}
+		OR = {
+			is_great_power = no
+			NOT = { total_development = 300 }
+		}
+		NOT = { has_ruler_flag = kiririsha_extremists_flag }
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = kiririsha_extremists_flag }
+	}
+
+	option = {
+		name = "elamite_religion.3.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 50
+				}
+			}
+			modifier = {
+				factor = 2
+				absolutism = 10
+			}
+		}
+		hidden_effect = { set_ruler_flag = did_not_intervened_kiririsha_flag }
+		add_absolutism = -3
+	}
+
+	option = {
+		name = "elamite_religion.3.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = {
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 30
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					primary_culture = susianian
+					primary_culture = characene
+				}
+			}
+		}
+		hidden_effect = { set_ruler_flag = supported_priests_kiririsha_flag }
+		if = {
+			limit = { has_personal_deity = kiririsha }
+			change_personal_deity = humban
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 4
+		}
+		add_adm_power = 30
+		add_mil_power = -60
+	}
+
+	option = {
+		name = "elamite_religion.3.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0
+				NOT = { stability = 0 }
+			}
+			modifier = {
+				factor = 2
+				primary_culture = anshanian
+			}
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 60
+					}
+					stability = 3
+				}
+			}
+		}
+		custom_tooltip = elamite_religion.1.ct
+		hidden_effect = { set_ruler_flag = supported_kiririsha_flag }
+		if = {
+			limit = { NOT = { has_personal_deity = kiririsha } }
+			change_personal_deity = kiririsha
+		}
+		add_mil_power = 30
+		add_stability = -1
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -5
+		}
+		add_ruler_modifier = {
+			name = kiririsha_extremists_support
+			duration = 1825
+		}
+	}
+}
+
+########################################################################################
+# Violence between Priests and Kiririsha radicalists
+########################################################################################
+
+country_event = {
+	id = elamite_religion.4
+	title = "elamite_religion.4.t"
+	desc = "elamite_religion.4.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = did_not_intervened_kiririsha_flag
+		NOT = { has_country_flag = escalating_violence_kiririsha_flag }
+	}
+
+	immediate = {
+		hidden_effect = { set_country_flag = escalating_violence_kiririsha_flag }
+	}
+
+	option = {
+		name = "elamite_religion.4.a"
+		ai_chance = {
+			factor = 33
+		}
+		add_stability = -1
+		add_prestige = -7
+		add_legitimacy = -6
+		add_republican_tradition = -6
+		add_devotion = -6
+		add_country_modifier = {
+			name = kiririsha_internal_conflict
+			duration = 2920
+		}
+	}
+}
+
+#Violence in province
+country_event = {
+	id = elamite_religion.401
+	title = "elamite_religion.401.t"
+	desc = "elamite_religion.401.d"
+	picture = death
+
+	is_triggered_only = yes
+	goto = kiririsha_violence_province
+
+	trigger = {
+		has_country_flag = escalating_violence_kiririsha_flag
+		any_owned_province = {
+			religion = elamite_religion
+			is_capital = no
+		}
+		is_at_war = no
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					religion = elamite_religion
+					is_capital = no
+				}
+				save_event_target_as = kiririsha_violence_province
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.401.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = { war_exhaustion = 1 }
+			}
+		}
+		event_target:kiririsha_violence_province = {
+			spawn_rebels = {
+				size = 1
+				type = elamite_religion_rebels
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.401.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				war_exhaustion = 5
+			}
+		}
+		event_target:kiririsha_violence_province = {
+			add_local_autonomy = 10
+			add_unrest = 6
+			add_devastation = 20
+		}
+	}
+}
+
+#Conflict dies off
+country_event = {
+	id = elamite_religion.402
+	title = "elamite_religion.402.t"
+	desc = "elamite_religion.402.d"
+	picture = execution
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = escalating_violence_kiririsha_flag
+		OR = {
+			had_country_flag = {
+				flag = escalating_violence_kiririsha_flag
+				days = 1460
+			}
+			is_at_war = no
+		}
+	}
+
+	immediate = {
+		hidden_effect = { clr_country_flag = escalating_violence_kiririsha_flag }
+	}
+
+	option = {
+		name = "elamite_religion.401.a"
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { has_country_modifier = kiririsha_internal_conflict }
+			remove_country_modifier = kiririsha_internal_conflict
+		}
+		add_stability = 1
+		add_prestige = 3
+		add_absolutism = 2
+	}
+}
+
+########################################################################################
+# Support for status quo
+########################################################################################
+
+country_event = {
+	id = elamite_religion.5
+	title = "elamite_religion.5.t"
+	desc = "elamite_religion.5.d"
+	picture = lostbattle
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_priests_kiririsha_flag
+	}
+
+	option = {
+		name = "elamite_religion.5.a"
+		ai_chance = {
+			factor = 33
+		}
+		add_army_tradition = -2
+		add_country_modifier = {
+			name = kiririsha_demoralized_army
+			duration = 2190
+		}
+	}
+}
+
+country_event = {
+	id = elamite_religion.501
+	title = "elamite_religion.501.t"
+	desc = "elamite_religion.501.d"
+	picture = priest
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_priests_kiririsha_flag
+	}
+
+	option = {
+		name = "elamite_religion.501.a"
+		ai_chance = {
+			factor = 33
+		}
+		add_adm_power = 30
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 3
+		}
+	}
+}
+
+country_event = {
+	id = elamite_religion.502
+	title = "elamite_religion.502.t"
+	desc = "elamite_religion.502.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_priests_kiririsha_flag
+		NOT = { has_country_modifier = kiririsha_tolerant_country }
+	}
+
+	option = {
+		name = "elamite_religion.502.a"
+		ai_chance = {
+			factor = 33
+		}
+		add_dip_power = 20
+		add_country_modifier = {
+			name = kiririsha_tolerant_country
+			duration = 4015
+		}
+	}
+}
+
+########################################################################################
+# Support for Kiririsha radicalists
+########################################################################################
+
+country_event = {
+	id = elamite_religion.6
+	title = "elamite_religion.6.t"
+	desc = "elamite_religion.6.d"
+	picture = deligation
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_kiririsha_flag
+		any_neighbor_country = {
+			NOT = {
+				AND = {
+					religion = elamite_religion
+					has_opinion_modifier = {
+						who = ROOT
+						modifier = kiririsha_radicalized_condemned_opinion
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_neighbor_country = {
+				limit = {
+					NOT = {
+						AND = {
+							religion = elamite_religion
+							has_opinion_modifier = {
+								who = ROOT
+								modifier = kiririsha_radicalized_condemned_opinion
+							}
+						}
+					}
+				}
+				save_event_target_as = kiririsha_insulted_country
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.6.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+
+			}
+		}
+		reverse_add_opinion = {
+			who = event_target:kiririsha_insulted_country
+			modifier = kiririsha_radicalized_condemned_opinion
+		}
+		add_prestige = 2
+	}
+
+	option = {
+		name = "elamite_religion.6.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				dip_power = 60
+			}
+		}
+		reverse_add_opinion = {
+			who = event_target:kiririsha_insulted_country
+			modifier = kiririsha_radicalized_condemned_opinion_2
+		}
+		add_opinion = {
+			who = event_target:kiririsha_insulted_country
+			modifier = kiririsha_radicalized_condemned_opinion_2
+		}
+		add_dip_power = -60
+	}
+}
+
+#Religious Violence
+country_event = {
+	id = elamite_religion.601
+	title = "elamite_religion.601.t"
+	desc = "elamite_religion.601.d"
+	picture = execution
+
+	is_triggered_only = yes
+	goto = kiririsha_religious_violence_province
+
+	trigger = {
+		has_ruler_flag = supported_kiririsha_flag
+		NOT = { has_country_modifier = state_patronized_religious_terror }
+		any_owned_province = {
+			NOT = { religion = elamite_religion }
+			is_core = ROOT
+			NOT = { has_province_modifier = local_religious_violence_modifier }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { religion = elamite_religion }
+					is_core = ROOT
+					NOT = { has_province_modifier = local_religious_violence_modifier }
+				}
+				save_event_target_as = kiririsha_religious_violence_province
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.601.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				stability = 2
+			}
+		}
+		event_target:kiririsha_religious_violence_province = {
+			add_local_autonomy = -10
+			add_devastation = -10
+		}
+		add_prestige = 2
+		add_stability = -1
+		hidden_effect = { clr_ruler_flag = supported_kiririsha_flag }
+	}
+
+	option = {
+		name = "elamite_religion.601.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				prestige = 20
+			}
+		}
+		event_target:kiririsha_religious_violence_province = {
+			add_local_autonomy = 10
+			add_devastation = 10
+			add_province_modifier = {
+				name = local_religious_violence_modifier
+				duration = 1460
+			}
+		}
+		add_prestige = -10
+	}
+
+	option = {
+		name = "elamite_religion.601.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+		}
+		event_target:kiririsha_religious_violence_province = {
+			add_devastation = 30
+			add_base_manpower = -1
+		}
+		add_prestige = -4
+		add_country_modifier = {
+			name = state_patronized_religious_terror
+			duration = 2555
+		}
+	}
+}
+
+#Demand of Military Positions
+country_event = {
+	id = elamite_religion.602
+	title = "elamite_religion.602.t"
+	desc = "elamite_religion.602.d"
+	picture = guard
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_kiririsha_flag
+	}
+
+	option = {
+		name = "elamite_religion.602.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				army_tradition = 30
+			}
+		}
+		add_army_tradition = -3
+		add_mil_power = 40
+		add_yearly_manpower = 0.33
+	}
+
+	option = {
+		name = "elamite_religion.602.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				NOT = { stability = 0 }
+			}
+		}
+		add_army_tradition = 5
+		add_stability = -1
+	}
+}
+
+#Claim in non-rel province
+country_event = {
+	id = elamite_religion.603
+	title = "elamite_religion.603.t"
+	desc = "elamite_religion.603.d"
+	picture = elamite_soldiers
+
+	is_triggered_only = yes
+	goto = kiririsha_claim_province
+
+	trigger = {
+		has_ruler_flag = supported_kiririsha_flag
+		any_owned_province = {
+			any_neighbor_province = {
+				owner = { NOT = { religion = elamite_religion } }
+				NOT = {
+					AND = {
+						owned_by = ROOT
+						is_permanent_claim = ROOT
+						is_claim = ROOT
+						is_core = ROOT
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				random_neighbor_province = {
+					limit = {
+						owner = { NOT = { religion = elamite_religion } }
+						NOT = {
+							AND = {
+								owned_by = ROOT
+								is_permanent_claim = ROOT
+								is_claim = ROOT
+								is_core = ROOT
+							}
+						}
+					}
+					save_event_target_as = kiririsha_claim_province
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.603.a"
+		ai_chance = {
+			factor = 50
+		}
+		event_target:kiririsha_claim_province = {
+			add_claim = ROOT
+		}
+	}
+}
+
+#Claim in non-rel province
+country_event = {
+	id = elamite_religion.604
+	title = "elamite_religion.604.t"
+	desc = "elamite_religion.604.d"
+	picture = rivercrossing
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_ruler_flag = supported_kiririsha_flag
+		is_at_war = no
+		has_any_disaster = no
+		any_neighbor_country = {
+			NOT = { religion = elamite_religion }
+			NOT = { alliance_with = ROOT }
+			NOT = { truce_with = ROOT }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_neighbor_country = {
+				limit = {
+					NOT = { religion = elamite_religion }
+					NOT = { alliance_with = ROOT }
+					NOT = { truce_with = ROOT }
+				}
+				save_event_target_as = kiririsha_invasion_target_country
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.604.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				army_strength = {
+					who = event_target:kiririsha_invasion_target_country
+					value = 1.0
+				}
+			}
+		}
+		add_casus_belli = {
+			type = cb_invasion
+			target = event_target:kiririsha_invasion_target_country
+		}
+		add_prestige = 4
+	}
+
+	option = {
+		name = "elamite_religion.604.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = {
+					army_strength = {
+						who = event_target:kiririsha_invasion_target_country
+						value = 0.9
+					}
+				}
+			}
+		}
+		add_prestige = -3
+		add_mil_power = -80
+	}
+}
+
+########################################################################################
+# Witchcraft reports
+########################################################################################
+
+country_event = {
+	id = elamite_religion.7
+	title = "elamite_religion.7.t"
+	desc = "elamite_religion.7.d"
+	picture = panic
+
+	is_triggered_only = yes
+	goto = witchcraft_province_target
+
+	trigger = {
+		religion = elamite_religion
+		any_owned_province = {
+			NOT = { has_province_modifier = suspected_witchcraft_modifier }
+			is_core = ROOT
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					NOT = { has_province_modifier = suspected_witchcraft_modifier }
+					is_core = ROOT
+				}
+				save_event_target_as = witchcraft_province_target
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.7.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				treasury = 10
+			}
+			modifier = {
+				factor = 2
+				adm_power = 20
+			}
+		}
+		event_target:witchcraft_province_target = {
+			add_province_modifier = {
+				name = suspected_witchcraft_modifier
+				duration = 1825
+			}
+			province_event = {
+				id = elamite_religion.701
+				days = 30
+			}
+		}
+		add_adm_power = -20
+		add_treasury = -10
+	}
+
+	option = {
+		name = "elamite_religion.7.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = { treasury = 10 }
+			}
+		}
+		add_adm_power = -20
+		event_target:witchcraft_province_target = {
+			add_province_modifier = {
+				name = suspected_witchcraft_modifier
+				duration = 1825
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.7.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = {
+					AND = {
+						adm_power = 20
+						treasury = 10
+					}
+				}
+			}
+		}
+		event_target:witchcraft_province_target = {
+			add_province_modifier = {
+				name = suspected_witchcraft_modifier
+				duration = 2190
+			}
+			add_local_autonomy = 10
+		}
+		add_prestige = -1
+	}
+}
+
+province_event = {
+	id = elamite_religion.701
+	title = "elamite_religion.701.t"
+	desc = "elamite_religion.701.d"
+	picture = city
+
+	is_triggered_only = yes
+	goto = ROOT
+
+	immediate = {
+		hidden_effect = {
+			remove_province_modifier = suspected_witchcraft_modifier
+		}
+	}
+
+	option = {
+		name = "elamite_religion.701.a"
+		add_province_modifier = {
+			name = suspected_witchcraft_modifier
+			duration = 365
+		}
+		owner = {
+			add_legitimacy = 4
+			add_devotion = 4
+			add_republican_tradition = 4
+		}
+	}
+}
+
+########################################################################################
+# Precious Stones mine
+########################################################################################
+
+country_event = {
+	id = elamite_religion.8
+	title = "elamite_religion.8.t"
+	desc = "elamite_religion.8.d"
+	picture = hellenistic_temple
+
+	is_triggered_only = yes
+	goto = elamite_gem_province
+
+	trigger = {
+		religion = elamite_religion
+		neither_tribal_nor_native_trigger = yes
+		any_owned_province = {
+			is_core = ROOT
+			trade_goods = gems
+			NOT = { has_province_modifier = gifted_gem_supply }
+			NOT = { has_province_modifier = angered_local_religious_authority }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+					trade_goods = gems
+					NOT = { has_province_modifier = gifted_gem_supply }
+				}
+				save_event_target_as = elamite_gem_province
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.8.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				estate_loyalty = {
+					estate = estate_merchants
+					loyalty = 50
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = {
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 30
+					}
+				}
+			}
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 4
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = -5
+		}
+		event_target:elamite_gem_province = {
+			add_province_modifier = {
+				name = gifted_gem_supply
+				duration = 3650
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.8.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 50
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = {
+					estate_loyalty = {
+						estate = estate_merchants
+						loyalty = 30
+					}
+				}
+			}
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -5
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 4
+		}
+		event_target:elamite_gem_province = {
+			add_province_modifier = {
+				name = angered_local_religious_authority
+				duration = 3650
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.8.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0
+				NOT = { years_of_income = 1 }
+			}
+			modifier = {
+				factor = 3
+				years_of_income = 1.0
+			}
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 4
+		}
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 2
+		}
+		add_years_of_income = -0.5
+		event_target:elamite_gem_province = {
+			add_province_modifier = {
+				name = gifted_gem_supply
+				duration = 3650
+			}
+		}
+	}
+}
+
+########################################################################################
+# Mesopotamian and Elamite Syncretism
+########################################################################################
+
+country_event = {
+	id = elamite_religion.9
+	title = "elamite_religion.9.t"
+	desc = "elamite_religion.9.d"
+	picture = religious
+
+	is_triggered_only = yes
+	goto = elamite_syncretism_province
+
+	trigger = {
+		religion = elamite_religion
+		any_owned_province = {
+			is_core = ROOT
+			religion = mesopotamian_religion
+			tolerance_to_this = 1
+			NOT = { has_construction = missionary }
+			NOT = { has_province_modifier = tolerated_local_cult_modifier }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+					religion = mesopotamian_religion
+					tolerance_to_this = 1
+					NOT = { has_construction = missionary }
+					NOT = { has_province_modifier = tolerated_local_cult_modifier }
+				}
+				save_event_target_as = elamite_syncretism_province
+			}
+		}
+	}
+
+	option = {
+		name = "elamite_religion.9.a"
+		ai_chance = {
+			factor = 1
+		}
+		add_absolutism = -5
+		event_target:elamite_syncretism_province = {
+			change_religion = elamite_religion
+			add_local_autonomy = -10
+		}
+	}
+
+	option = {
+		name = "elamite_religion.9.b"
+		ai_chance = {
+			factor = 99
+		}
+		event_target:elamite_syncretism_province = {
+			add_province_modifier = {
+				name = tolerated_local_cult_modifier
+				duration = 7300
+			}
+			add_prosperity = 10
+		}
+	}
+}
+
+########################################################################################
+# horse festival
+########################################################################################
+
+country_event = {
+	id = elamite_religion.10
+	title = "elamite_religion.10.t"
+	desc = "elamite_religion.10.d"
+	picture = religious
+
+	is_triggered_only = yes
+	goto = elamite_syncretism_province
+
+	trigger = {
+		religion = elamite_religion
+		any_owned_province = {
+			is_core = ROOT
+			religion = mesopotamian_religion
+			tolerance_to_this = 1
+			NOT = { has_construction = missionary }
+			NOT = { has_province_modifier = tolerated_local_cult_modifier }
+		}
+	}
+
+	option = {
+		name = "elamite_religion.10.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0
+				NOT = { years_of_income = 1 }
+			}
+			modifier = {
+				factor = 2
+				years_of_income = 1.5
+			}
+		}
+		add_years_of_income = -0.5
+		add_prestige = 3
+		add_legitimacy = 10
+		add_republican_tradition = 10
+		add_devotion = 10
+		add_absolutism = 5
+	}
+
+	option = {
+		name = "elamite_religion.10.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 0
+				NOT = { years_of_income = 0.5 }
+			}
+		}
+		add_years_of_income = -0.25
+		add_legitimacy = 5
+		add_republican_tradition = 5
+		add_devotion = 5
+		add_absolutism = 2
+	}
+
+	option = {
+		name = "elamite_religion.10.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.25 }
+			}
+		}
+		add_prestige = -5
+	}
+}

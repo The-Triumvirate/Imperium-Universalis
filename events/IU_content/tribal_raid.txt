@@ -1,0 +1,922 @@
+
+namespace = tribal_raid
+
+#High raid party power from variable amount of 8 upwards
+#Low raid party power from variable amount of 1 downwards
+#Low raid party speed from variable amount of 1.3 upwards
+#High raid party speed from variable amount of 0.3 downwards
+#Starting raid party manpower from variable amount of 500-5000
+
+########################################################################################
+# Starts tribal raid variable
+########################################################################################
+country_event = {
+	id = tribal_raid.1
+	title = "tribal_raid.1.t"
+	desc = "tribal_raid.1.d"
+	picture = boar
+	is_triggered_only = yes
+
+	immediate = { hidden_effect = { set_country_flag = is_tribal_raiding_flag } }
+
+	option = { #Very small raid party
+		name = "tribal_raid.1.a"
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 8
+				NOT = { manpower = 14 }
+			}
+		}
+		add_manpower = -0.5
+		hidden_effect = {
+			set_country_flag = very_small_raiding_party_flag
+			set_variable = {
+				which = raid_party_manpower
+				value = 500
+			}
+			set_variable = {
+				which = raid_party_power #The larger this value the more powerful a raid party is
+				value = 0.25
+			}
+			set_variable = {
+				which = raid_party_speed #The larger this value the slower a raid party is
+				value = 0.7
+			}
+		}
+	}
+	option = { #Small raid party
+		name = "tribal_raid.1.b"
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 2
+				manpower = 14
+				NOT = { manpower = 22 }
+			}
+		}
+		add_manpower = -1
+		hidden_effect = {
+			set_country_flag = small_raiding_party_flag
+			set_variable = {
+				which = raid_party_manpower
+				value = 1000
+			}
+			set_variable = {
+				which = raid_party_power
+				value = 0.5
+			}
+			set_variable = {
+				which = raid_party_speed
+				value = 0.8
+			}
+		}
+	}
+	option = { #Mid raid party
+		name = "tribal_raid.1.c"
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 2
+				manpower = 22
+				NOT = { manpower = 32 }
+			}
+		}
+		add_manpower = -2
+		hidden_effect = {
+			set_country_flag = mid_raiding_party_flag
+			set_variable = {
+				which = raid_party_manpower
+				value = 2000
+			}
+			set_variable = {
+				which = raid_party_power
+				value = 1
+			}
+			set_variable = {
+				which = raid_party_speed
+				value = 0.9
+			}
+		}
+	}
+	option = { #Large raid party
+		name = "tribal_raid.1.e"
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 2
+				manpower = 32
+				NOT = { manpower = 40 }
+			}
+		}
+		add_manpower = -3
+		hidden_effect = {
+			set_country_flag = large_raiding_party_flag
+			set_variable = {
+				which = raid_party_manpower
+				value = 3000
+			}
+			set_variable = {
+				which = raid_party_power
+				value = 1.5
+			}
+			set_variable = {
+				which = raid_party_speed
+				value = 1.1
+			}
+		}
+	}
+	option = { #Very large raid party
+		name = "tribal_raid.1.f"
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 5
+				manpower = 40
+			}
+		}
+		add_manpower = -5
+		hidden_effect = {
+			set_country_flag = very_large_raiding_party_flag
+			set_variable = {
+				which = raid_party_manpower
+				value = 5000
+			}
+			set_variable = {
+				which = raid_party_power
+				value = 2.25
+			}
+			set_variable = {
+				which = raid_party_speed
+				value = 1.3
+			}
+		}
+	}
+
+	after = { hidden_effect = { country_event = { id = tribal_raid.2 } } }
+}
+
+########################################################################################
+# Party's equipment
+########################################################################################
+country_event = {
+	id = tribal_raid.2
+	title = "tribal_raid.2.t"
+	desc = "tribal_raid.2.d"
+	picture = boar
+	is_triggered_only = yes
+
+
+	option = { #No funds
+		name = "tribal_raid.2.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				OR = {
+					is_in_large_debt = yes
+					is_in_deficit = yes
+					is_bankrupt = yes
+				}
+			}
+		}
+	}
+	option = { #Mid funds
+		name = "tribal_raid.2.b"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				NOT = { treasury = 20 }
+			}
+			modifier = {
+				factor = 3
+				treasury = 30
+				NOT = { treasury = 60 }
+			}
+		}
+		add_treasury = -15
+		hidden_effect = {
+			multiply_variable = {
+				which = raid_party_power
+				value = 1.2
+			}
+		}
+	}
+	option = { #Large funds
+		name = "tribal_raid.2.c"
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				NOT = { treasury = 50 }
+			}
+			modifier = {
+				factor = 4
+				treasury = 100
+			}
+		}
+		add_treasury = -40
+		hidden_effect = {
+			multiply_variable = {
+				which = raid_party_power
+				value = 1.5
+			}
+		}
+	}
+
+	after = { hidden_effect = { country_event = { id = tribal_raid.3 } } }
+}
+
+########################################################################################
+# Hidden modifiers affecting raid
+########################################################################################
+country_event = {
+	id = tribal_raid.3
+	title = "tribal_raid.2.t"
+	desc = "tribal_raid.2.d"
+	picture = boar
+	is_triggered_only = yes
+
+
+	option = {
+		name = "tribal_raid.2.a"
+		if = { #Non pastoral, non hordes get mobility penalty
+			limit = {
+				NOT = { has_reform = steppe_horde_reform }
+				NOT = { has_reform = pastoral_tribe_reform }
+				NOT = { has_reform = iranian_tribal_coalition_reform }
+			}
+			change_variable = {
+				which = raid_party_speed
+				value = 0.1
+			}
+		}
+		if = { #Pastorals get lesser penalty
+			limit = {
+				OR = {
+					has_reform = pastoral_tribe_reform
+					has_reform = iranian_tribal_coalition_reform
+				}
+			}
+			change_variable = {
+				which = raid_party_speed
+				value = 0.05
+			}
+		}
+		trigger_switch = {
+			on_trigger = army_tradition
+			100 = { change_variable = { which = raid_party_power value = 0.6 } }
+			90 = { change_variable = { which = raid_party_power value = 0.5 } }
+			80 = { change_variable = { which = raid_party_power value = 0.4 } }
+			60 = { change_variable = { which = raid_party_power value = 0.3 } }
+			50 = { change_variable = { which = raid_party_power value = 0.2 } }
+			40 = { change_variable = { which = raid_party_power value = 0.1 } }
+			30 = { change_variable = { which = raid_party_power value = -0.1 } }
+			20 = { change_variable = { which = raid_party_power value = -0.2 } }
+			10 = { change_variable = { which = raid_party_power value = -0.3 } }
+		}
+		#Morale affects strength of party, very important
+		export_to_variable = {
+			which = country_army_morale_raid
+			value = modifier:land_morale
+			who = ROOT
+		}
+		change_variable = {
+			which = raid_party_power
+			which = country_army_morale_raid
+		}
+		#Movement speed affects speed of party
+		export_to_variable = {
+			which = country_army_speed_raid
+			value = modifier:movement_speed
+			who = ROOT
+		}
+		divide_variable = {
+			which = country_army_speed_raid
+			value = 50
+		}
+		subtract_variable = {
+			which = raid_party_speed
+			which = country_army_speed_raid
+		}
+	}
+
+	after = { hidden_effect = { country_event = { id = tribal_raid.4 } } }
+}
+
+########################################################################################
+# Leadership of the raid
+########################################################################################
+country_event = {
+	id = tribal_raid.4
+	title = "tribal_raid.4.t"
+	desc = "tribal_raid.4.d"
+	picture = boar
+	is_triggered_only = yes
+
+
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 34
+		}
+		add_estate_loyalty = {
+			estate = estate_clans
+			loyalty = 4
+		}
+		hidden_effect = {
+			change_variable = {
+				which = raid_party_power
+				value = 0.1
+			}
+			subtract_variable = {
+				which = raid_party_speed
+				value = 0.1
+			}
+		}
+	}
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 34
+		}
+		add_army_tradition = 2
+		hidden_effect = {
+			change_variable = {
+				which = raid_party_power
+				value = 0.2
+			}
+			subtract_variable = {
+				which = raid_party_speed
+				value = 0.05
+			}
+		}
+	}
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 32
+			modifier = {
+				factor = 2
+				mil = 4
+			}
+		}
+		custom_tooltip = RULERS_MIL_INFLUENCES_RAID
+		hidden_effect = {
+			trigger_switch = {
+				on_trigger = MIL
+				6 = { multiply_variable = { which = raid_party_power value = 1.25 } }
+				5 = { multiply_variable = { which = raid_party_power value = 1.15 } }
+				4 = { multiply_variable = { which = raid_party_power value = 1.1 } }
+				2 = { multiply_variable = { which = raid_party_power value = 0.9 } }
+				1 = { multiply_variable = { which = raid_party_power value = 0.85 } }
+				0 = { multiply_variable = { which = raid_party_power value = 0.75 } }
+			}
+			change_variable = {
+				which = raid_party_power
+				value = 0.05
+			}
+			if = {
+				limit = { ruler_has_personality = craven_personality }
+				subtract_variable = {
+					which = raid_party_power
+					value = 0.2
+				}
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.05
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = cruel_personality }
+				subtract_variable = {
+					which = raid_party_power
+					value = 0.1
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = bold_fighter_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.2
+				}
+				change_variable = {
+					which = raid_party_speed
+					value = 0.05
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = inspiring_leader_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.3
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = strict_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.1
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = silver_tongue_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.1
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = tactical_genius_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.2
+				}
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.05
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = raider_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.2
+				}
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.1
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = legendary_leader_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.3
+				}
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.1
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = the_great_personality }
+				change_variable = {
+					which = raid_party_power
+					value = 0.4
+				}
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.15
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = horse_lover_personality }
+				subtract_variable = {
+					which = raid_party_speed
+					value = 0.05
+				}
+			}
+			if = {
+				limit = { ruler_has_personality = aggressive_personality }
+				change_variable = {
+					which = raid_party_speed
+					value = 0.1
+				}
+			}
+		}
+	}
+
+	after = { hidden_effect = { country_event = { id = tribal_raid.401 } } }
+}
+
+#Raid strategy
+country_event = {
+	id = tribal_raid.401
+	title = "tribal_raid.401.t"
+	desc = "tribal_raid.4.d"
+	picture = boar
+	is_triggered_only = yes
+
+
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 33
+		}
+		hidden_effect = { set_country_flag = lenient_raiding_flag }
+	}
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 34
+		}
+		hidden_effect = { set_country_flag = reasonable_raiding_flag }
+	}
+	option = {
+		name = "tribal_raid.4.a"
+		ai_chance = {
+			factor = 33
+		}
+		hidden_effect = { set_country_flag = harsh_raiding_flag }
+	}
+
+	after = { hidden_effect = { country_event = { id = tribal_raid.5 } } }
+}
+
+########################################################################################
+# Start raid, selects first prov to raid
+########################################################################################
+country_event = {
+	id = tribal_raid.5
+	title = "tribal_raid.5.t"
+	desc = { #Province is capital
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		desc = "tribal_raid.5.da"
+	}
+	desc = { #Province has fort and units
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		desc = "tribal_raid.5.db"
+	}
+	desc = { #Province has fort
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		desc = "tribal_raid.5.dc"
+	}
+	desc = { #Province has units
+		trigger = { event_target:raid_target_province = { units_in_province = 1 } }
+		desc = "tribal_raid.5.dd"
+	}
+	desc = "tribal_raid.5.d" #Province doesn't have fort, units nor is a capital
+	picture = boar
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			set_variable = {
+				which = raid_party_accumulated_loot
+				value = 0
+			}
+			event_target:country_raid_target = {
+				random_owned_province = {
+					if = {
+						limit = { any_neighbor_province = { owned_by = ROOT } }
+						save_global_event_target_as = raid_target_province
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "tribal_raid.5.a"
+		goto = raid_target_province
+		trigger = { event_target:country_raid_target = { NOT = { num_of_owned_provinces_with = { value = 2 } } } } #Target country is not an OPM
+		country_event = {
+			id = tribal_raid.6
+			days = 3
+		}
+	}
+	option = {
+		name = "tribal_raid.5.b"
+		goto = raid_target_province
+		trigger = { event_target:country_raid_target = { NOT = { num_of_owned_provinces_with = { value = 2 } } } } #Target country is OPM
+
+	}
+}
+
+########################################################################################
+# First raid of a prov
+########################################################################################
+country_event = {
+	id = tribal_raid.6
+	title = "tribal_raid.6.t"
+	desc = { #Province is capital
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		desc = "tribal_raid.6.da"
+	}
+	desc = { #Province has fort and units
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		desc = "tribal_raid.6.db"
+	}
+	desc = { #Province has fort
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		desc = "tribal_raid.6.dc"
+	}
+	desc = { #Province has units
+		trigger = { event_target:raid_target_province = { units_in_province = 1 } }
+		desc = "tribal_raid.6.dd"
+	}
+	desc = "tribal_raid.6.d" #Province doesn't have fort, units nor is a capital
+	picture = boar
+	is_triggered_only = yes
+
+	goto = raid_target_province
+
+	immediate = {
+		hidden_effect = {
+			set_variable = {
+				which = raid_party_local_loot
+				value = 0
+			}
+			event_target:raid_target_province = { #Calculating prov wealth and setting flags
+				if = { #Forts units or capital
+					limit = {
+						OR = {
+							units_in_province = 1
+							fort_level = 1
+							is_capital = yes
+						}
+					}
+					set_province_flag = raid_prov_has_fort_units_capital_flag
+				}
+				prov_wealth_calculation_effect = yes
+			}
+		}
+	}
+
+	option = { #First raid success guaranteed, if prov has no units, fort and is not a capital
+		name = "tribal_raid.6.a"
+		trigger = { event_target:raid_target_province = { NOT = { has_province_flag = raid_prov_has_fort_units_capital_flag } } }
+		tribal_raid_award_effect = yes
+		tribal_raid_devastation_effect = yes
+		hidden_effect = {
+			tribal_raid_add_loot_victory_effect = yes
+			tribal_raid_move_prov_effect = yes
+		}
+	}
+	option = { #First raid, prov has units, fort or is a capital
+		name = "tribal_raid.6.b"
+		trigger = { event_target:raid_target_province = { has_province_flag = raid_prov_has_fort_units_capital_flag } }
+		country_event = { id = tribal_raid.7 }
+	}
+}
+
+########################################################################################
+# Confrontation in prov, run or fight
+########################################################################################
+country_event = {
+	id = tribal_raid.7
+	title = "tribal_raid.7.t"
+	desc = { #Province is capital
+		trigger = { event_target:raid_target_province_capital = { is_capital = yes } }
+		desc = "tribal_raid.7.da"
+	}
+	desc = { #Province has fort and units
+		trigger = {
+			event_target:raid_target_province_capital = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		desc = "tribal_raid.7.db"
+	}
+	desc = { #Province has fort
+		trigger = {
+			event_target:raid_target_province_capital = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		desc = "tribal_raid.7.dc"
+	}
+	desc = "tribal_raid.7.d" #Province has units
+	picture = boar
+	is_triggered_only = yes
+
+	goto = raid_target_province
+
+	immediate = { event_target:raid_target_province = { clr_province_flag = raid_prov_has_fort_units_capital_flag } }
+
+	option = { #Fight, province is capital
+		name = "tribal_raid.7.a"
+		ai_chance = { factor = 40 }
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		tribal_raid_attack_on_capital_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Fight, province has fort and units
+		name = "tribal_raid.7.aa"
+		ai_chance = { factor = 40 }
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		tribal_raid_attack_on_fort_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Fight, province has fort
+		name = "tribal_raid.7.ab"
+		ai_chance = { factor = 40 }
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		tribal_raid_attack_on_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Fight, province has units
+		name = "tribal_raid.7.ac"
+		ai_chance = { factor = 40 }
+		trigger = {
+			event_target:raid_target_province = {
+				NOT = { fort_level = 1 }
+				units_in_province = 1
+			}
+		}
+		tribal_raid_attack_on_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Run away, province is capital
+		name = "tribal_raid.7.b"
+		ai_chance = { factor = 60 }
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		tribal_raid_run_capital_effect = yes
+	}
+	option = { #Run away, province has fort and units
+		name = "tribal_raid.7.ba"
+		ai_chance = { factor = 60 }
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		tribal_raid_run_fort_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Run away, province has fort
+		name = "tribal_raid.7.bb"
+		ai_chance = { factor = 60 }
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		tribal_raid_run_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+	option = { #Run away, province has units
+		name = "tribal_raid.7.bc"
+		ai_chance = { factor = 60 }
+		trigger = {
+			event_target:raid_target_province = {
+				NOT = { fort_level = 1 }
+				units_in_province = 1
+			}
+		}
+		tribal_raid_run_fort_or_units_effect = yes
+		hidden_effect = { event_target:raid_target_province = { owner = { country_event = { id = tribal_raid.702 } } } } #Alert to Owner
+	}
+}
+
+########################################################################################
+# Aftermath of confrontation
+########################################################################################
+country_event = {
+	id = tribal_raid.701
+	title = "tribal_raid.701.t"
+	desc = "tribal_raid.701.d" #Province has units
+	picture = boar
+	is_triggered_only = yes
+
+	immediate = { hidden_effect = { tribal_raid_move_prov_effect = yes } }
+
+	option = { #keep raiding
+		name = "tribal_raid.701.a"
+		ai_chance = { factor = 60 }
+		trigger = { tribal_raid_manpower_check_low_trigger = no }
+		goto = raid_target_province
+
+	}
+	option = { #call off raid
+		name = "tribal_raid.701.a"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				tribal_raid_manpower_check_trigger = yes
+			}
+			modifier = {
+				factor = 100
+				check_variable = { which = raid_party_accumulated_loot value = 2000 }
+			}
+		}
+		trigger = { tribal_raid_manpower_check_low_trigger = no }
+		tribal_raid_end_effect = yes
+	}
+	option = { #forced to stop raiding
+		name = "tribal_raid.701.a"
+		trigger = { tribal_raid_manpower_check_low_trigger = yes }
+		tribal_raid_end_effect = yes
+	}
+}
+
+########################################################################################
+# Informs prov owners of raids
+########################################################################################
+country_event = {
+	id = tribal_raid.702
+	title = "tribal_raid.702.t"
+	desc = "tribal_raid.702.d" #Province has units
+	picture = boar
+	is_triggered_only = yes
+	goto = raid_target_province
+
+	option = { #bastards
+		name = "tribal_raid.702.a"
+		ai_chance = { factor = 60 }
+		add_prestige = -1
+	}
+}
+
+########################################################################################
+# Continous raids
+########################################################################################
+country_event = {
+	id = tribal_raid.8
+	title = "tribal_raid.8.t"
+	desc = { #Province is capital
+		trigger = { event_target:raid_target_province = { is_capital = yes } }
+		desc = "tribal_raid.8.da"
+	}
+	desc = { #Province has fort and units
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				units_in_province = 1
+			}
+		}
+		desc = "tribal_raid.8.db"
+	}
+	desc = { #Province has fort
+		trigger = {
+			event_target:raid_target_province = {
+				fort_level = 1
+				NOT = { units_in_province = 1 }
+			}
+		}
+		desc = "tribal_raid.8.dc"
+	}
+	desc = { #Province has units
+		trigger = { event_target:raid_target_province = { units_in_province = 1 } }
+		desc = "tribal_raid.8.dd"
+	}
+	desc = "tribal_raid.8.d" #Province doesn't have fort, units nor is a capital
+	picture = boar
+	is_triggered_only = yes
+
+	goto = raid_target_province
+
+	immediate = {
+		hidden_effect = {
+			set_variable = {
+				which = raid_party_local_loot
+				value = 0
+			}
+			event_target:raid_target_province = { #Calculating prov wealth and setting flags
+				if = { #Forts units or capital
+					limit = {
+						OR = {
+							units_in_province = 1
+							fort_level = 1
+							is_capital = yes
+						}
+					}
+					set_province_flag = raid_prov_has_fort_units_capital_flag
+				}
+				prov_wealth_calculation_effect = yes
+			}
+		}
+	}
+
+	option = {
+		name = "tribal_raid.8.a"
+
+	}
+}

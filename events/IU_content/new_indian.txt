@@ -1,0 +1,5269 @@
+namespace = indian
+
+########################################################################################
+# Second Urbanization
+########################################################################################
+
+country_event = {
+	id = indian.1
+	title = "indian.1.t"
+	desc = "indian.1.d"
+	picture = tradecity
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		is_year = 254
+		capital_scope = {
+			region = northern_india_region
+		}
+		OR = {
+			culture_group = indian_group
+			primary_culture = asura
+		}
+		NOT = { started_in = 254.1.1 }
+		OR = {
+			has_reform = vedic_kingdom_reform
+			have_had_reform = vedic_kingdom_reform
+		}
+		government_rank = 3
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = second_indian_urbanization
+			set_country_flag = second_urbanization_janapada
+		}
+	}
+
+	option = {
+		name = "indian.1.a"
+		ai_chance = { factor = 30 }
+		every_owned_province = {
+			if = {
+				limit = {
+					continent = india
+					OR = {
+						culture_group = indian_group
+						culture = asura
+					}
+					base_manpower = 4
+				}
+				add_base_manpower = -3
+				add_base_production = 3
+				change_variable = { PS_rur_evtd = 3 }	change_variable = { PS_urb_evtu = 3 }
+			}
+		}
+		add_country_modifier = {
+			name = india_urban_explosion
+			duration = 10950
+		}
+	}
+}
+
+#Urbanization for other regions
+
+country_event = {
+	id = indian.101
+	title = "indian.101.t"
+	desc = "indian.101.d"
+	picture = tradecity
+
+	trigger = {
+		has_global_flag = second_indian_urbanization
+		NOT = { has_country_flag = second_urbanization_janapada }
+		capital_scope = { continent = india }
+		OR = {
+			culture_group = indian_group
+			primary_culture = asura
+		}
+		absolutism = 5
+		NOT = { started_in = 254.1.1 }
+		OR = {
+			has_reform = vedic_kingdom_reform
+			have_had_reform = vedic_kingdom_reform
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = second_urbanization_janapada
+		}
+	}
+
+	option = {
+		name = "indian.101.a"
+		ai_chance = { factor = 30 }
+		every_owned_province = {
+			if = {
+				limit = {
+					OR = {
+						culture_group = indian_group
+						culture = asura
+					}
+					continent = india
+					base_manpower = 4
+				}
+				add_base_manpower = -3
+				add_base_production = 3
+				change_variable = { PS_rur_evtd = 3 }	change_variable = { PS_urb_evtu = 3 }
+			}
+		}
+		add_country_modifier = {
+			name = india_urban_explosion
+			duration = 7300
+		}
+	}
+}
+
+########################################################################################
+# Rise of the Pradyota
+########################################################################################
+
+country_event = {
+	id = indian.2
+	title = "indian.2.t"
+	desc = "indian.2.d"
+	picture = generals
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = AVA
+		dynasty = Vitahvyas
+		NOT = { army_tradition = 30 }
+		OR = {
+			NOT = { legitimacy = 90 }
+			NOT = { stability = 2 }
+		}
+		is_year = 200
+	}
+
+	mean_time_to_happen = {
+		days = 20
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = pradyota_dynasty_avanti
+		}
+		VAT = {
+			country_event = {
+				id = indian.202
+				days = 30
+			}
+		}
+	}
+
+	option = {
+		name = "indian.2.a"
+		ai_chance = { factor = 60 }
+		define_ruler = {
+			name = "Pradyota"
+			dynasty = "Pradyota"
+			adm = 6
+			dip = 6
+			mil = 6
+			age = 20
+		}
+		define_heir = {
+			name = "Chanda"
+			dynasty = "Pradyota"
+			age = 0
+			adm = 4
+			dip = 4
+			mil = 3
+			claim = 100
+		}
+		add_mil_power = 50
+		add_stability = -1
+		add_war_exhaustion = 2
+	}
+
+	after = {
+		define_ruler_to_general = {
+			name = "Pradyota of Avanti"
+			fire = 6
+			shock = 8
+			manuever = 4
+			siege = 2
+		}
+	}
+}
+
+country_event = {
+	id = indian.202
+	title = "indian.202.t"
+	desc = "indian.202.d"
+	picture = generals
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = pradyota_dynasty_avanti
+	}
+
+	option = {
+		name = "indian.202.a"
+		ai_chance = { factor = 60 }
+		AVA = {
+			country_event = {
+				id = indian.203
+				days = 1
+			}
+		}
+	}
+}
+
+country_event = {
+	id = indian.203
+	title = "indian.203.t"
+	desc = "indian.203.d"
+	picture = rich_woman
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = pradyota_dynasty_avanti
+	}
+
+	option = {
+		name = "indian.203.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = VAT
+					value = 60
+				}
+			}
+			modifier = {
+				factor = 1
+				NOT = { num_of_royal_marriages = 4 }
+			}
+		}
+		define_consort = {
+			dynasty = Bharata
+			culture = vatsanite
+			country_of_origin = VAT
+			female = yes
+		}
+		add_prestige = 10
+		add_legitimacy = 10
+		add_army_tradition = -10
+		create_marriage = VAT
+		create_alliance = VAT
+	}
+	option = {
+		name = "indian.203.b"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				NOT = {
+					has_opinion = {
+						who = VAT
+						value = 60
+					}
+				}
+			}
+		}
+		add_casus_belli = {
+			target = VAT
+			type = cb_insult
+			months = 12
+		}
+		add_army_tradition = 15
+	}
+}
+
+########################################################################################
+# Loss of Dharma
+########################################################################################
+
+country_event = {
+	id = indian.3
+	title = "indian.3.t"
+	desc = "indian.3.d"
+	picture = family_conflict
+
+	trigger = {
+		OR = {
+			has_reform = vedic_kingdom_reform
+			has_indian_government = yes
+		}
+		NOT = { stability = 1 }
+		NOT = { legitimacy = 75 }
+		NOT = { mil = 2 }
+		OR = {
+			ruler_has_personality = malevolent_personality
+			ruler_has_personality = cruel_personality
+			ruler_has_personality = greedy_personality
+			ruler_has_personality = sinner_personality
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	option = {
+		name = "indian.3.a"
+		ai_chance = { factor = 50 }
+		kill_ruler = yes
+		add_stability = -3
+	}
+}
+
+########################################################################################
+# Fall of the Barhadratha
+########################################################################################
+
+country_event = {
+	id = indian.4
+	title = "indian.4.t"
+	desc = "indian.4.d"
+	picture = battle
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = MAU
+		dynasty = Barhadratha
+		is_year = 190
+		NOT = { prestige = 30 }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "indian.4.a"
+		ai_chance = { factor = 60 }
+		define_ruler = {
+			name = "Bhattiya"
+			dynasty = "Haryanka"
+			adm = 4
+			dip = 3
+			mil = 3
+			age = 25
+		}
+		define_heir = {
+			name = "Bimbisara"
+			dynasty = "Haryanka"
+			age = 0
+			adm = 5
+			dip = 6
+			mil = 6
+			claim = 100
+		}
+		add_prestige = -10
+	}
+}
+
+########################################################################################
+# Rishi offers service
+########################################################################################
+
+country_event = {
+	id = indian.5
+	title = "indian.5.t"
+	desc = "indian.5.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		religion_group = brahmin_group
+		NOT = { culture_group = mleccha_group }
+		prestige = 25
+		adm_power = 200
+		adm = 3
+		absolutism = 10
+	}
+
+	option = {
+		name = "indian.5.a"
+		ai_chance = { factor = 60 }
+		define_advisor = {
+			type = priest_adv
+			skill = 3
+			discount = yes
+		}
+		add_years_of_income = -0.33
+		add_patriarch_authority = 0.1
+	}
+	option = {
+		name = "indian.5.b"
+		ai_chance = { factor = 40 }
+		add_patriarch_authority = -0.1
+	}
+}
+
+########################################################################################
+# A great Janapadin
+########################################################################################
+
+country_event = {
+	id = indian.6
+	title = "indian.6.t"
+	desc = "indian.6.d"
+	picture = generals
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = vedic_kingdom_reform
+		army_tradition = 30
+	}
+
+	option = {
+		name = "indian.6.a"
+		ai_chance = { factor = 60 }
+		create_general = { tradition = 50 }
+		add_mil_power = 35
+		add_faction_influence = {
+			faction = fac_janapadins
+			influence = 10
+		}
+	}
+}
+
+########################################################################################
+# Sabha does not approve ruler
+########################################################################################
+
+country_event = {
+	id = indian.7
+	title = "indian.7.t"
+	desc = "indian.7.d"
+	picture = archemedis
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = vedic_kingdom_reform
+		NOT = { adm = 3 }
+		corruption = 2
+		NOT = { stability = 1 }
+	}
+
+	option = {
+		name = "indian.7.a"
+		ai_chance = { factor = 60 }
+		add_legitimacy = -10
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# the sabha is content
+########################################################################################
+
+country_event = {
+	id = indian.701
+	title = "indian.701.t"
+	desc = "indian.701.d"
+	picture = archemedis
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = vedic_kingdom_reform
+		adm = 3
+		NOT = { corruption = 2 }
+		stability = 1
+	}
+
+	option = {
+		name = "indian.701.a"
+		ai_chance = { factor = 60 }
+		add_legitimacy = 10
+		add_adm_power = 50
+	}
+}
+
+########################################################################################
+# samiti gains popular support
+########################################################################################
+
+country_event = {
+	id = indian.8
+	title = "indian.8.t"
+	desc = "indian.8.d"
+	picture = peasant_woman
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = vedic_kingdom_reform
+		war_exhaustion = 2
+	}
+
+	option = {
+		name = "indian.8.a"
+		ai_chance = { factor = 60 }
+		add_faction_influence = {
+			faction = fac_samiti
+			influence = 15
+		}
+		add_years_of_income = -0.2
+		add_yearly_manpower = -0.1
+	}
+}
+
+########################################################################################
+# janapadins protect the tribes
+########################################################################################
+
+country_event = {
+	id = indian.9
+	title = "indian.9.t"
+	desc = "indian.9.d"
+	picture = horserace
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = vedic_kingdom_reform
+		army_size_percentage = 0.8
+	}
+
+	option = {
+		name = "indian.9.a"
+		ai_chance = { factor = 60 }
+		add_faction_influence = {
+			faction = fac_janapadins
+			influence = 10
+		}
+		add_army_tradition = 5
+	}
+}
+
+########################################################################################
+# great gold work
+########################################################################################
+
+country_event = {
+	id = indian.10
+	title = "indian.10.t"
+	desc = "indian.10.d"
+	picture = forum_picture
+	is_triggered_only = yes
+
+	trigger = {
+		culture_group = indian_group
+		gold = 1
+		years_of_income = 0.5
+	}
+
+	option = {
+		name = "indian.10.a"
+		ai_chance = { factor = 60 }
+		add_prestige = 15
+		add_years_of_income = -0.5
+	}
+
+	option = {
+		name = "indian.10.b"
+		ai_chance = { factor = 40 }
+		add_prestige = -10
+	}
+}
+
+########################################################################################
+# illuminated ruler
+########################################################################################
+
+country_event = {
+	id = indian.12
+	title = "indian.12.t"
+	desc = "indian.12.d"
+	picture = ruler
+	major = yes
+
+	trigger = {
+		OR = {
+			religion = brahmin
+			religion = sramana
+			religion = jain
+			religion = buddhism
+			religion = ajivika
+			religion = hinduism
+		}
+		NOT = { has_ruler_modifier = illuminated_ruler }
+		NOT = { culture_group = mleccha_group }
+		adm = 5
+		dip	= 5
+		OR = {
+			ruler_has_personality = righteous_personality
+			ruler_has_personality = just_personality
+		}
+		OR = {
+			ruler_has_personality = scholar_personality
+			ruler_has_personality = pious_personality
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 365
+	}
+
+	option = {
+		name = "indian.12.a"
+		ai_chance = { factor = 60 }
+		add_prestige = 10
+		add_legitimacy = 20
+		add_stability = 1
+		add_ruler_modifier = {
+			name = illuminated_ruler
+		}
+	}
+}
+
+########################################################################################
+# kshatriyas refuse to join army
+########################################################################################
+
+country_event  = {
+	id = indian.14
+	title = "indian.14.t"
+	desc = "indian.14.d"
+	picture = battle
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			has_indian_government = yes
+			has_indian_tribe_reform = yes
+		}
+		NOT = { army_tradition = 30 }
+		NOT = { prestige = 25 }
+	}
+
+	option = {
+		name = "indian.14.a"
+		ai_chance = { factor = 60 }
+		add_yearly_manpower = -0.1
+	}
+}
+
+########################################################################################
+# Visha Kanya diplo action
+########################################################################################
+
+#succeeded
+country_event  = {
+	id = indian.15
+	title = "indian.15.t"
+	desc = "indian.15.d"
+	picture = death
+	is_triggered_only = yes
+
+	option = {
+		name = "indian.15.a"
+		ai_chance = { factor = 60 }
+		kill_ruler = yes
+		add_stability = -1
+		add_mil_power = -50
+		add_dip_power = -50
+		add_adm_power = -50
+		add_prestige = -20
+	}
+}
+
+#failed
+country_event  = {
+	id = indian.1501
+	title = "indian.1501.t"
+	desc = "indian.1501.d"
+	picture = illness
+	is_triggered_only = yes
+
+	option = {
+		name = "indian.1501.a"
+		ai_chance = { factor = 60 }
+		FROM = {
+			add_prestige = -10
+			add_country_modifier = {
+				name = visha_kanya_discovered
+				duration = 3650
+			}
+		}
+		add_opinion = {
+			who = FROM
+			modifier = used_visha_kanya_against_us_opinion
+		}
+		add_casus_belli = {
+			type = cb_insult
+			target = FROM
+		}
+	}
+}
+
+########################################################################################
+# Dvairajja
+########################################################################################
+
+country_event  = {
+	id = indian.29
+	title = "indian.29.t"
+	desc = "indian.29.d"
+	picture = forum_picture
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = dual_monarchy_reform
+	}
+
+	option = {
+		name = "indian.29.a"
+		ai_chance = { factor = 50 }
+		trigger = { dynasty = "Mausikanos" }
+		define_heir = {
+			dynasty = "Patalensis"
+			claim = 100
+			age = 20
+		}
+	}
+	option = {
+		name = "indian.29.b"
+		ai_chance = { factor = 50 }
+		trigger = { dynasty = "Patalensis" }
+		define_heir = {
+			dynasty = "Mausikanos"
+			claim = 100
+			age = 20
+		}
+	}
+}
+
+country_event  = {
+	id = indian.30
+	title = "indian.29.t"
+	desc = "indian.29.d"
+	picture = forum_picture
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = "indian.29.a"
+		ai_chance = { factor = 50 }
+		trigger = { dynasty = "Mausikanos" }
+		define_heir = {
+			dynasty = "Patalensis"
+			claim = 100
+			age = 20
+		}
+	}
+	option = {
+		name = "indian.29.a"
+		ai_chance = { factor = 50 }
+		trigger = { dynasty = "Patalensis" }
+		define_heir = {
+			dynasty = "Mausikanos"
+			claim = 100
+			age = 20
+		}
+	}
+}
+
+country_event  = {
+	id = indian.31
+	title = "indian.29.t"
+	desc = "indian.29.d"
+	picture = forum_picture
+	hidden = yes
+
+	trigger = {
+		has_reform = dual_monarchy_reform
+		NOT = { dynasty = "Patalensis" }
+		NOT = { dynasty = "Mausikanos" }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.29.a"
+		ai_chance = { factor = 50 }
+		define_ruler = {
+			dynasty = "Patalensis"
+			age = 20
+		}
+		define_heir = {
+			dynasty = "Mausikanos"
+			claim = 100
+			age = 20
+		}
+	}
+}
+
+########################################################################################
+# Malavas migration
+########################################################################################
+
+country_event  = {
+	id = indian.32
+	title = "indian.32.t"
+	desc = "indian.32.d"
+	picture = battle
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		2927 = {
+			owner = {
+				NOT = { culture_group = indian_group }
+				NOT = { culture_group = mleccha_group }
+			}
+		}
+		NOT = { exists = MLV }
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	immediate = {
+		hidden_effect = {
+			uttarapatha_superregion = {
+				limit = { is_core	= MLV }
+				remove_core = MLV
+				add_base_manpower = -1	change_variable = { PS_rur_evtd = 1 }
+			}
+		}
+	}
+
+	option = {
+		name = "indian.32.a"
+		ai_chance = { factor = 50 }
+		malava_area = {
+			add_core = MLV
+			add_base_manpower = 1	change_variable = { PS_rur_evtu = 1 }
+		}
+		MLV = { change_primary_culture = matsyanite }
+	}
+}
+
+########################################################################################
+# Dorajja
+########################################################################################
+
+country_event  = {
+	id = indian.33
+	title = "indian.33.t"
+	desc = "indian.33.d"
+	picture = ruler
+
+	trigger = {
+		NOT = { has_ruler_modifier = doraja_monarchy }
+		NOT = { has_ruler_modifier = viruddharajya_monarchy }
+		has_reform = dual_monarchy_reform
+		legitimacy = 95
+		stability = 1
+		absolutism = 10
+		adm = 3
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.33.a"
+		ai_chance = { factor = 50 }
+		add_ruler_modifier = {
+			name = doraja_monarchy
+		}
+	}
+}
+
+########################################################################################
+# Viruddharajya
+########################################################################################
+
+country_event  = {
+	id = indian.34
+	title = "indian.34.t"
+	desc = "indian.34.d"
+	picture = family_conflict
+
+	trigger = {
+		NOT = { has_ruler_modifier = viruddharajya_monarchy }
+		NOT = { has_ruler_modifier = doraja_monarchy }
+		has_reform = dual_monarchy_reform
+		NOT = { legitimacy = 50 }
+		NOT = { stability = 0 }
+		NOT = { adm = 3 }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.34.a"
+		ai_chance = { factor = 50 }
+		add_ruler_modifier = {
+			name = viruddharajya_monarchy
+		}
+	}
+}
+
+########################################################################################
+# a new republican raja
+########################################################################################
+
+country_event  = {
+	id = indian.35
+	title = "indian.35.t"
+	desc = "indian.35.d"
+	picture = family_conflict
+	is_triggered_only = yes
+
+	trigger = {
+		government = republic
+		OR = {
+			has_reform = indian_republic_reform
+			has_reform = martial_republic_reform
+		}
+	}
+
+	option = {
+		name = "indian.35.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = { army_tradition = 60 }
+			}
+		}
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 6
+			age = 35
+		}
+		add_army_tradition = 5
+	}
+
+	option = {
+		name = "indian.35.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = { republican_tradition = 80 }
+			}
+		}
+		add_republican_tradition = 5
+		define_ruler = {
+			max_random_adm = 6
+			max_random_dip = 3
+			max_random_mil = 3
+			age = 55
+		}
+	}
+
+	option = {
+		name = "indian.35.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.6 }
+			}
+		}
+		define_ruler = {
+			max_random_adm = 3
+			max_random_dip = 6
+			max_random_mil = 3
+			age = 35
+		}
+		add_years_of_income = 0.08
+	}
+}
+
+########################################################################################
+# republican raja killed
+########################################################################################
+
+country_event  = {
+	id = indian.36
+	title = "indian.36.t"
+	desc = "indian.36.d"
+	picture = death
+	is_triggered_only = yes
+
+	trigger = {
+		government = republic
+		has_reform = indian_republic_reform
+		NOT = { stability = 0 }
+		NOT = { republican_tradition = 75 }
+		NOT = { manpower_percentage = 0.6 }
+		corruption = 3
+		war_exhaustion = 4
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "indian.36.a"
+		ai_chance = { factor = 50 }
+		kill_ruler = yes
+		add_republican_tradition = -10
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# Death of Pravahana Jaivali
+########################################################################################
+
+country_event  = {
+	id = indian.37
+	title = "indian.37.t"
+	desc = "indian.37.d"
+	picture = death
+	is_triggered_only = yes
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = PNC
+		started_in = 142.8.10
+		NOT = { has_country_modifier = decline_kuru_panchala_modifier }
+		NOT = { started_in = 167.1.1 }
+		NOT = { has_global_flag = death_of_pravahana_jaivali_flag }
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = death_of_pravahana_jaivali_flag
+			release_all_subjects = yes
+			set_government_rank = 3
+		}
+	}
+
+	option = {
+		name = "indian.37.a"
+		ai_chance = { factor = 50 }
+		add_country_modifier = {
+			name = decline_kuru_panchala_modifier
+			duration = 18250
+		}
+		KUR = {
+			add_country_modifier = {
+				name = decline_kuru_panchala_modifier
+				duration = 18250
+			}
+		}
+		MAU = {
+			add_country_modifier = {
+				name = rise_of_the_madhyadesa_modifier
+				duration = 18250
+			}
+		}
+		KOS = {
+			add_country_modifier = {
+				name = rise_of_the_madhyadesa_modifier
+				duration = 18250
+			}
+		}
+		KSI = {
+			add_country_modifier = {
+				name = rise_of_the_madhyadesa_modifier
+				duration = 18250
+			}
+		}
+		VJJ = {
+			add_country_modifier = {
+				name = rise_of_the_madhyadesa_modifier
+				duration = 18250
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			create_alliance = KUR
+		}
+	}
+}
+
+########################################################################################
+# Kuru claims over Vatsa
+########################################################################################
+
+country_event  = {
+	id = indian.38
+	title = "indian.38.t"
+	desc = "indian.38.d"
+	picture = ruler
+	fire_only_once = yes
+
+	trigger = {
+		tag = KUR
+		dip_power = 250
+		is_subject = no
+	}
+
+	mean_time_to_happen = {
+		days = 365
+	}
+
+	option = {
+		name = "indian.38.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -10
+	}
+
+	option = {
+		name = "indian.38.b"
+		ai_chance = { factor = 1 }
+		VAT = {
+			country_event = {
+				id = indian.3801
+				days = 5
+			}
+		}
+		add_casus_belli = {
+			target = VAT
+			type = cb_mission_invasion
+			months = 60
+		}
+		add_dip_power = -250
+		hidden_effect = {
+			VAT = {
+				every_owned_province = {
+					add_core = KUR
+				}
+			}
+		}
+	}
+}
+
+country_event  = {
+	id = indian.3801
+	title = "indian.3801.t"
+	desc = "indian.3801.d"
+	picture = battle
+	is_triggered_only = yes
+
+	trigger = {
+		tag = VAT
+	}
+
+	option = {
+		name = "indian.38.a"
+		ai_chance = { factor = 1 }
+		add_prestige = -10
+	}
+
+	option = {
+		name = "indian.3801.b"
+		ai_chance = { factor = 99 }
+		add_casus_belli = {
+			target = KUR
+			type = cb_mission_invasion
+			months = 60
+		}
+		add_dip_power = -100
+		hidden_effect = {
+			KUR = {
+				every_owned_province = {
+					add_core = VAT
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Heheya claims over Avanti
+########################################################################################
+
+country_event  = {
+	id = indian.39
+	title = "indian.39.t"
+	desc = "indian.39.d"
+	picture = horserace
+	fire_only_once = yes
+
+	trigger = {
+		tag = HEH
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	option = {
+		name = "indian.39.b"
+		ai_chance = { factor = 99 }
+		add_casus_belli = {
+			target = AVA
+			type = cb_vassalize_mission
+			months = 240
+		}
+		add_mil_power = 50
+	}
+}
+
+########################################################################################
+# Avanti takes over Heheya
+########################################################################################
+
+country_event  = {
+	id = indian.40
+	title = "indian.40.t"
+	desc = "indian.40.d"
+	picture = horserace
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = AVA
+		total_development = 160
+		3103 = {
+			owned_by = AVA
+			NOT = { owned_by = HEH }
+		}
+		exists = HEH
+		NOT = { is_rival = HEH }
+		NOT = { war_with = HEH }
+		HEH = { ai = yes }
+		legitimacy_equivalent = HEH
+		prestige = HEH
+	}
+
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	option = {
+		name = "indian.40.a"
+		ai_chance = { factor = 99 }
+		add_prestige = 5
+		inherit = HEH
+	}
+}
+
+########################################################################################
+# events to convert to some of the advance indian religions
+########################################################################################
+
+#converts vedism to hinduism
+country_event  = {
+	id = indian.41
+	title = "indian.41.t"
+	desc = "indian.41.d"
+	picture = religious
+
+	trigger = {
+		OR = {
+			religion = brahmin
+			religion = sramana
+		}
+		neither_tribal_nor_native_trigger = yes
+		NOT = { dominant_religion = ROOT }
+		OR = {
+			dominant_religion = hinduism
+			dominant_religion = jain
+			dominant_religion = ajivika
+			dominant_religion = buddhism
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "indian.41.a"
+		ai_chance = { factor = 99 }
+		if = {
+			limit = { dominant_religion = hinduism }
+			change_religion = hinduism
+		}
+		else_if = {
+			limit = { dominant_religion = buddhism }
+			change_religion = buddhism
+		}
+		else_if = {
+			limit = { dominant_religion = jain }
+			change_religion = jain
+		}
+		else_if = {
+			limit = { dominant_religion = ajivika }
+			change_religion = ajivika
+		}
+	}
+
+	option = {
+		name = "indian.41.b"
+		ai_chance = { factor = 1 }
+		add_stability = -1
+		add_prestige = -20
+	}
+}
+
+########################################################################################
+# debuff to old indian religions in case it has new indian religions
+########################################################################################
+country_event  = {
+	id = indian.42
+	title = "indian.41.t"
+	desc = "indian.41.d"
+	picture = religious
+
+	hidden = yes
+
+	trigger = {
+		OR = {
+			religion = brahmin
+			religion = sramana
+		}
+		any_owned_province = {
+			OR = {
+				religion = hinduism
+				religion = buddhism
+				religion = jain
+				religion = ajivika
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		add_country_modifier = {
+			name = vedic_religions_conversion_debuff_modifier
+			duration = -1
+			hidden = yes
+		}
+	}
+
+	option = {
+		name = "indian.41.a"
+		ai_chance = { factor = 99 }
+	}
+}
+
+#Removes previous debuff
+country_event  = {
+	id = indian.4201
+	title = "indian.41.t"
+	desc = "indian.41.d"
+	picture = religious
+	hidden = yes
+
+	trigger = {
+		has_country_modifier = vedic_religions_conversion_debuff_modifier
+		OR = {
+			religion = hinduism
+			religion = buddhism
+			religion = jain
+			religion = ajivika
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		remove_country_modifier = vedic_religions_conversion_debuff_modifier
+	}
+
+	option = {
+		name = "indian.41.a"
+		ai_chance = { factor = 99 }
+	}
+}
+
+########################################################################################
+# if Kuru it's too weak it will get inherited by Panchala
+########################################################################################
+country_event  = {
+	id = indian.43
+	title = "indian.43.t"
+	desc = "indian.43.d"
+	picture = generals
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 232
+		tag = PNC
+		exists = KUR
+		OR = {
+			is_great_power = yes
+			alliance_with = KUR
+		}
+		KUR = {
+			NOT = { total_development = PNC }
+			NOT = { army_size = PNC }
+			NOT = { is_rival = PNC }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.75
+			NOT = { KUR = { adm = 4 } }
+		}
+		modifier = {
+			factor = 0.5
+			NOT = { KUR = { stability = 1 } }
+		}
+	}
+
+	option = {
+		name = "indian.43.a"
+		ai_chance = { factor = 99 }
+		inherit = KUR
+	}
+}
+
+########################################################################################
+# Choose new religious school
+########################################################################################
+
+#########New religions
+
+#Jain
+country_event  = {
+	id = indian.44
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		religion = jain
+	}
+
+	option = {
+		name = "indian.44.a"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = svetambara_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = svetambara_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.b"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = digambara_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = digambara_school
+			}
+		}
+	}
+}
+
+#Buddhist
+country_event  = {
+	id = indian.4401
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		religion = buddhism
+		has_global_flag = second_buddhist_council
+	}
+
+	option = {
+		name = "indian.44.c"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = mahasamghika_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = mahasamghika_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.e"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sthavira_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = sthavira_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.f"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sammatiyah_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = sammatiyah_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.g"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sarvastivada_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = sarvastivada_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.h"
+		trigger = {
+			OR = {
+				started_in = 507.1.1
+				has_global_flag = third_buddhist_council_flag
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vibhajyavada_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = vibhajyavada_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.i"
+		trigger = {
+			OR = {
+				started_in = 507.1.1
+				has_global_flag = third_buddhist_council_flag
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = pudgalavada_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = pudgalavada_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.j"
+		trigger = {
+			OR = {
+				started_in = 507.1.1
+				has_global_flag = third_buddhist_council_flag
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ekavyavaharika_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = ekavyavaharika_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.k"
+		trigger = {
+			OR = {
+				started_in = 507.1.1
+				has_global_flag = third_buddhist_council_flag
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = lokottaravada_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = lokottaravada_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.l"
+		trigger = {
+			OR = {
+				started_in = 507.1.1
+				has_global_flag = third_buddhist_council_flag
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kukkutika_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = kukkutika_school
+			}
+		}
+	}
+}
+
+#Ajivika
+country_event  = {
+	id = indian.4402
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		religion = ajivika
+	}
+
+	option = {
+		name = "indian.44.m"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = tala_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = tala_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.n"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = talapralamba_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = talapralamba_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.o"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = udvidha_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = udvidha_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.p"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = samvidha_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = samvidha_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.q"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = avavidha_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = avavidha_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.r"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = udaya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = udaya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.s"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = namodaya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = namodaya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.tt"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = narmodaya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = narmodaya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.u"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = anupalaka_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = anupalaka_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.v"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sankhapalaka_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = sankhapalaka_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.w"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ayambula_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = ayambula_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.x"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = katara_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = katara_school
+			}
+		}
+	}
+}
+
+#Hinduism
+country_event  = {
+	id = indian.4403
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		religion = hinduism
+	}
+
+	option = {
+		name = "indian.44.af"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = nyaya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = nyaya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ag"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vaishesika_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = vaishesika_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ai"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = samkhya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = samkhya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ah"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = yoga_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = yoga_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.az"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = mimamsa_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = mimamsa_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.aj"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vedanta_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = vedanta_school
+			}
+		}
+	}
+}
+
+######Old religions
+
+#Sramana
+country_event  = {
+	id = indian.4404
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		is_heterodox_trigger = yes
+	}
+
+	option = {
+		name = "indian.44.y"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = amoralism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = amoralism_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.z"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = determinism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = determinism_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.aa"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = fatalism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = fatalism_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ab"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = materialism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = materialism_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ac"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = atomism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = atomism_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ad"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = restraint_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = restraint_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ae"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = agnosticism_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = agnosticism_school
+			}
+		}
+	}
+}
+
+#Vedic
+country_event  = {
+	id = indian.4405
+	title = "indian.44.t"
+	desc = "indian.44.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		is_orthodox_trigger = yes
+	}
+
+	option = {
+		name = "indian.44.ak"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = shakala_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = shakala_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.al"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = bashkala_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = bashkala_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.am"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = asvalayana_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = asvalayana_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.an"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = madhyandina_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = madhyandina_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ao"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kanva_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = kanva_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ap"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = taittiriya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = taittiriya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.aq"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = maitrayani_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = maitrayani_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ar"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = caraka_katha_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = caraka_katha_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.as"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kapishthala_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = kapishthala_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.at"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kauthuma_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = kauthuma_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.au"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ranayaniya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = ranayaniya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.av"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = jaiminiya_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = jaiminiya_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.aw"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = shaunaka_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = shaunaka_school
+			}
+		}
+	}
+
+	option = {
+		name = "indian.44.ax"
+		if = {
+			limit = {
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = paippalada_school
+					}
+				}
+			}
+			clear_religious_scholar_modifiers_effect = yes
+			keep_former_school_as_scholar_modifier_effect = yes
+			set_religious_school = {
+				group = brahmin_group
+				school = paippalada_school
+			}
+		}
+	}
+}
+
+########################################################################################
+# Sets religious school in case of an incorrect one or having none
+########################################################################################
+country_event  = {
+	id = indian.50
+	title = "indian.49.t"
+	desc = "indian.49.d"
+	picture = religious
+
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		religion_group = brahmin_group
+		NOT = { religion = mleccha_religion }
+		if = {
+			limit = { religion = buddhism }
+			has_global_flag = second_buddhist_council
+		}
+		OR = {
+			has_religious_school = no
+			AND = {
+				religion = brahmin
+				OR = {
+					has_hindu_religious_school = yes
+					has_sramana_religious_school = yes
+					has_ajivika_religious_school = yes
+					has_buddhist_religious_school = yes
+					has_jain_religious_school = yes
+				}
+			}
+			AND = {
+				religion = hinduism
+				OR = {
+					has_vedic_religious_school = yes
+					has_sramana_religious_school = yes
+					has_ajivika_religious_school = yes
+					has_buddhist_religious_school = yes
+					has_jain_religious_school = yes
+				}
+			}
+			AND = {
+				religion = sramana
+				OR = {
+					has_vedic_religious_school = yes
+					has_hindu_religious_school = yes
+					has_ajivika_religious_school = yes
+					has_buddhist_religious_school = yes
+					has_jain_religious_school = yes
+				}
+			}
+			AND = {
+				religion = ajivika
+				OR = {
+					has_vedic_religious_school = yes
+					has_hindu_religious_school = yes
+					has_sramana_religious_school = yes
+					has_buddhist_religious_school = yes
+					has_jain_religious_school = yes
+				}
+			}
+			AND = {
+				religion = buddhism
+				OR = {
+					has_vedic_religious_school = yes
+					has_hindu_religious_school = yes
+					has_sramana_religious_school = yes
+					has_ajivika_religious_school = yes
+					has_jain_religious_school = yes
+				}
+			}
+			AND = {
+				religion = jain
+				OR = {
+					has_vedic_religious_school = yes
+					has_hindu_religious_school = yes
+					has_sramana_religious_school = yes
+					has_ajivika_religious_school = yes
+					has_buddhist_religious_school = yes
+				}
+			}
+		}
+	}
+
+	immediate = {
+		if = {
+			limit = { religion = brahmin }
+			country_event = { id = indian.4405 }
+		}
+		if = {
+			limit = { religion = hinduism }
+			country_event = { id = indian.4403 }
+		}
+		if = {
+			limit = { religion = sramana }
+			country_event = { id = indian.4404 }
+		}
+		if = {
+			limit = { religion = ajivika }
+			country_event = { id = indian.4402 }
+		}
+		if = {
+			limit = { religion = buddhism }
+			country_event = { id = indian.4401 }
+		}
+		if = {
+			limit = { religion = jain }
+			country_event = { id = indian.44 }
+		}
+	}
+
+	option = {
+		name = "indian.46.a"
+	}
+}
+
+########################################################################################
+# Satavahana appear
+########################################################################################
+country_event = {
+	id = indian.51
+	title = "indian.51.t"
+	desc = "indian.51.d"
+	picture = generals
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 454
+		NOT = { started_in = 524.1.1 }
+		NOT = { exists = SAT }
+		is_heterodox_trigger = yes
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+		}
+		krishnaveni_area = {
+			type = all
+			owned_by = ROOT
+		}
+		is_religion_enabled = hinduism
+		NOT = { stability = 0 }
+		NOT = { legitimacy_equivalent = 70 }
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			NOT = { manpower_percentage = 0.7 }
+		}
+	}
+
+	immediate = {
+		krishnaveni_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		andhraka_north = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		korounkala_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+		mahendragiri_area = {
+			add_core = SAT
+			cede_province = SAT
+			change_religion = hinduism
+			remove_core = ROOT
+		}
+	}
+
+	option = {
+		name = "indian.51.a"
+		ai_chance = { factor = 99 }
+		add_prestige = -15
+		add_truce_with = SAT
+		hidden_effect = {
+			SAT = {
+				set_capital = 3120
+				add_stability = 3
+				add_absolutism = 20
+				set_government_rank = 3
+				change_government = monarchy
+				add_government_reform = indian_common_monarchy
+				add_legitimacy = 100
+				add_army_tradition = 50
+				if = {
+					limit = { has_dlc = "Cradle of Civilization" }
+					add_army_professionalism = 0.5
+				}
+				add_treasury = 1000
+				add_adm_power = 200
+				add_mil_power = 200
+				add_dip_power = 200
+				change_religion = hinduism
+				capital_scope = {
+					build_to_forcelimit = {
+						infantry = 0.6
+						artillery = 0.2
+						cavalry = 0.2
+					}
+				}
+				define_ruler = {
+					name = "Simuka I"
+					dynasty = "Satavahana"
+					adm = 5
+					dip = 5
+					mil = 6
+					max_age = 30
+					male = yes
+				}
+				add_country_modifier = {
+					name = achieved_religious_unity_mission
+					duration = 9125
+				}
+			}
+			3120 = {
+				add_base_tax = 2
+				add_base_production = 5
+			}
+		}
+	}
+}
+
+########################################################################################
+# appearance of Chandragupta Maurya
+########################################################################################
+country_event = {
+	id = indian.52
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	major = yes
+	fire_only_once = yes
+
+	trigger = {
+		NOT = { started_in = 429.1.1 }
+		government = monarchy
+		OR = {
+			culture_group = indian_group
+			culture_group = dravidian_group
+		}
+		owns_core_province = 3027
+		num_of_cities = 5
+		is_year = 424
+		NOT = { is_year = 453 }
+	}
+
+	mean_time_to_happen = {
+		months = 36
+		modifier = {
+			factor = 0.6
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 2
+			absolutism = 25
+		}
+		modifier = {
+			factor = 0.25
+			tag = MAU
+		}
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		define_ruler = {
+			name = "Chandragupta"
+			dynasty = "Maurya"
+			culture = magadhi
+			adm = 6
+			dip = 6
+			mil = 6
+			max_age = 30
+		}
+		define_advisor = {
+			type = statesman_adv
+			name = "Chanakya"
+			skill = 5
+			cost_multiplier = 0.33
+			culture = magadhi
+			religion = hinduism
+		}
+		set_capital = 3027
+		hidden_effect = {
+			set_ruler_flag = chandragupta_maurya_king_flag
+			add_treasury = 2000
+			add_stability = 3
+			add_legitimacy = 100
+			add_absolutism = 25
+			add_adm_power = 250
+			add_mil_power = 250
+			add_adm_power = 250
+			add_army_tradition = 50
+			add_country_modifier = {
+				name = rise_maurya_modifier
+				duration = 10950
+			}
+			if = {
+				limit = { has_dlc = "Cradle of Civilization" }
+				add_army_professionalism = 0.5
+			}
+			if = {
+				limit = { NOT = { has_reform = indian_common_monarchy } }
+				add_government_reform = indian_common_monarchy
+			}
+		}
+	}
+	option = {
+		name = "indian.52.b"
+		ai_chance = { factor = 1 }
+		add_stability = -2
+		add_legitimacy = -40
+		kill_ruler = yes
+		hidden_effect = {
+			set_saved_name = {
+				key = chandragupta_pretender_rebel
+				type = simple
+				name = "Chandragupta Maurya"
+			}
+			3027 = {
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 3
+					leader = chandragupta_pretender_rebel
+					win = yes
+				}
+			}
+			random_owned_province = {
+				limit = { NOT = { province_id = 3027 } }
+				spawn_rebels = {
+					type = pretender_rebels
+					size = 3
+				}
+			}
+		}
+	}
+}
+
+#Cbs for Chandragupta's conquests
+country_event = {
+	id = indian.53
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	fire_only_once = yes
+	hidden = yes
+
+	trigger = {
+		has_ruler_flag = chandragupta_maurya_king_flag
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		every_known_country = {
+			limit = {
+				capital_scope = {
+					OR = {
+						region = gandhara
+						region = sindhu_region
+						region = kuru_panchala
+						region = northern_india_region
+						region = saurashtra_region
+						region = vanga_region
+						region = southern_india_region
+						region = aparantabhumi_region
+						region = western_india_region
+					}
+				}
+			}
+			reverse_add_casus_belli = {
+				type = cb_mission_invasion
+				target = ROOT
+				months = 300
+			}
+		}
+	}
+}
+
+########################################################################################
+# hidden buff for conversion from sramana or vedism to respective advanced form
+########################################################################################
+#buff for hinduism
+province_event = {
+	id = indian.54
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = hinduism }
+		religion = brahmin
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		add_province_modifier = {
+			name = older_religion_local_debuff_modifier
+			duration = -1
+			hidden = yes
+		}
+	}
+}
+
+#removes buff if owner changes to sramana
+province_event = {
+	id = indian.5401
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = sramana }
+		religion = brahmin
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
+	}
+}
+
+#buff for heterodox
+province_event = {
+	id = indian.55
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = {
+			OR = {
+				religion = ajivika
+				religion = buddhism
+				religion = jain
+			}
+		}
+		religion = sramana
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		add_province_modifier = {
+			name = older_religion_local_debuff_modifier
+			duration = -1
+			hidden = yes
+		}
+	}
+}
+
+#removes buff if owner changes to vedism
+province_event = {
+	id = indian.5501
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		owner = { religion = brahmin }
+		religion = sramana
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
+	}
+}
+
+#removes buff when changed to advanced religion
+province_event = {
+	id = indian.56
+	title = "indian.52.t"
+	desc = "indian.52.d"
+	picture = generals
+	hidden = yes
+
+	trigger = {
+		OR = {
+			religion = ajivika
+			religion = jain
+			religion = buddhism
+			religion = hinduism
+		}
+		has_province_modifier = older_religion_local_debuff_modifier
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.52.a"
+		ai_chance = { factor = 99 }
+		remove_province_modifier = older_religion_local_debuff_modifier
+	}
+}
+
+########################################################################################
+# Start of Sangam Period
+########################################################################################
+
+country_event = {
+	id = indian.57
+	title = "indian.57.t"
+	desc = "indian.57.d"
+	picture = archemedis
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		is_year = 254
+		capital_scope = {
+			region = chola_region
+		}
+		OR = {
+			primary_culture = tamil
+			primary_culture = tuluva
+		}
+		NOT = { started_in = 254.1.1 }
+		OR = {
+			has_reform = tamil_crowned_king_reform
+			has_reform = tamil_tribe_reform
+		}
+		government_rank = 3
+	}
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.25
+			has_reform = tamil_crowned_king_reform
+		}
+	}
+
+	immediate = {
+		hidden_effect = { set_global_flag = sangam_era_flag }
+	}
+
+	option = {
+		name = "indian.57.a"
+		ai_chance = { factor = 30 }
+		custom_tooltip = indian_event_ct.1
+		3158 = {
+			owner = {
+				add_country_modifier = {
+					name = india_urban_explosion
+					duration = 10950
+				}
+			}
+			add_permanent_province_modifier = {
+				name = sangam_center_modifier
+				duration = -1
+			}
+			add_base_tax = 1
+		}
+		hidden_effect = {
+			every_province = {
+				limit = {
+					OR = {
+						culture = tamil
+						culture = tuluva
+					}
+					continent = india
+					base_manpower = 3
+				}
+				add_base_manpower = -2		change_variable = { PS_rur_evtd = 2 }
+				add_base_production = 2		change_variable = { PS_urb_evtu = 2 }
+				add_institution_embracement = {
+					which = writing_system
+					value = 100
+				}
+			}
+			every_country = {
+				limit = {
+					NOT = { owns = 3158 }
+					capital_scope = { continent = india }
+					OR = {
+						primary_culture = tamil
+						primary_culture = tuluva
+					}
+				}
+				add_country_modifier = {
+					name = india_urban_explosion
+					duration = 7300
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Mleccha events
+########################################################################################
+
+#Mleccha brigans
+country_event = {
+	id = indian.58
+	title = "indian.58.t"
+	desc = "indian.58.d"
+	picture = generals
+
+	is_triggered_only = yes
+	goto = province_mleccha_brigands
+
+	trigger = {
+		culture_group = indian_group
+		NOT = { absolutism = 30 }
+		NOT = { started_in = 254.1.1 }
+		any_owned_province = {
+			continent = india
+			culture_group = indian_group
+			local_autonomy = 10
+			any_neighbor_province = {
+				culture = mleccha
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					continent = india
+					culture_group = indian_group
+					local_autonomy = 10
+					any_neighbor_province = {
+						OR = {
+							culture = mleccha
+							culture = sindhupulindas
+							culture = karnapravaranas
+						}
+					}
+				}
+				save_event_target_as = province_mleccha_brigands
+			}
+		}
+	}
+
+	option = {
+		name = "indian.58.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 1.5
+				mil_power = 100
+			}
+		}
+		add_mil_power = -50
+		event_target:province_mleccha_brigands = {
+			add_province_modifier = {
+				name = mleccha_brigands_modifier
+				duration = 365
+			}
+			add_prosperity = -1
+		}
+	}
+
+	option = {
+		name = "indian.58.b"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 0.5
+				NOT = { mil_power = 70 }
+			}
+		}
+		event_target:province_mleccha_brigands = {
+			add_province_modifier = {
+				name = mleccha_brigands_modifier
+				duration = 1460
+			}
+			add_prosperity = -5
+		}
+	}
+}
+
+#Mleccha ask for recognition
+country_event = {
+	id = indian.59
+	title = "indian.59.t"
+	desc = "indian.59.d"
+	picture = forum_picture
+
+	is_triggered_only = yes
+	goto = province_mleccha_integration
+
+	trigger = {
+		culture_group = indian_group
+		OR = {
+			is_heterodox_trigger = yes
+			is_orthodox_trigger = yes
+		}
+		NOT = { religion = mleccha_religion }
+		neither_tribal_nor_native_trigger = yes
+		stability = 1
+		any_owned_province = {
+			is_core = ROOT
+			continent = india
+			religion = ROOT
+			NOT = { has_province_modifier = denied_mleccha_integration_modifier }
+			OR = {
+				culture = mleccha
+				culture = sindhupulindas
+				culture = karnapravaranas
+			}
+			prosperity = 25
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_core = ROOT
+					continent = india
+					religion = ROOT
+					NOT = { has_province_modifier = denied_mleccha_integration_modifier }
+					OR = {
+						culture = mleccha
+						culture = sindhupulindas
+						culture = karnapravaranas
+					}
+					prosperity = 25
+				}
+				save_event_target_as = province_mleccha_integration
+			}
+		}
+	}
+
+	option = {
+		name = "indian.59.a"
+		ai_chance = { factor = 60 }
+		event_target:province_mleccha_integration = {
+			add_base_manpower = -1
+			add_base_production = 1
+			change_culture = ROOT
+			change_variable = { PS_rur_evtd = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+
+	option = {
+		name = "indian.59.b"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				ruler_has_personality = zealot_personality
+			}
+		}
+		add_prestige = -1
+		event_target:province_mleccha_integration = {
+			add_unrest = 2
+			add_prosperity = -5
+			add_province_modifier = {
+				name = denied_mleccha_integration_modifier
+				duration = 3650
+			}
+		}
+	}
+}
+
+#Mleccha revolt
+country_event = {
+	id = indian.60
+	title = "indian.60.t"
+	desc = "indian.60.d"
+	picture = generals
+
+	is_triggered_only = yes
+	goto = province_mleccha_revolt
+
+	trigger = {
+		culture_group = indian_group
+		NOT = { religion = mleccha_religion }
+		NOT = { stability = 1 }
+		any_owned_province = {
+			continent = india
+			OR = {
+				culture = mleccha
+				culture = sindhupulindas
+				culture = karnapravaranas
+			}
+			NOT = { local_autonomy = 50 }
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					continent = india
+					OR = {
+						culture = mleccha
+						culture = sindhupulindas
+						culture = karnapravaranas
+					}
+					NOT = { local_autonomy = 50 }
+				}
+				save_event_target_as = province_mleccha_revolt
+			}
+		}
+	}
+
+	option = {
+		name = "indian.60.a"
+		ai_chance = { factor = 60 }
+		event_target:province_mleccha_revolt = {
+			area = {
+				limit = {
+					OR = {
+						culture = mleccha
+						culture = sindhupulindas
+						culture = karnapravaranas
+					}
+				}
+				nationalist_rebels = 2
+				add_devastation = 50
+			}
+		}
+	}
+}
+
+#Mleccha intermarriage
+country_event = {
+	id = indian.61
+	title = "indian.61.t"
+	desc = "indian.61.d"
+	picture = family
+
+	is_triggered_only = yes
+	goto = province_mleccha_intermarriage
+
+	trigger = {
+		culture_group = indian_group
+		neither_tribal_nor_native_trigger = yes
+		OR = {
+			has_idea_group = syncretism_ideas
+			has_reform = allow_intercaste_marriage
+		}
+		any_owned_province = {
+			continent = india
+			OR = {
+				culture = mleccha
+				culture = sindhupulindas
+				culture = karnapravaranas
+			}
+			has_owner_accepted_culture = yes
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					continent = india
+					OR = {
+						culture = mleccha
+						culture = sindhupulindas
+						culture = karnapravaranas
+					}
+					has_owner_accepted_culture = yes
+				}
+				save_event_target_as = province_mleccha_intermarriage
+			}
+		}
+	}
+
+	option = {
+		name = "indian.61.a"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 1.5
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 30
+				}
+			}
+		}
+		event_target:province_mleccha_intermarriage = {
+			add_province_modifier = {
+				name = mleccha_intermarriage_modifier
+				duration = 3650
+			}
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -2
+		}
+	}
+	option = {
+		name = "indian.61.b"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 2.0
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 40
+				}
+			}
+		}
+		event_target:province_mleccha_intermarriage = {
+			change_culture = ROOT
+			change_religion = ROOT
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = -4
+		}
+	}
+	option = {
+		name = "indian.61.c"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 2.0
+				NOT = {
+					estate_loyalty = {
+						estate = estate_priesthood
+						loyalty = 30
+					}
+				}
+			}
+		}
+		event_target:province_mleccha_intermarriage = {
+			add_province_modifier = {
+				name = denied_mleccha_integration_modifier
+				duration = 3650
+			}
+			add_unrest = 1
+		}
+		add_estate_loyalty = {
+			estate = estate_priesthood
+			loyalty = 2
+		}
+	}
+}
+
+########################################################################################
+# Tamil migration to Lanka
+########################################################################################
+country_event = {
+	id = indian.62
+	title = "indian.62.t"
+	desc = "indian.62.d"
+	picture = tradecity
+	fire_only_once = yes
+
+	trigger = {
+		tag = ANJ
+		is_year = 454
+		NOT = { started_in = 517.1.1 }
+		OR = {
+			exists = CHO
+			exists = PAN
+		}
+		neither_tribal_nor_native_trigger = yes
+		uttaradesa_ceylon_area = {
+			type = all
+			owned_by = ANJ
+		}
+		owns_core_province = 3063
+		owns_core_province = 6439
+		is_religion_enabled = buddhism
+	}
+
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.5
+			CHO = { total_development = 100 }
+		}
+	}
+
+	option = {
+		name = "indian.62.a"
+		ai_chance = { factor = 60 }
+		uttaradesa_ceylon_area = {
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+		3063 = {
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+		6439 = {
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+
+	option = {
+		name = "indian.62.b"
+		ai_chance = { factor = 40 }
+		random_owned_province = {
+			limit = {
+				area = uttaradesa_ceylon_area
+				has_port = yes
+			}
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+country_event = {
+	id = indian.6201
+	title = "indian.62.t"
+	desc = "indian.62.d"
+	picture = tradecity
+	fire_only_once = yes
+
+	trigger = {
+		tag = ANJ
+		is_year = 454
+		NOT = { started_in = 652.1.1 }
+		OR = {
+			exists = CHO
+			exists = PAN
+		}
+		neither_tribal_nor_native_trigger = yes
+		pihiti_area = {
+			type = all
+			owned_by = ANJ
+		}
+		is_religion_enabled = buddhism
+	}
+
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.5
+			CHO = { total_development = 100 }
+		}
+	}
+
+	option = {
+		name = "indian.62.a"
+		ai_chance = { factor = 60 }
+		pihiti_area = {
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+
+	option = {
+		name = "indian.62.b"
+		ai_chance = { factor = 40 }
+		random_owned_province = {
+			limit = {
+				area = pihiti_area
+				has_port = yes
+			}
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+country_event = {
+	id = indian.6202
+	title = "indian.62.t"
+	desc = "indian.62.d"
+	picture = tradecity
+	fire_only_once = yes
+
+	trigger = {
+		tag = ANJ
+		is_year = 454
+		NOT = { started_in = 652.1.1 }
+		OR = {
+			exists = CHO
+			exists = PAN
+		}
+		neither_tribal_nor_native_trigger = yes
+		pacina_desa_area = {
+			type = all
+			owned_by = ANJ
+		}
+		is_religion_enabled = buddhism
+	}
+
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.5
+			CHO = { total_development = 100 }
+		}
+	}
+
+	option = {
+		name = "indian.62.a"
+		ai_chance = { factor = 60 }
+		pacina_desa_area = {
+			limit = { has_port = yes }
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+
+	option = {
+		name = "indian.62.b"
+		ai_chance = { factor = 40 }
+		random_owned_province = {
+			limit = {
+				area = pacina_desa_area
+				has_port = yes
+			}
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+country_event = {
+	id = indian.6203
+	title = "indian.62.t"
+	desc = "indian.62.d"
+	picture = tradecity
+	fire_only_once = yes
+
+	trigger = {
+		tag = ANJ
+		is_year = 454
+		NOT = { started_in = 652.1.1 }
+		OR = {
+			exists = CHO
+			exists = PAN
+		}
+		neither_tribal_nor_native_trigger = yes
+		ruhunu_area = {
+			type = all
+			owned_by = ANJ
+		}
+		is_religion_enabled = buddhism
+	}
+
+	mean_time_to_happen = {
+		months = 120
+		modifier = {
+			factor = 0.5
+			CHO = { total_development = 100 }
+		}
+	}
+
+	option = {
+		name = "indian.62.a"
+		ai_chance = { factor = 60 }
+		ruhunu_area = {
+			limit = { has_port = yes }
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+
+	option = {
+		name = "indian.62.b"
+		ai_chance = { factor = 40 }
+		random_owned_province = {
+			limit = {
+				area = ruhunu_area
+				has_port = yes
+			}
+			change_culture = tamil
+			change_religion = buddhism
+			add_core = ILA
+			add_base_production = 1
+			add_base_manpower = 1
+			change_variable = { PS_rur_evtu = 1 }	change_variable = { PS_urb_evtu = 1 }
+		}
+	}
+}
+
+################################################################################################
+# because Yakkha and Naga cultures are actually not human, these cultures should die very quickly just for convenience
+################################################################################################
+province_event = {
+	id = indian.63
+	title = "indian.63.t"
+	desc = "indian.63.d"
+	picture = trade
+	goto = ROOT
+
+	trigger = {
+		OR = {
+			culture = naga
+			culture = yakkha
+		}
+		owner = {
+			NOT = { primary_culture = naga }
+			NOT = { primary_culture = yakkha }
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.5
+			is_core = owner
+		}
+	}
+
+	option = {
+		name = "indian.63.a"
+		ai_chance = { factor = 60 }
+		change_culture = owner
+		change_religion = owner
+		remove_core = YAK
+		remove_core = NAG
+	}
+}
+
+################################################################################################
+# Fall of Pulindanagara
+################################################################################################
+province_event = {
+	id = indian.64
+	title = "indian.64.t"
+	desc = "indian.64.d"
+	picture = battle
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	goto = 3104
+
+	trigger = {
+		province_id = 3104
+		NOT = { started_in = 214.1.1 }
+		FROM = {
+			OR = {
+				tag = PLI
+				primary_culture = pulindas
+			}
+		}
+		owner = {
+			culture_group = indian_group
+			OR = {
+				is_heterodox_trigger = yes
+				is_orthodox_trigger = yes
+			}
+		}
+	}
+
+	option = {
+		name = "indian.64.a"
+		ai_chance = { factor = 60 }
+		change_culture = owner
+		change_religion = owner
+		hidden_effect = {
+			owner = {
+				every_known_country = {
+					limit = { primary_culture = pulindas }
+					add_prestige = -100
+					add_stability = -3
+				}
+				add_country_modifier = {
+					name = conquered_pulindas_modifier
+					duration = 7300
+				}
+			}
+		}
+	}
+}
+
+################################################################################################
+# Fall of Pragjyotisha
+################################################################################################
+country_event = {
+	id = indian.65
+	title = "indian.65.t"
+	desc = "indian.65.d"
+	picture = generals
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+	goto = 3542
+
+	trigger = {
+		FROM = { tag = PJY }
+		NOT = { exists = PJY }
+		owns_core_province = 3542
+		culture_group = indian_group
+		OR = {
+			is_heterodox_trigger = yes
+			is_orthodox_trigger = yes
+		}
+	}
+
+	option = {
+		name = "indian.65.a"
+		ai_chance = { factor = 60 }
+		3542 = {
+			add_core = ROOT
+		}
+		every_province = {
+			limit = { culture = asura }
+			remove_core = PJY
+			add_core = KMP
+			change_culture = assamese
+			change_religion = ROOT
+		}
+		add_country_modifier = {
+			name = destroyed_pragjyorisha_modifier
+			duration = 9125
+		}
+	}
+}
+
+########################################################################################
+# Kannada urbanization
+########################################################################################
+
+country_event = {
+	id = indian.66
+	title = "indian.66.t"
+	desc = "indian.66.d"
+	picture = city
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		NOT = { started_in = 300.1.1 }
+		is_religion_enabled = jain
+		has_global_flag = second_indian_urbanization
+		has_global_flag = sangam_era_flag
+		primary_culture = kannada
+		government_rank = 3
+	}
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.25
+			tag = KTK
+		}
+	}
+
+	option = {
+		name = "indian.66.a"
+		ai_chance = { factor = 30 }
+		custom_tooltip = indian_event_ct.2
+		hidden_effect = {
+			every_province = {
+				limit = {
+					culture = kannada
+					continent = india
+					base_manpower = 3
+				}
+				add_base_manpower = -2
+				add_base_production = 2
+				change_variable = { PS_rur_evtd = 2 }	change_variable = { PS_urb_evtu = 2 }
+				add_institution_embracement = {
+					which = writing_system
+					value = 100
+				}
+			}
+			every_country = {
+				limit = {
+					capital_scope = { continent = india }
+					primary_culture = kannada
+				}
+				add_country_modifier = {
+					name = india_urban_explosion
+					duration = 7300
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Telugu urbanization
+########################################################################################
+
+country_event = {
+	id = indian.67
+	title = "indian.67.t"
+	desc = "indian.66.d"
+	picture = city
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		NOT = { started_in = 300.1.1 }
+		is_religion_enabled = hinduism
+		has_global_flag = second_indian_urbanization
+		has_global_flag = sangam_era_flag
+		primary_culture = telugu
+		government_rank = 3
+	}
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.25
+			tag = ANX
+		}
+	}
+
+	option = {
+		name = "indian.66.a"
+		ai_chance = { factor = 30 }
+		custom_tooltip = indian_event_ct.3
+		hidden_effect = {
+			every_province = {
+				limit = {
+					culture = telugu
+					continent = india
+					base_manpower = 3
+				}
+				add_base_manpower = -2
+				add_base_production = 2
+				change_variable = { PS_rur_evtd = 2 }	change_variable = { PS_urb_evtu = 2 }
+				add_institution_embracement = {
+					which = writing_system
+					value = 100
+				}
+			}
+			every_country = {
+				limit = {
+					capital_scope = { continent = india }
+					primary_culture = telugu
+				}
+				add_country_modifier = {
+					name = india_urban_explosion
+					duration = 7300
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Choosing a Sangha Specialization
+########################################################################################
+
+country_event = {
+	id = indian.69
+	title = "indian.69.t"
+	desc = "indian.69.d"
+	picture = sacrifice
+	is_triggered_only = yes
+
+	trigger = {
+		is_heterodox_trigger = yes
+	}
+
+	option = {
+		name = "indian.69.a"
+		ai_chance = { factor = 16 }
+		add_ruler_modifier = {
+			name = trading_sangha_modifier
+		}
+	}
+	option = {
+		name = "indian.69.b"
+		ai_chance = { factor = 16 }
+		add_ruler_modifier = {
+			name = administrative_sangha_modifier
+		}
+	}
+	option = {
+		name = "indian.69.c"
+		ai_chance = { factor = 16 }
+		add_ruler_modifier = {
+			name = heresy_sangha_modifier
+		}
+	}
+}
+
+########################################################################################
+# Rise of the Kiratas
+########################################################################################
+
+country_event = {
+	id = indian.70
+	title = "indian.70.t"
+	desc = "indian.70.d"
+	picture = generals
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = KIT
+		is_year = 214
+		NOT = { started_in = 214.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.70.a"
+		ai_chance = { factor = 16 }
+		kirata_area = {
+			limit = {
+				NOT = { is_core = ROOT }
+				NOT = { owned_by = ROOT }
+			}
+			add_permanent_claim = KIT
+		}
+		sthanisvara_area = {
+			limit = {
+				NOT = { is_core = ROOT }
+				NOT = { owned_by = ROOT }
+			}
+			add_permanent_claim = KIT
+		}
+		himalaya_area = {
+			limit = {
+				NOT = { is_core = ROOT }
+				NOT = { owned_by = ROOT }
+			}
+			add_permanent_claim = KIT
+		}
+		add_country_modifier = {
+			name = rise_kirata_modifier
+			duration = 9125
+		}
+	}
+}
+
+########################################################################################
+# Mleccha policy
+########################################################################################
+
+country_event = {
+	id = indian.71
+	title = "indian.71.t"
+	desc = "indian.71.d"
+	picture = harvest
+	is_triggered_only = yes
+
+	option = {
+		name = "indian.71.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				is_orthodox_trigger = yes
+			}
+		}
+		add_country_modifier = {
+			name = segregate_mlecchas_modifier
+			duration = -1
+		}
+	}
+	option = {
+		name = "indian.71.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				is_heterodox_trigger = yes
+			}
+		}
+		add_country_modifier = {
+			name = assimilate_mlecchas_modifier
+			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# Join the Munda Janapada
+########################################################################################
+
+country_event = {
+	id = indian.72
+	title = "indian.71.t"
+	desc = "indian.71.d"
+	picture = harvest
+	is_triggered_only = yes
+
+	#Join
+	option = {
+		name = "indian.71.a"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				is_neighbor_of = FROM
+			}
+			modifier = {
+				factor = 2
+				NOT = { total_development = FROM }
+			}
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+		}
+		FROM = { inherit = ROOT }
+	}
+	#Not join
+	option = {
+		name = "indian.71.b"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = { is_neighbor_of = FROM }
+			}
+			modifier = {
+				factor = 2
+				total_development = FROM
+			}
+			modifier = {
+				factor = 10
+				is_rival = FROM
+			}
+		}
+		add_prestige = 2
+	}
+}
+
+########################################################################################
+# Removes Maharajadhiraja
+########################################################################################
+
+country_event = {
+	id = indian.73
+	title = "indian.71.t"
+	desc = "indian.71.d"
+	picture = harvest
+	hidden = yes
+
+	trigger = {
+		has_country_flag = maharajadhiraja_country_flag
+		OR = {
+			has_indian_government = no
+			AND = {
+				NOT = { total_development = 700 }
+				NOT = { num_of_subjects = 1 }
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+	option = {
+		name = "indian.71.a"
+		ai_chance = { factor = 50 }
+		clr_country_flag = maharajadhiraja_country_flag
+		remove_country_modifier = supreme_paramount_ruler_modifier
+	}
+}
+
+########################################################################################
+# Ahimsa
+########################################################################################
+
+country_event = {
+	id = indian.75
+	title = "indian.75.t"
+	desc = "indian.75.d"
+	picture = harvest
+
+	trigger = {
+		NOT = {
+			OR = {
+				has_country_modifier = amhisa_orthodox_modifier
+				has_country_modifier = amhisa_modifier
+			}
+		}
+		OR = {
+			is_orthodox_trigger = yes
+			is_heterodox_trigger = yes
+		}
+		NOT = { has_ruler_modifier = disregarding_ahimsa_modifier }
+		dominant_religion = ROOT
+		is_in_war = { attackers = THIS }
+		NOT = {
+			OR = {
+				is_in_war = { defenders = THIS }
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_moral_sanction
+				}
+				is_in_war = {
+					attackers = THIS
+					casus_belli = cb_restore_order
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "indian.75.a"
+		if = {
+			limit = { is_heterodox_trigger = yes }
+			add_country_modifier = {
+				name = amhisa_orthodox_modifier
+				duration = -1
+			}
+		}
+		else = {
+			add_country_modifier = {
+				name = amhisa_modifier
+				duration = -1
+			}
+		}
+	}
+}
+
+#Clears modifiers after war
+country_event = {
+	id = indian.7501
+	title = "indian.75.t"
+	desc = "indian.75.d"
+	picture = harvest
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		OR = {
+			has_country_modifier = amhisa_orthodox_modifier
+			has_country_modifier = amhisa_modifier
+		}
+		OR = {
+			is_at_war = no
+			is_in_war = { defenders = THIS }
+		}
+	}
+
+	option = {
+		name = "indian.75.a"
+		remove_country_modifier = amhisa_orthodox_modifier
+		remove_country_modifier = amhisa_modifier
+	}
+}
+
+########################################################################################
+# Choose a new scholar
+########################################################################################
+
+#
+country_event  = {
+	id = indian.4406
+	title = "indian.4406.t"
+	desc = "indian.4406.d"
+	picture = religious
+	is_triggered_only = yes
+
+	trigger = {
+		ai = no
+	}
+
+	option = {
+		name = "indian.4406.a"
+	}
+	option = {
+		name = "indian.4406.b"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = shakala_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = shakala_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.c"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = bashkala_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = bashkala_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.dd"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = asvalayana_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = asvalayana_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.e"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = madhyandina_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = madhyandina_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.f"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kanva_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = kanva_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.g"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = taittiriya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = taittiriya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.h"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = maitrayani_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = maitrayani_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.i"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = caraka_katha_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = caraka_katha_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.j"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kapishthala_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = kapishthala_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.k"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kauthuma_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = kauthuma_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.l"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ranayaniya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = ranayaniya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.m"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = jaiminiya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = jaiminiya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.n"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = shaunaka_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = shaunaka_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.o"
+		if = {
+			limit = {
+				is_orthodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = paippalada_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = paippalada_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.p"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = nyaya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = nyaya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.q"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vaishesika_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = vaishesika_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.r"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = samkhya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = samkhya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.s"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = yoga_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = yoga_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.tt"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = mimamsa_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = mimamsa_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.u"
+		if = {
+			limit = {
+				religion = hinduism
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vedanta_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = vedanta_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.v"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = amoralism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = amoralism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.w"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = determinism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = determinism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.x"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = fatalism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = fatalism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.y"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = materialism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = materialism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.z"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = atomism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = atomism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.aa"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = restraint_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = restraint_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ab"
+		if = {
+			limit = {
+				is_heterodox_trigger = yes
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = agnosticism_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = agnosticism_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ac"
+		if = {
+			limit = {
+				religion = buddhism
+				has_global_flag = second_buddhist_council
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = mahasamghika_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = mahasamghika_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ad"
+		if = {
+			limit = {
+				religion = buddhism
+				has_global_flag = second_buddhist_council
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sthavira_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = sthavira_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ae"
+		if = {
+			limit = {
+				religion = buddhism
+				has_global_flag = second_buddhist_council
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sammatiyah_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = sammatiyah_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.af"
+		if = {
+			limit = {
+				religion = buddhism
+				has_global_flag = second_buddhist_council
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sarvastivada_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = sarvastivada_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ag"
+		if = {
+			limit = {
+				religion = buddhism
+				OR = {
+					started_in = 507.1.1
+					has_global_flag = third_buddhist_council_flag
+				}
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = vibhajyavada_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = vibhajyavada_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ah"
+		if = {
+			limit = {
+				religion = buddhism
+				OR = {
+					started_in = 507.1.1
+					has_global_flag = third_buddhist_council_flag
+				}
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = pudgalavada_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = pudgalavada_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ai"
+		if = {
+			limit = {
+				religion = buddhism
+				OR = {
+					started_in = 507.1.1
+					has_global_flag = third_buddhist_council_flag
+				}
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ekavyavaharika_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = ekavyavaharika_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.aj"
+		if = {
+			limit = {
+				religion = buddhism
+				OR = {
+					started_in = 507.1.1
+					has_global_flag = third_buddhist_council_flag
+				}
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = lokottaravada_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = lokottaravada_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ak"
+		if = {
+			limit = {
+				religion = buddhism
+				OR = {
+					started_in = 507.1.1
+					has_global_flag = third_buddhist_council_flag
+				}
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = kukkutika_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = kukkutika_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.al"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = tala_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = tala_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.am"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = talapralamba_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = talapralamba_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.an"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = udvidha_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = udvidha_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ao"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = samvidha_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = samvidha_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ap"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = avavidha_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = avavidha_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.aq"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = udaya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = udaya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ar"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = namodaya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = namodaya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.as"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = narmodaya_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = narmodaya_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.at"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = anupalaka_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = anupalaka_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.au"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = sankhapalaka_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = sankhapalaka_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.av"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = ayambula_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = ayambula_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.aw"
+		if = {
+			limit = {
+				religion = ajivika
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = katara_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = katara_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ax"
+		if = {
+			limit = {
+				religion = jain
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = svetambara_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = svetambara_scholar_modifier duration = -1 }
+		}
+	}
+	option = {
+		name = "indian.4406.ay"
+		if = {
+			limit = {
+				religion = jain
+				NOT = {
+					religious_school = {
+						group = brahmin_group
+						school = digambara_school
+					}
+				}
+			}
+			adm_power_cost = 250
+			clear_religious_scholar_modifiers_effect = yes
+			add_country_modifier = { name = digambara_scholar_modifier duration = -1 }
+		}
+	}
+}

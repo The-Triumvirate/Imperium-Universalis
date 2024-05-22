@@ -1,0 +1,1091 @@
+
+namespace = lucania
+
+########################################################################################
+# Rise of the Lucanians
+########################################################################################
+country_event = {
+	id = lucania.1
+	title = "lucania.1.t"
+	desc = "lucania.1.d"
+	picture = germanics_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = LCA
+		OR = {
+			is_year = 334
+			ROM = {
+				exists = yes
+				OR = {
+					total_development = 50
+					socii_subject = 8
+				}
+			}
+			ETR = {
+				exists = yes
+				total_development = 180
+			}
+			ISM = {
+				exists = yes
+				total_development = 65
+			}
+			CAR = {
+				exists = yes
+				total_development = 100
+				OR = {
+					any_owned_province = { region = italian_region }
+					any_owned_province = { region = gallia_cisalpina }
+				}
+			}
+		}
+		NOT = { started_in = 354.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	immediate = {
+		hidden_effect = { set_global_flag = rise_lucanians_flag }
+	}
+
+	option = {
+		name = "lucania.1.a"
+		ai_chance = { factor = 99 }
+		add_stability = 2
+		change_mil = 3
+		add_country_modifier = {
+			name = lucanian_rise_modifier
+			duration = 9125
+		}
+		add_manpower = 8
+		add_prestige = 20
+		add_treasury = 300
+		add_mil_power = 100
+		every_owned_province = {
+			limit = { culture = lucani }
+			add_base_manpower = 1
+		}
+		lucania_area = {
+			limit = {
+				NOT = { owned_by = LCA }
+				NOT =  { is_core = LCA }
+			}
+			add_core = LCA
+		}
+		salento_area = {
+			limit = {
+				NOT = { owned_by = LCA }
+				NOT =  { is_core = LCA }
+			}
+			add_claim = LCA
+		}
+		calabria_area = {
+			limit = {
+				NOT = { owned_by = LCA }
+				NOT =  { is_core = LCA }
+			}
+			add_claim = LCA
+		}
+		bruttium_area = {
+			limit = {
+				NOT = { owned_by = LCA }
+				NOT =  { is_core = LCA }
+			}
+			add_claim = LCA
+		}
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					OR = {
+						culture_group = hellenic_group
+						primary_culture = oenotrian
+					}
+					any_owned_province = {
+						OR = {
+							area = lucania_area
+							area = calabria_area
+							area = salento_area
+							area = bruttium_area
+						}
+					}
+				}
+				country_event = {
+					id = lucania.2
+					days = 30
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Lucanian raids
+########################################################################################
+country_event = {
+	id = lucania.2
+	title = "lucania.2.t"
+	desc = "lucania.2.d"
+	picture = raid_on_romans_2
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = rise_lucanians_flag
+		OR = {
+			culture_group = hellenic_group
+			primary_culture = oenotrian
+		}
+		exists = LCA
+		any_owned_province = {
+			OR = {
+				area = lucania_area
+				area = calabria_area
+				area = salento_area
+				area = bruttium_area
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.2.a"
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 2
+				personality = ai_balanced
+			}
+		}
+		add_stability = -1
+		add_years_of_income = -0.5
+		add_war_exhaustion = 5
+		every_owned_province = {
+			limit = {
+				base_production = 1
+				OR = {
+					area = lucania_area
+					area = calabria_area
+					area = salento_area
+					area = bruttium_area
+				}
+			}
+			add_devastation = 25
+			add_base_production = -1
+			add_permanent_province_modifier = {
+				name = lucanian_raids_modifier
+				duration = 9125
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.2.b"
+		trigger = {
+			culture_group = hellenic_group
+			any_known_country = {
+				culture_group = hellenic_group
+				capital_scope = {
+					OR = {
+						region = greek_region
+						region = macedonia_region
+					}
+				}
+				total_development = 30
+			}
+		}
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 2
+				tag = TAR
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 100 }
+			}
+		}
+		add_stability = -2
+		add_years_of_income = -0.5
+		add_war_exhaustion = 5
+		add_prestige = -15
+		add_dip_power = -100
+		every_owned_province = {
+			limit = {
+				base_production = 1
+				OR = {
+					area = lucania_area
+					area = calabria_area
+					area = salento_area
+					area = bruttium_area
+				}
+			}
+			add_devastation = 25
+			add_base_production = -1
+			add_permanent_province_modifier = {
+				name = lucanian_raids_modifier
+				duration = 9125
+			}
+		}
+		random_country = {
+			limit = {
+				culture_group = hellenic_group
+				capital_scope = {
+					OR = {
+						region = greek_region
+						region = macedonia_region
+					}
+				}
+				total_development = 30
+				NOT = { is_rival = ROOT }
+				NOT = { war_with = ROOT }
+				NOT = { alliance_with = ROOT }
+			}
+			country_event = {
+				id = lucania.3
+				days = 20
+			}
+		}
+	}
+}
+
+########################################################################################
+# Embassy to the mainland
+########################################################################################
+country_event = {
+	id = lucania.3
+	title = "lucania.3.t"
+	desc = "lucania.3.d"
+	picture = oracle_meeting
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		culture_group = hellenic_group
+		capital_scope = {
+			OR = {
+				region = greek_region
+				region = macedonia_region
+			}
+		}
+		total_development = 30
+		exists = LCA
+	}
+
+	option = {
+		name = "lucania.3.a"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				NOT = { num_of_free_diplomatic_relations = 1 }
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 0
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					has_any_disaster = yes
+					war_exhaustion = 10
+				}
+			}
+			modifier = {
+				factor = 0
+				NOT = { stability = 0 }
+			}
+			modifier = {
+				factor = 10
+				historical_friend_with = FROM
+			}
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 3
+				army_strength = {
+					who = LCA
+					value = 1
+				}
+			}
+			modifier = {
+				factor = 3
+				is_great_power = yes
+			}
+		}
+		FROM = {
+			country_event = {
+				id = lucania.4
+				days = 20
+			}
+		}
+		reverse_add_opinion = {
+			who = FROM
+			modifier = lucania_military_help_opinion
+		}
+	}
+
+	option = {
+		name = "lucania.3.b"
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 0
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_in_large_debt = yes
+					is_bankrupt = yes
+					has_any_disaster = yes
+				}
+			}
+			modifier = {
+				factor = 0
+				NOT = { stability = 0 }
+			}
+			modifier = {
+				factor = 10
+				historical_friend_with = FROM
+			}
+			modifier = {
+				factor = 2
+				has_opinion = {
+					who = FROM
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 3
+				years_of_income = 1
+			}
+		}
+		FROM = {
+			country_event = {
+				id = lucania.401
+				days = 20
+			}
+		}
+		reverse_add_opinion = {
+			who = FROM
+			modifier = lucania_monetary_help_opinion
+		}
+	}
+
+	option = {
+		name = "lucania.3.c"
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 10
+				OR = {
+					is_in_deficit = yes
+					is_in_large_debt = yes
+					is_bankrupt = yes
+					has_any_disaster = yes
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = { stability = 0 }
+			}
+			modifier = {
+				factor = 2
+				NOT = {
+					has_opinion = {
+						who = FROM
+						value = 25
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					personality = ai_capitalist
+					personality = ai_balanced
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = { years_of_income = 0.25 }
+			}
+			modifier = {
+				factor = 2
+				war_exhaustion = 10
+			}
+		}
+		FROM = {
+			country_event = {
+				id = lucania.402
+				days = 20
+			}
+		}
+		reverse_add_opinion = {
+			who = FROM
+			modifier = lucania_denied_help_opinion
+		}
+	}
+}
+
+########################################################################################
+# Answer for help
+########################################################################################
+#Military support
+country_event = {
+	id = lucania.4
+	title = "lucania.4.t"
+	desc = "lucania.4.d"
+	picture = military_parade
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		culture_group = hellenic_group
+		exists = LCA
+		capital_scope = {
+			OR = {
+				area = lucania_area
+				area = calabria_area
+				area = salento_area
+				area = bruttium_area
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.4.a"
+		ai_chance = { factor = 60 }
+		create_alliance = FROM
+		add_historical_friend = FROM
+		FROM = { add_historical_friend = FROM }
+		add_stability = 1
+		add_war_exhaustion = -10
+		add_manpower = 5
+		add_casus_belli = {
+			type = cb_humiliate
+			target = LCA
+		}
+	}
+}
+
+#Monetary support
+country_event = {
+	id = lucania.401
+	title = "lucania.401.t"
+	desc = "lucania.401.d"
+	picture = ruler
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		culture_group = hellenic_group
+		exists = LCA
+		capital_scope = {
+			OR = {
+				area = lucania_area
+				area = calabria_area
+				area = salento_area
+				area = bruttium_area
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.401.a"
+		ai_chance = { factor = 60 }
+		add_stability = 1
+		add_years_of_income = 0.3
+		every_owned_province = {
+			limit = { has_province_modifier = lucanian_raids_modifier }
+			add_devastation = -10
+			hidden_effect = {
+				remove_province_modifier = lucanian_raids_modifier
+				add_permanent_province_modifier = {
+					name = lucanian_raids_modifier
+					duration = 5475
+				}
+			}
+		}
+	}
+}
+
+#Failure
+country_event = {
+	id = lucania.402
+	title = "lucania.402.t"
+	desc = "lucania.402.d"
+	picture = panic
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		culture_group = hellenic_group
+		exists = LCA
+		capital_scope = {
+			OR = {
+				area = lucania_area
+				area = calabria_area
+				area = salento_area
+				area = bruttium_area
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.402.a"
+		ai_chance = { factor = 60 }
+		add_prestige = -10
+		add_dip_power = -70
+		if = {
+			limit = { historical_friend_with = FROM }
+			remove_historical_friend = FROM
+		}
+	}
+}
+
+########################################################################################
+# Lucanian conquest of Poseidonia
+########################################################################################
+province_event = {
+	id = lucania.5
+	title = "lucania.5.t"
+	desc = "lucania.5.d"
+	picture = hellenistic_temple
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	goto = 29
+
+	trigger = {
+		province_id = 29
+		owned_by = LCA
+		has_global_flag = rise_lucanians_flag
+		NOT = { started_in = 354.1.1 }
+	}
+
+	option = {
+		name = "lucania.5.a"
+		ai_chance = { factor = 99 }
+		add_core = LCA
+		change_culture = lucani
+		change_religion = ROOT
+		remove_core = POS
+		change_province_name = "Paistos"
+		rename_capital = "Paistos"
+		LCA = { add_prestige = 10 }
+	}
+}
+
+########################################################################################
+# Battle of Laus
+########################################################################################
+country_event = {
+	id = lucania.6
+	title = "lucania.6.t"
+	desc = "lucania.6.d"
+	picture = raid_on_romans
+	fire_only_once = yes
+
+	trigger = {
+		tag = LCA
+		has_global_flag = rise_lucanians_flag
+		owns = 19
+		owns = 5653
+		OR = {
+			is_year = 364
+			total_development = 40
+		}
+		NOT = { started_in = 364.1.1 }
+		NOT = { exists = SYB }
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = battle_laus_flag
+			19 = {
+				add_core = SYB
+				cede_province = SYB
+				change_culture = italiote
+				change_religion = greek_religion
+			}
+			5653 = {
+				add_core = SYB
+				cede_province = SYB
+				change_culture = italiote
+				change_religion = greek_religion
+			}
+			SYB = {
+				set_capital = 19
+				capital_scope = { build_to_forcelimit = { infantry = 1 } }
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.6.a"
+		ai_chance = { factor = 60 }
+		declare_war_with_cb = {
+			casus_belli = cb_mission_invasion
+			who = SYB
+		}
+	}
+}
+
+########################################################################################
+# Victory in Laus
+########################################################################################
+country_event = {
+	id = lucania.7
+	title = "lucania.7.t"
+	desc = "lucania.7.d"
+	picture = military_parade
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		tag = LCA
+		has_global_flag = rise_lucanians_flag
+		has_country_flag = battle_laus_flag
+		FROM = { tag = SYB }
+	}
+
+	option = {
+		name = "lucania.7.a"
+		ai_chance = { factor = 60 }
+		hidden_effect = { clr_country_flag = battle_laus_flag }
+		19 = {
+			add_core = LCA
+			remove_core = SYB
+			change_culture = lucani
+			change_religion = roman_religion
+		}
+		5653 = {
+			add_core = LCA
+			remove_core = SYB
+			change_culture = lucani
+			change_religion = roman_religion
+		}
+	}
+}
+
+########################################################################################
+# Rebels in Lucania
+########################################################################################
+country_event = {
+	id = lucania.8
+	title = "lucania.8.t"
+	desc = "lucania.8.d"
+	picture = civilwar
+	fire_only_once = yes
+
+	trigger = {
+		tag = LCA
+		has_global_flag = rise_lucanians_flag
+		OR = {
+			any_owned_province = { area = bruttium_area }
+			owns = 5653
+		}
+		OR = {
+			is_year = 394
+			total_development = 60
+		}
+		NOT = { started_in = 394.1.1 }
+		NOT = { exists = BRV }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+		modifier = {
+			factor = 0.5
+			owns = 5653
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			clr_global_flag = rise_lucanians_flag
+			if = {
+				limit = { has_country_modifier = lucanian_rise_modifier }
+				remove_country_modifier = lucanian_rise_modifier
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.8.a"
+		ai_chance = { factor = 90 }
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = calabria_area
+					area = bruttium_area
+				}
+			}
+			remove_core = LCA
+			add_core = BRV
+			cede_province = BRV
+		}
+		if = {
+			limit = { owns = 5653 }
+			5653 = {
+				remove_core = LCA
+				add_core = BRV
+				cede_province = BRV
+			}
+		}
+		add_stability = 1
+		add_truce_with = BRV
+		BRV = {
+			country_event = {
+				id = lucania.9
+				days = 2
+			}
+		}
+	}
+
+	option = {
+		name = "lucania.8.b"
+		ai_chance = { factor = 10 }
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = calabria_area
+					area = bruttium_area
+				}
+			}
+			remove_core = LCA
+			add_core = BRV
+			add_named_unrest = {
+				name = bruttian_rebel_bands
+				value = 10
+			}
+			add_nationalism = 20
+			spawn_rebels = {
+				size = 3
+				type = nationalist_rebels
+				friend = BRV
+			}
+		}
+		if = {
+			limit = { owns = 5653 }
+			5653 = {
+				remove_core = LCA
+				add_core = BRV
+				add_named_unrest = {
+					name = bruttian_rebel_bands
+					value = 10
+				}
+				add_nationalism = 20
+				spawn_rebels = {
+					size = 3
+					type = nationalist_rebels
+					friend = BRV
+				}
+			}
+		}
+		add_stability = -1
+	}
+
+	option = {
+		name = "lucania.8.c"
+		ai_chance = { factor = 1 }
+		trigger = { ai = no }
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = calabria_area
+					area = bruttium_area
+				}
+			}
+			remove_core = LCA
+			add_core = BRV
+			cede_province = BRV
+		}
+		if = {
+			limit = { owns = 5653 }
+			5653 = {
+				remove_core = LCA
+				add_core = BRV
+				cede_province = BRV
+			}
+		}
+		add_stability = 1
+		add_truce_with = BRV
+		switch_tag = BRV
+		BRV = {
+			country_event = {
+				id = lucania.9
+				days = 2
+			}
+		}
+	}
+}
+
+########################################################################################
+# Emergence of the Bruttians
+########################################################################################
+country_event = {
+	id = lucania.9
+	title = "lucania.9.t"
+	desc = "lucania.9.d"
+	picture = maniple
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = BRV
+		is_year = 394
+		NOT = { started_in = 394.1.1 }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "lucania.9.a"
+		ai_chance = { factor = 60 }
+		add_country_modifier = {
+			name = bruttian_rise_modifier
+			duration = 10950
+		}
+		hidden_effect = {
+			add_stability = 2
+			add_mil_power = 200
+			change_mil = 3
+			add_manpower = 10
+			add_treasury = 300
+			capital_scope = {
+				build_to_forcelimit = {
+					infantry = 0.5
+					cavalry = 0.25
+					artillery = 0.25
+				}
+			}
+			every_owned_province = {
+				limit = {
+					OR = {
+						area = calabria_area
+						area = bruttium_area
+					}
+				}
+				add_core = BRV
+				change_culture = lucani
+				change_religion = roman_religion
+				add_base_manpower = 1
+			}
+			if = {
+				limit = { owns = 5653 }
+				5653 = {
+					add_core = BRV
+					change_culture = lucani
+					change_religion = roman_religion
+					add_base_manpower = 1
+				}
+			}
+			every_known_country = {
+				limit = {
+					OR = {
+						culture_group = hellenic_group
+						primary_culture = oenotrian
+					}
+					any_owned_province = {
+						OR = {
+							area = lucania_area
+							area = bruttium_area
+							area = calabria_area
+						}
+					}
+				}
+				country_event = {
+					id = lucania.10
+					days = 30
+				}
+			}
+			add_historical_rival = OEN
+			OEN = { add_historical_rival = BRV }
+		}
+		calabria_area = {
+			limit = {
+				NOT = { owned_by = BRV }
+				NOT = { is_core = BRV }
+			}
+			add_permanent_claim = BRV
+		}
+		bruttium_area = {
+			limit = {
+				NOT = { owned_by = BRV }
+				NOT = { is_core = BRV }
+			}
+			add_permanent_claim = BRV
+		}
+	}
+}
+
+########################################################################################
+# Bruttian raids
+########################################################################################
+country_event = {
+	id = lucania.10
+	title = "lucania.10.t"
+	desc = "lucania.10.d"
+	picture = tribemen
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			culture_group = hellenic_group
+			primary_culture = oenotrian
+		}
+		any_owned_province = {
+			OR = {
+				area = lucania_area
+				area = bruttium_area
+				area = calabria_area
+			}
+		}
+		exists = BRV
+	}
+
+	option = {
+		name = "lucania.10.a"
+		ai_chance = { factor = 60 }
+		add_stability = -1
+		add_war_exhaustion = 6
+		add_years_of_income = -0.4
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = lucania_area
+					area = bruttium_area
+					area = calabria_area
+				}
+			}
+			add_devastation = 20
+			add_permanent_province_modifier = {
+				name = bruttian_raids_modifier
+				duration = 5475
+			}
+		}
+	}
+}
+
+########################################################################################
+# Bruttian conquest of Croton
+########################################################################################
+province_event = {
+	id = lucania.11
+	title = "lucania.11.t"
+	desc = "lucania.11.d"
+	picture = siege_picture
+	fire_only_once = yes
+	major = yes
+	is_triggered_only = yes
+
+	goto = 17
+
+	trigger = {
+		province_id = 17
+		owned_by = BRV
+		NOT = { started_in = 398.1.1 }
+	}
+
+	option = {
+		name = "lucania.11.a"
+		ai_chance = { factor = 99 }
+		add_core = BRV
+		change_culture = lucani
+		change_religion = roman_religion
+		remove_core = CRO
+		BRV = { add_prestige = 15 }
+		hidden_effect = {
+			every_country = {
+				limit = {
+					culture_group = hellenic_group
+					capital_scope = {
+						OR = {
+							area = calabria_area
+							area = lucania_area
+							area = bruttium_area
+							area = salento_area
+						}
+					}
+				}
+				add_prestige = -10
+			}
+		}
+	}
+}
+
+########################################################################################
+# Bruttians assimilate Oenotrians
+########################################################################################
+province_event = {
+	id = lucania.12
+	title = "lucania.12.t"
+	desc = "lucania.12.d"
+	picture = shrine
+
+	goto = ROOT
+
+	trigger = {
+		culture = oenotrian
+		owned_by = BRV
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.25
+			NOT = { exists = OEN }
+		}
+	}
+
+	option = {
+		name = "lucania.12.a"
+		ai_chance = { factor = 99 }
+		add_core = BRV
+		remove_core = OEN
+		change_culture = lucani
+		change_religion = roman_religion
+		add_base_manpower = 1
+	}
+}

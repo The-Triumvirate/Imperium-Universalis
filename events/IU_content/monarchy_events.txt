@@ -1,0 +1,430 @@
+namespace = monarchy
+
+########################################################################################
+# heir killed
+########################################################################################
+country_event = {
+	id = monarchy.3
+	title = "monarchy.3.t"
+	desc = "monarchy.3.d"
+	picture = assassination
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_heir = yes
+		NOT = { stability = 0 }
+		NOT = { faction_in_power = fac_democrats }
+		NOT = { faction_in_power = fac_oligarchs }
+		NOT = { heir_has_personality = scenario_immortal_personality }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+		modifier = {
+			factor = 0.5
+			stability = 0
+		}
+
+	}
+	option = {
+		name = "monarchy.3.a"
+		add_stability = -1
+		kill_heir = {}
+	}
+}
+########################################################################################
+# new recruits
+########################################################################################
+country_event = {
+	id = monarchy.4
+	title = "monarchy.4.t"
+	desc = "monarchy.4.d"
+	picture = rivercrossing
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		MIL = 3
+	}
+
+	mean_time_to_happen = {
+		days = 1
+
+	}
+	option = {
+		name = "monarchy.4.a"
+		add_yearly_manpower = 0.5
+	}
+}
+########################################################################################
+# nobles support crown
+########################################################################################
+country_event = {
+	id = monarchy.5
+	title = "monarchy.5.t"
+	desc = "monarchy.5.d"
+	picture = guard
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_regency = no
+	}
+
+	mean_time_to_happen = {
+		days = 1
+
+	}
+	option = {
+		name = "monarchy.5.a"
+		add_stability = 1
+		add_faction_influence = { faction = fac_monarch influence = 5 }
+	}
+}
+########################################################################################
+# nobles refuse to support the crown
+########################################################################################
+country_event = {
+	id = monarchy.6
+	title = "monarchy.6.t"
+	desc = "monarchy.6.d"
+	picture = family
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_regency = no
+	}
+
+	mean_time_to_happen = {
+		days = 1
+
+	}
+	option = {
+		name = "monarchy.6.a"
+		add_stability = -1
+		add_faction_influence = { faction = fac_monarch influence = -5 }
+	}
+}
+########################################################################################
+# noble wife
+########################################################################################
+country_event = {
+	id = monarchy.7
+	title = "monarchy.7.t"
+	desc = "monarchy.7.d"
+	picture = family
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_regency = no
+		is_lesser_in_union = no
+		has_consort = no
+	}
+
+	mean_time_to_happen = {
+		days = 1
+
+	}
+	option = {
+		name = "monarchy.7.a"
+		add_faction_influence = { faction = fac_nobles influence = 5 }
+		define_consort = {
+			female = yes
+		}
+	}
+	option = {
+		name = "monarchy.7.b"
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# good education
+########################################################################################
+country_event = {
+	id = monarchy.8
+	title = "monarchy.8.t"
+	desc = "monarchy.8.d"
+	picture = ruler
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_heir = yes
+		NOT = { has_heir_flag = heir_educated }
+		heir_age = 14
+		NOT = { heir_age = 18 }
+		OR = {
+			heir_adm = 5
+			heir_dip = 5
+			heir_mil = 5
+		}
+		NOT = {
+			AND = {
+				heir_adm = 6
+				heir_dip = 6
+				heir_mil = 6
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	immediate = {
+		set_heir_flag = heir_educated
+	}
+
+	option = {
+		name = "monarchy.8.a"
+		if = {
+			limit = { NOT = { heir_adm = 6 } }
+			change_heir_adm = 1
+		}
+		if = {
+			limit = { NOT = { heir_dip = 6 } }
+			change_heir_dip = 1
+		}
+		if = {
+			limit = { NOT = { heir_mil = 6 } }
+			change_heir_mil = 1
+		}
+	}
+}
+########################################################################################
+# education year 6-12
+########################################################################################
+country_event = {
+	id = monarchy.9
+	title = "monarchy.9.t"
+	desc = "monarchy.9.d"
+	picture = family
+	#is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_heir = yes
+		NOT = { has_heir_flag = heir_educated_stage_1 }
+		heir_age = 6
+		NOT = { heir_age = 12 }
+		NOT = {
+			AND = {
+				heir_adm = 6
+				heir_dip = 6
+				heir_mil = 6
+			}
+		}
+	}
+
+
+	mean_time_to_happen = {
+		months = 60
+		modifier = {
+			factor = 0.25
+			heir_age = 10
+		}
+	}
+
+	immediate = {
+		set_heir_flag = heir_educated_stage_1
+	}
+
+	option = {
+		name = "monarchy.9.a"
+		set_heir_flag = heir_educated_in_administration
+		custom_tooltip = monarchy.9.att
+		change_heir_adm = 1
+	}
+	option = {
+		name = "monarchy.9.b"
+		set_heir_flag = heir_educated_in_diplomacy
+		custom_tooltip = monarchy.9.btt
+		change_heir_dip = 1
+	}
+	option = {
+		name = "monarchy.9.c"
+		set_heir_flag = heir_educated_in_military
+		custom_tooltip = monarchy.9.ctt
+		change_heir_mil = 1
+	}
+}
+
+########################################################################################
+# tensions between court and heir
+########################################################################################
+country_event = {
+	id = monarchy.10
+	title = "monarchy.10.t"
+	desc = "monarchy.10.d"
+	picture = mad_emperor
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		has_heir = yes
+		heir_age = 16
+		NOT = { has_reform = spartan_monarchy_reform }
+		NOT = { heir_has_personality = scenario_immortal_personality }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "monarchy.10.a"
+		add_stability = -1
+		add_faction_influence = { faction = fac_monarch influence = 5 }
+	}
+	option = {
+		name = "monarchy.10.b"
+		random_list = {
+			50 = {
+				kill_heir = {}
+			}
+			50 = {
+				random_owned_province = {
+					spawn_rebels = {
+						type = pretender_rebels
+						size = 3
+						use_heir_as_leader = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+#Coronation event
+country_event = {
+	id = monarchy.12
+	title = "monarchy.12.t"
+	desc = "monarchy.12.d"
+	picture = temple
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_ruler_flag = ruler_coronation
+			remove_country_modifier = ruler_not_crowned
+		}
+	}
+
+	option = {
+		name = "monarchy.12.a"
+		if = {
+			limit = { ai = yes }
+			add_treasury = -30
+		}
+		else = { add_treasury = -50 }
+		add_ruler_modifier = { name = coronation_meh }
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 3
+				legitimacy = 90
+			}
+			modifier = {
+				factor = 2
+				treasury = 60
+			}
+			modifier = {
+				factor = 2
+				treasury = 100
+			}
+			modifier = {
+				factor = 0
+				treasury = 300
+			}
+		}
+	}
+
+	option = {
+		name = "monarchy.12.b"
+		if = {
+			limit = { ai = yes }
+			add_treasury = -100
+		}
+		else = { add_treasury = -150 }
+		add_ruler_modifier = { name = coronation_decent }
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 3
+				NOT = { legitimacy = 80 }
+				legitimacy = 50
+			}
+			modifier = {
+				factor = 2
+				treasury = 300
+			}
+			modifier = {
+				factor = 3
+				treasury = 400
+			}
+			modifier = {
+				factor = 0
+				treasury = 600
+			}
+		}
+	}
+
+	option = {
+		name = "monarchy.12.c"
+		if = {
+			limit = { ai = yes }
+			add_treasury = -300
+		}
+		else = { add_treasury = -400 }
+		add_ruler_modifier = { name = coronation_lavish }
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 3
+				NOT = { legitimacy = 50 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 600 }
+			}
+			modifier = {
+				factor = 3
+				treasury = 2000
+			}
+			modifier = {
+				factor = 4
+				treasury = 3000
+			}
+		}
+	}
+}
+
+#Not crowned modifier
+country_event = {
+	id = monarchy.13
+	title = "monarchy.13.t"
+	desc = "monarchy.13.d"
+	picture = family
+	is_triggered_only = yes
+
+	trigger = {
+		government = monarchy
+		NOT = { has_reform = satrapy_reform }
+		NOT = { has_reform = satrap_diadochi_reform }
+		NOT = { has_reform = roman_principate_reform }
+		NOT = { has_ruler_flag = ruler_coronation }
+	}
+
+	option = {
+		name = "monarchy.13.a"
+		ai_chance = { factor = 100 }
+		add_ruler_modifier = { name = ruler_not_crowned }
+	}
+}

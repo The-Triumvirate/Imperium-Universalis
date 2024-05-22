@@ -1,0 +1,2647 @@
+namespace = popgrowth_stats
+
+####
+# POPGROWTH, STATISTICS EVENTS
+####
+# 1: Statistics menu: choose the following (through country decision)
+# 	2: Pop variables into your country, to save and analyze separately in excel
+#	3: How has your country evolved: population (u/c/t + var) by region, number of provinces (and change) also present
+#		301: How has your country evolved. Including your vassals (western mediterranean, for Rome games)
+#		302: How has your country evolved. Including your vassals (east med / persia, for Persia/Babylon games)
+#		303: How has your country evolved. Including your vassals (far east, for China games)
+# 	4: Display pop analysis of the selected provinces, depending on total scope:
+#		Possible scopes: In prov, area, region, super-region, within 200, 500, 1000 distance, or owned (only, or with vassals), or all.
+#		401: Show detailed info on pop capacities.
+#		402: Main variations, together (as in the event 3, but for the selected area). This event chooses the scope, and is calculated in 403
+#		403: the effect of the above
+#	5: Icons in the map:
+#				In the map modifiers, everything will have a color, from a 16-color gradient
+#		500: Province size (1 to 10)
+#		501: Rural: abs + growth
+#		502: Urban: abs + growth
+#		503: Upper: abs + growth
+#		504: Potential: % left to grow (-20%, -10, 0, 10, 20, 30, up to 90%+)
+#		505: Effective information range (migration range)
+#		506: How many X things has there been, positive effects: grown + promotions + immigration
+#		507: How many X things has there been, negative effects: famine + demotions + emigration
+#		508: How many X things has there been, war-related effects: enslaved + killed
+#
+#	6: Province detailed evolution: more information related to a single province; accessible through province interaction. Province only
+#
+#	7: Popstats Dev Tools(tm), very powerful events that will affect all the world's population depending on current capacities.
+#
+
+
+
+country_event = {		# 1: Statistics menu, done through the country decision. It will display the main "menu", with several options:
+	id = popgrowth_stats.1
+	title = "popgrowth_stats.1.t"
+	desc = "popgrowth_stats.1.d"
+	picture = peasant_woman
+
+	is_triggered_only = yes
+
+	immediate = {
+
+	}
+
+
+	option = {
+		name = "popgrowth_stats.1.1"
+		country_event = { id = popgrowth_stats.2 } 		# fires event 2, variables to use at the save file
+	}
+	option = {
+		name = "popgrowth_stats.1.2"
+		country_event = { id = popgrowth_stats.3 } 		# fires event 3, to see total variables in owned provinces (three regions)
+	}
+	option = {
+		name = "popgrowth_stats.1.3"
+		country_event = { id = popgrowth_stats.4 } 		# fires event 4, to see analysis based on selected provinces
+	}
+	option = {
+		name = "popgrowth_stats.1.4"
+		country_event = { id = popgrowth_stats.5 } 		# fires event 5, to see province modifiers in the trade map
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+		country_event = { id = popgrowth_stats.5 } 		# Nothing, go back
+	}
+
+
+}
+
+country_event = {		# 2: Store variables into your country variables. Look at the save file to copy those into excel
+	id = popgrowth_stats.2
+	title = "popgrowth_stats.2.t"
+	desc = "popgrowth_stats.2.d"
+	picture = peasant_woman
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			popgrowth_cleanup_world = yes
+			export_to_variable = { which = PS_year_now value = trigger_value:is_year }
+			every_province = {
+				trigger_switch = {
+					on_trigger = superregion		# See scripted effects. Uses the dynamic identifiers ($$ things), really cool
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { popgrowth_stats_basic = { regid = 01 } }
+					celtica_superregion = { popgrowth_stats_basic = { regid = 02 } }
+					germania_superregion = { popgrowth_stats_basic = { regid = 03 } }
+					britannia_superregion = { popgrowth_stats_basic = { regid = 04 } }
+					italia_superregion = { popgrowth_stats_basic = { regid = 05 } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { popgrowth_stats_basic = { regid = 06 } }
+					haemusia_superregion = { popgrowth_stats_basic = { regid = 07 } }
+					asia_superregion = { popgrowth_stats_basic = { regid = 08 } }
+					mesopotamia_superregion = { popgrowth_stats_basic = { regid = 09 } }
+					syria_superregion = { popgrowth_stats_basic = { regid = 10 } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { popgrowth_stats_basic = { regid = 11 } }
+					scythia_superregion = { popgrowth_stats_basic = { regid = 12 } }
+					aethiopia_superregion = { popgrowth_stats_basic = { regid = 13 } }
+					eastern_africa_superregion = { popgrowth_stats_basic = { regid = 14 } }
+					western_africa_superregion = { popgrowth_stats_basic = { regid = 15 } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { popgrowth_stats_basic = { regid = 16 } }
+					armenia_superregion = { popgrowth_stats_basic = { regid = 17 } }
+					iran_superregion = { popgrowth_stats_basic = { regid = 18 } }
+					uttarapatha_superregion = { popgrowth_stats_basic = { regid = 19 } }
+					dakshinapatha_superregion = { popgrowth_stats_basic = { regid = 20 } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands
+					china_superregion = { popgrowth_stats_basic = { regid = 21 } }
+					turan_superregion = { popgrowth_stats_basic = { regid = 22 } }
+					tibet_superregion = { popgrowth_stats_basic = { regid = 23 } }
+					sakastan_superregion = { popgrowth_stats_basic = { regid = 24 } }
+					korea_superregion = { popgrowth_stats_basic = { regid = 25 } }
+					chryse_insula_superregion = { popgrowth_stats_basic = { regid = 26 } }
+					suvarnabhumi_superregion = { popgrowth_stats_basic = { regid = 27 } }
+
+				}
+
+			}
+		}
+	}
+	# One option for each super-region, added through 1 to X in variables, to show for each region in detail. TBD
+	option = {
+		name = "popgrowth_stats.2.a"	# Nothing, save the variables in your country view and export them later into excel
+
+	}
+
+}
+
+#3: How has your country evolved: population (u/c/t + var) by region, number of provinces (and change) also present
+
+country_event = {
+	id = popgrowth_stats.3
+	title = "popgrowth_stats.3.t"
+	desc = "popgrowth_stats.3.d"
+	picture = splendor_city
+
+	is_triggered_only = yes
+
+	immediate = {
+		if = { limit = { NOT = { check_variable = { PS_year_now = 1 } } } set_variable = { which = PS_year_now value = 142 } }
+	}
+
+	option = {
+		name = "popgrowth_stats.3.1"	# Around Rome and Mediterranean
+		trigger = {
+			any_owned_province = {
+				OR = {
+					superregion = hispania_superregion		superregion = celtica_superregion	superregion = germania_superregion
+					superregion = britannia_superregion		superregion = italia_superregion	superregion = macedonia_superregion
+					superregion = haemusia_superregion		superregion = asia_superregion		superregion = mesopotamia_superregion
+					superregion = syria_superregion			superregion = scythia_superregion	superregion = eastern_africa_superregion
+					superregion = western_africa_superregion
+				}
+			}
+		}
+		country_event = { id = popgrowth_stats.301 }
+	}
+	option = {
+		name = "popgrowth_stats.3.2"	# Around Mesopotamia / Persia
+		trigger = {
+			any_owned_province = {
+				OR = {
+					superregion = haemusia_superregion		superregion = asia_superregion				superregion = mesopotamia_superregion
+					superregion = syria_superregion			superregion = parthia_superregion			superregion = scythia_superregion
+					superregion = aethiopia_superregion		superregion = eastern_africa_superregion	superregion = arabia_superregion
+					superregion = armenia_superregion		superregion = iran_superregion				superregion = uttarapatha_superregion
+					superregion = sakastan_superregion		superregion = macedonia_superregion
+				}
+			}
+		}
+		country_event = { id = popgrowth_stats.302 }
+	}
+	option = {
+		name = "popgrowth_stats.3.3"	# Around India and Far East
+		trigger = {
+			any_owned_province = {
+				OR = {
+					superregion = mesopotamia_superregion	superregion = parthia_superregion		superregion = arabia_superregion
+					superregion = armenia_superregion		superregion = iran_superregion			superregion = uttarapatha_superregion
+					superregion = dakshinapatha_superregion	superregion = china_superregion			superregion = turan_superregion
+					superregion = tibet_superregion			superregion = sakastan_superregion		superregion = korea_superregion
+					superregion = chryse_insula_superregion	superregion = suvarnabhumi_superregion
+				}
+			}
+		}
+		country_event = { id = popgrowth_stats.303 }
+	}
+	option = {
+		name = "popgrowth_stats.1.99"	# Around India and Far East
+		ai_chance = { factor = 100 }
+
+		# nothing
+	}
+
+
+}
+
+country_event = {		# 301: only shows regions around Rome / mediterranean
+	id = popgrowth_stats.301
+	title = "popgrowth_stats.301.t"
+	desc = "popgrowth_stats.301.d"
+	picture = splendor_city
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			PS_move_old_variables = yes
+			export_to_variable = { which = PS_year_now value = trigger_value:is_year }
+			set_variable = { which = PS_year_var which = PS_year_now } subtract_variable = { which = PS_year_var which = PS_year_old }
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { popgrowth_stats_complex = { regid = 01 } }
+					celtica_superregion = { popgrowth_stats_complex = { regid = 02 } }
+					germania_superregion = { popgrowth_stats_complex = { regid = 03 } }
+					britannia_superregion = { popgrowth_stats_complex = { regid = 04 } }
+					italia_superregion = { popgrowth_stats_complex = { regid = 05 } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { popgrowth_stats_complex = { regid = 06 } }
+					haemusia_superregion = { popgrowth_stats_complex = { regid = 07 } }
+					asia_superregion = { popgrowth_stats_complex = { regid = 08 } }
+					mesopotamia_superregion = { popgrowth_stats_complex = { regid = 09 } }
+					syria_superregion = { popgrowth_stats_complex = { regid = 10 } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { popgrowth_stats_complex = { regid = 11 } }
+					scythia_superregion = { popgrowth_stats_complex = { regid = 12 } }
+					aethiopia_superregion = { popgrowth_stats_complex = { regid = 13 } }
+					eastern_africa_superregion = { popgrowth_stats_complex = { regid = 14 } }
+					western_africa_superregion = { popgrowth_stats_complex = { regid = 15 } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { popgrowth_stats_complex = { regid = 16 } }
+					armenia_superregion = { popgrowth_stats_complex = { regid = 17 } }
+					iran_superregion = { popgrowth_stats_complex = { regid = 18 } }
+					uttarapatha_superregion = { popgrowth_stats_complex = { regid = 19 } }
+					dakshinapatha_superregion = { popgrowth_stats_complex = { regid = 20 } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { popgrowth_stats_complex = { regid = 21 } }
+					turan_superregion = { popgrowth_stats_complex = { regid = 22 } }
+					tibet_superregion = { popgrowth_stats_complex = { regid = 23 } }
+					sakastan_superregion = { popgrowth_stats_complex = { regid = 24 } }
+					korea_superregion = { popgrowth_stats_complex = { regid = 25 } }
+					chryse_insula_superregion = { popgrowth_stats_complex = { regid = 26 } }
+					suvarnabhumi_superregion = { popgrowth_stats_complex = { regid = 27 } }
+
+				}
+
+
+
+			}
+			PS_find_variation_complex = yes
+		}
+	}
+	# One option for each super-region, added through 1 to X in variables, to show for each region in detail. TBD
+	option = {
+		name = "popgrowth_stats.301.a"	# Nothing, save the variables in your country view and export them later into excel
+
+	}
+
+}
+country_event = {		# 302: only shows regions around Mesopotamia/Persia
+	id = popgrowth_stats.302
+	title = "popgrowth_stats.302.t"
+	desc = "popgrowth_stats.302.d"
+	picture = splendor_city
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			PS_move_old_variables = yes
+			export_to_variable = { which = PS_year_now value = trigger_value:is_year }
+			set_variable = { which = PS_year_var which = PS_year_now } subtract_variable = { which = PS_year_var which = PS_year_old }
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { popgrowth_stats_complex = { regid = 01 } }
+					celtica_superregion = { popgrowth_stats_complex = { regid = 02 } }
+					germania_superregion = { popgrowth_stats_complex = { regid = 03 } }
+					britannia_superregion = { popgrowth_stats_complex = { regid = 04 } }
+					italia_superregion = { popgrowth_stats_complex = { regid = 05 } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { popgrowth_stats_complex = { regid = 06 } }
+					haemusia_superregion = { popgrowth_stats_complex = { regid = 07 } }
+					asia_superregion = { popgrowth_stats_complex = { regid = 08 } }
+					mesopotamia_superregion = { popgrowth_stats_complex = { regid = 09 } }
+					syria_superregion = { popgrowth_stats_complex = { regid = 10 } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { popgrowth_stats_complex = { regid = 11 } }
+					scythia_superregion = { popgrowth_stats_complex = { regid = 12 } }
+					aethiopia_superregion = { popgrowth_stats_complex = { regid = 13 } }
+					eastern_africa_superregion = { popgrowth_stats_complex = { regid = 14 } }
+					western_africa_superregion = { popgrowth_stats_complex = { regid = 15 } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { popgrowth_stats_complex = { regid = 16 } }
+					armenia_superregion = { popgrowth_stats_complex = { regid = 17 } }
+					iran_superregion = { popgrowth_stats_complex = { regid = 18 } }
+					uttarapatha_superregion = { popgrowth_stats_complex = { regid = 19 } }
+					dakshinapatha_superregion = { popgrowth_stats_complex = { regid = 20 } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { popgrowth_stats_complex = { regid = 21 } }
+					turan_superregion = { popgrowth_stats_complex = { regid = 22 } }
+					tibet_superregion = { popgrowth_stats_complex = { regid = 23 } }
+					sakastan_superregion = { popgrowth_stats_complex = { regid = 24 } }
+					korea_superregion = { popgrowth_stats_complex = { regid = 25 } }
+					chryse_insula_superregion = { popgrowth_stats_complex = { regid = 26 } }
+					suvarnabhumi_superregion = { popgrowth_stats_complex = { regid = 27 } }
+
+				}
+
+
+
+			}
+			PS_find_variation_complex = yes
+		}
+	}
+	# One option for each super-region, added through 1 to X in variables, to show for each region in detail. TBD
+	option = {
+		name = "popgrowth_stats.302.a"	# Nothing, save the variables in your country view and export them later into excel
+
+	}
+
+}
+country_event = {		# 303: only shows regions around the Far East or India, SEA, etc
+	id = popgrowth_stats.303
+	title = "popgrowth_stats.303.t"
+	desc = "popgrowth_stats.303.d"
+	picture = splendor_city
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			PS_move_old_variables = yes
+			export_to_variable = { which = PS_year_now value = trigger_value:is_year }
+			set_variable = { which = PS_year_var which = PS_year_now } subtract_variable = { which = PS_year_var which = PS_year_old }
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { popgrowth_stats_complex = { regid = 01 } }
+					celtica_superregion = { popgrowth_stats_complex = { regid = 02 } }
+					germania_superregion = { popgrowth_stats_complex = { regid = 03 } }
+					britannia_superregion = { popgrowth_stats_complex = { regid = 04 } }
+					italia_superregion = { popgrowth_stats_complex = { regid = 05 } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { popgrowth_stats_complex = { regid = 06 } }
+					haemusia_superregion = { popgrowth_stats_complex = { regid = 07 } }
+					asia_superregion = { popgrowth_stats_complex = { regid = 08 } }
+					mesopotamia_superregion = { popgrowth_stats_complex = { regid = 09 } }
+					syria_superregion = { popgrowth_stats_complex = { regid = 10 } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { popgrowth_stats_complex = { regid = 11 } }
+					scythia_superregion = { popgrowth_stats_complex = { regid = 12 } }
+					aethiopia_superregion = { popgrowth_stats_complex = { regid = 13 } }
+					eastern_africa_superregion = { popgrowth_stats_complex = { regid = 14 } }
+					western_africa_superregion = { popgrowth_stats_complex = { regid = 15 } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { popgrowth_stats_complex = { regid = 16 } }
+					armenia_superregion = { popgrowth_stats_complex = { regid = 17 } }
+					iran_superregion = { popgrowth_stats_complex = { regid = 18 } }
+					uttarapatha_superregion = { popgrowth_stats_complex = { regid = 19 } }
+					dakshinapatha_superregion = { popgrowth_stats_complex = { regid = 20 } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { popgrowth_stats_complex = { regid = 21 } }
+					turan_superregion = { popgrowth_stats_complex = { regid = 22 } }
+					tibet_superregion = { popgrowth_stats_complex = { regid = 23 } }
+					sakastan_superregion = { popgrowth_stats_complex = { regid = 24 } }
+					korea_superregion = { popgrowth_stats_complex = { regid = 25 } }
+					chryse_insula_superregion = { popgrowth_stats_complex = { regid = 26 } }
+					suvarnabhumi_superregion = { popgrowth_stats_complex = { regid = 27 } }
+
+				}
+
+
+
+			}
+			PS_find_variation_complex = yes
+		}
+	}
+	# One option for each super-region, added through 1 to X in variables, to show for each region in detail. TBD
+	option = {
+		name = "popgrowth_stats.303.a"	# Nothing, save the variables in your country view and export them later into excel
+
+	}
+
+}
+
+country_event = {		#	4: Display pop analysis of the selected provinces, depending on total scope:
+	id = popgrowth_stats.4
+	title = "popgrowth_stats.4.t"
+	desc = "popgrowth_stats.4.d"
+	picture = peasant_woman
+
+	is_triggered_only = yes
+
+	immediate = {
+		# is the event target selected? If it's not, move it to your capital
+		if = {
+			limit = { has_saved_event_target = PGS_provtarget }
+			# nothing
+		}
+		else = { capital_scope = { save_event_target_as = PGS_provtarget } }
+	}
+
+
+	option = {
+		name = "popgrowth_stats.4.1"
+		country_event = { id = popgrowth_stats.401 } 		#	401: Show detailed info on pop capacities.
+	}
+	option = {
+		name = "popgrowth_stats.4.2"
+		country_event = { id = popgrowth_stats.402 } 		#	402: Pop variations of selected provinces (402 selects scope, 403 calculations)
+	}
+	option = {
+		name = "popgrowth_stats.1.99"		# nothing, go back
+		ai_chance = { factor = 100 }
+
+	}
+
+
+}
+
+country_event = {
+	id = popgrowth_stats.401
+	title = "popgrowth_stats.401.t"
+	desc = "popgrowth_stats.401.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.401.1"		# Province
+		event_target:PGS_provtarget = {
+			province_event = { id = population_capacity.5 }
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				province_event = { id = population_capacity.5 }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					province_event = { id = population_capacity.5 }
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { province_event = { id = population_capacity.5 } } }
+					celtica_superregion = { celtica_superregion = { province_event = { id = population_capacity.5 } } }
+					germania_superregion = { germania_superregion = { province_event = { id = population_capacity.5 } } }
+					britannia_superregion = { britannia_superregion = { province_event = { id = population_capacity.5 } } }
+					italia_superregion = { italia_superregion = { province_event = { id = population_capacity.5 } } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { province_event = { id = population_capacity.5 } } }
+					haemusia_superregion = { haemusia_superregion = { province_event = { id = population_capacity.5 } } }
+					asia_superregion = { asia_superregion = { province_event = { id = population_capacity.5 } } }
+					mesopotamia_superregion = { mesopotamia_superregion = { province_event = { id = population_capacity.5 } } }
+					syria_superregion = { syria_superregion = { province_event = { id = population_capacity.5 } } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { province_event = { id = population_capacity.5 } } }
+					scythia_superregion = { scythia_superregion = { province_event = { id = population_capacity.5 } } }
+					aethiopia_superregion = { aethiopia_superregion = { province_event = { id = population_capacity.5 } } }
+					eastern_africa_superregion = { eastern_africa_superregion = { province_event = { id = population_capacity.5 } } }
+					western_africa_superregion = { western_africa_superregion = { province_event = { id = population_capacity.5 } } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { province_event = { id = population_capacity.5 } } }
+					armenia_superregion = { armenia_superregion = { province_event = { id = population_capacity.5 } } }
+					iran_superregion = { iran_superregion = { province_event = { id = population_capacity.5 } } }
+					uttarapatha_superregion = { uttarapatha_superregion = { province_event = { id = population_capacity.5 } } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { province_event = { id = population_capacity.5 } } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { province_event = { id = population_capacity.5 } } }
+					turan_superregion = { turan_superregion = { province_event = { id = population_capacity.5 } } }
+					tibet_superregion = { tibet_superregion = { province_event = { id = population_capacity.5 } } }
+					sakastan_superregion = { sakastan_superregion = { province_event = { id = population_capacity.5 } } }
+					korea_superregion = { korea_superregion = { province_event = { id = population_capacity.5 } } }
+					chryse_insula_superregion = { chryse_insula_superregion = { province_event = { id = population_capacity.5 } } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { province_event = { id = population_capacity.5 } } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					province_event = { id = population_capacity.5 }
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					province_event = { id = population_capacity.5 }
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					province_event = { id = population_capacity.5 }
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				province_event = { id = population_capacity.5 }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				province_event = { id = population_capacity.5 }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.401.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				province_event = { id = population_capacity.5 }
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+
+country_event = {
+	id = popgrowth_stats.402				# 402: Main variations, together (as in the event 5, no % variations and eligible scope)
+	title = "popgrowth_stats.402.t"
+	desc = "popgrowth_stats.402.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+		if = {
+			limit = { has_saved_event_target = PGS_provtarget }
+			# nothing
+		}
+		else = { capital_scope = { save_event_target_as = PGS_provtarget } }
+	}
+
+	option = {
+		name = "popgrowth_stats.402.1"		# Province
+		event_target:PGS_provtarget = { province_event = { id = popgrowth_stats.6 } }
+	}
+	option = {
+		name = "popgrowth_stats.402.2"		# Area
+		set_country_flag = PS_variations_area
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.3"		# Region
+		set_country_flag = PS_variations_region
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.4"		# Super-region
+		set_country_flag = PS_variations_superregion
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.5"		# 200 distance radius
+		set_country_flag = PS_variations_dist200
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.6"		# 500 distance radius
+		set_country_flag = PS_variations_dist500
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.7"		# 1000 distance radius
+		set_country_flag = PS_variations_dist1000
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.8"		# Owned by root
+		set_country_flag = PS_variations_owned
+		country_event = { id = popgrowth_stats.403 }
+	}
+	option = {
+		name = "popgrowth_stats.402.9"		# Owned by root or its subjects
+		set_country_flag = PS_variations_ownsubjects
+		country_event = { id = popgrowth_stats.403 }
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.403				# 403: Shows the pop analysis depending on the scope asked
+	title = "popgrowth_stats.403.t"
+	desc = "popgrowth_stats.403.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+		trigger_switch = {
+			on_trigger = has_country_flag
+			PS_variations_area = { hidden_effect = {
+				event_target:PGS_provtarget = { area = { PS_variables_import = yes } }
+				clr_country_flag = PS_variations_area
+			} }
+			PS_variations_region = { hidden_effect = {
+				event_target:PGS_provtarget = { region = { PS_variables_import = yes } }
+				clr_country_flag = PS_variations_region
+			} }
+			PS_variations_superregion = { hidden_effect = {
+				event_target:PGS_provtarget = {
+					trigger_switch = {
+						on_trigger = superregion
+
+						# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+						hispania_superregion = { hispania_superregion = { PS_variables_import = yes } }
+						celtica_superregion = { celtica_superregion = { PS_variables_import = yes } }
+						germania_superregion = { germania_superregion = { PS_variables_import = yes } }
+						britannia_superregion = { britannia_superregion = { PS_variables_import = yes } }
+						italia_superregion = { italia_superregion = { PS_variables_import = yes } }
+						# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+						macedonia_superregion = { macedonia_superregion = { PS_variables_import = yes } }
+						haemusia_superregion = { haemusia_superregion = { PS_variables_import = yes } }
+						asia_superregion = { asia_superregion = { PS_variables_import = yes } }
+						mesopotamia_superregion = { mesopotamia_superregion = { PS_variables_import = yes } }
+						syria_superregion = { syria_superregion = { PS_variables_import = yes } }
+						# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+						parthia_superregion = { parthia_superregion = { PS_variables_import = yes } }
+						scythia_superregion = { scythia_superregion = { PS_variables_import = yes } }
+						aethiopia_superregion = { aethiopia_superregion = { PS_variables_import = yes } }
+						eastern_africa_superregion = { eastern_africa_superregion = { PS_variables_import = yes } }
+						western_africa_superregion = { western_africa_superregion = { PS_variables_import = yes } }
+						# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+						arabia_superregion = { arabia_superregion = { PS_variables_import = yes } }
+						armenia_superregion = { armenia_superregion = { PS_variables_import = yes } }
+						iran_superregion = { iran_superregion = { PS_variables_import = yes } }
+						uttarapatha_superregion = { uttarapatha_superregion = { PS_variables_import = yes } }
+						dakshinapatha_superregion = { dakshinapatha_superregion = { PS_variables_import = yes } }
+						# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+						china_superregion = { china_superregion = { PS_variables_import = yes } }
+						turan_superregion = { turan_superregion = { PS_variables_import = yes } }
+						tibet_superregion = { tibet_superregion = { PS_variables_import = yes } }
+						sakastan_superregion = { sakastan_superregion = { PS_variables_import = yes } }
+						korea_superregion = { korea_superregion = { PS_variables_import = yes } }
+						chryse_insula_superregion = { chryse_insula_superregion = { PS_variables_import = yes } }
+						suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_variables_import = yes } }
+					}
+				}
+				clr_country_flag = PS_variations_superregion
+			} }
+			PS_variations_dist200 = { hidden_effect = {
+				event_target:PGS_provtarget = { every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_variables_import = yes
+				} }
+				clr_country_flag = PS_variations_dist200
+			} }
+			PS_variations_dist500 = { hidden_effect = {
+				event_target:PGS_provtarget = { every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_variables_import = yes
+				} }
+				clr_country_flag = PS_variations_dist500
+			} }
+			PS_variations_dist1000 = { hidden_effect = {
+				event_target:PGS_provtarget = { every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_variables_import = yes
+				} }
+				clr_country_flag = PS_variations_dist1000
+			} }
+			PS_variations_owned = { hidden_effect = {
+				every_owned_province = { PS_variables_import = yes }
+				clr_country_flag = PS_variations_owned
+			} }
+			PS_variations_ownsubjects = { hidden_effect = {
+				every_province = { limit = { country_or_subject_holds = ROOT } PS_variables_import = yes }
+				clr_country_flag = PS_variations_ownsubjects
+			} }
+		}
+		# Now all eligible variables are at the country level. It's just that, a lot of variables that will appear here.
+		# There's no need for later calculations at the country level. Just that in the After you will see plenty of variables being erased.
+
+
+	}
+
+	option = {
+		name = "popgrowth_stats.403.1"
+
+	}
+
+	after = {
+		set_variable = { which = PS_rural_now value = 0 }	set_variable = { which = PS_urban_now value = 0 }
+		set_variable = { which = PS_upper_now value = 0 }	set_variable = { which = PS_total_now value = 0 }
+
+		set_variable = { which = PS_rur_grow value = 0 }	set_variable = { which = PS_urb_grow value = 0 }
+		set_variable = { which = PS_urb_prom value = 0 }	set_variable = { which = PS_upp_prom value = 0 }
+		set_variable = { which = PS_rur_imig value = 0 }	set_variable = { which = PS_urb_imig value = 0 }
+		set_variable = { which = PS_rur_evtu value = 0 }	set_variable = { which = PS_urb_evtu value = 0 }
+		set_variable = { which = PS_upp_evtu value = 0 }	set_variable = { which = PS_rur_dem value = 0 }
+		set_variable = { which = PS_urb_dem value = 0 }		set_variable = { which = PS_rur_dvtu value = 0 }
+		set_variable = { which = PS_urb_dvtu value = 0 }	set_variable = { which = PS_upp_dvtu value = 0 }
+
+		set_variable = { which = PS_rur_strv value = 0 }	set_variable = { which = PS_rur_goup value = 0 }
+		set_variable = { which = PS_urb_goup value = 0 }	set_variable = { which = PS_rur_emig value = 0 }
+		set_variable = { which = PS_rur_evtd value = 0 }	set_variable = { which = PS_urb_evtd value = 0 }
+		set_variable = { which = PS_upp_evtd value = 0 }	set_variable = { which = PS_urb_down value = 0 }
+		set_variable = { which = PS_upp_down value = 0 }	set_variable = { which = PS_rur_dvtd value = 0 }
+		set_variable = { which = PS_urb_dvtd value = 0 }	set_variable = { which = PS_upp_dvtd value = 0 }
+
+		set_variable = { which = PS_rur_slv value = 0 } 	set_variable = { which = PS_urb_slv value = 0 }
+		set_variable = { which = PS_upp_slv value = 0 }		set_variable = { which = PS_rur_sieg value = 0 }
+		set_variable = { which = PS_urb_sieg value = 0 }	set_variable = { which = PS_upp_sieg value = 0 }
+		set_variable = { which = PS_rur_imp value = 0 }
+
+		set_variable = { which = rural_capacity value = 0 } set_variable = { which = urban_capacity value = 0 }
+		set_variable = { which = upper_capacity value = 0 }
+
+		set_variable = { which = PS_rur_imigprov value = 0 } set_variable = { which = PS_rur_emigprov value = 0 }
+		set_variable = { which = PS_urb_imigprov value = 0 } set_variable = { which = PS_urb_emigprov value = 0 }
+		set_variable = { which = PS_upp_imigprov value = 0 } set_variable = { which = PS_upp_emigprov value = 0 }
+		set_variable = { which = PS_cot3prov value = 0 }	 set_variable = { which = PS_cot2prov value = 0 }
+		set_variable = { which = PS_cot1prov value = 0 }
+
+	}
+}
+
+# End of the "Analysis" part
+
+####
+#	EVENTS FOR MAP-DISPLAYING THINGS
+####
+
+
+country_event = {		# 	5: Display several values in the trade mapmode. Scope configurable
+	id = popgrowth_stats.5
+	title = "popgrowth_stats.5.t"
+	desc = "popgrowth_stats.5.d"
+	picture = peasant_woman
+
+	is_triggered_only = yes
+
+	immediate = {
+		# is the event target selected? If it's not, move it to your capital
+		if = {
+			limit = { has_saved_event_target = PGS_provtarget }
+			# nothing
+		}
+		else = { capital_scope = { save_event_target_as = PGS_provtarget } }
+	}
+
+
+	option = {
+		name = "popgrowth_stats.5.1"
+		country_event = { id = popgrowth_stats.500 } 		#	500: Province Size (determining rural population in Popgrowth)
+	}
+	option = {
+		name = "popgrowth_stats.5.2"
+		country_event = { id = popgrowth_stats.501 } 		#	501: Rural: abs + growth
+	}
+	option = {
+		name = "popgrowth_stats.5.3"
+		country_event = { id = popgrowth_stats.502 } 		#	502: Urban: abs + growth
+	}
+	option = {
+		name = "popgrowth_stats.5.4"
+		country_event = { id = popgrowth_stats.503 } 		#	503: Upper: abs + growth
+	}
+	option = {
+		name = "popgrowth_stats.5.5"
+		country_event = { id = popgrowth_stats.504 } 		#	504: Potential: % left to grow (-20%, -10, 0, 10, 20, 30, up to 80%+)
+	}
+	option = {
+		name = "popgrowth_stats.5.6"
+		country_event = { id = popgrowth_stats.505 } 		#	505: Effective information range (migration range)
+	}
+	option = {
+		name = "popgrowth_stats.5.7"
+		country_event = { id = popgrowth_stats.506 } 		#	506: How many X things has there been, positive effects
+	}
+	option = {
+		name = "popgrowth_stats.5.8"
+		country_event = { id = popgrowth_stats.507 } 		#	507: How many X things has there been, negative effects
+	}
+	option = {
+		name = "popgrowth_stats.5.9"
+		country_event = { id = popgrowth_stats.508 } 		#	508: How many X things has there been, war-related effects
+	}
+	option = {
+		name = "popgrowth_stats.1.99"		# nothing, go back
+		ai_chance = { factor = 100 }
+
+	}
+
+
+}
+
+
+country_event = {
+	id = popgrowth_stats.500			#		500: Province size
+	title = "popgrowth_stats.500.t"
+	desc = "popgrowth_stats.500.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.500.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_size = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_size = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_size = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_size = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_size = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_size = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_size = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_size = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_size = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_size = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_size = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_size = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_size = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_size = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_size = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_size = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_size = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_size = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_size = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_size = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_size = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_size = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_size = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_size = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_size = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_size = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_size = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_size = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_size = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_size = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_size = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_size = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_size = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_size = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_size = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.500.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_size = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.501			#		501: Rural: abs + growth
+	title = "popgrowth_stats.501.t"
+	desc = "popgrowth_stats.501.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.501.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_rurals = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_rurals = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_rurals = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_rurals = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_rurals = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_rurals = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_rurals = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_rurals = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_rurals = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_rurals = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_rurals = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_rurals = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_rurals = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_rurals = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_rurals = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_rurals = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_rurals = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_rurals = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_rurals = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_rurals = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_rurals = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_rurals = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_rurals = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_rurals = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_rurals = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_rurals = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_rurals = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_rurals = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_rurals = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_rurals = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_rurals = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_rurals = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_rurals = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_rurals = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_rurals = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.501.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_rurals = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.502			#		502: Urbans: abs + growth
+	title = "popgrowth_stats.502.t"
+	desc = "popgrowth_stats.502.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.502.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_urbans = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_urbans = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_urbans = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_urbans = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_urbans = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_urbans = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_urbans = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_urbans = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_urbans = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_urbans = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_urbans = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_urbans = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_urbans = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_urbans = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_urbans = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_urbans = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_urbans = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_urbans = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_urbans = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_urbans = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_urbans = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_urbans = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_urbans = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_urbans = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_urbans = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_urbans = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_urbans = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_urbans = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_urbans = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_urbans = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_urbans = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_urbans = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_urbans = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_urbans = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_urbans = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.502.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_urbans = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.503			#		503: Uppers: abs + growth
+	title = "popgrowth_stats.503.t"
+	desc = "popgrowth_stats.503.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.503.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_uppers = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_uppers = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_uppers = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_uppers = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_uppers = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_uppers = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_uppers = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_uppers = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_uppers = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_uppers = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_uppers = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_uppers = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_uppers = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_uppers = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_uppers = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_uppers = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_uppers = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_uppers = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_uppers = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_uppers = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_uppers = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_uppers = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_uppers = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_uppers = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_uppers = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_uppers = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_uppers = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_uppers = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_uppers = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_uppers = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_uppers = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_uppers = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_uppers = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_uppers = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_uppers = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.503.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_uppers = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.504			#		504: Potential, how many % of population is lacking to reach 100% capacity
+	title = "popgrowth_stats.504.t"
+	desc = "popgrowth_stats.504.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.504.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_potential = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_potential = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_potential = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_potential = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_potential = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_potential = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_potential = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_potential = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_potential = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_potential = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_potential = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_potential = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_potential = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_potential = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_potential = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_potential = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_potential = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_potential = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_potential = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_potential = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_potential = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_potential = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_potential = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_potential = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_potential = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_potential = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_potential = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_potential = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_potential = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_potential = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_potential = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_potential = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_potential = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_potential = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_potential = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.504.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_potential = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.505			#		505: Information range. Based on trade power (can spill to neighbor provinces), used to emigrate
+	title = "popgrowth_stats.505.t"
+	desc = "popgrowth_stats.505.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.505.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_inforange = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_inforange = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_inforange = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_inforange = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_inforange = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_inforange = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_inforange = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_inforange = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_inforange = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_inforange = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_inforange = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_inforange = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_inforange = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_inforange = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_inforange = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_inforange = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_inforange = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_inforange = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_inforange = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_inforange = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_inforange = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_inforange = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_inforange = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_inforange = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_inforange = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_inforange = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_inforange = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_inforange = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_inforange = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_inforange = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_inforange = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_inforange = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_inforange = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_inforange = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_inforange = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.505.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_inforange = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.506			#		506: Population variation, positive amount effects (growth, promotion, immigration)
+	title = "popgrowth_stats.506.t"
+	desc = "popgrowth_stats.506.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.506.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_varpos = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_varpos = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_varpos = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_varpos = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_varpos = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_varpos = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_varpos = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_varpos = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_varpos = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_varpos = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_varpos = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_varpos = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_varpos = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_varpos = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_varpos = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_varpos = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_varpos = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_varpos = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_varpos = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_varpos = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_varpos = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_varpos = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_varpos = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_varpos = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_varpos = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_varpos = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_varpos = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_varpos = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_varpos = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_varpos = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_varpos = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_varpos = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_varpos = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_varpos = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_varpos = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.506.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_varpos = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.507			#		507: Population variation, negative effects (starved, demoted, emigrated, enslaved)
+	title = "popgrowth_stats.507.t"
+	desc = "popgrowth_stats.507.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.507.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_varneg = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_varneg = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_varneg = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_varneg = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_varneg = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_varneg = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_varneg = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_varneg = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_varneg = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_varneg = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_varneg = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_varneg = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_varneg = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_varneg = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_varneg = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_varneg = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_varneg = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_varneg = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_varneg = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_varneg = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_varneg = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_varneg = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_varneg = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_varneg = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_varneg = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_varneg = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_varneg = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_varneg = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_varneg = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_varneg = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_varneg = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_varneg = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_varneg = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_varneg = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_varneg = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.507.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_varneg = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+country_event = {
+	id = popgrowth_stats.508			#		508: Siege-related effects (population lost, loot, colateral)
+	title = "popgrowth_stats.508.t"
+	desc = "popgrowth_stats.508.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+
+	}
+
+	option = {
+		name = "popgrowth_stats.508.1"		# Province
+		event_target:PGS_provtarget = {
+			PS_showmap_sieges = yes
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.2"		# Area
+		event_target:PGS_provtarget = {
+			area = {
+				PS_showmap_sieges = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.3"		# Region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				region = {
+					PS_showmap_sieges = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.4"		# Super-region
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				trigger_switch = {
+					on_trigger = superregion
+
+					# 1 Hispania, 2 Celtica, 3 Germania, 4 Britannica, 5 Italia
+					hispania_superregion = { hispania_superregion = { PS_showmap_sieges = yes } }
+					celtica_superregion = { celtica_superregion = { PS_showmap_sieges = yes } }
+					germania_superregion = { germania_superregion = { PS_showmap_sieges = yes } }
+					britannia_superregion = { britannia_superregion = { PS_showmap_sieges = yes } }
+					italia_superregion = { italia_superregion = { PS_showmap_sieges = yes } }
+
+					# 6 Macedonia, 7 Haemusia (Danube), 8 Asia, 9 Mesopotamia, 10 Syria
+					macedonia_superregion = { macedonia_superregion = { PS_showmap_sieges = yes } }
+					haemusia_superregion = { haemusia_superregion = { PS_showmap_sieges = yes } }
+					asia_superregion = { asia_superregion = { PS_showmap_sieges = yes } }
+					mesopotamia_superregion = { mesopotamia_superregion = { PS_showmap_sieges = yes } }
+					syria_superregion = { syria_superregion = { PS_showmap_sieges = yes } }
+
+					# 11 Parthia, 12 Scythia, 13 Aethiopia, 14 Eastern Africa, 15 Western Africa
+					parthia_superregion = { parthia_superregion = { PS_showmap_sieges = yes } }
+					scythia_superregion = { scythia_superregion = { PS_showmap_sieges = yes } }
+					aethiopia_superregion = { aethiopia_superregion = { PS_showmap_sieges = yes } }
+					eastern_africa_superregion = { eastern_africa_superregion = { PS_showmap_sieges = yes } }
+					western_africa_superregion = { western_africa_superregion = { PS_showmap_sieges = yes } }
+
+					# 16 Arabia, 17 Armenia, 18 Iran, 19 Uttarapatha (North India), 20 Dakshinapatha (South India)
+					arabia_superregion = { arabia_superregion = { PS_showmap_sieges = yes } }
+					armenia_superregion = { armenia_superregion = { PS_showmap_sieges = yes } }
+					iran_superregion = { iran_superregion = { PS_showmap_sieges = yes } }
+					uttarapatha_superregion = { uttarapatha_superregion = { PS_showmap_sieges = yes } }
+					dakshinapatha_superregion = { dakshinapatha_superregion = { PS_showmap_sieges = yes } }
+
+					# 21 China, 22 Turan, 23 Tibet, 24 Sakastan, 25 Korea, 26 Pacific Islands, 27 Burma
+					china_superregion = { china_superregion = { PS_showmap_sieges = yes } }
+					turan_superregion = { turan_superregion = { PS_showmap_sieges = yes } }
+					tibet_superregion = { tibet_superregion = { PS_showmap_sieges = yes } }
+					sakastan_superregion = { sakastan_superregion = { PS_showmap_sieges = yes } }
+					korea_superregion = { korea_superregion = { PS_showmap_sieges = yes } }
+					chryse_insula_superregion = { chryse_insula_superregion = { PS_showmap_sieges = yes } }
+					suvarnabhumi_superregion = { suvarnabhumi_superregion = { PS_showmap_sieges = yes } }
+
+				}
+
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.5"		# 200 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 200 } } }
+					PS_showmap_sieges = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.6"		# 500 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 500 } } }
+					PS_showmap_sieges = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.7"		# 1000 distance radius
+		hidden_effect = {
+			event_target:PGS_provtarget = {
+				every_province = {
+					limit = { NOT = { province_distance = { who = PREV distance = 1000 } } }
+					PS_showmap_sieges = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.8"		# Owned by root
+		hidden_effect = {
+			every_owned_province = {
+				PS_showmap_sieges = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.9"		# Owned by root or its subjects
+		hidden_effect = {
+			every_province = {
+				limit = { country_or_subject_holds = ROOT }
+				PS_showmap_sieges = yes
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.508.10"		# Everywhere
+		hidden_effect = {
+			every_province = {
+				PS_showmap_sieges = yes
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.1.99"
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+
+###
+# END OF THE MAP-PAINTING
+###
+
+
+
+province_event = {			# 6: Province detailed evolution: more information related to a single province
+	id = popgrowth_stats.6
+	title = "popgrowth_stats.6.t"
+	desc = "popgrowth_stats.6.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+		hidden_effect = {
+
+			# Store previously done values as "old" (same as cleanup)
+			set_variable = { which = PS_yearold which = PS_yearnow }
+			export_to_variable = { which = PS_yearnow value = trigger_value:is_year }
+			set_variable = { which = PS_yearall which = PS_yearnow } 	subtract_variable = { which = PS_yearall which = PS_year_init }
+			set_variable = { which = PS_yearlim which = PS_yearnow } 	subtract_variable = { which = PS_yearall which = PS_yearold }
+
+			# Current values
+			export_to_variable = { which = PS_rur_now value = base_manpower }
+			export_to_variable = { which = PS_urb_now value = base_production }
+			export_to_variable = { which = PS_upp_now value = base_tax }
+			export_to_variable = { which = PS_tot_now value = development }
+
+
+			# TOTAL VARIATION
+			# prepararion and avoid divide by zeros
+			if = { limit = { NOT = { check_variable = { PS_yearall = 1 } } } 	set_variable = { which = PS_yearall value = 1 } }
+			if = { limit = { NOT = { check_variable = { PS_urb_init = 1 } } } 	set_variable = { which = PS_urb_init value = 0.50 } }
+			if = { limit = { NOT = { check_variable = { PS_upp_init = 1 } } } 	set_variable = { which = PS_upp_init value = 0.50 } }
+
+			# absolute variation
+			set_variable = { which = PS_rur_varall which = PS_rur_now } 	subtract_variable = { which = PS_rur_varall which = PS_trb_init }
+			set_variable = { which = PS_urb_varall which = PS_urb_now } 	subtract_variable = { which = PS_urb_varall which = PS_urb_init }
+			set_variable = { which = PS_upp_varall which = PS_upp_now } 	subtract_variable = { which = PS_upp_varall which = PS_upp_init }
+			set_variable = { which = PS_tot_varall which = PS_rur_varall }	change_variable = { which = PS_tot_varall which = PS_urb_varall }
+			change_variable = { which = PS_tot_varall which = PS_upp_varall }
+
+			# percentage variation, all. VPAB = variation in percentage, all years, basic (year now against initial year)
+			set_variable = { which = PS_rur_vpab which = PS_rur_varall } 	divide_variable = { which = PS_rur_vpab which = PS_trb_init }
+			set_variable = { which = PS_urb_vpab which = PS_urb_varall } 	divide_variable = { which = PS_urb_vpab which = PS_urb_init }
+			set_variable = { which = PS_upp_vpab which = PS_upp_varall } 	divide_variable = { which = PS_upp_vpab which = PS_upp_init }
+			set_variable = { which = PS_tot_vpab which = PS_tot_varall } 	divide_variable = { which = PS_tot_vpab which = PS_tot_init }
+
+			# percentage variation, annualized. VPAA = variation in percentage, all years, annualized
+			set_variable = { which = PS_rur_vpaa which = PS_rur_vpb } 		divide_variable = { which = PS_rur_vpaa which = PS_yearall }
+			set_variable = { which = PS_urb_vpaa which = PS_urb_vpb } 		divide_variable = { which = PS_urb_vpaa which = PS_yearall }
+			set_variable = { which = PS_upp_vpaa which = PS_upp_vpb } 		divide_variable = { which = PS_upp_vpaa which = PS_yearall }
+			set_variable = { which = PS_tot_vpaa which = PS_tot_vpb } 		divide_variable = { which = PS_tot_vpaa which = PS_yearall }
+
+			# LIMITED VARIATION
+			# absolute variation
+			set_variable = { which = PS_rur_varlim which = PS_rur_now } 	subtract_variable = { which = PS_rur_varlim which = PS_rur_old }
+			set_variable = { which = PS_urb_varlim which = PS_urb_now } 	subtract_variable = { which = PS_urb_varlim which = PS_urb_old }
+			set_variable = { which = PS_upp_varlim which = PS_upp_now } 	subtract_variable = { which = PS_upp_varlim which = PS_upp_old }
+			set_variable = { which = PS_tot_varlim which = PS_rur_varlim }	change_variable = { which = PS_tot_varlim which = PS_urb_varlim }
+			change_variable = { which = PS_tot_varlim which = PS_upp_varlim }
+
+			# percentage variation, all. vplb = variation in percentage, limited to last check, basic (year now against last time)
+			set_variable = { which = PS_rur_vplb which = PS_rur_varlim } 	divide_variable = { which = PS_rur_vplb which = PS_rur_old }
+			set_variable = { which = PS_urb_vplb which = PS_urb_varlim } 	divide_variable = { which = PS_urb_vplb which = PS_urb_old }
+			set_variable = { which = PS_upp_vplb which = PS_upp_varlim } 	divide_variable = { which = PS_upp_vplb which = PS_upp_old }
+			set_variable = { which = PS_tot_vplb which = PS_tot_varlim } 	divide_variable = { which = PS_tot_vplb which = PS_tot_old }
+
+			# percentage variation, annualized. vpla = variation in percentage, limited to last check, annualized
+			set_variable = { which = PS_rur_vpla which = PS_rur_vpb } 		divide_variable = { which = PS_rur_vpla which = PS_yearall }
+			set_variable = { which = PS_urb_vpla which = PS_urb_vpb } 		divide_variable = { which = PS_urb_vpla which = PS_yearall }
+			set_variable = { which = PS_upp_vpla which = PS_upp_vpb } 		divide_variable = { which = PS_upp_vpla which = PS_yearall }
+			set_variable = { which = PS_tot_vpla which = PS_tot_vpb } 		divide_variable = { which = PS_tot_vpla which = PS_yearall }
+
+			# SPECIALIZED DATA (just absolute variation, both total and limited; but no percentages)
+			# remember that all values are already stored, happening in each circunstance of the game. Therefore, "total variation" is always there.
+			# the available values are:
+			# ups: grown, 	  promoted to,  demoted down, immigrated, by-event, by snapping fingers
+			# downs: starved, demoted from, promoted up,  emigrated,  by-event, by snapping fingers
+			# other downs: enslaved (prosecuted), enslaved (siege), killed (siege)
+
+			# UPS
+			set_variable = { which = PS_rur_grow_lim which = PS_rur_grow } 	subtract_variable = { which = PS_rur_grow_lim which = PS_rur_grow_old }
+			set_variable = { which = PS_urb_grow_lim which = PS_urb_grow } 	subtract_variable = { which = PS_urb_grow_lim which = PS_urb_grow_old }
+
+			set_variable = { which = PS_urb_prom_lim which = PS_urb_prom } 	subtract_variable = { which = PS_urb_prom_lim which = PS_urb_prom_old }
+			set_variable = { which = PS_upp_prom_lim which = PS_upp_prom } 	subtract_variable = { which = PS_upp_prom_lim which = PS_upp_prom_old }
+
+			set_variable = { which = PS_rur_imig_lim which = PS_rur_imig } 	subtract_variable = { which = PS_rur_imig_lim which = PS_rur_imig_old }
+			set_variable = { which = PS_urb_imig_lim which = PS_urb_imig } 	subtract_variable = { which = PS_urb_imig_lim which = PS_urb_imig_old }
+
+			set_variable = { which = PS_rur_evtu_lim which = PS_rur_evtu } 	subtract_variable = { which = PS_rur_evtu_lim which = PS_rur_evtu_old }
+			set_variable = { which = PS_urb_evtu_lim which = PS_urb_evtu } 	subtract_variable = { which = PS_urb_evtu_lim which = PS_urb_evtu_old }
+			set_variable = { which = PS_upp_evtu_lim which = PS_upp_evtu } 	subtract_variable = { which = PS_upp_evtu_lim which = PS_upp_evtu_old }
+
+			set_variable = { which = PS_rur_dem_lim which = PS_rur_dem } 	subtract_variable = { which = PS_rur_dem_lim which = PS_rur_dem_old }
+			set_variable = { which = PS_urb_dem_lim which = PS_urb_dem } 	subtract_variable = { which = PS_urb_dem_lim which = PS_urb_dem_old }
+
+			set_variable = { which = PS_rur_dvtu_lim which = PS_rur_dvtu } 	subtract_variable = { which = PS_rur_dvtu_lim which = PS_rur_dvtu_old }
+			set_variable = { which = PS_urb_dvtu_lim which = PS_urb_dvtu } 	subtract_variable = { which = PS_urb_dvtu_lim which = PS_urb_dvtu_old }
+			set_variable = { which = PS_upp_dvtu_lim which = PS_upp_dvtu } 	subtract_variable = { which = PS_upp_dvtu_lim which = PS_upp_dvtu_old }
+
+			# DOWNS
+			set_variable = { which = PS_rur_strv_lim which = PS_rur_strv } 	subtract_variable = { which = PS_rur_strv_lim which = PS_rur_strv_old }
+
+			set_variable = { which = PS_rur_goup_lim which = PS_rur_goup } 	subtract_variable = { which = PS_rur_goup_lim which = PS_rur_goup_old }
+			set_variable = { which = PS_urb_goup_lim which = PS_urb_goup } 	subtract_variable = { which = PS_urb_goup_lim which = PS_urb_goup_old }
+
+			set_variable = { which = PS_rur_emig_lim which = PS_rur_emig } 	subtract_variable = { which = PS_rur_emig_lim which = PS_rur_emig_old }
+
+			set_variable = { which = PS_rur_evtd_lim which = PS_rur_evtd } 	subtract_variable = { which = PS_rur_evtd_lim which = PS_rur_evtd_old }
+			set_variable = { which = PS_urb_evtd_lim which = PS_urb_evtd } 	subtract_variable = { which = PS_urb_evtd_lim which = PS_urb_evtd_old }
+			set_variable = { which = PS_upp_evtd_lim which = PS_upp_evtd } 	subtract_variable = { which = PS_upp_evtd_lim which = PS_upp_evtd_old }
+
+			set_variable = { which = PS_urb_down_lim which = PS_urb_down } 	subtract_variable = { which = PS_urb_down_lim which = PS_urb_down_old }
+			set_variable = { which = PS_upp_down_lim which = PS_upp_down } 	subtract_variable = { which = PS_upp_down_lim which = PS_upp_down_old }
+
+			set_variable = { which = PS_rur_dvtd_lim which = PS_rur_dvtd } 	subtract_variable = { which = PS_rur_dvtd_lim which = PS_rur_dvtd_old }
+			set_variable = { which = PS_urb_dvtd_lim which = PS_urb_dvtd } 	subtract_variable = { which = PS_urb_dvtd_lim which = PS_urb_dvtd_old }
+			set_variable = { which = PS_upp_dvtd_lim which = PS_upp_dvtd } 	subtract_variable = { which = PS_upp_dvtd_lim which = PS_upp_dvtd_old }
+
+			# MORE DOWNS
+			set_variable = { which = PS_rur_imp_lim which = PS_rur_imp } 	subtract_variable = { which = PS_rur_imp_lim which = PS_rur_imp_old }
+
+			set_variable = { which = PS_rur_slv_lim which = PS_rur_slv } 	subtract_variable = { which = PS_rur_slv_lim which = PS_rur_slv_old }
+			set_variable = { which = PS_urb_slv_lim which = PS_urb_slv } 	subtract_variable = { which = PS_urb_slv_lim which = PS_urb_slv_old }
+			set_variable = { which = PS_upp_slv_lim which = PS_upp_slv } 	subtract_variable = { which = PS_upp_slv_lim which = PS_upp_slv_old }
+
+			set_variable = { which = PS_rur_sieg_lim which = PS_rur_sieg } 	subtract_variable = { which = PS_rur_sieg_lim which = PS_rur_sieg_old }
+			set_variable = { which = PS_urb_sieg_lim which = PS_urb_sieg } 	subtract_variable = { which = PS_urb_sieg_lim which = PS_urb_sieg_old }
+			set_variable = { which = PS_upp_sieg_lim which = PS_upp_sieg } 	subtract_variable = { which = PS_upp_sieg_lim which = PS_upp_sieg_old }
+
+			# ALL POSSIBLE EFFECTS HAPPENING IN THESE STATISTICS
+			#	PS_rur_grow				PS_rur_strv
+			#	PS_urb_grow				PS_urb_strv -> not yet
+			#	PS_upp_grow -> no		PS_upp_strv -> no
+			#
+			#	PS_rur_prom -> no		PS_rur_goup
+			#	PS_urb_prom				PS_urb_goup
+			#	PS_upp_prom				PS_upp_goup -> no
+			#
+			#	PS_rur_imig				PS_rur_emig
+			#	PS_urb_imig				PS_urb_emig -> not yet
+			#	PS_upp_imig -> not yet	PS_upp_emig -> not yet
+			#
+			#	PS_rur_evtu				PS_rur_evtd				PS_rur_imp
+			#	PS_urb_evtu				PS_urb_evtd				PS_urb_imp -> not yet
+			#	PS_upp_evtu				PS_upp_evtd				PS_upp_imp -> not yet. Could be used for "enemies of the republic"
+			#
+			#	PS_urb_dem				PS_rur_down -> no		PS_rur_slv
+			#	PS_rur_dem				PS_urb_down				PS_urb_slv
+			#	PS_upp_dem -> no		PS_upp_down				PS_upp_slv
+			#
+			#	PS_rur_dvtu				PS_rur_dvtd				PS_rur_sieg
+			#	PS_urb_dvtu				PS_urb_dvtd				PS_urb_sieg
+			#	PS_upp_dvtu				PS_upp_dvtd				PS_upp_sieg
+			#
+
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.6.1"
+
+	}
+
+	after = {
+		# save the current specialized variables as "old", to allow limited comparisons later on
+		set_variable = { which = PS_rur_old which = PS_rur_now } 			set_variable = { which = PS_urb_old which = PS_urb_now }
+		set_variable = { which = PS_upp_old which = PS_upp_now } 			set_variable = { which = PS_tot_old which = PS_tot_now }
+
+		set_variable = { which = PS_rur_grow_old which = PS_rur_grow } 		set_variable = { which = PS_urb_grow_old which = PS_urb_grow }
+		set_variable = { which = PS_urb_prom_old which = PS_urb_prom } 		set_variable = { which = PS_upp_prom_old which = PS_upp_prom }
+		set_variable = { which = PS_rur_imig_old which = PS_rur_imig } 		set_variable = { which = PS_urb_imig_old which = PS_urb_imig }
+		set_variable = { which = PS_rur_evtu_old which = PS_rur_evtu } 		set_variable = { which = PS_urb_evtu_old which = PS_urb_evtu }
+		set_variable = { which = PS_upp_evtu_old which = PS_upp_evtu } 		set_variable = { which = PS_rur_dem_old which = PS_rur_dem }
+		set_variable = { which = PS_urb_dem_old  which = PS_urb_dem } 		set_variable = { which = PS_rur_dvtu_old which = PS_rur_dvtu }
+		set_variable = { which = PS_urb_dvtu_old which = PS_urb_dvtu } 		set_variable = { which = PS_upp_dvtu_old which = PS_upp_dvtu }
+
+		set_variable = { which = PS_rur_strv_old which = PS_rur_strv } 		set_variable = { which = PS_rur_goup_old which = PS_rur_goup }
+		set_variable = { which = PS_urb_goup_old which = PS_urb_goup } 		set_variable = { which = PS_rur_emig_old which = PS_rur_emig }
+		set_variable = { which = PS_rur_evtd_old which = PS_rur_evtd } 		set_variable = { which = PS_urb_evtd_old which = PS_urb_evtd }
+		set_variable = { which = PS_upp_evtd_old which = PS_upp_evtd } 		set_variable = { which = PS_urb_down_old which = PS_urb_down }
+		set_variable = { which = PS_upp_down_old which = PS_upp_down } 		set_variable = { which = PS_rur_dvtd_old which = PS_rur_dvtd }
+		set_variable = { which = PS_urb_dvtd_old which = PS_urb_dvtd } 		set_variable = { which = PS_upp_dvtd_old which = PS_upp_dvtd }
+
+		set_variable = { which = PS_rur_slv_old which = PS_rur_slv } 		set_variable = { which = PS_rur_sieg_old which = PS_rur_sieg }
+		set_variable = { which = PS_urb_slv_old which = PS_urb_slv } 		set_variable = { which = PS_urb_sieg_old which = PS_urb_sieg }
+		set_variable = { which = PS_upp_slv_old which = PS_upp_slv } 		set_variable = { which = PS_upp_sieg_old which = PS_upp_sieg }
+		set_variable = { which = PS_rur_imp_old which = PS_rur_imp }
+
+	}
+
+}
+
+
+
+####
+#	DEVELOMENT TOOLS, they are very powerful
+#
+####
+
+
+
+country_event = {	# More Development tools. Only accessable with console command. IT WILL RUIN YOUR CURRENT GAME through population changes
+	id = popgrowth_stats.7
+	title = "popgrowth_stats.7.t"
+	desc = "popgrowth_stats.7.d"
+	picture = fingersnap_marduk
+
+	is_triggered_only = yes
+
+	option = {
+		name = "popgrowth_stats.7.1"	# Remove excess population until the maximum value
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_down_to_max = yes
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.2"	# Remove excess population until 80% of max capacity
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_down_to_perc = { perc = 0.8 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.3"	# Remove excess population until 50% of max capacity
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_down_to_perc = { perc = 0.5 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.4"	# Remove excess population until 20% of max capacity (everything depopulated)
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_down_to_perc = { perc = 0.2 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.5"	# Add people up to 60% capacity
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_up_to_perc = { perc = 0.6 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.6"	# Add people up to 80% capacity
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_up_to_perc = { perc = 0.8 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.7"	# Add people up to 100% capacity
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_up_to_perc = { perc = 1.0 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+	option = {
+		name = "popgrowth_stats.7.8"	# Crazy mode: up to 200% capacity. Do this and then disable the popgrowth, that population will stay!
+		trigger = { has_global_flag = popgrowth_running }
+		hidden_effect = {
+			every_province = {
+				adjust_pops_up_to_perc = { perc = 2.0 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+			}
+		}
+	}
+
+	option = {
+		name = "popgrowth_stats.7.9"	# There are things best left untouched
+		ai_chance = { factor = 100 }
+
+	}
+
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,1343 @@
+namespace = custom_religion
+
+########################################################################################
+# Child Sacrifice
+########################################################################################
+
+country_event = {
+	id = custom_religion.1
+	title = "custom_religion.1.t"
+	desc = "custom_religion.1.d"
+	picture = sacrifice
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = punic_religion
+	}
+
+	option = {
+		name = "custom_religion.1.b"
+		ai_chance = { factor = 30 }
+		add_country_modifier = {
+			name = moloch_sacrifice_1
+			duration = 1825
+		}
+		add_legitimacy = -10
+		add_republican_tradition = -10
+		add_devotion = -10
+		#add_patriarch_authority = 0.15
+	}
+	option = {
+		name = "custom_religion.1.c"
+		ai_chance = { factor = 30 }
+		add_country_modifier = {
+			name = moloch_sacrifice_2
+			duration = 1825
+		}
+		add_years_of_income = -0.25
+		#add_patriarch_authority = 0.1
+	}
+	option = {
+		name = "custom_religion.1.e"
+		ai_chance = { factor = 10 }
+		#add_patriarch_authority = -0.2
+		add_prestige = -5
+	}
+
+	option = {
+		name = "custom_religion.1.a"
+		ai_chance = { factor = 30 }
+		trigger = {
+			has_heir = yes
+			NOT = { heir_age = 2 }
+		}
+		#add_patriarch_authority = 0.2
+		kill_heir = {}
+		add_country_modifier = {
+			name = moloch_sacrifice
+			duration = 1825
+		}
+	}
+}
+
+########################################################################################
+# Akitu festival
+########################################################################################
+
+country_event = {
+	id = custom_religion.2
+	title = "custom_religion.2.t"
+	desc = "custom_religion.2.d"
+	picture = religious
+
+	trigger = {
+		ai = no
+		religion = mesopotamian_religion
+		is_month = 1
+		NOT = { is_month = 3 }
+		is_at_war = no
+		is_bankrupt = no
+		NOT = { has_country_modifier = mesopotamian_celebration_cooldown }
+		NOT = { has_country_modifier = celebrate_national_akitu }
+		NOT = { has_country_modifier = mesopotamian_akitu }
+		NOT = { has_country_modifier = minor_akitu }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "custom_religion.2.a"
+		ai_chance = { factor = 3 }
+		add_years_of_income = -1
+		add_stability = 1
+		add_legitimacy = 10
+		add_patriarch_authority = 0.2
+		add_country_modifier = {
+			name = celebrate_national_akitu
+			duration = 90
+		}
+		hidden_effect = {
+			add_country_modifier = {
+				name = mesopotamian_celebration_cooldown
+				duration = 305
+				hidden = yes
+			}
+		}
+	}
+
+	option = {
+		name = "custom_religion.2.c"
+		add_years_of_income = -0.5
+		ai_chance = { factor = 3 }
+		add_patriarch_authority = 0.15
+		add_legitimacy = 10
+		add_country_modifier = {
+			name = minor_akitu
+			duration = 90
+		}
+		hidden_effect = {
+			add_country_modifier = {
+				name = mesopotamian_celebration_cooldown
+				duration = 305
+				hidden = yes
+			}
+		}
+	}
+
+	option = {
+		name = "custom_religion.2.b"
+		ai_chance = { factor = 3 }
+		custom_tooltip = custom_religion.2.tt
+		hidden_effect = {
+			add_country_modifier = {
+				name = mesopotamian_celebration_cooldown
+				duration = 305
+				hidden = yes
+			}
+			every_owned_province = {
+				limit = {
+					religion = mesopotamian_religion
+				}
+				add_province_modifier = {
+					name = local_akitu
+					duration = 90
+				}
+			}
+		}
+		add_country_modifier = {
+			name = mesopotamian_akitu
+			duration = 90
+		}
+		add_years_of_income = -0.25
+		add_legitimacy = 5
+		add_patriarch_authority = 0.1
+	}
+	option = {
+		name = "custom_religion.2.c"
+		ai_chance = { factor = 90 }
+		hidden_effect = {
+			add_country_modifier = {
+				name = mesopotamian_celebration_cooldown
+				duration = 305
+				hidden = yes
+			}
+		}
+	}
+}
+
+########################################################################################
+# Lybian Revolt
+########################################################################################
+
+country_event = {
+	id = custom_religion.3
+	title = "custom_religion.3.t"
+	desc = "custom_religion.3.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = {
+			OR = {
+				primary_culture = lybian
+				primary_culture = lybio_egyptian
+			}
+		}
+		NOT = { stability = 2 }
+		NOT = { legitimacy = 90 }
+		NOT = { absolutism = 25 }
+		any_owned_province = {
+			NOT = { has_province_modifier = lybians_revolt }
+			has_province_modifier = lybia_present
+		}
+	}
+
+	option = {
+		name = "custom_religion.3.a"
+		ai_chance = { factor = 50 }
+		random_owned_province = {
+			if = {
+				limit = {
+					has_province_modifier = lybia_present
+				}
+				spawn_rebels = {
+					type = leadered_peasant_rebels
+					size = 3
+					friend = LYB
+				}
+				add_province_modifier = {
+					name = lybians_revolt
+					duration = 3650
+				}
+			}
+		}
+		add_yearly_manpower = -0.33
+		add_mil_power = -100
+		add_stability = -1
+	}
+}
+
+########################################################################################
+# Sectarianism in Judaism
+########################################################################################
+
+country_event = {
+	id = custom_religion.4
+	title = "custom_religion.4.t"
+	desc = "custom_religion.4.d"
+	picture = senat_conflict
+
+	fire_only_once = yes
+
+	trigger = {
+		NOT = { has_global_flag = growing_sects_with_jews }
+		is_year = 453
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+		NOT = { religious_unity = 0.85 }
+		NOT = { jewish = 5 }
+	}
+
+	immediate = {
+		set_global_flag = growing_sects_with_jews
+	}
+
+	mean_time_to_happen = {
+		days = 365
+	}
+
+	option = {
+		name = "custom_religion.4.a"
+		ai_chance = { factor = 0 }
+		add_adm_power = 100
+		add_dip_power = -50
+		add_mil_power = -50
+		add_country_modifier = {
+			name = supporting_sadducees
+			duration = -1
+		}
+	}
+	option = {
+		name = "custom_religion.4.b"
+		ai_chance = { factor = 100 }
+		add_adm_power = -50
+		add_dip_power = -50
+		add_mil_power = 100
+		add_country_modifier = {
+			name = supporting_pharisees
+			duration = -1
+		}
+	}
+	option = {
+		name = "custom_religion.4.c"
+		ai_chance = { factor = 0 }
+		add_adm_power = -50
+		add_dip_power = 100
+		add_mil_power = -50
+		add_country_modifier = {
+			name = supporting_essenes
+			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# Change in Sect
+########################################################################################
+
+country_event = {
+	id = custom_religion.5
+	title = "custom_religion.5.t"
+	desc = "custom_religion.5.d"
+	picture = senat_conflict
+
+	is_triggered_only = yes
+
+	option = {
+		name = "custom_religion.5.a"
+		ai_chance = { factor = 33 }
+		trigger = {
+			NOT = { has_country_modifier = supporting_sadducees }
+		}
+		add_adm_power = 100
+		add_dip_power = -50
+		add_mil_power = -50
+		if = {
+			limit = {
+				has_country_modifier = supporting_pharisees
+			}
+			remove_country_modifier = supporting_pharisees
+		}
+		if = {
+			limit = {
+				has_country_modifier = supporting_essenes
+			}
+			remove_country_modifier = supporting_essenes
+		}
+		add_country_modifier = {
+			name = supporting_sadducees
+			duration = -1
+		}
+		add_country_modifier = {
+			name = changed_jewish_sect
+			duration = 3650
+		}
+	}
+
+	option = {
+		name = "custom_religion.5.b"
+		ai_chance = { factor = 33 }
+		trigger = {
+			NOT = { has_country_modifier = supporting_pharisees }
+		}
+		add_adm_power = -50
+		add_dip_power = -50
+		add_mil_power = 100
+		if = {
+			limit = {
+				has_country_modifier = supporting_sadducees
+			}
+			remove_country_modifier = supporting_sadducees
+		}
+		if = {
+			limit = {
+				has_country_modifier = supporting_essenes
+			}
+			remove_country_modifier = supporting_essenes
+		}
+		add_country_modifier = {
+			name = supporting_pharisees
+			duration = -1
+		}
+		add_country_modifier = {
+			name = changed_jewish_sect
+			duration = 3650
+		}
+	}
+
+	option = {
+		name = "custom_religion.5.c"
+		ai_chance = { factor = 33 }
+		trigger = {
+			NOT = { has_country_modifier = supporting_essenes }
+		}
+		add_adm_power = -50
+		add_dip_power = 100
+		add_mil_power = -50
+		if = {
+			limit = {
+				has_country_modifier = supporting_pharisees
+			}
+			remove_country_modifier = supporting_pharisees
+		}
+		if = {
+			limit = {
+				has_country_modifier = supporting_sadducees
+			}
+			remove_country_modifier = supporting_sadducees
+		}
+		add_country_modifier = {
+			name = supporting_essenes
+			duration = -1
+		}
+		add_country_modifier = {
+			name = changed_jewish_sect
+			duration = 3650
+		}
+	}
+}
+
+########################################################################################
+# Jeremiah
+########################################################################################
+
+country_event = {
+	id = custom_religion.6
+	title = "custom_religion.6.t"
+	desc = "custom_religion.6.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 145
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	option = {
+		name = "custom_religion.6.a"
+		ai_chance = { factor = 100 }
+		add_dip_power = 50
+		add_country_modifier = {
+			name = prophet_jeremiah
+			duration = 7665
+		}
+	}
+}
+
+########################################################################################
+# Ezekiel
+########################################################################################
+
+country_event = {
+	id = custom_religion.7
+	title = "custom_religion.7.t"
+	desc = "custom_religion.7.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 145
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	option = {
+		name = "custom_religion.7.a"
+		ai_chance = { factor = 100 }
+		add_adm_power = 50
+		add_country_modifier = {
+			name = prophet_ezekiel
+			duration = 13870
+		}
+	}
+}
+
+########################################################################################
+# Habakkuk
+########################################################################################
+
+country_event = {
+	id = custom_religion.8
+	title = "custom_religion.8.t"
+	desc = "custom_religion.8.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 145
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	option = {
+		name = "custom_religion.8.a"
+		ai_chance = { factor = 100 }
+		define_advisor = {
+			type = oracle
+			name = "Habakkuk"
+			discount = yes
+			skill = 3
+		}
+	}
+}
+
+########################################################################################
+# Zephaniah
+########################################################################################
+
+country_event = {
+	id = custom_religion.9
+	title = "custom_religion.9.t"
+	desc = "custom_religion.9.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 145
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 120
+	}
+
+	option = {
+		name = "custom_religion.9.a"
+		ai_chance = { factor = 100 }
+		define_advisor = {
+			type = scholar_advisor
+			name = "Zephaniah"
+			discount = yes
+			skill = 3
+		}
+	}
+}
+
+########################################################################################
+# Haggai
+########################################################################################
+
+country_event = {
+	id = custom_religion.10
+	title = "custom_religion.10.t"
+	desc = "custom_religion.10.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 233
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 30
+	}
+
+	option = {
+		name = "custom_religion.10.a"
+		ai_chance = { factor = 100 }
+		define_advisor = {
+			type = diplomat_adv
+			name = "Haggai"
+			discount = yes
+			skill = 3
+		}
+	}
+}
+
+########################################################################################
+# Zechariah
+########################################################################################
+
+country_event = {
+	id = custom_religion.11
+	title = "custom_religion.11.t"
+	desc = "custom_religion.11.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 233
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	option = {
+		name = "custom_religion.11.a"
+		ai_chance = { factor = 100 }
+		define_advisor = {
+			type = priest_adv
+			name = "Zechariah"
+			discount = yes
+			skill = 3
+		}
+	}
+}
+
+########################################################################################
+# Malachi
+########################################################################################
+
+country_event = {
+	id = custom_religion.12
+	title = "custom_religion.12.t"
+	desc = "custom_religion.12.d"
+	picture = ruler
+
+	fire_only_once = yes
+
+	trigger = {
+		is_year = 237
+		OR = {
+			tag = JUD
+			tag = ISR
+		}
+		religion = jewish
+	}
+
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	option = {
+		name = "custom_religion.12.a"
+		ai_chance = { factor = 100 }
+		define_advisor = {
+			type = oracle
+			name = "Malachi"
+			discount = yes
+			skill = 3
+		}
+	}
+}
+
+####Enuma Anu Enlil####
+
+########################################################################################
+# Good harvest omen
+########################################################################################
+
+country_event = {
+	id = custom_religion.13
+	title = "custom_religion.13.t"
+	desc = "custom_religion.13.d"
+	picture = harvest
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = good_harvest_omen }
+		NOT = { has_country_modifier = bad_harvest_omen }
+	}
+
+	option = {
+		name = "custom_religion.13.a"
+		ai_chance = { factor = 40 }
+		add_country_modifier = {
+			name = good_harvest_omen
+			duration = 1825
+		}
+	}
+}
+
+########################################################################################
+# Bad harvest omen
+########################################################################################
+
+country_event = {
+	id = custom_religion.14
+	title = "custom_religion.14.t"
+	desc = "custom_religion.14.d"
+	picture = food_supplies
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = bad_harvest_omen }
+		NOT = { has_country_modifier = good_harvest_omen }
+	}
+
+	option = {
+		name = "custom_religion.14.a"
+		ai_chance = { factor = 40 }
+		add_country_modifier = {
+			name = bad_harvest_omen
+			duration = 1825
+		}
+	}
+}
+
+########################################################################################
+# Omens of catastrophic flooding
+########################################################################################
+
+country_event = {
+	id = custom_religion.15
+	title = "custom_religion.15.t"
+	desc = "custom_religion.15.d"
+	picture = death
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = flooding_omen }
+	}
+
+	option = {
+		name = "custom_religion.15.a"
+		add_country_modifier = {
+			name = flooding_omen
+			duration = 365
+		}
+	}
+}
+
+########################################################################################
+# Catastrophic famine
+########################################################################################
+
+country_event = {
+	id = custom_religion.16
+	title = "custom_religion.16.t"
+	desc = "custom_religion.16.d"
+	picture = civilwar
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = famine_omen }
+	}
+
+	option = {
+		name = "custom_religion.16.a"
+		add_years_of_income = -0.4
+		add_stability = -1
+		add_country_modifier = {
+			name = famine_omen
+			duration = 3650
+		}
+	}
+}
+
+########################################################################################
+# Marduk is displeased
+########################################################################################
+
+country_event = {
+	id = custom_religion.17
+	title = "custom_religion.17.t"
+	desc = "custom_religion.17.d"
+	picture = religious
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_personal_deity = marduk }
+		NOT = { prestige = 50 }
+	}
+
+	option = {
+		name = "custom_religion.17.a"
+		add_legitimacy = -10
+		add_prestige = -10
+	}
+}
+
+########################################################################################
+# Marduk is pleased
+########################################################################################
+
+country_event = {
+	id = custom_religion.18
+	title = "custom_religion.18.t"
+	desc = "custom_religion.18.d"
+	picture = culture
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_personal_deity = marduk
+		prestige = 50
+		religion = mesopotamian_religion
+	}
+
+	option = {
+		name = "custom_religion.18.a"
+		add_legitimacy = 10
+		add_prestige = 10
+	}
+}
+
+########################################################################################
+# Ishtar is displeased
+########################################################################################
+
+country_event = {
+	id = custom_religion.19
+	title = "custom_religion.19.t"
+	desc = "custom_religion.19.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_personal_deity = ishtar }
+		NOT = { manpower_percentage = 0.85 }
+	}
+
+	option = {
+		name = "custom_religion.19.a"
+		add_army_tradition = -10
+		add_navy_tradition = -10
+	}
+}
+
+########################################################################################
+# Ishtar is pleased
+########################################################################################
+
+country_event = {
+	id = custom_religion.20
+	title = "custom_religion.20.t"
+	desc = "custom_religion.20.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_personal_deity = ishtar
+		manpower_percentage = 0.85
+		religion = mesopotamian_religion
+	}
+
+	option = {
+		name = "custom_religion.20.a"
+		add_army_tradition = 10
+		add_navy_tradition = 10
+	}
+}
+
+########################################################################################
+# Nabu is displeased
+########################################################################################
+
+country_event = {
+	id = custom_religion.21
+	title = "custom_religion.21.t"
+	desc = "custom_religion.21.d"
+	picture = temple
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_personal_deity = nabu }
+		corruption = 3
+	}
+
+	option = {
+		name = "custom_religion.21.a"
+		add_splendor = -50
+	}
+}
+
+########################################################################################
+# Nabu is pleased
+########################################################################################
+
+country_event = {
+	id = custom_religion.22
+	title = "custom_religion.22.t"
+	desc = "custom_religion.22.d"
+	picture = libary
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_personal_deity = nabu
+		NOT = { corruption = 3 }
+		religion = mesopotamian_religion
+	}
+
+	option = {
+		name = "custom_religion.22.a"
+		add_splendor = 50
+	}
+}
+
+########################################################################################
+# great victories in the future
+########################################################################################
+
+country_event = {
+	id = custom_religion.23
+	title = "custom_religion.23.t"
+	desc = "custom_religion.23.d"
+	picture = military_parade
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = victories_omen }
+		NOT = { has_country_modifier = defeats_omen }
+		army_size_percentage = 0.8
+		mil = 3
+	}
+
+	option = {
+		name = "custom_religion.23.a"
+		add_mil_power = 50
+		add_country_modifier = {
+			name = victories_omen
+			duration = 3650
+		}
+	}
+}
+
+########################################################################################
+# defeats in the future
+########################################################################################
+
+country_event = {
+	id = custom_religion.24
+	title = "custom_religion.24.t"
+	desc = "custom_religion.24.d"
+	picture = battle
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { has_country_modifier = defeats_omen }
+		NOT = { has_country_modifier = victories_omen }
+		NOT = { army_size_percentage = 0.8 }
+		NOT = { mil = 3 }
+	}
+
+	option = {
+		name = "custom_religion.24.a"
+		add_mil_power = -50
+		add_country_modifier = {
+			name = defeats_omen
+			duration = 3650
+		}
+	}
+}
+
+########################################################################################
+# incompetent astrologists
+########################################################################################
+
+country_event = {
+	id = custom_religion.25
+	title = "custom_religion.25.t"
+	desc = "custom_religion.25.d"
+	picture = libary
+
+	is_triggered_only = yes
+
+	trigger = {
+		religion = mesopotamian_religion
+		NOT = { adm = 2 }
+		NOT = { stability = 0 }
+		NOT = { prestige = 0 }
+	}
+
+	option = {
+		name = "custom_religion.25.a"
+		add_adm_power = -80
+		add_patriarch_authority = -0.15
+	}
+}
+
+########################################################################################
+# Philistia new serenim
+########################################################################################
+
+country_event = {
+	id = custom_religion.28
+	title = "custom_religion.28.t"
+	desc = "custom_religion.28.d"
+	picture = ritual_feast
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_reform = philistian_pentapolis_reform
+	}
+
+	option = {
+		name = "custom_religion.28.a"
+		ai_chance = { factor = 20 }
+		trigger = {
+			owns = 2279
+		}
+		add_dip_power = 50
+		add_mil_power = -25
+		add_adm_power = -25
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 6
+			max_random_mil = 3
+			age = 30
+			dynasty = "of Gaza"
+		}
+
+	}
+	option = {
+		name = "custom_religion.28.b"
+		ai_chance = { factor = 20 }
+		trigger = {
+			owns = 3443
+		}
+		add_dip_power = 50
+		add_mil_power = -25
+		add_adm_power = -25
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 6
+			max_random_mil = 3
+			age = 30
+			dynasty = "of Ashdod"
+		}
+
+	}
+	option = {
+		name = "custom_religion.28.c"
+		ai_chance = { factor = 20 }
+		trigger = {
+			owns = 5692
+		}
+		add_dip_power = -25
+		add_mil_power = -25
+		add_adm_power = 50
+		define_heir = {
+			max_random_adm = 6
+			max_random_dip = 3
+			max_random_mil = 3
+			age = 30
+			dynasty = "of Ashkelon"
+		}
+
+	}
+	option = {
+		name = "custom_religion.28.e"
+		ai_chance = { factor = 20 }
+		trigger = {
+			owns = 4882
+		}
+		add_dip_power = -25
+		add_mil_power = 50
+		add_adm_power = -25
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 6
+			age = 30
+			dynasty = "of Ekron"
+		}
+
+	}
+	option = {
+		name = "custom_religion.28.f"
+		ai_chance = { factor = 20 }
+		trigger = {
+			owns = 5691
+		}
+		add_dip_power = -25
+		add_mil_power = 50
+		add_adm_power = -25
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 6
+			age = 30
+			dynasty = "of Gath"
+		}
+	}
+}
+
+########################################################################################
+# seth issue
+########################################################################################
+
+country_event = {
+	id = custom_religion.29
+	title = "custom_religion.29.t"
+	desc = "custom_religion.29.d"
+	picture = temple
+
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = EGY
+		religion = egyptian_religion
+		NOT = { faction_in_power = fac_priesthood }
+		NOT = { religious_unity = 0.8 }
+		NOT = { has_country_flag = the_seth_issue }
+		OR = {
+			NOT = { tolerance_to_this = 3 }
+			has_idea_group = syncretism_ideas
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 730
+	}
+
+	immediate = {
+		set_country_flag = the_seth_issue
+	}
+
+	option = {
+		name = "custom_religion.29.a"
+		ai_chance = {
+			factor = 35
+			modifier = {
+				factor = 2
+				average_unrest = 2
+			}
+			modifier = {
+				factor = 2
+				has_idea_group = syncretism_ideas
+			}
+			modifier = {
+				factor = 2
+				NOT = { religious_unity = 0.7 }
+			}
+		}
+		add_country_modifier = {
+			name = seth_restored_pantheon
+			duration = -1
+		}
+		add_prestige = -10
+		add_dip_power = 100
+	}
+
+	option = {
+		name = "custom_religion.29.b"
+		ai_chance = {
+			factor = 65
+			modifier = {
+				factor = 2
+				religious_unity = 0.7
+			}
+		}
+		add_dip_power = -100
+		add_prestige = 10
+		add_country_modifier = {
+			name = continue_seth_vilification
+			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# when passing a pagan religious reform
+########################################################################################
+
+country_event = {
+	id = custom_religion.30
+	title = "custom_religion.30.t"
+	desc = "custom_religion.30.d"
+	picture = temple
+
+	is_triggered_only = yes
+
+	trigger = {
+		has_dlc = "El Dorado"
+		unreformed_pagan_religious_group_trigger = yes
+	}
+
+	option = {
+		name = "custom_religion.30.a"
+		add_stability = -3
+		add_legitimacy = -40
+		add_republican_tradition = -40
+		add_devotion = -40
+		if = {
+			limit = {
+				uses_patriarch_authority = yes
+			}
+			add_patriarch_authority = -1
+		}
+		else = {
+			add_absolutism = -20
+		}
+		add_adm_power = -200
+		add_dip_power = -200
+		add_mil_power = -200
+	}
+}
+
+########################################################################################
+# Selecting religious reform path
+########################################################################################
+
+country_event = {
+	id = custom_religion.31
+	title = "custom_religion.31.t"
+	desc = "custom_religion.31.d"
+	picture = temple
+
+	is_triggered_only = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = "custom_religion.31.a"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				average_unrest = 1
+			}
+			modifier = {
+				factor = 2
+				has_idea_group = syncretism_ideas
+			}
+			modifier = {
+				factor = 0
+				has_idea_group = cerimonial_ideas
+			}
+			modifier = {
+				factor = 2
+				NOT = { religious_unity = 0.7 }
+			}
+			modifier = {
+				factor = 2
+				num_accepted_cultures = 2
+			}
+		}
+		hidden_effect = {
+			set_country_flag = syncretism_religion_reforms_path_flag
+		}
+		if = {
+			limit = {
+				uses_patriarch_authority = yes
+			}
+			add_patriarch_authority = 0.1
+		}
+		else = { add_absolutism = 5 }
+	}
+	option = {
+		name = "custom_religion.31.b"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				religious_unity = 0.7
+			}
+			modifier = {
+				factor = 2
+				NOT = { stability = 1 }
+			}
+			modifier = {
+				factor = 2
+				NOT = { absolutism = 20 }
+			}
+			modifier = {
+				factor = 2
+				NOT = { legitimacy_equivalent = 75 }
+			}
+		}
+		hidden_effect = {
+			set_country_flag = stability_religion_reforms_path_flag
+		}
+		if = {
+			limit = {
+				uses_patriarch_authority = yes
+			}
+			add_patriarch_authority = 0.1
+		}
+		else = { add_absolutism = 5 }
+	}
+	option = {
+		name = "custom_religion.31.c"
+		ai_chance = {
+			factor = 33
+			modifier = {
+				factor = 2
+				religious_unity = 0.7
+			}
+			modifier = {
+				factor = 0
+				has_idea_group = syncretism_ideas
+			}
+			modifier = {
+				factor = 2
+				has_idea_group = cerimonial_ideas
+			}
+			modifier = {
+				factor = 2
+				stability = 1
+			}
+			modifier = {
+				factor = 2
+				absolutism = 20
+			}
+			modifier = {
+				factor = 2
+				NOT = { num_accepted_cultures = 2 }
+			}
+		}
+		hidden_effect = {
+			set_country_flag = proselytism_religion_reforms_path_flag
+		}
+		if = {
+			limit = {
+				uses_patriarch_authority = yes
+			}
+			add_patriarch_authority = 0.1
+		}
+		else = { add_absolutism = 5 }
+	}
+}

@@ -1,0 +1,913 @@
+namespace = ruler_health
+########################################################################################
+# Fell from Horse
+########################################################################################
+country_event = {
+	id = ruler_health.1
+	title = "ruler_health.1.t"
+	desc = "ruler_health.1.d"
+	picture = horse_smith
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { immortal_ruler_trigger = yes }
+		ruler_age = 20
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+		add_ruler_modifier = { name = fell_from_horse_modifier }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				40 = {}
+				30 = { change_adm = -1 }
+				30 = { change_dip = -1 }
+				30 = { change_mil = -1 }
+				20 = {
+					change_adm = -1
+					change_dip = -1
+					change_mil = -1
+				}
+				20 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				30 = {}
+				40 = { change_adm = -1 }
+				40 = { change_dip = -1 }
+				40 = { change_mil = -1 }
+				30 = {
+					change_adm = -1
+					change_dip = -1
+					change_mil = -1
+				}
+				30 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				20 = {}
+				50 = { change_adm = -1 }
+				50 = { change_dip = -1 }
+				50 = { change_mil = -1 }
+				40 = {
+					change_adm = -1
+					change_dip = -1
+					change_mil = -1
+				}
+				40 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			10 = {}
+			90 = { change_adm = -1 }
+			70 = { change_dip = -1 }
+			70 = { change_mil = -1 }
+			60 = {
+				change_adm = -1
+				change_dip = -1
+				change_mil = -1
+			}
+			60 = { kill_ruler = yes }
+		}
+	}
+	option = { # Same effect as having a skill 1 physician
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 150 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 300 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -100
+		add_treasury = -200
+		random_list = {
+			20 = {}
+			50 = { change_adm = -1 }
+			50 = { change_dip = -1 }
+			50 = { change_mil = -1 }
+			40 = {
+				change_adm = -1
+				change_dip = -1
+				change_mil = -1
+			}
+			40 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Food poisoning
+########################################################################################
+country_event = {
+	id = ruler_health.2
+	title = "ruler_health.2.t"
+	desc = "ruler_health.2.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				90 = {}
+				10 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				80 = {}
+				20 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				70 = {}
+				30 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			50 = {}
+			50 = { kill_ruler = yes }
+		}
+	}
+	option = { # Same effect as having a skill 1 physician
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 100 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 150 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -50
+		add_treasury = -75
+		random_list = {
+			70 = {}
+			30 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Tuberculosis
+########################################################################################
+country_event = {
+	id = ruler_health.3
+	title = "ruler_health.3.t"
+	desc = "ruler_health.3.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		ruler_age = 35
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				35 = {}
+				65 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				25 = {}
+				75 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				15 = {}
+				85 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			5 = {}
+			95 = { kill_ruler = yes }
+		}
+	}
+	option = {
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 200 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 200 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -100
+		add_treasury = -100
+		random_list = {
+			20 = {}
+			80 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Stroke
+########################################################################################
+country_event = {
+	id = ruler_health.4
+	title = "ruler_health.4.t"
+	desc = "ruler_health.4.d"
+	picture = death
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		ruler_age = 30
+		NOT = { has_ruler_modifier = suffered_stroke_modifier }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		NOT = { immortal_ruler_trigger = yes }
+		ruler_age = 45
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		add_ruler_modifier = { name = suffered_stroke_modifier }
+		change_mil = -1
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				40 = {}
+				40 = { change_adm = -2 }
+				40 = { change_dip = -2 }
+				40 = { change_mil = -1 }
+				30 = {
+					change_adm = -2
+					change_dip = -2
+					change_mil = -1
+				}
+				10 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				30 = {}
+				50 = { change_adm = -2 }
+				50 = { change_dip = -2 }
+				50 = { change_mil = -1 }
+				40 = {
+					change_adm = -2
+					change_dip = -2
+					change_mil = -1
+				}
+				20 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				20 = {}
+				60 = { change_adm = -2 }
+				60 = { change_dip = -2 }
+				60 = { change_mil = -1 }
+				50 = {
+					change_adm = -2
+					change_dip = -2
+					change_mil = -1
+				}
+				30 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			10 = {}
+			80 = { change_adm = -2 }
+			80 = { change_dip = -2 }
+			80 = { change_mil = -1 }
+			60 = {
+				change_adm = -2
+				change_dip = -2
+				change_mil = -1
+			}
+			50 = { kill_ruler = yes }
+		}
+	}
+	option = { # Same effect as having a skill 1 physician
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 300 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 400 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -200
+		add_treasury = -300
+		random_list = {
+			20 = {}
+			60 = { change_adm = -2 }
+			60 = { change_dip = -2 }
+			60 = { change_mil = -1 }
+			50 = {
+				change_adm = -2
+				change_dip = -2
+				change_mil = -1
+			}
+			30 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Flu
+########################################################################################
+country_event = {
+	id = ruler_health.5
+	title = "ruler_health.5.t"
+	desc = "ruler_health.5.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				95 = {}
+				5 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				85 = {}
+				15 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				75 = {}
+				25 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			65 = {}
+			35 = { kill_ruler = yes }
+		}
+	}
+	option = {
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 200 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 200 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -100
+		add_treasury = -100
+		random_list = {
+			80 = {}
+			20 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Infection
+########################################################################################
+country_event = {
+	id = ruler_health.6
+	title = "ruler_health.6.t"
+	desc = "ruler_health.6.d"
+	picture = battle
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = { # An employed physician will reduce chances of death
+		name = "ruler_health.1.a"
+		ai_chance = {
+			factor = 100
+		}
+		trigger = { advisor = physician_adv }
+		highlight = yes
+		if = { # The higher the skill the more chances of coming out better
+			limit = { physician_adv = 3 }
+			random_list = {
+				70 = {}
+				20 = { change_mil = -1 }
+				10 = { kill_ruler = yes }
+			}
+		}
+		else_if = {
+			limit = { physician_adv = 2 }
+			random_list = {
+				60 = {}
+				30 = { change_mil = -1 }
+				20 = { kill_ruler = yes }
+			}
+		}
+		else = {
+			random_list = {
+				50 = {}
+				40 = { change_mil = -1 }
+				30 = { kill_ruler = yes }
+			}
+		}
+	}
+	option = { #Most likely scenario to die
+		name = "ruler_health.1.b"
+		ai_chance = {
+			factor = 50
+		}
+		random_list = {
+			40 = {}
+			50 = { change_mil = -1 }
+			40 = { kill_ruler = yes }
+		}
+	}
+	option = {
+		name = "ruler_health.1.c"
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				advisor = physician_adv
+			}
+			modifier = {
+				factor = 0
+				NOT = { dip_power = 300 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { treasury = 300 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_deficit = yes
+					is_bankrupt = yes
+					is_in_large_debt = yes
+				}
+			}
+		}
+		add_dip_power = -150
+		add_treasury = -200
+		random_list = {
+			55 = {}
+			35 = { change_mil = -1 }
+			25 = { kill_ruler = yes }
+		}
+	}
+}
+
+########################################################################################
+# Senile old ruler
+########################################################################################
+country_event = {
+	id = ruler_health.7
+	title = "ruler_health.7.t"
+	desc = "ruler_health.7.d"
+	picture = mad_emperor
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		ruler_age = 60
+		NOT = { has_ruler_modifier = senile_ruler_modifier }
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.7.a"
+		ai_chance = {
+			factor = 100
+		}
+		add_ruler_modifier = { name = senile_ruler_modifier }
+		change_adm = -3
+		change_dip = -3
+		change_mil = -1
+	}
+}
+
+########################################################################################
+# Infirm old ruler
+########################################################################################
+country_event = {
+	id = ruler_health.8
+	title = "ruler_health.8.t"
+	desc = "ruler_health.8.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		ruler_age = 50
+		NOT = { has_ruler_modifier = infirm_ruler_modifier }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.8.a"
+		ai_chance = {
+			factor = 100
+		}
+		change_mil = -2
+		add_ruler_modifier = { name = infirm_ruler_modifier }
+	}
+}
+
+########################################################################################
+# Leprous ruler
+########################################################################################
+country_event = {
+	id = ruler_health.9
+	title = "ruler_health.9.t"
+	desc = "ruler_health.9.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { has_ruler_modifier = leprous_ruler_modifier }
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.9.a"
+		ai_chance = {
+			factor = 100
+		}
+		change_dip = -3
+		add_ruler_modifier = { name = leprous_ruler_modifier }
+	}
+}
+
+########################################################################################
+# Gout
+########################################################################################
+country_event = {
+	id = ruler_health.10
+	title = "ruler_health.10.t"
+	desc = "ruler_health.10.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { has_ruler_modifier = gout_ruler_modifier }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		ruler_age = 40
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.10.a"
+		ai_chance = {
+			factor = 100
+		}
+		change_mil = -3
+		add_ruler_modifier = { name = gout_ruler_modifier }
+	}
+}
+
+########################################################################################
+# Cancer
+########################################################################################
+country_event = {
+	id = ruler_health.11
+	title = "ruler_health.11.t"
+	desc = "ruler_health.11.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { has_ruler_modifier = cancer_ruler_modifier }
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		ruler_age = 30
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.11.a"
+		ai_chance = {
+			factor = 100
+		}
+		change_mil = -1
+		add_ruler_modifier = { name = cancer_ruler_modifier }
+	}
+}
+
+########################################################################################
+# Lead poisoning
+########################################################################################
+country_event = {
+	id = ruler_health.12
+	title = "ruler_health.12.t"
+	desc = "ruler_health.12.d"
+	picture = illness
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		NOT = { has_ruler_modifier = lead_poisoning_modifier }
+		NOT = { immortal_ruler_trigger = yes }
+		NOT = { has_ruler_flag = ruler_got_sick_flag }
+		months_of_ruling = 120
+	}
+
+	immediate = {
+		hidden_effect = { set_ruler_flag = ruler_got_sick_flag }
+	}
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = "ruler_health.12.a"
+		ai_chance = {
+			factor = 100
+		}
+		change_adm = -1
+		change_dip = -1
+		change_mil = -1
+		add_ruler_modifier = { name = lead_poisoning_modifier }
+	}
+}
+
+########################################################################################
+# ruler dies in hunting
+########################################################################################
+
+country_event = {
+	id = ruler_health.13
+	title = "ruler_health.13.t"
+	desc = "ruler_health.13.d"
+	picture = boar
+	is_triggered_only = yes
+
+	trigger = {
+		has_regency = no
+		ruler_age = 25
+		mil = 3
+		months_of_ruling = 120
+	}
+
+	option = {
+		name = "ruler_health.13.a"
+		ai_chance = { factor = 60 }
+		random = {
+			chance = 70
+			kill_ruler = yes
+		}
+	}
+}

@@ -1,0 +1,1650 @@
+namespace = athenai
+
+########################################################################################
+# cleanup event for early athens to remove default factions
+########################################################################################
+country_event = {
+	id = athenai.101
+	title = "athenai.101.t"
+	desc = "athenai.101.d"
+	picture = senat_conflict
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		NOT = {
+			is_year = 193
+		}
+	}
+	option = {
+		name = "athenai.101.a"
+		ATH = {
+			remove_faction = fac_democrats
+			remove_faction = fac_oligarchs
+			remove_faction = fac_monarchists
+			remove_country_modifier = polis_oligarchy_modifier
+			add_faction_influence = { faction = fac_diakrii influence = -15 }
+			add_faction_influence = { faction = fac_paralii influence = 5 }
+			add_faction_influence = { faction = fac_pedii influence = 10 }
+		}
+	}
+}
+
+
+########################################################################################
+# NEW EVENTS START
+########################################################################################
+########################################################################################
+# Pittacus of Mytilene - moved to mytilene flavor
+########################################################################################
+
+
+########################################################################################
+# Duel with Phrynon and peace with Athens
+########################################################################################
+country_event = {
+	id = athenai.11
+	title = "athenai.11.t"
+	desc = "athenai.11.d"
+	picture = sea_invasion
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 150
+		NOT = { started_in = 160.1.1  }
+		war_with = LB1
+		LB1 = { has_country_flag = pittacus }
+		NOT = {	has_country_flag = pittacus_duel }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.11.a"
+		ai_chance = { factor = 90 }
+		kill_leader = {	type = "Phrynon" }
+		add_prestige = -5
+		white_peace = LB1
+		release = SIE
+		LB1 = {
+			vassalize = SIE
+		}
+		set_country_flag = pittacus_duel
+	}
+	option = {
+		name = "athenai.11.b"
+		ai_chance = { factor = 10 }
+		kill_leader = { type = "Phrynon" }
+		add_prestige = -10
+		add_war_exhaustion = 2
+		set_country_flag = pittacus_duel
+	}
+}
+
+
+########################################################################################
+# Atheno-Megarian conflict
+########################################################################################
+country_event = {
+	id = athenai.12
+	title = "athenai.12.t"
+	desc = "athenai.12.d"
+	picture = exploration
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		NOT = {	has_country_flag = atheno_megarian_conflict }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.12.a"
+		ai_chance = { factor = 100 }
+		add_country_modifier = {
+			name = megarian_sea_blockade
+			duration = 9600
+		}
+		set_country_flag = atheno_megarian_conflict
+	}
+}
+
+########################################################################################
+# Sent Force to Salamis and raid Nisaia while Megarians are distracted?
+########################################################################################
+country_event = {
+	id = athenai.13
+	title = "athenai.13.t"
+	desc = "athenai.13.d"
+	picture = navy2
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		has_country_flag = atheno_megarian_conflict
+		NOT = {	has_country_flag = sent_force }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.13.a"
+		ai_chance = { factor = 100 }
+		set_country_flag = sent_force
+		ROOT = {
+			add_mil_power = -50
+			add_manpower = -4
+			define_general = {
+				name = "Solon"
+				fire = 3
+				shock = 3
+				manuever = 3
+				siege = 2
+			}
+		}
+	}
+}
+
+########################################################################################
+# Athens with Solon as general capture Salamis while Megarians distracted by conflict with Perinthos and Samos
+########################################################################################
+country_event = {
+	id = athenai.14
+	title = "athenai.14.t"
+	desc = "athenai.14.d"
+	picture = sea_invasion
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 155
+		NOT = { started_in = 160.1.1  }
+		has_country_flag = atheno_megarian_conflict
+		has_country_flag = sent_force
+		NOT = {	has_country_flag = salamis_capture }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.14.a"
+		ai_chance = { factor = 100 }
+		5545 = {
+			add_base_production = 1
+		}
+		set_country_flag = salamis_capture
+		remove_country_modifier = megarian_sea_blockade
+	}
+}
+
+########################################################################################
+# Solon (moved from flavor_Greek )
+########################################################################################
+country_event = {
+	id = athenai.140
+	title = "greek.2.t"
+	desc = "greek.2.d"
+	picture = senat
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = ATH
+		has_reform = early_athens_polis_reform
+		has_country_flag = sent_force
+		is_year = 160
+		NOT = {
+			is_year = 190
+		}
+		NOT = { has_global_flag = solons_reform_flag  }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.140.a"
+		ai_chance = { factor = 100 }
+		set_global_flag = birth_of_democracy
+		set_global_flag = solons_reform_flag
+		add_stability = 1
+		add_republican_tradition = 20
+		add_government_reform = institutionalized_democracy_reform
+		add_government_reform = written_law_reform
+		add_country_modifier = {
+			name = solons_reform
+			desc = SOLONS_REFORMS_DESC
+			duration = -1
+		}
+		add_country_modifier = {
+			name = ath_council_of_400
+			desc = ath_council_of_400_desc
+			duration = 14600
+		}
+		remove_country_modifier = draco_laws
+		define_ruler = {
+			name = "Solon"
+			dynasty = "Kodrosoi"
+			adm = 6
+			dip = 4
+			mil = 3
+			age = 50
+			attach_leader = "Solon"
+		}
+	}
+}
+
+########################################################################################
+# Solon reforms: local focus on reducing debt, patronise small farmers, olive growing and export, land maximum reduced aristorcratic lands
+########################################################################################
+country_event = {
+	id = athenai.15
+	title = "athenai.15.t"
+	desc = "athenai.15.d"
+	picture = ruler
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 160
+		has_ruler = "Solon"
+		NOT = { started_in = 195.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.15.a"
+		ai_chance = { factor = 100 }
+		add_government_reform = private_land_reform
+		add_government_reform = agraculture_focus_reform
+		add_faction = fac_diakrii
+		add_faction_influence = { faction = fac_diakrii influence = 15 }
+	}
+}
+########################################################################################
+# social unrest - many now happy about Solon reforms - aristocrats that lost power, demos - that got not enough
+########################################################################################
+country_event = {
+	id = athenai.6
+	title = "athenai.6.t"
+	desc = "athenai.6.d"
+	picture = senat_conflict
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 161
+		NOT = { started_in = 185.1.1  }
+		has_ruler = "Solon"
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.6.a"
+		ai_chance = { factor = 100 }
+		add_stability = -1
+		add_republican_tradition = -5
+		set_country_flag = solon_unrest
+	}
+}
+
+
+########################################################################################
+# Solon exile
+########################################################################################
+country_event = {
+	id = athenai.601
+	title = "athenai.601.t"
+	desc = "athenai.601.d"
+	picture = trial
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 161
+		NOT = { started_in = 166.1.1  }
+		has_country_modifier = solons_reform
+		has_country_flag = solon_unrest
+		NOT = { has_country_flag = solon_exiled }
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "athenai.601.a"
+		ai_chance = { factor = 100 }
+		add_republican_tradition = -5
+		kill_ruler = yes
+		set_country_flag = solon_exiled
+	}
+}
+
+
+########################################################################################
+# Megarians recapture Salamis while Athens in turmoil
+########################################################################################
+country_event = {
+	id = athenai.16
+	title = "athenai.16.t"
+	desc = "athenai.16.d"
+	picture = sea_invasion
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		NOT = { started_in = 195.1.1  }
+		has_country_flag = solon_exiled
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.16.a"
+		ai_chance = { factor = 100 }
+		5545 = {
+			add_base_production = -1
+		}
+		MEG = {
+			add_manpower = 5
+		}
+	}
+}
+
+########################################################################################
+# Pisistratus leads and empowers Diakrii faction - + influence to them
+########################################################################################
+country_event = {
+	id = athenai.17
+	title = "athenai.17.t"
+	desc = "athenai.17.d"
+	picture = senat
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 193
+		NOT = { started_in = 195.1.1  }
+		NOT = { has_country_flag = pisistratus_start }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.17.a"
+		ai_chance = { factor = 100 }
+		add_republican_tradition = -10
+		add_manpower = -0.050
+		set_country_flag = pisistratus_start
+	}
+}
+
+
+########################################################################################
+# Pisistratus seizes Acropolis for first time and rules from there. Seems everyone accepted him for some time.
+########################################################################################
+country_event = {
+	id = athenai.18
+	title = "athenai.18.t"
+	desc = "athenai.18.d"
+	picture = guard
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 193
+		NOT = { started_in = 195.1.1  }
+		has_country_flag = pisistratus_start
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "athenai.18.a"
+		ai_chance = { factor = 100 }
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratidae"
+			age = 36
+			dip = 3
+			adm = 4
+			mil = 5
+			attach_leader = "Peisistratos"
+		}
+		add_stability = 1
+		add_army_professionalism = 0.1
+		set_country_flag = pisistratus_1_term
+	}
+}
+########################################################################################
+# Pisistratus overthrown by combined force of Paralii and Pedii
+########################################################################################
+country_event = {
+	id = athenai.19
+	title = "athenai.19.t"
+	desc = "athenai.19.d"
+	picture = senat_conflict
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		OR = {
+			AND = {
+				has_country_flag = pisistratus_1_term
+				is_year = 198
+				has_ruler = "Peisistratos"
+			}
+			AND = {
+				has_country_flag = pisistratus_1_term
+				NOT = {
+					has_ruler = "Peisistratos"
+				}
+			}
+		}
+		NOT = { started_in = 200.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.19.a"
+		ai_chance = { factor = 100 }
+		change_government = republic
+		add_government_reform = early_athens_polis_reform
+		add_government_reform = oligarchy_republic_reform
+		define_ruler = {
+			name = "Hegesias"
+			dynasty = ""
+			dip = 3
+			adm = 3
+			mil = 3
+		}
+		set_country_flag = pisistratus_1_exile
+		add_faction_influence = { faction = fac_paralii influence = 10 }
+		add_faction_influence = { faction = fac_pedii influence = 10 }
+		add_faction_influence = { faction = fac_diakrii influence = -20 }
+	}
+}
+
+########################################################################################
+# Pisistratus returns again for short time
+#######################################################################################
+country_event = {
+	id = athenai.20
+	title = "athenai.20.t"
+	desc = "athenai.20.d"
+	picture = senat
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 199
+		has_country_flag = pisistratus_1_exile
+		NOT = {
+			has_ruler = "Peisistratos"
+		}
+		NOT = { started_in = 200.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "athenai.20.a"
+		ai_chance = { factor = 100 }
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratidae"
+			age = 39
+			dip = 3
+			adm = 4
+			mil = 5
+			attach_leader = "Peisistratos"
+		}
+		add_stability = 1
+		add_army_professionalism = 0.1
+		define_consort = {
+			name = "Kesira"
+			country_of_origin = ATH
+			dynasty = "Alcmeonidae"
+			adm = 2
+			dip = 2
+			mil = 2
+			female = yes
+			age = 25
+		}
+		set_country_flag = pisistratus_2_term
+	}
+}
+
+########################################################################################
+# Pisistratus exiled again after neglected his new wife, daughter of paralii leader
+########################################################################################
+country_event = {
+	id = athenai.21
+	title = "athenai.21.t"
+	desc = "athenai.21.d"
+	picture = exploration
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		has_country_flag = pisistratus_2_term
+		NOT = { started_in = 204.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 4
+	}
+
+	option = {
+		name = "athenai.21.a"
+		ai_chance = { factor = 100 }
+		change_government = republic
+		add_government_reform = early_athens_polis_reform
+		add_government_reform = oligarchy_republic_reform
+		define_ruler = {
+			name = "Hegesias"
+			dynasty = ""
+			dip = 3
+			adm = 3
+			mil = 3
+		}
+		set_country_flag = pisistratus_2_exile
+		add_faction_influence = { faction = fac_paralii influence = 15 }
+		add_faction_influence = { faction = fac_pedii influence = 15 }
+		add_faction_influence = { faction = fac_diakrii influence = -30 }
+	}
+}
+
+########################################################################################
+# Pisistratus returns again, now till the end
+########################################################################################
+country_event = {
+	id = athenai.22
+	title = "athenai.22.t"
+	desc = "athenai.22.d"
+	picture = hoplites
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 208
+		has_country_flag = pisistratus_2_exile
+		NOT = {
+			has_ruler = "Peisistratos"
+		}
+		NOT = { started_in = 210.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.22.a"
+		ai_chance = { factor = 98 }
+		change_government = monarchy
+		add_government_reform = aristocratic_monarchy_reform
+		define_general = {
+			name = "Peisistratos"
+			fire = 3
+			shock = 4
+			manuever = 3
+			siege = 3
+		}
+		define_ruler = {
+			name = "Peisistratos"
+			dynasty = "Peisistratidae"
+			age = 45
+			dip = 3
+			adm = 4
+			mil = 5
+			attach_leader = "Peisistratos"
+		}
+		add_stability = 1
+		add_army_professionalism = 0.1
+		define_consort = {
+			name = "Timonassa"
+			country_of_origin = ARG
+			dynasty = "of Argos"
+			adm = 2
+			dip = 2
+			mil = 2
+			female = yes
+			age = 25
+		}
+		define_heir = {
+			name = "Hippias"
+			dynasty = "Peisistratidae"
+			age = 12
+			adm = 3
+			dip = 4
+			mil = 2
+		}
+		set_country_flag = pisistratus_3_term
+		#clears alliances and addes new
+		create_alliance = ARG
+		create_alliance = ERT
+		create_alliance = BOE
+		#overseas lands of Peisistratos,captured in exile, now belongs to Athens.
+		if = {
+			limit = {
+				ATH = {
+					ai = no
+				}
+			}
+			1066 = {
+				cede_province = ATH
+			}
+			1074 = {
+				cede_province = ATH
+			}
+		}
+		else = {
+			ATH = {
+				add_country_modifier = {
+					name = pisistratus_thracian_mines_revenue
+					duration = 17500
+				}
+			}
+		}
+	}
+	option = {
+		name = "athenai.22.b"
+		ai_chance = { factor = 2 }
+		961 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 5
+				leader = "Peisistratos Peisistratidae"
+				friend = ARG
+			}
+		}
+		set_country_flag = pisistratus_3_term_refuse
+	}
+}
+########################################################################################
+# Pisistratus reforms: protection of farmers and lower intrest rates
+########################################################################################
+country_event = {
+	id = athenai.23
+	title = "athenai.23.t"
+	desc = "athenai.23.d"
+	picture = harvest
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 208
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 210.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 8
+	}
+
+	option = {
+		name = "athenai.23.a"
+		set_country_flag = pisistratus_farmer_protectionism
+		add_country_modifier = {
+			name = pisistratus_farmer_protectionism_modifier
+			duration = 17500
+		}
+	}
+}
+########################################################################################
+# Pisistratus reforms: returning solon reforms, if somehow they were disbanded
+########################################################################################
+country_event = {
+	id = athenai.24
+	title = "athenai.24.t"
+	desc = "athenai.24.d"
+	picture = ruler
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 208
+		has_country_flag = pisistratus_3_term
+		NOT = {
+			has_country_flag = pisistratus_restored_solon_reforms
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 210.1.1  }
+		NOT = {
+			has_country_modifier = solons_reform
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.24.a"
+		set_country_flag = pisistratus_restored_solon_reforms
+		add_country_modifier = {
+			name = solons_reform
+			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# Pisistratus reforms: buildings for prodcution - plantations and workshops, mines in Laurium, roads, markets
+########################################################################################
+
+country_event = {
+	id = athenai.25
+	title = "athenai.25.t"
+	desc = "athenai.25.d"
+	picture = farming
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 209
+		has_country_flag = pisistratus_3_term
+		NOT = {
+			has_country_flag = pisistratus_prod_buildings
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 210.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "athenai.25.a"
+		set_country_flag = pisistratus_prod_buildings
+		add_adm_power = 25
+	}
+}
+########################################################################################
+country_event = {
+	id = athenai.250
+	title = "athenai.250.t"
+	desc = "athenai.250.d"
+	picture = farming
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 209
+		treasury = 200
+		has_country_flag = pisistratus_prod_buildings
+		NOT = {
+			has_country_flag = pisistratus_prod_building_plantations
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 210.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.250.a"
+		set_country_flag = pisistratus_prod_building_plantations
+		5547 = {
+			if = {
+				limit = {
+					NOT = { has_building = farming_settlement }
+				}
+				add_building_construction = {
+					building = farming_settlement
+					speed = 1
+					cost = 0.25
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = small_water_irrigation
+					speed = 1
+					cost = 0.33
+				}
+			}
+		}
+		5545 = {
+			if = {
+				limit = {
+					NOT = { has_building = farming_settlement }
+				}
+				add_building_construction = {
+					building = farming_settlement
+					speed = 1
+					cost = 0.25
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = small_water_irrigation
+					speed = 1
+					cost = 0.33
+				}
+			}
+		}
+	}
+	option = {
+		name = "athenai.250.b"
+		set_country_flag = pisistratus_prod_building_plantations
+		add_prestige = -3
+	}
+}
+########################################################################################
+country_event = {
+	id = athenai.251
+	title = "athenai.251.t"
+	desc = "athenai.251.d"
+	picture = smithy
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 209
+		treasury = 200
+		has_country_flag = pisistratus_prod_buildings
+		NOT = {
+			has_country_flag = pisistratus_prod_building_workshops
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 210.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.251.a"
+		set_country_flag = pisistratus_prod_building_workshops
+		959 = {
+			if = {
+				limit = {
+					NOT = { has_building = quarry }
+				}
+				add_building_construction = {
+					building = quarry
+					speed = 1
+					cost = 0.33
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = pottery
+					speed = 1
+					cost = 0.25
+				}
+			}
+		}
+		960 = {
+			if = {
+				limit = {
+					NOT = { has_building = quarry }
+				}
+				add_building_construction = {
+					building = quarry
+					speed = 1
+					cost = 0.33
+				}
+			}
+			else = {
+				add_base_production = 1
+			}
+		}
+		961 = {
+			if = {
+				limit = {
+					NOT = { has_building = quarry }
+				}
+				add_building_construction = {
+					building = quarry
+					speed = 1
+					cost = 0.33
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = miners_camp
+					speed = 1
+					cost = 0.25
+				}
+			}
+		}
+	}
+	option = {
+		name = "athenai.251.b"
+		set_country_flag = pisistratus_prod_building_workshops
+		add_prestige = -3
+	}
+}
+########################################################################################
+country_event = {
+	id = athenai.252
+	title = "athenai.252.t"
+	desc = "athenai.252.d"
+	picture = market
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 210
+		has_country_flag = pisistratus_prod_buildings
+		NOT = {
+			has_country_flag = pisistratus_prod_building_markets_roads
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 211.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.252.a"
+		set_country_flag = pisistratus_prod_building_markets_roads
+		959 = {
+			if = {
+				limit = {
+					NOT = { has_building = small_market }
+				}
+				add_building_construction = {
+					building = small_market
+					speed = 1
+					cost = 0.33
+				}
+			}
+			else = {
+				add_building_construction = {
+					building = gravel_road
+					speed = 1
+					cost = 0.33
+				}
+			}
+		}
+	}
+	option = {
+		name = "athenai.252.b"
+		set_country_flag = pisistratus_prod_building_markets_roads
+		add_prestige = -3
+	}
+}
+########################################################################################
+country_event = {
+	id = athenai.253
+	title = "athenai.253.t"
+	desc = "athenai.253.d"
+	picture = coins
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 211
+		has_country_flag = pisistratus_prod_buildings
+		NOT = {
+			has_country_flag = pisistratus_prod_building_laurion_mine
+		}
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 212.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.253.a"
+		set_country_flag = pisistratus_prod_building_laurion_mine
+		960 = {
+			if = {
+				limit = {
+					NOT = { has_building = miners_camp }
+				}
+				add_building_construction = {
+					building = miners_camp
+					speed = 1
+					cost = 0.25
+				}
+			}
+			else = {
+				add_years_of_income = 1
+			}
+		}
+	}
+	option = {
+		name = "athenai.253.b"
+		set_country_flag = pisistratus_prod_building_laurion_mine
+		add_prestige = -3
+	}
+}
+########################################################################################
+# consenquences - athenian pottery surpasses corinthian. Reduce Korinth TC by 1 level, add 1 level of Athenian TC
+########################################################################################
+country_event = {
+	id = athenai.254
+	title = "athenai.254.t"
+	desc = "athenai.254.d"
+	picture = merchants
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 214
+		has_country_flag = pisistratus_prod_buildings
+		NOT = {
+			has_country_flag = athenian_pottery_better
+		}
+		NOT = { started_in = 216.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.254.a"
+		set_country_flag = athenian_pottery_better
+		959 = {
+			add_center_of_trade_level = 1
+		}
+		945 = {
+			add_center_of_trade_level = -1
+		}
+	}
+}
+
+########################################################################################
+# Pisistratus "golden age" +2 stability
+########################################################################################
+country_event = {
+	id = athenai.26
+	title = "athenai.26.t"
+	desc = "athenai.26.d"
+	picture = court
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 209
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 215.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.26.a"
+		if = {
+			limit = {
+				OR = {
+					stability = 2
+				}
+			}
+			add_adm_power = 50
+		}
+		else_if = {
+			limit = {
+				AND = {
+					stability = 0
+					NOT = { stability = 2 }
+				}
+			}
+			add_stability = 1
+		}
+		else = {
+			add_stability = 2
+		}
+	}
+}
+########################################################################################
+# Pisistratus reforms: temples in Athens and Eleusis
+########################################################################################
+country_event = {
+	id = athenai.27
+	title = "athenai.27.t"
+	desc = "athenai.27.d"
+	picture = hellenistic_temple
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 211
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 216.1.1  }
+		treasury = 200
+	}
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "athenai.27.a"
+		959 = {
+			add_building_construction = {
+				building = small_temple
+				speed = 1
+				cost = 0.5
+			}
+		}
+		5545 = {
+			add_building_construction = {
+				building = small_temple
+				speed = 1
+				cost = 0.5
+			}
+		}
+	}
+}
+########################################################################################
+# Pisistratus reforms: Panathenaic games (small splendor permanent modifier)
+########################################################################################
+country_event = {
+	id = athenai.28
+	title = "athenai.28.t"
+	desc = "athenai.28.d"
+	picture = olympia
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 212
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 215.1.1  }
+	}
+	mean_time_to_happen = {
+		months = 7
+	}
+
+	option = {
+		name = "athenai.28.a"
+		959 = {
+			add_province_modifier = {
+				name = panathenaic_games
+				duration = -1
+			}
+		}
+		add_splendor = 100
+	}
+}
+
+########################################################################################
+# Pisistratus ambitions: claims (or wars?) for Sigeion (created vassal or revassalized Sigeion, putting his son Hegesistratus to rule there)
+########################################################################################
+country_event = {
+	id = athenai.29
+	title = "athenai.29.t"
+	desc = "athenai.29.d"
+	picture = navy
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 214
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 215.1.1  }
+	}
+
+	mean_time_to_happen = {
+		months = 7
+	}
+
+	option = {
+		name = "athenai.29.a"
+		ai_chance = { factor = 100 }
+
+		if = {
+			limit = {
+				2118 = {
+					owned_by = ATH
+				}
+			}
+			ATH = {
+				release = SIE
+				vassalize = SIE
+			}
+			SIE = {
+				define_ruler = {
+					name = "Hegesistratus"
+					dynasty = "Peisistratidae"
+					age = 16
+					adm = 3
+					dip = 3
+					mil = 2
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				SIE = {
+					is_subject_of = ATH
+				}
+			}
+			SIE = {
+				define_ruler = {
+					name = "Hegesistratus"
+					dynasty = "Peisistratidae"
+					age = 16
+					adm = 3
+					dip = 3
+					mil = 2
+				}
+			}
+		}
+		else = {
+			ATH = {
+				add_core = 2118
+			}
+		}
+	}
+}
+########################################################################################
+# Pisistratus promise - attack on Naxos and Delos, to install Lygdamis of Naxos as Ruler
+########################################################################################
+country_event = {
+	id = athenai.30
+	title = "athenai.30.t"
+	desc = "athenai.30.d"
+	picture = navy
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		is_year = 214
+		exists = NXS
+		has_country_flag = pisistratus_3_term
+		has_ruler = "Peisistratos"
+		NOT = { started_in = 215.1.1  }
+		NOT = {	has_country_flag = lygdamis_instalment }
+		NOT = { NXS = { is_subject_of = ATH } }
+	}
+	mean_time_to_happen = {
+		months = 5
+	}
+
+	option = {
+		name = "athenai.30.a"
+		ai_chance = { factor = 100 }
+		NXS = {
+			create_alliance = DEL
+		}
+		ATH = {
+			declare_war_with_cb = {
+				who = NXS
+				casus_belli = cb_conquest
+			}
+		}
+		set_country_flag = lygdamis_instalment
+	}
+}
+########################################################################################
+country_event = {
+	id = athenai.301
+	title = "athenai.301.t"
+	desc = "athenai.301.d"
+	picture = navy
+	fire_only_once = yes
+
+	trigger = {
+		tag = NXS
+		ATH = { has_country_flag = lygdamis_instalment }
+		NOT = {	has_country_flag = lygdamis_instalment_done	}
+		NXS = {
+			NOT = {
+				controls = 978
+			}
+		}
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "athenai.301.a"
+		ai_chance = { factor = 100 }
+		NXS = {
+			white_peace = ATH
+			define_ruler = {
+				name = "Lygdamis"
+				dynasty = "of Naxos"
+				age = 40
+				adm = 4
+				dip = 5
+				mil = 3
+			}
+			vassalize = PAR
+			add_historical_friend = ATH
+			add_historical_friend = SAM
+			add_historical_rival = SP1
+		}
+		ATH = {
+			create_alliance = NXS
+			add_historical_friend = NXS
+		}
+		SAM = {
+			create_alliance = NXS
+			add_historical_friend = NXS
+		}
+		SP1 = {
+			add_casus_belli = {
+				target = NXS
+				type = cb_change_government
+				months = 9600
+			}
+			add_historical_rival = NXS
+		}
+		set_country_flag = lygdamis_instalment_done
+	}
+}
+########################################################################################
+# Pisistratus "cleansing" of Delos on occupation - removes 1 pop, adds splendor and permanent claim on island.
+########################################################################################
+country_event = {
+	id = athenai.31
+	title = "athenai.31.t"
+	desc = "athenai.31.d"
+	picture = execution_multiple
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		NOT = { is_year = 254 }
+		977 = {
+			controlled_by = ATH
+		}
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "athenai.31.a"
+		ai_chance = { factor = 100 }
+		977 = {
+			add_base_tax = -1
+			add_base_production = -1
+			add_base_manpower = -1
+		}
+		ATH = {
+			add_splendor = 200
+		}
+	}
+}
+########################################################################################
+# Miltiades taking Chersonessos after his uncle death, becomes vassal of Athens.
+########################################################################################
+country_event = {
+	id = athenai.32
+	title = "athenai.32.t"
+	desc = "athenai.32.d"
+	picture = family_conflict
+	fire_only_once = yes
+
+	trigger = {
+		tag = SES
+		is_year = 238
+		NOT = { has_country_flag = miltiades_in_chersonesos }
+		ATH = {
+			num_of_subjects = 1
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "athenai.32.a"
+		ai_chance = { factor = 100 }
+		set_country_flag = miltiades_in_chersonesos
+		SES = {
+			define_general = {
+				name = "Miltiades"
+				fire = 2
+				shock = 8
+				manuever = 6
+				siege = 1
+			}
+			define_ruler = {
+				name = "Miltiades"
+				dynasty = "Philaidae"
+				age = 34
+				adm = 2
+				dip = 3
+				mil = 5
+				attach_leader = "Miltiades"
+			}
+			create_alliance = ODR
+			create_marriage = ODR
+		}
+		5584 = {
+			add_core = SES
+			cede_province = SES
+		}
+		ATH = {
+			create_subject = {
+				subject_type = league_member_subject
+				subject = SES
+			}
+		}
+	}
+}
+########################################################################################
+# on death of Peisistratus - adds Hipparchus as heir to Hippias
+########################################################################################
+country_event = {
+	id = athenai.33
+	title = "athenai.33.t"
+	desc = "athenai.33.d"
+	picture = audience
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		has_country_flag = pisistratus_3_term
+		NOT = { has_ruler = "Peisistratos" }
+		NOT = {	has_country_flag = hippias_and_hipparchus }
+		government = monarchy
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = "athenai.33.a"
+		ai_chance = { factor = 100 }
+		define_heir = {
+			name = "Hipparchus"
+			dynasty = "Peisistratidae"
+			age = 31
+			adm = 2
+			dip = 4
+			mil = 3
+		}
+		set_country_flag = hippias_and_hipparchus
+	}
+}
+
+
+########################################################################################
+#Cleithenes Alcmeonidae return with spartan troops, 510 bc, Hippias deposed, oligarchic polis established with Isagoras, but middle class and democrats and unhappy
+########################################################################################
+country_event = {
+	id = athenai.36
+	title = "athenai.36.t"
+	desc = "athenai.36.d"
+	picture = spartans
+	fire_only_once = yes
+
+	trigger = {
+		tag = ATH
+		has_country_flag = hippias_and_hipparchus
+		government = monarchy
+	}
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	option = {
+		name = "athenai.36.a"
+		ai_chance = { factor = 100 }
+		ATH = {
+			add_stability = -1
+			959 = {
+				add_base_tax = -1
+			}
+			change_government = republic
+			add_government_reform = greek_polis_reform
+			add_government_reform = private_land_reform
+			add_government_reform = agraculture_focus_reform
+			add_government_reform = written_law_reform
+			define_ruler = {
+				name = "Isagoras"
+				dynasty = "Tisandae"
+				mil = 2
+				adm = 4
+				dip = 2
+			}
+			define_advisor = {
+				name = "Cleisthenes"
+				type = statesman_adv
+				skill = 2
+				discount = yes
+			}
+			set_country_flag = peisistratids_over
+			add_faction = fac_democrats
+			add_faction_influence = { faction = fac_oligarchs influence = 15 }
+			add_faction_influence = { faction = fac_democrats influence = 40 }
+		}
+	}
+	option = {
+		name = "athenai.36.b" #note - you will lock yourself out of any further democratic and probably historical content, remaining generic athenian tyranny
+		ATH = {
+			add_stability = -1
+		}
+		959 = {
+			spawn_rebels = {
+				type = democratic_rebels
+				size = 3
+				leader = "Cleithenes Alcmeonidae"
+				friend = SP1
+			}
+		}
+	}
+}
+########################################################################################
+# Cleisthenes takes power
+########################################################################################
+country_event = {
+	id = athenai.37
+	title = "athenai.37.t"
+	desc = "athenai.37.d"
+	picture = forum_picture
+
+	trigger = {
+		has_country_modifier = solons_reform
+		government = republic
+		faction_influence = {
+			faction = fac_democrats
+			influence = 30
+		}
+		tag = ATH
+		has_country_flag = peisistratids_over
+	}
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "athenai.37.a"
+		ai_chance = { factor = 100 }
+		add_government_reform = citizens_republic_reform
+		remove_country_modifier = solons_reform
+		add_country_modifier = {
+			name = kleisthenes_reform
+			duration = -1
+		}
+		every_owned_province = {
+			limit = {
+				OR = {
+					area = attica_area
+					area = corinthia_area
+				}
+				NOT = { has_province_modifier = kleisthenian_reforms_modifier }
+			}
+			add_province_modifier = {
+				name = kleisthenian_reforms_modifier
+				duration = -1
+			}
+		}
+		add_stability = 2
+		define_ruler = {
+			name = "Cleisthenes"
+			dynasty = "Alcmeonidae"
+			age = 55
+			mil = 2
+			adm = 6
+			dip = 3
+		}
+		remove_advisor = statesman_adv
+		5545 = { #spartans unsuccesfully invade (Isagoras as pretender rebel supported by Sparta?)
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 1
+				leader = "Isagoras Tisandae"
+				friend = SP1
+			}
+		}
+	}
+}
