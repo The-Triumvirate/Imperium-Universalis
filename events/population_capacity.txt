@@ -11,7 +11,6 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 	title = "population_capacity.1.t"
 	desc = "population_capacity.1.d"
 	picture = peasant_woman
-	hidden = yes
 
 	is_triggered_only = yes
 
@@ -24,7 +23,15 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 				if = {
 					limit = { has_global_flag = popgrowth_running }
 					# PG: Pop Growth (capacities)
-					province_event = { id = population_capacity.4 }
+				
+				# Calculate capacities for all provinces. New version: capacity.15; old version: capacity.4. 
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
+					
+					
 				}
 				# SS: Sieges and repairs
 				if = {
@@ -38,6 +45,7 @@ country_event = {				# BI-YEARLY EVENT, UPDATES ESSENTIAL POPGROWTH VALUES
 			}
 		}
 	}
+
 
 	option = {
 		name = "population_capacity.1.a"
@@ -86,6 +94,7 @@ country_event = {
 		name = "population_capacity.2.6"	# Keep playing with vanilla mechanics
 		trigger = { has_global_flag = popgrowth_vanilla }
 	}
+	
 	#option = {
 	#	name = "population_capacity.2.6"	# Show menu for automated migration options and variables
 	#	trigger = { has_global_flag = popgrowth_running }
@@ -95,7 +104,6 @@ country_event = {
 		name = "population_capacity.2.7"	# Nothing, go back
 		ai_chance = { factor = 100 }
 		trigger = { has_global_flag = popgrowth_running }
-
 	}
 	option = {
 		name = "population_capacity.2.7"	# I don't know if it may happen, but if there is a possible lack of options, this should work
@@ -112,6 +120,7 @@ province_event = {				# PROVINCE INTERACTION MENU
 	title = "population_capacity.3.t"
 	desc = "population_capacity.3.d"
 	picture = forum_picture
+
 	is_triggered_only = yes
 	#hidden = yes
 	#fire_only_once = yes
@@ -127,6 +136,7 @@ province_event = {				# PROVINCE INTERACTION MENU
 
 	option = {
 		name = "population_capacity.3.1"	# Show only detailed capacities in this province
+		trigger = { NOT = { has_global_flag = popgrowth_v5capacities } }
 		province_event = { id = population_capacity.5 }
 	}
 	option = {
@@ -167,13 +177,27 @@ province_event = {
 	title = "population_capacity.4.t"	# v1 was Feb'19, v2 June'20, v3 (first in the public mod) Oct'21
 	desc = "population_capacity.4.d"	# Optimized as of 3/6/2024
 	picture = peasant_woman
-	hidden = yes
 
+	hidden = yes
 	is_triggered_only = yes
 	# will fire after what may have changed the rural population, every two years
 
 	immediate = {
 		# Remember that in the Popgrowth System, we start with the Rural / Urban divide, and then transform it into Tribal, Commoner and Upper population. This means that it could be that someone living in rural areas actually is working "as a commoner", because is exporting extra goods and is contributing to the state equally.
+		# Imagine the following chart, from rurals and urbans, into tribal, commoner and uppers
+		# (reasons for Rural
+		# or urbans)
+		# R R R 	T T T
+		# R R	-->		
+		# R R		C C
+		#
+		# U U U		C C C
+		# U U	--> 
+		# U U		C Up Up
+		#
+		
+		
+		
 
 		######################
 		# RURAL CAPACITY, those living off the land. Will be assigned mostly to tribal pops, but also commoners. 10% to upper pops.
@@ -316,7 +340,7 @@ province_event = {
 
 
 		# 6. MODIFIER %
-		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance  }	# as 0.2 for +20%
+		export_to_variable = { which = PG_dev_extra value = modifier:local_colony_cost_modifier  }	# as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
 
@@ -747,8 +771,8 @@ province_event = {
 	title = "population_capacity.5.t"
 	desc = "population_capacity.5.d"
 	picture = peasant_woman
-	hidden = yes
 
+	hidden = yes
 	is_triggered_only = yes
 	# will fire after what may have changed the rural population, every two years
 
@@ -905,7 +929,7 @@ province_event = {
 		set_variable = { which = PS_rur5 which = rural_capacity }
 
 		# 6. MODIFIER %
-		export_to_variable = { which = PG_dev_extra value = modifier:local_colonist_placement_chance } # as 0.2 for +20%
+		export_to_variable = { which = PG_dev_extra value = modifier:local_colony_cost_modifier } # as 0.2 for +20%
 		change_variable = { PG_dev_extra = 1 }														# now 1.2, will modify things
 		multiply_variable = { which = rural_capacity which = PG_dev_extra }							# rural cap raised. Also used in urban cap
 		set_variable = { which = PS_rur6 which = rural_capacity }
@@ -1344,96 +1368,359 @@ province_event = {
 		subtract_variable = { PS_growctry = 1 } multiply_variable = { PS_growctry = 100 }
 
 		PG_detail_zerovalues = yes
-
 	}
-
 
 	option = {
 		name = "population_capacity.5.a"
 		add_province_modifier = { name = PGD_debug_viewer duration = 30 }
 		add_province_modifier = { name = PGD_growth_viewer duration = 30 }
 	}
+}
+
+
+province_event = {				# POPGROWTH mecanics, v5 (2024)
+	id = population_capacity.15
+	title = "population_capacity.4.t"
+	desc = "population_capacity.4.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	hidden = yes
+	#fire_only_once = yes
+
+	#mean_time_to_happen = {
+	#	months = 2
+	#}
+	immediate = {
+		# Design philosophy: for this new version I wanted to move everything into scripted effects,
+		# because now the code is "siloed" and can be called independently, without needing to calculate everything. 
+		# A new building is finished? Then just update urban capacity and final values. No need to update terrain. 
+		# This event will still have "everything" calculated, but other, simpler events will usually be fired. 
+		
+		# Definitions. Modifiers that will be used from the vanilla game
+			# new name of the modifier / abs or relative / EU4 vanilla name / reason
+		
+			# Rural pop extra capacity (abs): local_colonist_placement_chance -> land reclamation building + monuments
+			# Rural pop capacity modifier (%): local_colony_cost_modifier -> same
+			# Urban pop extra capacity (abs): local_colonial_growth -> main modifier appearing in almost all buildings
+			# Urban pop capacity modifier (%): local_gold_depletion_chance_modifier -> gold depletion not possible, unused
+			# Upper pop extra capacity (abs): allowed_num_of_manufactories -> fixed to one manufactory per province, unused
+		
+		# Rural
+			# PG_rurcap1 = size x terrain x infra building
+			# PG_rurmax1 = size x terrain x infra max
+			PG_rurcap1_terrain = yes
+			
+			# PG_rurcap2 = size x climate +-tech
+			PG_rurcap2_climate = yes
+			
+			# PG_rurcap3 = fishing + buildings
+			if = { 
+				limit = { has_port = yes }
+				PG_rurcap3_fishing = yes
+			}
+			
+			# PG_rurcap4 = land reclamation
+			# PG_rurmod1 = +% from land reclamation
+			PG_rurcap4_reclamation = yes
+			
+			# PG_rurstab = +% from country stability
+			# PG_rurdevs = +% from local devastation
+			PG_rurcap_modifiers = yes
+			
+			# Main formula
+			# PG_ruralcap (1 + 2 + 3 + 4) x (1+ (PG_rurmod1%) x (1+(PG_rurstab% + PG_rurdevs%))
+			PG_rurcap_formula = yes
+			
+			# Rural capacity done!
+			
+		
+		# Urban 
+			# PG_urbcap1 = trade points
+			PG_urbcap1_trade = yes
+			
+			# PG_urbcap2 = buildings values (all buildings, capital, etc). Uses "local_colonial_growth" modifier, absolute bonus. 
+			PG_urbcap2_buildings = yes
+			
+			# PG_urbmod1 = +% urban infrastructure, local
+			# PG_urbmod2 = +% urban infrastructure, country
+			# PG_urbstab = +% from country stability
+			# PG_urbdevs = +% from local devastation
+			PG_urbcap_modifiers = yes 
+			
+			# Main formula: PG_urbancap (1 + (2 x (1+ PG_urbmod1% + PG_urbmod2%))) x (1+ PG_urbstab%) x PG_urbdevs%
+			PG_urbcap_formula = yes
+			
+			# Urban capacity done!
+		
+		# Upper (extra to rural + urban, such as the capital)
+			# PG_upp_upp = modifier, extra manufactories. No further modifiers, it is already hard enough
+			PG_uppcap_formula = yes
+			
+			
+		# Society structure: Trigger_value by society building
+			# PG_rur_trb = ruralcap x %
+			# PG_rur_com = ruralcap x %
+			# PG_rur_upp = ruralcap x %
+			# PG_urb_com = urbancap x %
+			# PG_urb_upp = urbancap x %
+			PG_society_temporal = yes 		# later it will be -> PG_society_structure = yes
+		
+		# Convert to final variables
+			# final variables
+				# PG_trb_cap = PG_rur_trb
+				# PG_com_cap = PG_rur_com + PG_urb_com
+				# PG_upp_cap = PG_rur_upp + PG_urb_upp + PG_upp_upp
+			# Current population
+				# PG_trb_now
+				# PG_com_now
+				# PG_upp_now
+			# Show expected variation -> target to fill
+				# PG_trb_var = PG_trb_cap - PG_trb_now
+				# PG_com_var = PG_com_cap - PG_com_now
+				# PG_upp_var = PG_upp_cap - PG_upp_now
+			# Legacy: also provincial growth
+			PG_capacity_calc = yes 
+		
+		# "Legacy" things, added back
+		######################
+		# check whether max capacity has increased and no further need for the "Pause" modifier (added at startup event, to avoid losing the initial population)
+		if = { limit = { check_variable = { which = PG_trb_cap which = PS_trb_init } } remove_province_modifier = rural_pause }
+		if = { limit = { check_variable = { which = PG_com_cap which = PS_urb_init } } remove_province_modifier = urban_pause }
+
+		# Find how much information is flowing to this province. Will allow for long-range migration
+		PG_update_inforange = yes
+		
+		# If there was not enough capacity for upper or commoner, change the modifier. Otherwise, return to the old one
+		if = {
+			limit = { OR = { has_province_flag = PG_move_all has_province_flag = PG_move_upp_com } }
+			remove_province_modifier  = popgrowth_viewer
+			add_permanent_province_modifier = { name = popgrowth_viewer2 duration = -1 }
+		}
+		else_if = {
+			limit = { has_province_modifier = popgrowth_viewer2 }
+			remove_province_modifier  = popgrowth_viewer2
+			add_permanent_province_modifier = { name = popgrowth_viewer duration = -1 }
+		}
+
+		# Update naval forcelimit nerfs, in inland and river ports
+		if = { 		limit = { has_port = no }									 PG_inland_navalsize = yes }
+		else_if = { limit = { has_port = yes has_province_flag = PG_river_port } PG_riverport_navalsize = yes }
+		
+
+		
+		## From here below, it is not fully implemented yet. It is all commented. 
+		
+		# Growth is calculated area-wide -> for now it will be out of the active code, until it is polished
+		
+			# Area level: add up all variables: real, capacity, growth
+				# careful here because the "area capital" variables will be temporarily lost
+				# area capital: copy PG_trb_cap, PG_com_cap, PG_upp_cap to float_1, float_2, float_3
+				#	save event target as area capital
+			# all other member provinces: add to event target
+				# PG_trb_cap, PG_trb_now
+				# PG_com_cap, PG_com_now
+				# PG_upp_cap, PG_upp_now
+			# area capital: now all "cap" and "now" are area-level
+				# PG_trb_areacap, PG_trb_areanow, calculate PG_trb_grow
+				# PG_com_areacap, PG_com_areanow, calculate PG_com_grow
+				# PG_upp_areacap, PG_upp_areanow, calculate PG_upp_grow
+			# area capital: give back PG_trb_cap with float variables, give back PG_trb_now with export of development. 
+			# copy these variables in all provinces. But only those with the modifier will have it in effect
+			
+			#if = { limit = { has_province_flag = PG_area_cap_flag } PG_area_growth_calc = yes } # Main filter, added at game start
+			
+			
+			
+			
+		# Assign each case, combinations
+			
+			# Number of provinces of each type
+			# tribal: total variation / provs with +1, provs with -1
+			# common: total variation / provs with +1, provs with -1
+			# uppers: total variation / provs with +1, provs with -1
+			
+			# If growth values are both positive, first 
+			# Make the code as per these groups, to keep the if-elseif working. 
+			
+			# tribal +1, tribal -1 -> internal movement
+		
+			# commoner +1, commoner -2 -> internal movement
+			
+			# upper +1, upper -1 -> internal movement
+			
+			# upper +1, commoner = 2 same province -> promote
+			# upper +1, other commoner = 2 -> immigrate + promote
+			# upper -1, commoner +1 -> demote to commoner
+			# upper -1, commoner <+1 -> demote to tribal
+			
+			# commoner +1, tribal -1 same -> promotion
+			# commoner +2, tribal -1 other -> immigration + growth
+			# commoner +1, no tribal <-1 -> immigration
+			
+			# commoner -1, tribal +1 same -> demotion
+			# commoner -1, tribal +1 other -> emigration + demotion within area
+			# commoner -1, no other tribal -> emigration far away
+			
+			# tribal +1 -> growth
+			# tribal +3 -> growth + emigration (explosive growth, separate flag)
+			
+			
+		# All these will be made into PROVINCE MODIFIERS which show what to do,
+			# but they will NOT be activated as an event. This will be done at the area capital. 
+			# Once the area capital gets the event, it will move to the affected provinces (they have the modifiers)
+			
+			# Modifiers shown in each province -> flag in area capital
+			# Upper arriving -> upper internal movement
+			# Upper leaving ->  upper internal movement
+			# Commoner arriving -> commoner internal movement
+			# Commoner leaving -> commoner internal movement
+			# Tribal arriving -> tribal internal movement
+			# Tribal leaving -> tribal internal movement
+			
+			# Commoner promoted -> ETC, not finished
+		
+	}
+
+	#option = {
+	#	name = "population_capacity.99.1"
+	#	add_province_modifier = { name = PG_dev_01 duration = 20 }
+	#}
+	option = {
+		name = "population_capacity.4.a"
+		# ok, all done inside the immediate
+	}
+
+	after = {
+		clr_province_flag = PG_move_all
+		clr_province_flag = PG_move_upp_com
+	}
+	
+	
+}
 
 }
 
 province_event = {				# POP CAPACITY, EXPERIMENTAL THINGS
-	id = population_capacity.99
-	title = "population_capacity.99.t"
-	desc = "population_capacity.99.d"
+	id = population_capacity.16
+	title = "population_capacity.16.t"
+	desc = "population_capacity.16.d"
 	picture = forum_picture
 	is_triggered_only = yes
 	#hidden = yes
 	#fire_only_once = yes
 
 	immediate = {
-		export_to_variable = { which = PG_nav value = base_manpower } 		multiply_variable = { PG_nav = 0.05 }
-		export_to_variable = { which = PG_cnav value = base_production } 	multiply_variable = { PG_cnav = 0.10 }
-		export_to_variable = { which = PG_unav value = base_tax } 			multiply_variable = { PG_unav = 0.50 }
-		change_variable = { which = PG_nav which = PG_cnav } change_variable = { which = PG_nav which = PG_unav }
-		#set_variable = { which = PG_cnav value = 0 } set_variable = { which = PG_unav value = 0 }
-
-		# Now we have the amount of ships to be deducted
-		if = { limit = { check_variable = { PG_nav = 16 } } 	PG_reduce_navalsize = { amt = 16 } }
-		if = { limit = { check_variable = { PG_nav = 8 } } 		PG_reduce_navalsize = { amt = 8 } }
-		if = { limit = { check_variable = { PG_nav = 4 } } 		PG_reduce_navalsize = { amt = 4 } }
-		if = { limit = { check_variable = { PG_nav = 2 } } 		PG_reduce_navalsize = { amt = 2 } }
-		if = { limit = { check_variable = { PG_nav = 1 } } 		PG_reduce_navalsize = { amt = 1 } }
-		if = { limit = { check_variable = { PG_nav = 0.5 } } 	PG_reduce_navalsize = { amt = 0.5 } }
-		if = { limit = { check_variable = { PG_nav = 0.25 } } 	PG_reduce_navalsize = { amt = 0.25 } }
-		if = { limit = { check_variable = { PG_nav = 0.125 } } 	PG_reduce_navalsize = { amt = 0.125 } }
-		set_variable = { which = PG_nav value = 0 }
-
+		
+		
 	}
-
+	
 	option = {
-		name = "population_capacity.99.1"
-		add_province_modifier = { name = PG_dev_01 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.2"
-		add_province_modifier = { name = PG_dev_02 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.3"
-		add_province_modifier = { name = PG_dev_03 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.4"
-		add_province_modifier = { name = PG_dev_04 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.5"
-		add_province_modifier = { name = PG_dev_05 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.6"
-		add_province_modifier = { name = PG_dev_06 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.7"
-		add_province_modifier = { name = PG_dev_07 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.8"
-		add_province_modifier = { name = PG_dev_08 duration = 20 }
-
-	}
-	option = {
-		name = "population_capacity.99.9"
-		owner = {
-			every_owned_province = {
-				export_to_variable = { which = PG_development_cost value = modifier:local_development_cost }
-			}
+		name = "population_capacity.16.1"
+		# Scope: one province, targeted with the console
+		area = {
+			limit = { has_province_flag = PG_area_cap_flag }
+			province_event = { id = population_capacity.15 }
+			PG_area_vars_aggregate = yes
+			add_province_modifier = { name = PG_dev_02 duration = 20 }
 		}
 	}
+	option = {
+		name = "population_capacity.16.2"
+		# Scope: one province, targeted with the console
+		area = {
+			limit = { NOT = { has_province_flag = PG_area_cap_flag } }
+			province_event = { id = population_capacity.15 }	
+		}
+	}
+	option = {
+		name = "population_capacity.16.3"
+		# Assign province flat
+		set_province_flag = PG_area_cap_flag
+	}
+	option = {
+		name = "population_capacity.16.4"	
+		# Assign flags to link them later, once the event fires. 
+		if = {
+			limit = { check_variable = { PG_trb_uptotal = 1 } check_variable = { PG_trb_downtotal = 1 } }	# tribal +1 and -1
+			
+			# First province: +1 variation
+			set_variable = { which = PG_counter value = 1 }		# to convert a multi-province scope to just one. a "randomizer"
+			area = {
+				limit = { check_variable = { PG_trb_var = 1 } }		# The province with +1
+				if = { 
+					limit = { PREV = { check_variable = { PG_counter = 1 } } }	# "randomizer"
+					PREV = { set_variable = { which = PG_counter value = 0 } }	# "randomizer"
+					
+					add_province_modifier = { name = PG_dev_03 duration = 20 }	# to change with the province flag
+					PREV = { subtract_variable = { PG_trb_uptotal = 1 } }
+					
+				}
+			}
+			
+			# Second province: -1 variation
+			set_variable = { which = PG_counter value = 1 }		# to convert a multi-province scope to just one
+			area = {		
+				limit = { NOT = { check_variable = { PG_trb_var = -0.9 } } }		# The province with -1
+				if = { 
+					limit = { PREV = { check_variable = { PG_counter = 1 } } }	# "randomizer"
+					PREV = { set_variable = { which = PG_counter value = 0 } }	# "randomizer"
+					
+					add_province_modifier = { name = PG_dev_03 duration = 20 }	# to change with the province flag
+					PREV = { subtract_variable = { PG_trb_downtotal = 1 } }
+					
+				}
+			}
+			
+			set_variable = { which = PG_counter value = 0 }		# reset to zero
+			
+		}
+	}
+	
+	
+	option = {
+		name = "population_capacity.16.99"	# (nothing, close this)
+		
+	}
+	
+}
 
+province_event = {				# Experimental, point update
+	id = population_capacity.17
+	title = "population_capacity.17.t"
+	desc = "population_capacity.17.d"
+	picture = forum_picture
+	is_triggered_only = yes
+	#hidden = yes
+	#fire_only_once = yes
+	
+	#mean_time_to_happen = {
+	#	months = 2	
+	#}
+	immediate = {
+		# Each province will add more points into advancing to the next state. 
+		
+		set_variable = { which = PG_new_points value = 0 } 		# to be used in all calcs 
+		
+		# These buildings will "spread" to neigboring provinces, both land or sea-based, as long as the relations with that neighbor are +50, full effect if it is the building, and half effect if only the modifier. 
+		
+		# land reclamation -> no spread
+		# land infrastructure % -> spread with building or prov mod
+		# urban infrastructure % -> spread with building or prov mod
+		
+		# society structure -> no spread, must be gained. Buildings and institutions
+			# Lv1: Coin Usage; temple, theatre, gov 1
+			# Lv2: Cast Iron or Classical Philosophy; temple, theatre, gov 2
+			# Lv3: Axio Maths or Blast Furnace; temple, theatre, gov 3
+			# Lv4: Astronomy; academies, palace, theatre 4, gov 4
+			
+	}
+	
+	option = {
+		name = "population_capacity.17.1"	
+		
+	}
+	
+	
 	option = {
 		name = "population_capacity.7.99"	# (nothing, close this)
 

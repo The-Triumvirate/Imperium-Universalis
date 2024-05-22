@@ -68,7 +68,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				export_to_variable = { which = SD_ferocity value = trigger_value:artillery_in_province }
 				change_variable = { which = SD_siege_power which = SD_ferocity }
 				set_variable = { which = SD_looted which = SD_siege_power }
-				export_to_variable = { which = SD_ferocity value = modifier:max_revolutionary_zeal who = ROOT }	# repurposed modifier
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }	# repurposed modifier
 				#set_variable = { which = SD_ferocity value = 5 }					# until this max revolutionary zeal is added to mechanics
 				multiply_variable = { which = SD_siege_power which = SD_ferocity }
 
@@ -100,7 +100,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				##
 				# ENSLAVEMENT
 				# Find suitable population to be enslaved/killed (explanation)
-				export_to_variable = { which = SD_slave_eff value = modifier:native_assimilation who = ROOT }	# Enslaving efficiency
+				export_to_variable = { which = SD_slave_eff value = modifier:enslavement_efficiency who = ROOT }
 				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
 
 				export_to_variable = { which = SD_t_lost value = base_manpower }
@@ -166,7 +166,7 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 
 
 				export_to_variable = { which = SD_devast value = development }
-				export_to_variable = { which = SD_ferocity value = modifier:max_revolutionary_zeal who = ROOT }
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }
 
 
 			}
@@ -226,7 +226,11 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				collateral_damage_eff = { hd = 10 size = 100 }	# See Scripted Effects, very cool
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
 				add_province_modifier = { name = SD_was_tributed duration = 365 }	# Shows what happened in the siege
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 			# Country, besieger effect
 			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
@@ -257,7 +261,11 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				collateral_damage_eff = { hd = 40 size = 100 }
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
 				add_province_modifier = { name = SD_was_sacked duration = 730 }	# this modifier allows us to see that happened in the siege
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 
 			# Country, besieger effect
@@ -292,7 +300,11 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
 				SD_slave_prov_modifiers = { days = 60 }
 				add_province_modifier = { name = SD_was_enslaved duration = 1825 }	# this modifier allows us to see that happened in the siege
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 			# Country, besieger effect
 			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
@@ -328,7 +340,11 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				collateral_damage_eff = { hd = 60 size = 200 }	SD_slave_prov_modifiers = { days = 60 }
 				ROOT = { set_variable = { which = SD_looted which = PREV } set_variable = { which = SD_inflation which = PREV } }
 				add_province_modifier = { name = SD_was_destroyed duration = 1825 }	# this modifier allows us to see that happened in the siege
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 
 			# Country, besieger effect
@@ -368,7 +384,11 @@ country_event = {		# Activated by the on-action. FROM = province, ROOT = attacke
 				else = {
 					add_province_modifier = { name = SD_was_delenda duration = 4500 } # 12 years
 				}
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 			# Country, besieger effect
 			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
@@ -467,7 +487,7 @@ country_event = {			# Simplified event, when under X value. By on-action. FROM =
 				change_variable = { which = SD_siege_power which = SD_ferocity }
 				set_variable = { which = SD_looted which = SD_siege_power }
 
-				export_to_variable = { which = SD_ferocity value = modifier:max_revolutionary_zeal who = ROOT }	# repurposed modifier
+				export_to_variable = { which = SD_ferocity value = modifier:siege_ferocity who = ROOT }	# repurposed modifier
 				multiply_variable = { which = SD_siege_power which = SD_ferocity }
 
 				export_to_variable = { which = SD_ferocity value = development } 	# repurposed variables, the least the better
@@ -494,7 +514,7 @@ country_event = {			# Simplified event, when under X value. By on-action. FROM =
 				##
 				# ENSLAVEMENT
 				# Find suitable population to be enslaved/killed (explanation)
-				export_to_variable = { which = SD_slave_eff value = modifier:native_assimilation who = ROOT }	# Enslaving efficiency
+				export_to_variable = { which = SD_slave_eff value = modifier:enslavement_efficiency who = ROOT }
 				set_variable = { which = SD_slave_eff value = 0.3 }												# Base 30%, up to 80% with buffs and ideas
 
 				export_to_variable = { which = SD_t_lost value = base_manpower }
@@ -564,7 +584,11 @@ country_event = {			# Simplified event, when under X value. By on-action. FROM =
 					set_country_flag = SD_recent_captives
 				}
 				add_province_modifier = { name = SD_was_raided duration = 730 }	# Shows what happened in the siege
-				province_event = { id = population_capacity.4 }
+				if = {
+					limit = { has_global_flag = popgrowth_v5capacities }
+					province_event = { id = population_capacity.15 }
+				}
+				else = { province_event = { id = population_capacity.4 } }
 			}
 			# Country, besieger effect
 			money_gain_effect = { var = SD_looted } SD_inflation_effect = { var = SD_inflation }
