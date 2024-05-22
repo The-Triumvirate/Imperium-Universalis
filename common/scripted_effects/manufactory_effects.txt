@@ -313,3 +313,25 @@ SD_autoassign_slaves = {
 	SD_update_prov_output = yes
 }
 
+SD_slaves_pulse_effect = {
+	# For AI to get slaves in provs, for free. Also updates slots & output for all provs.
+	every_owned_province = {
+		limit = {
+			check_variable = { SD_slot_free = 1 }
+			owner = { ai = yes check_variable = { slaves = 10 } }
+		}
+		while = {
+			limit = { check_variable = { SD_slot_free = 1 } owner = { check_variable = { slaves = 10 } } }
+			change_variable = { slaves_in_province = 10 } subtract_variable = { SD_slot_free = 1 }
+			owner = {
+				change_variable = { slaves_in_province = 10 } subtract_variable = { slaves = 10 }
+			}
+		}
+	}
+	every_owned_province = {
+		SD_update_provslots = yes
+		SD_update_prov_output = yes
+	}
+}
+
+
