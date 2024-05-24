@@ -252,7 +252,7 @@ country_event = {
 		hre_heretic_religion = liyuebadao
 		hre_religion_locked = yes
 		tag = JIN
-		was_player = yes
+		ai = no
 		NOT = {
 			exists = SHE
 		}
@@ -592,7 +592,7 @@ country_event = {
 		in_league = liyuebadao
 		is_in_league_war = yes
 		tag = YAN
-		was_player = yes
+		ai = no
 		NOT = {
 			exists = GUZ
 		}
@@ -1696,4 +1696,111 @@ country_event = {
 	}
 }
 
-#event for chu taking fenghao
+########################################################################################
+# zhou will be revived in chengzhou if annexed (only applies to ai, player can decline)
+########################################################################################
+country_event = {
+	id = china.38
+	title = "china.38.t"
+	desc = "china.38.d"
+	picture = ruler
+	
+	trigger = {
+		NOT = {
+			tag = ZHO
+		}
+		ZHO = {
+			exists = no
+		}
+		owns = 4349
+		religion = chinese_religion
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "china.38.a"
+		4349 = {
+			cede_province = ZHO
+		}
+		create_march = ZHO
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = opinion_country_released_zhou
+		}
+		add_papal_influence = 100
+		ZHO = {
+			add_country_modifier = { 
+				name = zhou_king
+				duration = -1
+			}
+		}
+		ai_chance = { 
+			factor = 100
+		}
+	}
+	option = {
+		name = "china.38.b"
+		trigger = { ai = no }
+		add_legitimacy = -50
+		add_prestige = -25
+	}
+
+}
+
+########################################################################################
+# chu takes fenghao (other state notif)
+########################################################################################
+country_event = {
+	id = china.40
+	title = "china.40.t"
+	desc = "china.40.d"
+	picture = defense
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.40.a"
+		add_prestige = -5
+	}
+}
+
+########################################################################################
+# chu takes fenghao
+########################################################################################
+country_event = {
+	id = china.39
+	title = "china.39.t"
+	desc = "china.39.d"
+	fire_only_once = yes
+	picture = military_parade
+	major = yes
+	
+	trigger = {
+		tag = CHU
+		owns = 4189
+		owns = 4193
+		war = no
+	}
+	
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "china.39.a"
+		add_prestige = 25
+		add_legitimacy = 25
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				country_event = { id = china.40 }
+			}
+		}
+	}
+}
