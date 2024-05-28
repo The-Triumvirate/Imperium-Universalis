@@ -834,7 +834,7 @@ country_event = {
 				id = china.22
 			}
 		}
-		JIN = {
+		emperor = {
 			country_event = {
 				id = china.22
 			}
@@ -1867,3 +1867,240 @@ country_event = {
 		trigger = { ai = no }
 	}
 }
+
+########################################################################################
+# no more liyuebadao nations left (for emperor)
+########################################################################################
+country_event = {
+	id = china.43
+	title = "china.43.t"
+	desc = "china.43.d"
+	fire_only_once = yes
+	picture = navy
+	is_triggered_only = yes
+
+	option = {
+		name = "china.43.a"
+		add_mil_power = 250
+		prestige = 25
+		add_country_modifier = { 
+			name = china_no_more_liyuebadao
+			duration = 2190
+		}
+		ai_chance = { 
+			factor = 100
+		}
+	}
+}
+
+########################################################################################
+# no more liyuebadao nations left
+########################################################################################
+country_event = {
+	id = china.42
+	title = "china.42.t"
+	desc = "china.42.d"
+	fire_only_once = yes
+	major = yes
+	picture = navy
+	
+	trigger = {
+		tag = ZHO
+		NOT = {
+			has_global_flag = zhanguokaishi
+		}
+		calc_true_if = {
+			all_known_country = {
+				religion = liyuebadao
+				capital_scope = {
+					continent = china
+				}
+			}
+			NOT = {
+				amount = 1
+			}
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 4
+	}
+
+	option = {
+		name = "china.42.a"
+		add_mil_power = 100
+		prestige = 10
+		add_country_modifier = { 
+			name = china_no_more_liyuebadao
+			duration = 2190
+		}
+		emperor = {
+			country_event = { id = china.43 }
+		}
+		ai_chance = { 
+			factor = 100
+		}
+	}
+}
+
+########################################################################################
+# looting of ChengZhou
+########################################################################################
+country_event = {
+	id = china.44
+	title = "china.44.t"
+	desc = "china.44.d"
+	major = yes
+	picture = book_burning
+	
+	trigger = {
+		AND = {
+			NOT = {
+				religion = chinese_religion
+			}
+			NOT = {
+				religion = confucianism
+			}
+			NOT = {
+				religion = mohism
+			}
+			NOT = {
+				religion = taoism
+			}
+		}
+		controls = 4349 
+		4349 = {
+			owned_by = ZHO
+			AND = {
+				NOT = {
+					has_province_modifier = china_looted_chengzhou
+				}
+				NOT = {
+					has_province_modifier = china_looted_chengzhou_harsh
+				}
+			}
+		}
+	}
+	
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "china.44.a"
+		add_curia_treasury = -75
+		add_treasury = 75
+		prestige = 5
+		ZHO = {
+			add_war_exhaustion = 0.5
+		}
+		every_country = {
+			limit = {
+				OR = {
+					religion = chinese_religion
+					religion = confucianism
+				}
+			}
+			add_opinion	 = {
+				who = ROOT
+				modifier = opinion_looted_chengzhou
+			}
+		}
+		4349 = {
+			add_province_modifier = { 
+				name = china_looted_chengzhou
+				duration = 1825 
+			}
+		}
+		ai_chance = { 
+			factor = 60
+			modifier = {
+				factor = 1.5
+				NOT = {
+					years_of_income = 1
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.44.b"
+		add_curia_treasury = -200
+		add_treasury = 200
+		prestige = 10
+		ZHO = {
+			add_war_exhaustion = 1
+		}
+		every_country = {
+			limit = {
+				OR = {
+					religion = chinese_religion
+					religion = confucianism
+				}
+			}
+			add_opinion	= {
+				who = ROOT
+				modifier = opinion_looted_chengzhou
+				multiplier = 3
+			}
+		}
+		4349 = {
+			add_province_modifier = { 
+				name = china_looted_chengzhou_harsh
+				duration = 1825 
+			}
+		}
+		ai_chance = { 
+			factor = 30
+			modifier = {
+				factor = 1.5
+				num_of_loans = 1
+			}
+			modifier = {
+				factor = 1.5
+				num_of_loans = 2
+			}
+			modifier = {
+				factor = 3
+				OR = {
+					ruler_has_personality = greedy_personality
+					ruler_has_personality = malevolent_personality
+					ruler_has_personality = embezzler_personality
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.44.c"
+		every_country = {
+			limit = {
+				OR = {
+					religion = chinese_religion
+					religion = confucianism
+				}
+			}
+			add_opinion	= {
+				who = ROOT
+				modifier = opinion_not_looted_chengzhou
+			}
+		}
+		ai_chance = { 
+			factor = 10
+			modifier = {
+				factor = 10
+				OR = {
+					ruler_has_personality = just_personality
+					ruler_has_personality = righteous_personality
+					ruler_has_personality = kind_hearted_personality
+					ruler_has_personality = benevolent_personality
+				}
+			}
+			modifier = {
+				factor = 3
+				years_of_income = 2
+			}
+		}
+	}
+}
+
