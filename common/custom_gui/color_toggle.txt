@@ -1,0 +1,93 @@
+custom_button = {
+	name = IU_show_settings_panel_button
+	#tooltip = IU_show_formables_panel_button_tt
+	potential = {
+		always = yes
+	}
+	trigger = {
+		always = yes
+	}
+	frame = {
+		number = 2
+		trigger = { has_country_flag = IU_show_settings_panel_button_flag }
+	}
+	frame = {
+		number = 1
+		trigger = { always = yes }
+	}
+	effect = {
+		hidden_effect = {
+			FROM = {
+				if = {
+					limit = {
+						has_country_flag = IU_show_settings_panel_button_flag
+					}
+					clr_country_flag = IU_show_settings_panel_button_flag
+				}
+				else = {
+					set_country_flag = IU_show_settings_panel_button_flag
+				}
+			}
+		}
+	}
+}
+
+custom_icon = {
+	name = IU_settings_menu_bg
+    potential = {
+        FROM = { has_country_flag = IU_show_settings_panel_button_flag }
+	}
+}
+
+custom_button = {
+    name = IU_color_toggle
+    potential = { has_country_flag = IU_show_settings_panel_button_flag }
+    trigger = { hidden_trigger = { always = yes } }
+    effect = {
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_global_flag = coloredvassals_yes } }
+				every_country = {
+					if = {
+						limit = {
+							is_subject = yes
+							is_colonial_nation = no
+							NOT = {
+								is_subject_of_type = tributary_state
+							}
+						}
+						change_country_color = {
+							country = OVERLORD
+						}
+						set_country_flag = color_changed_overlord
+					}
+				}
+				set_global_flag = coloredvassals_yes
+			}
+			else = {
+				every_country = {
+					limit = {
+						has_country_flag = color_changed_overlord
+					}
+					restore_country_color = yes
+					clr_country_flag = color_changed_overlord
+				}
+				clr_global_flag = coloredvassals_yes
+			}
+		}
+	}
+    #tooltip = AN_core_color_tooltip #Can use customizable localisation
+
+	frame = {
+        number = 1
+        trigger = {
+			NOT = { has_global_flag = coloredvassals_yes }
+		}
+    }
+	frame = {
+        number = 2
+        trigger = {
+			has_global_flag = coloredvassals_yes
+		}
+    }
+}

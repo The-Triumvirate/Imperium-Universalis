@@ -143,27 +143,71 @@ can_make_state = {}
 
 can_improve_tax = {
 	condition = {
-		tooltip = "NOT_POSSIBLE"
+		tooltip = "AN_NO_SUBJECT_CENSUS"
 		potential = {
-			always = yes
+    		owner = { is_subject = yes overlord = { ai = no } }
 		}
-		allow = {
-			NOT = { owner = { ai = yes } }
-
+		#if yes to above, then always disallow
+		allow = { always = no }
+	}
+	condition = {
+		tooltip = "AN_NO_ADM_PP"
+		potential = {
+    		NOT = { owner = { adm_power = 25 treasury = 25 } }
 		}
+		#if yes to above, then always disallow
+		allow = { always = no }
+	}
+	condition = {
+		tooltip = "AN_NO_AI_WEALTH"
+		potential = {
+    		owner = { ai = yes }
+		}
+		#if yes to above, then always disallow
+		allow = { always = no }
 	}
 }
 
-can_improve_production = {			# both manpower and production buttons activate the province interaction menu
+can_improve_production = {
 	condition = {
-		tooltip = "NOT_POSSIBLE"
+		tooltip = "AN_DEV_CAPPED"
 		potential = {
-			always = yes
+			#check that dev >= dev_cap
+    		check_variable = {
+        		which = AN_prov_infrastructure
+        		which = AN_prov_infrastructure_cap
+    		}
 		}
-		allow = {
-			NOT = { owner = { ai = yes } }
-
+		#if yes to above, then always disallow
+		allow = { always = no }
+	}
+	condition = {
+		tooltip = "AN_WEALTH_GREATER_INFRA"
+		potential = {
+			#check that wealth is greater than infra
+			check_variable = {
+				which = AN_prov_infrastructure
+				which = AN_prov_wealth
+    		}
 		}
+		#if yes to above, then always disallow
+		allow = { always = no }
+	}
+	condition = {
+		tooltip = "AN_NO_SUBJECT_CENSUS"
+		potential = {
+    		owner = { is_subject = yes overlord = { ai = no } }
+		}
+		#if yes to above, then always disallow
+		allow = { always = no }
+	}
+	condition = {
+		tooltip = "AN_NO_DIP_PP"
+		potential = {
+			NOT = { owner = { mil_power = 25 } }
+		}
+		#if yes to above, then always disallow
+		allow = { always = no }
 	}
 }
 
@@ -175,7 +219,7 @@ can_improve_manpower = {			# both manpower and production buttons activate the p
 			always = yes
 		}
 		allow = {
-			NOT = { owner = { ai = yes } }
+			always = no
 		}
 	}
 

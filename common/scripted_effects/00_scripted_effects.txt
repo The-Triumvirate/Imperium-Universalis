@@ -1843,3 +1843,69 @@ remove_inefficient_land_organization_modifiers = {
 	remove_country_modifier = inefficient_land_organization_modifier_11
 	remove_country_modifier = inefficient_land_organization_modifier_12
 }
+
+color_subjects_init = {
+	set_global_flag = coloredvassals_yes
+	every_country  = {
+		limit = {
+			is_subject = yes
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+			}
+		}
+		set_country_flag = color_changed_overlord
+		clr_country_flag = color_set
+		change_country_color = {
+			country = OVERLORD
+		}
+	}
+}
+
+color_subjects_dep_lost = {
+	FROM = {
+		if = {
+			limit = {
+				NOT = { has_country_flag = color_set }
+			}
+			clr_country_flag = color_changed_overlord
+			restore_country_color = yes
+		}
+	}
+}
+
+color_subjects_dep_gained = {
+	FROM = {
+		if = {
+			limit = {
+				has_global_flag = coloredvassals_yes
+				is_colonial_nation = no
+				NOT = {
+					is_subject_of_type = tributary_state
+				}
+			}
+			set_country_flag = color_changed_overlord
+			clr_country_flag = color_set
+			change_country_color = {
+				country = ROOT
+			}
+		}
+	}
+}
+
+color_subjects_create_sub = {
+	if = {
+		limit = {
+			has_global_flag = coloredvassals_yes
+			is_colonial_nation = no
+			NOT = {
+				is_subject_of_type = tributary_state
+			}
+		}
+		set_country_flag = color_changed_overlord
+		clr_country_flag = color_set
+		change_country_color = {
+			country = FROM
+		}
+	}
+}
