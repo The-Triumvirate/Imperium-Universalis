@@ -760,12 +760,13 @@ country_event = {
 	}
 }
 
-#pharaoh is bad general comparing to predecessors
+#pharaoh is bad general comparing to predecessors+likes greeks and speaks greek in his court!
 country_event = {
 	id = egypt.11
 	title = "egypt.11.t"
 	desc = "egypt.11.d"
 	picture = battle
+	fire_only_once = yes
 
 	trigger = {
 		tag = EGY
@@ -787,7 +788,11 @@ country_event = {
 		name = "egypt.11.a"
 		ai_chance = {  factor = 100 }
 		set_ruler_flag = bad_general_pharaoh
+		add_ruler_modifier = {
+			name = bad_general_pharaoh_debuff
+		}
 		add_prestige = -5
+		set_ruler_culture = doric
 		hidden_effect = {
 			add_truce_with = BAB
 		}
@@ -816,6 +821,8 @@ country_event = {
 
 	option = {
 		name = "egypt.12.a"
+		ai_chance = {  factor = 20 }
+		add_stability = -1
 		if = {
 			limit = {
 				802 = {
@@ -837,7 +844,7 @@ country_event = {
 				add_base_manpower = 1
 			}
 			801 = {
-				add_base_manpower = -1
+				add_base_manpower = 1
 			}
 			KUS = {
 				add_prestige = 5
@@ -873,26 +880,533 @@ country_event = {
 			add_yearly_manpower = -0.2
 		}
 	}
+	option = {
+		name = "egypt.12.b"
+		ai_chance = {  factor = 80 }
+		add_dip_power = -300
+		add_country_modifier = {
+			name = egy_merc_preferences
+			duration = 7300
+		}
+	}
 }
 #greek settlers influx in Kyrenaike - accept or not - if yes - next events happen
+country_event = {
+	id = egypt.13
+	title = "egypt.13.t"
+	desc = "egypt.13.d"
+	picture = exploration
+	fire_only_once = yes
 
+	trigger = {
+		tag = KYR
+		is_year = 170
+		NOT = {
+			is_year = 180
+		}
+		NOT = {
+			has_country_flag = greek_colonisation_cyrene
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "egypt.13.a" #bring them all in! lets rock!
+		ai_chance = {  factor = 95 }
+		set_country_flag = greek_colonisation_cyrene
+		set_global_flag = battle_of_irasa_will_happen
+		define_ruler = {
+			name = "Battus II the Blessed"
+			dynasty = "Battiadae"
+			dip = 3
+			adm = 4
+			mil = 5
+			age = 36
+		}
+		define_ruler_to_general = {
+			name = "Battus II the Blessed"
+			fire = 6
+			shock = 8
+			manuever = 4
+			siege = 4
+		}
+		700 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = doric
+			change_religion = greek_religion
+		}
+		701 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = doric
+			change_religion = greek_religion
+		}
+		702 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = doric
+			change_religion = greek_religion
+		}
+		704 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = doric
+			change_religion = greek_religion
+		}
+		705 = {
+			add_base_tax = 1
+			add_base_production = 1
+			add_base_manpower = -1
+			change_culture = doric
+			change_religion = greek_religion
+		}
+		6241 = {
+			add_base_production = 1
+		}
+		707 = {
+			add_base_production = 1
+		}
+		hidden_effect = {
+			random_province = {
+				limit = {
+					OR = {
+						area = gortyn_area
+						area = hierapytna_area
+						area = knossos_area
+						area = polyrrenia_area
+						area = laconica_area
+						area = elis_area
+						area = argolis_area
+						area = corinthia_area
+						area = rhodiorum_area
+					}
+					base_production = 3
+				}
+				add_base_production = -1
+			}
+			random_province = {
+				limit = {
+					region = greek_region
+					base_manpower = 3
+				}
+				add_base_manpower = -1
+			}
+			KYR = {
+				country_event = {
+					days = 395
+					id = egypt.15
+				}
+			}
+			LYB = {
+				country_event = {
+					days = 365
+					id = egypt.14
+				}
+			}
+		}
+	}
+	option = {
+		name = "egypt.13.b" #no, I want to live with lybians and have no wars
+		ai_chance = {  factor = 5 }
+		set_country_flag = greek_colonisation_cyrene
+		add_prestige = -5
+		define_ruler = {
+			name = "Battus II the Blessed"
+			dynasty = "Battiadae"
+			dip = 3
+			adm = 4
+			mil = 5
+			age = 36
+		}
+	}
+}
 #lybian response - unite the tribes and call egypt (become settled tribal kingdom and tributary of Egypt) or just call (stay native tributary) or no reaction (-100 prestige, ruler dies)
+country_event = {
+	id = egypt.14
+	title = "egypt.14.t"
+	desc = "egypt.14.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
 
-#Event for Kyrene - gives new Ruler Bato II "The Blessed", 3-2-6, and buff modifiers, and warns lybians and egyptians are planning a war
+	trigger = {
+		tag = LYB
+		is_year = 170
+		NOT = {
+			is_year = 200
+		}
+		has_global_flag = battle_of_irasa_will_happen
+	}
 
-#Event for Egypt - to accept lybian call or not - if yes - Lybia starts a punitive war against Kyrene. Kyrene spawns few more infantry.
+	option = {
+		name = "egypt.14.a"
+		change_government = tribal
+		add_government_reform = tribal_kingdom_reform
+		define_ruler = {
+			name = "Adicran"
+			dynasty = "of Sais"
+			culture = lybian
+			age = 33
+			dip = 3
+			adm = 3
+			mil = 2
+		}
+		ammonium_area = {
+			limit = {
+				is_empty = yes
+			}
+			cede_province = ROOT
+			add_core = ROOT
+		}
+		marmarica_east = {
+			limit = {
+				is_empty = yes
+			}
+			cede_province = ROOT
+			add_core = ROOT
+		}
+		marmarica_west = {
+			limit = {
+				is_empty = yes
+			}
+			cede_province = ROOT
+			add_core = ROOT
+		}
+		add_country_modifier = {
+			name = lyb_lybians_temp_country_buff
+			duration = 3650
+		}
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		create_alliance = EGY
+		EGY = {
+			country_event = {
+				days = 50
+				id = egypt.16
+			}
+		}
+	}
+	option = {
+		name = "egypt.14.b"
+		create_alliance = EGY
+		define_ruler = {
+			name = "Adicran"
+			dynasty = "of Sais"
+			culture = lybian
+			age = 33
+			dip = 3
+			adm = 3
+			mil = 2
+		}
+		add_country_modifier = {
+			name = lyb_lybians_temp_country_buff
+			duration = 3650
+		}
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		infantry = 716
+		EGY = {
+			country_event = {
+				days = 50
+				id = egypt.16
+			}
+		}
+	}
+	option = {
+		name = "egypt.14.c"
+		add_prestige = -5
+		add_stability = -1
+	}
+}
+#Event for Kyrene - gives new Ruler Bato II "The Blessed" buff modifiers, and warns lybians and egyptians are planning a war
+country_event = {
+	id = egypt.15
+	title = "egypt.15.t"
+	desc = "egypt.15.d"
+	picture = spartans
+	fire_only_once = yes
+	is_triggered_only = yes
 
+	option = {
+		name = "egypt.15.a"
+		ai_chance = {  factor = 100 }
+		add_country_modifier = {
+			name = kyr_bato_temp_country_buff
+			duration = 3650
+		}
+		add_army_professionalism = 0.1
+		add_yearly_manpower = 5
+		add_army_tradition = 20
+		add_mil_power = 50
+		artillery = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+		infantry = 707
+	}
+}
+#Event for Egypt - to accept lybian ambassadors call or not - if yes - Lybia starts a punitive war against Kyrene. Kyrene spawns few more infantry.
+country_event = {
+	id = egypt.16
+	title = "egypt.16.t"
+	desc = "egypt.16.d"
+	picture = ruler
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			create_alliance =  LYB
+		}
+		EGY = {
+			add_trust = {
+				who = LYB
+				value = 30
+				mutual = yes
+			}
+		}
+	}
+	after = {
+		every_ally = {
+			join_all_offensive_wars_of = KYR
+		}
+	}
+
+	option = {
+		name = "egypt.16.a" #we go war!
+		ai_chance = {  factor = 90 }
+		create_alliance =  LYB
+		KYR = {
+			declare_war_with_cb = {
+				who = LYB
+				casus_belli = cb_insult
+			}
+		}
+	}
+
+	option = {
+		name = "egypt.16.b" #lybia can die alone, idk
+		ai_chance = {  factor = 10 }
+		break_alliance = LYB
+		LYB = {
+			declare_war_with_cb = {
+				who = KYR
+				casus_belli = cb_insult
+			}
+		}
+	}
+}
 #on egypt victory - (occupation of Kyrene, and at least 30% warscore on egyptian side) event for Lybian Victory. Kyrene becomes Egypt Tributary. Lybia gets few provs on south and on west of Kyrene, and cb on it.
+country_event = {
+	id = egypt.17
+	title = "egypt.17.t"
+	desc = "egypt.17.d"
+	picture = battle
+	fire_only_once = yes
 
+	trigger = {
+		tag = LYB
+		is_year = 170
+		NOT = {
+			is_year = 200
+		}
+		has_global_flag = battle_of_irasa_will_happen
+		war_with = KYR
+		707 = {
+			OR = {
+				controlled_by = EGY
+				controlled_by = LYB
+			}
+		}
+		war_score_against = {
+			who = KYR
+			value = 30
+		}
+	}
+
+	option = {
+		name = "egypt.17.a"
+		ai_chance = {  factor = 100 }
+		white_peace = KYR
+		LYB = {
+			white_peace = KYR
+		}
+		705= {
+			cede_province = ROOT
+			add_core = ROOT
+			change_culture = lybian
+			change_religion = numidian_religion
+		}
+		701= {
+			cede_province = ROOT
+			add_core = ROOT
+			change_culture = lybian
+			change_religion = numidian_religion
+		}
+		702= {
+			cede_province = ROOT
+			add_core = ROOT
+			change_culture = lybian
+			change_religion = numidian_religion
+		}
+		704= {
+			cede_province = ROOT
+			add_core = ROOT
+			change_culture = lybian
+			change_religion = numidian_religion
+		}
+		1641= {
+			cede_province = ROOT
+			add_core = ROOT
+			change_culture = lybian
+			change_religion = numidian_religion
+		}
+		EGY = {
+			country_event = {
+				days = 1
+				id = egypt.170
+			}
+		}
+	}
+}
+country_event = {
+	id = egypt.170
+	title = "egypt.170.t"
+	desc = "egypt.170.d"
+	picture = military_parade
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "egypt.170.a" #we won!
+		ai_chance = {  factor = 100 }
+		create_subject = {
+			subject_type = tributary_state
+			subject = KYR
+		}
+		create_subject = {
+			subject_type = tributary_state
+			subject = LYB
+		}
+	}
+}
 #Greek victory event - on 10-15 % positive warscore  - battle of Irasa (2 events, this one is victory message for Kyrene.
 #Kyrene gets 50 prestige, 10 legitimacy, and peaces out Lybia. Lybia gets -25 prestige,
+country_event = {
+	id = egypt.18
+	title = "egypt.18.t"
+	desc = "egypt.18.d"
+	picture = military_parade
+	fire_only_once = yes
+
+	trigger = {
+		tag = KYR
+		is_year = 170
+		NOT = {
+			is_year = 200
+		}
+		has_global_flag = battle_of_irasa_will_happen
+		war_with = LYB
+		war_score_against = {
+			who = LYB
+			value = 30
+		}
+	}
+
+	option = {
+		name = "egypt.18.a"
+		ai_chance = {  factor = 100 }
+		white_peace = LYB
+		white_peace = EGY
+		add_legitimacy = 10
+		add_prestige = 50
+		add_splendor = 200
+		EGY = {
+			country_event = {
+				days = 1
+				id = egypt.180
+			}
+		}
+		LYB = {
+			country_event = {
+				days = 1
+				id = egypt.180
+			}
+		}
+	}
+}
 
 #Egypt gets event of "Battle of Irasa", gets -50 legitimacy, -50 prestige, -10 army tradiitons.
 #mentions that survivors blame bad unskilled pharaoh for sending them to slaughter, and accuse him of being hellenophile. Revolt is brewing.
 
-#Egyptian civil war. Egyptians blame pharaoh for relying on greek mercenaries and sending egyptians to death, and for accepting greek culture.
+country_event = {
+	id = egypt.180
+	title = "egypt.180.t"
+	desc = "egypt.180.d"
+	picture = spartans
+	fire_only_once = yes
+	is_triggered_only = yes
 
-#Player chooses side : Current paharaoh, capital changes to Naukratis, -2 stab, all regiments disbanded, -50k manpower, spawns 10k greek mercs in naukratis,
+	option = {
+		name = "egypt.180.a" #Battle of Irasa lost!
+		ai_chance = {  factor = 100 }
+		add_legitimacy = -50
+		add_prestige = -30
+		add_army_tradition = -10
+		add_manpower = -20
+		if = {
+			limit = {
+				tag = EGY
+			}
+			country_event = {
+				days = 30
+				id = egypt.19
+			}
+		}
+	}
+}
+#Egyptian civil war. Egyptians blame pharaoh for relying on greek mercenaries and sending egyptians to death, and for accepting greek culture.
+country_event = {
+	id = egypt.19
+	title = "egypt.19.t"
+	desc = "egypt.19.d"
+	picture = civilwar
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "egypt.19.a"
+		ai_chance = {  factor = 100 }
+		add_stability = -1
+		EGY = {
+			country_event = {
+				days = 30
+				id = egypt.19
+			}
+		}
+	}
+}
+#Player chooses side : Current pharaoh, capital changes to Naukratis, -2 stab, all regiments disbanded, -50k manpower, spawns 10k greek mercs in naukratis,
 #huge pretender revolts, sponsoored by Babylon, in Memphis, Thebes, Sais, and more suth etc.  ? Babylon declares punitive war to help install Amasis II. ? - might go without that.
 
 #Amasis: All mercenaries disbanded, big pretender revolt in Naucratis and delta, -2 stab.
