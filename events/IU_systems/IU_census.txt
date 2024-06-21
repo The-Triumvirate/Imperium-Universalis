@@ -397,12 +397,12 @@ province_event = {
 		ai_chance = {
 			factor = 100
 		}
-		trigger = { OR = { has_terrain = grasslands has_terrain = drylands AND = { has_terrain = marsh OR = { has_province_modifier = dikes has_port = no  } } has_province_modifier = floodplain has_province_modifier = oasis has_province_modifier = valley has_province_modifier = volcano } NOT = { has_province_modifier = irrigation } }
+		trigger = { OR = { has_farmland_terrain = yes has_terrain = grasslands has_terrain = drylands AND = { has_terrain = marsh OR = { has_province_modifier = dikes has_port = no  } } has_province_modifier = floodplain has_province_modifier = oasis has_province_modifier = valley has_province_modifier = volcano } NOT = { has_province_modifier = irrigation } }
 		if = {
 			limit = {
-				base_tax = 6
+				base_tax = 20
 			}
-			add_base_tax = -3
+			add_base_tax = -8
 			add_permanent_province_modifier = {
 				name = irrigation
 				duration = -1
@@ -413,7 +413,7 @@ province_event = {
 		else = {
 			custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
 			tooltip = {
-				add_base_tax = -3
+				add_base_tax = -8
 				add_permanent_province_modifier = {
 					name = irrigation
 					duration = -1
@@ -429,10 +429,10 @@ province_event = {
 		ai_chance = {
 			factor = 100
 		}
-		trigger = { OR = { has_terrain = badlands has_terrain = savannah has_terrain = steppe has_province_modifier = oasis AND = { has_terrain = drylands climate_parched = yes } AND = { has_terrain = drylands climate_dry = yes } } NOT = { has_province_modifier = wells } }
+		trigger = { adm_tech = 4 OR = { has_terrain = badlands has_terrain = savannah has_terrain = steppe has_province_modifier = oasis AND = { has_terrain = drylands climate_parched = yes } AND = { has_terrain = drylands climate_dry = yes } } NOT = { has_province_modifier = wells } }
 		if = {
 			limit = {
-				base_tax = 4
+				base_tax = 6
 			}
 			add_base_tax = -2
 			add_permanent_province_modifier = {
@@ -461,12 +461,12 @@ province_event = {
 		ai_chance = {
 			factor = 100
 		}
-		trigger = { OR = { has_terrain = mountain has_terrain = hills has_terrain = highlands } NOT = { has_province_modifier = terrace } }
+		trigger = { OR = { has_terrain = mountain has_terrain = hills has_terrain = highlands has_terrain = fertile_highlands } NOT = { has_province_modifier = terrace } }
 		if = {
 			limit = {
-				base_tax = 6
+				base_tax = 16
 			}
-			add_base_tax = -3
+			add_base_tax = -4
 			add_permanent_province_modifier = {
 				name = terrace
 				duration = -1
@@ -477,7 +477,7 @@ province_event = {
 		else = {
 			custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
 			tooltip = {
-				add_base_tax = -3
+				add_base_tax = -4
 				add_permanent_province_modifier = {
 					name = terrace
 					duration = -1
@@ -493,10 +493,10 @@ province_event = {
 		ai_chance = {
 			factor = 100
 		}
-		trigger = { owner = { has_reform = agrarian_freeholds_reform } has_terrain = grasslands NOT = { OR = { has_building = village has_building = town has_building = city has_building = metropolis } } NOT = { has_province_modifier = enclosures } }
+		trigger = { adm_tech = 16 OR = { has_farmland_terrain = yes has_terrain = grasslands } NOT = { OR = { has_building = village has_building = town has_building = city has_building = metropolis } } NOT = { has_province_modifier = enclosures } }
 		if = {
 			limit = {
-				base_tax = 6
+				base_tax = 12
 			}
 			add_base_tax = -3
 			add_permanent_province_modifier = {
@@ -529,7 +529,7 @@ province_event = {
 		if = {
 			limit = {
 				OR = { has_province_modifier = irrigation has_province_modifier = terrace has_province_modifier = dikes has_province_modifier = wells }
-				base_tax = 12
+				base_tax = 16
 			}
 			add_base_tax = -6
 			add_permanent_province_modifier = {
@@ -608,7 +608,8 @@ province_event = {
 		trigger = { province_has_center_of_trade_of_level = 2 has_port = yes OR = { has_province_modifier = breakwaters has_province_modifier = dikes } NOT = { has_province_modifier = lighthouse } }
 		if = {
 			limit = {
-				base_tax = 16
+				adm_tech = 16
+				base_tax = 24
 			}
 			add_base_tax = -8
 			add_permanent_province_modifier = {
@@ -793,284 +794,9 @@ province_event = {
 			hidden_effect = { province_event = { id = census.1 days = 0 } }
 		}
 	}
-	option = { #Establish Manors / Unique
-		name = "census.300.l"
-		trigger = { OR = { has_terrain = grasslands has_terrain = drylands has_terrain = woods } owner = { OR = { has_reform = feudal_manors_reform has_reform = latifundium_reform has_reform = seigneuries_reform has_reform = folwarks_reform has_reform = heerlijkheid_reform has_reform = patroons_reform has_reform = rittergut_reform has_reform = encomiendas_reform has_reform = shoen_reform } } NOT = { OR = { has_province_modifier = latifundium has_province_modifier = seigneurie has_province_modifier = folwark has_province_modifier = heerlijkheid has_province_modifier = patroon has_province_modifier = rittergut has_province_modifier = hacienda has_province_modifier = shoen has_province_modifier = manor has_building = village has_building = town has_building = city has_building = metropolis} } }
-		if = {
-			limit = { owner = { has_reform = latifundium_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = latifundium
-					duration = -1
-				}
-				custom_tooltip = latifundium.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = latifundium
-						duration = -1
-					}
-					custom_tooltip = latifundium.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = seigneuries_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = seigneurie
-					duration = -1
-				}
-				custom_tooltip = seigneurie.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = seigneurie
-						duration = -1
-					}
-					custom_tooltip = seigneurie.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = folwarks_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = folwark
-					duration = -1
-				}
-				custom_tooltip = folwark.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = folwark
-						duration = -1
-					}
-					custom_tooltip = folwark.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-			add_province_modifier = {
-				name = folwark
-				duration = -1
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = heerlijkheid_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = heerlijkheid
-					duration = -1
-				}
-				custom_tooltip = heerlijkheid.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = heerlijkheid
-						duration = -1
-					}
-					custom_tooltip = heerlijkheid.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-			add_province_modifier = {
-				name = heerlijkheid
-				duration = -1
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = patroons_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = patroon
-					duration = -1
-				}
-				custom_tooltip = patroon.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = patroon
-						duration = -1
-					}
-					custom_tooltip = patroon.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-			add_province_modifier = {
-				name = patroon
-				duration = -1
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = rittergut_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = rittergut
-					duration = -1
-				}
-				custom_tooltip = rittergut.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = rittergut
-						duration = -1
-					}
-					custom_tooltip = rittergut.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-			add_province_modifier = {
-				name = rittergut
-				duration = -1
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = haciendas_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = hacienda
-					duration = -1
-				}
-				custom_tooltip = hacienda.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = hacienda
-						duration = -1
-					}
-					custom_tooltip = hacienda.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-			add_province_modifier = {
-				name = hacienda
-				duration = -1
-			}
-		}
-		else_if = {
-			limit = { owner = { has_reform = shoen_reform } }
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = shoen
-					duration = -1
-				}
-				custom_tooltip = shoen.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = shoen
-						duration = -1
-					}
-					custom_tooltip = shoen.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-		}
-		else = {
-			if = {
-				limit = {
-					base_tax = 10
-				}
-				add_base_tax = -5
-				add_permanent_province_modifier = {
-					name = manor
-					duration = -1
-				}
-				custom_tooltip = manor.tooltip
-
-			}
-			else = {
-				custom_tooltip = IR_CENSUS_CANNOT_AFFORD_INFR_PRJ
-				tooltip = {
-					add_base_tax = -5
-					add_permanent_province_modifier = {
-						name = manor
-						duration = -1
-					}
-					custom_tooltip = manor.tooltip
-
-				}
-				hidden_effect = { province_event = { id = census.1 days = 0 } }
-			}
-		}
-	}
 	option = { #Construct Waystations
 		name = "census.300.i"
-		trigger = { OR = { has_terrain = tundra has_terrain = steppe has_terrain = desert has_terrain = coastal_desert has_terrain = glacier } NOT = { has_province_modifier = waystations } }
+		trigger = { OR = { has_terrain = tundra has_terrain = steppe has_terrain = desert has_terrain = coastal_desert } NOT = { has_province_modifier = waystations } }
 		if = {
 			limit = {
 				base_tax = 4

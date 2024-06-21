@@ -7,101 +7,15 @@ SD_trigger_recently_attacked = {
 		has_province_modifier = SD_was_enslaved		# enslave: 20% income value, 10% devast, population enslaved
 		has_province_modifier = SD_was_destroyed	# destroy: 30% income value, 60% building destruction, 40% devastation, enslaved, x% refugees
 		has_province_modifier = SD_was_delenda		# delenda est: all of the above
-
-	}
-
-
-
-}
-
-PG_any_prod_port_trade = {
-	OR = {
-		has_building = big_mine
-		has_building = small_mine
-		has_building = quarry
-
-		has_building = big_estate
-		has_building = big_water_irrigation
-		has_building = small_water_irrigation
-
-		has_building = artisan_district
-		has_building = small_workshop
-		has_building = craftsman
-
-		has_building = farming_settlement
-		has_building = winery
-		has_building = shepherds
-		has_building = apiary
-		has_building = weavers
-		has_building = fishermen_huts
-		has_building = tannery
-		has_building = salt_gatherers
-		has_building = miners_camp
-		has_building = pottery
-		has_building = glassmaker
-		has_building = tar_pit
-		has_building = blacksmith
-		has_building = horsebreeder
-		has_building = goldsmith
-		has_building = lumberjack
-		has_building = dyer
-
-		has_building = small_market
-		has_building = medium_market
-		has_building = great_market
-
-		has_building = small_harbor
-		has_building = big_harbor
-		has_building = harbor_district
-
-		has_building = small_shipyard
-		has_building = big_shipyard
-	}
-}
-PG_any_gov_tax_temple = {
-	OR = {
-		has_building = shrine
-		has_building = small_temple
-		has_building = great_temple
-		has_building = oracle
-
-		has_building = small_townhall
-		has_building = big_townhall
-		has_building = government_palace
-		has_building = government_district
-
-		has_building = taxman
-		has_building = tax_collector
-	}
-}
-
-
-PG_trigger_has_new_pop = {
-	OR = {
-		has_province_modifier = PG_migr_new_allsame
-		has_province_modifier = PG_migr_new_cultgroup
-		has_province_modifier = PG_migr_new_otherrelg
-		has_province_modifier = PG_migr_new_othercult
-		has_province_modifier = PG_migr_new_rulercult
-		has_province_modifier = PG_migr_new_none_advanced
-		has_province_modifier = PG_migr_new_none_neutral
-		has_province_modifier = PG_migr_new_none_tension
 	}
 }
 
 SD_slavesprod_check = {
 	OR = {
-		has_building = big_mine
-		has_building = small_mine
-		has_building = quarry
-
-		has_building = big_estate
-		has_building = big_water_irrigation
-		has_building = small_water_irrigation
-
-		has_building = artisan_district
-		has_building = small_workshop
-		has_building = craftsman
+		has_building = factory
+		has_building = new_manufactory
+		has_building = workshop
+		has_building = cottage
 
 		has_building = farming_settlement
 		has_building = winery
@@ -120,7 +34,86 @@ SD_slavesprod_check = {
 		has_building = goldsmith
 		has_building = lumberjack
 		has_building = dyer
-		# any other wonder
+	}
+}
 
+########
+## Forests
+########
+
+AN_can_chop_forest = {
+	OR = {
+		AND = {
+			has_province_modifier = $TYPE$_1
+			owner = {
+				OR = {
+					ai = no
+					treasury = 50
+				}
+			}
+		}
+		AND = {
+			has_province_modifier = $TYPE$_2
+			owner = {
+				OR = {
+					ai = no
+					treasury = 100
+				}
+			}
+		}
+		AND = {
+			has_province_modifier = $TYPE$_3
+			owner = {
+				OR = {
+					ai = no
+					treasury = 150
+				}
+			}
+		}
+	}
+	NOT = { has_province_modifier = $TYPE$_chopped }
+}
+
+AN_can_reforest = {
+	OR = {
+		AND = {
+			has_province_flag = $TYPE$_residual
+			owner = {
+				OR = {
+					ai = no
+					treasury = 25
+				}
+			}
+		}
+		AND = {
+			has_province_modifier = $TYPE$_1
+			owner = {
+				OR = {
+					ai = no
+					treasury = 150
+				}
+			}
+		}
+		AND = {
+			has_province_modifier = $TYPE$_2
+			owner = {
+				OR = {
+					ai = no
+					treasury = 200
+				}
+			}
+		}
+		any_neighbor_province = {
+			OR = {
+				has_province_modifier = $TYPE$_1
+				has_province_modifier = $TYPE$_2
+				has_province_modifier = $TYPE$_3
+			}
+		}
+	}
+	NOT = {
+		has_province_modifier = $TYPE$_chopped
+		has_terrain = desert
+		has_terrain = coastal_desert
 	}
 }
