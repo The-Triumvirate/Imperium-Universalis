@@ -1401,18 +1401,277 @@ country_event = {
 		EGY = {
 			country_event = {
 				days = 30
-				id = egypt.19
+				id = egypt.20
 			}
 		}
 	}
 }
 #Player chooses side : Current pharaoh, capital changes to Naukratis, -2 stab, all regiments disbanded, -50k manpower, spawns 10k greek mercs in naukratis,
 #huge pretender revolts, sponsoored by Babylon, in Memphis, Thebes, Sais, and more suth etc.  ? Babylon declares punitive war to help install Amasis II. ? - might go without that.
+#Amasis: All mercenaries disbanded, big pretender revolt in Naucratis, and some in south egypt, -2 stab.
+country_event = {
+	id = egypt.20
+	title = "egypt.20.t"
+	desc = "egypt.20.d"
+	picture = civilwar
+	fire_only_once = yes
+	is_triggered_only = yes
 
-#Amasis: All mercenaries disbanded, big pretender revolt in Naucratis and delta, -2 stab.
+	option = {
+		name = "egypt.20.a" #current pharaoh
+		set_country_flag = amasis_civil_war_apries
+		ai_chance = {  factor = 100 }
+		add_stability = -2
+		disband_all_regiments = yes
+		729 = {
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_infantry = EGY
+			mercenary_cavalry = EGY
+			mercenary_artillery = EGY
+			mercenary_artillery = EGY
+		}
+		745 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 3
+				leader = "Amasis of Sais"
+			}
+		}
+		740 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 3
+				leader = "Amasis of Sais"
+			}
+		}
+		762 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 3
+				leader = "Amasis of Sais"
+			}
+		}
+		736 = {
+			spawn_rebels = {
+				type = peasant_rebels
+				size = 3
+			}
+		}
+		6258 = {
+			spawn_rebels = {
+				type = peasant_rebels
+				size = 3
+			}
+		}
+		6262 = {
+			spawn_rebels = {
+				type = peasant_rebels
+				size = 1
+			}
+		}
+	}
+	option = {
+		name = "egypt.20.b" #amasis
+		ai_chance = {  factor = 100 }
+		set_country_flag = amasis_civil_war_amasis
+		add_stability = -2
+		define_ruler = {
+			name = "Amasis II"
+			dynasty = "of Sais"
+			culture = lybio_egyptian
+			age = 40
+			dip = 4
+			adm = 4
+			mil = 4
+		}
+		define_heir = {
+			name = "Psamtik III"
+			dynasty = "of Sais"
+			culture = lybio_egyptian
+			age = 3
+			dip = 3
+			adm = 3
+			mil = 2
+		}
+		6245 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 1.5
+				leader = "Haaibre Wahibre of Sais"
+			}
+		}
+		730 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 1
+				leader = "Haaibre Wahibre of Sais"
+			}
+		}
+		785 = {
+			spawn_rebels = {
+				type = pretender_rebels
+				size = 1
+				leader = "Haaibre Wahibre of Sais"
+			}
+		}
+	}
+}
 
 #End of civil war: no pretender rebels or rebel occupied provs, +1 stab.+30 legitimacy
+country_event = {
+	id = egypt.21
+	title = "egypt.21.t"
+	desc = "egypt.21.d"
+	picture = civilwar
+	fire_only_once = yes
 
+	trigger = {
+		tag = EGY
+		NOT = {
+			started_in = 180.1.1
+		}
+		OR = {
+			has_country_flag = amasis_civil_war_amasis
+			has_country_flag = amasis_civil_war_apries
+		}
+		NOT = { has_spawned_rebels = pretender_rebels }
+	}
+	option = {
+		name = "egypt.21.a"
+		ai_chance = {  factor = 100 }
+		add_stability = 2
+		add_legitimacy = 30
+		EGY = {
+			country_event = {
+				days = 30
+				id = egypt.23
+			}
+		}
+	}
+}
 #After end of civil war, and Battus II death, event for Kyrene: Rise of Barka, dividing country on 2 tags, with claims on each other.
+country_event = {
+	id = egypt.22
+	title = "egypt.22.t"
+	desc = "egypt.22.d"
+	picture = civilwar
+	fire_only_once = yes
 
+	trigger = {
+		tag = KYR
+		is_year = 185
+		NOT = { is_year = 220 }
+		NOT = {	has_ruler = "Battus II the Blessed"	}
+		EGY = {
+			OR = {
+				has_country_flag = amasis_civil_war_amasis
+				has_country_flag = amasis_civil_war_apries
+			}
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			cyrenaica_west = {
+				type = all
+				add_core = BRK
+				cede_province = BRK
+			}
+			705 = {
+				infantry = BRK
+				infantry = BRK
+				cavalry = BRK
+			}
+			cyrenaica_east = {
+				type = all
+				add_core = BRK
+			}
+			BRK = {
+				set_capital = 705
+				discover_country = KYR
+				discover_province = 703
+				discover_province = 708
+				discover_province = 1641
+				add_army_professionalism = 0.2
+				add_army_tradition = 10
+				add_mil_power = 100
+			}
+			705 = {
+				add_base_tax = 1
+				center_of_trade = 1
+			}
+		}
+	}
+
+	option = {
+		name = "egypt.22.a"
+		ai_chance = {  factor = 100 }
+		add_stability = -1
+		BRK = {
+			define_ruler = {
+				name = "Learhus I"
+				dynasty = "Battiadae"
+				culture = doric
+				age = 30
+				dip = 4
+				adm = 3
+				mil = 3
+			}
+		}
+		KYR = {
+			declare_war = BRK
+		}
+	}
+	option = {
+		name = "egypt.22.b"
+		ai_chance = {  factor = 100 }
+		switch_tag = BRK
+		BRK = {
+			define_ruler = {
+				name = "Learhus I"
+				dynasty = "Battiadae"
+				culture = doric
+				age = 30
+				dip = 4
+				adm = 3
+				mil = 3
+			}
+		}
+		KYR = {
+			declare_war = BRK
+		}
+	}
+}
 #If Amasis is picked, event after end of civil war: Greko-Egyptian Alliance, alliance and royal marriage of Kyrene and egypt., and alliance with Samos and Lydia. #adds historical friendship of Samos and Egypt and Egypt and Lydia.
+country_event = {
+	id = egypt.23
+	title = "egypt.23.t"
+	desc = "egypt.23.d"
+	picture = ruler
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "egypt.23.a"
+		ai_chance = {  factor = 100 }
+		create_alliance = KYR
+		create_alliance = LYD
+		create_alliance = SAM
+		create_marriage = KYR
+		cyprus_region = {
+			type = all
+			add_core = EGY
+		}
+		add_adm_power = 300
+		add_dip_power = 100
+		add_mil_power = 100
+	}
+}
