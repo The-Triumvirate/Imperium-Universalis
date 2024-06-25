@@ -67,7 +67,7 @@ settlement = {
     # Optional. Province scope. Limits construction of building if not met.
     build_trigger = {
 		base_manpower = 10
-		check_variable = { which = AN_civ_stat value = 15 }
+		check_variable = { which = AN_civ_stat value = 8 }
     }
 
 	keep_trigger = {
@@ -77,6 +77,7 @@ settlement = {
     # The modifier the building applies to the province.
     # Country-scope modifiers used here will apply to the owning country of the building instead.
     modifier = {
+		local_defensiveness = -0.05
         local_development_cost = -0.025
 		supply_limit_modifier = 0.05
 		local_institution_spread = 0.025
@@ -129,6 +130,7 @@ village = {
     # The modifier the building applies to the province.
     # Country-scope modifiers used here will apply to the owning country of the building instead.
     modifier = {
+		local_defensiveness = -0.20
         local_development_cost = -0.05
 		supply_limit_modifier = 0.1
 		local_institution_spread = 0.05
@@ -185,6 +187,7 @@ town = {
     # The modifier the building applies to the province.
     # Country-scope modifiers used here will apply to the owning country of the building instead.
     modifier = {
+		local_defensiveness = -0.35
         local_development_cost = -0.1
 		supply_limit_modifier = 0.2
 		local_institution_spread = 0.1
@@ -233,6 +236,7 @@ city = {
     # The modifier the building applies to the province.
     # Country-scope modifiers used here will apply to the owning country of the building instead.
     modifier = {
+		local_defensiveness = -0.50
         local_development_cost = -0.15
 		supply_limit_modifier = 0.3
 		local_institution_spread = 0.15
@@ -279,7 +283,9 @@ metropolis = {
 
     # The modifier the building applies to the province.
     # Country-scope modifiers used here will apply to the owning country of the building instead.
-    modifier = {
+
+	modifier = {
+		local_defensiveness = -0.65
         local_development_cost = -0.2
 		supply_limit_modifier = 0.4
 		local_institution_spread = 0.2
@@ -313,6 +319,11 @@ wood_city_walls = { #year 135
 	cost = 100
 	time = 24
 
+	modifier = {
+		fort_level = 1
+		local_defensiveness = 0.1
+	}
+
 	build_trigger = {
 		OR = {
 			has_building = village
@@ -322,10 +333,6 @@ wood_city_walls = { #year 135
 		}
     }
 
-	modifier = {
-		fort_level = 1
-	}
-
 	onmap = yes
 	influencing_fort = yes
 
@@ -334,7 +341,7 @@ wood_city_walls = { #year 135
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	ai_will_do = {
-		factor = 1.0
+		factor = 99999
 	}
 }
 
@@ -345,6 +352,11 @@ stone_city_walls = { #year 295
 	time = 24
 	make_obsolete = wood_city_walls
 
+	modifier = {
+		fort_level = 2
+		local_defensiveness = 0.2
+	}
+
 	build_trigger = {
 		OR = {
 			has_building = town
@@ -352,10 +364,6 @@ stone_city_walls = { #year 295
 			has_building = metropolis
 		}
     }
-
-	modifier = {
-		fort_level = 2
-	}
 
 	onmap = yes
 	influencing_fort = yes
@@ -365,7 +373,7 @@ stone_city_walls = { #year 295
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	ai_will_do = {
-		factor = 1.0
+		factor = 99999
 		modifier = { factor = 0	owner = { ai = yes	government = tribal } } # no tribal AI
 	}
 }
@@ -376,6 +384,11 @@ turreted_city_walls = { #year 430
 	cost = 300
 	time = 34
 	make_obsolete = stone_city_walls
+
+	modifier = {
+		fort_level = 3
+		local_defensiveness = 0.3
+	}
 
 	build_trigger = {
 		OR = {
@@ -394,10 +407,6 @@ turreted_city_walls = { #year 430
 		}
 	}
 
-	modifier = {
-		fort_level = 3
-	}
-
 	onmap = yes
 	influencing_fort = yes
 
@@ -406,7 +415,7 @@ turreted_city_walls = { #year 430
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	ai_will_do = {
-		factor = 1.0
+		factor = 99999
 		modifier = { factor = 0	owner = { NOT = { full_idea_group = fortress_ideas } government = tribal } } # no tribal AI
 	}
 }
@@ -417,6 +426,11 @@ huge_city_walls = { #year ?
 	cost = 400
 	time = 34
 	make_obsolete = stone_city_walls
+
+	modifier = {
+		fort_level = 4
+		local_defensiveness = 0.4
+	}
 
 	build_trigger = {
 		has_building = metropolis
@@ -432,10 +446,6 @@ huge_city_walls = { #year ?
 		}
 	}
 
-	modifier = {
-		fort_level = 4
-	}
-
 	onmap = yes
 	influencing_fort = yes
 
@@ -444,7 +454,7 @@ huge_city_walls = { #year ?
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	ai_will_do = {
-		factor = 1.0
+		factor = 99999
 		modifier = { factor = 0	owner = { NOT = { full_idea_group = fortress_ideas } government = tribal } } # no tribal AI
 	}
 }
@@ -477,7 +487,7 @@ small_outpost = { #year 135
 	}
 }
 
-# Stone City Walls
+# Large Outpost
 
 large_outpost = { #year 295
 	cost = 100
@@ -487,6 +497,11 @@ large_outpost = { #year 295
 	modifier = {
 		fort_level = 2
 		local_unrest = -2
+	}
+
+	build_trigger = {
+		NOT = { has_building = border_garrison }
+		#owner = { has_institution = feudalism } swap to non-tribal?
 	}
 
 	onmap = yes
@@ -502,7 +517,7 @@ large_outpost = { #year 295
 	}
 }
 
-# Turreted City Walls
+# Small Fortress
 
 small_fortress = { #year 430
 	cost = 200
@@ -510,6 +525,7 @@ small_fortress = { #year 430
 	make_obsolete = large_outpost
 
 	build_trigger = {
+		NOT = { has_building = border_garrison }
 		owner = {
 			OR = {
 				neither_tribal_nor_native_trigger = yes
@@ -537,7 +553,7 @@ small_fortress = { #year 430
 	}
 }
 
-# Huge City Walls
+# Large Fortress
 
 large_fortress = { #year ?
 	cost = 400
@@ -545,6 +561,7 @@ large_fortress = { #year ?
 	make_obsolete = small_fortress
 
 	build_trigger = {
+		NOT = { has_building = border_garrison }
 		owner = {
 			OR = {
 				neither_tribal_nor_native_trigger = yes
@@ -572,6 +589,119 @@ large_fortress = { #year ?
 	}
 }
 
+# Ditches
+
+fort_ditches = { #year 130
+	cost = 50
+	time = 24
+
+	modifier = {
+		local_defensiveness = 0.10
+		local_hostile_movement_speed = -0.15
+	}
+
+	build_trigger = {
+		OR = { has_building = wood_city_walls has_building = stone_city_walls has_building = turreted_city_walls has_building = huge_city_walls has_building = small_outpost has_building = large_outpost has_building = small_fortress has_building = large_fortress }
+	}
+
+	keep_trigger = {
+		OR = { has_building = wood_city_walls has_building = stone_city_walls has_building = turreted_city_walls has_building = huge_city_walls has_building = small_outpost has_building = large_outpost has_building = small_fortress has_building = large_fortress }
+	}
+	on_built = { AN_check_dev_variables = yes }
+
+	on_destroyed = { AN_check_dev_variables = yes }
+
+	ai_will_do = {
+		factor = 50
+	}
+}
+
+# Stockpiles
+
+fort_stockpiles = { #year 130
+	cost = 150
+	time = 24
+
+	modifier = {
+		local_defensiveness = 0.15
+		local_fort_maintenance_modifier = 0.25
+	}
+
+	build_trigger = {
+		OR = { has_building = large_outpost has_building = small_fortress has_building = large_fortress }
+	}
+
+	keep_trigger = {
+		OR = { has_building = large_outpost has_building = small_fortress has_building = large_fortress }
+	}
+
+	on_built = { AN_check_dev_variables = yes }
+
+	on_destroyed = { AN_check_dev_variables = yes }
+
+	ai_will_do = {
+		factor = 50
+	}
+}
+
+# Double layer wall
+
+fort_double_wall = { #year 130
+	cost = 300
+	time = 36
+
+	modifier = {
+		local_defensiveness = 0.25
+		local_hostile_attrition = 1
+	}
+
+	build_trigger = {
+		OR = { has_building = small_fortress has_building = large_fortress }
+	}
+
+	keep_trigger = {
+		OR = { has_building = small_fortress has_building = large_fortress }
+	}
+
+	on_built = { AN_check_dev_variables = yes }
+
+	on_destroyed = { AN_check_dev_variables = yes }
+
+	ai_will_do = {
+		factor = 50
+	}
+}
+
+# Mounted Weapons
+
+fort_mounted_weapons = { #year 130
+	cost = 400
+	time = 48
+
+	modifier = {
+		local_defensiveness = 0.10
+		local_hostile_attrition = 1
+		hostile_fleet_attrition = 0.5
+		blockade_force_required = 1
+	}
+
+	build_trigger = {
+		OR = { has_building = large_fortress }
+	}
+
+	keep_trigger = {
+		OR = { has_building = large_fortress }
+	}
+
+	on_built = { AN_check_dev_variables = yes }
+
+	on_destroyed = { AN_check_dev_variables = yes }
+
+	ai_will_do = {
+		factor = 50
+	}
+}
+
 # Border Garrison
 
 border_garrison = { #year 130
@@ -579,9 +709,9 @@ border_garrison = { #year 130
 	time = 24
 
 	modifier = {
-		fort_level = 1
-		local_unrest = -1
-		blockade_force_required = 0.4
+		fort_level = 2
+		local_unrest = -2
+		local_defensiveness = 0.2
 	}
 
 	build_trigger = {
@@ -616,11 +746,14 @@ border_garrison = { #year 130
 #################
 
 tiny_marketplace = {
-	cost = 50               # Cost of the building in ducats
-    time = 8             # Time (in months) that it takes to construct the building
-   # make_obsolete = <building>  # Optional, makes listed building obsolete when this building is constructed
+	cost = 50
+    time = 8
 
-    # Optional. Province scope. Limits construction of building if not met.
+    modifier = {
+		province_trade_power_value = 1
+		local_production_efficiency = 0.05
+	}
+
     build_trigger = {
 		OR = {
 			has_building = settlement
@@ -628,10 +761,10 @@ tiny_marketplace = {
 			has_building = town
 			has_building = city
 			has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
 		}
-		#owner = { has_institution = commercialism }
     }
+
 	keep_trigger = {
         OR = {
 			has_building = settlement
@@ -639,162 +772,93 @@ tiny_marketplace = {
             has_building = town
             has_building = city
             has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
         }
     }
-
-
-    #show_separate = yes
-    #manufactory = { all }
-    #bonus_manufactory = {
-    	#food ?
-    #}
 
 	on_built = { AN_check_dev_variables = yes }
 
 	on_destroyed = { AN_check_dev_variables = yes }
 
-    # The modifier the building applies to the province.
-    # Country-scope modifiers used here will apply to the owning country of the building instead.
-    modifier = {
-		province_trade_power_value = 1
-		local_production_efficiency = 0.05
-	}
-	#bonus_modifier = {
-	#	province_trade_power_value = 1
-	#	local_production_efficiency = 0.1
-	#}
-
-    # The importance the AI places on constructing this building.
     ai_will_do = {
         factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
 		}
     }
 }
 
 marketplace = {
-	cost = 100               # Cost of the building in ducats
-    time = 12             # Time (in months) that it takes to construct the building
-   # make_obsolete = <building>  # Optional, makes listed building obsolete when this building is constructed
+	cost = 100
+    time = 12
 
-    # Optional. Province scope. Limits construction of building if not met.
+    modifier = {
+		province_trade_power_value = 2.5
+		local_production_efficiency = 0.1
+	}
+
     build_trigger = {
 		OR = {
 			has_building = village
 			has_building = town
 			has_building = city
 			has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 3
 		}
-		#owner = { has_institution = commercialism }
     }
+
 	keep_trigger = {
         OR = {
             has_building = village
             has_building = town
             has_building = city
             has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 3
         }
     }
-
-
-    #show_separate = yes
-    #manufactory = { all }
-    #bonus_manufactory = {
-    	#food ?
-    #}
 
 	on_built = { AN_check_dev_variables = yes }
 
 	on_destroyed = { AN_check_dev_variables = yes }
 
-    # The modifier the building applies to the province.
-    # Country-scope modifiers used here will apply to the owning country of the building instead.
-    modifier = {
-		province_trade_power_value = 2.5
-		local_production_efficiency = 0.1
-	}
-	#bonus_modifier = {
-	#	province_trade_power_value = 1
-	#	local_production_efficiency = 0.1
-	#}
-
-    # The importance the AI places on constructing this building.
     ai_will_do = {
         factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 3
 		}
     }
 }
 
 trade_depot = {
-	cost = 200               # Cost of the building in ducats
-    time = 24             # Time (in months) that it takes to construct the building
-    make_obsolete = marketplace  # Optional, makes listed building obsolete when this building is constructed
+	cost = 200
+    time = 24
+    make_obsolete = marketplace
 
-    # Optional. Province scope. Limits construction of building if not met.
-    build_trigger = {
-		OR = {
-			has_building = town
-			has_building = city
-			has_building = metropolis
-			province_has_center_of_trade_of_level = 2
-		}
-		owner = { has_institution = commercialism }
-    }
-	keep_trigger = {
-        OR = {
-            has_building = village
-            has_building = town
-            has_building = city
-            has_building = metropolis
-			province_has_center_of_trade_of_level = 2
-        }
-    }
-
-	on_built = { AN_check_dev_variables = yes }
-
-	on_destroyed = { AN_check_dev_variables = yes }
-
-    # The modifier the building applies to the province.
-    # Country-scope modifiers used here will apply to the owning country of the building instead.
     modifier = {
 		province_trade_power_value = 5
 		local_production_efficiency = 0.2
 	}
 
-    # The importance the AI places on constructing this building.
-    ai_will_do = {
-        factor = 100
-		modifier = {
-			factor = 5
-			province_has_center_of_trade_of_level = 2
-		}
-    }
-}
-counting_house = {
-	cost = 400               # Cost of the building in ducats
-    time = 36             # Time (in months) that it takes to construct the building
-    make_obsolete = trade_depot  # Optional, makes listed building obsolete when this building is constructed
-
-    # Optional. Province scope. Limits construction of building if not met.
     build_trigger = {
 		OR = {
+			has_building = town
 			has_building = city
 			has_building = metropolis
 			province_has_center_of_trade_of_level = 3
 		}
-		owner = { has_institution = commercialism has_institution = finance }
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				OR = { full_idea_group = caravan_trade_ideas full_idea_group = maritime_trade_ideas }
+			}
+		}
     }
+
 	keep_trigger = {
         OR = {
-            has_building = village
             has_building = town
             has_building = city
             has_building = metropolis
@@ -806,40 +870,41 @@ counting_house = {
 
 	on_destroyed = { AN_check_dev_variables = yes }
 
-    # The modifier the building applies to the province.
-    # Country-scope modifiers used here will apply to the owning country of the building instead.
+    ai_will_do = {
+        factor = 100
+		modifier = {
+			factor = 5
+			province_has_center_of_trade_of_level = 3
+		}
+    }
+}
+
+counting_house = {
+	cost = 400
+    time = 36
+    make_obsolete = trade_depot
+
     modifier = {
 		province_trade_power_value = 10
 		local_production_efficiency = 0.3
 	}
 
-    # The importance the AI places on constructing this building.
-    ai_will_do = {
-        factor = 100
-		modifier = {
-			factor = 5
-			province_has_center_of_trade_of_level = 3
-		}
-    }
-}
-bank = {
-	cost = 600                 # Cost of the building in ducats
-    time = 48             # Time (in months) that it takes to construct the building
-    make_obsolete = counting_house  # Optional, makes listed building obsolete when this building is constructed
-
-    # Optional. Province scope. Limits construction of building if not met.
     build_trigger = {
 		OR = {
 			has_building = city
 			has_building = metropolis
 			province_has_center_of_trade_of_level = 4
 		}
-		owner = { has_institution = commercialism has_institution = finance }
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				OR = { full_idea_group = caravan_trade_ideas full_idea_group = maritime_trade_ideas }
+			}
+		}
     }
 	keep_trigger = {
         OR = {
-            has_building = village
-            has_building = town
             has_building = city
             has_building = metropolis
 			province_has_center_of_trade_of_level = 4
@@ -850,19 +915,55 @@ bank = {
 
 	on_destroyed = { AN_check_dev_variables = yes }
 
-    # The modifier the building applies to the province.
-    # Country-scope modifiers used here will apply to the owning country of the building instead.
-    modifier = {
-		province_trade_power_value = 10
-		local_production_efficiency = 0.5
-	}
-
-    # The importance the AI places on constructing this building.
     ai_will_do = {
         factor = 100
 		modifier = {
 			factor = 5
 			province_has_center_of_trade_of_level = 4
+		}
+    }
+}
+
+bank = {
+	cost = 600
+    time = 48
+    make_obsolete = counting_house
+
+    modifier = {
+		province_trade_power_value = 10
+		local_production_efficiency = 0.5
+	}
+
+    build_trigger = {
+		OR = {
+			has_building = metropolis
+			province_has_center_of_trade_of_level = 5
+		}
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				OR = { full_idea_group = caravan_trade_ideas full_idea_group = maritime_trade_ideas }
+			}
+		}
+    }
+
+	keep_trigger = {
+        OR = {
+            has_building = metropolis
+			province_has_center_of_trade_of_level = 5
+        }
+    }
+
+	on_built = { AN_check_dev_variables = yes }
+
+	on_destroyed = { AN_check_dev_variables = yes }
+
+    ai_will_do = {
+        factor = 100
+		modifier = {
+			factor = 5
+			province_has_center_of_trade_of_level = 5
 		}
     }
 }
@@ -872,8 +973,8 @@ bank = {
 ######################
 
 cottage = {
-	cost = 100               # Cost of the building in ducats
-    time = 12             # Time (in months) that it takes to construct the building
+	cost = 100
+    time = 12
 
     build_trigger = {
 		OR = {
@@ -889,7 +990,6 @@ cottage = {
 		#local_defensiveness = 0.05, supply_limit_modifier = 0.05 if irrigated
 		#local_production_efficiency = 0.025 if produced
 		#trade_goods_size_modifier = 0.05, local_fort_maintenance_modifier = -0.10 if quarried
-
 	}
 
 	on_built = {
@@ -928,8 +1028,8 @@ cottage = {
 }
 
 workshop = {
-	cost = 250               # Cost of the building in ducats
-    time = 24             # Time (in months) that it takes to construct the building
+	cost = 250
+    time = 24
 	make_obsolete = cottage
 
     build_trigger = {
@@ -937,6 +1037,13 @@ workshop = {
 			has_building = town
 			has_building = city
 			has_building = metropolis
+		}
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
 		}
     }
 
@@ -986,14 +1093,20 @@ workshop = {
 }
 
 new_manufactory = {
-	cost = 500               # Cost of the building in ducats
-    time = 36             # Time (in months) that it takes to construct the building
+	cost = 500
+    time = 36
 
-    # Optional. Province scope. Limits construction of building if not met.
     build_trigger = {
 		OR = {
 			has_building = city
 			has_building = metropolis
+		}
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
 		}
     }
 
@@ -1041,18 +1154,24 @@ new_manufactory = {
 		}
 	}
 
-    # The importance the AI places on constructing this building.
     ai_will_do = {
         factor = 100
     }
 }
 
 factory = {
-	cost = 1000               # Cost of the building in ducats
-    time = 60             # Time (in months) that it takes to construct the building
+	cost = 1000
+    time = 60
 
     build_trigger = {
 		has_building = metropolis
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = engineering_ideas
+			}
+		}
     }
 
     modifier = {
@@ -1614,93 +1733,6 @@ government_district = { #year 625
 	}
 }
 
-#######################
-# GRAIN DEPOT RELATED #
-#######################
-
-# Small Grain Depot
-
-small_grain_depot = { #year 205
-	cost = 300
-	time = 24
-
-	build_trigger = {
-		OR = {
-			trade_goods = grain
-			trade_goods = fruits
-			trade_goods = rice
-		}
-	}
-
-	keep_trigger = {
-		OR = {
-			trade_goods = grain
-			trade_goods = fruits
-			trade_goods = rice
-		}
-	}
-
-	modifier = {
-		land_forcelimit = 1
-		trade_goods_size_modifier = 0.2
-		supply_limit = 1.5
-	}
-
-	ai_will_do = {
-		factor = 1
-		modifier = { factor = 100 	owner = { treasury = 1000 } }
-		modifier = { factor = 200 	owner = { treasury = 2000 } }
-		modifier = { factor = 300 	owner = { treasury = 2500 } }
-		modifier = { factor = 400 	owner = { treasury = 3000 } }
-		modifier = { factor = 500 	owner = { treasury = 3500 } }
-		modifier = { factor = 600 	owner = { treasury = 4000 } }
-		modifier = { factor = 700 	owner = { treasury = 4500 } }
-		modifier = { factor = 800 	owner = { treasury = 5000 } }
-		modifier = { factor = 900 	owner = { treasury = 5500 } }
-		modifier = { factor = 1000	owner = { treasury = 6000 } }
-		modifier = { factor = 10000 owner = { treasury = 10000 } }
-
-	}
-}
-
-# Big Grain Depot
-
-big_grain_depot = { #year 475
-	cost = 600
-	time = 36
-	make_obsolete = small_grain_depot
-	build_trigger = {
-		OR = {
-			trade_goods = grain
-			trade_goods = fruits
-			trade_goods = rice
-		}
-	}
-	modifier = {
-		land_forcelimit = 3
-		trade_goods_size_modifier = 0.4
-		supply_limit = 3
-	}
-
-
-	ai_will_do = {
-		factor = 1
-		modifier = { factor = 0	owner = { NOT = { full_idea_group = agraculture_ideas }	government = tribal } } # no tribal AI
-		modifier = { factor = 100 	owner = { treasury = 1000 } }
-		modifier = { factor = 200 	owner = { treasury = 2000 } }
-		modifier = { factor = 300 	owner = { treasury = 2500 } }
-		modifier = { factor = 400 	owner = { treasury = 3000 } }
-		modifier = { factor = 500 	owner = { treasury = 3500 } }
-		modifier = { factor = 600 	owner = { treasury = 4000 } }
-		modifier = { factor = 700 	owner = { treasury = 4500 } }
-		modifier = { factor = 800 	owner = { treasury = 5000 } }
-		modifier = { factor = 900 	owner = { treasury = 5500 } }
-		modifier = { factor = 1000	owner = { treasury = 6000 } }
-		modifier = { factor = 10000 owner = { treasury = 10000 } }
-
-	}
-}
-
 ##################
 # HARBOR RELATED #
 ##################
@@ -1715,13 +1747,13 @@ small_harbor = { #year 235
 		has_port = yes
 		OR = {
 			has_building = village has_building = town has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
 		}
 	}
 	keep_trigger = {
 		OR = {
 			has_building = village has_building = town has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
 		}
 	}
 
@@ -1730,7 +1762,7 @@ small_harbor = { #year 235
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	modifier = {
-		local_sailors_modifier  = 0.25
+		local_sailors_modifier = 0.25
 		province_trade_power_modifier = 0.1
 		naval_forcelimit = 0.5
 	}
@@ -1739,7 +1771,7 @@ small_harbor = { #year 235
 		factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 1
+			province_has_center_of_trade_of_level = 2
 		}
 	}
 }
@@ -1755,14 +1787,20 @@ big_harbor = { #year 430
 		has_port = yes
 		OR = {
 			has_building = town has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 2
+			province_has_center_of_trade_of_level = 3
 		}
-		owner = { has_institution = commercialism }
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = shipbuilding_ideas
+			}
+		}
 	}
 	keep_trigger = {
 		OR = {
 			has_building = town has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 2
+			province_has_center_of_trade_of_level = 3
 		}
 	}
 
@@ -1771,7 +1809,7 @@ big_harbor = { #year 430
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	modifier = {
-		local_sailors_modifier  = 0.5
+		local_sailors_modifier = 0.5
 		province_trade_power_modifier = 0.2
 		naval_forcelimit = 1
 	}
@@ -1780,7 +1818,7 @@ big_harbor = { #year 430
 		factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 2
+			province_has_center_of_trade_of_level = 3
 		}
 	}
 }
@@ -1796,13 +1834,20 @@ harbor_district = { #year 550
 		has_port = yes
 		OR = {
 			has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 3
+			province_has_center_of_trade_of_level = 4
+		}
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = shipbuilding_ideas
+			}
 		}
 	}
 	keep_trigger = {
 		OR = {
 			has_building = city has_building = metropolis
-			province_has_center_of_trade_of_level = 3
+			province_has_center_of_trade_of_level = 4
 		}
 	}
 
@@ -1811,7 +1856,7 @@ harbor_district = { #year 550
 	on_destroyed = { AN_check_dev_variables = yes }
 
 	modifier = {
-		local_sailors_modifier  = 0.75
+		local_sailors_modifier = 0.75
 		province_trade_power_modifier = 0.4
 		naval_forcelimit = 2
 	}
@@ -1820,7 +1865,7 @@ harbor_district = { #year 550
 		factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 3
+			province_has_center_of_trade_of_level = 4
 		}
 	}
 }
@@ -1834,14 +1879,20 @@ massive_harbor = { #harbor
 		has_port = yes
 		OR = {
 			has_building = metropolis
-			province_has_center_of_trade_of_level = 4
+			province_has_center_of_trade_of_level = 5
 		}
-		owner = { has_institution = commercialism has_institution = finance }
+		owner = {
+			OR = {
+				neither_tribal_nor_native_trigger = yes
+				has_country_flag = tribal_can_use_all_buildings_flag
+				full_idea_group = shipbuilding_ideas
+			}
+		}
     }
 	keep_trigger = {
         OR = {
             has_building = metropolis
-			province_has_center_of_trade_of_level = 4
+			province_has_center_of_trade_of_level = 5
         }
     }
 
@@ -1850,7 +1901,7 @@ massive_harbor = { #harbor
 	on_destroyed = { AN_check_dev_variables = yes }
 
     modifier = {
-		local_sailors_modifier  = 1
+		local_sailors_modifier = 1
 		province_trade_power_modifier = 0.6
 		local_institution_spread = 0.05
 		naval_forcelimit = 4
@@ -1860,7 +1911,7 @@ massive_harbor = { #harbor
         factor = 100
 		modifier = {
 			factor = 5
-			province_has_center_of_trade_of_level = 4
+			province_has_center_of_trade_of_level = 5
 		}
     }
 }
@@ -2683,32 +2734,6 @@ greater_temple = { #year 190
 	}
 }
 
-# Oracle, unhandled
-
-oracle = { #year 280
-	cost = 200
-	time = 24
-	build_trigger = {
-		always = no
-	}
-	modifier = {
-		local_missionary_strength = 0.01
-		# Popgrowth
-		local_colonial_growth = 0.25		# Urban capacity (+ absolute)
-		allowed_num_of_manufactories = 0.25	# Upper capacity (+abs, added as extra urban)
-	}
-	on_built = {
-		if = {
-			limit = { owner = { uses_patriarch_authority = yes } }
-			owner = { add_patriarch_authority = 0.025 }
-		}
-	}
-
-	ai_will_do = {
-        factor = 100
-	}
-}
-
 ###################
 # THEATRE RELATED #
 ###################
@@ -3310,10 +3335,6 @@ blacksmith = {
 	}
 }
 
-####################
-#Old manufactories #
-####################
-
 # Horsebreeder
 
 horsebreeder = { #year 265
@@ -3683,5 +3704,117 @@ big_bath = { #year 700
 		modifier = { factor = 1000	owner = { treasury = 6000 } }
 		modifier = { factor = 10000 owner = { treasury = 10000 } }
 
+	}
+}
+#######################
+# GRAIN DEPOT RELATED #
+#######################
+
+# Small Grain Depot
+
+small_grain_depot = { #year 205
+	cost = 300
+	time = 24
+
+	build_trigger = {
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
+	}
+
+	keep_trigger = {
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
+	}
+
+	modifier = {
+		land_forcelimit = 1
+		trade_goods_size_modifier = 0.2
+		supply_limit = 1.5
+	}
+
+	ai_will_do = {
+		factor = 1
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+
+	}
+}
+
+# Big Grain Depot
+
+big_grain_depot = { #year 475
+	cost = 600
+	time = 36
+	make_obsolete = small_grain_depot
+	build_trigger = {
+		OR = {
+			trade_goods = grain
+			trade_goods = fruits
+			trade_goods = rice
+		}
+	}
+	modifier = {
+		land_forcelimit = 3
+		trade_goods_size_modifier = 0.4
+		supply_limit = 3
+	}
+
+
+	ai_will_do = {
+		factor = 1
+		modifier = { factor = 0	owner = { NOT = { full_idea_group = agraculture_ideas }	government = tribal } } # no tribal AI
+		modifier = { factor = 100 	owner = { treasury = 1000 } }
+		modifier = { factor = 200 	owner = { treasury = 2000 } }
+		modifier = { factor = 300 	owner = { treasury = 2500 } }
+		modifier = { factor = 400 	owner = { treasury = 3000 } }
+		modifier = { factor = 500 	owner = { treasury = 3500 } }
+		modifier = { factor = 600 	owner = { treasury = 4000 } }
+		modifier = { factor = 700 	owner = { treasury = 4500 } }
+		modifier = { factor = 800 	owner = { treasury = 5000 } }
+		modifier = { factor = 900 	owner = { treasury = 5500 } }
+		modifier = { factor = 1000	owner = { treasury = 6000 } }
+		modifier = { factor = 10000 owner = { treasury = 10000 } }
+
+	}
+}
+
+# Oracle, unhandled
+
+oracle = { #year 280
+	cost = 200
+	time = 24
+	build_trigger = {
+		always = no
+	}
+	modifier = {
+		local_missionary_strength = 0.01
+		# Popgrowth
+		local_colonial_growth = 0.25		# Urban capacity (+ absolute)
+		allowed_num_of_manufactories = 0.25	# Upper capacity (+abs, added as extra urban)
+	}
+	on_built = {
+		if = {
+			limit = { owner = { uses_patriarch_authority = yes } }
+			owner = { add_patriarch_authority = 0.025 }
+		}
+	}
+
+	ai_will_do = {
+        factor = 100
 	}
 }
