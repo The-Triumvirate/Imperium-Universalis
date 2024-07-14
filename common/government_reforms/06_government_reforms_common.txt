@@ -571,7 +571,7 @@ trade_focus_reform = {
 		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-		global_trade_power = 0.1
+		merchants = 1
 		trade_efficiency = 0.1
 	}
 	ai = {
@@ -660,7 +660,7 @@ agraculture_focus_reform = {
 		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-		production_efficiency = 0.1
+		global_trade_goods_size_modifier = 0.1
 		land_forcelimit_modifier = 0.1
 	}
 	ai = {
@@ -751,6 +751,7 @@ noble_council_reform = {
 	modifiers = {
 		fac_nobles_influence = 0.05
 		stability_cost_modifier = -0.1
+		advisor_pool = 1
 	}
 }
 
@@ -769,6 +770,7 @@ royal_inspectors_reform = {
 		fac_monarch_influence = 0.05
 		global_autonomy = -0.05
 		harsh_treatment_cost = -0.25
+		reduced_liberty_desire = 0.05
 	}
 }
 
@@ -802,7 +804,7 @@ bureaucracy_reform = {
 		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
-		max_absolutism = 15
+		max_absolutism = 10
 	}
 }
 
@@ -898,9 +900,16 @@ twelve_tables_reform = {
 			has_country_flag = res_publica
 		}
 	}
-
+	trigger = {
+		OR = {
+			is_roman_country_trigger = yes
+			has_country_flag = res_publica
+		}
+		adm_tech = 11
+	}
 	modifiers = {
-		stability_cost_modifier = -0.15
+		global_unrest = -1
+		stability_cost_modifier = -0.10
 	}
 
 	ai = {
@@ -1049,7 +1058,7 @@ levy_army_reform = {
 	modifiers = {
 		global_manpower_modifier = 0.2
 		global_regiment_cost = -0.1
-		global_regiment_recruit_speed = -0.1
+		global_regiment_recruit_speed = -0.25
 	}
 
 }
@@ -1065,9 +1074,16 @@ standing_army_reform = {
 		NOT = { has_reform = chinese_reform_monarchy_reform }
 		NOT = { has_reform = celestial_empire }
 	}
+	trigger = {
+		OR = {
+			army_tradition = 60
+			army_professionalism = 0.6
+		}
+	}
 	modifiers = {
-		recover_army_morale_speed = 0.15
+		recover_army_morale_speed = 0.1
 		discipline = 0.05
+		has_banners = no
 	}
 }
 
@@ -1138,7 +1154,33 @@ druzhina_reform = {
 		druzhina_faction_influence = 0.02
 	}
 }
+achaemenid_army_reform = {
+	icon = "multicultural_armies_reform"
+	allow_normal_conversion = yes
 
+	potential = {
+		OR = {
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = medes_monarchy_reform
+		}
+		must_not_have_any_indian_reform = yes
+		NOT = { has_reform = chinese_feudalism_reform }
+		NOT = { has_reform = ShiQing_feudalism_reform }
+		NOT = { has_reform = chinese_reform_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
+	}
+	trigger = {
+		OR = {
+			has_reform = persian_achaemenid_monarchy_reform
+			has_reform = medes_monarchy_reform
+		}
+	}
+	modifiers = {
+		global_regiment_recruit_speed = -0.15
+		discipline = 0.025
+		morale_damage_received = 0.05
+	}
+}
 ##################
 #
 #	constitution of the army
@@ -1190,6 +1232,7 @@ citizens_armies_reform = {
 	trigger = {
 		NOT = { has_reform = persian_achaemenid_monarchy_reform }
 		NOT = { has_reform = medes_monarchy_reform }
+		NOT = { has_reform = standing_army_reform }
 	}
 
 	modifiers = {
@@ -1200,6 +1243,21 @@ citizens_armies_reform = {
 
 	custom_attributes = {
 		can_recruit_citizen_units = yes
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			culture_group = greek
+		}
+		modifier = {
+			factor = 5
+			government = republic
+		}
+		modifier = {
+			factor = 2
+			tag = ATH
+		}
 	}
 }
 limited_conscription_reform = {
@@ -1215,6 +1273,16 @@ limited_conscription_reform = {
 		global_rebel_suppression_efficiency = 0.25
 		harsh_treatment_cost = -0.2
 		manpower_in_own_culture_provinces = 0.5
+	}
+	ai = {
+		factor = 2
+		modifier = {
+			factor = 10
+			OR = {
+				has_reform = diadochi_kingdom_reform
+				has_reform = satrap_diadochi_reform
+			}
+		}
 	}
 }
 
@@ -1239,6 +1307,15 @@ mercenary_army_reform = {
 			factor = 2
 			num_of_mercenaries = 6
 		}
+		modifier = {
+			factor = 5
+			primary_culture = punic
+			tag = PER
+		}
+		modifier = {
+			factor = 4
+			tag = ATH
+		}
 	}
 }
 
@@ -1262,6 +1339,10 @@ auxiliares_army_reform = {
 			factor = 2
 			num_of_mercenaries = 6
 		}
+		modifier = {
+			factor = 3
+			num_accepted_cultures = 5
+		}
 	}
 }
 
@@ -1279,10 +1360,31 @@ ethnic_division_of_armies_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 	}
+	trigger = {
+		num_accepted_cultures = 3
+	}
 
 	modifiers = {
 		reserves_organisation = 0.1
-		reinforce_speed = 0.2
+		reinforce_speed = 0.15
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			OR = {
+				has_reform = persian_achaemenid_monarchy_reform
+				has_reform = medes_monarchy_reform
+			}
+		}
+		modifier = {
+			factor = 3
+			num_accepted_cultures = 4
+		}
+		modifier = {
+			factor = 6
+			total_development = 1000
+		}
 	}
 }
 
@@ -1296,8 +1398,8 @@ unit_division_of_armies = {
 	}
 
 	modifiers = {
-		shock_damage = 0.1
-		fire_damage = 0.1
+		shock_damage = 0.05
+		fire_damage = 0.05
 	}
 }
 
@@ -1313,6 +1415,25 @@ wealth_division_of_armies = {
 	modifiers = {
 		global_regiment_cost = -0.15
 		reinforce_cost_modifier = -0.15
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 10
+			OR = {
+				technology_group = celtic
+				technology_group = roman
+				technology_group = roman
+			}
+		}
+		modifier = {
+			factor = 3
+			num_accepted_cultures = 5
+		}
+		modifier = {
+			factor = 6
+			total_development = 1000
+		}
 	}
 }
 
@@ -1330,17 +1451,31 @@ infantry_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 	}
-
+	trigger = {
+		OR = {
+			has_idea_group = infantry_ideas
+			has_idea_group = leadership_ideas
+		}
+	}
 	modifiers = {
 		infantry_power = 0.1
-		shock_damage_received = -0.1
+		shock_damage_received = -0.05
 	}
 
 	ai = {
 		factor = 1
 		modifier = {
 			factor = 4
-			infantry_fraction = 0.5
+			infantry_fraction = 0.6
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				technology_group = greek
+				technology_group = germanic
+				technology_group = balkan
+				technology_group = diadochi
+			}
 		}
 	}
 }
@@ -1353,6 +1488,12 @@ cavalry_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 	}
+	trigger = {
+		OR = {
+			has_idea_group = cavalry_ideas
+			has_idea_group = leadership_ideas
+		}
+	}
 	modifiers = {
 		cavalry_power = 0.1
 		cavalry_flanking = 0.25
@@ -1364,10 +1505,22 @@ cavalry_focus_reform = {
 			factor = 4
 			cavalry_fraction = 0.4
 		}
+		modifier = {
+			factor = 5
+			technology_group = scythian
+			technology_group = central_asian
+			technology_group = iranian
+			technology_group = iberian
+			technology_group = celtiberian
+			technology_group = arabic
+			technology_group = north_african
+			technology_group = nomad_group
+			technology_group = anatolian
+		}
 	}
 }
 cataphracts_reform = {
-	icon = "cavalry_focus_reform"
+	icon = "cataphracts_reform"
 	allow_normal_conversion = yes
 
 	potential = {
@@ -1378,7 +1531,6 @@ cataphracts_reform = {
 			technology_group = iranian
 			technology_group = scythian_tech
 			technology_group = central_asian
-			technology_group = central_asian
 			technology_group = diadochi
 			technology_group = caucaso_anatolian
 		}
@@ -1388,12 +1540,10 @@ cataphracts_reform = {
 		NOT = {
 			tag = ANH
 		}
-		NOT = {
-			tag = MDI
-		}
 	}
 	trigger = {
 		mil_tech = 25
+		has_idea_group = cavalry_ideas
 	}
 	modifiers = {
 		cavalry_cost = 0.1
@@ -1432,7 +1582,12 @@ skirmisher_focus_reform = {
 		NOT = { has_reform = chinese_feudalism_reform }
 		NOT = { has_reform = ShiQing_feudalism_reform }
 	}
-
+	trigger = {
+		OR = {
+			has_idea_group = skirmisher_ideas
+			has_idea_group = raider_ideas
+		}
+	}
 	modifiers = {
 		artillery_power = 0.1
 		fire_damage_received = -0.1
@@ -1442,7 +1597,51 @@ skirmisher_focus_reform = {
 		factor = 1
 		modifier = {
 			factor = 4
-			artillery_fraction = 0.4
+			artillery_fraction = 0.5
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				technology_group = balkan
+				technology_group = germanic
+				technology_group = iberian
+				technology_group = celtiberian
+				technology_group = indian
+			}
+		}
+	}
+}
+
+marines_focus_reform = {
+	icon = "marines_focus_reform"
+	allow_normal_conversion = yes
+
+	potential = {
+		has_dlc = "Rule Britannia"
+		NOT = { has_reform = chinese_feudalism_reform }
+		NOT = { has_reform = ShiQing_feudalism_reform }
+	}
+	trigger = {
+		OR = {
+			has_idea_group = maritime_ideas
+			has_idea_group = naval_ideas
+			has_idea_group = raider_ideas
+		}
+	}
+	modifiers = {
+		allowed_marine_fraction = 0.1
+		regiment_disembark_speed = 0.15
+	}
+
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 6
+			OR = {
+				technology_group = punic
+				primary_culture = phoenician
+				primary_culture = punic
+			}
 		}
 	}
 }
@@ -1457,21 +1656,87 @@ combine_arms_focus_reform = {
 	}
 
 	modifiers = {
-		fire_damage_received = -0.1
-		shock_damage_received = -0.1
+		fire_damage_received = -0.05
+		shock_damage_received = -0.05
+		morale_damage_received = -0.05
+	}
+	trigger = {
+		OR = {
+			army_professionalism = 0.4
+			has_idea_group = leadership_ideas
+			has_reform = diadochi_kingdom_reform
+			has_reform = satrap_diadochi_reform
+		}
+	}
+	ai = {
+		factor = 1
+		modifier = {
+			factor = 5
+			infantry_fraction = 0.4
+			cavalry_fraction = 0.3
+			artillery_fraction = 0.3
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				has_reform = diadochi_kingdom_reform
+				has_reform = satrap_diadochi_reform
+			}
+		}
+		modifier = {
+			factor = 5
+			OR = {
+				has_idea_group = leadership_ideas
+				army_professionalism = 0.4
+			}
+		}
+	}
+}
+fortress_focus_reform = {
+	icon = "fortress_focus_reform"
+	allow_normal_conversion = yes
+
+	potential = {
+		NOT = { has_reform = chinese_feudalism_reform }
+		NOT = { has_reform = ShiQing_feudalism_reform }
+	}
+	trigger = {
+		OR = {
+			has_idea_group = fortress_ideas
+			has_idea_group = leadership_ideas
+		}
+	}
+	modifiers = {
+		defensiveness = 0.1
+		fort_maintenance_modifier = -0.15
 	}
 
 	ai = {
 		factor = 1
 		modifier = {
-			factor = 4
-			infantry_fraction = 0.4
-			cavalry_fraction = 0.3
-			artillery_fraction = 0.3
+			factor = 5
+			OR = {
+				has_idea_group = fortress_ideas
+			}
 		}
 	}
 }
+no_particular_focus_reform = {
+	icon = "no_particular_focus_reform"
+	allow_normal_conversion = yes
 
+	potential = {
+		NOT = { has_reform = chinese_feudalism_reform }
+		NOT = { has_reform = ShiQing_feudalism_reform }
+	}
+	modifiers = {
+		land_morale = 0.05
+	}
+
+	ai = {
+		factor = 2
+	}
+}
 ##################
 #
 #	territorial divisions
@@ -1533,7 +1798,8 @@ feudal_divisions_reform = {
 
 	modifiers = {
 		fort_maintenance_modifier = -0.15
-		state_maintenance_modifier = -0.05
+		state_maintenance_modifier = -0.1
+		min_autonomy = 5
 	}
 }
 
@@ -1577,7 +1843,6 @@ early_feudalism_reform = {
 		land_maintenance_modifier = -0.1
 		state_maintenance_modifier = -0.15
 		fac_nobles_influence = 0.05
-
 	}
 }
 
@@ -1737,5 +2002,26 @@ organized_trade_reform = {
 	modifiers = {
 		merchants = 2
 		global_trade_power = 0.15
+	}
+}
+
+military_administration_reform = {
+	icon = "generals_army"
+	allow_normal_conversion = yes
+
+	trigger = {
+		army_tradition = 50
+	}
+	potential = {
+		must_not_have_any_indian_reform = yes
+		NOT = { has_reform = chinese_feudalism_reform }
+		NOT = { has_reform = ShiQing_feudalism_reform }
+		NOT = { has_reform = chinese_reform_monarchy_reform }
+		NOT = { has_reform = celestial_empire }
+	}
+	modifiers = {
+		fort_maintenance_modifier = -0.1
+		free_leader_pool = 1
+		reinforce_cost_modifier = -0.1
 	}
 }
