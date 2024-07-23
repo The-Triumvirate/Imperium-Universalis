@@ -2441,3 +2441,187 @@ country_event = {
 		remove_country_modifier = rong_united_mod
 	}
 }
+
+########################################################################################
+# Li ministers residing in Wey request them to free their home state
+########################################################################################
+country_event = {
+	id = china.52
+	title = "china.52.t"
+	desc = "china.52.d"
+	picture = ruler
+	fire_only_once = yes
+	
+	trigger = {
+		tag = WEY
+		NOT = {
+			is_year = 220
+		}
+		4114 = {
+			owner = {
+				NOT = {
+					culture_group = chinese_group
+				}
+			}
+		}
+		OR = {
+			owns = 4128
+			owns = 4129
+			owns = 4110
+			owns = 4111
+			owns = 4116
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 30
+	}
+
+	option = {
+		name = "china.52.a"
+		create_alliance = LIO
+		set_country_flag = wey_promised_liberate_li
+		custom_tooltip = wey_li_tooltip_three
+		ai_chance = { 
+			factor = 25
+		}
+	}
+	option = {
+		name = "china.52.b"
+		add_prestige = -10
+		add_historical_rival = LIO
+		LIO = {
+			add_historical_rival = WEY
+		}
+		ai_chance = { 
+			factor = 75
+		}
+	}
+}
+
+########################################################################################
+# Wey fails to free Li
+########################################################################################
+country_event = {
+	id = china.53
+	title = "china.53.t"
+	desc = "china.53.d"
+	picture = defense
+	fire_only_once = yes
+	
+	trigger = {
+		tag = WEY
+		had_country_flag = {
+			flag = wey_promised_liberate_li
+			days = 1825
+		}
+		LIO = {
+			NOT = {
+				owns = 4114
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		trigger = { ai = no }
+		name = "china.53.a"
+		clr_country_flag = wey_promised_liberate_li
+		add_prestige = -50
+		add_historical_rival = LIO
+		break_alliance = LIO
+		LIO = {
+			add_historical_rival = WEY
+			add_opinion = {
+				who = WEY
+				modifier = opinion_wey_broke_promise
+			}
+		}
+		custom_tooltip = wey_li_tooltip_one
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+					NOT = {
+						tag = LIO
+					}
+				}
+				add_opinion = {
+					who = WEY
+					modifier = opinion_wey_broke_promise_all_else
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { ai = yes } #dont punish ai as harshly
+		name = "china.53.a"
+		
+		add_historical_rival = LIO
+		clr_country_flag = wey_promised_liberate_li
+		break_alliance = LIO
+		LIO = {
+			add_historical_rival = WEY
+			add_opinion = {
+				who = WEY
+				modifier = opinion_wey_broke_promise
+			}
+		}
+	}
+}
+
+########################################################################################
+# Wey frees Li
+########################################################################################
+country_event = {
+	id = china.54
+	title = "china.54.t"
+	desc = "china.54.d"
+	picture = military_parade
+	fire_only_once = yes
+	
+	trigger = {
+		tag = WEY
+		has_country_flag = wey_promised_liberate_li
+		LIO = {
+			owns = 4114
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "china.54.a"
+		add_prestige = 50
+		add_papal_influence = 25
+		clr_country_flag = wey_promised_liberate_li
+		LIO = {
+			add_historical_friend = WEY
+		}
+		add_historical_friend = LIO
+		custom_tooltip = wey_li_tooltip_two
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_opinion = {
+					who = WEY
+					modifier = opinion_wey_kept_promise
+				}
+			}
+			LIO = {
+				add_opinion = {
+					who = WEY
+					modifier = opinion_wey_kept_promise
+				}
+			}
+		}
+	}
+}
+
