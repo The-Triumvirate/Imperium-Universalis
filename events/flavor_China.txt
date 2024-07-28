@@ -859,6 +859,7 @@ country_event = {
 		tag = ZHO
 		religion = chinese_religion
 		curia_treasury_size = 250
+		has_reform = free_city_zhou
 		adm_tech = 2
 		any_owned_province = {
 			num_free_building_slots = 1
@@ -2645,5 +2646,136 @@ country_event = {
 	option = {
 		name = "china.55.a"
 		dismantle_hre = yes
+	}
+}
+
+########################################################################################
+# bribe a rival's DaFu
+########################################################################################
+country_event = {
+	id = china.56
+	title = "china.56.t"
+	desc = "china.56.d"
+	picture = ruler
+	goto = random_prov_kill_dafu
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			event_target:rival_chosen_to_steal_dafu = {
+				random_owned_province = {
+					limit = {
+						has_cardinal = yes
+					}
+					save_event_target_as = random_prov_kill_dafu
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "china.56.a"
+		event_target:random_prov_kill_dafu = {
+			remove_cardinal = yes
+		}
+		add_treasury = -20
+		event_target:rival_chosen_to_steal_dafu = {
+			add_spy_network_from = {
+				who = ROOT
+				value = -60
+			}
+			country_event = { id = china.57 }
+		}
+		clr_country_flag = china_looking_into_dafu_rn
+		
+		ai_chance = { 
+			factor = 60 
+		}
+	}
+	option = {
+		name = "china.56.b"
+		trigger = { 
+			any_owned_province = {
+				development = 10
+				has_cardinal = no
+			}
+		}
+		clr_country_flag = china_looking_into_dafu_rn
+		event_target:random_prov_kill_dafu = {
+			remove_cardinal = yes
+		}
+		random_owned_province = {
+			limit = {
+				development = 10
+				has_cardinal = no
+			}
+			add_cardinal = yes
+		}
+		add_treasury = -50
+		event_target:rival_chosen_to_steal_dafu = {
+			add_spy_network_from = {
+				who = ROOT
+				value = -60
+			}
+			random_list = {
+				75 = {
+					country_event = { id = china.58 }
+				}
+				25 = {
+					country_event = { id = china.57 }
+				}
+			}
+		}
+		ai_chance = { 
+			factor = 40 
+		}
+	}
+	option = {
+		name = "china.56.c"
+		clr_country_flag = china_looking_into_dafu_rn
+		ai_chance = { 
+			factor = 0
+		}
+	}
+}
+
+########################################################################################
+# DaFu removed, but no consequences for executor
+########################################################################################
+country_event = {
+	id = china.57
+	title = "china.57.t"
+	desc = "china.57.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+
+	option = {
+		name = "china.57.a"
+	}
+}
+
+########################################################################################
+# DaFu removed, exectuor got caught
+########################################################################################
+country_event = {
+	id = china.58
+	title = "china.58.t"
+	desc = "china.58.d"
+	picture = ruler
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.58.a"
+		add_opinion = {
+			who = FROM
+			modifier = opinion_caught_stealing_dafu
+		}
+		add_casus_belli = {
+			target = FROM
+			type = cb_insult
+			months = 24
+		}		
 	}
 }
