@@ -1,0 +1,115 @@
+#new shenshou appoint button
+#since i cant get rid of the republic acceptance modifier on the old one, i made a new one
+#so far i cant figure out how to disable the old one so for now i left a note in the localization
+china_appoint_shenshou = {
+	category = emperor
+	#alert_index = 11
+	alert_tooltip = china_appoint_shenshou_alert_tooltip.1
+
+	require_acceptance = yes
+	
+	is_visible = {
+		#NOT = { FROM = { is_subject_of = ROOT } }
+		#religion = chinese_religion
+		FROM = {
+			is_part_of_hre = yes
+			NOT = {
+				has_reform = free_city
+			}
+		}
+		is_emperor = yes
+	}
+	is_allowed = {
+		is_at_war = no
+		FROM = {
+			is_at_war = no
+			NOT = {
+				is_elector = yes
+			}
+			NOT = {
+				num_of_cities = 2
+			}
+			NOT = {
+				is_enemy = ROOT
+			}
+			custom_trigger_tooltip = {
+				tooltip = CANT_BE_MILITARIST_C
+				NOT = {
+					personality = ai_militarist
+				}
+			}
+		}
+	}
+	on_accept = {
+		FROM = {
+			add_government_reform = free_city
+		}
+	}
+    
+    ai_acceptance = {
+        add_entry = {
+            name = TRUST
+            export_to_variable = {
+                variable_name = ai_value
+                value = trust      
+                who = FROM            
+                with = ROOT                 
+            }
+            subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 0.5 }
+        }
+		add_entry = {
+            name = OPINION
+            export_to_variable = {
+                variable_name = ai_value
+                value = opinion      
+                who = FROM            
+                with = ROOT                 
+            }
+			subtract_variable = { which = ai_value value = 150 }
+			multiply_variable = { which = ai_value value = 1 }
+        }
+		add_entry = {
+            name = LEGITIMACYMODF
+            export_to_variable = {
+                variable_name = ai_value
+                value = modifier:legitimacy      
+                who = ROOT                           
+            }
+			multiply_variable = { which = ai_value value = 1 }
+        }
+		add_entry = {
+			name = DIP_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 4 }
+		}
+		add_entry = {
+			name = MANPOWER_PERCENTAGE
+			export_to_variable = {
+				variable_name = ai_value
+				value = manpower_percentage
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+			subtract_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = STABILITY
+			export_to_variable = {
+				variable_name = ai_value
+				value = stability
+				who = ROOT
+			}
+			subtract_variable = { which = ai_value value = 2 }
+			multiply_variable = { which = ai_value value = 5 }
+		}
+    }
+
+	ai_will_do = {
+		is_at_war = no
+	}
+}
