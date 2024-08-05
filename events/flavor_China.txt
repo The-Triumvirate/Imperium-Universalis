@@ -859,6 +859,7 @@ country_event = {
 		tag = ZHO
 		religion = chinese_religion
 		curia_treasury_size = 250
+		has_dlc = "Emperor"
 		has_reform = free_city_zhou
 		adm_tech = 2
 		any_owned_province = {
@@ -1236,6 +1237,7 @@ country_event = {
 		}
 		religion = chinese_religion
 		curia_treasury_size = 750
+		has_dlc = "Emperor"
 		calc_true_if = {
 			all_known_country = {
 				religion = liyuebadao
@@ -1368,6 +1370,7 @@ country_event = {
 		tag = ZHO
 		religion = chinese_religion
 		curia_treasury_size = 500
+		has_dlc = "Emperor"
 		calc_true_if = {
 			all_known_country = {
 				religion = chinese_religion
@@ -1508,6 +1511,7 @@ country_event = {
 		tag = ZHO
 		religion = chinese_religion
 		curia_treasury_size = 400
+		has_dlc = "Emperor"
 		NOT = {
 			num_of_cities = 7
 		}
@@ -1993,6 +1997,7 @@ country_event = {
 		}
 		controls = 4349 
 		curia_treasury_size = 200
+		has_dlc = "Emperor"
 		4349 = {
 			owned_by = ZHO
 			AND = {
@@ -3024,3 +3029,345 @@ country_event = {
 		}
 	}
 }
+
+########################################################################################
+# Xing lose core on Yiyi if restored in their original homeland
+########################################################################################
+country_event = {
+	id = china.63
+	title = "china.63.t"
+	desc = "china.63.d"
+	picture = defense
+	fire_only_once = yes
+	
+	trigger = {
+		tag = XNG
+		NOT = {
+			owns = 4260
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "china.63.a"
+		4260 = {
+			remove_core = XGO
+		}
+		ai_chance = { 
+			factor = 99
+		}
+	}
+	option = {
+		name = "china.63.b"
+		every_neighbor_country = {
+			add_aggressive_expansion = {
+				who = XGO
+				value = 20
+			}
+		}
+		ai_chance = { 
+			factor = 1
+		}
+	}
+}
+
+########################################################################################
+# Sun Shuao
+########################################################################################
+country_event = {
+	id = china.64
+	title = "china.64.t"
+	desc = "china.64.d"
+	picture = religious
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		is_year = 144
+		NOT = {
+			started_in = 144.1.1
+		}	
+	}
+	
+	mean_time_to_happen = {
+		months = 8
+	}
+
+	option = {
+		name = "china.64.a"
+		add_adm_power = 100
+		define_advisor = {
+			type = engineer
+			name = "Sun Shuao"
+			discount = yes
+			skill = 3
+			culture = nanchu
+			religion = liyuebadao
+			min_age = 20
+			max_age = 20
+		}
+		ai_chance = { 
+			factor = 100
+		}
+	}
+}
+
+########################################################################################
+# Reform Desire Controller
+########################################################################################
+country_event = {
+	id = china.65
+	title = "china.65.t"
+	desc = "china.65.d"
+	picture = religious
+	hidden = yes
+	trigger = {
+		is_emperor = yes #use the emperor as a check since itll always exist
+		OR = {
+			AND = {
+				NOT = {
+					reform_desire = 0.1
+				}
+				NOT = {
+					has_country_modifier = china_low_reform_desire
+				}
+			}
+			AND = {
+				NOT = {
+					reform_desire = 0.25
+				}
+				reform_desire = 0.1
+				NOT = {
+					has_country_modifier = china_medium_reform_desire
+				}
+			}
+			AND = {
+				NOT = {
+					reform_desire = 0.5
+				}
+				reform_desire = 0.25
+				NOT = {
+					has_country_modifier = china_high_reform_desire
+				}
+			}
+			AND = {
+				NOT = {
+					reform_desire = 0.75
+				}
+				reform_desire = 0.5
+				NOT = {
+					has_country_modifier = china_higher_reform_desire
+				}
+			}
+			AND = {
+				reform_desire = 0.75
+				NOT = {
+					has_country_modifier = china_highest_reform_desire
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				NOT = {
+					reform_desire = 0.1
+				}
+			}
+			every_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_country_modifier = { 
+					name = china_low_reform_desire
+					duration = -1  
+				}
+				remove_country_modifier = china_medium_reform_desire
+				remove_country_modifier = china_high_reform_desire
+				remove_country_modifier = china_higher_reform_desire
+				remove_country_modifier = china_highest_reform_desire
+			}
+		}
+		
+		if = {
+			limit = {
+				reform_desire = 0.1
+				NOT = {
+					reform_desire = 0.25
+				}
+			}
+			every_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_country_modifier = { 
+					name = china_medium_reform_desire
+					duration = -1  
+				}
+				remove_country_modifier = china_low_reform_desire
+				remove_country_modifier = china_high_reform_desire
+				remove_country_modifier = china_higher_reform_desire
+				remove_country_modifier = china_highest_reform_desire
+			}
+		}
+		
+		if = {
+			limit = {
+				reform_desire = 0.25
+				NOT = {
+					reform_desire = 0.50
+				}
+			}
+			every_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_country_modifier = { 
+					name = china_high_reform_desire
+					duration = -1  
+				}
+				remove_country_modifier = china_medium_reform_desire
+				remove_country_modifier = china_low_reform_desire
+				remove_country_modifier = china_higher_reform_desire
+				remove_country_modifier = china_highest_reform_desire
+			}
+		}
+		
+		if = {
+			limit = {
+				reform_desire = 0.50
+				NOT = {
+					reform_desire = 0.75
+				}
+			}
+			every_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_country_modifier = { 
+					name = china_higher_reform_desire
+					duration = -1  
+				}
+				remove_country_modifier = china_medium_reform_desire
+				remove_country_modifier = china_high_reform_desire
+				remove_country_modifier = china_low_reform_desire
+				remove_country_modifier = china_highest_reform_desire
+			}
+		}
+		
+		if = {
+			limit = {
+				reform_desire = 0.75
+			}
+			every_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_country_modifier = { 
+					name = china_highest_reform_desire
+					duration = -1  
+				}
+				remove_country_modifier = china_medium_reform_desire
+				remove_country_modifier = china_high_reform_desire
+				remove_country_modifier = china_higher_reform_desire
+				remove_country_modifier = china_low_reform_desire
+			}
+		}
+	}
+	option = {
+		name = "china.65.a"
+		ai_chance = { 
+			factor = 100
+		}
+	}
+}
+
+########################################################################################
+# AI use of grand assembly button
+########################################################################################
+country_event = {
+	id = china.66
+	title = "china.66.t"
+	desc = "china.66.d"
+	picture = defense
+
+	trigger = {
+		is_papal_controller = yes
+		tag = ZHO
+		ai = yes
+		curia_treasury_size = 1000
+		reform_desire = 0.09
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "china.66.a"
+		add_curia_treasury = -750
+		add_reform_desire = -0.05
+	}
+}
+
+########################################################################################
+# AI use of ban rival button
+########################################################################################
+country_event = {
+	id = china.67
+	title = "china.67.t"
+	desc = "china.67.d"
+	picture = defense
+
+	trigger = {
+		is_papal_controller = yes
+		ai = yes
+		ZHO = {
+			any_rival_country = {
+				is_excommunicated = no
+				religion = chinese_religion
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		modifier = {
+			factor = 0.9
+			imperial_influence = 20
+		}
+		modifier = {
+			factor = 0.9
+			imperial_influence = 40
+		}
+		modifier = {
+			factor = 1.25
+			NOT = {
+				imperial_influence = 10
+			}
+		}
+	}
+
+	option = {
+		name = "china.67.a"
+		
+		ZHO = {
+			random_rival_country = {
+				limit = {
+					is_excommunicated = no
+					religion = chinese_religion
+				}
+				excommunicate = THIS
+			}
+		}
+	}
+}
+
