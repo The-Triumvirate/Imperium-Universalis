@@ -2975,7 +2975,6 @@ country_event = {
 		}
 		is_emperor = no
 		is_papal_controller = no
-		hre_size = 1
 	}
 	
 	mean_time_to_happen = {
@@ -2985,9 +2984,9 @@ country_event = {
 	option = {
 		name = "china.62.a"
 		add_reform_desire = -0.01
-		add_prestige = 5
+		add_prestige = 2
 		ai_chance = { 
-			factor = 50
+			factor = 45
 			modifier = {
 				factor = 2
 				has_opinion = {
@@ -2997,22 +2996,28 @@ country_event = {
 			}
 			modifier = {
 				factor = 1.5
-				imperial_influence = 25
+				imperial_influence = 30
 			}
 			modifier = {
-				factor = 2
-				imperial_influence = 50
+				factor = 1.5
+				imperial_influence = 55
+			}
+			modifier = {
+				factor = 1.25
+				emperor = {
+					stability = 3
+				}
 			}
 		}
 	}
 	option = {
 		name = "china.62.b"
-		add_years_of_income = 0.05
+		add_years_of_income = 0.04
 		add_reform_desire = 0.01
 		ai_chance = { 
-			factor = 50
+			factor = 55
 			modifier = {
-				factor = 5
+				factor = 10
 				NOT = {
 					has_opinion = {
 						who = ZHO
@@ -3024,6 +3029,36 @@ country_event = {
 				factor = 1.5
 				NOT = {
 					imperial_influence = 3
+				}
+			}
+			modifier = {
+				factor = 1.5
+				emperor = {
+					war_exhaustion = 1
+				}
+			}
+			modifier = {
+				factor = 1.5
+				emperor = {
+					NOT = {
+						legitimacy = 90
+					}
+				}
+			}
+			modifier = {
+				factor = 1.5
+				emperor = {
+					NOT = {
+						legitimacy = 80
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				emperor = {
+					NOT = {
+						legitimacy = 70
+					}
 				}
 			}
 		}
@@ -3126,6 +3161,7 @@ country_event = {
 	hidden = yes
 	trigger = {
 		is_emperor = yes #use the emperor as a check since itll always exist
+		religion = chinese_religion
 		OR = {
 			AND = {
 				NOT = {
@@ -3368,6 +3404,281 @@ country_event = {
 				excommunicate = THIS
 			}
 		}
+	}
+}
+
+########################################################################################
+# BaZhu options to reduce RD
+########################################################################################
+country_event = {
+	id = china.68
+	title = "china.68.t"
+	desc = "china.68.d"
+	picture = deligation
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.68.a"
+		trigger = { 
+			years_of_income = 1
+		}
+		add_years_of_income = -1
+		add_reform_desire = -0.05
+		clr_country_flag = bazhu_checking_out_rd_event
+		ai_chance = { 
+			factor = 35
+			modifier = {
+				factor = 2
+				years_of_income = 2
+			}
+			modifier = {
+				factor = 4
+				years_of_income = 3
+			}
+		}
+	}
+	option = {
+		name = "china.68.b"
+		trigger = { 
+			imperial_influence = 2
+		}
+		add_imperial_influence = -2
+		add_reform_desire = -0.05
+		clr_country_flag = bazhu_checking_out_rd_event
+		ai_chance = { 
+			factor = 35
+			modifier = {
+				factor = 1.75
+				imperial_influence = 20
+			}
+			modifier = {
+				factor = 2
+				imperial_influence = 40
+			}
+			modifier = {
+				factor = 3
+				imperial_influence = 55
+			}
+		}
+	}
+	option = {
+		name = "china.68.c"
+		trigger = { 
+			NOT = {
+				has_country_modifier = bazhu_making_minor_concessions_fd
+			}
+			NOT = {
+				has_country_modifier = bazhu_making_major_concessions_fd
+			}
+		}
+		add_country_modifier = {
+			name = bazhu_making_minor_concessions_fd
+			duration = 2555
+		}
+		add_reform_desire = -0.05
+		clr_country_flag = bazhu_checking_out_rd_event
+		ai_chance = { 
+			factor = 25
+			modifier = {
+				factor = 3
+				personality = ai_diplomat
+			}
+		}
+	}
+	option = {
+		name = "china.68.dd"
+		trigger = { 
+			NOT = {
+				has_country_modifier = bazhu_making_major_concessions_fd
+			}
+			NOT = {
+				has_country_modifier = bazhu_making_minor_concessions_fd
+			}
+		}
+		add_country_modifier = {
+			name = bazhu_making_major_concessions_fd
+			duration = 2555
+		}
+		add_reform_desire = -0.1
+		clr_country_flag = bazhu_checking_out_rd_event
+		ai_chance = { 
+			factor = 5
+			modifier = {
+				factor = 5
+				ruler_has_personality = craven_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = drunkard_personality
+			}
+		}
+	}
+	option = {
+		name = "china.68.e"
+		clr_country_flag = bazhu_checking_out_rd_event
+		ai_chance = { 
+			factor = 0
+		}
+	}
+}
+
+########################################################################################
+# Reform desire - BaZhu's position is questioned
+########################################################################################
+country_event = {
+	id = china.69
+	title = "china.69.t"
+	desc = "china.69.d"
+	picture = civilwar
+	
+	trigger = {
+		is_emperor = yes
+		religion = chinese_religion
+		NOT = {
+			legitimacy = 70
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "china.69.a"
+		add_reform_desire = 0.05
+	}
+}
+
+########################################################################################
+# Reform desire - Annexation is causing worry
+########################################################################################
+country_event = {
+	id = china.70
+	title = "china.70.t"
+	desc = "china.70.d"
+	picture = defense
+	
+	trigger = {
+		is_emperor = yes
+		religion = chinese_religion
+		NOT = {
+			calc_true_if = {
+				all_countries_including_self = {
+					religion_group = chinese_religions
+					capital_scope = {
+						continent = china
+					}
+				}
+				amount = 31
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 72
+	}
+
+	option = {
+		name = "china.70.a"
+		add_reform_desire = 0.05
+	}
+}
+
+########################################################################################
+# Reform desire - Zhou Court isn't seen as prestigious
+########################################################################################
+country_event = {
+	id = china.71
+	title = "china.71.t"
+	desc = "china.71.d"
+	picture = civilwar
+	
+	trigger = {
+		tag = ZHO
+		religion = chinese_religion
+		NOT = {
+			prestige = 1
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 84
+	}
+
+	option = {
+		name = "china.71.a"
+		add_reform_desire = 0.05
+	}
+}
+
+########################################################################################
+# Reform desire - BaZhu has stability issues
+########################################################################################
+country_event = {
+	id = china.72
+	title = "china.72.t"
+	desc = "china.72.d"
+	picture = civilwar
+	
+	trigger = {
+		is_emperor = yes
+		religion = chinese_religion
+		OR = {
+			NOT = {
+				stability = 0
+			}
+			war_exhaustion = 0.75
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+
+	option = {
+		name = "china.72.a"
+		add_reform_desire = 0.05
+	}
+}
+
+########################################################################################
+# remove reform desire effects if religion change
+########################################################################################
+country_event = {
+	id = china.73
+	title = "china.73.t"
+	desc = "china.73.d"
+	picture = civilwar
+	hidden = yes
+	
+	trigger = {
+		NOT = {
+			religion = chinese_religion
+		}
+		OR = {
+			has_country_modifier = china_low_reform_desire
+			has_country_modifier = china_medium_reform_desire
+			has_country_modifier = china_high_reform_desire
+			has_country_modifier = china_higher_reform_desire
+			has_country_modifier = china_highest_reform_desire
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		remove_country_modifier = china_low_reform_desire
+		remove_country_modifier = china_medium_reform_desire_reform_desire
+		remove_country_modifier = china_high_reform_desire
+		remove_country_modifier = china_higher_reform_desire
+		remove_country_modifier = china_highest_reform_desire
+	}
+
+	option = {
+		name = "china.73.a"
 	}
 }
 
