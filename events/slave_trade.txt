@@ -115,7 +115,7 @@ country_event = {
 					NOT = { has_saved_event_target = SD_purchase_province_4 } 			# not done before
 					check_variable = { SD_trade_price = 40 }
 				}
-				SD_purchase_slaves_active_tn = { num = 14 price = 40 }
+				SD_purchase_slaves_active_tn = { num = 4 price = 40 }
 			}
 			if = {
 				limit = {
@@ -157,7 +157,7 @@ country_event = {
 					NOT = { has_saved_event_target = SD_purchase_province_4 } 			# not done before
 					check_variable = { SD_trade_price = 60 }
 				}
-				SD_purchase_slaves_active_tn = { num = 14 price = 60 }
+				SD_purchase_slaves_active_tn = { num = 4 price = 60 }
 			}
 			if = {
 				limit = {
@@ -168,7 +168,7 @@ country_event = {
 				SD_purchase_slaves_active_tn = { num = 5 price = 60 }
 			}
 
-
+			# Now we have stored 5 provinces where to purchase the slaves from, trying to get a good price wherever possible. 
 
 
 
@@ -275,609 +275,626 @@ country_event = {
 
 
 	after = {
+		# cleanup variables created
 		if = {
 			limit = { has_saved_event_target = SD_purchase_province_1 }
-			event_target:SD_purchase_province_1 = { clr_province_flag = SD_taken
-				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } }
+			event_target:SD_purchase_province_1 = { 
+				clr_province_flag = SD_taken
+				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } 
+			}
+		}
+		if = {
+			limit = { has_saved_event_target = SD_purchase_province_2 }
+			event_target:SD_purchase_province_2 = { 
+				clr_province_flag = SD_taken
+				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } 
+			}
+		}
+		if = {
+			limit = { has_saved_event_target = SD_purchase_province_3 }
+			event_target:SD_purchase_province_3 = { 
+				clr_province_flag = SD_taken
+				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } 
+			}
+		}
+		if = {
+			limit = { has_saved_event_target = SD_purchase_province_4 }
+			event_target:SD_purchase_province_4 = { 
+				clr_province_flag = SD_taken
+				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } 
+			}
+		}
+		if = {
+			limit = { has_saved_event_target = SD_purchase_province_5 }
+			event_target:SD_purchase_province_5 = { 
+				clr_province_flag = SD_taken
+				set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } 
+			}
+		}
+
+		set_variable = { which = SD_new_purchases value = 0 }
+		set_variable = { which = SD_new_paid value = 0 }
+	}
+}
+
+# CAPTIVE events
+#	make them simple, just distribute slaves around the CoTs or at the capital, nothing else
+
+# 2: Sell captives (fired every 1 year with captives, or after the war)
+# 3: set price
+
+# sell SLAVES by decision
+# 4: set quantity, 5: set price
+
+country_event = {
+	id = slave_trade.2			# Sell captives after 12 months in (war unfinished)
+	title = "slave_trade.2.t"
+	desc = "slave_trade.2.d"
+	picture = slave_market
+
+	trigger = {
+		had_country_flag = { flag = SD_recent_captives days = 365 }
+		check_variable = { SD_captives = 10 }
+
+	}
+	mean_time_to_happen = { months = 12 }
+
+	immediate = {
+
+		hidden_effect = {
+			set_variable = { which = float_1 which = SD_captives } multiply_variable = { float_1 = 0.333 }
+			set_variable = { which = float_2 which = SD_captives } multiply_variable = { float_2 = 0.666 }
+			if = { limit = { NOT = { check_variable = { SD_trade_price = 20 } } } set_variable = { which = SD_trade_price value = 40 } }
+		}
+
+	}
+
+
+	option = {
+		name = "slave_trade.2.1"	# All to sell
+		ai_chance = { factor = 50 }
+		hidden_effect = {
+			while = {
+				limit = {
+					check_variable = { SD_captives = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
+					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { SD_captives = 10 }
+			}
+			clr_country_flag = SD_recent_captives
+		}
+
+	}
+
+	option = {
+		name = "slave_trade.2.2"	# 66% sell, 33% own slaves
+		ai_chance = { factor = 30 }
+		hidden_effect = {
+			change_variable = { which = slaves which = float_1 }
+			subtract_variable = { which = SD_captives which = float_1 }
+
+			while = {
+				limit = {
+					check_variable = { SD_captives = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
+					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { SD_captives = 10 }
+			}
+			clr_country_flag = SD_recent_captives
+		}
+	}
+
+	option = {
+		name = "slave_trade.2.3"	# 33% sell, 66% own slaves
+		ai_chance = { factor = 20 }
+		trigger = { has_estate = estate_slaves } 				# forces normal tribals and nomadics out, make them sell most of it
+		hidden_effect = {
+			change_variable = { which = slaves which = float_2 }
+			subtract_variable = { which = SD_captives which = float_2 }
+
+			while = {
+				limit = {
+					check_variable = { SD_captives = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
+					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { SD_captives = 10 }
+			}
+			clr_country_flag = SD_recent_captives
+		}
+	}
+
+	option = {
+		name = "slave_trade.2.4"	# All into slavery
+		ai_chance = { factor = 20 }
+		trigger = { has_estate = estate_slaves } 				# forces normal tribals and nomadics out, make them sell most of it
+		hidden_effect = {
+			change_variable = { which = slaves which = SD_captives }
+			set_variable = { which = SD_captives value = 0 }
+		}
+		clr_country_flag = SD_recent_captives
+	}
+
+	option = {
+		name = "slave_trade.2.5"	# Pardon them all (move into random owned places with growth)
+		ai_chance = { factor = 0 }
+		hidden_effect = {
+			change_variable = { which = freedmen_new which = SD_captives }
+			set_variable = { which = SD_captives value = 0 }
+			while = {
+				limit = {
+					check_variable = { freedmen_new = 10 }
+					any_owned_province = {
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+						NOT = { has_province_modifier = PG_new_freedmen }
+					}
+
+				}
+				random_owned_province = {
+					limit = {
+						OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
+						NOT = { has_province_modifier = PG_new_freedmen }
+					}
+					PG_migrate_freedmen = yes
+					if = {
+						limit = { has_global_flag = popgrowth_v5capacities }
+						province_event = { id = population_capacity.15 }
+					}
+					else = { province_event = { id = population_capacity.4 } }
+				}
+
+			}
+			# all those not assiged, will be lost
+			set_variable = { which = freedmen_new value = 0 }
+			clr_country_flag = SD_recent_captives
+		}
+	}
+	option = {
+		name = "slave_trade.2.6"	# Change the price we are offering
+		ai_chance = { factor = 20 }
+		country_event = { id = slave_trade.5 }
+		
+
+	}
+
+	option = {
+		name = "slave_trade.2.7"	# I will think it later on (reset flag)
+		ai_chance = { factor = 0 }
+		clr_country_flag = SD_recent_captives
+		set_country_flag = SD_recent_captives
+
+	}
+
+
+
+
+
+}
+
+
+
+country_event = {
+	id = slave_trade.3
+	title = "slave_trade.3.t"
+	desc = "slave_trade.3.d"
+	picture = slave_market
+
+	is_triggered_only = yes
+	immediate = {
+
+
+
+	}
+
+	option = {
+		name = "slave_trade.3.1"	# At 20 (cheapest)
+		ai_chance = { factor = 40 }
+		set_variable = { which = SD_trade_price value = 20 }
+		country_event = { id = slave_trade.2 }
+
+	}
+	option = {
+		name = "slave_trade.3.2"	# At 40 (normal)
+		ai_chance = { factor = 40 }
+		set_variable = { which = SD_trade_price value = 40 }
+		country_event = { id = slave_trade.2 }
+
+	}
+	option = {
+		name = "slave_trade.3.3"	# At 60 (high)
+		ai_chance = { factor = 20 }
+		set_variable = { which = SD_trade_price value = 60 }
+		country_event = { id = slave_trade.2 }
+
+	}
+
+
+}
+
+country_event = { 
+	id = slave_trade.4			
+	title = "slave_trade.4.t"
+	desc = "slave_trade.4.d"
+	picture = slave_market
+	is_triggered_only = yes
+
+
+	immediate = {
+
+		hidden_effect = {
+			set_variable = { which = float_1 which = slaves } 	# to sell 10%
+			multiply_variable = { float_1 = 0.1 }
+
+			set_variable = { which = float_2 value = 10 } 		# to sell 10.000
+			if = {
+				limit = { check_variable = { which = float_2 which = slaves } }	# too many, limited to slave amt
+				set_variable = { which = float_2 which = slaves }
+			}
+
+			set_variable = { which = float_3 value = 50 } 		# to sell 50.000
+			if = {
+				limit = { check_variable = { which = float_3 which = slaves } }	# too many, limited to slave amt
+				set_variable = { which = float_3 which = slaves }
+			}
+
+			set_variable = { which = float_4 value = 100 } 		# to sell 100.000
+			if = {
+				limit = { check_variable = { which = float_4 which = slaves } }	# too many, limited to slave amt
+				set_variable = { which = float_4 which = slaves }
+			}
+
+			set_variable = { which = float_5 value = 200 } 		# to sell 200.000
+			if = {
+				limit = { check_variable = { which = float_5 which = slaves } }	# too many, limited to slave amt
+				set_variable = { which = float_5 which = slaves }
+			}
+
+			if = {												# to sell over 100%, only if it has 100%
+				limit = { check_variable = { slave_pop_social = 100 } }
+
+				set_variable = { which = float_6 which = slaves_tot_display }
+				set_variable = { which = float_7 which = slaves_tot_display }
+				divide_variable = { which = float_7 which = slave_pop_social }
+				multiply_variable = { float_7 = 100 }
+				subtract_variable = { which = float_6 which = float_7 }
 			}
 			if = {
-				limit = { has_saved_event_target = SD_purchase_province_2 }
-				event_target:SD_purchase_province_2 = { clr_province_flag = SD_taken
-					set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } }
+				limit = { check_variable = { which = float_6 which = slaves } }	# too many, limited to slave amt
+				set_variable = { which = float_6 which = slaves }
+			}
+
+			# Fallback for price, if it has never been changed
+			if = { limit = { NOT = { check_variable = { SD_trade_price = 20 } } } set_variable = { which = SD_trade_price value = 40 } }
+		}
+
+	}
+
+	option = {
+		name = "slave_trade.4.1"	# Sell 10%
+		ai_chance = { factor = 20 }
+
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_1 }
+			while = {
+				limit = {
+					check_variable = { float_1 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
 				}
-				if = {
-					limit = { has_saved_event_target = SD_purchase_province_3 }
-					event_target:SD_purchase_province_3 = { clr_province_flag = SD_taken
-						set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } }
-					}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
 					if = {
-						limit = { has_saved_event_target = SD_purchase_province_4 }
-						event_target:SD_purchase_province_4 = { clr_province_flag = SD_taken
-							set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } }
-						}
-						if = {
-							limit = { has_saved_event_target = SD_purchase_province_5 }
-							event_target:SD_purchase_province_5 = { clr_province_flag = SD_taken
-								set_variable = { which = SD_transaction value = 0 } set_variable = { which = SD_sell_size value = 0 } }
-							}
-
-							set_variable = { which = SD_new_purchases value = 0 }
-							set_variable = { which = SD_new_paid value = 0 }
-						}
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_1 = 10 }
+			}
+			change_variable = { which = slaves which = float_1 }	# for low-value, to not lose the small %s
+		}
+	}
 
-					# Events to code, all follow the same logic
-					#	make them simple, just distribute slaves around the CoTs or at the capital, nothing else
+	option = {
+		name = "slave_trade.4.2"	# Sell 10k
+		ai_chance = { factor = 20 }
 
-					# Sell captives after 12 months in (war unfinished)
-					# Sell captives after the war
-					# Sell/release captives, when tribal
-					# Sell/release captives, when nomad
-
-
-					country_event = {
-						id = slave_trade.2
-						title = "slave_trade.2.t"
-						desc = "slave_trade.2.d"
-						picture = slave_market
-
-						trigger = {
-							had_country_flag = { flag = SD_recent_captives days = 365 }
-							check_variable = { SD_captives = 10 }
-
-						}
-						mean_time_to_happen = { months = 12 }
-
-						immediate = {
-
-							hidden_effect = {
-								set_variable = { which = float_1 which = SD_captives } multiply_variable = { float_1 = 0.333 }
-								set_variable = { which = float_2 which = SD_captives } multiply_variable = { float_2 = 0.666 }
-								if = { limit = { NOT = { check_variable = { SD_trade_price = 20 } } } set_variable = { which = SD_trade_price value = 40 } }
-							}
-
-						}
-
-
-						option = {
-							name = "slave_trade.2.1"	# All to sell
-							ai_chance = { factor = 50 }
-							hidden_effect = {
-								while = {
-									limit = {
-										check_variable = { SD_captives = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { SD_captives = 10 }
-								}
-								clr_country_flag = SD_recent_captives
-							}
-
-						}
-
-						option = {
-							name = "slave_trade.2.2"	# 66% sell, 33% own slaves
-							ai_chance = { factor = 30 }
-							hidden_effect = {
-								change_variable = { which = slaves which = float_1 }
-								subtract_variable = { which = SD_captives which = float_1 }
-
-								while = {
-									limit = {
-										check_variable = { SD_captives = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { SD_captives = 10 }
-								}
-								clr_country_flag = SD_recent_captives
-							}
-						}
-
-						option = {
-							name = "slave_trade.2.3"	# 33% sell, 66% own slaves
-							ai_chance = { factor = 20 }
-							hidden_effect = {
-								change_variable = { which = slaves which = float_2 }
-								subtract_variable = { which = SD_captives which = float_2 }
-
-								while = {
-									limit = {
-										check_variable = { SD_captives = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { SD_captives = 10 }
-								}
-								clr_country_flag = SD_recent_captives
-							}
-						}
-
-						option = {
-							name = "slave_trade.2.4"	# All into slavery
-							ai_chance = { factor = 20 }
-							hidden_effect = {
-								change_variable = { which = slaves which = SD_captives }
-								set_variable = { which = SD_captives value = 0 }
-							}
-							clr_country_flag = SD_recent_captives
-						}
-
-						option = {
-							name = "slave_trade.2.5"	# Pardon them all (move into random places with growth within your active trade zone)
-							ai_chance = { factor = 0 }
-							hidden_effect = {
-								change_variable = { which = freedmen_new which = SD_captives }
-								set_variable = { which = SD_captives value = 0 }
-								while = {
-									limit = {
-										check_variable = { freedmen_new = 10 }
-										any_owned_province = {
-											OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
-											NOT = { has_province_modifier = PG_new_freedmen }
-										}
-
-									}
-									random_owned_province = {
-										limit = {
-											OR = { check_variable = { PG_trb_grow = 120 } check_variable = { PG_com_grow = 120 } }
-											NOT = { has_province_modifier = PG_new_freedmen }
-										}
-										PG_migrate_freedmen = yes
-										if = {
-											limit = { has_global_flag = popgrowth_v5capacities }
-											province_event = { id = population_capacity.15 }
-										}
-										else = { province_event = { id = population_capacity.4 } }
-									}
-
-								}
-								clr_country_flag = SD_recent_captives
-							}
-						}
-						option = {
-							name = "slave_trade.2.6"	# Change the price we are offering
-							ai_chance = { factor = 20 }
-							country_event = { id = slave_trade.3 }
-
-
-						}
-
-						option = {
-							name = "slave_trade.2.7"	# I will think it later on (reset flag)
-							ai_chance = { factor = 0 }
-							clr_country_flag = SD_recent_captives
-							set_country_flag = SD_recent_captives
-
-						}
-
-
-
-
-
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_2 }
+			while = {
+				limit = {
+					check_variable = { float_2 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_2 = 10 }
+			}
+		}
+	}
 
-					country_event = {
-						id = slave_trade.3
-						title = "slave_trade.3.t"
-						desc = "slave_trade.3.d"
-						picture = slave_market
+	option = {
+		name = "slave_trade.4.3"	# Sell 50k
+		trigger = { check_variable = { slaves = 10 } }	# previous step, if it reaches it, means that this is possible.
+		ai_chance = { factor = 20 }
 
-						is_triggered_only = yes
-						immediate = {
-
-
-
-						}
-
-						option = {
-							name = "slave_trade.3.1"	# At 20 (cheapest)
-							ai_chance = { factor = 40 }
-							set_variable = { which = SD_trade_price value = 20 }
-							country_event = { id = slave_trade.2 }
-
-						}
-						option = {
-							name = "slave_trade.3.2"	# At 40 (normal)
-							ai_chance = { factor = 40 }
-							set_variable = { which = SD_trade_price value = 40 }
-							country_event = { id = slave_trade.2 }
-
-						}
-						option = {
-							name = "slave_trade.3.3"	# At 60 (high)
-							ai_chance = { factor = 20 }
-							set_variable = { which = SD_trade_price value = 60 }
-							country_event = { id = slave_trade.2 }
-
-						}
-
-
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_3 }
+			while = {
+				limit = {
+					check_variable = { float_3 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_3 = 10 }
+			}
+		}
+	}
 
-					country_event = {
-						id = slave_trade.4
-						title = "slave_trade.4.t"
-						desc = "slave_trade.4.d"
-						picture = slave_market
-						is_triggered_only = yes
+	option = {
+		name = "slave_trade.4.4"	# Sell 100k
+		trigger = { check_variable = { slaves = 50 } }	# previous step, if it reaches it, means that this is possible.
+		ai_chance = { factor = 20 }
 
-
-						immediate = {
-
-							hidden_effect = {
-								set_variable = { which = float_1 which = slaves } 	# to sell 10%
-								multiply_variable = { float_1 = 0.1 }
-
-								set_variable = { which = float_2 value = 10 } 		# to sell 10.000
-								if = {
-									limit = { check_variable = { which = float_2 which = slaves } }	# too many, limited to slave amt
-									set_variable = { which = float_2 which = slaves }
-								}
-
-								set_variable = { which = float_3 value = 50 } 		# to sell 50.000
-								if = {
-									limit = { check_variable = { which = float_3 which = slaves } }	# too many, limited to slave amt
-									set_variable = { which = float_3 which = slaves }
-								}
-
-								set_variable = { which = float_4 value = 100 } 		# to sell 100.000
-								if = {
-									limit = { check_variable = { which = float_4 which = slaves } }	# too many, limited to slave amt
-									set_variable = { which = float_4 which = slaves }
-								}
-
-								set_variable = { which = float_5 value = 200 } 		# to sell 200.000
-								if = {
-									limit = { check_variable = { which = float_5 which = slaves } }	# too many, limited to slave amt
-									set_variable = { which = float_5 which = slaves }
-								}
-
-								if = {												# to sell over 100%, only if it has 100%
-									limit = { check_variable = { slave_pop_social = 100 } }
-
-									set_variable = { which = float_6 which = slaves_tot_display }
-									set_variable = { which = float_7 which = slaves_tot_display }
-									divide_variable = { which = float_7 which = slave_pop_social }
-									multiply_variable = { float_7 = 100 }
-									subtract_variable = { which = float_6 which = float_7 }
-								}
-								if = {
-									limit = { check_variable = { which = float_6 which = slaves } }	# too many, limited to slave amt
-									set_variable = { which = float_6 which = slaves }
-								}
-
-								# Fallback for price, if it has never been changed
-								if = { limit = { NOT = { check_variable = { SD_trade_price = 20 } } } set_variable = { which = SD_trade_price value = 40 } }
-							}
-
-						}
-
-						option = {
-							name = "slave_trade.4.1"	# Sell 10%
-							ai_chance = { factor = 20 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_1 }
-								while = {
-									limit = {
-										check_variable = { float_1 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_1 = 10 }
-								}
-								change_variable = { which = slaves which = float_1 }	# for low-value, to not lose the small %s
-							}
-						}
-
-						option = {
-							name = "slave_trade.4.2"	# Sell 10k
-							ai_chance = { factor = 20 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_2 }
-								while = {
-									limit = {
-										check_variable = { float_2 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_2 = 10 }
-								}
-							}
-						}
-
-						option = {
-							name = "slave_trade.4.3"	# Sell 50k
-							trigger = { check_variable = { slaves = 10 } }	# previous step, if it reaches it, means that this is possible.
-							ai_chance = { factor = 20 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_3 }
-								while = {
-									limit = {
-										check_variable = { float_3 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_3 = 10 }
-								}
-							}
-						}
-
-						option = {
-							name = "slave_trade.4.4"	# Sell 100k
-							trigger = { check_variable = { slaves = 50 } }	# previous step, if it reaches it, means that this is possible.
-							ai_chance = { factor = 20 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_4 }
-								while = {
-									limit = {
-										check_variable = { float_4 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_4 = 10 }
-								}
-							}
-						}
-
-						option = {
-							name = "slave_trade.4.5"	# Sell 200k
-							trigger = { check_variable = { slaves = 100 } }	# previous step, if it reaches it, means that this is possible.
-							ai_chance = { factor = 20 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_5 }
-								while = {
-									limit = {
-										check_variable = { float_5 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_5 = 10 }
-								}
-							}
-						}
-
-						option = {
-							name = "slave_trade.4.6"	# Sell all over 100%
-							trigger = { check_variable = { slave_pop_social = 100 } }
-							ai_chance = { factor = 60 }
-
-							hidden_effect = {
-								subtract_variable = { which = slaves which = float_6 }
-								while = {
-									limit = {
-										check_variable = { float_6 = 10 }
-										any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-									}
-									random_owned_province = {
-										limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
-										change_variable = { SD_slaves_available = 10 }
-										if = {
-											limit = { NOT = { has_province_modifier = SD_market_open } }
-											add_province_modifier = { name = SD_market_open duration = -1 }
-										}
-										set_variable = { which = SD_trade_price which = ROOT }
-									}
-									subtract_variable = { float_6 = 10 }
-								}
-							}
-
-						}
-
-
-
-
-						option = {
-							name = "slave_trade.4.10"	# Change the price we are offering
-							ai_chance = { factor = 0 }
-							country_event = { id = slave_trade.5 }
-
-
-						}
-
-						option = {
-							name = "slave_trade.4.99"	# Stop this sale, we will do it later
-							ai_chance = { factor = 0 }
-
-						}
-
-
-						after = {
-							set_variable = { which = SD_slaves_available value = 0 }
-							every_owned_province = {
-								limit = { check_variable = { SD_slaves_available = 1 } }				# any province with slaves being sold
-								owner = { change_variable = { which = SD_slaves_available which = PREV } }
-							}
-
-							SD_slave_totaldisp_update = yes
-						}
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_4 }
+			while = {
+				limit = {
+					check_variable = { float_4 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_4 = 10 }
+			}
+		}
+	}
 
-					country_event = {
-						id = slave_trade.5
-						title = "slave_trade.5.t"
-						desc = "slave_trade.5.d"
-						picture = slave_market
+	option = {
+		name = "slave_trade.4.5"	# Sell 200k
+		trigger = { check_variable = { slaves = 100 } }	# previous step, if it reaches it, means that this is possible.
+		ai_chance = { factor = 20 }
 
-						is_triggered_only = yes
-						immediate = {
-
-						}
-
-						option = {
-							name = "slave_trade.5.1"	# At 20 (cheapest)
-							ai_chance = { factor = 40 }
-							set_variable = { which = SD_trade_price value = 20 }
-							country_event = { id = slave_trade.4 }
-
-						}
-						option = {
-							name = "slave_trade.5.2"	# At 40 (normal)
-							ai_chance = { factor = 40 }
-							set_variable = { which = SD_trade_price value = 40 }
-							country_event = { id = slave_trade.4 }
-
-						}
-						option = {
-							name = "slave_trade.5.3"	# At 60 (high)
-							ai_chance = { factor = 20 }
-							set_variable = { which = SD_trade_price value = 60 }
-							country_event = { id = slave_trade.4 }
-
-						}
-
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_5 }
+			while = {
+				limit = {
+					check_variable = { float_5 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_5 = 10 }
+			}
+		}
+	}
 
-					###
-					#	EXPERIMENTAL EVENTS, to do debug testing
-					###
+	option = {
+		name = "slave_trade.4.6"	# Sell all over 100%
+		trigger = { check_variable = { slave_pop_social = 100 } }
+		ai_chance = { factor = 60 }
 
-					province_event = {		# Debug event, to add slaves into a province (it is being sold)
-						id = slave_trade.25
-						title = "slave_trade.25.t"
-						desc = "slave_trade.25.d"
-						picture = slaves
-						is_triggered_only = yes
-
-						trigger = {
-
-						}
-
-
-						immediate = {
-							#hidden_effect = {
-							# remove previous modifier
-							remove_province_modifier = SD_market_open
-
-
-
-							#}
-						}
-
-
-						option = {
-							name = "slave_trade.25.1"	# Add slaves, base
-							set_variable = { SD_slaves_available = 30 }
-
-						}
-						option = {
-							name = "slave_trade.25.1"	# Add slaves, base
-							change_variable = { SD_slaves_available = 20 }
-
-						}
-
-						option = {
-							name = "slave_trade.25.1"	# set the price, high
-
-							set_variable = { which = SD_trade_price value = 60 }
-
-						}
-						option = {
-							name = "slave_trade.25.1"	# set the price, normal
-
-							set_variable = { which = SD_trade_price value = 40 }
-
-						}
-						option = {
-							name = "slave_trade.25.1"	# set the price, low
-
-							set_variable = { which = SD_trade_price value = 20 }
-
-						}
-
-						option = {
-							name = "slave_trade.25.1"
-
-
-						}
-
-						after = {
-							if = {
-								limit = { check_variable = { SD_slaves_available = 1 } }
-								add_province_modifier = { name = SD_market_open duration = -1 }
-								set_province_flag = SD_market_open_flag
-								# adds a flag to know if, after X years, all slaves have been sold. If not, you get an event suggesting to lower the price
-							}
-							else_if = {
-								limit = { has_province_flag = SD_market_open_flag }		# flag but no slaves
-								clr_province_flag = SD_market_open_flag
-							}
-
-
-
-
-
-						}
+		hidden_effect = {
+			subtract_variable = { which = slaves which = float_6 }
+			while = {
+				limit = {
+					check_variable = { float_6 = 10 }
+					any_owned_province = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+				}
+				random_owned_province = {
+					limit = { OR = { province_has_center_of_trade_of_level = 1 is_capital = yes } }
+					change_variable = { SD_slaves_available = 10 }
+					if = {
+						limit = { NOT = { has_province_modifier = SD_market_open } }
+						add_province_modifier = { name = SD_market_open duration = -1 }
 					}
+					set_variable = { which = SD_trade_price which = ROOT }
+				}
+				subtract_variable = { float_6 = 10 }
+			}
+		}
+
+	}
+
+
+
+
+	option = {
+		name = "slave_trade.4.10"	# Change the price we are offering
+		ai_chance = { factor = 0 }
+		country_event = { id = slave_trade.5 }
+
+
+	}
+
+	option = {
+		name = "slave_trade.4.99"	# Stop this sale, we will do it later
+		ai_chance = { factor = 0 }
+
+	}
+
+
+	after = {
+		set_variable = { which = SD_slaves_available value = 0 }
+		every_owned_province = {
+			limit = { check_variable = { SD_slaves_available = 1 } }				# any province with slaves being sold
+			owner = { change_variable = { which = SD_slaves_available which = PREV } }
+		}
+
+		SD_slave_totaldisp_update = yes
+	}
+}
+
+country_event = {
+	id = slave_trade.5
+	title = "slave_trade.5.t"
+	desc = "slave_trade.5.d"
+	picture = slave_market
+
+	is_triggered_only = yes
+	immediate = {
+
+	}
+
+	option = {
+		name = "slave_trade.5.1"	# At 20 (cheapest)
+		ai_chance = { factor = 40 }
+		set_variable = { which = SD_trade_price value = 20 }
+		country_event = { id = slave_trade.4 }
+
+	}
+	option = {
+		name = "slave_trade.5.2"	# At 40 (normal)
+		ai_chance = { factor = 40 }
+		set_variable = { which = SD_trade_price value = 40 }
+		country_event = { id = slave_trade.4 }
+
+	}
+	option = {
+		name = "slave_trade.5.3"	# At 60 (high)
+		ai_chance = { factor = 20 }
+		set_variable = { which = SD_trade_price value = 60 }
+		country_event = { id = slave_trade.4 }
+
+	}
+
+}
+
+###
+#	EXPERIMENTAL EVENTS, to do debug testing
+###
+
+province_event = {		# Debug event, to add slaves into a province (it is being sold)
+	id = slave_trade.25
+	title = "slave_trade.25.t"
+	desc = "slave_trade.25.d"
+	picture = slaves
+	is_triggered_only = yes
+
+	trigger = {
+
+	}
+
+
+	immediate = {
+		#hidden_effect = {
+		# remove previous modifier
+		remove_province_modifier = SD_market_open
+
+
+
+		#}
+	}
+
+
+	option = {
+		name = "slave_trade.25.1"	# Add slaves, base
+		set_variable = { SD_slaves_available = 30 }
+
+	}
+	option = {
+		name = "slave_trade.25.1"	# Add slaves, base
+		change_variable = { SD_slaves_available = 20 }
+
+	}
+
+	option = {
+		name = "slave_trade.25.1"	# set the price, high
+
+		set_variable = { which = SD_trade_price value = 60 }
+
+	}
+	option = {
+		name = "slave_trade.25.1"	# set the price, normal
+
+		set_variable = { which = SD_trade_price value = 40 }
+
+	}
+	option = {
+		name = "slave_trade.25.1"	# set the price, low
+
+		set_variable = { which = SD_trade_price value = 20 }
+
+	}
+
+	option = {
+		name = "slave_trade.25.1"
+
+
+	}
+
+	after = {
+		if = {
+			limit = { check_variable = { SD_slaves_available = 1 } }
+			add_province_modifier = { name = SD_market_open duration = -1 }
+			set_province_flag = SD_market_open_flag
+			# adds a flag to know if, after X years, all slaves have been sold. If not, you get an event suggesting to lower the price
+		}
+		else_if = {
+			limit = { has_province_flag = SD_market_open_flag }		# flag but no slaves
+			clr_province_flag = SD_market_open_flag
+		}
+
+
+
+
+
+	}
+}
 
 
