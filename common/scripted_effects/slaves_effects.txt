@@ -231,6 +231,153 @@ slaves_ratio_create_low = {
 
 }
 
+slave_abolish_powerreq = {
+
+	# base: 300 adm + dip + mil
+	# status laws add or reduce an absolute value
+	# harshness laws modify mil cost
+	# other laws reduce % adm and dip cost, 10% a small one and 20% each advanced one, depending
+	
+	set_variable = { which = slave_abolish_adm value = 300 }
+	set_variable = { which = slave_abolish_dip value = 300 }
+	set_variable = { which = slave_abolish_mil value = 300 }
+	
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_status_2 = {							# Serfdom
+			change_variable = { slave_abolish_adm = 50 }	# more traditions that have to be changed
+			change_variable = { slave_abolish_dip = 50 }
+			change_variable = { slave_abolish_mil = 50 }
+		}
+		estate_slaves_status_4 = {							# Chattel slavery
+			change_variable = { slave_abolish_adm = 100 }	# economy is geared toward slaves, so more resitance
+			change_variable = { slave_abolish_dip = 100 }
+			change_variable = { slave_abolish_mil = 100 }
+		}
+		estate_slaves_status_5 = {							# State owned
+			change_variable = { slave_abolish_adm = 150 }	# the State needs these slave, so cost is higher
+			change_variable = { slave_abolish_dip = 150 }
+			change_variable = { slave_abolish_mil = 150 }
+		}
+		estate_slaves_status_6 = {							# Criminal only
+			subtract_variable = { slave_abolish_adm = 100 }	# greatly diminished cost
+			subtract_variable = { slave_abolish_dip = 100 }
+			subtract_variable = { slave_abolish_mil = 100 }
+		}
+		# only "neutral" costs are 1 (war captives) and 3 (standard)
+	}
+	
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_condition_1 = { multiply_variable = { slave_abolish_mil = 0.25 } }
+		estate_slaves_condition_2 = { multiply_variable = { slave_abolish_mil = 0.50 } }
+		estate_slaves_condition_3 = { multiply_variable = { slave_abolish_mil = 0.80 } }
+		
+		estate_slaves_condition_5 = { multiply_variable = { slave_abolish_mil = 1.25 } }
+		estate_slaves_condition_6 = { multiply_variable = { slave_abolish_mil = 1.50 } }
+		estate_slaves_condition_7 = { multiply_variable = { slave_abolish_mil = 2.00 } }
+		# The harsher the treatment the worst it is to change attitudes
+	}
+	
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_law_A1 = { multiply_variable = { slave_abolish_adm = 0.90 } }
+		estate_slaves_law_A2 = { multiply_variable = { slave_abolish_adm = 0.80 } }
+	}
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_law_B1 = { multiply_variable = { slave_abolish_adm = 0.90 } }
+		estate_slaves_law_B2 = { multiply_variable = { slave_abolish_adm = 0.80 } }
+	}
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_law_C1 = { multiply_variable = { slave_abolish_dip = 0.90 } }
+		estate_slaves_law_C2 = { multiply_variable = { slave_abolish_dip = 0.80 } }
+	}
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_law_D1 = { multiply_variable = { slave_abolish_dip = 0.90 } }
+		estate_slaves_law_D2 = { multiply_variable = { slave_abolish_dip = 0.80 } }
+	}
+	trigger_switch = {
+		on_trigger = has_estate_privilege
+		estate_slaves_law_E1 = { 
+			multiply_variable = { slave_abolish_adm = 0.95 } 
+			multiply_variable = { slave_abolish_dip = 0.95 } 
+		}
+		estate_slaves_law_Eº2 = { 
+			multiply_variable = { slave_abolish_adm = 0.90 } 
+			multiply_variable = { slave_abolish_dip = 0.90 } 
+		}
+	}
+	
+	# Total value is then multiplied by roughly slave population
+	# -50% if <10%, -25% if <25%, 0 until 60%, +25% after, +50% if >100%
+	if = {		
+		limit = { check_variable = { slave_pop_social = 100 } } 
+		multiply_variable = { slave_abolish_adm = 1.5 }
+		multiply_variable = { slave_abolish_dip = 1.5 }
+		multiply_variable = { slave_abolish_mil = 1.5 }
+	}
+	else_if = {	
+		limit = { check_variable = { slave_pop_social = 60 } } 
+		multiply_variable = { slave_abolish_adm = 1.25 }
+		multiply_variable = { slave_abolish_dip = 1.25 }
+		multiply_variable = { slave_abolish_mil = 1.25 }
+	}
+	else_if = {	
+		limit = { check_variable = { slave_pop_social = 25 } } 	
+		# nothing, the same
+	}
+	else_if = { 
+		limit = { check_variable = { slave_pop_social = 10 } } 	
+		multiply_variable = { slave_abolish_adm = 0.75 }
+		multiply_variable = { slave_abolish_dip = 0.75 }
+		multiply_variable = { slave_abolish_mil = 0.75 }
+	}
+	else_if = { 
+		limit = { check_variable = { slave_pop_social = 10 } } 	
+		multiply_variable = { slave_abolish_adm = 0.50 }
+		multiply_variable = { slave_abolish_dip = 0.50 }
+		multiply_variable = { slave_abolish_mil = 0.50 }
+	}
+	
+
+
+}
+
+slave_display_variables = {
+	set_variable = { which = slaves_tot_display which = slaves }
+	change_variable = { which = slaves_tot_display which = slaves_in_province }
+	change_variable = { which = slaves_tot_display which = SD_new_slaves }
+	#change_variable = { which = slaves_tot_display which = SD_serfs }			# serfs not ready yet
+	change_variable = { which = slaves_tot_display which = SD_slaves_available }
+	change_variable = { which = slaves_tot_display which = SD_captives }
+	multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }	# rounding
+
+	set_variable = { which = slaves_oth_disp which = slaves }
+	multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
+	set_variable = { which = slaves_mnf_display which = slaves_in_province }
+	multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
+	set_variable = { which = slaves_new_disp which = SD_new_slaves }
+	multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_new_disp = 1000 }
+
+	multiply_variable = { slave_pop_social = 100 }						# to be in percentage (1 to 100), not units (0,x to 1,0)
+	multiply_variable = { slave_pop_economic = 100 }					# to be in percentage (1 to 100)
+
+	export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
+	change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
+
+	multiply_variable = { slaves_change = 0.001 }	multiply_variable = { slaves_change = 1000 }
+	multiply_variable = { slaves_libers = 0.001 }	multiply_variable = { slaves_libers = 1000 }
+
+	multiply_variable = { slave_gain = 100 }		multiply_variable = { slave_net_growth = 100 }
+	multiply_variable = { slave_loss = 100 }		multiply_variable = { slave_libratio = 100 }
+	multiply_variable = { slave_state_income = 100 }
+	export_to_variable = { which = var_total_pop value = total_development }
+
+}
+
 SD_purchase_slaves_active_tn = {
 	# This effect is used to find, within a province in our active trade nodes, somewhere with available slaves, and purchase them up to the agreed price.
 	# Inputs: num (number of province, 1 to 5), and price (20, 40 or 60 only). The prices must match! All other variables, such as how many slaves to buy and budget, are already set at the country level, so this effect does not need to know.

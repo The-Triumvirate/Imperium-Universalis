@@ -124,37 +124,14 @@ country_event = {
 				owner = { change_variable = { which = SD_sale_collected which = PREV } }
 				set_variable = { which = SD_sale_collected value = 0 }
 			}
-
+			
+			# Find mana requirement to abolish slavery
+			slave_abolish_powerreq = yes
 
 			# Show variables for display
-			set_variable = { which = slaves_tot_display which = slaves }
-			change_variable = { which = slaves_tot_display which = slaves_in_province }
-			change_variable = { which = slaves_tot_display which = SD_new_slaves }
-			#change_variable = { which = slaves_tot_display which = SD_serfs }			# serfs not ready yet
-			change_variable = { which = slaves_tot_display which = SD_slaves_available }
-			change_variable = { which = slaves_tot_display which = SD_captives }
-			multiply_variable = { slaves_tot_display = 0.001 }			multiply_variable = { slaves_tot_display = 1000 }	# rounding
-
-			set_variable = { which = slaves_oth_disp which = slaves }
-			multiply_variable = { slaves_oth_disp = 0.001 }			 	multiply_variable = { slaves_oth_disp = 1000 }
-			set_variable = { which = slaves_mnf_display which = slaves_in_province }
-			multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_mnf_display = 1000 }
-			set_variable = { which = slaves_new_disp which = SD_new_slaves }
-			multiply_variable = { slaves_mnf_display = 0.001 }			multiply_variable = { slaves_new_disp = 1000 }
-
-			multiply_variable = { slave_pop_social = 100 }						# to be in percentage (1 to 100), not units (0,x to 1,0)
-			multiply_variable = { slave_pop_economic = 100 }					# to be in percentage (1 to 100)
-
-			export_to_variable = { which = slave_productivity value = modifier:slavesmod_productivity }		  # for display purposes
-			change_variable = { slave_productivity = 1 } multiply_variable = { slave_productivity = 100 } # to be in percentage (1 to 100)
-
-			multiply_variable = { slaves_change = 0.001 }	multiply_variable = { slaves_change = 1000 }
-			multiply_variable = { slaves_libers = 0.001 }	multiply_variable = { slaves_libers = 1000 }
-
-			multiply_variable = { slave_gain = 100 }		multiply_variable = { slave_net_growth = 100 }
-			multiply_variable = { slave_loss = 100 }		multiply_variable = { slave_libratio = 100 }
-			multiply_variable = { slave_state_income = 100 }
-			export_to_variable = { which = var_total_pop value = total_development }
+			slave_display_variables = yes
+			
+			
 		}
 	}
 
@@ -238,7 +215,37 @@ country_event = {
 		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
 		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
 	}
+	option = {
+		name = "slaves.1.4"				# What if I want to abolish slavery? Explain formulas
+		ai_chance = { factor = 0 }
+		hidden_effect = {
+			# Modifier
+			slaves_ratio_create_high = yes
 
+			# Earn the money
+			money_gain_effect = { var = slave_income }
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
+
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+
+		}
+		custom_tooltip = SLAVES_EVENT_1_ABOL_START
+		custom_tooltip = SLAVES_EVENT_1_ABOL_STATUS
+		custom_tooltip = SLAVES_EVENT_1_ABOL_CONDITIONS
+		custom_tooltip = SLAVES_EVENT_1_ABOL_LAWS
+		custom_tooltip = SLAVES_EVENT_1_ABOL_POPSIZE
+		custom_tooltip = SLAVES_EVENT_1_ABOL_TOTAL
+		
+		
+
+	}
+	
 
 	after = {
 		set_variable = { which = var_slave_income value = 0 }
@@ -261,8 +268,8 @@ country_event = {
 			set_variable = { which = SD_sale_collected value = 0 }
 			set_variable = { which = SD_slaves_available value = 0 }
 		}
-
-
+		
+		
 	}
 }
 
