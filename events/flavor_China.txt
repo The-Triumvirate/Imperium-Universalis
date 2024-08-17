@@ -4136,28 +4136,297 @@ country_event = {
 	
 	trigger = {
 		has_country_modifier = bought_indulgence
-		OR = {
-			NOT = {
-				has_country_flag = indulgence_extender_flag
-			}
-			had_country_flag = {
-				flag = indulgence_extender_flag
-				days = 7300
-			}
+		NOT = {
+			has_country_modifier = indulgence_extender_check
 		}
 	}
 	
 	immediate = {
-		clr_country_flag = indulgence_extender_flag
-		set_country_flag = indulgence_extender_flag
 		add_country_modifier = {
 			name = bought_indulgence
 			duration = 7300
+		}
+		add_country_modifier = {
+			name = indulgence_extender_check
+			duration = 7300
+			hidden = yes
 		}
 	}
 	
 	
 	option = {
 		name = "ok"
+	}
+}
+
+########################################################################################
+# remove city of bin after certain point
+########################################################################################
+country_event = {
+	id = china.83
+	title = "china.83.t"
+	desc = "china.83.d"
+	picture = city
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = {
+			hre_size = 2
+		}
+		NOT = {
+			exists = ZHO
+		}
+		owns = 4207
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+	
+	
+	option = {
+		name = "china.83.a"
+		4207 = {
+			remove_province_modifier = city_of_bin
+		}
+	}
+}
+
+########################################################################################
+# Qi Gong uses Yi etiquette
+########################################################################################
+country_event = {
+	id = china.84
+	title = "china.84.t"
+	desc = "china.84.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QIG
+		exists = LUU
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+	
+	
+	option = {
+		name = "china.84.a"
+		add_years_of_income = -0.08
+		add_prestige = 10
+		reverse_add_opinion = {
+			who = LUU
+			modifier = opinion_used_our_rites
+		}
+		reverse_add_opinion = {
+			who = JUU
+			modifier = opinion_didnt_use_our_rites
+		}
+		reverse_add_opinion = {
+			who = JIE
+			modifier = opinion_didnt_use_our_rites
+		}
+		reverse_add_opinion = {
+			who = LAI
+			modifier = opinion_didnt_use_our_rites
+		}
+		ai_chance = { 
+			factor = 80
+		}
+	}
+	option = {
+		name = "china.84.b"
+		add_prestige = -10
+		reverse_add_opinion = {
+			who = LUU
+			modifier = opinion_didnt_use_our_rites
+		}
+		reverse_add_opinion = {
+			who = JUU
+			modifier = opinion_used_our_rites
+		}
+		reverse_add_opinion = {
+			who = JIE
+			modifier = opinion_used_our_rites
+		}
+		reverse_add_opinion = {
+			who = LAI
+			modifier = opinion_used_our_rites
+		}
+		custom_tooltip = qig_tooltip_one
+		set_country_flag = qi_didnt_do_rites
+		ai_chance = { 
+			factor = 20
+			modifier = {
+				factor = 2.5
+				NOT = {
+					years_of_income = 0.08
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# reduction to curia treasury 
+########################################################################################
+country_event = {
+	id = china.85
+	title = "china.85.t"
+	desc = "china.85.d"
+	picture = trade
+	fire_only_once = yes
+	
+	trigger = {
+		is_papal_controller = yes
+		curia_treasury_size = 1000
+	}
+	
+	mean_time_to_happen = {
+		months = 180
+		modifier = {
+			factor = 0.9
+			curia_treasury_size = 1500
+		}
+		modifier = {
+			factor = 0.9
+			curia_treasury_size = 2000
+		}
+		modifier = {
+			factor = 0.9
+			curia_treasury_size = 2500
+		}
+		modifier = {
+			factor = 0.8
+			curia_treasury_size = 3000
+		}
+		modifier = {
+			factor = 0.8
+			curia_treasury_size = 5000
+		}
+		modifier = {
+			factor = 0.75
+			curia_treasury_size = 10000
+		}
+		modifier = {
+			factor = 0.75
+			papal_controller = {
+				ai = yes
+			}
+		}
+	}
+	
+	
+	option = {
+		name = "china.85.a"
+		if = {
+			limit = {
+				curia_treasury_size = 1
+				NOT = {
+					curia_treasury_size = 1100
+				}
+			}
+			add_curia_treasury = -100
+		}
+		if = {
+			limit = {
+				curia_treasury_size = 1100
+				NOT = {
+					curia_treasury_size = 2000
+				}
+			}
+			add_curia_treasury = -250
+		}
+		if = {
+			limit = {
+				curia_treasury_size = 2500
+				NOT = {
+					curia_treasury_size = 4000
+				}
+			}
+			add_curia_treasury = -500
+		}
+		if = {
+			limit = {
+				curia_treasury_size = 4000
+				NOT = {
+					curia_treasury_size = 9000
+				}
+			}
+			add_curia_treasury = -1000
+		}
+		if = {
+			limit = {
+				curia_treasury_size = 9000
+			}
+			add_curia_treasury = -2000
+		}
+	}
+}
+
+########################################################################################
+# qi loses title (this happened irl and is probably why they started off without their gong title originally, so lets account for that)
+########################################################################################
+country_event = {
+	id = china.86
+	title = "china.86.t"
+	desc = "china.86.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QIG
+		has_country_flag = qi_didnt_do_rites
+		NOT = {
+			has_country_modifier = zhou_papacy_tribute_modifier
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+	
+	
+	option = {
+		name = "china.86.a"
+		add_prestige = -10
+		clr_country_flag = zhuxiatouxian_Gong
+		set_country_flag = zhuxiatouxian_Bo
+		custom_tooltip = qig_tooltip_two
+	}
+}
+
+########################################################################################
+# qi regains title
+########################################################################################
+country_event = {
+	id = china.87
+	title = "china.87.t"
+	desc = "china.87.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QIG
+		NOT = {
+			has_country_flag = zhuxiatouxian_Gong
+		}
+		has_country_flag = zhuxiatouxian_Bo
+		has_country_modifier = zhou_papacy_tribute_modifier
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	
+	option = {
+		name = "china.86.a"
+		add_prestige = 20
+		clr_country_flag = qi_didnt_do_rites
+		clr_country_flag = zhuxiatouxian_Bo
+		set_country_flag = zhuxiatouxian_Gong
 	}
 }
