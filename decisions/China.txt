@@ -596,6 +596,196 @@ country_decisions = {
 		ai_importance = 500
 	}
 	
+	xgo_restore_state = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			tag = XGO
+			NOT = {
+				has_country_flag = xgo_restored_state_flag
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 4111
+				province_id = 4119
+				province_id = 4117
+				province_id = 4112
+				province_id = 4099
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_subject = no
+			is_at_war = no
+			owns_core_province = 4111
+			owns_core_province = 4119
+			owns_core_province = 4117
+			owns_core_province = 4112
+			owns_core_province = 4099
+		}
+		effect = {
+			set_country_flag = xgo_restored_state_flag
+			add_prestige = 10
+			4112 = {
+				change_culture = hebei
+				change_religion = chinese_religion
+			}
+			4117 = {
+				change_culture = hebei
+				change_religion = chinese_religion
+			}
+			4098 = {
+				add_permanent_claim = XGO
+			}
+			4093 = {
+				add_permanent_claim = XGO
+			}
+			4095 = {
+				add_permanent_claim = XGO
+			}
+			4096 = {
+				add_permanent_claim = XGO
+			}
+			4094 = {
+				add_permanent_claim = XGO
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		ai_importance = 500
+	}
+	
+	xgo_expand_north = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			tag = XGO
+			has_country_flag = xgo_restored_state_flag
+			NOT = {
+				has_country_flag = xgo_expanded_north_flag
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 4098
+				province_id = 4093
+				province_id = 4095
+				province_id = 4096
+				province_id = 4094
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_subject = no
+			is_at_war = no
+			owns_core_province = 4098
+			owns_core_province = 4093
+			owns_core_province = 4095
+			owns_core_province = 4096
+			owns_core_province = 4094
+		}
+		effect = {
+			set_country_flag = xgo_expanded_north_flag
+			4099 = {
+				change_culture = hebei
+				change_religion = chinese_religion
+			}
+			add_prestige = 25
+			every_province = {
+				limit = {
+					area = handan_area
+					owner = {
+						NOT = {
+							culture_group = chinese_group
+						}
+					}
+				}
+				add_core = THIS
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		ai_importance = 500
+	}
+	
+	xgo_purchase_electorate = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			tag = XGO
+			ai = no
+			has_country_flag = xgo_expanded_north_flag
+			NOT = {
+				has_country_flag = xgo_purchased_electorate_flag
+			}
+		}
+
+		allow = {
+			is_subject = no
+			is_at_war = no
+			treasury = 500
+			OR = {
+				AND = {
+					exists = CAI
+					total_development = CAI
+					CAI = {
+						is_elector = yes
+					}
+				}
+				AND = {
+					exists = CHN
+					total_development = CHN
+					CHN = {
+						is_elector = yes
+					}
+				}
+			}
+		}
+		effect = {
+			set_country_flag = xgo_purchased_electorate_flag
+			set_government_rank = 3
+			add_treasury = -500
+			emperor = {
+				add_treasury = 400
+			}
+			add_curia_treasury = 100
+			if = {
+				limit = {
+					exists = CAI
+					total_development = CAI
+					CAI = {
+						is_elector = yes
+					}
+				}
+				elector = yes
+				CAI = {
+					elector = no
+				}
+			}
+			else_if = {
+				limit = {
+					exists = CHN
+					total_development = CHN
+					CHN = {
+						is_elector = yes
+					}
+				}
+				elector = yes
+				CHN = {
+					elector = no
+				}
+			}
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		ai_importance = 500
+	}
+	
 	restore_changdi = {
 		major = yes
 		color = { 245 160 60 }
@@ -619,6 +809,8 @@ country_decisions = {
 				province_id = 4261
 				province_id = 4256
 				province_id = 4255
+				province_id = 4120
+				province_id = 4105
 			}
 			NOT = { owned_by = ROOT }
 		}
@@ -656,11 +848,18 @@ country_decisions = {
 			4255 = {
 				owned_by = CAD
 			}
+			4120 = {
+				owned_by = CAD
+			}
+			4105 = {
+				owned_by = CAD
+			}
 			is_at_war = no
 		}
 		effect = {
 			set_country_flag = cad_took_back_stuff
-			add_prestige = 25
+			add_prestige = 50
+			set_government_rank = 3
 			4104 = {
 				change_culture = changdi
 				change_religion = tengri
@@ -702,6 +901,14 @@ country_decisions = {
 				change_religion = tengri
 			}
 			4255 = {
+				change_culture = changdi
+				change_religion = tengri
+			}
+			4120 = {
+				change_culture = changdi
+				change_religion = tengri
+			}
+			4105 = {
 				change_culture = changdi
 				change_religion = tengri
 			}
