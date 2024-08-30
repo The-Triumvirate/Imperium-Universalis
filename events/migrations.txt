@@ -85,47 +85,12 @@ province_event = {
 			else_if = { limit = { base_manpower = 5 } 	set_variable = { which = PG_trb_migsize value = 2 } }
 			else = {									set_variable = { which = PG_trb_migsize value = 1 } }
 
-			# BLOCK 2: Discover which provinces it may go.
-			# Priorities; everything within travel distance for this province (travel distance = function of direct or indirect trade power)
-			#	A high center of trade, then a lower one (lv2), then culture/religion, owned by same, then any other both tribal and common.
-			# 	Affected by prosperity/devastation, meaning the wealth of the province (poor citizens can't afford to travel far)
-			#	Recent tweak: only within active trade nodes, to avoid traveling in a disorganized way
-
-			set_variable = { which = PG_travel_range which = PG_info_range }
-			if = {
-				limit = { devastation = 1 }
-				trigger_switch = {
-					on_trigger = devastation
-					50 = { multiply_variable = { PG_travel_range = 0.10 } }
-					30 = { multiply_variable = { PG_travel_range = 0.20 } }
-					20 = { multiply_variable = { PG_travel_range = 0.40 } }
-					10 = { multiply_variable = { PG_travel_range = 0.60 } }
-				}
-			} else = {
-				trigger_switch = {
-					on_trigger = prosperity
-					99 = { multiply_variable = { PG_travel_range = 1.50 } }	# will be able to travel further
-					50 = { multiply_variable = { PG_travel_range = 1.25 } }
-					25 = { multiply_variable = { PG_travel_range = 1.01 } }
-					0 = { multiply_variable = { PG_travel_range = 0.70 } }
-				}
-			}
-
 			# Get an event target for the current owner, to check triggers "owned by" or "active merchant"
 			owner = { save_event_target_as = PG_migr_start_owner }
 			save_event_target_as = PG_migr_origin_prov
 
-			# Find the provinces, with Travel Range = info range x %wealth (devastation or prosperity)
-			if = { 		limit = { check_variable = { PG_travel_range = 100 } } 	PG_find_target_province_2 = { range = 1500 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 75 } } 	PG_find_target_province_2 = { range = 1000 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 50 } } 	PG_find_target_province_2 = { range = 700 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 30 } } 	PG_find_target_province_2 = { range = 500 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 20 } } 	PG_find_target_province_2 = { range = 350 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 10 } } 	PG_find_target_province_2 = { range = 200 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 5 } }  	PG_find_target_province_2 = { range = 100 } }
-			else_if = { limit = { check_variable = { PG_travel_range = 2 } }  	PG_find_target_province_2 = { range = 50 } }
-			else = { 														  	PG_find_target_province_2 = { range = 25 } }
-
+			# Find the provinces, neighbour only.
+			PG_find_target_province_2 = yes
 		}
 		if = { 		limit = { has_province_flag = PG_starvation_start } custom_tooltip = PG_MIGR_STARVATION }
 		else_if = { limit = { has_province_flag = PG_target_success } 	custom_tooltip = PG_MIGR_TARGETINFO }
@@ -297,9 +262,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 				custom_tooltip = PG_MIGRATION_BASE
 				hidden_effect = {
 					# here goes the scripted effect with everything it means to migrate
-					if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-					else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-					else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+					if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+					else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+					else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 					if = {
 						limit = { has_global_flag = popgrowth_v5capacities }
 						province_event = { id = population_capacity.15 }
@@ -338,9 +303,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 					}
 					hidden_effect = {
 						# here goes the scripted effect with everything it means to migrate
-						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 						if = {
 							limit = { has_global_flag = popgrowth_v5capacities }
 							province_event = { id = population_capacity.15 }
@@ -486,9 +451,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 					custom_tooltip = PG_MIGRATION_OWNREGION
 					hidden_effect = {
 						# here goes the scripted effect with everything it means to migrate
-						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 						mig_dist_cost = yes
 						if = {
 							limit = { has_global_flag = popgrowth_v5capacities }
@@ -517,9 +482,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 					custom_tooltip = PG_MIGRATION_ALTERNATIVE
 					hidden_effect = {
 						# here goes the scripted effect with everything it means to migrate
-						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 						if = {
 							limit = { has_global_flag = popgrowth_v5capacities }
 							province_event = { id = population_capacity.15 }
@@ -559,9 +524,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 					custom_tooltip = PG_MIGRATION_OTHERREGION
 					hidden_effect = {
 						# here goes the scripted effect with everything it means to migrate
-						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 						mig_dist_cost = yes
 						if = {
 							limit = { has_global_flag = popgrowth_v5capacities }
@@ -590,9 +555,9 @@ country_event = {		# 1st Country Event: tribal population want to leave. The cou
 					custom_tooltip = PG_MIGRATION_ALTERNATIVE
 					hidden_effect = {
 						# here goes the scripted effect with everything it means to migrate
-						if = { 		limit = { PREV { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
-						else_if = { limit = { PREV { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
+						if = { 		limit = { PREV = { check_variable = { PG_trb_migsize = 3 } } } PG_migrate_tribal_happy = { size = 3 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 2 } } } PG_migrate_tribal_happy = { size = 2 } }
+						else_if = { limit = { PREV = { check_variable = { PG_trb_migsize = 1 } } } PG_migrate_tribal_happy = { size = 1 } }
 						if = {
 							limit = { has_global_flag = popgrowth_v5capacities }
 							province_event = { id = population_capacity.15 }

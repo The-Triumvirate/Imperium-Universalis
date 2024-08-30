@@ -67,14 +67,6 @@ country_event = {
 			multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
 			divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
 
-			# cleanup of previous modifier
-			slaves_remove_basic_modifiers = yes
-			slaves_remove_complex_modifiers = yes
-
-			# Let's find where we are (coordinates x and y, 15 x 7 = 105 possibilities)
-			slaves_find_coordinates = yes
-
-
 			# SLAVE INCOME
 			#multiply_variable = { slave_income = 0.01 }								# careful with overflowing
 			multiply_variable = { which = slave_income which = slave_pop_economic }
@@ -94,6 +86,13 @@ country_event = {
 			export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
 			export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
 			export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
+
+			# cleanup of previous modifier, moved to after demographics so it can effect growth
+			slaves_remove_basic_modifiers = yes
+			slaves_remove_complex_modifiers = yes
+
+			# Let's find where we are (coordinates x and y, 15 x 7 = 105 possibilities)
+			slaves_find_coordinates = yes
 
 			if = {
 				limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
@@ -124,14 +123,14 @@ country_event = {
 				owner = { change_variable = { which = SD_sale_collected which = PREV } }
 				set_variable = { which = SD_sale_collected value = 0 }
 			}
-			
+
 			# Find mana requirement to abolish slavery
 			slave_abolish_powerreq = yes
 
 			# Show variables for display
 			slave_display_variables = yes
-			
-			
+
+
 		}
 	}
 
@@ -241,11 +240,11 @@ country_event = {
 		custom_tooltip = SLAVES_EVENT_1_ABOL_LAWS
 		custom_tooltip = SLAVES_EVENT_1_ABOL_POPSIZE
 		custom_tooltip = SLAVES_EVENT_1_ABOL_TOTAL
-		
-		
+
+
 
 	}
-	
+
 
 	after = {
 		set_variable = { which = var_slave_income value = 0 }
@@ -268,8 +267,8 @@ country_event = {
 			set_variable = { which = SD_sale_collected value = 0 }
 			set_variable = { which = SD_slaves_available value = 0 }
 		}
-		
-		
+
+
 	}
 }
 
@@ -886,7 +885,7 @@ country_event = {	# Event to add a privilege that you shouldn't remove
 country_event = {	# Event to add basic privileges to a newly added slave estate (removing abolishment, or tribal)
 	id = slaves.7
 	title = "slaves.7.t"
-	
+
 	desc = {						# different description whether it comes from re-introducing slavery, or as new, for tribals
 	   trigger = { has_country_modifier = slaves_estate_allowed }
 	   desc = "slaves.7.d1"
@@ -896,13 +895,13 @@ country_event = {	# Event to add basic privileges to a newly added slave estate 
 	   desc = "slaves.7.d2"
 	}
 	picture = slave_mosaic
-	
+
 	is_triggered_only = yes
 
 	immediate = {
 		set_country_flag = SD_priv_recent_change
-		
-		# fall back if there are no flags in country. I don't know, it shouldn't happen. 
+
+		# fall back if there are no flags in country. I don't know, it shouldn't happen.
 		if = {
 			limit = {
 				NOT = { has_country_flag = SD_lostpriv_status_1 }
@@ -940,7 +939,7 @@ country_event = {	# Event to add basic privileges to a newly added slave estate 
 
 	option = {
 		name = "slaves.7.1"
-		# uses the same as the other event, i added country flags at the startup event. 
+		# uses the same as the other event, i added country flags at the startup event.
 		trigger_switch = {
 			on_trigger = has_country_flag
 			SD_lostpriv_status_1 = { set_estate_privilege = estate_slaves_status_1 clr_country_flag = SD_lostpriv_status_1 }
