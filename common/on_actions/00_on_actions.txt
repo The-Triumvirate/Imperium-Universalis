@@ -13,24 +13,8 @@ on_startup = {
 	emperor = {
 		save_global_event_target_as = Emperor
 	}
-	set_global_flag = coloredvassals_yes
-	every_country  = {
-		limit = {
-			is_subject = yes
-			is_colonial_nation = no
-			NOT = {
-				is_subject_of_type = tributary_state
-				is_subject_of_type = vassal
-				is_subject_of_type = half_autonomous_vassal
-			}
-		}
-		set_country_flag = color_changed_overlord
-		clr_country_flag = color_set
-		change_country_color = {
-			country = OVERLORD
-		}
-	}
 
+	color_subjects_init = yes
 	recalc_socii_variables_w_check = yes
 
 	if = {
@@ -776,7 +760,7 @@ on_dismantle_revolution = { }
 
 # province
 on_adm_development = {	# Base tax, upper pops
-	
+
 	# Checks whether to reduce (add base x) or set to zero (if only one)
 	if = {
 		limit = { base_tax = 2 }
@@ -1951,24 +1935,9 @@ on_company_chartered = { }
 # ROOT = Overlord, FROM = Minor
 on_dependency_gained = {
 	recalc_socii_variables_w_check = yes
+	color_subjects_dep_gained = yes
 	FROM = {
 		if = {
-			limit = {
-				has_global_flag = coloredvassals_yes
-				is_colonial_nation = no
-				NOT = {
-					is_subject_of_type = tributary_state
-					is_subject_of_type = vassal
-					is_subject_of_type = half_autonomous_vassal
-				}
-			}
-			set_country_flag = color_changed_overlord
-			clr_country_flag = color_set
-			change_country_color = {
-				country = ROOT
-			}
-		}
-		else_if = {
 			limit = {
 				is_subject_of_type = tributary_state
 			}
@@ -1983,15 +1952,7 @@ on_dependency_gained = {
 # ROOT = Overlord, FROM = Minor
 on_dependency_lost = {
 	recalc_socii_variables_w_check = yes
-	FROM = {
-		if = {
-			limit = {
-				NOT = { has_country_flag = color_set }
-			}
-			clr_country_flag = color_changed_overlord
-			restore_country_color = yes
-		}
-	}
+	color_subjects_dep_lost = yes
 }
 
 # ROOT = New vassal, FROM = Overlord
@@ -2004,9 +1965,9 @@ on_create_vassal = {
 		change_religion = chinese_religion
 	}
 	if = {
-		limit = { 
+		limit = {
 			OR = {
-				culture_group = chinese_group 
+				culture_group = chinese_group
 				tag = GUZ
 			}
 
@@ -2052,22 +2013,7 @@ on_create_vassal = {
 			}
 		}
 	}
-	if = {
-		limit = {
-			FROM = { has_global_flag = coloredvassals_yes }
-			is_colonial_nation = no
-			NOT = {
-				is_subject_of_type = tributary_state
-				is_subject_of_type = vassal
-				is_subject_of_type = half_autonomous_vassal
-			}
-		}
-		set_country_flag = color_changed_overlord
-		clr_country_flag = color_set
-		change_country_color = {
-			country = FROM
-		}
-	}
+	color_subjects_create_sub = yes
 }
 
 # ROOT = Country establishing it
@@ -2101,9 +2047,9 @@ on_country_released = {
 		change_religion = chinese_religion
 	}
 	if = {
-		limit = { 
+		limit = {
 			OR = {
-				culture_group = chinese_group 
+				culture_group = chinese_group
 				tag = GUZ
 			}
 
@@ -2178,22 +2124,7 @@ on_create_client_state = {
 	country_event = {
 		id = government.36
 	}
-	if = {
-		limit = {
-			FROM = { has_global_flag = coloredvassals_yes }
-			is_colonial_nation = no
-			NOT = {
-				is_subject_of_type = tributary_state
-				is_subject_of_type = vassal
-				is_subject_of_type = half_autonomous_vassal
-			}
-		}
-		set_country_flag = color_changed_overlord
-		clr_country_flag = color_set
-		change_country_color = {
-			country = FROM
-		}
-	}
+	color_subjects_create_sub = yes
 }
 
 # this = new target, from = previous target (both can be non-existent tag)
