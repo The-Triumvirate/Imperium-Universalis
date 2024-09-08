@@ -77,7 +77,10 @@ country_event = {
 	trigger = {
 		tag = ROM
 		has_country_flag = had_punic_wars.1_trade
-		owns_or_non_sovereign_subject_of = 5653
+		OR = {
+			owns_or_non_sovereign_subject_of = 5653
+			owns_or_non_sovereign_subject_of = 17
+		}
 	}
 
 	immediate = {
@@ -119,13 +122,14 @@ country_event = {
 		has_country_flag = had_punic_wars.2
 		OR = {
 			ROM = { owns_or_non_sovereign_subject_of = 14 }
-			CAR = { owns_or_non_sovereign_subject_of = 14 }
+			CAR = { owns_or_non_sovereign_subject_of = 7 }
 		}
 	}
 
 	immediate = {
 		clr_country_flag = had_punic_wars.2
 		clr_country_flag = had_punic_wars.1_trade
+		set_global_flag = prepare_punic_wars
 	}
 
 	option = {
@@ -284,13 +288,14 @@ country_event = {
 		has_country_flag = had_punic_wars.7
 		OR = {
 			ROM = { owns_or_non_sovereign_subject_of = 14 }
-			CAR = { owns_or_non_sovereign_subject_of = 14 }
+			CAR = { owns_or_non_sovereign_subject_of = 7 }
 		}
 	}
 
 	immediate = {
 		clr_country_flag = had_punic_wars.7
 		clr_country_flag = had_punic_wars.1_rival
+		set_global_flag = prepare_punic_wars
 	}
 
 	option = {
@@ -339,5 +344,1755 @@ country_event = {
 		}
 		add_manpower = 10
 		add_sailors = 5000
+	}
+}
+
+########################################################################################
+# First Punic War started - notification event
+########################################################################################
+country_event = {
+	id = punic_wars.10
+	title = "punic_wars.10.t"
+	desc = "punic_wars.10.d"
+	picture = italicgfx_first_punic_war
+	fire_only_once = yes
+	mean_time_to_happen = { months = 48}
+
+	trigger = {
+		tag = ROM
+		has_global_flag = prepare_punic_wars
+		war_with = CAR
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	immediate = {
+		hidden_effect = { #mamertines take Messana
+		clr_global_flag = prepare_punic_wars
+		set_global_flag = first_punic_war_start
+			7 = {
+				cede_province = ROM
+				mercenary_infantry = ROM
+				mercenary_infantry = ROM
+			}
+		}
+		13 = {
+			add_core = ROM
+			cede_province = ROM
+		}
+		add_country_modifier = {
+			name = punic_wars_rome_fleet_buff
+			duration = -1
+		}
+	}
+
+	option = {
+		name = "punic_wars.10.a"
+		add_sailors = 5
+		if = {
+			limit = {
+				exists = SYR
+				NOT = {
+					SYR = {
+						is_subject_of = ROM
+					}
+				}
+			}
+			SYR = {
+				declare_war = ROM
+			}
+			every_known_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = syracuse_area
+							area = sicilia_est
+							area = sicelia_area
+							area = sicani_area
+							area = sicilia_west
+						}
+					}
+					NOT = {
+						is_subject_of = ROM
+					}
+				}
+				declare_war = ROM
+			}
+		}
+		else = {
+			every_known_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = syracuse_area
+							area = sicilia_est
+							area = sicelia_area
+							area = sicani_area
+							area = sicilia_west
+						}
+					}
+					NOT = {
+						is_subject_of = ROM
+					}
+				}
+				declare_war = ROM
+			}
+		}
+	}
+}
+
+########################################################################################
+# First Punic War end
+########################################################################################
+country_event = {
+	id = punic_wars.11
+	title = "punic_wars.11.t"
+	desc = "punic_wars.11.d"
+	picture = italicgfx_first_punic_war_end
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = first_punic_war_start
+		war_with = CAR
+		war_score_against = {
+			who = CAR
+			value = 30
+		}
+		magna_graecia = {
+			type = all
+			OR = {
+				controlled_by = ROM
+				controller = {
+					is_subject_of = ROM
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = { years = 5 }
+
+	immediate = {
+		hidden_effect = {
+			sicilia_west = {
+				limit = {
+					NOT = {
+						owned_by = ROM
+					}
+				}
+				cede_province = ROM
+				remove_core = CAR
+				add_claim = CAR
+			}
+			sicelia_area = {
+				limit = {
+					NOT = {
+						owned_by = ROM
+					}
+				}
+				cede_province = ROM
+				remove_core = CAR
+				add_claim = CAR
+			}
+			sicani_area = {
+				limit = {
+					NOT = {
+						owned_by = ROM
+					}
+				}
+				cede_province = ROM
+				remove_core = CAR
+				add_claim = CAR
+			}
+			sicilia_est = {
+				limit = {
+					NOT = {
+						owned_by = ROM
+					}
+				}
+				cede_province = ROM
+				remove_core = CAR
+				add_claim = CAR
+			}
+			syracuse_area = {
+				limit = {
+					NOT = {
+						owned_by = ROM
+					}
+				}
+				cede_province = SYR
+				remove_core = CAR
+				add_claim = CAR
+			}
+			clr_global_flag = first_punic_war_start
+			set_global_flag = first_punic_war_end
+		}
+	}
+
+	option = {
+		name = "punic_wars.11.a"
+			add_prestige = 20
+			add_navy_tradition = 20
+			add_army_tradition = 20
+			add_treasury = 3000
+			white_peace = CAR
+			vassalize = SYR
+			CAR = {
+				country_event = {
+					id = punic_wars.12
+					days = 5
+				}
+			}
+	}
+}
+########################################################################################
+# Mercenary War
+########################################################################################
+country_event = {
+	id = punic_wars.12
+	title = "punic_wars.12.t"
+	desc = "punic_wars.12.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.12.a"
+		add_manpower = -10
+		6264 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+				leader = "Spendius"
+			}
+		}
+		608 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+			}
+		}
+		620 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+				leader = "Matho"
+			}
+		}
+		598 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+				leader = "Autaritus"
+			}
+		}
+		603 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+			}
+		}
+		129 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+			}
+		}
+		610 = {
+			change_controller = REB
+			spawn_rebels = {
+				type = nationalist
+				size = 5
+				leader = "Zarzas"
+			}
+		}
+	}
+}
+
+########################################################################################
+# Sardinia and Corsica Goes to Rome
+########################################################################################
+country_event = {
+	id = punic_wars.13
+	title = "punic_wars.13.t"
+	desc = "punic_wars.13.d"
+	picture = maniple
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = first_punic_war_end
+		NOT = {
+			war_with = CAR
+		}
+		129 = {
+			controlled_by = REB
+		}
+	}
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "punic_wars.13.a"
+		custom_tooltip = punic_wars.13.tt
+		set_global_flag = barcids_soon_rise
+		hidden_effect = {
+			sardinia_corsica_region = {
+				limit = {
+					owned_by = CAR
+				}
+				cede_province = ROM
+				remove_core = CAR
+				add_claim = CAR
+			}
+			8203 = {
+				spawn_rebels = {
+					type = nationalist
+					size = 2
+				}
+			}
+			8202 = {
+				spawn_rebels = {
+					type = nationalist
+					size = 2
+				}
+			}
+			8209 = {
+				spawn_rebels = {
+					type = nationalist
+					size = 2
+				}
+			}
+			every_known_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							region = sardinia_corsica_region
+						}
+					}
+				}
+				declare_war = ROM
+			}
+		}
+	}
+}
+
+########################################################################################
+# Barcids take Spain as domain and attack all the tribes to expand it and get more resources for next Punic war
+########################################################################################
+country_event = {
+	id = punic_wars.14
+	title = "punic_wars.14.t"
+	desc = "punic_wars.14.d"
+	picture = punicgfx_barcids
+	fire_only_once = yes
+
+	trigger = {
+		tag = CAR
+		has_global_flag = barcids_soon_rise
+		NOT = {
+			war_with = ROM
+		}
+		num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+			value = 3
+			OR = {
+				region = hispania_baetica
+				region = lusitania
+				region = cartaginensis_region
+				region = hispania_tarraconensis
+				region = gallaecia
+			}
+		}
+	}
+	mean_time_to_happen = { months = 6 }
+
+	immediate = {
+		hidden_effect = {
+			clr_global_flag = barcids_soon_rise
+			set_global_flag = barcids_rise
+			if = {
+				limit = {
+					exists = CRT
+				}
+				CAR = {
+					inherit = CRT
+				}
+				western_africa_superregion = {
+					type = all
+					remove_core = CRT
+				}
+			}
+			else = {
+				western_africa_superregion = {
+					type = all
+					remove_core = CRT
+				}
+			}
+			CRT = {
+				override_country_name = "Barcids"
+				country_event = { id = new_ideas.1 }
+			}
+			151 = {
+				add_core = CRT
+				cede_province = CRT
+				remove_core = CAR
+				add_base_tax = 1
+				add_base_production = 2
+				add_base_manpower = -1
+				change_culture = ibero_phoenician
+				change_religion = punic_religion
+				change_province_name = "Qart Hadasht"
+				rename_capital = "Qart Hadasht"
+			}
+			136 = {
+				add_core = CRT
+				cede_province = CRT
+				remove_core = CAR
+				infantry = CRT
+				infantry = CRT
+				infantry = CRT
+				infantry = CRT
+				infantry = CRT
+				cossack_cavalry = CRT
+				cossack_cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				heavy_ship = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+				transport = CRT
+			}
+			CRT = {
+				add_accepted_culture = ibero_phoenician
+				change_religion = punic
+				change_government = monarchy
+				add_government_reform = barcid_domain
+				add_government_reform = mercenary_army_reform
+				add_army_tradition = 50
+				add_army_professionalism = 0.4
+				add_manpower = 30
+				add_sailors = 5
+				add_treasury = 300
+				remove_idea_group = naval_ideas
+				remove_idea_group = maritime_ideas
+				remove_idea_group = shipbuilding_ideas
+				add_idea_group = leadership_ideas
+				add_idea_group = mercenary_ideas
+				add_idea = meritocratic_recruitment_idea
+				add_idea = experienced_generals_idea
+				add_idea = regular_trainings_idea
+				add_idea = expanded_officercorps_idea
+				add_idea = recovery_after_the_battle_idea
+				add_idea = military_science_idea
+				add_idea = new_army_tactics_idea
+				add_idea = mercenary_army_idea
+				add_idea = spare_our_blood_idea
+				add_idea = long_term_contracts_idea
+				add_idea = experienced_mercenary_leaders_idea
+				add_idea = mass_recruitment_idea
+				add_idea = own_forces_reserves_idea
+				add_idea = auxiliares_in_army_idea
+				add_stability = 2
+				add_prestige = 80
+				add_mil_power = 300
+				add_dip_power = 300
+				add_adm_power = 300
+				define_ruler = {
+					name = "Hamilcar"
+					dynasty = "Barca"
+					ADM = 5
+					DIP = 5
+					MIL = 5
+					culture = punic
+					age = 45
+				}
+				define_ruler_to_general = {
+					name = "Hamilcar Barca"
+					fire = 6
+					shock = 5
+					manuever = 6
+					siege = 4
+				}
+				define_heir = {
+					name = "Hasdrubal the Fair"
+					dynasty = "Barca"
+					ADM = 5
+					DIP = 6
+					MIL = 3
+					culture = punic
+					age = 15
+				}
+				define_heir_to_general = {
+					name = "Hasdrubal Barca"
+					fire = 5
+					shock = 4
+					manuever = 5
+					siege = 3
+				}
+				add_country_modifier = {
+					name = barcids_invasion_iberia_buff
+					duration = 10950
+				}
+				add_historical_rival = ROM
+			}
+			ROM = {
+				add_historical_rival = CRT
+			}
+			CAR = {
+				every_owned_province = {
+					limit = {
+						superregion = hispania_superregion
+						NOT = {
+							area = baleares_area
+						}
+					}
+					add_core = CRT
+					remove_core = CAR
+					cede_province = CRT
+				}
+			}
+
+			#startdomain
+			gades_area = {
+				type = all
+				add_core = CRT
+				remove_core = CAR
+				cede_province = CRT
+			}
+			malaca_area = {
+				type = all
+				add_core = CRT
+				remove_core = CAR
+				cede_province = CRT
+			}
+			regina_turdulorum_area = {
+				type = all
+				add_core = CRT
+				remove_core = CAR
+				cede_province = CRT
+			}
+			baetis_area = {
+				type = all
+				add_core = CRT
+				remove_core = CAR
+				cede_province = CRT
+			}
+			carthaginensis_area = {
+				type = all
+				add_core = CRT
+				remove_core = CAR
+				cede_province = CRT
+			}
+			# cores for them
+			cartaginensis_region = {
+				type = all
+				add_core = CRT
+			}
+			hispania_baetica = {
+				type = all
+				add_core = CRT
+			}
+			ilercavonesis_area = {
+				type = all
+				add_core = CRT
+			}
+			iberus_area = {
+				type = all
+				add_core = CRT
+			}
+			emeritanus_area = {
+				type = all
+				add_core = CRT
+			}
+			164 = {
+				add_core = CRT
+			}
+			209 = {
+				add_core = CRT
+			}
+			6502 = {
+				add_core = CRT
+			}
+			CAR = {
+				every_subject_country = {
+					limit = {
+						capital_scope = {
+							superregion = hispania_superregion
+						}
+					}
+					grant_independence = yes
+				}
+			}
+			157 = {
+				add_core = HOM
+				cede_province = HOM
+			}
+			6510 = {
+				add_core = ZAT
+				cede_province = ZAT
+			}
+			CAR = {
+				create_subject = {
+					subject_type = private_domain
+					subject = CRT
+				}
+			}
+			every_country = {
+				limit = {
+					OR = {
+						core_claim = CRT
+					}
+					capital_scope = {
+						OR = {
+							region = cartaginensis_region
+							region = hispania_baetica
+						}
+					}
+				}
+				reverse_add_casus_belli = {
+					target = CAR
+					type = cb_core
+					months = 360
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.14.a" # lets go barcids! wish you luck
+		custom_tooltip = punic_wars.14.tt
+		add_prestige = 3
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						core_claim = CRT
+					}
+					capital_scope = {
+						OR = {
+							region = cartaginensis_region
+							region = hispania_baetica
+						}
+					}
+				}
+				declare_war = CRT
+			}
+			CRT = {
+				country_event = {
+					id = punic_wars.140
+					days = 3650
+				}
+			}
+		}
+	}
+	option = {
+		name = "punic_wars.14.b" #player switch to Barcids!
+		custom_tooltip = punic_wars.14.tt
+		add_prestige = 3
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						core_claim = CRT
+					}
+					capital_scope = {
+						OR = {
+							region = cartaginensis_region
+							region = hispania_baetica
+						}
+					}
+				}
+				declare_war = CRT
+			}
+		}
+		switch_tag = CRT
+		CRT = {
+			country_event = {
+				id = punic_wars.140
+				days = 3650
+			}
+		}
+	}
+}
+
+country_event = { # Hannibal takes power after death of father
+	id = punic_wars.140
+	title = "punic_wars.140.t"
+	desc = "punic_wars.140.d"
+	picture = punicgfx_hannibal2
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.140.a"
+		add_prestige = 3
+		kill_ruler = yes
+		define_ruler = {
+			name = "Hannibal"
+			dynasty = "Barca"
+			ADM = 6
+			DIP = 5
+			MIL = 6
+			culture = punic
+			age = 20
+		}
+		define_ruler_to_general = {
+			name = "Hannibal Barca"
+			fire = 9
+			shock = 10
+			manuever = 9
+			siege = 3
+		}
+		define_heir = {
+			name = "Hasdrubal"
+			dynasty = "Barca"
+			ADM = 3
+			DIP = 3
+			MIL = 3
+			culture = punic
+			age = 19
+		}
+		define_heir_to_general = {
+			name = "Hasdrubal Barca"
+			fire = 5
+			shock = 4
+			manuever = 3
+			siege = 2
+		}
+		define_general = {
+			name = "Mago Barca"
+			fire = 4
+			shock = 5
+			manuever = 5
+			siege = 2
+		}
+	}
+}
+########################################################################################
+# Second Punic War started - notification event for Rome
+########################################################################################
+country_event = {
+	id = punic_wars.15
+	title = "punic_wars.15.t"
+	desc = "punic_wars.15.d"
+	picture = maniple
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = barcids_rise
+		war_with = CAR
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = second_punic_war_start
+		}
+	}
+
+	option = {
+		name = "punic_wars.15.a"
+		add_prestige = -3
+		CAR = {
+			country_event = {
+				id = punic_wars.150
+				days = 1
+			}
+		}
+		ROM = { #Landing in Emporia
+			country_event = {
+				id = punic_wars.16
+				days = 3
+			}
+		}
+		add_country_modifier = {
+			name = rom_punic_war_2_navy_buff
+			duration = 7300
+		}
+	}
+}
+country_event = { # Second Punic War started - notification event for Carthage
+	id = punic_wars.150
+	title = "punic_wars.150.t"
+	desc = "punic_wars.150.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.150.a"
+		add_prestige = 3
+		CAR = {
+			country_event = {
+				id = punic_wars.17
+				days = 30
+			}
+		}
+	}
+}
+
+country_event = { ##Landing in Emporia
+	id = punic_wars.16
+	title = "punic_wars.16.t"
+	desc = "punic_wars.16.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
+
+
+	option = {
+		name = "punic_wars.16.a"
+		custom_tooltip = punic_wars.16.tt
+		hidden_effect = {
+			254 = {
+				cede_province = ROM
+				infantry = ROM
+				infantry = ROM
+				infantry = ROM
+				infantry = ROM
+				infantry = ROM
+				infantry = ROM
+				infantry = ROM
+				cavalry = ROM
+				artillery = ROM
+				artillery = ROM
+			}
+			255 = {
+				cede_province = ROM
+			}
+			6504 = {
+				cede_province = ROM
+			}
+			253 = {
+				cede_province = ROM
+			}
+			6500 = {
+				cede_province = ROM
+				spawn_rebels = {
+					type = nationalist
+					size = 2
+				}
+			}
+			250 = {
+				cede_province = ROM
+			}
+			6501 = {
+				cede_province = ROM
+				spawn_rebels = {
+					type = nationalist
+					size = 2
+				}
+			}
+		}
+		ROM = {
+			define_general = {
+				name = "Publius Cornelius Scipio" #not that Scipio, but his relative who first landed in Spain
+				fire = 3
+				shock = 3
+				manuever = 3
+				siege = 2
+			}
+			define_general = {
+				name = "Publius Cornelius Scipio Africanus" # now that is that one, the legend
+				fire = 7
+				shock = 9
+				manuever = 9
+				siege = 4
+			}
+			define_general = {
+				name = "Gaius Terentius Varro" #looser of Cannae
+				fire = 2
+				shock = 2
+				manuever = 2
+				siege = 2
+			}
+			define_general = {
+				name = "Quintus Fabius Maximus" #Cunctator, "the delayer" dictator of Rome who pressed "go guerilla" against Hannibal, exausting him
+				fire = 3
+				shock = 4
+				manuever = 7
+				siege = 2
+			}
+			define_general = {
+				name = "Marcus Claudius Marcellus" #bane of Syracuse and gauls
+				fire = 3
+				shock = 4
+				manuever = 4
+				siege = 6
+			}
+		}
+	}
+}
+
+country_event = { ##Alp Crossing
+	id = punic_wars.17
+	title = "punic_wars.17.t"
+	desc = "punic_wars.17.d"
+	picture = hannibal1
+	fire_only_once = yes
+	is_triggered_only = yes
+
+
+	option = {
+		name = "punic_wars.17.a"
+		custom_tooltip = punic_wars.17.tt
+		hidden_effect = {
+			set_global_flag = hannibal_in_italy_flag
+			hispania_superregion = {
+				limit = {
+					owned_by = CAR
+				}
+				kill_units = { who = owner }
+			}
+			102 = {
+				cede_province = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				samurai_infantry = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				artillery = CRT
+				cossack_cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+				cavalry = CRT
+			}
+			101 = {
+				cede_province = CRT
+			}
+			every_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = transpadana
+							area = liguria_septentrionalis_area
+							area = aemilia_area
+							area = cenomania_area
+							area = alpes_raetae
+						}
+					}
+				}
+				country_event = {
+					id = punic_wars.170
+					days = 1
+				}
+			}
+			every_country = {
+				limit = {
+					capital_scope = {
+						OR = {
+							area = alpes_cottiae
+						}
+					}
+				}
+				declare_war = CRT
+			}
+			SYR = {
+				declare_war = ROM
+			}
+			ROM = {
+				add_country_modifier = {
+					name = alps_crossing_caught_by_surprise
+					duration = 700
+				}
+			}
+		}
+	}
+}
+
+country_event = { ##Alp Crossing - vassalizing cisalpine celts
+	id = punic_wars.170
+	title = "punic_wars.170.t"
+	desc = "punic_wars.170.d"
+	picture = hannibal1
+	fire_only_once = yes
+
+
+	option = {
+		name = "punic_wars.170.a"
+		CAR = {
+			vassalize = ROOT
+		}
+	}
+}
+
+country_event = { #Hannibal escapes Italy
+	id = punic_wars.18
+	title = "punic_wars.18.t"
+	desc = "punic_wars.18.d"
+	picture = hannibal1
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = hannibal_in_italy_flag
+		war_with = CAR
+		CRT = {
+			num_of_owned_provinces_with = {
+				superregion = italia_superregion
+				controlled_by = ROM
+				value = 2
+			}
+		}
+		NOT = {
+			CAR = {
+				units_in_province = italia_superregion
+			}
+		}
+		NOT = {
+			CRT = {
+				units_in_province = italia_superregion
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = second_punic_war_near_end
+		}
+	}
+
+	option = {
+		name = "punic_wars.18.a"
+		custom_tooltip = punic_wars.18.tt
+		add_war_exhaustion = -4
+		hidden_effect = {
+			every_country = {
+				limit = {
+					capital_scope = {
+						superregion = italia_superregion
+					}
+					OR = {
+						is_subject_of = CAR
+						is_subject_of = CRT
+					}
+				}
+				ROM = {
+					inherit = THIS
+				}
+			}
+			CRT = {
+				every_owned_province = {
+					limit = {
+						superregion = italia_superregion
+					}
+					remove_core = CRT
+					cede_province = ROM
+				}
+			}
+			CAR = {
+				every_owned_province = {
+					limit = {
+						superregion = italia_superregion
+					}
+					remove_core = CRT
+					cede_province = ROM
+				}
+			}
+		}
+	}
+}
+
+country_event = { #Second Punic War end
+	id = punic_wars.19
+	title = "punic_wars.19.t"
+	desc = "punic_wars.19.d"
+	picture = second_punic_war_end
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = second_punic_war_start
+		war_with = CAR
+		OR = {
+			AND = {
+				CAR = {
+					all_owned_province = {
+						superregion = hispania_superregion
+						controlled_by = ROM
+					}
+				}
+				CRT = {
+					all_owned_province = {
+						superregion = hispania_superregion
+						controlled_by = ROM
+					}
+				}
+				CAR = {
+					any_owned_province = {
+						region = africa_region
+						controlled_by = ROM
+					}
+				}
+			}
+			AND = {
+				612 = { controlled_by = ROM }
+				war_score_against = {
+					who = CAR
+					value = 60
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = second_punic_war_end
+			clr_country_flag = second_punic_war_near_end
+			ROM = {
+				white_peace = CRT
+				white_peace = CAR
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.19.a"
+		custom_tooltip = punic_wars.19.tt
+		hidden_effect = {
+			CRT = {
+				every_owned_province = {
+					limit = {
+						superregion = hispania_superregion
+					}
+					cede_province = ROM
+				}
+			}
+			hispania_superregion = {
+				type = all
+				remove_core = CRT
+			}
+			CAR = {
+				every_owned_province = {
+					limit = {
+						superregion = hispania_superregion
+					}
+					cede_province = ROM
+				}
+			}
+			ROM = {
+				add_treasury = 10000
+				add_prestige = 50
+				add_adm_power = 300
+				add_dip_power = 300
+				add_mil_power = 300
+				add_stability = 1
+				add_war_exhaustion = -2
+				inherit = CRT
+				release = ARQ
+				release = BLQ
+				release = LSQ
+				release = SEQ
+				release = TBQ
+				release = LOQ
+				release = ORQ
+				release = CRQ
+				release = TIQ
+				release = AEQ
+				release = TUQ
+				release = CUQ
+				gades_area = {
+					type = all
+					add_core = ROM
+					cede_province = ROM
+				}
+				malaca_area = {
+					type = all
+					add_core = ROM
+					cede_province = ROM
+				}
+				regina_turdulorum_area = {
+					type = all
+					add_core = ROM
+					cede_province = ROM
+				}
+				baetis_area = {
+					type = all
+					add_core = ROM
+					cede_province = ROM
+				}
+				carthaginensis_area = {
+					type = all
+					add_core = ROM
+					cede_province = ROM
+				}
+				every_owned_province = {
+					limit = {
+						area = lassira_area
+					}
+					cede_province = CLQ
+				}
+				every_owned_province = {
+					limit = {
+						area = toletum_area
+					}
+					cede_province = CLQ
+				}
+				every_owned_province = {
+					limit = {
+						area = lusitania_east
+					}
+					cede_province = CR8
+				}
+				every_owned_province = {
+					limit = {
+						area = emeritanus_area
+					}
+					cede_province = CCQ
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = olcadia_area
+							area = numantia_area
+						}
+					}
+					cede_province = CCQ
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = cluniensis_area
+							area = segovia_area
+						}
+					}
+					cede_province = VC8
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = asturica_area
+							area = asturum_area
+						}
+					}
+					cede_province = ASQ
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = cantabria_area
+							area = cantabria_sea_area
+						}
+					}
+					cede_province = CBQ
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = vasconensis_area
+							area = vasconensis_sea_area
+						}
+					}
+					cede_province = VRQ
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = lusitania_west
+							area = scallabitanus_area
+							area = oestriminis_inferior
+						}
+					}
+					cede_province = LUS
+				}
+				every_owned_province = {
+					limit = {
+						region = gallaecia
+					}
+					cede_province = GLQ
+				}
+				6514 = {
+					cede_province = ILQ
+				}
+				6503 = {
+					cede_province = ILQ
+				}
+				210 = {
+					cede_province = ILQ
+				}
+			}
+			CAR = {
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = lixiane_area
+							area = gaetulia_darae
+							area = cerne_area
+						}
+					}
+					remove_core = CAR
+					add_core = SLT
+					cede_province = SLT
+				}
+				every_owned_province = {
+					limit = {
+						region = lybia_deserta_region
+					}
+					remove_core = CAR
+					cede_province = XXX
+				}
+				every_owned_province = {
+					limit = {
+						area = fortunatae_insulae
+					}
+					remove_core = CAR
+					cede_province = XXX
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = cirta_area
+							area = thevestis_area
+							area = mauretania_sitifensis
+							area = caesariensis_west
+							area = caesariensis_east
+							area = siga_area
+							area = deserta_mauretania
+							province_id = 622
+							province_id = 626
+							province_id = 627
+							province_id = 5869
+							province_id = 7006
+							province_id = 5615
+							province_id = 8513
+						}
+					}
+					remove_core = CAR
+					add_core = NUM
+					cede_province = NUM
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = madethubadus_area
+							area = gaetulia
+							area = militiana_area
+						}
+					}
+					remove_core = CAR
+					add_core = GAT
+					cede_province = GAT
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = deserta_tripolitania
+							area = deserta_syrtica
+						}
+					}
+					remove_core = CAR
+					add_core = BAG
+					cede_province = BAG
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = augila_area
+							area = nasamonia_area
+						}
+					}
+					remove_core = CAR
+					add_core = NAS
+					cede_province = NAS
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = garamantum_area
+							area = desertum_africanum
+							area = garamantum_ulterior
+						}
+					}
+					remove_core = CAR
+					add_core = GAR
+					cede_province = GAR
+				}
+				every_owned_province = {
+					limit = {
+						region = mauretania_region
+						NOT = {
+							area = cartenna_area
+						}
+					}
+					remove_core = CAR
+					add_core = MRT
+					cede_province = MRT
+				}
+			}
+			MRT = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_stability = 1
+				add_absolutism = 20
+				add_prestige = 10
+				inherit = DM7
+				inherit = HRP
+				inherit = MAE
+				inherit = BCU
+				inherit = AUT
+				inherit = DU6
+				inherit = DU6
+			}
+			atlas_mons = {
+				add_core = MRT
+				cede_province = MRT
+			}
+			mauretania_ulterior = {
+				add_core = MRT
+				remove_core = NUM
+				cede_province = MRT
+			}
+			519 = {
+				add_core = MRT
+				cede_province = MRT
+			}
+			533 = {
+				add_core = NUM
+				remove_core = MRT
+				cede_province = NUM
+			}
+			ROM = {
+				create_subject = {
+					subject_type = tributary_state
+					subject = MRT
+				}
+			}
+			NUM = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_stability = 1
+				add_absolutism = 20
+				add_prestige = 10
+				define_ruler = {
+					name = "Massinissa I"
+					dynasty = "of Massylii"
+					ADM = 5
+					DIP = 5
+					MIL = 6
+					culture = punic
+					age = 30
+				}
+				set_capital = 589
+				create_alliance = ROM
+				inherit = MAA
+				inherit = MYL
+				inherit = SLI
+				inherit = ASR
+				inherit = AZU
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = deserta_mauretania
+							area = diur_mons
+							area = tingitana_east
+							area = tingitana_west
+							area = mauretania_superior
+							area = mauretania_ulterior
+
+						}
+					}
+					remove_core = NUM
+					add_core = MRT
+					cede_province = MRT
+				}
+			}
+			GAR = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_stability = 1
+				add_absolutism = 20
+				add_prestige = 10
+			}
+			garamantum_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = GAR
+				cede_province = GAR
+			}
+			desertum_africanum = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = GAR
+				cede_province = GAR
+			}
+			garamantum_ulterior = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = GAR
+				cede_province = GAR
+			}
+			BAG = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+			}
+			deserta_tripolitania = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = BAG
+				cede_province = BAG
+			}
+			deserta_syrtica = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = BAG
+				cede_province = BAG
+			}
+			deserta_numidia = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = BAG
+				cede_province = BAG
+			}
+			GAT = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+			}
+			NAS = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+			}
+			augila_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = NAS
+				cede_province = NAS
+			}
+			nasamonia_area = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_core = NAS
+				cede_province = NAS
+			}
+		}
+	}
+}
+
+########################################################################################
+# Third Punic War started - notification event for Rome
+########################################################################################
+country_event = {
+	id = punic_wars.20
+	title = "punic_wars.20.t"
+	desc = "punic_wars.20.d"
+	picture = third_punic_war
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = second_punic_war_end
+		war_with = CAR
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = third_punic_war_start
+		}
+	}
+
+	option = {
+		name = "punic_wars.20.a"
+		add_prestige = 3
+		CAR = {
+			country_event = {
+				id = punic_wars.200
+				days = 1
+			}
+		}
+	}
+}
+country_event = { # Second Punic War started - notification event for Carthage
+	id = punic_wars.200
+	title = "punic_wars.200.t"
+	desc = "punic_wars.200.d"
+	picture = third_punic_war
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.150.a"
+		add_prestige = -3
+	}
+}
+
+country_event = { #Third Punic War end
+	id = punic_wars.21
+	title = "punic_wars.21.t"
+	desc = "punic_wars.21.d"
+	picture = third_punic_war_end
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = third_punic_war_start
+		war_with = CAR
+		612 = {
+			controlled_by = ROM
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+
+	option = {
+		name = "punic_wars.21.a"
+		custom_tooltip = punic_wars.21.tt
+		hidden_effect = {
+			CAR = {
+				every_owned_province = {
+					limit = {
+						area = baleares_area
+					}
+					remove_core = CAR
+					add_core = GYM
+					cede_province = GYM
+				}
+				every_owned_province = {
+					limit = {
+						NOT = {
+							OR = {
+								area = carthago_area
+								area = bagrada_area
+								area = numidia_maritimae
+								area = zeugitana_area
+								area = mediterranea_insulae
+								area = tripolitania_east
+								area = tripolitania_west
+								area = byzacium_area
+								province_id = 620
+								province_id = 621
+								province_id = 625
+								province_id = 629
+							}
+						}
+					}
+					remove_core = CAR
+					add_core = NUM
+					cede_province = NUM
+				}
+			}
+			ROM = {
+				inherit = CAR
+				add_prestige = 5
+			}
+			612 = {
+				add_base_tax = -10
+				add_base_production = -20
+				add_base_manpower = -10
+				add_base_tax = 1
+				add_base_production = 1
+				add_base_manpower = 1
+				add_devastation = 100
+			}
+		}
 	}
 }
