@@ -534,6 +534,47 @@ country_event = {
 			subject_type = satrapy_vassal
     		subject = ARM
 		}
+		country_event = {
+			days = 300
+			id = media.203
+		}
+	}
+}
+#Removes old kaska culture and scythians in Scytheni lands,
+#and fuses them into kappadokians
+country_event = {
+	id = media.203
+	title = "media.203.t"
+	desc = "media.203.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "media.203.a"
+		every_province = {
+			if = {
+				limit = {
+					OR = {
+						culture = kaska
+						AND = {
+							culture = ishkuzan
+							OR = {
+								region = bithynia_et_pontus
+								region = cappadocia_region
+							}
+						}
+					}
+				}
+				change_culture = kappadokian
+				change_religion = cybele
+				add_core = KPP
+			}
+		}
+		2221 = {
+			change_culture = chalybean
+			change_religion = cybele
+		}
 	}
 }
 ########################################################################################
@@ -612,15 +653,18 @@ country_event = {
 	trigger = {
 		tag = MDI
 		dynasty = "Khshathrita"
-		NOT = { started_in = 169.1.1 }
-		NOT = { is_year = 185 }
+		NOT = { started_in = 165.1.1 }
+		NOT = { is_year = 195 }
 		is_year = 170
 		NOT = { alliance_with = LYD }
 		is_at_war = no
 		LYD = {
 			exists = yes
-			is_neighbor_of = MDI
 			total_development = 120
+		}
+		OR = {
+			PHR = { is_neighbor_of = MDI }
+			LYD = { is_neighbor_of = MDI }
 		}
 	}
 
@@ -633,8 +677,6 @@ country_event = {
 		ai_chance = {
 			factor = 99
 		}
-		add_army_tradition = 10
-		add_army_professionalism = 0.05
 		declare_war_with_cb = {
 			casus_belli = cb_mission_invasion
 			who = LYD
@@ -657,7 +699,7 @@ country_event = {
 	id = media.401
 	title = "media.401.t"
 	desc = "media.401.d"
-	picture = battle
+	picture = rich_woman
 	fire_only_once = yes
 	is_triggered_only = yes
 
@@ -694,6 +736,71 @@ country_event = {
 			dip = 3
 			mil = 3
 		}
+		cappadocia_region = {
+			add_core = MDI
+			cede_province = MDI
+		}
+		gazacene_area = {
+			add_core = MDI
+			cede_province = MDI
+		}
+		pontus_area = {
+			add_core = LYD
+			cede_province = LYD
+		}
+		pontus_galaticus = {
+			add_core = LYD
+			cede_province = LYD
+		}
+		LYD = {
+			inherit = PHR
+		}
+		LYD = {
+			inherit = LYA
+		}
+		LYD = {
+			inherit = PSD
+		}
+		if = {
+			limit = {
+				has_country_flag = caria_betrayal_flag
+			}
+			LYD = {
+				inherit = CRI
+			}
+		}
+		2193 = {
+			add_core = LYD
+			cede_province = LYD
+		}
+		5797 = {
+			add_core = LYD
+			cede_province = LYD
+		}
+		2221 = {
+			add_core = LYD
+			cede_province = LYD
+		}
+		5795 = {
+			add_core = MDI
+			remove_core = LYD
+			cede_province = MDI
+		}
+		2238 = {
+			add_core = MDI
+			remove_core = LYD
+			cede_province = MDI
+		}
+		add_historical_friend = LYD
+		LYD = {
+			add_historical_friend = MDI
+		}
+		KIL = {
+			country_event = {
+				days = 30
+				id = media.402
+			}
+		}
 	}
 	option = {
 		name = "media.401.b"
@@ -704,7 +811,149 @@ country_event = {
 		LYD = { add_war_exhaustion = 5 }
 	}
 }
+country_event = {##Syennesis Diplomacy 402 - Cilicia event, all 4 powers create_guarantee = KIL. Cedes all in Cilicia Region to Cilicia
+	id = media.402
+	title = "media.402.t"
+	desc = "media.402.d"
+	picture = court
+	fire_only_once = yes
+	is_triggered_only = yes
 
+	immediate = {
+		hidden_effect = { set_global_flag = syennetes_diplomacy_flag }
+	}
+
+	option = {
+		name = "media.402.a"
+		add_prestige = 30
+		add_dip_power = 50
+		add_truce = LYD
+		LYD = {
+			create_guarantee = KIL
+		}
+		add_truce = MDI
+		MDI = {
+			create_guarantee = KIL
+		}
+		add_truce = BAB
+		BAB = {
+			create_guarantee = KIL
+		}
+		add_truce = EGY
+		EGY = {
+			create_guarantee = KIL
+		}
+		LYD = {
+			country_event = {
+				days = 7
+				id = media.403
+			}
+		}
+		cilicia_region = {
+			add_core = KIL
+			remove_core = BAB
+			remove_core = LYD
+			remove_core = MDI
+			cede_province = KIL
+		}
+		BAB = {
+			country_event = {
+				days = 7
+				id = media.404
+			}
+		}
+		EGY = {
+			country_event = {
+				days = 7
+				id = media.405
+			}
+		}
+	}
+}
+##Syennetis Diplomacy 403- Lydia event, alliance with BAB and SP1 agains MDI just in case.
+country_event = {
+	id = media.403
+	title = "media.403.t"
+	desc = "media.403.d"
+	picture = court
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "media.403.a"
+		create_alliance = SP1
+		create_alliance = BAB
+		lycia_pamphylia_region = {
+			add_permanent_claim = LYD
+			remove_claim = KIL
+		}
+		bithynia_region = {
+			add_permanent_claim = LYD
+			remove_claim = MDI
+		}
+	}
+}
+##Syennetis Diplomacy 404 - Babylon event, royal marriage with LYD. Removes cores from Egypt region. Cedes all provs in Egypt region to Egypt.
+country_event = {
+	id = media.404
+	title = "media.404.t"
+	desc = "media.404.d"
+	picture = court
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "media.404.a"
+		every_owned_province = {
+			limit = {
+				region = lower_egypt_region
+			}
+			remove_core = BAB
+			remove_claim = BAB
+			cede_province = BAB
+		}
+		create_marriage = LYD
+		remove_historical_rival = EGY
+	}
+}
+##Syennetis Diplomacy 405 - Egypt event, alliance with LYD. Removes claims from Canaan and Phoenician. Cedes all Cyprus to Egypt, if no player tag capital is in Cyprus
+country_event = {
+	id = media.405
+	title = "media.405.t"
+	desc = "media.405.d"
+	picture = ruler
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "media.405.a"
+		canaan_region = {
+			limit = {
+				OR = {
+					is_core = EGY
+					has_claim = EGY
+				}
+			}
+			remove_core = EGY
+			remove_claim = EGY
+		}
+		create_marriage = LYD
+		create_alliance = LYD
+		remove_historical_rival = BAB
+		create_alliance = BAB
+		every_known_country = {
+			limit = {
+				capital_scope = {
+					region = cyprus_region
+				}
+				ai = yes
+			}
+			EGY = {
+				inherit = ROOT
+			}
+		}
+	}
+}
 ########################################################################################
 # Transformation of Ecbatana
 ########################################################################################
@@ -775,9 +1024,6 @@ country_event = {
 		NOT = { started_in = 195.1.1 }
 		is_year = 204
 		NOT = { is_year = 224 }
-		adm = 5
-		dip = 5
-		mil = 5
 		dynasty = "Haxamanishiya"
 		exists = MDI
 		MDI = { ai = yes }
@@ -815,7 +1061,6 @@ country_event = {
 					disband_all_units = yes
 					ROOT = { inherit = PREV }
 				}
-				disband_all_units = yes
 				ROOT = { inherit = PREV }
 			}
 			add_legitimacy = 100
@@ -965,7 +1210,7 @@ country_event = {
 		ai = yes
 		NOT = { started_in = 205.1.1 }
 		is_year = 150
-		NOT = { is_year = 205 }
+		NOT = { is_year = 210 }
 		NOT = { manpower_percentage = 0.5 }
 		ASY = { exists = no }
 	}
@@ -979,3 +1224,7 @@ country_event = {
 		add_manpower = 50
 	}
 }
+
+########################################################################################
+# Media eastern campaigns
+########################################################################################
