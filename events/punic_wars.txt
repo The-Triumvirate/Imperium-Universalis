@@ -115,7 +115,7 @@ country_event = {
 	desc = "punic_wars.3.d"
 	picture = italicgfx_first_punic_war
 	fire_only_once = yes
-	mean_time_to_happen = { months = 48}
+	mean_time_to_happen = { months = 48 }
 
 	trigger = {
 		tag = ROM
@@ -135,6 +135,7 @@ country_event = {
 	option = {
 		name = "punic_wars.3.a"
 		custom_tooltip = punic_wars.3.tt
+		custom_tooltip = punic_wars_can_start.tt
 		remove_country_modifier = punic_roman_trade_2a
 		add_historical_rival = CAR
 		add_country_modifier = {
@@ -160,7 +161,7 @@ country_event = {
 ########################################################################################
 # Trade Relation (CARTHAGE) - Punic Wars background
 ########################################################################################
-# Phase 1 of 3
+# Phase 1 of 3, Carthage
 country_event = {
 	id = punic_wars.4
 	title = "punic_wars.4.t"
@@ -182,7 +183,7 @@ country_event = {
 		}
 	}
 }
-# Phase 2 of 3
+# Phase 2 of 3, Carthage
 country_event = {
 	id = punic_wars.5
 	title = "punic_wars.5.t"
@@ -205,7 +206,7 @@ country_event = {
 		}
 	}
 }
-# Phase 3 of 3
+# Phase 3 of 3, Carthage
 country_event = {
 	id = punic_wars.6
 	title = "punic_wars.6.t"
@@ -216,6 +217,7 @@ country_event = {
 	option = {
 		name = "punic_wars.6.a"
 		custom_tooltip = punic_wars.6.tt
+		custom_tooltip = punic_wars_can_start.tt
 		remove_country_modifier = punic_roman_trade_2b
 		add_historical_rival = ROM
 		add_country_modifier = {
@@ -301,6 +303,7 @@ country_event = {
 	option = {
 		name = "punic_wars.8.a"
 		custom_tooltip = punic_wars.8.tt
+		custom_tooltip = punic_wars_can_start.tt
 		remove_country_modifier = punic_roman_rivalry_2
 		add_country_modifier = {
 			name = punic_wars_preparations
@@ -312,8 +315,11 @@ country_event = {
 		}
 		add_manpower = 5
 		add_sailors = 2500
-		every_subject_country = {
-			add_liberty_desire = -25
+		custom_tooltip = punic_wars.8.tt2
+		hidden_effect = {
+			every_subject_country = {
+				add_liberty_desire = -25
+			}
 		}
 		CAR = {
 			country_event = {
@@ -334,6 +340,7 @@ country_event = {
 	option = {
 		name = "punic_wars.9.a"
 		custom_tooltip = punic_wars.9.tt
+		custom_tooltip = punic_wars_can_start.tt
 		add_country_modifier = {
 			name = punic_wars_preparations
 			duration = 7300
@@ -356,7 +363,6 @@ country_event = {
 	desc = "punic_wars.10.d"
 	picture = italicgfx_first_punic_war
 	fire_only_once = yes
-	mean_time_to_happen = { months = 48}
 
 	trigger = {
 		tag = ROM
@@ -367,12 +373,12 @@ country_event = {
 		}
 	}
 
-	mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { days = 2 }
 
 	immediate = {
 		hidden_effect = { #mamertines take Messana
-		clr_global_flag = prepare_punic_wars
-		set_global_flag = first_punic_war_start
+			set_global_flag = first_punic_war_start
+			clr_global_flag = prepare_punic_wars
 			7 = {
 				cede_province = ROM
 				mercenary_infantry = ROM
@@ -384,7 +390,7 @@ country_event = {
 			}
 			add_country_modifier = {
 				name = punic_wars_rome_fleet_buff
-				duration = 10950
+				duration = -1
 			}
 		}
 	}
@@ -392,37 +398,25 @@ country_event = {
 	option = {
 		name = "punic_wars.10.a"
 		add_sailors = 5
-		if = {
-			limit = {
-				exists = SYR
-				NOT = {
-					SYR = {
-						is_subject_of = ROM
-					}
-				}
+		custom_tooltip = punic_wars.10.tt
+		custom_tooltip = tooltip_has_happened
+		tooltip = {
+			7 = {
+				cede_province = ROM
+				mercenary_infantry = ROM
+				mercenary_infantry = ROM
 			}
-			SYR = {
-				declare_war = ROM
+			13 = {
+				add_core = ROM
+				cede_province = ROM
 			}
-			every_known_country = {
-				limit = {
-					capital_scope = {
-						OR = {
-							area = syracuse_area
-							area = sicilia_est
-							area = sicelia_area
-							area = sicani_area
-							area = sicilia_west
-						}
-					}
-					NOT = {
-						is_subject_of = ROM
-					}
-				}
-				declare_war = ROM
+			add_country_modifier = {
+				name = punic_wars_rome_fleet_buff
+				duration = -1
 			}
 		}
-		else = {
+		custom_tooltip = tooltip_has_happened_barrier
+		hidden_effect = {
 			every_known_country = {
 				limit = {
 					capital_scope = {
@@ -462,90 +456,69 @@ country_event = {
 			who = CAR
 			value = 30
 		}
-		magna_graecia = {
+		pg_sicily_group = {
 			type = all
 			OR = {
 				controlled_by = ROM
 				controller = {
 					is_subject_of = ROM
 				}
+				owner = { NOT = { war_with = ROM } }
 			}
 		}
 	}
 
-	mean_time_to_happen = { years = 5 }
+	mean_time_to_happen = { months = 4 }
+
 
 	immediate = {
 		hidden_effect = {
-			sicilia_west = {
+			CAR = {
+				pg_italica_suburbica_group = {
+					limit = { OR = { owned_by = PREV owned_by_subject_of = PREV } }
+					remove_core = OWNER
+					add_claim = OWNER
+					cede_province = ROM
+				}
+			}
+			13 = {
+				remove_core = CAR
+				add_claim = CAR
+			}
+			7 = {
+				remove_core = CAR
+				add_claim = CAR
+			}
+			pg_sicily_group = {
 				limit = {
 					NOT = {
 						owned_by = ROM
 					}
 				}
 				cede_province = ROM
-				remove_core = CAR
-				add_claim = CAR
-			}
-			sicelia_area = {
-				limit = {
-					NOT = {
-						owned_by = ROM
-					}
-				}
-				cede_province = ROM
-				remove_core = CAR
-				add_claim = CAR
-			}
-			sicani_area = {
-				limit = {
-					NOT = {
-						owned_by = ROM
-					}
-				}
-				cede_province = ROM
-				remove_core = CAR
-				add_claim = CAR
-			}
-			sicilia_est = {
-				limit = {
-					NOT = {
-						owned_by = ROM
-					}
-				}
-				cede_province = ROM
-				remove_core = CAR
-				add_claim = CAR
-			}
-			syracuse_area = {
-				limit = {
-					NOT = {
-						owned_by = ROM
-					}
-				}
-				cede_province = SYR
 				remove_core = CAR
 				add_claim = CAR
 			}
 			clr_global_flag = first_punic_war_start
 			set_global_flag = first_punic_war_end
+			white_peace = CAR
 		}
 	}
 
 	option = {
 		name = "punic_wars.11.a"
-			add_prestige = 20
-			add_navy_tradition = 20
-			add_army_tradition = 20
-			add_treasury = 3000
-			white_peace = CAR
-			vassalize = SYR
+		add_prestige = 20
+		add_navy_tradition = 20
+		add_army_tradition = 20
+		add_treasury = 3000
+		hidden_effect = {
 			CAR = {
 				country_event = {
 					id = punic_wars.12
-					days = 5
+					days = 4
 				}
 			}
+		}
 	}
 }
 ########################################################################################
@@ -556,65 +529,109 @@ country_event = {
 	title = "punic_wars.12.t"
 	desc = "punic_wars.12.d"
 	picture = battle
+	major = yes
 	fire_only_once = yes
 	is_triggered_only = yes
 
 	option = {
 		name = "punic_wars.12.a"
 		add_manpower = -10
-		6264 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-				leader = "Spendius"
+		add_stability = -2
+		custom_tooltip = punic_wars.12.tt
+		hidden_effect = {
+			set_variable = { which = whilecounter value = 3 }
+			while = {
+				limit = { check_variable = { whilecounter = 1 }  }
+				subtract_variable = { whilecounter = 1 }
+				random_owned_province = {
+					limit = {
+						region = sardinia_corsica_region
+						NOT = { has_province_flag = rebels_spawned }
+					}
+					set_province_flag = rebels_spawned
+					change_controller = REB
+					spawn_rebels = {
+						type = nationalist
+						size = 3
+					}
+				}
+			}
+			set_variable = { which = whilecounter value = 6 }
+			while = {
+				limit = { check_variable = { whilecounter = 1 }  }
+				subtract_variable = { whilecounter = 1 }
+				random_owned_province = {
+					limit = {
+						region = africa_region
+						NOT = { has_province_flag = rebels_spawned }
+					}
+					set_province_flag = rebels_spawned
+					change_controller = REB
+					spawn_rebels = {
+						type = particularist_rebels
+						size = 5
+					}
+				}
+			}
+			ROM = {
+				country_event = {
+					id = punic_wars.1202
+					days = 30
+				}
+				country_event = {
+					id = punic_wars.13
+					days = 182
+				}
+				country_event = {
+					id = punic_wars.1301
+					days = 182
+				}
 			}
 		}
-		608 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
+	}
+}
+
+country_event = {
+	id = punic_wars.1202
+	title = "punic_wars.1202.t"
+	desc = "punic_wars.1202.d"
+	picture = battle
+	fire_only_once = yes
+	major = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.1202.a"
+		add_treasury = -600
+		add_manpower = -4
+		add_army_tradition = -5
+		custom_tooltip = punic_wars.1202.tt
+		hidden_effect = {
+			CAR = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							region = sardinia_corsica_region
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 5
+						}
+					}
+				}
 			}
 		}
-		620 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-				leader = "Matho"
-			}
-		}
-		598 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-				leader = "Autaritus"
-			}
-		}
-		603 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-			}
-		}
-		129 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-			}
-		}
-		610 = {
-			change_controller = REB
-			spawn_rebels = {
-				type = nationalist
-				size = 5
-				leader = "Zarzas"
-			}
-		}
+	}
+
+	option = {
+		name = "punic_wars.1202.b"
+		add_prestige = -5
 	}
 }
 
@@ -626,19 +643,20 @@ country_event = {
 	title = "punic_wars.13.t"
 	desc = "punic_wars.13.d"
 	picture = maniple
+	is_triggered_only = yes
 	fire_only_once = yes
 
 	trigger = {
-		tag = ROM
 		has_global_flag = first_punic_war_end
 		NOT = {
 			war_with = CAR
 		}
-		129 = {
+		sardinia_corsica_region = {
+			type = any
+			owned_by = CAR
 			controlled_by = REB
 		}
 	}
-	mean_time_to_happen = { months = 3 }
 
 	option = {
 		name = "punic_wars.13.a"
@@ -649,26 +667,26 @@ country_event = {
 				limit = {
 					owned_by = CAR
 				}
+				kill_units = { who = enemy }
 				cede_province = ROM
 				remove_core = CAR
 				add_claim = CAR
 			}
-			8203 = {
-				spawn_rebels = {
-					type = nationalist
-					size = 2
-				}
-			}
-			8202 = {
-				spawn_rebels = {
-					type = nationalist
-					size = 2
-				}
-			}
-			8209 = {
-				spawn_rebels = {
-					type = nationalist
-					size = 2
+			set_variable = { which = whilecounter value = 2 }
+			while = {
+				limit = { check_variable = { whilecounter = 1 }  }
+				subtract_variable = { whilecounter = 1 }
+				random_owned_province = {
+					limit = {
+						region = sardinia_corsica_region
+						NOT = { has_province_flag = rebels_spawned }
+					}
+					set_province_flag = rebels_spawned
+					change_controller = REB
+					spawn_rebels = {
+						type = nationalist
+						size = 2
+					}
 				}
 			}
 			every_known_country = {
@@ -680,6 +698,43 @@ country_event = {
 					}
 				}
 				declare_war = ROM
+			}
+		}
+	}
+}
+
+########################################################################################
+# Sardinia and Corsica does not go to Rome
+########################################################################################
+country_event = {
+	id = punic_wars.1301
+	title = "punic_wars.1301.t"
+	desc = "punic_wars.1301.d"
+	picture = maniple
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		NOT = {
+			war_with = CAR
+		}
+		NOT = {
+			sardinia_corsica_region = {
+				type = any
+				owned_by = CAR
+				controlled_by = REB
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1301.a"
+		custom_tooltip = punic_wars.1301.tt
+		hidden_effect = {
+			set_global_flag = barcids_soon_rise
+			sardinia_corsica_region = {
+				limit = { owned_by = CAR }
+				add_core = ROM
 			}
 		}
 	}
@@ -922,54 +977,42 @@ country_event = {
 
 			#startdomain
 			gades_area = {
-				type = all
 				add_core = CRT
 				remove_core = CAR
 				cede_province = CRT
 			}
 			malaca_area = {
-				type = all
 				add_core = CRT
 				remove_core = CAR
 				cede_province = CRT
 			}
 			regina_turdulorum_area = {
-				type = all
-				add_core = CRT
-				remove_core = CAR
-				cede_province = CRT
-			}
-			baetis_area = {
-				type = all
 				add_core = CRT
 				remove_core = CAR
 				cede_province = CRT
 			}
 			carthaginensis_area = {
-				type = all
 				add_core = CRT
 				remove_core = CAR
 				cede_province = CRT
 			}
 			# cores for them
 			cartaginensis_region = {
-				type = all
 				add_core = CRT
 			}
 			hispania_baetica = {
-				type = all
 				add_core = CRT
 			}
 			ilercavonesis_area = {
-				type = all
 				add_core = CRT
 			}
 			iberus_area = {
-				type = all
 				add_core = CRT
 			}
 			emeritanus_area = {
-				type = all
+				add_core = CRT
+			}
+			baetis_area = {
 				add_core = CRT
 			}
 			164 = {
@@ -1003,6 +1046,11 @@ country_event = {
 				create_subject = {
 					subject_type = private_domain
 					subject = CRT
+				}
+			}
+			TTQ = {
+				country_event = {
+					id = punic_wars.1401
 				}
 			}
 			every_country = {
@@ -1080,6 +1128,32 @@ country_event = {
 				days = 3650
 			}
 		}
+	}
+}
+
+country_event = { #Tartessos submits
+	id = punic_wars.1401
+	title = "punic_wars.1401.t"
+	desc = "punic_wars.1401.d"
+	picture = punicgfx_hannibal2
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.1401.a"
+		ai_chance = { factor = 80 }
+		add_stability = 1
+		CRT = {
+			create_subject = {
+				subject_type = half_autonomous_vassal
+				subject = PREV
+			}
+		}
+	}
+
+	option = {
+		ai_chance = { factor = 20 }
+		name = "punic_wars.1401.b"
 	}
 }
 
