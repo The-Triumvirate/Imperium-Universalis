@@ -479,6 +479,12 @@ country_event = {
 					remove_core = OWNER
 					add_claim = OWNER
 					cede_province = ROM
+					if = {
+						limit = {
+							culture_group = italic_group
+						}
+						add_core = ROM
+					}
 				}
 			}
 			13 = {
@@ -498,6 +504,12 @@ country_event = {
 				cede_province = ROM
 				remove_core = CAR
 				add_claim = CAR
+				if = {
+					limit = {
+						culture_group = italic_group
+					}
+					add_core = ROM
+				}
 			}
 			clr_global_flag = first_punic_war_start
 			set_global_flag = first_punic_war_end
@@ -511,6 +523,7 @@ country_event = {
 		add_navy_tradition = 20
 		add_army_tradition = 20
 		add_treasury = 3000
+		custom_tooltip = punic_wars.11.tt
 		hidden_effect = {
 			CAR = {
 				country_event = {
@@ -569,7 +582,7 @@ country_event = {
 					change_controller = REB
 					spawn_rebels = {
 						type = particularist_rebels
-						size = 5
+						size = 4
 					}
 				}
 			}
@@ -602,6 +615,7 @@ country_event = {
 
 	option = {
 		name = "punic_wars.1202.a"
+		ai_chance = { factor = 100 }
 		add_treasury = -600
 		add_manpower = -4
 		add_army_tradition = -5
@@ -632,6 +646,7 @@ country_event = {
 	option = {
 		name = "punic_wars.1202.b"
 		add_prestige = -5
+		custom_tooltip = punic_wars.1202.ttb
 	}
 }
 
@@ -663,41 +678,72 @@ country_event = {
 		custom_tooltip = punic_wars.13.tt
 		set_global_flag = barcids_soon_rise
 		hidden_effect = {
-			sardinia_corsica_region = {
+			if = {
 				limit = {
-					owned_by = CAR
+					has_global_flag = rom_supported_merc_war
 				}
-				kill_units = { who = enemy }
-				cede_province = ROM
-				remove_core = CAR
-				add_claim = CAR
-			}
-			set_variable = { which = whilecounter value = 2 }
-			while = {
-				limit = { check_variable = { whilecounter = 1 }  }
-				subtract_variable = { whilecounter = 1 }
-				random_owned_province = {
+				sardinia_corsica_region = {
 					limit = {
-						region = sardinia_corsica_region
-						NOT = { has_province_flag = rebels_spawned }
+						owned_by = CAR
 					}
-					set_province_flag = rebels_spawned
-					change_controller = REB
-					spawn_rebels = {
-						type = nationalist
-						size = 2
-					}
+					kill_units = { who = enemy }
+					cede_province = ROM
+					remove_core = CAR
+					add_claim = CAR
 				}
-			}
-			every_known_country = {
-				limit = {
-					capital_scope = {
-						OR = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
 							region = sardinia_corsica_region
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
 						}
 					}
 				}
-				declare_war = ROM
+				every_known_country = {
+					limit = {
+						capital_scope = {
+							OR = {
+								region = sardinia_corsica_region
+							}
+						}
+					}
+					declare_war = ROM
+				}
+			}
+			else = {
+				pg_sardinia_group = {
+					limit = {
+						owned_by = CAR
+					}
+					kill_units = { who = enemy }
+					add_core = SAR
+					remove_core = CAR
+					add_claim = CAR
+					add_claim = ROM
+				}
+				pg_corsica_group = {
+					limit = {
+						owned_by = CAR
+					}
+					kill_units = { who = enemy }
+					add_core = COR
+					remove_core = CAR
+					add_claim = CAR
+					add_claim = ROM
+				}
+				CAR = {
+					release = SAR
+					release = COR
+				}
 			}
 		}
 	}
@@ -749,6 +795,7 @@ country_event = {
 	desc = "punic_wars.14.d"
 	picture = punicgfx_barcids
 	fire_only_once = yes
+	major = yes
 
 	trigger = {
 		tag = CAR
@@ -887,7 +934,7 @@ country_event = {
 			}
 			CRT = {
 				add_accepted_culture = ibero_phoenician
-				change_religion = punic
+				change_religion = punic_religion
 				change_government = monarchy
 				add_government_reform = barcid_domain
 				add_government_reform = mercenary_army_reform
@@ -954,7 +1001,7 @@ country_event = {
 				}
 				add_country_modifier = {
 					name = barcids_invasion_iberia_buff
-					duration = 10950
+					duration = 3650
 				}
 				add_historical_rival = ROM
 			}
@@ -997,33 +1044,15 @@ country_event = {
 				cede_province = CRT
 			}
 			# cores for them
-			cartaginensis_region = {
-				add_core = CRT
-			}
-			hispania_baetica = {
-				add_core = CRT
-			}
-			ilercavonesis_area = {
-				add_core = CRT
-			}
-			iberus_area = {
-				add_core = CRT
-			}
-			emeritanus_area = {
-				add_core = CRT
-			}
-			baetis_area = {
-				add_core = CRT
-			}
-			164 = {
-				add_core = CRT
-			}
-			209 = {
-				add_core = CRT
-			}
-			6502 = {
-				add_core = CRT
-			}
+			hispania_baetica = { add_core = CRT }
+			valentia_area = { add_core = CRT }
+			edetania_area = { add_core = CRT }
+			hispania_citerior_area = { add_core = CRT }
+			carthaginensis_area = { add_core = CRT }
+			deitania_area = { add_core = CRT }
+			hispania_ulterior_area = { add_core = CRT }
+			emeritanus_area = { add_core = CRT }
+			baetis_area = { add_core = CRT }
 			CAR = {
 				every_subject_country = {
 					limit = {
@@ -1047,6 +1076,20 @@ country_event = {
 					subject_type = private_domain
 					subject = CRT
 				}
+				add_truce_with = CRT
+				remove_historical_rival = CRT
+			}
+			CRT = {
+				add_historical_rival = ROM
+				remove_historical_rival = CAR
+				add_liberty_desire = -50
+				add_rival = ROM
+				add_truce_with = CAR
+				add_truce_with = ROM
+			}
+			ROM = {
+				add_historical_rival = CRT
+				add_truce_with = CRT
 			}
 			TTQ = {
 				country_event = {
@@ -1071,12 +1114,22 @@ country_event = {
 					months = 360
 				}
 			}
+			hispania_superregion = {
+				limit = {
+					is_core = CRT
+					owner = { NOT = { tag = CRT } }
+				}
+				owner = { set_country_flag = hannibal_war_target }
+			}
 		}
 	}
 
 	option = {
 		name = "punic_wars.14.a" # lets go barcids! wish you luck
 		custom_tooltip = punic_wars.14.tt
+		ai_chance = {
+			factor = 100
+		}
 		add_prestige = 3
 		hidden_effect = {
 			every_country = {
@@ -1090,6 +1143,7 @@ country_event = {
 							region = hispania_baetica
 						}
 					}
+					NOT = { tag = TTQ }
 				}
 				declare_war = CRT
 			}
@@ -1117,6 +1171,7 @@ country_event = {
 							region = hispania_baetica
 						}
 					}
+					NOT = { tag = TTQ }
 				}
 				declare_war = CRT
 			}
@@ -1154,6 +1209,119 @@ country_event = { #Tartessos submits
 	option = {
 		ai_chance = { factor = 20 }
 		name = "punic_wars.1401.b"
+		declare_war = CRT
+	}
+}
+country_event = { # Barcids eat Hispanian neighbour, hispanian
+	id = punic_wars.1402
+	title = "punic_wars.1402.t"
+	desc = "punic_wars.1402.d"
+	picture = punicgfx_hannibal2
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	trigger = {
+		has_country_flag = hannibal_war_target
+		war_with = CRT
+		CRT = {
+			war_score_against = {
+				who = ROOT
+				value = 50
+			}
+		}
+		NOT = { has_global_flag = hannibal_surrendering }
+	}
+
+	immediate = {
+		set_global_flag = hannibal_surrendering
+		clr_country_flag = hannibal_war_target
+	}
+
+	option = {
+		name = "punic_wars.1402.a"
+		ai_chance = { factor = 100 }
+		every_known_country = {
+			limit = {
+				OR = {
+					is_in_war = {
+						attacker_leader = ROOT
+						defender_leader = CRT
+					}
+					is_in_war = {
+						defender_leader = ROOT
+						attacker_leader = CRT
+					}
+				}
+			}
+			every_owned_province = {
+				limit = {
+					controlled_by = CRT
+					OR = {
+						is_core = CRT
+						is_claim = CRT
+					}
+				}
+				set_province_flag = hannibal_take_prov
+			}
+		}
+		CRT = {
+			country_event = {
+				id = punic_wars.1403
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1402.b"
+		add_war_exhaustion = -2
+	}
+}
+country_event = { # Barcids eat Hispanian neighbour, carthage
+	id = punic_wars.1403
+	title = "punic_wars.1403.t"
+	desc = "punic_wars.1403.d"
+	picture = punicgfx_hannibal2
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = "punic_wars.1403.a"
+		ai_chance = { factor = 100 }
+		custom_tooltip = punic_wars.1403.tt
+		FROM = {
+			white_peace = CRT
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+						is_core = CRT
+					}
+					cede_province = CRT
+				}
+				hispania_superregion = {
+					limit = {
+						has_province_flag = hannibal_take_prov
+					}
+					cede_province = CRT
+					clr_province_flag = hannibal_take_prov
+				}
+			}
+		}
+		clr_global_flag = hannibal_surrendering
+	}
+
+	option = {
+		name = "punic_wars.1403.b"
+		hidden_effect = {
+			hispania_superregion = {
+				limit = {
+					has_province_flag = hannibal_take_prov
+				}
+				clr_province_flag = hannibal_take_prov
+			}
+		}
+		clr_global_flag = hannibal_surrendering
 	}
 }
 
@@ -1163,6 +1331,7 @@ country_event = { # Hannibal takes power after death of father
 	desc = "punic_wars.140.d"
 	picture = punicgfx_hannibal2
 	fire_only_once = yes
+	major = yes
 	is_triggered_only = yes
 
 	option = {
@@ -1208,8 +1377,149 @@ country_event = { # Hannibal takes power after death of father
 			manuever = 5
 			siege = 2
 		}
+		remove_country_modifier = barcids_invasion_iberia_buff
+		add_country_modifier = {
+			name = barcids_hannibal_buff
+			duration = 3650
+		}
+		toletum_area = { add_core = CRT }
+		numantia_area = { add_core = CRT }
+		caesaraugustanus_area = { add_core = CRT }
+		iberus_area = { add_core = CRT }
+		lacetania_area = { add_core = CRT }
+		ilercavonesis_area = { add_core = CRT }
+		rhoda_area = { add_core = CRT }
+		olcadia_area = { add_core = CRT }
+		hidden_effect = {
+			ROM = {
+				country_event = {
+					id = punic_wars.1404
+					days = 10
+				}
+			}
+			hispania_superregion = {
+				limit = {
+					is_core = CRT
+					owner = {
+						NOT = {
+							tag = CRT
+							is_subject_of = CRT
+						}
+					}
+				}
+				owner = { set_country_flag = hannibal_war_target }
+			}
+		}
 	}
 }
+
+########################################################################################
+# Rome event for Hannibal
+########################################################################################
+
+country_event = {
+	id = punic_wars.1404
+	title = "punic_wars.1404.t"
+	desc = "punic_wars.1404.d"
+	picture = punicgfx_hannibal2
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.1404.a"
+		custom_tooltip = punic_wars.1404.tt
+	}
+}
+
+########################################################################################
+# Second Punic War begin oppourtunity, Rome begins
+########################################################################################
+
+country_event = {
+	id = punic_wars.14051
+	title = "punic_wars.1405.t"
+	desc = "punic_wars.1405.d"
+	picture = punicgfx_hannibal2
+	fire_only_once = yes
+	hidden = yes
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	trigger = {
+		tag = ROM
+		has_global_flag = barcids_rise
+		NOT = {	has_global_flag = second_punic_war_end }
+		NOT = {
+			war_with = CRT
+		}
+		CRT = {
+			any_owned_province = {
+				province_group = pg_north_of_iberus_group
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1405.a"
+		CRT = {
+			random_owned_province = {
+				limit = {
+					province_group = pg_north_of_iberus_group
+				}
+				province_event = {
+					id = punic_wars.14052
+				}
+			}
+		}
+	}
+}
+province_event = {
+	id = punic_wars.14052
+	title = "punic_wars.1405.t"
+	desc = "punic_wars.1405.d"
+	picture = punicgfx_hannibal2
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = "punic_wars.1405.a"
+		ROM = {
+			country_event = {
+				id = punic_wars.14053
+			}
+		}
+	}
+}
+
+country_event = {
+	id = punic_wars.14053
+	title = "punic_wars.1405.t"
+	desc = "punic_wars.1405.d"
+	picture = fall_of_saguntum
+	major = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "punic_wars.1405.a"
+		custom_tooltip = punic_wars.1405.tt
+		hidden_effect = {
+			declare_war_with_cb = {
+				casus_belli = cb_punic_war
+				who = CRT
+			}
+			country_event = {
+				id = punic_wars.15
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1405.b"
+		add_stability = -2
+		add_prestige = -50
+	}
+}
+
 ########################################################################################
 # Second Punic War started - notification event for Rome
 ########################################################################################
@@ -1223,7 +1533,7 @@ country_event = {
 	trigger = {
 		tag = ROM
 		has_global_flag = barcids_rise
-		NOT = {	has_global_flag = second_punic_war_end	 }
+		NOT = {	has_global_flag = second_punic_war_end }
 		war_with = CAR
 	}
 
@@ -1232,22 +1542,41 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			set_global_flag = second_punic_war_start
+			iberus_area = {
+				cede_province = CRT
+				add_core = CRT
+			}
+			CRT = {
+				every_owned_province = {
+					ROM = {
+						discover_province = PREV
+					}
+				}
+				every_subject_country = {
+					every_owned_province = {
+						ROM = {
+							discover_province = PREV
+						}
+					}
+				}
+			}
 		}
 	}
 
 	option = {
 		name = "punic_wars.15.a"
 		add_prestige = -3
-		CAR = {
-			country_event = {
-				id = punic_wars.150
-				days = 1
+		hidden_effect = {
+			CAR = {
+				country_event = {
+					id = punic_wars.150
+				}
 			}
-		}
-		ROM = { #Landing in Emporia
-			country_event = {
-				id = punic_wars.16
-				days = 3
+			ROM = { #Landing in Emporia
+				country_event = {
+					id = punic_wars.16
+					days = 14
+				}
 			}
 		}
 		add_country_modifier = {
@@ -1289,43 +1618,17 @@ country_event = { ##Landing in Emporia
 		name = "punic_wars.16.a"
 		custom_tooltip = punic_wars.16.tt
 		hidden_effect = {
-			254 = {
-				cede_province = ROM
-				infantry = ROM
-				infantry = ROM
-				infantry = ROM
-				infantry = ROM
-				infantry = ROM
-				infantry = ROM
-				infantry = ROM
-				cavalry = ROM
-				artillery = ROM
-				artillery = ROM
-			}
-			255 = {
-				cede_province = ROM
-			}
-			6504 = {
-				cede_province = ROM
-			}
-			253 = {
-				cede_province = ROM
-			}
-			6500 = {
-				cede_province = ROM
-				spawn_rebels = {
-					type = nationalist
-					size = 2
+			pg_north_of_iberus_coast_group = {
+				if = {
+					limit = {
+						owner = {
+							war_with = ROM
+						}
+					}
+					change_controller = ROM
 				}
-			}
-			250 = {
-				cede_province = ROM
-			}
-			6501 = {
-				cede_province = ROM
-				spawn_rebels = {
-					type = nationalist
-					size = 2
+				else = {
+					cede_province = ROM
 				}
 			}
 		}
@@ -1383,12 +1686,6 @@ country_event = { ##Alp Crossing
 		custom_tooltip = punic_wars.17.tt
 		hidden_effect = {
 			set_global_flag = hannibal_in_italy_flag
-			hispania_superregion = {
-				limit = {
-					owned_by = CAR
-				}
-				kill_units = { who = owner }
-			}
 			102 = {
 				cede_province = CRT
 				mercenary_infantry = CRT
@@ -1410,6 +1707,13 @@ country_event = { ##Alp Crossing
 				mercenary_infantry = CRT
 				mercenary_infantry = CRT
 				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				mercenary_infantry = CRT
+				samurai_infantry = CRT
 				samurai_infantry = CRT
 				artillery = CRT
 				artillery = CRT
@@ -1420,8 +1724,8 @@ country_event = { ##Alp Crossing
 				artillery = CRT
 				artillery = CRT
 				cossack_cavalry = CRT
-				cavalry = CRT
-				cavalry = CRT
+				cossack_cavalry = CRT
+				cossack_cavalry = CRT
 				cavalry = CRT
 				cavalry = CRT
 				cavalry = CRT
@@ -1429,40 +1733,28 @@ country_event = { ##Alp Crossing
 			101 = {
 				cede_province = CRT
 			}
+			gallia_cisalpina = {
+				CRT = { discover_province = PREV }
+				CAR = { discover_province = PREV }
+			}
 			every_country = {
 				limit = {
+					is_subject = no
 					capital_scope = {
-						OR = {
-							area = transpadana
-							area = liguria_septentrionalis_area
-							area = aemilia_area
-							area = cenomania_area
-							area = alpes_raetae
-						}
+						region = gallia_cisalpina
 					}
 				}
 				country_event = {
 					id = punic_wars.170
-					days = 1
 				}
-			}
-			every_country = {
-				limit = {
-					capital_scope = {
-						OR = {
-							area = alpes_cottiae
-						}
-					}
-				}
-				declare_war = CRT
-			}
-			SYR = {
-				declare_war = ROM
 			}
 			ROM = {
 				add_country_modifier = {
 					name = alps_crossing_caught_by_surprise
 					duration = 700
+				}
+				country_event = {
+					id = punic_wars.171
 				}
 			}
 		}
@@ -1474,13 +1766,1681 @@ country_event = { ##Alp Crossing - vassalizing cisalpine celts
 	title = "punic_wars.170.t"
 	desc = "punic_wars.170.d"
 	picture = hannibal1
-	fire_only_once = yes
+	is_triggered_only = yes
 
 
 	option = {
 		name = "punic_wars.170.a"
 		CAR = {
-			vassalize = ROOT
+			create_subject = {
+				subject_type = tributary_state
+				who = PREV
+			}
+		}
+	}
+}
+
+country_event = { ##Alp Crossing - Rome warning
+	id = punic_wars.171
+	title = "punic_wars.171.t"
+	desc = "punic_wars.171.d"
+	picture = hannibal
+	is_triggered_only = yes
+
+
+	option = {
+		name = "punic_wars.170.a"
+		add_prestige = -5
+	}
+}
+
+
+country_event = { #Punic war disaster
+	id = punic_wars.1701
+	title = "punic_wars.1701.t"
+	desc = "punic_wars.1701.d"
+	picture = panic
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		has_global_flag = second_punic_war_start
+		CRT = {
+			war_score_against = {
+				who = ROM
+				value = 20
+			}
+		}
+	}
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_country_flag = punic_war_disaster
+			set_country_flag = panic_election
+			random_list = {
+				15 = { country_event = { id = punic_wars.17010 days = 30 } }
+				10 = { country_event = { id = punic_wars.17011 days = 30 } }
+				5 = { country_event = { id = punic_wars.17012 days = 30 } }
+				5 = { country_event = { id = punic_wars.17013 days = 30 } }
+				5 = { country_event = { id = punic_wars.17014 days = 30 } }
+				7 = { country_event = { id = punic_wars.17015 days = 30 } }
+				7 = { country_event = { id = punic_wars.17016 days = 30 } }
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1701.a"
+		custom_tooltip = punic_wars.1701.tt
+		add_country_modifier = {
+			name = rome_mass_desertions
+			duration = 1825
+		}
+		add_stability = -2
+		add_prestige = -25
+		add_manpower = -20
+	}
+}
+
+country_event = { #Punic war disaster, enforce next military law
+	id = punic_wars.1702
+	title = "punic_wars.1702.t"
+	desc = "punic_wars.1702.d"
+	picture = senat_conflict
+
+	trigger = {
+		tag = ROM
+		had_country_flag = {
+			flag = punic_war_disaster
+			days = 240
+		}
+		NOT = { has_country_modifier = rome_mass_desertions }
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "punic_wars.1702.a"
+		add_mil_power = -150
+		custom_tooltip = punic_wars.1702.tt
+		hidden_effect = {
+			if = {
+				limit = {
+					has_country_modifier = rome_basic_mil
+				}
+				country_event = {
+					id = rome.17
+				}
+			}
+			if = {
+				limit = {
+					has_country_modifier = servius_tullius_mil
+				}
+				country_event = {
+					id = rome.19
+				}
+			}
+			if = {
+				limit = {
+					has_country_modifier = camillan_mil
+				}
+				country_event = {
+					id = rome.20
+				}
+			}
+			if = {
+				limit = {
+					has_country_modifier = polybian_mil
+				}
+				country_event = {
+					id = rome.35
+				}
+			}
+			if = {
+				limit = {
+					has_country_modifier = marian_mil
+				}
+				country_event = {
+					id = rome.36
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.1702.b"
+		add_stability = 1
+	}
+}
+
+country_event = { #Punic war disaster, emergency consul appointment & dictatorship
+	id = punic_wars.1703
+	title = "punic_wars.1703.t"
+	desc = "punic_wars.1703.d"
+	picture = senat_conflict
+
+	trigger = {
+		tag = ROM
+		had_country_flag = {
+			flag = punic_war_disaster
+			days = 180
+		}
+		has_country_flag = panic_election
+	}
+
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = { set_country_flag = election_happening }
+	}
+
+	after = {
+		hidden_effect = {
+			clr_country_flag = panic_election
+			clr_country_flag = election_happening
+		}
+	}
+
+	option = { #temp. dictatorship
+		name = "punic_wars.1703.a"
+		add_republican_tradition = -5
+		define_ruler = {
+			name = "Scipio Africanus"
+			dynasty = "Cornelii"
+			adm = 5
+			dip = 3
+			mil = 6
+			age = 31
+		}
+		hidden_effect = {
+			kill_heir = { allow_new_heir = no }
+			country_event = { id = government.38 days = 35 }
+		}
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 3
+			claim = 100
+			age = 40
+			male = yes
+			no_consort_with_heir = yes
+		}
+		add_country_modifier = {
+			name = roman_dictatorship
+			duration = 1095
+		}
+		if = {
+			limit = { republican_tradition = 70 }
+			add_ruler_modifier = { name = co_consul }
+		}
+		else = {
+			add_ruler_modifier = { name = angry_consul }
+		}
+	}
+
+	option = { #perm. dictatorship til end
+		name = "punic_wars.1703.b"
+		add_stability = -1
+		add_republican_tradition = -15
+		define_ruler = {
+			name = "Scipio Africanus"
+			dynasty = "Cornelii"
+			adm = 5
+			dip = 3
+			mil = 6
+			age = 31
+		}
+		hidden_effect = {
+			kill_heir = { allow_new_heir = no }
+			country_event = { id = government.38 days = 35 }
+		}
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 3
+			claim = 100
+			age = 40
+			male = yes
+			no_consort_with_heir = yes
+		}
+		add_country_modifier = {
+			name = roman_dictatorship
+			duration = -1
+		}
+		if = {
+			limit = { republican_tradition = 70 }
+			add_ruler_modifier = { name = co_consul }
+		}
+		else = {
+			add_ruler_modifier = { name = angry_consul }
+		}
+	}
+
+	option = { #normal guy
+		name = "punic_wars.1703.c"
+		define_ruler = {
+			name = "Scipio Africanus"
+			dynasty = "Cornelii"
+			adm = 5
+			dip = 3
+			mil = 6
+			age = 31
+		}
+		hidden_effect = {
+			kill_heir = { allow_new_heir = no }
+			country_event = { id = government.38 days = 35 }
+		}
+		define_heir = {
+			max_random_adm = 3
+			max_random_dip = 3
+			max_random_mil = 3
+			claim = 100
+			age = 40
+			male = yes
+			no_consort_with_heir = yes
+		}
+		if = {
+			limit = { republican_tradition = 70 }
+			add_ruler_modifier = { name = co_consul }
+		}
+		else = {
+			add_ruler_modifier = { name = angry_consul }
+		}
+	}
+}
+
+country_event = { #Punic war disaster, mass conscriptions
+	id = punic_wars.1704
+	title = "punic_wars.1704.t"
+	desc = "punic_wars.1704.d"
+	picture = training
+
+	trigger = {
+		tag = ROM
+		had_country_flag = {
+			flag = punic_war_disaster
+			days = 240
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "punic_wars.1704.a"
+		add_manpower = 40
+		add_army_tradition = -10
+		add_stability = -1
+		add_country_modifier = {
+			name = emergency_punic_conscriptions
+			duration = 1825
+		}
+	}
+
+	option = {
+		name = "punic_wars.1704.b"
+		add_manpower = 20
+	}
+}
+
+country_event = { #Punic war disaster, solving the desertions
+	id = punic_wars.1705
+	title = "punic_wars.1705.t"
+	desc = "punic_wars.1705.d"
+	picture = senat_conflict
+
+	trigger = {
+		tag = ROM
+		had_country_flag = {
+			flag = punic_war_disaster
+			days = 120
+		}
+		has_country_modifier = rome_mass_desertions
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 4
+			NOT = { has_country_modifier = emergency_punic_conscriptions }
+		}
+		modifier = {
+			factor = 4
+			NOT = { has_ruler = "Scipio Africanus" }
+		}
+	}
+
+	option = {
+		name = "punic_wars.1705.a"
+		add_years_of_income = -0.75
+		add_adm_power = -100
+		remove_country_modifier = rome_mass_desertions
+	}
+
+	option = {
+		name = "punic_wars.1705.b"
+		add_republican_tradition = -10
+		add_yearly_manpower = -1
+		add_army_tradition = -5
+		remove_country_modifier = rome_mass_desertions
+	}
+
+	option = {
+		name = "punic_wars.1705.c"
+		add_prestige = -5
+	}
+}
+
+country_event = { #Punic war disaster, etruscan revolts
+	id = punic_wars.17010
+	title = "punic_wars.17010.t"
+	desc = "punic_wars.17010.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				province_group = pg_etruria_group
+			}
+			any_subject_country = {
+				any_owned_province = {
+					province_group = pg_etruria_group
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			pg_etruria_group = {
+				type = any
+				OR = { controlled_by = CRT controlled_by = CAR }
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							province_group = pg_etruria_group
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							province_group = pg_etruria_group
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17010.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 3 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, umbrian revolts
+	id = punic_wars.17011
+	title = "punic_wars.17011.t"
+	desc = "punic_wars.17011.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = umbria_area
+					area = picenum_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = umbria_area
+						area = picenum_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			OR = {
+				umbria_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				picenum_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = umbria_area
+								area = picenum_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = umbria_area
+								area = picenum_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17011.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, marsium revolts
+	id = punic_wars.17012
+	title = "punic_wars.17012.t"
+	desc = "punic_wars.17012.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = sabinia_area
+					area = marsium_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = sabinia_area
+						area = marsium_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			OR = {
+				sabinia_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				marsium_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = sabinia_area
+								area = marsium_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = sabinia_area
+								area = marsium_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17012.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, latium revolts
+	id = punic_wars.17013
+	title = "punic_wars.17013.t"
+	desc = "punic_wars.17013.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = latium_area
+					area = latium_novum_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = latium_area
+						area = latium_novum_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 360
+		modifier = {
+			factor = 0.60
+			OR = {
+				latium_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				latium_novum_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = latium_area
+								area = latium_novum_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = latium_area
+								area = latium_novum_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17013.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, campania revolts
+	id = punic_wars.17014
+	title = "punic_wars.17014.t"
+	desc = "punic_wars.17014.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				area = campania_area
+			}
+			any_subject_country = {
+				any_owned_province = {
+					area = campania_area
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 360
+		modifier = {
+			factor = 0.60
+			campania_area = {
+				type = any
+				OR = { controlled_by = CRT controlled_by = CAR }
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							area = campania_area
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							area = campania_area
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17014.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, samnium revolts
+	id = punic_wars.17015
+	title = "punic_wars.17015.t"
+	desc = "punic_wars.17015.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = samnium_area
+					area = frentania_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = samnium_area
+						area = frentania_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			OR = {
+				samnium_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				frentania_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = samnium_area
+								area = frentania_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = samnium_area
+								area = frentania_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17015.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 3 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, apulia revolts
+	id = punic_wars.17016
+	title = "punic_wars.17016.t"
+	desc = "punic_wars.17016.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = daunia_area
+					area = apulia_area
+					area = salento_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = daunia_area
+						area = apulia_area
+						area = salento_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			OR = {
+				daunia_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				apulia_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				salento_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = daunia_area
+								area = apulia_area
+								area = salento_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = daunia_area
+								area = apulia_area
+								area = salento_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17016.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 3 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
+		}
+	}
+}
+
+country_event = { #Punic war disaster, apulia revolts
+	id = punic_wars.17017
+	title = "punic_wars.17017.t"
+	desc = "punic_wars.17017.d"
+	picture = socii_revolt
+
+	trigger = {
+		tag = ROM
+		has_country_flag = punic_war_disaster
+		NOT = {
+			has_global_flag = rebel_socii_happening
+			has_global_flag = second_punic_war_near_end
+		}
+		OR = {
+			any_owned_province = {
+				OR = {
+					area = lucania_area
+					area = bruttium_area
+					area = calabria_area
+				}
+			}
+			any_subject_country = {
+				any_owned_province = {
+					OR = {
+						area = lucania_area
+						area = bruttium_area
+						area = calabria_area
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 240
+		modifier = {
+			factor = 0.60
+			OR = {
+				lucania_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				bruttium_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+				calabria_area = {
+					type = any
+					OR = { controlled_by = CRT controlled_by = CAR }
+				}
+			}
+		}
+		modifier = {
+			factor = 0.50
+			CRT = {
+				war_score_against = {
+					who = ROM
+					value = 20
+				}
+			}
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 1 }
+		}
+		modifier = {
+			factor = 0.90
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 0.95
+			has_country_modifier = roman_dictatorship
+		}
+		modifier = {
+			factor = 0.90
+			has_country_modifier = emergency_punic_conscriptions
+		}
+	}
+
+	immediate = {
+		hidden_effect = {
+			set_global_flag = rebel_socii_happening
+			if = {
+				limit = {
+					any_subject_country = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = lucania_area
+								area = bruttium_area
+								area = calabria_area
+							}
+						}
+					}
+				}
+				ROM = { set_country_flag = socii_revolts }
+				every_subject_country = {
+					limit = {
+						is_subject_of_type = socii_subject
+						capital_scope = {
+							OR = {
+								area = lucania_area
+								area = bruttium_area
+								area = calabria_area
+							}
+						}
+					}
+					set_country_flag = socii_revolting
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "punic_wars.17017.a"
+		if = {
+			limit = {
+				has_country_flag = socii_revolts
+			}
+			custom_tooltip = punic_wars_rome_socii_revolt.tt
+			hidden_effect = {
+				every_subject_country = {
+					limit = {
+						has_country_flag = socii_revolting
+					}
+					add_country_modifier = { name = socii_war_buff_indiv duration = 365 }
+					add_prestige_or_monarch_power = { amount = 10 }
+					add_army_tradition_or_mil_power = { amount = 10 }
+					add_manpower = 4
+					add_treasury = 200
+					set_country_flag = rebel_socii
+					declare_war_with_cb = {
+						who = PREV
+						casus_belli = cb_rome_socii_rebellion
+					}
+					clr_country_flag = socii_revolting
+				}
+			}
+		}
+		else = {
+			custom_tooltip = punic_wars_rome_rebel_revolt.tt
+			hidden_effect = {
+				set_variable = { which = whilecounter value = 2 }
+				while = {
+					limit = { check_variable = { whilecounter = 1 }  }
+					subtract_variable = { whilecounter = 1 }
+					random_owned_province = {
+						limit = {
+							province_group = pg_etruria_group
+							NOT = { has_province_flag = rebels_spawned }
+						}
+						set_province_flag = rebels_spawned
+						change_controller = REB
+						spawn_rebels = {
+							type = nationalist
+							size = 2
+						}
+					}
+				}
+			}
+		}
+	}
+
+	after = {
+		hidden_effect = {
+			clr_global_flag = rebel_socii_happening
+			clr_country_flag = socii_revolts
 		}
 	}
 }
@@ -1496,21 +3456,12 @@ country_event = { #Hannibal escapes Italy
 		tag = ROM
 		has_global_flag = hannibal_in_italy_flag
 		war_with = CAR
-		CRT = {
-			num_of_owned_provinces_with = {
-				superregion = italia_superregion
-				controlled_by = ROM
-				value = 2
-			}
-		}
+		controls = 101
+		controls = 102
 		NOT = {
-			CAR = {
-				units_in_province = italia_superregion
-			}
-		}
-		NOT = {
-			CRT = {
-				units_in_province = italia_superregion
+			italia_superregion = {
+				units_in_province = CAR
+				units_in_province = CRT
 			}
 		}
 	}
@@ -1520,6 +3471,9 @@ country_event = { #Hannibal escapes Italy
 	immediate = {
 		hidden_effect = {
 			set_global_flag = second_punic_war_near_end
+			CRT = {
+				remove_country_modifier = barcids_hannibal_buff
+			}
 		}
 	}
 
@@ -1538,9 +3492,7 @@ country_event = { #Hannibal escapes Italy
 						is_subject_of = CRT
 					}
 				}
-				ROM = {
-					inherit = THIS
-				}
+				grant_independence = yes
 			}
 			CRT = {
 				every_owned_province = {
@@ -1556,7 +3508,7 @@ country_event = { #Hannibal escapes Italy
 					limit = {
 						superregion = italia_superregion
 					}
-					remove_core = CRT
+					remove_core = CAR
 					cede_province = ROM
 				}
 			}
@@ -1589,12 +3541,6 @@ country_event = { #Second Punic War end
 						controlled_by = ROM
 					}
 				}
-				CAR = {
-					any_owned_province = {
-						region = africa_region
-						controlled_by = ROM
-					}
-				}
 			}
 			AND = {
 				612 = { controlled_by = ROM }
@@ -1612,6 +3558,11 @@ country_event = { #Second Punic War end
 		hidden_effect = {
 			set_global_flag = second_punic_war_end
 			clr_country_flag = second_punic_war_near_end
+			clr_country_flag = punic_war_disaster
+			remove_country_modifier = roman_dictatorship
+			remove_country_modifier = emergency_punic_conscriptions
+			remove_country_modifier = rome_mass_desertions
+			remove_country_modifier = rom_punic_war_2_navy_buff
 			ROM = {
 				white_peace = CRT
 				white_peace = CAR
@@ -1626,165 +3577,31 @@ country_event = { #Second Punic War end
 			CRT = {
 				every_owned_province = {
 					limit = {
-						superregion = hispania_superregion
+						OR = {
+							province_group = pg_punicwar_iberia_group
+							province_group = pg_north_of_iberus_group
+						}
 					}
 					cede_province = ROM
 				}
+				hispania_superregion = {
+					remove_core = CRT
+				}
 			}
-			hispania_superregion = {
-				type = all
-				remove_core = CRT
-			}
+
 			CAR = {
 				every_owned_province = {
 					limit = {
-						superregion = hispania_superregion
+						OR = {
+							province_group = pg_punicwar_iberia_group
+							area = baleares_area
+							province_id = 1249
+							province_id = 1250
+						}
 					}
 					cede_province = ROM
 				}
-			}
-			ROM = {
-				add_treasury = 10000
-				add_prestige = 50
-				add_adm_power = 300
-				add_dip_power = 300
-				add_mil_power = 300
-				add_stability = 1
-				add_war_exhaustion = -2
-				inherit = CRT
-				release = ARQ
-				release = BLQ
-				release = LSQ
-				release = SEQ
-				release = TBQ
-				release = LOQ
-				release = ORQ
-				release = CRQ
-				release = TIQ
-				release = AEQ
-				release = TUQ
-				release = CUQ
-				gades_area = {
-					type = all
-					add_core = ROM
-					cede_province = ROM
-				}
-				malaca_area = {
-					type = all
-					add_core = ROM
-					cede_province = ROM
-				}
-				regina_turdulorum_area = {
-					type = all
-					add_core = ROM
-					cede_province = ROM
-				}
-				baetis_area = {
-					type = all
-					add_core = ROM
-					cede_province = ROM
-				}
-				carthaginensis_area = {
-					type = all
-					add_core = ROM
-					cede_province = ROM
-				}
-				every_owned_province = {
-					limit = {
-						area = lassira_area
-					}
-					cede_province = CLQ
-				}
-				every_owned_province = {
-					limit = {
-						area = toletum_area
-					}
-					cede_province = CLQ
-				}
-				every_owned_province = {
-					limit = {
-						area = lusitania_east
-					}
-					cede_province = CR8
-				}
-				every_owned_province = {
-					limit = {
-						area = emeritanus_area
-					}
-					cede_province = CCQ
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = olcadia_area
-							area = numantia_area
-						}
-					}
-					cede_province = CCQ
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = cluniensis_area
-							area = segovia_area
-						}
-					}
-					cede_province = VC8
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = asturica_area
-							area = asturum_area
-						}
-					}
-					cede_province = ASQ
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = cantabria_area
-							area = cantabria_sea_area
-						}
-					}
-					cede_province = CBQ
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = vasconensis_area
-							area = vasconensis_sea_area
-						}
-					}
-					cede_province = VRQ
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = lusitania_west
-							area = scallabitanus_area
-							area = oestriminis_inferior
-						}
-					}
-					cede_province = LUS
-				}
-				every_owned_province = {
-					limit = {
-						region = gallaecia
-					}
-					cede_province = GLQ
-				}
-				6514 = {
-					cede_province = ILQ
-				}
-				6503 = {
-					cede_province = ILQ
-				}
-				210 = {
-					cede_province = ILQ
-				}
-			}
-			CAR = {
+
 				every_owned_province = {
 					limit = {
 						OR = {
@@ -1797,144 +3614,287 @@ country_event = { #Second Punic War end
 					add_core = SLT
 					cede_province = SLT
 				}
-				every_owned_province = {
+
+				#create numidia
+				if = {
 					limit = {
-						region = lybia_deserta_region
+						exists = NUM
 					}
-					remove_core = CAR
-					cede_province = XXX
-				}
-				every_owned_province = {
-					limit = {
-						area = fortunatae_insulae
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CAR
+						add_core = NUM
+						cede_province = NUM
 					}
-					remove_core = CAR
-					cede_province = XXX
 				}
-				every_owned_province = {
+				else = {
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CAR
+						add_core = NUM
+					}
+					release = NUM
+				}
+
+				if = {
 					limit = {
-						OR = {
-							area = cirta_area
-							area = thevestis_area
-							area = mauretania_sitifensis
-							area = caesariensis_west
-							area = caesariensis_east
-							area = siga_area
-							area = deserta_mauretania
-							province_id = 622
-							province_id = 626
-							province_id = 627
-							province_id = 5869
-							province_id = 7006
-							province_id = 5615
-							province_id = 8513
+						exists = GAT
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CAR
+						add_core = GAT
+						cede_province = GAT
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CAR
+						add_core = GAT
+					}
+					release = GAT
+				}
+
+				if = {
+					limit = {
+						exists = BAG
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CAR
+						add_core = BAG
+						cede_province = BAG
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CAR
+						add_core = BAG
+					}
+					release = BAG
+				}
+
+				if = {
+					limit = {
+						exists = NAS
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CAR
+						add_core = NAS
+						cede_province = NAS
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CAR
+						add_core = NAS
+					}
+					release = NAS
+				}
+
+				if = {
+					limit = {
+						exists = GAR
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CAR
+						add_core = GAR
+						cede_province = GAR
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CAR
+						add_core = GAR
+					}
+					release = GAR
+				}
+				if = {
+					limit = {
+						exists = MRT
+					}
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+						remove_core = CAR
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				else_if = {
+					limit = {
+						any_owned_province = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
 						}
 					}
-					remove_core = CAR
-					add_core = NUM
-					cede_province = NUM
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = madethubadus_area
-							area = gaetulia
-							area = militiana_area
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
 						}
+						remove_core = CAR
+						add_core = MRT
 					}
-					remove_core = CAR
-					add_core = GAT
-					cede_province = GAT
+					release = MRT
 				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = deserta_tripolitania
-							area = deserta_syrtica
+				else = {
+					every_known_country = {
+						limit = {
+							capital_scope = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
 						}
-					}
-					remove_core = CAR
-					add_core = BAG
-					cede_province = BAG
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = augila_area
-							area = nasamonia_area
+						every_owned_province = {
+							limit = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
+							remove_core = CAR
+							add_core = MRT
 						}
+						set_country_flag = potential_releaser_ugly_workaround
 					}
-					remove_core = CAR
-					add_core = NAS
-					cede_province = NAS
-				}
-				every_owned_province = {
-					limit = {
-						OR = {
-							area = garamantum_area
-							area = desertum_africanum
-							area = garamantum_ulterior
+					random_known_country = {
+						limit = {
+							has_country_flag = potential_releaser_ugly_workaround
 						}
+						release = MRT
 					}
-					remove_core = CAR
-					add_core = GAR
-					cede_province = GAR
-				}
-				every_owned_province = {
-					limit = {
-						region = mauretania_region
-						NOT = {
-							area = cartenna_area
+					every_province = {
+						limit = {
+							owner = { has_country_flag = potential_releaser_ugly_workaround }
+							is_core = MRT
 						}
+						cede_province = MRT
 					}
-					remove_core = CAR
-					add_core = MRT
-					cede_province = MRT
+					every_known_country = {
+						clr_country_flag = potential_releaser_ugly_workaround
+					}
 				}
 			}
 			MRT = {
 				change_government = monarchy
 				add_government_reform = despotism_reform
-				add_stability = 1
-				add_absolutism = 20
+				add_absolutism = 10
 				add_prestige = 10
-				inherit = DM7
-				inherit = HRP
-				inherit = MAE
-				inherit = BCU
-				inherit = AUT
-				inherit = DU6
-				inherit = DU6
-			}
-			atlas_mons = {
-				add_core = MRT
-				cede_province = MRT
-			}
-			mauretania_ulterior = {
-				add_core = MRT
-				remove_core = NUM
-				cede_province = MRT
-			}
-			519 = {
-				add_core = MRT
-				cede_province = MRT
-			}
-			533 = {
-				add_core = NUM
-				remove_core = MRT
-				cede_province = NUM
-			}
-			ROM = {
-				create_subject = {
-					subject_type = tributary_state
-					subject = MRT
+				mauretania_region = {
+					discover_country = MRT
 				}
+				every_known_country = {
+					limit = {
+						capital_scope = {
+							region = mauretania_region
+							NOT = { province_group = pg_punicwar_numidia_group }
+						}
+					}
+					if = {
+						limit = {
+							total_development = MRT
+						}
+						MRT = { inherit = PREV }
+					}
+					else = {
+						MRT = {
+							create_subject = {
+								subject_type = vassal
+								subject = PREV
+							}
+						}
+					}
+				}
+				atlas_mons = {
+					if = {
+						limit = {
+							is_city = no
+						}
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				mauretania_ulterior = {
+					if = {
+						limit = {
+							is_city = no
+						}
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				disband_all_units = yes
+				stabilize_country_effect = yes
 			}
 			NUM = {
 				change_government = monarchy
 				add_government_reform = despotism_reform
-				add_stability = 1
-				add_absolutism = 20
+				add_absolutism = 10
 				add_prestige = 10
 				define_ruler = {
 					name = "Massinissa I"
@@ -1946,87 +3906,104 @@ country_event = { #Second Punic War end
 					age = 30
 				}
 				set_capital = 589
-				create_alliance = ROM
-				inherit = MAA
-				inherit = MYL
-				inherit = SLI
-				inherit = ASR
-				inherit = AZU
-				every_owned_province = {
+				add_historical_friend = ROOT
+				ROOT = { add_historical_friend = PREV }
+				pg_punicwar_numidia_group = {
+					discover_country = NUM
+				}
+				africa_region = {
+					discover_country = NUM
+				}
+				every_known_country = {
 					limit = {
-						OR = {
-							area = deserta_mauretania
-							area = diur_mons
-							area = tingitana_east
-							area = tingitana_west
-							area = mauretania_superior
-							area = mauretania_ulterior
-
+						or = {
+							capital_scope = { province_group = pg_punicwar_numidia_group }
+							TAG = GAT
 						}
 					}
-					remove_core = NUM
-					add_core = MRT
-					cede_province = MRT
+					if = {
+						limit = {
+							total_development = NUM
+						}
+						NUM = { inherit = PREV }
+					}
+					else = {
+						NUM = {
+							create_subject = {
+								subject_type = vassal
+								subject = PREV
+							}
+						}
+					}
 				}
+				every_subject_country = {
+					limit = {
+						OR = { tag = MAA tag = MYL }
+					}
+					NUM = { inherit = PREV }
+				}
+				disband_all_units = yes
+				stabilize_country_effect = yes
 			}
 			GAR = {
 				change_government = monarchy
 				add_government_reform = despotism_reform
-				add_stability = 1
-				add_absolutism = 20
+				add_absolutism = 10
 				add_prestige = 10
-			}
-			garamantum_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				garamantum_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
 				}
-				add_core = GAR
-				cede_province = GAR
-			}
-			desertum_africanum = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				desertum_africanum = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
 				}
-				add_core = GAR
-				cede_province = GAR
-			}
-			garamantum_ulterior = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				garamantum_ulterior = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
 				}
-				add_core = GAR
-				cede_province = GAR
+				disband_all_units = yes
+				stabilize_country_effect = yes
 			}
 			BAG = {
 				change_government = tribal
 				add_government_reform = steppe_horde_reform
-			}
-			deserta_tripolitania = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				deserta_tripolitania = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
 				}
-				add_core = BAG
-				cede_province = BAG
-			}
-			deserta_syrtica = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				deserta_syrtica = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
 				}
-				add_core = BAG
-				cede_province = BAG
-			}
-			deserta_numidia = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				deserta_numidia = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
 				}
-				add_core = BAG
-				cede_province = BAG
 			}
 			GAT = {
 				change_government = tribal
@@ -2035,22 +4012,86 @@ country_event = { #Second Punic War end
 			NAS = {
 				change_government = tribal
 				add_government_reform = steppe_horde_reform
-			}
-			augila_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				augila_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = NAS
+					cede_province = NAS
 				}
-				add_core = NAS
-				cede_province = NAS
-			}
-			nasamonia_area = {
-				limit = {
-					NOT = { is_core = ROOT }
-					NOT = { owned_by = ROOT }
+				nasamonia_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = NAS
+					cede_province = NAS
 				}
-				add_core = NAS
-				cede_province = NAS
+			}
+			CRT = {
+				release_all_subjects = yes
+				release_all_possible_countries = yes
+				every_owned_province = {
+					set_province_flag = annihilate_country_flag
+				}
+				annihilate_country_effect = yes
+			}
+			CAR = {
+				add_country_modifier = {
+					name = punic_war_car_disarmament
+					duration = -1
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							region = libya_deserta_region
+							area = fortunatae_insulae
+						}
+					}
+					remove_core = CAR
+					decolonize = yes
+				}
+				release = ISC
+				release = EMC
+				release = SKY
+				release = TRP
+				release = AST
+				release = IDY
+				release_all_subjects = yes
+			}
+		}
+		ROM = {
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+						culture_group = iberian_group
+						has_port = yes
+					}
+					add_territorial_core = ROM
+				}
+			}
+			add_treasury = 10000
+			add_prestige = 50
+			add_adm_power = 200
+			add_dip_power = 200
+			add_mil_power = 200
+			add_stability = 1
+			add_war_exhaustion = -2
+		}
+	}
+	after = {
+		hidden_effect = {
+			CAR = {
+				every_owned_province = {
+					limit = {
+						NOT = {
+							region = africa_region
+						}
+					}
+					set_province_flag = annihilate_country_flag
+				}
+				annihilate_country_effect = yes
 			}
 		}
 	}
@@ -2065,14 +4106,15 @@ country_event = {
 	desc = "punic_wars.20.d"
 	picture = third_punic_war
 	fire_only_once = yes
-
+	is_triggered_only = yes
 	trigger = {
-		tag = ROM
-		has_global_flag = second_punic_war_end
-		NOT = {
-			has_global_flag = third_punic_war_end
-		}
-		war_with = CAR
+		always = no
+		# tag = ROM
+		# has_global_flag = second_punic_war_end
+		# NOT = {
+		# 	has_global_flag = third_punic_war_end
+		# }
+		# war_with = CAR
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -2114,14 +4156,15 @@ country_event = { #Third Punic War end
 	desc = "punic_wars.21.d"
 	picture = third_punic_war_end
 	fire_only_once = yes
-
+	is_triggered_only = yes
 	trigger = {
-		tag = ROM
-		has_global_flag = third_punic_war_start
-		war_with = CAR
-		612 = {
-			controlled_by = ROM
-		}
+		always = no
+		# tag = ROM
+		# has_global_flag = third_punic_war_start
+		# war_with = CAR
+		# 612 = {
+		# 	controlled_by = ROM
+		# }
 	}
 
 	mean_time_to_happen = { months = 1 }

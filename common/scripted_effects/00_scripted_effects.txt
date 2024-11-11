@@ -1994,3 +1994,37 @@ color_subjects_create_sub = {
 		}
 	}
 }
+
+annihilate_country_effect = {
+	every_owned_province = {
+		limit = { has_province_flag = annihilate_country_flag }
+		if = {
+			limit = { any_core_country = { NOT = { tag = ROOT } } }
+			random_core_country = {
+				limit = { NOT = { tag = ROOT } }
+				PREV = { cede_province = PREV }
+			}
+		}
+		else_if = {
+			limit = {
+				any_neighbor_province = {
+					is_city = yes
+					NOT = { owned_by = ROOT }
+				}
+			}
+			random_neighbor_province = {
+				limit = {
+					is_city = yes
+					NOT = { owned_by = ROOT }
+				}
+				owner = { save_event_target_as = new_owner }
+			}
+			if = {
+				limit = { has_saved_event_target = new_owner }
+				cede_province = event_target:new_owner
+			}
+		}
+		else = { decolonize = yes }
+		clr_province_flag = annihilate_country_flag
+	}
+}
