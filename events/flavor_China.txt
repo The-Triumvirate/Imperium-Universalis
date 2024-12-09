@@ -837,7 +837,7 @@ country_event = {
 	trigger = {
 		tag = CHU
 		NOT = {
-			total_development = 230
+			total_development = 240
 		}
 		has_country_flag = zhuxiatouxian_wang
 	}
@@ -2909,7 +2909,7 @@ country_event = {
 			form_coalition_against = CHU
 		}
 		ai_chance = { 
-			factor = 65
+			factor = 70
 		}
 	}
 	option = {
@@ -2946,7 +2946,7 @@ country_event = {
 			remove_core = CHU
 		}
 		ai_chance = { 
-			factor = 35
+			factor = 30
 		}
 	}
 }
@@ -4353,7 +4353,6 @@ country_event = {
 	title = "china.85.t"
 	desc = "china.85.d"
 	picture = trade
-	fire_only_once = yes
 	
 	trigger = {
 		is_papal_controller = yes
@@ -4678,6 +4677,8 @@ country_event = {
 			limit = {
 				OR = {
 					tag = YUO
+					tag = YIG
+					tag = BIY
 					tag = KUA
 				}
 			}
@@ -4714,6 +4715,7 @@ country_event = {
 					tag = YIC
 					tag = LAO
 					tag = LIU
+					tag = NNM
 				}
 			}
 			set_dynasty = "Yan"
@@ -4774,7 +4776,6 @@ country_event = {
 	title = "china.90.t"
 	desc = "china.90.d"
 	picture = deligation
-	fire_only_once = yes
 	
 	trigger = {
 		religion = chinese_religion
@@ -5350,5 +5351,297 @@ country_event = {
 		remove_country_modifier = xnc_yufang_mod
 		clr_country_flag = zhuxiatouxian_YuFang
 		set_country_flag = zhuxiatouxian_Hou
+	}
+}
+
+########################################################################################
+# yong joins baipu
+########################################################################################
+country_event = {
+	id = china.104
+	title = "china.104.t"
+	desc = "china.104.d"
+	picture = guard
+	fire_only_once = yes
+	
+	trigger = {
+		tag = YON
+		CHU = {
+			has_country_flag = chu_began_bii_war
+			NOT = {
+				has_country_flag = chu_end_bii_war
+			}
+		}
+		BII = {
+			exists = yes
+			is_at_war = yes
+		}
+		OR = {
+			AND = {
+				BII = {
+					ai = yes
+				}
+				CHU = {
+					had_country_flag = {
+						flag = chu_began_bii_war
+						days = 365
+					}
+				}
+			}
+			AND = {
+				BII = {
+					ai = no
+				}
+				has_opinion = {
+					who = BII
+					value = 50
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.104.a"
+		create_alliance = BII
+		join_all_defensive_wars_of = BII
+		BII = {
+			add_manpower = 2
+			add_war_exhaustion = -2
+		}
+		ai_chance = { 
+			factor = 100
+		}
+	}
+	option = {
+		name = "china.104.b"
+		trigger = { ai = no }
+		reverse_add_opinion = {
+			who = CHU
+			modifier = opinion_didnt_go_against
+		}
+	}
+}
+
+########################################################################################
+# rebellion of the Baipu (qunman)
+########################################################################################
+country_event = {
+	id = china.105
+	title = "china.105.t"
+	desc = "china.105.d"
+	picture = guard
+	fire_only_once = yes
+	
+	trigger = {
+		is_year = 145
+		NOT = {
+			exists = BII
+		}
+		tag = CHU
+		NOT = {
+			has_country_flag = chu_began_bii_war
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "china.105.a"
+		set_country_flag = chu_began_bii_war
+		release = BII
+		4456 = {
+			cede_province = BII
+			add_core = BII
+		}
+		BII = {
+			add_country_modifier = {
+				name = baipu_boost
+				duration = 1825
+			}
+			set_capital = 4456
+			4456 = {
+				build_to_forcelimit = {
+					infantry = 0.7
+					artillery = 0.3
+				}
+			}
+		}
+		declare_war_with_cb = {
+			who = BII
+			casus_belli = cb_insult
+		}
+		ai_chance = { 
+			factor = 95
+		}
+	}
+	option = {
+		name = "china.105.b"
+		trigger = { ai = no }
+		set_country_flag = chu_began_bii_war
+		release = BII
+		4456 = {
+			cede_province = BII
+			add_core = BII
+		}
+		BII = {
+			add_country_modifier = {
+				name = baipu_boost
+				duration = 1825
+			}
+			set_capital = 4456
+			4456 = {
+				build_to_forcelimit = {
+					infantry = 0.7
+					artillery = 0.3
+				}
+			}
+		}
+		declare_war_with_cb = {
+			who = BII
+			casus_belli = cb_insult
+		}
+		switch_tag = BII
+		custom_tooltip = chu_baipu_war_one
+	}
+	option = {
+		name = "china.105.c"
+		add_prestige = -15
+		release = BII
+		4456 = {
+			cede_province = BII
+			add_core = BII
+		}
+		BII = {
+			set_capital = 4456
+			add_opinion = {
+				who = CHU
+				modifier = opinion_didnt_go_against
+			}
+			4456 = {
+				build_to_forcelimit = {
+					infantry = 0.7
+					artillery = 0.3
+				}
+			}
+		}
+		set_country_flag = chu_end_bii_war
+		add_opinion = {
+			who = BII
+			modifier = opinion_didnt_go_against
+		}
+		ai_chance = { 
+			factor = 5
+		}
+	}
+}
+
+########################################################################################
+# baipu war conclusion (chu victory)
+########################################################################################
+country_event = {
+	id = china.106
+	title = "china.106.t"
+	desc = "china.106.d"
+	picture = guard
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		has_country_flag = chu_began_bii_war
+		NOT = {
+			has_country_flag = chu_end_bii_war
+		}
+		OR = {
+			NOT = {
+				exists = BII
+			}
+			has_won_war_against = {
+				who = BII
+				max_years_since = 10
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.106.a"
+		add_prestige = 5
+		set_country_flag = chu_end_bii_war
+		YON = {
+			every_owned_province = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				exists = BII
+			}
+			BII = {
+				every_owned_province = {
+					cede_province = CHU
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# baipu war conclusion (baipu victory)
+########################################################################################
+country_event = {
+	id = china.107
+	title = "china.107.t"
+	desc = "china.107.d"
+	picture = guard
+	fire_only_once = yes
+	major = yes
+	
+	trigger = {
+		tag = BII
+		CHU = {
+			has_country_flag = chu_began_bii_war
+			NOT = {
+				has_country_flag = chu_end_bii_war
+			}
+		}
+		is_at_war = no
+		is_subject = no
+		CHU = {
+			NOT = {
+				has_won_war_against = {
+					who = BII
+					max_years_since = 10
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.107.a"
+		add_prestige = 50
+		change_government_reform_progress = 50
+		change_adm = 2
+		change_dip = 2
+		change_mil = 2
+		add_country_modifier = {
+			name = baipu_victory
+			duration = 3650
+		}
+		CHU = {
+			set_country_flag = chu_end_bii_war
+		}
 	}
 }
