@@ -1,0 +1,1093 @@
+country_decisions = {
+
+	form_hellas_nation = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			culture_group = hellenic_group
+			NOT = { exists = HEL }
+			total_development = 100
+		}
+		provinces_to_highlight = {
+			province_group = pg_hellenic_formable_cities_group
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war =  no
+			owns_all_provinces = {
+				province_group = pg_hellenic_formable_cities_group
+			}
+			total_development = 300
+		}
+		effect = {
+			change_tag = HEL
+			if = {
+				limit = { government = republic	}
+				add_government_reform = league_reform
+			}
+			if = {
+				limit = { NOT = { government = republic }}
+				change_government = republic
+				add_government_reform = league_reform
+			}
+			if = {
+				limit = { NOT = { government_rank = 4 } }
+				set_government_rank = 4
+			}
+			set_country_flag = formed_greek_minor
+			set_country_flag = formed_greek_major
+			set_country_flag = allowed_koine
+			country_event = {
+				id = new_ideas.1
+			}
+			custom_tooltip = hellas_tt
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+
+				every_subject_country = {
+					limit = { is_subject_of_type = league_member_subject }
+					HEL = { inherit = PREV }
+				}
+				greek_region = {
+					limit = { NOT = { owned_by = ROOT } }
+					add_permanent_claim = HEL
+				}
+			}
+		}
+
+		ai_importance = 0
+		ai_will_do = {
+			factor = 400
+		}
+	}
+
+	form_macedon = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			OR = {
+				primary_culture = old_macedon
+				primary_culture = macedon
+			}
+			NOT = {
+				exists = MAC
+				was_tag = MAC
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 1061
+				province_id = 1063
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			owns_core_province = 1061
+			owns_core_province = 1063
+			is_at_war = no
+		}
+		effect = {
+			change_tag = MAC
+
+			macedonia_secunda = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = MAC
+			}
+			macedonia_prima = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = MAC
+			}
+			country_event = {
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 50
+		ai_will_do = {
+			factor = 400
+		}
+	}
+
+	#Mainland Leagues
+
+	form_chalcidian_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			capital_scope = {
+				province_group = pg_chalcidian_group
+			}
+			NOT = { exists = CCI }
+		}
+
+		provinces_to_highlight = {
+			province_group = pg_chalcidian_group
+			NOT = { owned_by = ROOT }
+		}
+
+		allow = {
+			pg_chalcidian_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+
+		effect = {
+			change_tag = CCI
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_achaean_league = {
+		major = yes
+        color = { 245 160 60 }
+
+		potential = {
+			OR = {
+				primary_culture = achaean
+				primary_culture = greek
+			}
+			capital_scope = {
+				area = achaea_area
+			}
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			NOT = { exists = ACH }
+		}
+
+		provinces_to_highlight = {
+			area = achaea_area
+			NOT = { owned_by = ROOT }
+		}
+
+		allow = {
+			achaea_area = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+
+		effect = {
+			change_tag = ACH
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_thessalian_league = {
+		major = yes
+        color = { 245 160 60 }
+
+		potential = {
+			culture_group = hellenic_group
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			capital_scope = {
+				province_group = pg_thessalia_group
+			}
+			NOT = { exists = THL }
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_thessalia_group
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 12
+								province_group = pg_thessalia_group
+							}
+						}
+					}
+				}
+				province_group = pg_thessalian_formable_cities_group
+			}
+			NOT = { owned_by = ROOT }
+		}
+
+		allow = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 12
+				province_group = pg_thessalia_group
+			}
+			num_of_owned_provinces_with = {
+				value = 6
+				is_core = ROOT
+				province_group = pg_thessalian_formable_cities_group
+			}
+		}
+
+		effect = {
+			change_tag = THL
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_arcadian_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+				tag = SP1
+				exists = ARC
+			}
+			capital_scope = {
+				province_group = pg_arcadia_group
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_arcadia_group
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 10
+								province_group = pg_arcadia_group
+							}
+						}
+					}
+				}
+				province_group = pg_arcadian_formable_cities_group
+			}
+			NOT = { owned_by = ROOT }
+		}
+
+		allow = {
+			pg_arcadia_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+			num_of_owned_provinces_with = {
+				value = 5
+				is_core = ROOT
+				province_group = pg_arcadian_formable_cities_group
+			}
+		}
+
+		effect = {
+			change_tag = ARC
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_boeotian_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			capital_scope = {
+				area = boeotia_area
+			}
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+				exists = BOE
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					OR = {
+						owns_core_province = 963
+						owns_core_province = 965
+					}
+					NOT = { is_core = ROOT }
+				}
+				AND = {
+					area = boeotia_area
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+			}
+		}
+
+		allow = {
+			OR = {
+				owns_core_province = 963
+				owns_core_province = 965
+			}
+			boeotia_area = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+
+		effect = {
+			change_tag = BOE
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#Aegean Formables
+
+	archipelagos_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			capital_scope = {
+				province_group = pg_archipelagos_group
+			}
+			total_development = 20
+			NOT = {
+				has_country_flag = formed_greek_major
+				exists = APG
+				exists = CYC
+			}
+		}
+
+		provinces_to_highlight = {
+			province_group = pg_archipelagos_group
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+
+		allow = {
+			pg_archipelagos_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+			OR = { NOT = { exists = SP1 } total_development = SP1 }
+			OR = { NOT = { exists = ATH } total_development = ATH }
+			OR = { NOT = { exists = MLT } total_development = MLT }
+		}
+
+		effect = {
+			change_tag = APG
+			set_country_flag = formed_greek_major
+			country_event = {
+				id = new_ideas.1
+			}
+			add_prestige = 50
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	unitedislands_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			total_development = 50
+			capital_scope = {
+				province_group = pg_unitedislands_group
+			}
+			NOT = {
+				exists = UNI
+				has_country_flag = formed_greek_major
+			}
+		}
+
+		provinces_to_highlight = {
+			province_group = pg_unitedislands_group
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+
+		allow = {
+			pg_unitedislands_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+
+		effect = {
+			change_tag = UNI
+			swap_non_generic_missions = yes
+			country_event = { id = new_ideas.1 }
+			add_prestige = 50
+			hidden_effect = { set_country_flag = formed_greek_major }
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_nesiotic_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			capital_scope = {
+				province_group = pg_cyclades_group
+			}
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+				exists = CYC
+				exists = UNI
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_cyclades_group
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+				AND = {
+					province_group = pg_unitedislands_group
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 4
+								province_group = pg_unitedislands_group
+							}
+						}
+					}
+					NOT = { owned_by = ROOT }
+				}
+			}
+		}
+
+		allow = {
+			pg_cyclades_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+			num_of_owned_provinces_with = {
+				value = 4
+				province_group = pg_unitedislands_group
+			}
+		}
+
+		effect = {
+			change_tag = CYC
+			set_country_flag = formed_greek_minor
+			change_government = republic
+			add_government_reform = league_reform
+			country_event = {
+				id = new_ideas.1
+			}
+			pg_cyclades_group = {
+				limit = { NOT = { owned_by = ROOT } }
+				add_permanent_claim = ROOT
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	minoan_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			culture_group = minoan_group
+			NOT = { exists = MNO }
+		}
+		provinces_to_highlight = {
+			province_group = pg_crete_group
+			NOT = { owned_by = ROOT }
+		}
+
+		allow = {
+			pg_crete_group = { type = all owned_by = ROOT }
+		}
+
+		effect = {
+			change_tag = MNO
+			macedonia_superregion = {
+				limit = {
+					NOT = { owned_by = MNO }
+					NOT = { is_core = MNO }
+					culture = doric
+				}
+				add_permanent_claim = MNO
+			}
+			add_prestige = 20
+			swap_non_generic_missions = yes
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_euboean_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			NOT = { has_country_flag = formed_euboea }
+			capital_scope = {
+				province_group = pg_euboea_group
+			}
+			NOT = {
+				exists = EUB
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_euboea_group
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+				AND = {
+					province_id = 972
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+			}
+		}
+
+		allow = {
+			pg_euboea_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+			owns_core_province = 972
+		}
+
+		effect = {
+			change_tag = EUB
+			change_government = republic
+			set_country_flag = formed_greek_minor
+			add_government_reform = league_reform
+			add_prestige = 10
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_creta_nation = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			OR = {
+				primary_culture = greek
+				primary_culture = doric
+			}
+			capital_scope = {
+				province_group = pg_crete_group
+			}
+			NOT = {
+				exists = KRT
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+		provinces_to_highlight = {
+			province_group = pg_crete_group
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+		allow = {
+			is_at_war = no
+			pg_crete_group = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+		effect = {
+			change_tag = KRT
+			if = {
+				limit = { NOT = { government_rank = 2 } }
+				set_government_rank = 2
+			}
+			country_event = {
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 0
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#Anatolian Formables
+
+	form_ionian_league = {
+		major = yes
+        color = { 245 160 60 }
+
+		potential = {
+			OR = {
+				culture = ionic
+				culture = greek
+			}
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			capital_scope = {
+				region = ionia_region
+			}
+			NOT = { exists = ION }
+			NOT = { exists = AEO }
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_ionia_group
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 9
+								province_group = pg_ionia_group
+							}
+						}
+					}
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+				AND = {
+					province_id = 2123
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+				AND = {
+					province_id = 986
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+				AND = {
+					province_id = 993
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+			}
+		}
+
+		allow = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 9
+				province_group = pg_ionia_group
+			}
+			OR = {
+				owns_core_province = 993
+				owns_core_province = 986
+			}
+			owns_core_province = 2123
+		}
+
+		effect = {
+			change_tag = ION
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_aeolian_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			OR = {
+				culture = aeolic
+				culture = greek
+			}
+			NOT = {
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			capital_scope = {
+				region = ionia_region
+			}
+			NOT = {
+				exists = AEO
+				exists = ION
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					province_group = pg_aeolia_group
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 10
+								province_group = pg_aeolia_group
+							}
+						}
+					}
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+				AND = {
+					province_id = 2118
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+				AND = {
+					province_id = 5601
+					NOT = {
+						is_core = ROOT
+						owned_by = ROOT
+					}
+				}
+			}
+		}
+		allow = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 10
+				province_group = pg_aeolia_group
+			}
+			OR = {
+				owns_core_province = 2118
+				owns_core_province = 5601
+			}
+		}
+
+		effect = {
+			change_tag = AEO
+			change_government = republic
+			add_government_reform = league_reform
+			set_country_flag = formed_greek_minor
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_propontic_league = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture_group = hellenic_group
+			capital_scope = {
+				region = propontis_region
+			}
+			NOT = {
+				exists = PPP
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+
+		provinces_to_highlight = {
+			OR = {
+				AND = {
+					region = propontis_region
+					NOT = {
+						ROOT = {
+							num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+								value = 12
+								region = propontis_region
+							}
+						}
+					}
+					NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+				}
+				AND = {
+					province_group = pg_propontis_formable_cities_group
+					NOT = { owned_by = ROOT }
+				}
+			}
+		}
+
+		allow = {
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 12
+				region = propontis_region
+			}
+			num_of_owned_provinces_with = {
+				value = 6
+				is_core = ROOT
+				province_group = pg_propontis_formable_cities_group
+			}
+		}
+
+		effect = {
+			change_tag = PPP
+			set_country_flag = formed_greek_minor
+			change_government = republic
+			add_government_reform = league_reform
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+			    remove_country_modifier = polis_democracy_modifier
+                remove_country_modifier = polis_oligarchy_modifier
+                remove_country_modifier = polis_tyrannis_modifier
+			}
+			add_prestige = 20
+		}
+		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#Overseas Formables
+
+	form_bosporian_nation = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			culture_group = hellenic_group
+			NOT = {
+				exists = BOS
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+			capital_scope = { province_group = pg_bosporan_group }
+		}
+		provinces_to_highlight = {
+			AND = {
+				province_group = pg_bosporan_group
+				NOT = {
+					ROOT = {
+						num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+							value = 10
+							province_group = pg_bosporan_group
+						}
+					}
+				}
+			}
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+		allow = {
+			is_at_war = no
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 10
+				province_group = pg_bosporan_group
+			}
+		}
+		effect = {
+			set_country_flag = formed_greek_minor
+			change_tag = BOS
+			add_prestige = 25
+			chersonesus_heracle = {
+				limit = { NOT = { owned_by = ROOT } }
+				add_permanent_claim = BOS
+			}
+			carcinites_area = {
+				limit = { NOT = { owned_by = ROOT } }
+				add_permanent_claim = BOS
+			}
+			country_event = {
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 100
+		ai_will_do = {
+			factor = 200
+		}
+	}
+
+	form_kypros_nation = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			capital_scope = { region = cyprus_region }
+			OR = {
+				primary_culture = greek
+				primary_culture = cypriot
+				primary_culture = phoenician
+			}
+			NOT = {
+				exists = ZYP
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+		provinces_to_highlight = {
+			region = cyprus_region
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+		allow = {
+			is_at_war = no
+			cyprus_region = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+				}
+			}
+		}
+		effect = {
+			change_tag = ZYP
+			set_country_flag = formed_greek_minor
+			swap_non_generic_missions = yes
+			if = {
+				limit = { NOT = { government_rank = 2 } }
+				set_government_rank = 2
+			}
+			country_event = {
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 50
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	#Eastern Formables
+
+	#Western Formables
+}
