@@ -420,6 +420,59 @@ country_decisions = {
 		}
 	}
 
+	form_epirus = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			primary_culture = epirot
+			NOT = {
+				exists = EPI
+				has_country_flag = formed_greek_major
+				has_country_flag = formed_greek_minor
+			}
+		}
+		provinces_to_highlight = {
+			province_group = pg_epirus_group
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war = no
+			owns_core_province = 1039
+			owns_core_province = 1036
+			owns_core_province = 1038
+			num_of_owned_provinces_with = {
+				value = 12
+				province_group = pg_epirus_group
+			}
+		}
+		effect = {
+			remove_country_modifier = administration_reformed
+			remove_country_modifier = trade_reformed
+			remove_country_modifier = army_reformed
+			if = { limit = { tag = MOL }  set_country_flag = molossian_ruler }
+			if = { limit = { tag = CHC }  set_country_flag = chaonian_ruler }
+			if = { limit = { tag = THP }  set_country_flag = thesprotian_ruler }
+			change_tag = EPI
+			set_country_flag = formed_greek_minor
+			if = {
+				limit = { government = tribal }
+				change_government = monarchy
+			}
+			add_government_reform = epirote_monarchy_reform
+			pg_epirus_group = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = EPI
+			}
+			set_government_rank = 3
+		}
+		ai_importance = 100
+		ai_will_do = {
+			factor = 400
+		}
+	}
+
 	#Aegean Formables
 
 	archipelagos_nation = {
@@ -623,6 +676,76 @@ country_decisions = {
 		}
 
 		ai_importance = 20
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	form_rhodos_nation = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			capital_scope = { area = rhodiorum_area	}
+			OR = {
+				primary_culture = greek
+				primary_culture = rhodian
+			}
+			NOT = {
+				exists = RHO
+				has_country_flag = formed_greek_major
+				has_country_flag = formed_greek_minor
+			}
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 995
+				province_id = 996
+				province_id = 997
+				province_id = 5504
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			rhodiorum_area = {
+				type = all
+				OR = {
+					owned_by = ROOT
+					owned_by_subject_of = ROOT
+					province_id = 998
+				}
+			}
+			is_at_war =  no
+		}
+		effect = {
+			change_tag = RHO
+			if = {
+				limit = { NOT = { owns = 995 } }
+				995 = { cede_province = RHO add_core = RHO }
+			}
+			if = {
+				limit = { NOT = { owns = 996 } }
+				996 = { cede_province = RHO add_core = RHO }
+			}
+			if = {
+				limit = { NOT = { owns = 997 } }
+				997 = { cede_province = RHO add_core = RHO }
+			}
+			if = {
+				limit = { NOT = { owns = 5504 } }
+				5504 = { cede_province = RHO add_core = RHO }
+			}
+			set_capital = 995
+			995 = {
+				rename_capital = Rhodos
+				change_province_name = Rhodos
+				add_base_production = 2
+			}
+			996 = {
+				add_base_production = -1
+			}
+			997 = { add_base_production = -1 }
+		}
+		ai_importance = 100
 		ai_will_do = {
 			factor = 1
 		}
@@ -1087,7 +1210,151 @@ country_decisions = {
 		}
 	}
 
-	#Eastern Formables
-
 	#Western Formables
+
+	form_greater_greece_nation = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			culture = italiote
+			NOT = {
+				exists = MHE
+				has_country_flag = formed_greek_minor
+				has_country_flag = formed_greek_major
+			}
+		}
+		provinces_to_highlight = {
+			region = magna_graecia
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			total_development = 150
+			is_at_war =  no
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 40
+				region = magna_graecia
+			}
+		}
+		effect = {
+			change_tag = MHE
+			set_country_flag = formed_greek_major
+			set_country_flag = formed_greek_minor
+			add_prestige = 50
+			magna_graecia = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = MHE
+			}
+			if = {
+				limit = { government = republic }
+				add_government_reform = league_reform
+			}
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+		}
+
+		ai_importance = 20
+		ai_will_do = {
+			factor = 200
+		}
+	}
+
+	form_sicily_nation = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			primary_culture = italiote
+			capital_scope = {
+				province_group = pg_sicily_group
+			}
+			NOT = {
+				exists = SCI
+				has_country_flag = formed_greek_major
+				has_country_flag = formed_greek_minor
+			}
+		}
+		provinces_to_highlight = {
+			province_group = pg_sicily_group
+			NOT = { OR = { owned_by = ROOT owned_by_subject_of = ROOT } }
+		}
+		allow = {
+			total_development = 100
+			is_at_war =  no
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 20
+				province_group = pg_sicily_group
+			}
+		}
+		effect = {
+			change_tag = SCI
+			add_prestige = 50
+			set_country_flag = formed_greek_minor
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+		}
+		ai_importance = 100
+		ai_will_do = {
+			factor = 200
+		}
+	}
+
+	# Eastern Formables
+
+	form_indo_greek_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			OR = {
+				primary_culture = greco_bactrian
+				primary_culture = greco_indian
+			}
+			NOT = { exists = IGK }
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 2930
+				province_id = 2951
+				province_id = 2936
+				province_id = 2927
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			owns_core_province = 2930
+			owns_core_province = 2951
+			owns_core_province = 2936
+			owns_core_province = 2927
+			is_at_war = no
+			OR = {
+				religion = buddhism
+				secondary_religion = buddhism
+			}
+		}
+		effect = {
+			change_tag = IGK
+			if = {
+				limit = { not = { primary_culture = greco_indian } }
+				change_primary_culture = greco_indian
+			}
+			add_prestige = 50
+			gandhara = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = IGK
+			}
+			country_event = {
+				id = new_ideas.1
+			}
+		}
+		ai_importance = 500
+		ai_will_do = {
+			factor = 400
+		}
+	}
 }
