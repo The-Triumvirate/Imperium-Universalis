@@ -1,0 +1,337 @@
+country_decisions = {
+
+	# northwestern africa
+
+	form_mauretania = {
+        color = { 245 160 60 }
+		major = yes
+		potential = {
+			primary_culture = mauretanian
+			NOT = { exists = MRT }
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_group = pg_mauretania_group
+				province_group = pg_atlantic_mauretania_group
+				province_group = pg_punicwar_numidia_group
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war =  no
+			is_subject = no
+			pg_mauretania_group = {
+				type = all
+				owned_by = ROOT
+			}
+			OR = {
+				pg_atlantic_mauretania_group = {
+					type = all
+					owned_by = ROOT
+				}
+				num_of_owned_provinces_with = {
+					value = 8
+					owned_by = ROOT
+					province_group = pg_punicwar_numidia_group
+				}
+			}
+		}
+		effect = {
+			change_tag = MRT
+			add_prestige = 50
+			capital_scope = {
+				add_base_tax = 1
+				add_base_production = 1
+			}
+			if = {
+				limit = { NOT = { government_rank = 3 } }
+				set_government_rank = 3
+			}
+			mauretania_region = {
+				limit = {
+					NOT = { is_core = ROOT }
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+		}
+
+		ai_importance = 500
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	form_numidia_nation = {
+		major = yes
+        color = { 245 160 60 }
+		potential = {
+			primary_culture = numidian
+			NOT = { exists = NUM }
+		}
+		provinces_to_highlight = {
+			OR = {
+				region = mauretania_region
+				region = africa_region
+			}
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war = no
+			owns_core_province = 589
+			owns_core_province = 624
+			owns_core_province = 563
+			total_development = 250
+			num_of_owned_provinces_with = {
+				value = 30
+				is_core = ROOT
+				province_group = pg_punicwar_numidia_group
+			}
+		}
+		effect = {
+			change_tag = NUM
+			if = {
+				limit = {
+					NOT = { government_rank = 3 }
+				}
+				set_government_rank = 4
+			}
+		}
+		ai_importance = 50
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	# eastern africa
+
+	form_egypt_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			OR = {
+				tag = MEM
+				tag = THB
+			}
+			NOT = { exists = EGY }
+		}
+		provinces_to_highlight = {
+			OR = {
+				region = lower_egypt_region
+				region = upper_egypt_region
+			}
+			NOT = { owned_by = ROOT province_id = 778 }
+		}
+		allow = {
+			is_at_war = no
+			upper_egypt_region = {
+				type = all
+				OR = { owned_by = ROOT province_id = 778 }
+			}
+			lower_egypt_region = {
+				type = all
+				owned_by = ROOT
+			}
+		}
+		effect = {
+			change_tag = EGY
+			add_prestige = 25
+		}
+		ai_importance = 500
+		ai_will_do = {
+			factor = 400
+		}
+	}
+
+	form_meshwesh = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			primary_culture = lybian
+			NOT = { exists = MSW }
+			has_dlc = "Conquest of Paradise"
+		}
+		provinces_to_highlight = {
+			province_group = pg_meshwesh_group
+			NOT = { owned_by = ROOT }
+		}
+		allow = {
+			is_at_war = no
+			is_subject = no
+			OR = {
+				pg_meshwesh_group = {
+					type = all
+					owned_by = ROOT
+					is_core = ROOT
+				}
+				pg_meshwesh_group = {
+					type = all
+					tribal_land_of = ROOT
+				}
+			}
+			pg_meshwesh_group = {
+				type = all
+				has_province_modifier = lybia_present
+			}
+		}
+		effect = {
+			change_tag = MSW
+			add_prestige = 20
+			change_religion = egyptian_religion
+			hidden_effect = {
+				add_government_reform = start_sedentarization_reform
+				every_tribal_land_province = {
+					limit = { NOT = { owner = { exists = yes } } }
+					settle_province = ROOT
+				}
+			}
+			change_government = monarchy
+			add_government_reform = kemetic_kingdom
+			hidden_effect = {
+				add_accepted_culture = egyptian
+				add_accepted_culture = lybian
+				set_capital = 729
+				change_technology_group = diadochi
+				change_unit_type = diadochi
+				change_graphical_culture = egyptgfx
+			}
+			change_primary_culture = lybio_egyptian
+			country_event = {
+				id = new_ideas.1
+			}
+			hidden_effect = {
+				738 = {
+					if = {
+						limit = {
+							has_province_modifier = lybia_present
+						}
+						change_culture = lybio_egyptian
+						remove_province_modifier = lybia_present
+					}
+				}
+				729 = {
+					if = {
+						limit = {
+							has_province_modifier = lybia_present
+						}
+						change_culture = lybio_egyptian
+						remove_province_modifier = lybia_present
+					}
+				}
+				lower_egypt_region = {
+					every_province = {
+						if = {
+							limit = {
+								has_province_modifier = lybia_present
+							}
+							add_core = MSW
+						}
+					}
+				}
+				lower_egypt_region = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = MSW
+				}
+				upper_egypt_region = {
+					limit = {
+						NOT = { owned_by = ROOT }
+					}
+					add_permanent_claim = MSW
+				}
+			}
+		}
+		ai_importance = 100
+		ai_will_do = {
+			factor = 100
+		}
+	}
+
+	form_aethiopia_nation = {
+		major = yes
+		color = { 245 160 60 }
+		potential = {
+			culture_group = cushitic_group
+			NOT = { exists = ETH }
+		}
+		provinces_to_highlight = {
+			OR = {
+				province_id = 868
+				province_id = 870
+				province_id = 872
+				region = aethiops
+			}
+			NOT = { is_core = ROOT }
+		}
+		allow = {
+			is_at_war = no
+			owns_core_province = 868
+			owns_core_province = 870
+			owns_core_province = 872
+			total_development = 500
+			neither_tribal_nor_native_trigger = yes
+			num_of_owned_provinces_with = {
+				value = 60
+				is_core = ROOT
+				region = aethiops
+			}
+		}
+		effect = {
+			change_tag = ETH
+			if = {
+				limit = {
+					NOT = { government_rank = 4 }
+				}
+				set_government_rank = 4
+			}
+			aethiops = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ETH
+			}
+		}
+		ai_importance = 50
+		ai_will_do = {
+			factor = 400
+		}
+	}
+
+	egyptian_heritage = {
+		color = { 245 160 60 }
+		potential = {
+			culture_group = nubian_group
+			NOT = { has_reform = kemetic_kingdom }
+		}
+		allow = {
+			is_at_war =  no
+			owns_core_province = 785
+			owns_core_province = 762
+			owns_core_province = 757
+		}
+		effect = {
+			add_accepted_culture = egyptian
+			add_accepted_culture = wasetic
+			change_technology_group = diadochi
+			add_government_reform = kemetic_kingdom
+			lower_egypt_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+			upper_egypt_region = {
+				limit = {
+					NOT = { owned_by = ROOT }
+				}
+				add_permanent_claim = ROOT
+			}
+
+		}
+		ai_importance = 10
+		ai_will_do = {
+			factor = 400
+		}
+	}
+}
