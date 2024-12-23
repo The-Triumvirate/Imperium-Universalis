@@ -867,22 +867,6 @@ country_decisions = {
 				change_culture = changdi
 				change_religion = tengri
 			}
-			4271 = {
-				change_culture = changdi
-				change_religion = tengri
-			}
-			4269 = {
-				change_culture = changdi
-				change_religion = tengri
-			}
-			4259 = {
-				change_culture = changdi
-				change_religion = tengri
-			}
-			4608 = {
-				change_culture = changdi
-				change_religion = tengri
-			}
 			4261 = {
 				change_culture = changdi
 				change_religion = tengri
@@ -1404,7 +1388,7 @@ country_decisions = {
 			tag = ZHU
 			ai = no
 			NOT = {
-				is_year = 146
+				is_year = 143
 			}
 			NOT = {
 				has_country_flag = set_new_zhulou_name
@@ -1416,21 +1400,6 @@ country_decisions = {
 		effect = {
 			set_country_flag = set_new_zhulou_name
 			override_country_name = zhulou_to_zhu
-		}
-	}
-
-	zhu_to_zhulou = {
-		potential = {
-			tag = ZHU
-			ai = no
-			has_country_flag = set_new_zhulou_name
-		}
-		allow = {
-
-		}
-		effect = {
-			clr_country_flag = set_new_zhulou_name
-			restore_country_name = yes
 		}
 	}
 
@@ -1632,6 +1601,7 @@ country_decisions = {
 			change_religion = chinese_religion #in case they flip to wu
 			#swap_free_idea_group = yes
 			set_in_empire = yes
+			add_government_reform = chinese_feudalism_reform
 			capital_scope = {
 				change_culture = nanchu
 			}
@@ -1743,6 +1713,7 @@ country_decisions = {
 				province_id = 5955
 				province_id = 4482
 				province_id = 4484
+				province_id = 4490
 			}
 			NOT = {
 				owned_by = ROOT
@@ -1775,6 +1746,9 @@ country_decisions = {
 				add_core = BII
 			}
 			4484 = {
+				add_core = BII
+			}
+			4490 = {
 				add_core = BII
 			}
 		}
@@ -1854,7 +1828,188 @@ country_decisions = {
 			factor = 1
 		}
 	}
+	
+	minister_request_land = {
+		major = yes
+		color = { 144 14 183 }
+		potential = {
+			has_global_flag = jin_partition_started
+			is_subject_of_type = ministerial_clan
+			OR = {
+				NOT = {
+					has_country_flag = minister_recently_asked_for_land
+				}
+				had_country_flag = {
+					flag = minister_recently_asked_for_land
+					days = 1095
+				}
+			}
+			JIN = {
+				check_variable = {
+					which = minister_resisting_var
+					value = 1
+				}
+			}
+		}
+		#exception for league war
+		allow = {
+			stability = 1
+			mil_power = 100
+			hidden_trigger = {
+				NOT = {
+					has_country_flag = selecting_minister_event
+				}
+			}
+		}
+		effect = {
+			set_country_flag = selecting_minister_event
+			country_event = { id = jin_partition.23 }
+			set_country_flag = minister_recently_asked_for_land
+		}
 
+		ai_importance = 280
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				JIN = {
+					is_in_league_war = yes
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = { ruler_has_personality = conqueror_personality }
+					NOT = { mil = 6 }
+				}
+				NOT = {
+					mil_power = 200
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = { ruler_has_personality = conqueror_personality }
+					NOT = { mil = 6 }
+				}
+				NOT = {
+					dip_power = 200
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = { ruler_has_personality = conqueror_personality }
+					NOT = { mil = 6 }
+				}
+				NOT = {
+					adm_power = 200
+				}
+			}
+			modifier = {
+				factor = 0
+				JIN = {
+					is_at_war = yes
+				}
+				has_opinion = {
+					who = JIN
+					value = 199
+				}
+			}
+			modifier = {
+				factor = 0
+				JIN = {
+					tech_difference = 2
+				}
+			}
+		}
+	}
+	
+	jin_reduce_minister_value = {
+		major = yes
+		color = { 144 14 183 }
+		potential = {
+			tag = JIN
+			has_global_flag = jin_partition_started
+			check_variable = {
+				which = minister_resisting_var
+				value = 1
+			}
+		}
+		allow = {
+			stability = 1
+			mil_power = 100
+		}
+		effect = {
+			add_mil_power = -100
+			
+			subtract_variable = {
+				which = minister_resisting_var
+				value = 1
+			}
+		}
+
+		ai_importance = 225
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { mil_power = 175 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { mil_power = 300 }
+				NOT = { is_year = 250 }
+			}
+			modifier = {
+				factor = 0
+				NOT = { mil = 6 }
+				NOT = { mil_power = 450 }
+				NOT = { is_year = 190 }
+			}
+		}
+	}
+
+	min_increase_minister_value = {
+		major = yes
+		color = { 144 14 183 }
+		potential = {
+			is_subject_of_type = ministerial_clan
+			ai = no
+			NOT = {
+				check_variable = {
+					which = minister_resisting_var
+					value = 15
+				}
+			}
+			has_global_flag = jin_partition_started
+			check_variable = {
+				which = minister_resisting_var
+				value = 1
+			}
+		}
+		allow = {
+			stability = 2
+			dip_power = 200
+		}
+		effect = {
+			add_dip_power = -200
+			
+			change_variable = {
+				which = minister_resisting_var
+				value = 1
+			}
+		}
+
+		ai_importance = 200
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
 	xnc_become_liyue = {
 		potential = {
 			tag = XNC
