@@ -5468,7 +5468,7 @@ country_event = {
 				}
 			}
 			define_general = {
-				name = "Junren"
+				name = "Jun DaFu"
 				shock = 2
 				fire = 3
 				manuever = 3
@@ -5507,7 +5507,7 @@ country_event = {
 				}
 			}
 			define_general = {
-				name = "Junren"
+				name = "Jun DaFu"
 				shock = 2
 				fire = 3
 				manuever = 3
@@ -5664,5 +5664,184 @@ country_event = {
 		CHU = {
 			set_country_flag = chu_end_bii_war
 		}
+	}
+}
+
+########################################################################################
+# hanshu reference - Fan can get decision to form Han through event chain
+########################################################################################
+country_event = {
+	id = china.108
+	title = "china.108.t"
+	desc = "china.108.d"
+	picture = cloudy_manor
+	
+	trigger = {
+		tag = FAN
+		ai = no
+		NOT = {
+			started_in = 200.1.1
+		}
+		has_regency = no
+		NOT = {
+			ruler_age = 50
+		}
+		NOT = {
+			has_ruler_flag = ongoing_fan_dream
+		}
+		NOT = {
+			has_country_flag = fan_discovered_dream
+		}
+		NOT = {
+			has_country_flag = didnt_go_with_dream
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 110
+	}
+	
+	option = {
+		name = "china.108.a"
+		custom_tooltip = fan_lord_tooltip_one
+		set_ruler_flag = ongoing_fan_dream
+	}
+	option = {
+		name = "china.108.b"
+		set_country_flag = didnt_go_with_dream
+	}
+}
+
+########################################################################################
+# second in event chain
+########################################################################################
+country_event = {
+	id = china.109
+	title = "china.109.t"
+	desc = "china.109.d"
+	picture = religious
+	
+	trigger = {
+		has_ruler_flag = ongoing_fan_dream
+		NOT = {
+			has_ruler_flag = ongoing_fan_dream_second
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 13
+	}
+	
+	option = {
+		name = "china.109.a"
+		add_years_of_income = -0.5
+		set_ruler_flag = ongoing_fan_dream_second
+	}
+	option = {
+		name = "china.109.b"
+		clr_ruler_flag = ongoing_fan_dream
+		set_country_flag = didnt_go_with_dream
+	}
+}
+
+########################################################################################
+# third in event chain
+########################################################################################
+country_event = {
+	id = china.110
+	title = "china.110.t"
+	desc = "china.110.d"
+	picture = navy
+	
+	trigger = {
+		has_ruler_flag = ongoing_fan_dream_second
+		NOT = {
+			has_ruler_flag = ongoing_fan_dream_third
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 18
+	}
+	
+	option = {
+		name = "china.110.a"
+		add_years_of_income = -1
+		set_ruler_flag = ongoing_fan_dream_third
+	}
+	option = {
+		name = "china.110.b"
+		clr_ruler_flag = ongoing_fan_dream
+		clr_ruler_flag = ongoing_fan_dream_second
+		set_country_flag = didnt_go_with_dream
+	}
+}
+
+########################################################################################
+# fourth and final event
+########################################################################################
+country_event = {
+	id = china.111
+	title = "china.111.t"
+	desc = "china.111.d"
+	picture = celebration_priestess
+	
+	trigger = {
+		had_ruler_flag = {
+			flag = ongoing_fan_dream_third
+			days = 730
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "china.111.a"
+		add_prestige = 5
+		custom_tooltip = fan_lord_tooltip_two
+		set_country_flag = fan_discovered_dream
+		clr_ruler_flag = ongoing_fan_dream
+		clr_ruler_flag = ongoing_fan_dream_second
+		clr_ruler_flag = ongoing_fan_dream_third
+	}
+}
+
+########################################################################################
+# fan ruler may die on his trip south
+########################################################################################
+country_event = {
+	id = china.112
+	title = "china.112.t"
+	desc = "china.112.d"
+	picture = death
+	
+	trigger = {
+		has_ruler_flag = ongoing_fan_dream_third
+		NOT = {
+			had_ruler_flag = {
+				flag = ongoing_fan_dream_third
+				days = 730
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 48
+		modifier = {
+			factor = 0.5
+			ruler_has_personality = frail_personality
+		}
+	}
+	
+	immediate = {
+		clr_ruler_flag = ongoing_fan_dream_third
+	}
+	
+	option = {
+		name = "china.112.a"
+		kill_ruler = yes
+		custom_tooltip = fan_lord_tooltip_three
 	}
 }
