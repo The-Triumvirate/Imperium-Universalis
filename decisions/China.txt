@@ -1564,13 +1564,13 @@ country_decisions = {
 			add_mil_power = -50
 			add_dip_power = -100
 			set_country_flag = huaiyi_states_restore_culture_flag
-			change_primary_culture = nanchu
+			change_primary_culture = jianghan
 			change_religion = chinese_religion #in case they flip to wu
 			#swap_free_idea_group = yes
 			set_in_empire = yes
 			add_government_reform = chinese_feudalism_reform
 			capital_scope = {
-				change_culture = nanchu
+				change_culture = jianghan
 			}
 		}
 
@@ -1806,9 +1806,25 @@ country_decisions = {
 				NOT = {
 					has_country_flag = minister_recently_asked_for_land
 				}
-				had_country_flag = {
-					flag = minister_recently_asked_for_land
-					days = 1095
+				OR = {
+					had_country_flag = {
+						flag = minister_recently_asked_for_land
+						days = 1095
+					}
+					AND = {
+						is_year = 194
+						had_country_flag = {
+							flag = minister_recently_asked_for_land
+							days = 730
+						}
+					}
+					AND = {
+						is_year = 269
+						had_country_flag = {
+							flag = minister_recently_asked_for_land
+							days = 365
+						}
+					}
 				}
 			}
 			JIN = {
@@ -1818,7 +1834,6 @@ country_decisions = {
 				}
 			}
 		}
-		#exception for league war
 		allow = {
 			stability = 1
 			mil_power = 100
@@ -1938,6 +1953,76 @@ country_decisions = {
 			}
 		}
 	}
+	
+	chu_obtain_zheng_help = {
+		major = yes
+		#color = { 144 14 183 }
+		potential = {
+			tag = CHU
+			NOT = { has_country_flag = chu_got_zheng_help }
+			hre_leagues_enabled = yes
+			is_in_league_war = no
+			NOT = {
+				is_year = 155
+			}
+			NOT = {
+				ZHE = {
+					in_league = liyuebadao
+				}
+			}
+			NOT = {
+				has_country_flag = chu_got_zhe_help
+			}
+		}
+		allow = {
+			owns_core_province = 4372
+			treasury = 100
+			dip_power = 100
+			reverse_has_opinion = {
+				who = ZHE
+				value = 190
+			}
+			army_size = 40
+			NOT = {
+				is_year = 155
+			}
+		}
+		effect = {
+			add_treasury = -100
+			add_dip_power = -100
+			custom_tooltip = chu_get_zheng_league 
+			hidden_effect = {
+				every_known_country = {
+					limit = {
+						culture_group = chinese_group
+					}
+					add_aggressive_expansion = {
+						who = ROOT
+						value = 20
+						apply_calc = no
+					}
+				}
+			}
+			set_country_flag = chu_got_zheng_help
+			ZHE = {
+				join_league = liyuebadao
+			}
+		}
+
+		ai_importance = 100
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				ZHE = { ai = no }
+			}
+			modifier = {
+				factor = 0
+				coalition_target = ROOT
+			}
+		}
+	}
 
 	min_increase_minister_value = {
 		major = yes
@@ -1945,28 +2030,34 @@ country_decisions = {
 		potential = {
 			is_subject_of_type = ministerial_clan
 			ai = no
-			NOT = {
+			has_global_flag = jin_partition_started
+			JIN = {
 				check_variable = {
 					which = minister_resisting_var
-					value = 15
+					value = 1
 				}
-			}
-			has_global_flag = jin_partition_started
-			check_variable = {
-				which = minister_resisting_var
-				value = 1
 			}
 		}
 		allow = {
 			stability = 2
 			dip_power = 200
+			JIN = {
+				NOT = {
+					check_variable = {
+						which = minister_resisting_var
+						value = 15
+					}
+				}
+			}
 		}
 		effect = {
 			add_dip_power = -200
 			
-			change_variable = {
-				which = minister_resisting_var
-				value = 1
+			JIN = {
+				change_variable = {
+					which = minister_resisting_var
+					value = 1
+				}
 			}
 		}
 
