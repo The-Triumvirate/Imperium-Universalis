@@ -913,6 +913,7 @@ country_event = {
 		has_dlc = "Emperor"
 		has_reform = free_city_zhou
 		adm_tech = 2
+		is_council_enabled = no
 		any_owned_province = {
 			num_free_building_slots = 1
 			NOT = { has_construction = building }
@@ -1369,6 +1370,7 @@ country_event = {
 		religion = chinese_religion
 		curia_treasury_size = 500
 		has_dlc = "Emperor"
+		is_council_enabled = no
 		calc_true_if = {
 			all_known_country = {
 				religion = chinese_religion
@@ -1522,6 +1524,7 @@ country_event = {
 		religion = chinese_religion
 		curia_treasury_size = 400
 		has_dlc = "Emperor"
+		is_council_enabled = no
 		NOT = {
 			num_of_cities = 7
 		}
@@ -3319,33 +3322,6 @@ country_event = {
 }
 
 ########################################################################################
-# Reform desire - BaZhu's position is questioned
-########################################################################################
-country_event = {
-	id = china.69
-	title = "china.69.t"
-	desc = "china.69.d"
-	picture = civilwar
-	
-	trigger = {
-		is_emperor = yes
-		religion = chinese_religion
-		NOT = {
-			legitimacy = 70
-		}
-	}
-	
-	mean_time_to_happen = {
-		months = 60
-	}
-
-	option = {
-		name = "china.69.a"
-		add_reform_desire = 0.05
-	}
-}
-
-########################################################################################
 # remove reform desire effects if religion change
 ########################################################################################
 country_event = {
@@ -3729,6 +3705,7 @@ country_event = {
 		name = "china.78.a"
 		enable_council = yes
 		custom_tooltip = zhouli_tooltip_one
+		set_global_flag = zhouli_conference_flag_done
 		hidden_effect = {
 			if = {
 				limit = {
@@ -3929,56 +3906,8 @@ country_event = {
 	
 	option = {
 		name = "china.79.a"
-		add_reform_desire_scale = -1
-		add_reform_desire = -1
-	}
-}
-
-########################################################################################
-# conservative state causes backlash #REWORK
-########################################################################################
-country_event = {
-	id = china.80
-	title = "china.80.t"
-	desc = "china.80.d"
-	picture = HRE_eventPicture
-	
-	mean_time_to_happen = {
-		months = 24
-	}
-	
-	trigger = {
-		council_position = harsh
-		is_all_concessions_in_council_taken = no
-	}
-	
-	option = {
-		name = "china.80.a"
-		add_reform_desire = 0.03
-	}
-}
-
-########################################################################################
-# reformative state eases tension #REWORK
-########################################################################################
-country_event = {
-	id = china.81
-	title = "china.81.t"
-	desc = "china.81.d"
-	picture = HRE_eventPicture
-	
-	mean_time_to_happen = {
-		months = 48
-	}
-	
-	trigger = {
-		council_position = concilatory
-		is_all_concessions_in_council_taken = no
-	}
-	
-	option = {
-		name = "china.81.a"
-		add_reform_desire = -0.01
+		#add_reform_desire_scale = -1
+		add_reform_desire = -2
 	}
 }
 
@@ -4139,18 +4068,20 @@ country_event = {
 	
 	trigger = {
 		is_papal_controller = yes
-		curia_treasury_size = 1500
+		curia_treasury_size = 1550
+		is_council_enabled = no
+		is_all_concessions_in_council_taken = no
 	}
 	
 	mean_time_to_happen = {
 		months = 216
 		modifier = {
 			factor = 0.9
-			curia_treasury_size = 1800
+			curia_treasury_size = 1900
 		}
 		modifier = {
 			factor = 0.9
-			curia_treasury_size = 2400
+			curia_treasury_size = 2500
 		}
 		modifier = {
 			factor = 0.8
@@ -4167,6 +4098,10 @@ country_event = {
 		modifier = {
 			factor = 0.5
 			curia_treasury_size = 10000
+		}
+		modifier = {
+			factor = 0.25
+			curia_treasury_size = 12000
 		}
 		modifier = {
 			factor = 0.9
@@ -4186,7 +4121,7 @@ country_event = {
 					curia_treasury_size = 1700
 				}
 			}
-			add_curia_treasury = -100
+			add_curia_treasury = -250
 		}
 		else_if = {
 			limit = {
@@ -4195,7 +4130,7 @@ country_event = {
 					curia_treasury_size = 2500
 				}
 			}
-			add_curia_treasury = -250
+			add_curia_treasury = -500
 		}
 		else_if = {
 			limit = {
@@ -4204,7 +4139,7 @@ country_event = {
 					curia_treasury_size = 4000
 				}
 			}
-			add_curia_treasury = -500
+			add_curia_treasury = -750
 		}
 		else_if = {
 			limit = {
@@ -4213,13 +4148,13 @@ country_event = {
 					curia_treasury_size = 9000
 				}
 			}
-			add_curia_treasury = -1000
+			add_curia_treasury = -2000
 		}
 		else_if = {
 			limit = {
 				curia_treasury_size = 9000
 			}
-			add_curia_treasury = -3000
+			add_curia_treasury = -4000
 		}
 	}
 }
@@ -4408,6 +4343,7 @@ country_event = {
 					tag = FGO
 					tag = TAG
 					tag = WEN
+					tag = QIC
 				}
 			}
 			set_dynasty = "Jih"
@@ -4498,6 +4434,7 @@ country_event = {
 					tag = BIY
 					tag = KUA
 					tag = RUO
+					tag = SHN
 				}
 			}
 			set_dynasty = "Yun"
@@ -7156,6 +7093,640 @@ country_event = {
 		swap_free_idea_group = yes
 		change_country_color = { 
 			color = { 179 142 21 }
+		}
+	}
+}
+
+########################################################################################
+# bazhu can intervene in war after reform passed
+########################################################################################
+country_event = {
+	id = china.133
+	title = "china.133.t"
+	desc = "china.133.d"
+	picture = religious
+	
+	trigger = {
+		is_emperor = yes
+		OR = {
+			AND = {
+				has_dlc = "Emperor"
+				hre_reform_passed = emperor_erbkaisertum
+			}
+			hre_reform_passed = erbkaisertum
+		}
+		any_known_country = {
+			is_part_of_hre = yes
+			is_in_war = {
+				defender_leader = THIS
+			}
+			emperor = {
+				NOT = {
+					is_in_war = {
+						participants = PREV
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		random_known_country = {
+			limit = {
+				is_part_of_hre = yes
+				is_in_war = {
+					defender_leader = THIS
+				}
+				emperor = {
+					NOT = {
+						is_in_war = {
+							participants = PREV
+						}
+					}
+				}
+			}
+			save_global_event_target_as = bazhu_defend_target
+		}
+	}
+	
+	option = {
+		name = "china.133.a"
+		random_known_country = {
+			limit = {
+				offensive_war_with = event_target:bazhu_defend_target
+			}
+			country_event = { id = china.134 }
+		}
+	}
+	option = {
+		name = "china.133.a"
+		trigger = { ai = no }
+		add_prestige = -5
+		add_imperial_influence = -2
+	}
+}
+
+########################################################################################
+# offender receive
+########################################################################################
+country_event = {
+	id = china.134
+	title = "china.134.t"
+	desc = "china.134.d"
+	picture = religious
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.134.a"
+		white_peace = event_target:bazhu_defend_target
+		add_truce_with = event_target:bazhu_defend_target
+		ai_chance = { 
+			factor = 90
+			modifier = {
+				factor = 2
+				NOT = {
+					total_development = 75
+				}
+			}
+			modifier = {
+				factor = 5
+				NOT = {
+					total_development = 30
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.134.a"
+		emperor = {
+			join_all_defensive_wars_of = event_target:bazhu_defend_target
+		}
+		ai_chance = { 
+			factor = 10
+			modifier = {
+				factor = 1.5
+				total_development = 250
+			}
+			modifier = {
+				factor = 2
+				total_development = 450
+			}
+			modifier = {
+				factor = 2
+				emperor = {
+					NOT = {
+						total_development = ROOT
+					}
+				}
+			}
+			modifier = {
+				factor = 4
+				emperor = {
+					NOT = {
+						army_size = ROOT
+					}
+				}
+			}
+			modifier = {
+				factor = 10
+				emperor = {
+					NOT = {
+						land_forcelimit = ROOT
+					}
+				}
+			}
+		}
+	}
+}
+
+
+########################################################################################
+# badao penalty calculation
+########################################################################################
+country_event = {
+	id = china.135
+	title = "china.133.t"
+	desc = "china.133.d"
+	picture = religious
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+		is_emperor = yes
+		religion = chinese_religion
+		#OR = {
+		#	is_all_concessions_in_council_taken = yes
+		#	is_council_enabled = yes
+		#}
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				calc_true_if = {
+					all_country = {
+						religion = liyuebadao
+						is_part_of_hre = yes
+						total_development = 100
+					}
+					amount = 5
+				}
+			}
+			add_country_modifier = { 
+				name = bazhu_badao_penalty_five
+				duration = -1  
+			}
+			remove_country_modifier = bazhu_badao_penalty_four
+			remove_country_modifier = bazhu_badao_penalty_three
+			remove_country_modifier = bazhu_badao_penalty_two
+			remove_country_modifier = bazhu_badao_penalty_one
+		}
+		else_if = {
+			limit = {
+				calc_true_if = {
+					all_country = {
+						religion = liyuebadao
+						is_part_of_hre = yes
+						total_development = 100
+					}
+					amount = 4
+				}
+			}
+			add_country_modifier = { 
+				name = bazhu_badao_penalty_four
+				duration = -1  
+			}
+			remove_country_modifier = bazhu_badao_penalty_five
+			remove_country_modifier = bazhu_badao_penalty_three
+			remove_country_modifier = bazhu_badao_penalty_two
+			remove_country_modifier = bazhu_badao_penalty_one
+		}
+		else_if = {
+			limit = {
+				calc_true_if = {
+					all_country = {
+						religion = liyuebadao
+						is_part_of_hre = yes
+						total_development = 100
+					}
+					amount = 3
+				}
+			}
+			add_country_modifier = { 
+				name = bazhu_badao_penalty_three
+				duration = -1  
+			}
+			remove_country_modifier = bazhu_badao_penalty_four
+			remove_country_modifier = bazhu_badao_penalty_five
+			remove_country_modifier = bazhu_badao_penalty_two
+			remove_country_modifier = bazhu_badao_penalty_one
+		}
+		else_if = {
+			limit = {
+				calc_true_if = {
+					all_country = {
+						religion = liyuebadao
+						is_part_of_hre = yes
+						total_development = 100
+					}
+					amount = 2
+				}
+			}
+			add_country_modifier = { 
+				name = bazhu_badao_penalty_two
+				duration = -1  
+			}
+			remove_country_modifier = bazhu_badao_penalty_four
+			remove_country_modifier = bazhu_badao_penalty_three
+			remove_country_modifier = bazhu_badao_penalty_five
+			remove_country_modifier = bazhu_badao_penalty_one
+		}
+		else_if = {
+			limit = {
+				calc_true_if = {
+					all_country = {
+						religion = liyuebadao
+						is_part_of_hre = yes
+						total_development = 100
+					}
+					amount = 1
+				}
+			}
+			add_country_modifier = { 
+				name = bazhu_badao_penalty_one
+				duration = -1  
+			}
+			remove_country_modifier = bazhu_badao_penalty_four
+			remove_country_modifier = bazhu_badao_penalty_three
+			remove_country_modifier = bazhu_badao_penalty_two
+			remove_country_modifier = bazhu_badao_penalty_five
+		}
+		else = {
+			remove_country_modifier = bazhu_badao_penalty_four
+			remove_country_modifier = bazhu_badao_penalty_three
+			remove_country_modifier = bazhu_badao_penalty_two
+			remove_country_modifier = bazhu_badao_penalty_five
+			remove_country_modifier = bazhu_badao_penalty_one
+		}
+	}
+	
+	option = {
+		name = "china.133.a"
+		
+	}
+}
+
+########################################################################################
+# china help - HRE
+########################################################################################
+country_event = {
+	id = china.136
+	title = "china.136.t"
+	desc = "china.136.d"
+	picture = archemedis
+	is_triggered_only = yes
+
+	option = {
+		name = "china.136.a"
+		country_event = {
+			id = china.137
+		}
+	}
+	option = {
+		name = "help_event_done"
+	}
+	option = {
+		name = "help_event_back"
+		hidden_effect = {
+			country_event = {
+				id = help_event.1
+			}
+		}
+	}
+}
+
+########################################################################################
+# china help - HRE (second)
+########################################################################################
+country_event = {
+	id = china.137
+	title = "china.137.t"
+	desc = "china.137.d"
+	picture = archemedis
+	is_triggered_only = yes
+
+	option = {
+		name = "help_event_done"
+	}
+	option = {
+		name = "help_event_back"
+		hidden_effect = {
+			country_event = {
+				id = help_event.1
+			}
+		}
+	}
+}
+
+########################################################################################
+# china help - religion
+########################################################################################
+country_event = {
+	id = china.138
+	title = "china.138.t"
+	desc = "china.138.d"
+	picture = archemedis
+	is_triggered_only = yes
+
+	option = {
+		name = "help_event_done"
+	}
+	option = {
+		name = "help_event_back"
+		hidden_effect = {
+			country_event = {
+				id = help_event.1
+			}
+		}
+	}
+}
+
+########################################################################################
+# badao nations arent affected by forcelimit debuff
+########################################################################################
+country_event = {
+	id = china.139
+	title = "china.139.t"
+	desc = "china.139.d"
+	picture = army_construction
+	hidden = yes
+	
+	trigger = {
+		hre_reform_passed = emperor_privilegia_de_non_appelando
+		religion = liyuebadao
+		is_part_of_hre = yes
+		NOT = {
+			has_country_modifier = no_badao_forcelimit_debuff
+		}
+	}
+	
+	immediate = {
+		add_country_modifier = { 
+			name = no_badao_forcelimit_debuff
+			duration = -1  
+		}
+	}
+
+	option = {
+		name = "china.139.a"
+	
+	}
+}
+
+########################################################################################
+# remove previous thing if not badao or left hre
+########################################################################################
+country_event = {
+	id = china.140
+	title = "china.140.t"
+	desc = "china.140.d"
+	picture = army_construction
+	hidden = yes
+	
+	trigger = {
+		hre_reform_passed = emperor_privilegia_de_non_appelando
+		OR = {
+			NOT = { religion = liyuebadao }
+			is_part_of_hre = no
+		}
+		has_country_modifier = no_badao_forcelimit_debuff
+	}
+	
+	immediate = {
+		remove_country_modifier = no_badao_forcelimit_debuff
+	}
+
+	option = {
+		name = "china.140.a"
+		
+	}
+}
+
+########################################################################################
+# after league war - bazhu will have to choose one new elector if qin chose badao
+########################################################################################
+country_event = {
+	id = china.141
+	title = "china.141.t"
+	desc = "china.141.d"
+	picture = cloudy_manor
+	is_triggered_only = yes
+	
+	trigger = { 
+		NOT = {
+			num_of_electors = 7
+		}
+	}
+
+	option = {
+		name = "china.141.a"
+		WEY = {
+			elector = yes
+		}
+		ai_chance = {
+			factor = 55
+			modifier = {
+				factor = 3
+				WEY = {
+					owns = 4122
+				}
+			}
+			modifier = {
+				factor = 4
+				alliance_with = WEY
+			}
+		}
+	}
+	option = {
+		name = "china.141.b"
+		YAN = {
+			elector = yes
+		}
+		ai_chance = { 
+			factor = 45
+			modifier = {
+				factor = 2
+				YAN = {
+					total_development = 165
+				}
+			}
+			modifier = {
+				factor = 5
+				YAN = {
+					total_development = 200
+				}
+			}
+			modifier = {
+				factor = 4
+				alliance_with = YAN
+			}
+		}
+	}
+	option = {
+		name = "china.141.c"
+		trigger = {
+			NOT = {
+				exists = WEY
+			}
+			NOT = {
+				exists = YAN
+			}
+		}
+	}
+}
+
+########################################################################################
+# chu wins league (emperor notif)
+########################################################################################
+country_event = {
+	id = china.142
+	title = "china.142.t"
+	desc = "china.142.d"
+	picture = plundering
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "china.142.a"
+		custom_tooltip = BADAO_LEAGUE_VICTORY_NEW
+	}
+}
+
+########################################################################################
+# zhouli flavor - extra donation to curia
+########################################################################################
+country_event = {
+	id = china.143
+	title = "china.143.t"
+	desc = "china.143.d"
+	picture = plundering
+	
+	trigger = {
+		religion = chinese_religion
+		is_part_of_hre = yes
+		is_council_enabled = yes
+		is_all_concessions_in_council_taken = no
+		treasury = 25
+	}
+	
+	mean_time_to_happen = {
+		months = 600
+		modifier = {
+			factor = 0.9
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 1095
+			}
+		}
+		modifier = {
+			factor = 0.9
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 1460
+			}
+		}
+		modifier = {
+			factor = 0.9
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 1825
+			}
+		}
+		modifier = {
+			factor = 0.8
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 2190
+			}
+		}
+		modifier = {
+			factor = 0.8
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 2555
+			}
+		}
+		modifier = {
+			factor = 0.75
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 2920
+			}
+		}
+		modifier = {
+			factor = 0.75
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 3285
+			}
+		}
+		modifier = {
+			factor = 0.5
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 3650
+			}
+		}
+	}
+	
+	option = {
+		name = "china.143.a"
+		add_curia_treasury = 10
+		add_treasury = -10
+		ai_chance = { 
+			factor = 60
+		}
+	}
+	option = {
+		name = "china.143.b"
+		add_curia_treasury = 25
+		add_treasury = -25
+		ai_chance = { 
+			factor = 20
+			modifier = {
+				factor = 2
+				had_global_flag = {
+					flag = zhouli_conference_flag_done
+					days = 2190
+				}
+			}
+			modifier = {
+				factor = 4
+				had_global_flag = {
+					flag = zhouli_conference_flag_done
+					days = 3285
+				}
+			}
+			modifier = {
+				factor = 1.5
+				years_of_income = 1
+				treasury = 25
+			}
+			modifier = {
+				factor = 2
+				years_of_income = 1.75
+				treasury = 25
+			}
+		}
+	}
+	option = {
+		name = "china.143.c"
+		modifier = {
+			factor = 4
+			had_global_flag = {
+				flag = zhouli_conference_flag_done
+				days = 3285
+			}
 		}
 	}
 }
