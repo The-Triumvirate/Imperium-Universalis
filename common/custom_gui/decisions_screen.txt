@@ -313,3 +313,118 @@ custom_button = {
 		}
 	}
 }
+
+custom_button = {
+	name = IU_slave_add_button
+	tooltip = IU_slave_add_button_tt
+	potential = { NOT = { has_country_modifier = slavery_abolished } }
+    trigger = {
+		treasury = 10
+		check_variable = { slaves = 10 }
+		any_owned_province = {
+			can_build = manufactory_slave_up
+			is_state = yes
+			check_variable = { SD_slot_free = 1 }
+		}
+	}
+	frame = {
+		number = 1
+		trigger = { always = yes }
+	}
+	frame = {
+		number = 2
+		trigger = { always = no }
+	}
+	effect = {
+		random_owned_province = {
+			limit = {
+				can_build = manufactory_slave_up
+				is_state = yes
+				check_variable = { SD_slot_free = 1 }
+			}
+			add_building_construction = {
+				building = manufactory_slave_up
+				speed = 1.0
+				cost = 1.0
+			}
+		}
+	}
+}
+
+custom_button = {
+	name = IU_slave_repeat_button
+	tooltip = IU_slave_repeat_button_tt
+	potential = { NOT = { has_country_modifier = slavery_abolished } }
+    trigger = {
+		treasury = 10
+		check_variable = { slaves = 10 }
+		any_owned_province = {
+			can_build = manufactory_slave_up
+			is_state = yes
+			check_variable = { SD_slot_free = 1 }
+		}
+	}
+	frame = {
+		number = 1
+		trigger = { always = yes }
+	}
+	frame = {
+		number = 2
+		trigger = { always = no }
+	}
+	effect = {
+		while = {
+			limit = {
+				treasury = 10
+				check_variable = { slaves = 10 }
+				any_owned_province = {
+					can_build = manufactory_slave_up
+					is_state = yes
+					check_variable = { SD_slot_free = 1 }
+				}
+			}
+			random_owned_province = {
+				limit = {
+					can_build = manufactory_slave_up
+					is_state = yes
+					check_variable = { SD_slot_free = 1 }
+				}
+				add_building_construction = {
+					building = manufactory_slave_up
+					speed = 1.0
+					cost = 1.0
+				}
+			}
+		}
+	}
+}
+
+custom_button = {
+	name = IU_slave_sell_button
+	tooltip = IU_slave_sell_button_tt
+	potential = {
+		OR = {
+			has_estate_privilege = estate_slaves_status_3	# the previous groups, so that the player knows it is possible
+			has_estate_privilege = estate_slaves_status_4	# the triggers themselves
+			has_estate_privilege = estate_slaves_status_5
+		}
+	}
+    trigger = {
+		OR = {
+			has_estate_privilege = estate_slaves_status_4
+			has_estate_privilege = estate_slaves_status_5
+			check_variable = { slave_pop_social = 100 }		# over 100% is also allowed, for normal slavery
+		}
+	}
+	frame = {
+		number = 1
+		trigger = { always = yes }
+	}
+	frame = {
+		number = 2
+		trigger = { always = no }
+	}
+	effect = {
+		hidden_effect = {country_event = { id = slave_trade.4 } }
+	}
+}
