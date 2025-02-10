@@ -1764,6 +1764,7 @@ country_event = {
 		}
 		owns = 4349
 		religion = chinese_religion
+		is_emperor_of_china = no
 	}
 	
 
@@ -3679,10 +3680,6 @@ country_event = {
 	fire_only_once = yes
 	major = yes
 	
-	mean_time_to_happen = {
-		months = 4
-	}
-	
 	trigger = {
 		has_dlc = "Emperor"
 		OR = {
@@ -3695,8 +3692,22 @@ country_event = {
 			}
 		}
 		OR = {
-			reform_desire = 1
-			hre_reform_passed = emperor_erbkaisertum
+			AND = {
+				reform_desire = 1
+				ZHO = {
+					is_emperor = no
+				}
+				is_council_enabled = no
+				is_all_concessions_in_council_taken = no
+			}
+			AND = {
+				hre_reform_passed = emperor_erbkaisertum
+				ZHO = {
+					is_emperor = no
+				}
+				is_council_enabled = no
+				is_all_concessions_in_council_taken = no
+			}
 		}
 	}
 	
@@ -3872,6 +3883,12 @@ country_event = {
 				add_curia_treasury = -9950
 			}
 		}
+		emperor = {
+			add_country_modifier = { 
+				name = no_IA_while_trent
+				duration = -1 
+			}
+		}
 	}
 }
 
@@ -3887,7 +3904,7 @@ country_event = {
 	major = yes
 	
 	mean_time_to_happen = {
-		months = 4
+		months = 2
 	}
 	
 	trigger = {
@@ -3907,6 +3924,9 @@ country_event = {
 		name = "china.79.a"
 		#add_reform_desire_scale = -1
 		add_reform_desire = -2
+		emperor = {
+			remove_country_modifier = no_IA_while_trent
+		}
 	}
 }
 
@@ -7378,81 +7398,6 @@ country_event = {
 }
 
 ########################################################################################
-# china help - HRE
-########################################################################################
-country_event = {
-	id = china.136
-	title = "china.136.t"
-	desc = "china.136.d"
-	picture = archemedis
-	is_triggered_only = yes
-
-	option = {
-		name = "china.136.a"
-		country_event = {
-			id = china.137
-		}
-	}
-	option = {
-		name = "help_event_done"
-	}
-	option = {
-		name = "help_event_back"
-		hidden_effect = {
-			country_event = {
-				id = help_event.1
-			}
-		}
-	}
-}
-
-########################################################################################
-# china help - HRE (second)
-########################################################################################
-country_event = {
-	id = china.137
-	title = "china.137.t"
-	desc = "china.137.d"
-	picture = archemedis
-	is_triggered_only = yes
-
-	option = {
-		name = "help_event_done"
-	}
-	option = {
-		name = "help_event_back"
-		hidden_effect = {
-			country_event = {
-				id = help_event.1
-			}
-		}
-	}
-}
-
-########################################################################################
-# china help - religion
-########################################################################################
-country_event = {
-	id = china.138
-	title = "china.138.t"
-	desc = "china.138.d"
-	picture = archemedis
-	is_triggered_only = yes
-
-	option = {
-		name = "help_event_done"
-	}
-	option = {
-		name = "help_event_back"
-		hidden_effect = {
-			country_event = {
-				id = help_event.1
-			}
-		}
-	}
-}
-
-########################################################################################
 # badao nations arent affected by forcelimit debuff
 ########################################################################################
 country_event = {
@@ -7992,5 +7937,57 @@ country_event = {
 		ZHO = {
 			grant_independence = yes
 		}
+	}
+}
+
+########################################################################################
+# end zhouli conference if zhou is bazhu
+########################################################################################
+country_event = {
+	id = china.154
+	title = "china.154.t"
+	desc = "china.154.d"
+	picture = ruler
+	
+	trigger = {
+		is_council_enabled = yes
+		tag = ZHO
+		is_emperor = yes
+	}
+	
+	option = {
+		name = "china.149.a"
+		finish_council = yes
+	}
+}
+
+########################################################################################
+# ai does decentral (HOPEFULLY)
+########################################################################################
+country_event = {
+	id = china.155
+	title = "china.155.t"
+	desc = "china.155.d"
+	picture = ruler
+	hidden = yes
+	
+	trigger = {
+		is_emperor = yes
+		ai = yes
+		hre_reform_passed = emperor_gemeinerpfennig
+		ZHO = {
+			has_reform = free_city_zhou
+			has_reform = zho_reform_align_big
+			has_reform = zho_reform_no_hegemony_bid
+		}
+	}
+	
+	immediate = {
+		revoke_reform = emperor_gemeinerpfennig
+		add_imperial_influence = 55
+	}
+	
+	option = {
+		name = "china.149.a"
 	}
 }
