@@ -315,16 +315,37 @@ SD_autoassign_slaves = {
 
 SD_slaves_pulse_effect = {
 	# For AI to get slaves in provs, for free. Also updates slots & output for all provs.
-	every_owned_province = {
+	if = {
 		limit = {
-			check_variable = { SD_slot_free = 1 }
-			owner = { ai = yes check_variable = { slaves = 10 } }
+			ai = yes
+			check_variable = { slaves = 10 }
 		}
-		while = {
-			limit = { check_variable = { SD_slot_free = 1 } owner = { check_variable = { slaves = 10 } } }
-			change_variable = { slaves_in_province = 10 } subtract_variable = { SD_slot_free = 1 }
-			owner = {
-				change_variable = { slaves_in_province = 10 } subtract_variable = { slaves = 10 }
+		every_owned_province = {
+			limit = {
+				check_variable = { SD_slot_free = 1 }
+				owner = { check_variable = { slaves = 10 } }
+				OR = {
+					base_tax = 4
+					trade_goods = dyes
+					trade_goods = glas
+					trade_goods = metalware
+					trade_goods = jade
+					trade_goods = paper
+					trade_goods = silk
+					trade_goods = tin
+					trade_goods = pearls
+					trade_goods = olibanum
+					trade_goods = marble
+					trade_goods = amber
+					trade_goods = copper
+				}
+			}
+			while = {
+				limit = { check_variable = { SD_slot_free = 1 } owner = { check_variable = { slaves = 10 } } }
+				change_variable = { slaves_in_province = 10 } subtract_variable = { SD_slot_free = 1 }
+				owner = {
+					change_variable = { slaves_in_province = 10 } subtract_variable = { slaves = 10 }
+				}
 			}
 		}
 	}
