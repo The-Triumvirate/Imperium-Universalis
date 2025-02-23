@@ -2733,3 +2733,1124 @@ country_event = {
 		}
 	}
 }
+
+#Elephant domestication emerges in Southern China, for primitives only
+country_event = {
+	id = ShiJian.5003
+	title = daxiang.000101.t
+	desc = daxiang.000101.d
+	picture = religious
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		always = yes
+		capital_scope = {
+			continent = china
+		}
+	}
+	
+	mean_time_to_happen = {
+    months = 1
+    }
+	
+	#
+	option = {
+		name = daxiang.000101.a
+		every_country = {
+		    limit = {
+			        primitives = yes
+					OR = {
+						capital_scope = { region = yizhou_china }
+						capital_scope = { region = jiaozhou_china }
+						capital_scope = { region = jingzhou_china }
+						capital_scope = { region = yangzhou_china }
+						capital_scope = { region = lacviet_region }
+					}
+				}
+			capital_scope = { 
+			   add_institution_embracement = {
+                       which = elephant_domestication
+					   value = 100
+                }
+			}
+		
+		}
+		
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#《孙子兵法》问世
+country_event = {
+	id = ShiJian.505
+	title = flavor_wuu.505.t
+	desc = flavor_wuu.505.d
+	picture = religious 
+	major = yes
+	is_triggered_only = yes
+	
+	trigger = {
+	    
+	}
+	
+	#伟大的经典！
+	option = {
+		name = flavor_wuu.505.a
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#抢走《孙子兵法》
+country_event = {
+	id = ShiJian.506
+	title = flavor_wuu.1.t
+	desc = flavor_wuu.1.d
+	picture = religious
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    capital_scope = { continent = china }
+		FROM = {
+			has_province_modifier = wuu_sunzibingfa_modifier
+			NOT = { owned_by = ROOT }
+			NOT = {
+				owner = {
+					OR = {
+						is_in_war = {
+							defenders = PREV
+							defenders = ROOT
+						}
+						is_in_war = {
+							attackers = PREV
+							attackers = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			FROM = {
+				save_global_event_target_as = tripitaka_wuu_province
+				if = {
+					limit = { has_province_modifier = wuu_sunzibingfa_modifier }
+					
+				}
+				owner = {
+					save_event_target_as = tripitaka_wuu_og_owner
+				}
+			}
+		}
+	}
+	
+	#Steal it
+	option = {
+		name = flavor_wuu.1.a
+		trigger = {
+			
+		}
+		add_prestige = 10
+		hidden_effect = {
+			FROM = {
+				owner = {
+					country_event = {
+						id = ShiJian.507
+					}
+				}
+			}
+		}
+		custom_tooltip = tripitaka_wuu_tt.1
+		capital_scope = {
+			add_permanent_province_modifier = {
+				name = wuu_sunzibingfa_modifier
+				duration = -1
+			}
+		}
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = wuu_sunzibingfa_modifier
+			}
+		}
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfa_opinion
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#Burn it down!
+	option = {
+		name = flavor_wuu.1.b
+		add_mil_power = 2000
+		custom_tooltip = tripitaka_wuu_tt.2
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = wuu_sunzibingfa_modifier
+			}
+		}
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfashao_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#Spare it!
+	option = {
+		name = flavor_wuu.1.c
+		add_prestige = 10
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfabaohu_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#《孙子兵法》遗失
+country_event = {
+	id = ShiJian.507
+	title = flavor_wuu.2.t
+	desc = flavor_wuu.2.d
+	picture = plundering
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = flavor_wuu.2.a
+		custom_tooltip = tripitaka_wuu_tt.4
+		add_prestige = -20
+		add_legitimacy = -10
+#		hidden_effect = {
+#			if = {
+#				limit = {
+#					Tag = WUU
+#					mission_completed = wuu_sunwujungai
+#				}
+#				
+#			}
+#			else = {
+#				remove_idea_group = bingfa_ideas
+#			}
+#			
+#		}
+	}
+	
+	after = {
+		clear_global_event_target = tripitaka_wuu_province
+	}
+}
+
+#美人西施的命运
+country_event = {
+	id = ShiJian.508
+	title = flavor_yue.1.t
+	desc = flavor_yue.1.d
+	picture = event_xishi
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = YUE
+	}
+	
+	#进献吴王，乞求存国
+	option = {
+		name = flavor_yue.1.a
+		trigger = {
+			
+		}
+		custom_tooltip = xishi_tt.3
+		WUU = {
+		   add_prestige = 10
+		   country_event = { id = ShiJian.509 }
+		}
+		hidden_effect = {
+			
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#西施是我的！
+	option = {
+		name = flavor_yue.1.b
+		remove_consort = yes
+		define_consort = {
+              name = "Yiguang"
+			  dynasty = "Shi"
+              culture = wuyue
+			  country_of_origin = YUE
+			  age = 16
+              adm = 6
+              dip = 6
+              mil = 6
+              female = yes
+			  religion = wuism
+            }
+		add_queen_personality = fertile_personality
+		custom_tooltip = xishi_yue_tt.2
+		add_country_modifier = {
+				name = "yue_xishi_modifier" 
+				duration = 9125
+			}
+		hidden_effect = {
+			change_heir_adm = 1
+			change_heir_dip = 1
+			change_heir_mil = 1
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#可怜的美人，还她自由
+	option = {
+		name = flavor_yue.1.c
+		add_prestige = 10
+		add_war_exhaustion = -5
+		add_stability = 1
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#越国进献西施美人计
+country_event = {
+	id = ShiJian.509
+	title = flavor_wuu.3.t
+	desc = flavor_wuu.3.d
+	picture = event_xishi
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = WUU
+	}
+	
+	#抱得美人归！
+	option = {
+		name = flavor_wuu.3.a
+		remove_consort = yes
+		define_consort = {
+              name = "Yiguang"
+			  dynasty = "Shi"
+              culture = wuyue
+			  country_of_origin = YUE
+			  age = 16
+              adm = 6
+              dip = 6
+              mil = 6
+              female = yes
+			  religion = wuism
+            }
+		add_queen_personality = fertile_personality
+		custom_tooltip = xishi_wuu_tt.43
+		custom_tooltip = xishi_yue_tt.2
+		add_country_modifier = {
+				name = "yue_xishi_modifier" 
+				duration = 9125
+			}
+		hidden_effect = {
+			change_heir_adm = 1
+			change_heir_dip = 1
+			change_heir_mil = 1
+			white_peace = YUE
+			country_event = { 
+			    id = ShiJian.5 
+				days = 1
+				}
+		}
+		YUE = {	 
+		    add_ruler_modifier = {
+				name = "yue_woxinchangdan_modifier" 
+			}
+			change_mil = 1
+			# Cede borderlands to Wu
+		    4442 = { 
+				cede_province = WUU
+		    }
+			4448 = { 
+				cede_province = WUU
+		    }
+			4435 = { 
+				cede_province = WUU
+		    }
+		}
+		WUU = {
+		   vassalize = YUE
+		   add_treasury = 1000
+		   # Cede back territories taken outside of original borderland to Yue
+		   4436 = { 
+				cede_province = YUE
+		   }
+		   4440 = { 
+				cede_province = YUE
+		   }
+		   4437 = { 
+				cede_province = YUE
+		   }
+		   4441 = { 
+				cede_province = YUE
+		   }
+		   4450 = { 
+				cede_province = YUE
+		   }
+		   4449 = { 
+			cede_province = YUE
+		   }
+		   4438 = { 
+				cede_province = YUE
+		   }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#识破美人计！
+	option = {
+		name = flavor_wuu.3.b
+		YUE = {
+			add_prestige = -25
+		}
+		WUU = {
+			add_legitimacy = 10
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#迎娶西施
+country_event = {
+	id = ShiJian.510
+	title = flavor_wuu.4.t
+	desc = flavor_wuu.4.d
+	picture = caravan
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = WUU
+	}
+	
+	#西施是我的啦！
+	option = {
+		name = flavor_wuu.4.a
+		custom_tooltip = xishi_wuu_tt.42
+		change_adm = 1
+		change_dip = 1
+		change_mil = 1
+		add_ruler_personality = conqueror_personality
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#越国灭亡
+country_event = {
+	id = ShiJian.601
+	title =flavor_yue.liumin.t
+	desc = flavor_yue.liumin.d
+	picture = asiangfx_construction
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		NOT = { exists = YUE }
+		NOT = { exists = XIA }
+		OR = {
+			Tag = MNY
+			Tag = OUY
+			Tag = YYG
+			Tag = NAN
+			Tag = GAA
+			Tag = GUM
+			Tag = SHY		
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		country_event = { id = ShiJian.602 }
+	}
+	
+	#
+	option = {
+		name = flavor_yue.liumin.a
+		
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#越国流民
+country_event = {
+	id = ShiJian.602
+	title =flavor_yue.liumin.t
+	desc = flavor_yue.liumin.d
+	picture = asiangfx_construction
+	
+	is_triggered_only = yes
+	
+	immediate = {
+	   hidden_effect = {
+			add_treasury = 1000
+			add_manpower = 20
+			add_country_modifier = {
+				name = "yue_baiyuezhimeng_modifier" 
+				duration = -1
+			}
+	    }
+    }
+	
+	#接纳他们
+	option = {
+		name = flavor_yue.liumin.a
+		every_country = {
+			limit = {
+				OR = {
+					Tag = MNY
+					Tag = OUY
+					Tag = YYG
+					Tag = NAN
+					Tag = GAA
+					Tag = GUM
+					Tag = SHY		
+				}				
+			}
+			every_tribal_land_province = {
+				limit = { 
+					NOT = { 
+						owner = { 
+							exists = yes 
+						} 
+					} 
+				}
+				settle_province = ROOT
+			}
+			change_government = tribal
+			add_government_reform = tribal_kingdom_reform
+			change_government_reform_progress = 2000
+			add_country_modifier = {
+				name = "yue_liumin_modifier" 
+				duration = 18250
+			}
+			custom_tooltip = baiyuezhimengtt
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = YYG
+			}
+			create_alliance = YYG
+		    add_historical_friend = YYG
+		    remove_rival = YYG
+		    add_trust = {
+				who = YYG
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = NAN
+			}
+			create_alliance = NAN
+		    add_historical_friend = NAN
+		    remove_rival = NAN
+		    add_trust = {
+				who = NAN
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = GAA
+			}
+			create_alliance = GAA
+		    add_historical_friend = GAA
+		    remove_rival = GAA
+		    add_trust = {
+				who = GAA
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = GUM
+			}
+			create_alliance = GUM
+		    add_historical_friend = GUM
+		    remove_rival = GUM
+		    add_trust = {
+				who = GUM
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = SHY
+			}
+			create_alliance = SHY
+		    add_historical_friend = SHY
+		    remove_rival = SHY
+		    add_trust = {
+				who = SHY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = MNY
+			}
+			create_alliance = MNY
+		    add_historical_friend = MNY
+		    remove_rival = MNY
+		    add_trust = {
+				who = MNY
+				value = 5
+                mutual = yes
+            }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#不熟岭南
+country_event = {
+	id = flavor_baiyue.0101
+	title = flavor_baiyue.0101.t
+	desc = flavor_baiyue.0101.d
+	picture = event_baiyuesenlin1
+	
+	trigger = {
+		NOT = { Tag = MNY }
+		NOT = { Tag = OUY }
+		NOT = { Tag = YYG }
+		NOT = { Tag = NAN }
+		NOT = { Tag = YUE }
+		NOT = { Tag = XIA }
+		NOT = { Tag = GAA }
+		NOT = { Tag = GUM }
+		NOT = { Tag = SHY }
+		NOT = { government = native }
+		NOT = { mission_completed = wuu_nanzhengbaiyue }
+		OR = { 
+			offensive_war_with = MNY
+			offensive_war_with = YYG
+			offensive_war_with = OUY
+			offensive_war_with = NAN
+			offensive_war_with = GAA
+			offensive_war_with = GUM
+			offensive_war_with = SHY
+		}
+		OR = { 
+			is_in_war = {
+				defender_leader = MNY
+			}
+			is_in_war = {
+				defender_leader = OUY
+			}
+			is_in_war = {
+				defender_leader = YYG
+			}
+			is_in_war = {
+				defender_leader = NAN
+			}
+			is_in_war = {
+				defender_leader = GAA
+			}
+			is_in_war = {
+				defender_leader = GUM
+			}
+			is_in_war = {
+				defender_leader = SHY
+			}
+		}
+		NOT = { has_country_modifier = yue_bushunanling_modifier }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		add_country_modifier = {
+           name = yue_bushunanling_modifier
+           duration = -1
+        }
+	}
+	
+	option = {
+		name = flavor_baiyue.0101.a
+		
+		ai_chance = {
+			factor = 60
+		}
+	}
+}
+
+#不熟岭南消失
+country_event = {
+	id = flavor_baiyue.0102
+	title = flavor_baiyue.0102.t
+	desc = flavor_baiyue.0102.d
+	picture = event_baiyuesenlin2
+	
+	trigger = {
+		has_country_modifier = yue_bushunanling_modifier
+		OUY = {
+			OR = {
+				NOT = { exists = OUY }
+				NOT = {defensive_war_with = ROOT}
+				}
+	    }
+		MNY = {
+	        OR = {
+				NOT = { exists = MNY }
+				NOT = {defensive_war_with = ROOT}
+	        }
+	    }
+		YYG = {
+	        OR = {
+				NOT = { exists = YYG }
+				NOT = {defensive_war_with = ROOT}
+	        }
+	    }
+		NAN = {
+	        OR = {
+				NOT = { exists = NAN }
+				NOT = {defensive_war_with = ROOT}
+	        }	
+	    }
+		GAA = {
+	        OR = {
+				NOT = { exists = GAA }
+				NOT = {defensive_war_with = ROOT}
+	        }
+	    }
+		GUM = {
+	        OR = {
+				NOT = { exists = GUM }
+				NOT = {defensive_war_with = ROOT}
+	        }
+	    }
+		SHY = {
+	        OR = {
+				NOT = { exists = SHY }
+				NOT = {defensive_war_with = ROOT}
+	        }
+	    }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		hidden_effect = {
+			remove_country_modifier =  yue_bushunanling_modifier 
+		}
+	}
+	
+	option = {
+		name = flavor_baiyue.0102.a
+		
+		ai_chance = {
+			factor = 60
+		}
+	}
+}
+
+#熟悉岭南
+country_event = {
+	id = flavor_baiyue.103
+	title = flavor_baiyue.0103.t
+	desc = flavor_baiyue.0103.d
+	picture = event_baiyuesenlin2
+	
+	trigger = {
+		OR = {
+			government = native
+			Tag = YUE
+			Tag = XIA
+			Tag = MNY
+			Tag = OUY
+			Tag = YYG
+			Tag = NAN
+			Tag = GAA
+			Tag = GUM
+			Tag = SHY
+			mission_completed = wuu_nanzhengbaiyue
+			num_of_owned_provinces_with = {
+	             value = 50
+				 is_core = ROOT
+	             OR = {
+					area = yifeng_area
+					area = ai_area
+					area = yuzhang_area
+					area = baqiu_area
+					area = yichun_area
+					area = zhongling_area
+					area = nancheng_area
+					area = yangfeng_area
+					area = yuzhang_area_south
+					area = nankang_area
+					area = wushang_area
+					area = yongning_area
+					area = minzhong_area
+					area = minzhong_area_north
+					area = dongan_area
+					area = nanhai_area_north
+					area = nanhai_area
+					area = sihui_area
+					area = gaoyao_area
+					area = guilin_area
+					area = hepu_area
+					area = xuwen_area
+					area = zhuya_area
+					area = zhaner_area
+					area = lingyang_area
+					area = lujiang_area
+					area = danyang_area_south
+					area = kuaiji_area_west
+					area = shangrao_area
+					area = fanyang_area
+				}
+				OR = {
+					has_owner_culture = yes
+					accepted_culture = ROOT
+				}
+            }
+		}
+		OR = { 
+			offensive_war_with = MNY
+			offensive_war_with = YYG
+			offensive_war_with = OUY
+			offensive_war_with = NAN
+			offensive_war_with = GAA
+			offensive_war_with = GUM
+			offensive_war_with = SHY
+		}
+		OR = { 
+			is_in_war = {
+				defender_leader = MNY
+			}	
+			is_in_war = {
+				defender_leader = OUY
+			}
+			is_in_war = {
+				defender_leader = YYG
+			}
+			is_in_war = {
+				defender_leader = NAN
+			}
+			is_in_war = {
+				defender_leader = GAA
+			}
+			is_in_war = {
+				defender_leader = GUM
+			}
+			is_in_war = {
+				defender_leader = SHY
+			}
+		}
+			NOT = { has_country_modifier = yue_shuxilingnan_modifier }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		hidden_effect = {
+			add_country_modifier = {
+				name = yue_shuxilingnan_modifier
+				duration = -1
+			}
+		}
+	}
+	
+	option = {
+		name = flavor_baiyue.0103.a
+		custom_tooltip = flavor_baiyue.0103.tt
+		
+		ai_chance = {
+			factor = 60
+		}
+	}
+}
+
+#和平状态清除标识
+country_event = {
+	id = flavor_baiyue.104
+	title = flavor_baiyue.0104.t
+	desc = flavor_baiyue.0104.d
+	picture = event_baiyuesenlin2
+	hidden = yes
+	
+	trigger = {
+		has_country_modifier = yue_shuxilingnan_modifier
+		is_at_war = no
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		hidden_effect = {
+			remove_country_modifier =  yue_shuxilingnan_modifier 
+		}
+	}
+	
+	option = {
+		name = flavor_baiyue.0104.a
+		
+		ai_chance = {
+			factor = 60
+		}
+	}
+}
+
+#夺走越王勾践剑
+country_event = {
+	id = flavor_yue.12577
+	title = flavor_yue.12577.t
+	desc = flavor_yue.12577.d
+	picture = military_parade
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    capital_scope = { continent = china }
+		FROM = {
+			has_province_modifier = yue_goujianjian_modifier
+			NOT = { owned_by = ROOT }
+			NOT = {
+				owner = {
+					OR = {
+						is_in_war = {
+							defenders = PREV
+							defenders = ROOT
+						}
+						is_in_war = {
+							attackers = PREV
+							attackers = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			FROM = {
+				save_global_event_target_as = tripitaka_yue_province
+				if = {
+					limit = { has_province_modifier = yue_goujianjian_modifier }
+					
+				}
+				owner = {
+					save_event_target_as = tripitaka_yue_og_owner
+				}
+			}
+		}
+	}
+	
+	#Steal it
+	option = {
+		name = flavor_yue.12577.a
+		trigger = {
+			
+		}
+		add_prestige = 10
+		hidden_effect = {
+			FROM = {
+				owner = {
+					country_event = {
+						id = flavor_yue.22577
+					}
+				}
+			}
+		}
+		custom_tooltip = tripitaka_yue_tt.1
+		capital_scope = {
+			add_permanent_province_modifier = {
+				name = yue_goujianjian_modifier
+				duration = -1
+			}
+		}
+		hidden_effect = {
+			event_target:tripitaka_yue_province = {
+				remove_province_modifier = yue_goujianjian_modifier
+			}
+		}
+		event_target:tripitaka_yue_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = yue_missionevent_goujianjian_opinion
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#Burn it down!
+	option = {
+		name = flavor_yue.12577.b
+		add_mil_power = 500
+		custom_tooltip = tripitaka_yue_tt.2
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = yue_goujianjian_modifier
+			}
+		}
+		event_target:tripitaka_yue_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = yue_missionevent_goujianjianshao_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#Spare it!
+	option = {
+		name = flavor_yue.12577.c
+		add_prestige = 10
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#越王勾践剑被夺
+country_event = {
+	id = flavor_yue.22577
+	title = flavor_yue.22577.t
+	desc = flavor_yue.22577.d
+	picture = plundering
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = flavor_yue.22577.2.a
+		custom_tooltip = tripitaka_yue_tt.4
+		add_prestige = -20
+		add_legitimacy = -10
+	}
+	
+	after = {
+		clear_global_event_target = tripitaka_yue_province
+	}
+}
