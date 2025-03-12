@@ -7720,6 +7720,7 @@ country_event = {
 		owns = 4115
 		owns = 4110
 		has_country_modifier = querenzuyuan_papacy
+		NOT = { start_date = 87.1.1 }
 	}
 	
 	mean_time_to_happen = {
@@ -8334,5 +8335,420 @@ country_event = {
 			}
 			add_truce_with = ROOT
 		}
+	}
+}
+
+########################################################################################
+# first lu-qi war event chain, start
+########################################################################################
+country_event = {
+	id = china.161
+	title = "china.161.t"
+	desc = "china.161.d"
+	picture = guard
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QII
+		is_year = 142
+		OR = {
+			is_month = 8 #the war started in autumn, i thought about making it a thing at the start date, but wouldnt really be accurate
+			is_year = 143
+		}
+		NOT = {
+			started_in = 142.9.1
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.161.a"
+		set_country_flag = qi_fought_lu_war_one
+		declare_war_with_cb = {
+			who = LUU
+			casus_belli = cb_vassalize_hegemony
+		}
+		ai_chance = { 
+			factor = 90
+		}
+	}
+	option = {
+		name = "china.161.b"
+		add_prestige = -10
+		ai_chance = { 
+			factor = 10
+		}
+	}
+}
+
+########################################################################################
+# first lu-qi war event chain, Zi Shu Ji, wife of Duke Zhao and mother of the assassinated Prince She, may be released or kept
+########################################################################################
+country_event = {
+	id = china.162
+	title = "china.162.t"
+	desc = "china.162.d"
+	picture = training
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QII
+		has_country_flag = qi_fought_lu_war_one
+		is_year = 142
+		NOT = {
+			has_country_flag = qilu_war_one_concluded
+		}
+		OR = {
+			is_month = 9
+			is_year = 143
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.162.a" #historical, let her and the Lu emissary go
+		add_papal_influence = 5
+		add_prestige = -5
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = let_zishuji_go_opinion
+		}
+		reverse_add_opinion = {
+			who = LUU
+			modifier = let_zishuji_go_opinion
+		}
+		ai_chance = { 
+			factor = 80
+		}
+	}
+	option = {
+		name = "china.162.b" #kill Zi Shi Ji, let the Lu emissary go
+		reverse_add_opinion = {
+			who = LUU
+			modifier = killed_zishuji_opinion
+		}
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = qilu_didnt_listen_zhou
+		}
+		ai_chance = { 
+			factor = 19
+		}
+	}
+	option = {
+		name = "china.162.c" #kill Zi Shu Ji and sacrifice the Lu emissary
+		add_papal_influence = -10
+		add_legitimacy = -10
+		reverse_add_opinion = {
+			who = LUU
+			modifier = killed_zishuji_and_emi_opinion
+		}
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = qilu_didnt_listen_zhou
+			multiplier = 2
+		}
+		add_country_modifier = { 
+			name = qi_sacrificed_lu_emi
+			duration = 1825
+		}
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 5
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 10
+				ruler_has_personality = lunatic_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# first lu-qi war event chain, cao may be attacked to "overawe" lu
+########################################################################################
+country_event = {
+	id = china.163
+	title = "china.163.t"
+	desc = "china.163.d"
+	picture = siege_battle
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QII
+		is_year = 142
+		has_country_flag = qi_fought_lu_war_one
+		NOT = {
+			has_country_flag = qilu_war_one_concluded
+		}
+		OR = {
+			is_month = 11
+			is_year = 143
+		}
+		NOT = {
+			alliance_with = CAA
+		}
+		NOT = {
+			started_in = 142.9.1
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.163.a"
+		set_country_flag = qilu_war_one_attacked_cao
+		add_prestige = 5
+		custom_tooltip = qilu_war_tooltip_one
+		CAA = {
+			join_all_defensive_wars_of = LUU
+		}
+		CAA = {
+			country_event = { id = china.164 }
+		}
+		LUU = {
+			country_event = { id = china.164 }
+		}
+		ai_chance = { 
+			factor = 90
+		}
+	}
+	option = {
+		name = "china.163.b"
+		ai_chance = { 
+			factor = 10
+			modifier = {
+				factor = 2
+				CAA = {
+					ai = no
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# Cao and Lu notification for event above
+########################################################################################
+country_event = {
+	id = china.164
+	title = "china.164.t"
+	desc = "china.164.d"
+	picture = siege_battle
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.164.a"
+		if = {
+			limit = {
+				tag = CAA
+			}
+			custom_tooltip = qilu_war_tooltip_two
+		}
+	}
+}
+
+########################################################################################
+# Qi troops enter Cao, which overawes Lu
+########################################################################################
+country_event = {
+	id = china.165
+	title = "china.165.t"
+	desc = "china.165.d"
+	picture = siege_picture
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QII
+		has_country_flag = qilu_war_one_attacked_cao
+		NOT = {
+			has_country_flag = qilu_war_one_concluded
+		}
+		OR = {
+			4300 = {
+				num_of_units_in_province = {
+					who = QII
+					amount = 1
+				}
+			}
+			4300 = {
+				controlled_by = QII
+			}
+		}
+		4300 = {
+			unit_in_battle = no 
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.165.a"
+		clr_country_flag = qilu_war_one_attacked_cao
+		LUU = {
+			set_country_flag = lu_cao_capitulated_qilu
+		}
+		white_peace = CAA
+		add_prestige = 5
+		add_war_exhaustion = -1
+		LUU = {
+			add_war_exhaustion = 2.5
+			country_event = { id = china.166 }
+		}
+		ai_chance = { 
+			factor = 80
+		}
+	}
+}
+
+########################################################################################
+# Lu notification for event above
+########################################################################################
+country_event = {
+	id = china.166
+	title = "china.165.t"
+	desc = "china.166.d"
+	picture = siege_picture
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.166.a"
+		custom_tooltip = qilu_war_tooltip_three
+	}
+}
+
+########################################################################################
+# scripted peace if war goes on too long and lu is losing (ai qi will always accept)
+########################################################################################
+country_event = {
+	id = china.167
+	title = "china.167.t"
+	desc = "china.167.d"
+	picture = HRE_eventPicture
+	fire_only_once = yes
+	
+	trigger = {
+		tag = LUU
+		war_with = QII
+		OR = {
+			QII = {
+				had_country_flag = {
+					flag = qi_fought_lu_war_one
+					days = 300
+				}
+			}
+			has_country_flag = lu_cao_capitulated_qilu
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 4
+		modifier = {
+			factor = 0.5
+			has_country_flag = lu_cao_capitulated_qilu
+		}
+	}
+	
+	immediate = {
+		clr_country_flag = lu_cao_capitulated_qilu
+	}
+
+	option = {
+		name = "china.167.a"
+		custom_tooltip = qilu_war_tooltip_four
+		QII = { country_event = { id = china.168 } }
+		ai_chance = { 
+			factor = 90
+		}
+	}
+	option = {
+		name = "china.167.b"
+		add_prestige = 5
+		ai_chance = { 
+			factor = 10
+		}
+	}
+}
+
+########################################################################################
+# Qi gets peace offer
+########################################################################################
+country_event = {
+	id = china.168
+	title = "china.168.t"
+	desc = "china.168.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.168.a"
+		clr_country_flag = qilu_war_one
+		white_peace = LUU
+		if = {
+			limit = {
+				war_with = CAA
+			}
+			white_peace = CAA
+		}
+		add_treasury = 50
+		clr_country_flag = qi_fought_lu_war_one
+		clr_country_flag = qilu_war_one_attacked_cao
+		set_country_flag = qilu_war_one_concluded
+		remove_rival = LUU
+		LUU = {
+			remove_rival = QII
+		}
+		reverse_add_opinion = {
+			who = LUU
+			modifier = qilu_forced_friend_opinion
+		}
+		add_favors = {
+		   who = LUU
+		   amount = 75
+		}
+		LUU = {
+			country_event = { id = china.169 }
+		}
+	}
+	option = {
+		name = "china.168.b"
+		trigger = { ai = no }
+		add_war_exhaustion = 2
+		add_papal_influence = -10
+	}
+}
+
+########################################################################################
+# Lu notif, end this event chain
+########################################################################################
+country_event = {
+	id = china.169
+	title = "china.169.t"
+	desc = "china.169.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.165.a"
+		add_treasury = -50
 	}
 }
