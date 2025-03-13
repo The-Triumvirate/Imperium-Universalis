@@ -808,13 +808,18 @@ country_event = {
 	desc = "china.21.d"
 	picture = deligation
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			add_country_modifier = { 
+				name = china_rejected_rank_modifier
+				duration = 1825 
+			}
+		}
+	}
 
 	option = {
 		name = "china.21.a"
-		add_country_modifier = { 
-			name = china_rejected_rank_modifier
-			duration = 1825 
-		}
 	}
 }
 
@@ -8373,6 +8378,10 @@ country_event = {
 		}
 		ai_chance = { 
 			factor = 90
+			modifier = {
+				factor = 5
+				personality = ai_militarist
+			}
 		}
 	}
 	option = {
@@ -8424,7 +8433,15 @@ country_event = {
 			modifier = let_zishuji_go_opinion
 		}
 		ai_chance = { 
-			factor = 80
+			factor = 84
+			modifier = {
+				factor = 5
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 2
+				personality = ai_balanced
+			}
 		}
 	}
 	option = {
@@ -8438,13 +8455,17 @@ country_event = {
 			modifier = qilu_didnt_listen_zhou
 		}
 		ai_chance = { 
-			factor = 19
+			factor = 15
+			modifier = {
+				factor = 5
+				ruler_has_personality = ai_militarist
+			}
 		}
 	}
 	option = {
 		name = "china.162.c" #kill Zi Shu Ji and sacrifice the Lu emissary
 		add_papal_influence = -10
-		add_legitimacy = -10
+		#add_legitimacy = -10
 		reverse_add_opinion = {
 			who = LUU
 			modifier = killed_zishuji_and_emi_opinion
@@ -8657,10 +8678,27 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 4
+		months = 5
 		modifier = {
 			factor = 0.5
 			has_country_flag = lu_cao_capitulated_qilu
+		}
+		modifier = {
+			factor = 0.1
+			has_country_flag = lu_cao_capitulated_qilu
+			ai = yes
+		}
+		modifier = {
+			factor = 0.1
+			4291 = {
+				OR = {
+					controlled_by = QII
+					num_of_units_in_province = {
+						who = QII
+						amount = 6
+					}
+				}
+			}
 		}
 	}
 	
@@ -8670,17 +8708,65 @@ country_event = {
 
 	option = {
 		name = "china.167.a"
+		trigger = {
+			OR = {
+				ai = no
+				NOT = {
+					war_score_against = {
+						who = QII
+						value = 51
+					}
+				}
+			}
+		}
 		custom_tooltip = qilu_war_tooltip_four
 		QII = { country_event = { id = china.168 } }
 		ai_chance = { 
-			factor = 90
+			factor = 95
+			modifier = {
+				factor = 5
+				NOT = {
+					war_score_against = {
+						who = QII
+						value = -50
+					}
+				}
+			}
 		}
 	}
 	option = {
 		name = "china.167.b"
 		add_prestige = 5
 		ai_chance = { 
-			factor = 10
+			factor = 5
+			modifier = {
+				factor = 2
+				war_score_against = {
+					who = QII
+					value = 1
+				}
+			}
+			modifier = {
+				factor = 2
+				war_score_against = {
+					who = QII
+					value = 15
+				}
+			}
+			modifier = {
+				factor = 2
+				war_score_against = {
+					who = QII
+					value = 25
+				}
+			}
+			modifier = {
+				factor = 2
+				war_score_against = {
+					who = QII
+					value = 40
+				}
+			}
 		}
 	}
 }
@@ -8750,5 +8836,51 @@ country_event = {
 	option = {
 		name = "china.165.a"
 		add_treasury = -50
+	}
+}
+
+########################################################################################
+# remove flags from event chain above
+########################################################################################
+country_event = {
+	id = china.170
+	title = "china.169.t"
+	desc = "china.169.d"
+	picture = deligation
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			AND = {
+				tag = QII
+				has_country_flag = qi_fought_lu_war_one
+				NOT = {
+					war_with = LUU
+				}
+			}
+			AND = {
+				tag = LUU
+				has_country_flag = lu_cao_capitulated_qilu
+				NOT = {
+					war_with = QII
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		QII = {
+			clr_country_flag = qi_fought_lu_war_one
+			set_country_flag = qilu_war_one_concluded
+		}
+		LUU = {
+			clr_country_flag = lu_cao_capitulated_qilu
+		}
+	}
+	
+	option = {
+		name = "china.165.a"
+	
 	}
 }
