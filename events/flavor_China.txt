@@ -629,9 +629,9 @@ country_event = {
 		release = GUZ
 		GUZ = {
 			define_ruler = {
-				name = "Chu"
+				name = "Ba"
 				dynasty = "Motai"
-				adm = 5
+				adm = 4
 				dip = 4
 				mil = 4
 				age = 27
@@ -671,7 +671,7 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 600
+		months = 504
 
 	}
 	option = {
@@ -2941,6 +2941,9 @@ country_event = {
 		}
 		CHU = {
 			has_country_flag = zhuxiatouxian_wang
+			NOT = {
+				war_with = ZHO
+			}
 			OR = {
 				is_at_war = no
 				war_score = 5
@@ -4096,28 +4099,20 @@ country_event = {
 	
 	trigger = {
 		is_papal_controller = yes
-		curia_treasury_size = 1550
+		curia_treasury_size = 2500
 		is_council_enabled = no
 		is_all_concessions_in_council_taken = no
 	}
 	
 	mean_time_to_happen = {
-		months = 216
-		modifier = {
-			factor = 0.9
-			curia_treasury_size = 1900
-		}
-		modifier = {
-			factor = 0.9
-			curia_treasury_size = 2500
-		}
+		months = 240
 		modifier = {
 			factor = 0.8
-			curia_treasury_size = 3100
+			curia_treasury_size = 3500
 		}
 		modifier = {
 			factor = 0.75
-			curia_treasury_size = 3800
+			curia_treasury_size = 45800
 		}
 		modifier = {
 			factor = 0.75
@@ -4144,30 +4139,12 @@ country_event = {
 		name = "china.85.a"
 		if = {
 			limit = {
-				curia_treasury_size = 1
-				NOT = {
-					curia_treasury_size = 1700
-				}
-			}
-			add_curia_treasury = -250
-		}
-		else_if = {
-			limit = {
-				curia_treasury_size = 1700
-				NOT = {
-					curia_treasury_size = 2500
-				}
-			}
-			add_curia_treasury = -500
-		}
-		else_if = {
-			limit = {
 				curia_treasury_size = 2500
 				NOT = {
 					curia_treasury_size = 4000
 				}
 			}
-			add_curia_treasury = -750
+			add_curia_treasury = -800
 		}
 		else_if = {
 			limit = {
@@ -4696,10 +4673,16 @@ province_event = {
 				tag = GUZ
 			}
 			NOT = {
+				tag = JSG
+			}
+			NOT = {
 				tag = QUG
 			}
 			NOT = {
 				tag = BEI
+			}
+			NOT = {
+				tag = DAG
 			}
 		}
 	}
@@ -5214,8 +5197,18 @@ country_event = {
 		name = "china.104.a"
 		create_alliance = BII
 		join_all_defensive_wars_of = BII
+		if = {
+			limit = {
+				JUN = {
+					ai = yes
+				}
+			}
+			JUN = {
+				join_all_defensive_wars_of = BII
+			}
+		}
 		BII = {
-			add_manpower = 5
+			add_manpower = 8
 			add_war_exhaustion = -5
 		}
 		ai_chance = { 
@@ -5990,8 +5983,8 @@ country_event = {
 	
 	option = {
 		name = "china.115.a"
-		kill_ruler = yes
 		kill_heir = { allow_new_heir = no }
+		kill_ruler = yes
 		add_stability = 1
 		set_country_flag = song_got_bao_zi
 		define_ruler = {
@@ -6252,7 +6245,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 11
+		months = 8
 	}
 	
 	immediate = {
@@ -6532,6 +6525,10 @@ country_event = {
 	fire_only_once = yes
 	trigger = {
 		tag = BAA
+		owns = 4243
+		NOT = {
+			is_year = 160
+		}
 		CHU = {
 			has_country_flag = chu_began_bii_war
 			is_at_war = yes
@@ -7802,12 +7799,6 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	trigger = {
-		NOT = {
-			owns = 4399
-		}
-	}
-	
 	immediate = {
 		if = {
 			limit = {
@@ -8288,7 +8279,18 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 8
+		months = 6
+		modifier = {
+			factor = 0.1
+			calc_true_if = {
+				all_owned_province = {
+					NOT = {
+						controlled_by = ROOT
+					}
+				}
+				amount = 11
+			}
+		}
 	}
 	
 	option = {
@@ -8340,6 +8342,12 @@ country_event = {
 			}
 			add_truce_with = ROOT
 		}
+		every_country = {
+			limit = {
+				defensive_war_with = ROOT
+			}
+			white_peace = ROOT
+		}
 	}
 }
 
@@ -8387,6 +8395,7 @@ country_event = {
 	option = {
 		name = "china.161.b"
 		add_prestige = -10
+		set_country_flag = qi_did_not_first_lu_war
 		ai_chance = { 
 			factor = 10
 		}
@@ -8417,12 +8426,15 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 6
+		modifier = {
+			factor = 0.1
+			has_country_flag = qi_fought_lu_war_one
+		}
 	}
 	
 	option = {
 		name = "china.162.a" #historical, let her and the Lu emissary go
-		add_papal_influence = 5
 		add_prestige = -5
 		reverse_add_opinion = {
 			who = ZHO
@@ -8816,7 +8828,7 @@ country_event = {
 	option = {
 		name = "china.168.b"
 		trigger = { ai = no }
-		add_war_exhaustion = 2
+		add_war_exhaustion = 3
 		add_papal_influence = -10
 	}
 }
@@ -8882,5 +8894,523 @@ country_event = {
 	option = {
 		name = "china.165.a"
 	
+	}
+}
+
+########################################################################################
+# Jiang Shangren is assassinated
+########################################################################################
+country_event = {
+	id = china.176
+	title = "china.176.t"
+	desc = "china.176.d"
+	picture = assassination
+	fire_only_once = yes
+	
+	trigger = {
+		tag = QII
+		OR = {
+			AND = {
+				is_year = 145
+				is_month = 4
+			}
+			is_year = 146
+		}
+		NOT = {
+			started_in = 146.1.1
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.176.a"
+		trigger = { NOT = { war_with = WEY } }
+		kill_heir = { allow_new_heir = no }	
+		kill_ruler = yes
+		define_ruler = {
+			name = "Yuan"
+			dynasty = "Jiang"
+			adm = 4
+			dip = 3
+			mil = 3
+			age = 40
+			claim = 90
+		}
+		add_opinion = {
+			who = WEY
+			modifier = opinion_crowned_exiled_ruler
+		}
+		add_stability = 1
+	}
+	option = {
+		name = "china.176.b"
+		trigger = { war_with = WEY }
+		kill_heir = { allow_new_heir = no }	
+		kill_ruler = yes
+		define_ruler = {
+			#name = "Yuan"
+			dynasty = "Jiang"
+			adm = 2
+			dip = 3
+			mil = 2
+			age = 20
+			claim = 80
+		}
+		custom_tooltip = shangren_assassination_tooltip_one
+	}
+}
+
+########################################################################################
+# Shuqi of Ju is assassinated
+########################################################################################
+country_event = {
+	id = china.171
+	title = "china.171.t"
+	desc = "china.171.d"
+	picture = assassination
+	fire_only_once = yes
+	
+	trigger = {
+		tag = JUU
+		OR = {
+			AND = {
+				is_year = 145
+				is_month = 5
+			}
+			is_year = 146
+		}
+		NOT = {
+			started_in = 146.1.1
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 2
+	}
+	
+	option = {
+		name = "china.171.a"
+		kill_heir = { allow_new_heir = no }	
+		kill_ruler = yes
+		define_ruler = {
+			name = "Jituo"
+			dynasty = "Jih"
+			adm = 3
+			dip = 4
+			mil = 3
+			age = 22
+			claim = 80
+		}
+		LUU = {
+			country_event = { id = china.172 }
+		}
+	}
+}
+
+########################################################################################
+# Shuqi's son, Pu, flees to Lu
+########################################################################################
+country_event = {
+	id = china.172
+	title = "china.172.t"
+	desc = "china.172.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.172.a" #take in the former heir
+		4305 = {
+			change_religion = wuism
+		}
+		custom_tooltip = liyue_lose_30_opinion
+		hidden_effect = {
+			every_neighbor_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				reverse_add_opinion = {
+					who = ROOT
+					modifier = opinion_took_in_bad_ruler
+				}
+			}
+		}
+		JUU = {
+			add_historical_rival = LUU
+		}
+		add_casus_belli = {
+			target = JUU
+			type = cb_vassalize_mission
+			months = 120
+		}
+		JUU = {
+			country_event = { id = china.173 }
+		}
+		ai_chance = { 
+			factor = 35
+			modifier = {
+				factor = 3
+				ruler_has_personality = tactical_genius_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = expansionist_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = aggressive_personality
+			}
+			modifier = {
+				factor = 0.75
+				ruler_has_personality = zealot_personality
+			}
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+		}
+	}
+	option = {
+		name = "china.172.b" #kill the former heir and seize his goods
+		add_prestige = -10
+		add_treasury = 50
+		reverse_add_opinion = {
+			who = JUU
+			modifier = opinion_lu_killed_ju_heir
+		}
+		JUU = {
+			country_event = { id = china.174 }
+		}
+		ai_chance = { 
+			factor = 20
+			modifier = {
+				factor = 5
+				ruler_has_personality = greedy_personality
+			}
+			modifier = {
+				factor = 3
+				ruler_has_personality = cruel_personality
+			}
+			modifier = {
+				factor = 3
+				ruler_has_personality = embezzler_personality
+			}
+		}
+	}
+	option = {
+		name = "china.172.c" #seize the former heir and deliver him to Jituo (gives Ju their own dilemma)
+		add_prestige = 10
+		add_papal_influence = 5
+		add_historical_friend = JUU
+		JUU = {
+			add_historical_friend = LUU
+		}
+		reverse_add_opinion = {
+			who = JUU
+			modifier = opinion_lu_returned_ju_heir
+		}
+		JUU = {
+			country_event = { id = china.175 }
+		}
+		ai_chance = { 
+			factor = 45
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 5
+				ruler_has_personality = incorruptible_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = just_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = righteous_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = pious_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# Ju notif, Pu taken in
+########################################################################################
+country_event = {
+	id = china.173
+	title = "china.173.t"
+	desc = "china.173.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.173.a"
+	}
+}
+
+########################################################################################
+# Ju notif, Pu killed
+########################################################################################
+country_event = {
+	id = china.174
+	title = "china.174.t"
+	desc = "china.174.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.174.a"
+		add_legitimacy = 10
+	}
+}
+
+########################################################################################
+# Ju notif, Pu returned
+########################################################################################
+country_event = {
+	id = china.175
+	title = "china.175.t"
+	desc = "china.175.d"
+	picture = arrested_person
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		add_stability = 1
+	}
+	
+	option = {
+		name = "china.175.a" #kill Pu
+		add_legitimacy = 20
+		add_estate_loyalty = {
+			estate = estate_nobility
+			loyalty = 10
+		}
+		add_country_modifier = { 
+			name = ju_killed_pu
+			duration = 3650
+		}
+		ai_chance = { 
+			factor = 50
+			modifier = {
+				factor = 2
+				stability = 2
+			}
+			modifier = {
+				factor = 10
+				stability = 3
+			}
+		}
+	}
+	option = {
+		name = "china.175.b" #imprison Pu
+		add_legitimacy = 20
+		add_stability = 1
+		add_country_modifier = { 
+			name = ju_spared_pu
+			duration = 3650
+		}
+		ai_chance = { 
+			factor = 50
+			modifier = {
+				factor = 2
+				NOT = {
+					stability = 0
+				}
+			}
+			modifier = {
+				factor = 4
+				NOT = {
+					stability = -1
+				}
+			}
+		}
+	}
+}
+
+#skip 176, its above
+
+########################################################################################
+# burial rites for the Zhou king
+########################################################################################
+country_event = {
+	id = china.177
+	title = "china.177.t"
+	desc = "china.177.d"
+	picture = death
+	is_triggered_only = yes
+	
+	immediate = {
+		clr_country_flag = zhou_king_death_pending
+	}
+
+	option = {
+		name = "china.177.a" #perform the burial
+		clr_country_flag = zhou_king_death_delayed
+		add_treasury = -150
+		add_prestige = 10
+		add_legitimacy = 20
+		custom_tooltip = liyue_gain_50_opinion
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = opinion_zhou_did_full_burial
+				}
+			}
+		}
+		ai_chance = { 
+			factor = 44
+			modifier = {
+				factor = 0
+				NOT = {
+					treasury = 150
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = {
+					treasury = 175
+				}
+			}
+			modifier = {
+				factor = 2
+				treasury = 250
+			}
+			modifier = {
+				factor = 3
+				treasury = 350
+			}
+			modifier = {
+				factor = 1.5
+				treasury = 150
+				NOT = {
+					prestige = 10
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.177.b" #ask princes to help (uses curia)
+		clr_country_flag = zhou_king_death_delayed
+		trigger = { curia_treasury_size = 75 }
+		add_legitimacy = 5
+		add_treasury = -75
+		add_curia_treasury = -75
+		ai_chance = { 
+			factor = 55
+			modifier = {
+				factor = 0
+				NOT = {
+					treasury = 75
+				}
+			}
+			modifier = {
+				factor = 1.5
+				prestige = 30
+			}
+			modifier = {
+				factor = 2
+				curia_treasury_size = 1000
+			}
+			modifier = {
+				factor = 4
+				curia_treasury_size = 1500
+			}
+		}
+	}
+	option = {
+		name = "china.177.c" #delay
+		set_country_flag = zhou_king_death_delayed
+		add_legitimacy = -5
+		custom_tooltip = zhou_burial_tooltip_one
+		hidden_effect = {
+			country_event = { id = china.177 days = 365 }
+		}
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				treasury = 75
+				curia_treasury_size = 75
+			}
+			modifier = {
+				factor = 0
+				treasury = 150
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou king dies, and previous king has not been buried
+########################################################################################
+country_event = {
+	id = china.178
+	title = "china.178.t"
+	desc = "china.178.d"
+	picture = cloudy_manor
+	is_triggered_only = yes
+	
+	immediate = {
+		clr_country_flag = zhou_king_death_delayed
+	}
+
+	option = {
+		name = "china.178.a"
+		if = {
+			limit = {
+				curia_treasury_size = 150
+			}
+			add_curia_treasury = -150
+		}
+		else_if = {
+			limit = {
+				curia_treasury_size = 100
+			}
+			add_curia_treasury = -100
+			add_treasury = -50
+		}
+		else_if = {
+			limit = {
+				curia_treasury_size = 50
+			}
+			add_curia_treasury = -50
+			add_treasury = -100
+		}
+		else = {
+			add_treasury = -150
+		}
+		add_prestige = -10
+		add_legitimacy = -20
+		custom_tooltip = liyue_lose_50_opinion
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = opinion_zhou_never_got_burial
+				}
+			}
+		}
 	}
 }
