@@ -3090,7 +3090,7 @@ country_event = {
 		name = "china.64.a"
 		add_adm_power = 50
 		define_advisor = {
-			type = engineer
+			type = statesman_adv
 			name = "Sun Shuao"
 			discount = yes
 			skill = 3
@@ -6064,6 +6064,10 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 90
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
 		}
 	}
 	option = {
@@ -6073,6 +6077,16 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 10
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
+			modifier = {
+				factor = 4
+				NOT = {
+					treasury = 50
+				}
+			}
 		}
 	}
 }
@@ -6113,6 +6127,10 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 2
+				personality = ai_diplomat
+			}
 		}
 	}
 	option = {
@@ -6134,6 +6152,10 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
 		}
 	}
 }
@@ -7965,7 +7987,6 @@ country_event = {
 
 	option = {
 		name = "china.153.a"
-		add_papal_influence = 50
 		ZHO = {
 			grant_independence = yes
 		}
@@ -9915,5 +9936,180 @@ country_event = {
 				add_government_reform = free_city
 			}
 		}
+	}
+}
+
+########################################################################################
+# cardinal setup
+########################################################################################
+country_event = {
+	id = china.182
+	title = "china.182.t"
+	desc = "china.182.d"
+	picture = deligation
+	fire_only_once = yes
+	hidden = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		ai = no
+	}
+	
+	immediate = {
+		every_province = {
+			limit = {
+				has_cardinal = yes
+			}
+			remove_cardinal = yes
+		}
+		4291 = { #qufu
+			add_cardinal = yes
+		}
+		4263 = { #linzi
+			add_cardinal = yes
+		}
+		4354 = { #xinzheng
+			add_cardinal = yes
+		}
+		4346 = { #shangyang
+			add_cardinal = yes
+		}
+		4322 = { #shangqiu
+			add_cardinal = yes
+		}
+		4357 = { #diqiu
+			add_cardinal = yes
+		}
+		4071 = { #jiang
+			add_cardinal = yes
+		}
+	}
+
+	option = {
+		name = "china.180.a"
+		
+	}
+}
+
+########################################################################################
+# xian clan colludes with the di
+########################################################################################
+country_event = {
+	id = china.183
+	title = "china.183.t"
+	desc = "china.183.d"
+	picture = battle
+	fire_only_once = yes
+
+	trigger = {
+		tag = CXA
+		is_year = 158
+		is_at_war = no
+		is_subject_of = JIN
+		NOT = {
+			started_in = 159.1.1
+		}
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 5
+	}
+	
+	immediate = {
+		hidden_effect = {
+			JIN = {
+				set_country_flag = xianjin_war_began
+			}
+		}
+	}
+
+	option = {
+		name = "china.183.a"
+		add_manpower = 5
+		every_known_country = {
+			limit = {
+				alliance_with = ROOT
+				NOT = {
+					primary_culture = chidi
+				}
+			}
+			break_alliance = ROOT
+		}
+		declare_war_with_cb = {
+			who = JIN
+			casus_belli = cb_independence_war
+		}
+		JIN = {
+			country_event = { id = china.185 }
+		}
+	}
+	option = {
+		name = "china.183.b"
+		trigger = { ai = no }
+	}
+}
+
+########################################################################################
+# xian loses (maybe expand upon this later)
+########################################################################################
+country_event = {
+	id = china.184
+	title = "china.184.t"
+	desc = "china.184.d"
+	picture = military_parade
+	fire_only_once = yes
+
+	trigger = {
+		tag = JIN
+		has_country_flag = xianjin_war_began
+		NOT = {
+			is_year = 170
+		}
+		OR = {
+			has_won_war_against = {
+				who = CXA
+				max_years_since = 1
+			}
+			NOT = {
+				exists = CXA
+			}
+		}
+	}
+	
+	immediate = {
+		clr_country_flag = xianjin_war_began
+	}
+
+	option = {
+		name = "china.179.a"
+		if = {
+			limit = {
+				exists = CXA
+			}
+			inherit = CXA
+		}
+		every_owned_province = {
+			limit = {
+				is_core = CXA
+			}
+			remove_core = CXA
+		}
+	}
+}
+
+########################################################################################
+# jin notif
+########################################################################################
+country_event = {
+	id = china.185
+	title = "china.185.t"
+	desc = "china.185.d"
+	picture = battle
+	fire_only_once = yes
+	is_triggered_only = yes	
+	
+	option = {
+		name = "china.185.a"
 	}
 }
