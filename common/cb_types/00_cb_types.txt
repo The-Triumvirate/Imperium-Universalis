@@ -927,18 +927,33 @@ cb_force_join_hre = {
 	}
 
 	prerequisites = {
-		can_use_peace_treaty = {
-			who = FROM
-			treaty = po_join_empire
-		}
+		#can_use_peace_treaty = {
+		#	who = FROM
+		#	treaty = po_join_empire
+		#}
 		FROM = {
 			OR = {
 				culture_group = chinese_group
 				culture_group = dongyi_group
+				tag = XSG
+				tag = LSS
+				tag = PXS
+				tag = BOG
+				tag = WUU
+				tag = YUE
+				tag = MJR
+				tag = YLR
+				tag = LHR
+				tag = CMS
+				hre_reform_passed = emperor_hepingzhiyue
 			}
 			capital_scope = {
 				same_continent = ROOT
 				is_part_of_hre = no
+			}
+			OR = {
+				is_subject = no
+				is_subject_of_type = tributary_state
 			}
 			any_owned_province = {
 				any_neighbor_province = {
@@ -949,6 +964,38 @@ cb_force_join_hre = {
 	}
 
 	war_goal = take_capital_force_join_hre
+}
+
+cb_hre_force_religion = {
+	valid_for_subject = no
+
+	prerequisites_self = {
+		has_dlc = "Emperor"
+		is_emperor = yes
+		hre_reform_passed = emperor_expand_gemeiner_pfennig
+	}
+
+	prerequisites = {
+		FROM = {
+			is_part_of_hre = yes
+			OR = {
+				AND = {
+					hre_religion = chinese_religion
+					NOT = {
+						religion = chinese_religion
+					}
+				}
+				AND = {
+					hre_religion = liyuebadao
+					NOT = {
+						religion = liyuebadao
+					}
+				}
+			}
+		}
+	}
+
+	war_goal = take_capital_force_hre_convert
 }
 
 cb_reintegrate_into_hre = {
@@ -1030,6 +1077,12 @@ cb_invasion = {
 			is_neighbor_of = ROOT
 			total_development = 400
 			government_rank = 3
+			OR = {
+				NOT = {
+					tag = CHU
+				}
+				hre_leagues_enabled = no
+			}
 		}
 	}
 

@@ -2714,7 +2714,7 @@ country_event = {
 		event_target:rival_chosen_to_steal_dafu = {
 			add_spy_network_from = {
 				who = ROOT
-				value = -60
+				value = -30
 			}
 			country_event = { id = china.57 }
 		}
@@ -2747,7 +2747,7 @@ country_event = {
 		event_target:rival_chosen_to_steal_dafu = {
 			add_spy_network_from = {
 				who = ROOT
-				value = -60
+				value = -30
 			}
 			random_list = {
 				75 = {
@@ -3257,7 +3257,7 @@ country_event = {
 		tag = ZHO
 		ai = yes
 		curia_treasury_size = 1500
-		reform_desire = 0.25
+		reform_desire = 0.15
 		is_council_enabled = no
 		is_all_concessions_in_council_taken = no
 	}
@@ -3568,7 +3568,7 @@ country_event = {
 	picture = deligation
 
 	mean_time_to_happen = {
-		months = 120
+		months = 300
 	}
 
 	trigger = {
@@ -4273,6 +4273,7 @@ country_event = {
 					tag = ZHG
 					tag = ZHO
 					tag = SYW
+					tag = YGG
 				}
 			}
 			set_dynasty = "Ji"
@@ -4305,6 +4306,7 @@ country_event = {
 					tag = QIG
 					tag = FEG
 					tag = THG
+					tag = ZNG
 				}
 			}
 			set_dynasty = "Si"
@@ -4422,7 +4424,10 @@ country_event = {
 		}
 		if = {
 			limit = {
-				tag = ZHU
+				OR = {
+					tag = ZHU
+					tag = XZG
+				}
 			}
 			set_dynasty = "Cao"
 		}
@@ -4444,6 +4449,7 @@ country_event = {
 					tag = KUA
 					tag = RUO
 					tag = SHN
+					
 				}
 			}
 			set_dynasty = "Yun"
@@ -7190,7 +7196,7 @@ country_event = {
 				has_dlc = "Emperor"
 				hre_reform_passed = emperor_erbkaisertum
 			}
-			hre_reform_passed = erbkaisertum
+			hre_reform_passed = landfriede #fix the localization shit for hre without dlc uuuggggffghhhh
 		}
 		any_known_country = {
 			is_part_of_hre = yes
@@ -7208,21 +7214,23 @@ country_event = {
 	}
 
 	immediate = {
-		random_known_country = {
-			limit = {
-				is_part_of_hre = yes
-				is_in_war = {
-					defender_leader = THIS
-				}
-				emperor = {
-					NOT = {
-						is_in_war = {
-							participants = PREV
+		hidden_effect = {
+			random_known_country = {
+				limit = {
+					is_part_of_hre = yes
+					is_in_war = {
+						defender_leader = THIS
+					}
+					emperor = {
+						NOT = {
+							is_in_war = {
+								participants = PREV
+							}
 						}
 					}
 				}
+				save_global_event_target_as = bazhu_defend_target
 			}
-			save_global_event_target_as = bazhu_defend_target
 		}
 	}
 
@@ -7230,13 +7238,16 @@ country_event = {
 		name = "china.133.a"
 		random_known_country = {
 			limit = {
-				offensive_war_with = event_target:bazhu_defend_target
+				is_in_war = {
+					attacker_leader = THIS
+					defender_leader = event_target:bazhu_defend_target
+				}
 			}
 			country_event = { id = china.134 }
 		}
 	}
 	option = {
-		name = "china.133.a"
+		name = "china.133.b"
 		trigger = { ai = no }
 		add_prestige = -5
 		add_imperial_influence = -2
@@ -8019,38 +8030,6 @@ country_event = {
 }
 
 ########################################################################################
-# ai does decentral (HOPEFULLY)
-########################################################################################
-country_event = {
-	id = china.155
-	title = "china.155.t"
-	desc = "china.155.d"
-	picture = ruler
-	hidden = yes
-
-	trigger = {
-		is_emperor = yes
-		ai = yes
-		is_year = 9999
-		hre_reform_passed = emperor_gemeinerpfennig
-		ZHO = {
-			has_reform = free_city_zhou
-			has_reform = zho_reform_align_big
-			has_reform = zho_reform_no_hegemony_bid
-		}
-	}
-
-	immediate = {
-		revoke_reform = emperor_gemeinerpfennig #this comes up in error log, make sure to test
-		add_imperial_influence = 100
-	}
-
-	option = {
-		name = "china.149.a"
-	}
-}
-
-########################################################################################
 # possible revival of qig
 ########################################################################################
 country_event = {
@@ -8303,6 +8282,7 @@ country_event = {
 	trigger = {
 		tag = QIN
 		ai = yes
+		is_league_leader = no
 		JIN = {
 			ai = yes
 		}
@@ -9693,6 +9673,10 @@ province_event = {
 		modifier = {
 			factor = 2
 			local_autonomy = 90
+		}
+		modifier = {
+			factor = 0.5
+			culture = changdi
 		}
 		modifier = {
 			factor = 0.9
