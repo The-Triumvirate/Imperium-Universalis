@@ -292,6 +292,68 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = medo_assyrian_war.301
+	title = "medo_assyrian_war.301.t"
+	desc = "medo_assyrian_war.301.d"
+	picture = generals
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+
+	trigger = {
+		tag = ASY
+	}
+
+	option = {
+		name = "medo_assyrian_war.301.a"
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 10
+				has_global_flag = assyria_win_rr
+			}
+		}
+		infantry = 2347
+		infantry = 2347
+		infantry = 2347
+		cavalry = 2347
+		cavalry = 2347
+		add_war_exhaustion = -4
+		add_treasury = 50
+		add_prestige = -25
+		add_legitimacy = -10
+		add_manpower = 6
+		set_global_flag = assyria_accepts_scythian_offer
+		SX1 = {
+			create_alliance = ASY
+			add_prestige = 10
+			infantry = 2237
+			infantry = 2237
+			infantry = 2237
+			infantry = 2237
+			artillery = 2237
+			artillery = 2237
+			cavalry = 2237
+			cavalry = 2237
+			join_all_defensive_wars_of = ASY
+		}
+	}
+
+	option = {
+		name = "medo_assyrian_war.301.b"
+		ai_chance = {
+			factor = 85
+			modifier = {
+				factor = 0
+				has_global_flag = assyria_win_rr
+			}
+		}
+		add_prestige = 5
+		add_legitimacy = 10
+	}
+}
+
 ########################################################################################
 # Babylonia Wins
 ########################################################################################
@@ -643,26 +705,54 @@ country_event = {
 			factor = 99
 		}
 		custom_tooltip = medo_assyrian_war_ct.3
+		add_army_tradition = -20
+		add_prestige = -100
+		add_mil_power = -150
+		add_legitimacy = 10
+		set_capital = 2476
 		hidden_effect = {
 			clr_global_flag = nineveh_fall_flag
 			clr_global_flag = assyria_accepts_egyptian_offer
-			add_army_tradition = -20
-			add_prestige = -100
-			add_mil_power = -150
+			set_country_flag = won_assyro_bab_war
+			set_country_flag = gave_up_levant
 			release = ISR
+			ISR = { stabilize_country_effect = yes }
 			release = HAM
+			HAM = { stabilize_country_effect = yes }
 			release = PLM
+			PLM = { stabilize_country_effect = yes }
 			release = LUH
+			LUH = { stabilize_country_effect = yes }
 			release = QAR
+			QAR = { stabilize_country_effect = yes }
 			release = SY6
+			SY6 = { stabilize_country_effect = yes }
 			release = SY9
+			SY9 = { stabilize_country_effect = yes }
 			release = SI3
+			SI3 = { stabilize_country_effect = yes }
 			release = SI4
+			SI4 = { stabilize_country_effect = yes }
 			release = SI5
+			SI5 = { stabilize_country_effect = yes }
 			release = SI7
+			SI7 = { stabilize_country_effect = yes }
 			release = U21
+			U21 = { stabilize_country_effect = yes }
 			release = CMM
-			set_capital = 2476
+			CMM = { stabilize_country_effect = yes }
+		}
+		hidden_effect = {
+			country_event = {
+				id = medo_assyrian_war.603
+			}
+			BAB = {
+				country_event = {
+					id = medo_assyrian_war.604
+					days = 120
+					random = 60
+				}
+			}
 		}
 	}
 	option = {
@@ -672,11 +762,13 @@ country_event = {
 		}
 		clr_global_flag = nineveh_fall_flag
 		clr_global_flag = assyria_accepts_egyptian_offer
+		set_country_flag = won_assyro_bab_war
 		add_country_modifier = {
 			name = bab_pact_breaker
 			duration = 7300
 		}
 		add_war_exhaustion = 4
+		add_legitimacy = 25
 		add_army_tradition = 10
 		add_prestige = 20
 		add_stability = -1
@@ -684,6 +776,18 @@ country_event = {
 			country_event = {
 				id = medo_assyrian_war.601
 				days = 10
+			}
+		}
+		hidden_effect = {
+			country_event = {
+				id = medo_assyrian_war.603
+			}
+			BAB = {
+				country_event = {
+					id = medo_assyrian_war.604
+					days = 120
+					random = 60
+				}
 			}
 		}
 	}
@@ -699,15 +803,23 @@ country_event = {
 	major = yes
 
 	trigger = {
-		tag = EGY
-		has_global_flag = assyria_accepts_egyptian_offer
+		OR = {
+			AND = {
+				tag = EGY
+				has_global_flag = assyria_accepts_egyptian_offer
+			}
+			AND = {
+				tag = SX1
+				has_global_flag = assyria_accepts_scythian_offer
+			}
+		}
 	}
 
 	option = {
 		name = "medo_assyrian_war.601.a"
 
 		ai_chance = {
-			factor = 99
+			factor = 100
 		}
 		declare_war_with_cb = {
 			who = ASY
@@ -716,6 +828,22 @@ country_event = {
 		add_opinion = {
 			who = ASY
 			modifier = opinion_bab_refused_arbela
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					tag = EGY
+					war_with = SX1
+				}
+				white_peace = SX1
+			}
+			if = {
+				limit = {
+					tag = SX1
+					war_with = EGY
+				}
+				white_peace = EGY
+			}
 		}
 	}
 }
@@ -739,16 +867,16 @@ country_event = {
 		is_at_war = no
 		controls = 2476
 	}
-
 	option = {
 		name = "medo_assyrian_war.602.a"
 		ai_chance = {
 			factor = 99
 		}
 		clr_global_flag = nineveh_fall_flag
+		set_country_flag = won_assyro_bab_war
 		hidden_effect = { set_capital = 2476 }
 		add_stability = 1
-		add_legitimacy = 50
+		add_legitimacy = 40
 		change_mil = 2
 		change_dip = 2
 		change_adm = 2
@@ -761,6 +889,7 @@ country_event = {
 			type = cb_mission_invasion
 			months = 120
 		}
+
 		add_casus_belli = {
 			target = MDI
 			type = cb_vassalize_mission
@@ -770,6 +899,120 @@ country_event = {
 			name = asy_wins_media_bab_war
 			duration = 7300
 		}
+		hidden_effect = {
+			country_event = {
+				id = medo_assyrian_war.603
+			}
+			BAB = {
+				country_event = {
+					id = medo_assyrian_war.604
+					days = 120
+					random = 60
+				}
+			}
+		}
+	}
+}
+
+country_event = { #Scythian treaty
+	id = medo_assyrian_war.603
+	title = "medo_assyrian_war.603.t"
+	desc = "medo_assyrian_war.603.d"
+	picture = civilwar
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+	trigger = {
+		tag = ASY
+		has_global_flag = assyria_accepts_scythian_offer
+		is_at_war = no
+		NOT = { defensive_war_with = BAB }
+	}
+
+
+	option = {
+		name = "medo_assyrian_war.603.a"
+		ai_chance = {
+			factor = 99
+		}
+		custom_tooltip = medo_assyrian_war_ct.3
+		add_army_tradition = -20
+		add_prestige = -100
+		add_mil_power = -150
+		add_historical_friend = SX1
+		hidden_effect = {
+			clr_global_flag = assyria_accepts_scythian_offer
+			release = SI2
+			SX1 = {
+				add_historical_friend = ASY
+				create_subject = {
+					subject_type = tributary_state
+					who = SI2
+				}
+			}
+		}
+	}
+	option = {
+		name = "medo_assyrian_war.603.b"
+		ai_chance = {
+			factor = 1
+		}
+		clr_global_flag = assyria_accepts_scythian_offer
+		add_country_modifier = {
+			name = bab_pact_breaker
+			duration = 7300
+		}
+		add_war_exhaustion = 2
+		add_army_tradition = 10
+		add_legitimacy = 5
+		add_prestige = 20
+		add_stability = -1
+		SX1 = {
+			country_event = {
+				id = medo_assyrian_war.601
+				days = 10
+			}
+		}
+	}
+}
+
+country_event = { #Babylonian civil war
+	id = medo_assyrian_war.604
+	title = "medo_assyrian_war.604.t"
+	desc = "medo_assyrian_war.604.d"
+	picture = civilwar
+	fire_only_once = yes
+	is_triggered_only = yes
+	major = yes
+	trigger = {
+	}
+
+
+	option = {
+		name = "medo_assyrian_war.603.a"
+		ai_chance = {
+			factor = 99
+		}
+		add_stability = -2
+		add_legitimacy = -50
+		add_country_modifier = {
+			name = bab_kill_manpower
+			duration = 3650
+		}
+		pg_akkad_group = {
+			add_core = AKK
+		}
+		pg_susiana_group = {
+			add_core = SU5
+		}
+		3468 = { cede_province = EIM }
+		4846 = { cede_province = EIM }
+		5633 = { cede_province = EIM }
+		release = AKK
+		release = SU5
+		set_government_rank = 2
+		release_all_subjects = yes
+		release_all_possible_countries = yes
 	}
 }
 
