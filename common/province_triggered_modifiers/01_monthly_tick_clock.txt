@@ -1,0 +1,140 @@
+# Harbivore's work, edit as needed but remember to add to the list of the clock's functions
+# This functions as a clock does it's affect once a month on the tick.
+# It is in province id "1354" which is the Mare Ligisticum (The one off the coast of Rome)
+# Currently it's functions are:
+# - Give the AI crownland when it is low enough to spiral
+# -
+# -
+# -
+#
+
+monthly_clock = {
+	potential = {
+		always = yes	#Is always there
+	}
+
+	trigger = {	#Turns the clock on and off every month (Is on for all the odd months and off on all the even months)
+		OR = {
+			AND = {
+				is_month = 0		#January
+				NOT = {
+					is_month = 1 	#Febuary
+				}
+			}
+			AND = {
+				is_month = 2		#March
+				NOT = {
+					is_month = 3 	#April
+				}
+			}
+			AND = {
+				is_month = 4		#May
+				NOT = {
+					is_month = 5 	#June
+				}
+			}
+			AND = {
+				is_month = 6		#July
+				NOT = {
+					is_month = 7 	#August
+				}
+			}
+			AND = {
+				is_month = 8		#September
+				NOT = {
+					is_month = 9 	#October
+				}
+			}
+			AND = {
+				is_month = 10		#November
+				NOT = {
+					is_month = 11 	#December
+				}
+			}
+		}
+	}
+
+	on_activation = {
+		every_country = {
+			if = {
+				limit = {	#Doesn't happen on the first month to lower the year tick lag
+					ai = yes
+				}
+				random_list = {
+					1 = { #Sends out the all provinces dev point calculation for an ai once every 2 yearsmodifier = {	# If this is an Ai nation with a human overlord they should calaculate their dev points the same as a human nation
+						modifier = {
+							factor = 0
+							OR = {
+								AND = {
+									overlord = {
+										ai = yes
+									}
+									is_subject = yes
+								}
+								is_subject = no
+							}
+							is_month = 0
+							NOT = {
+								is_month = 1
+							}
+						}
+						# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+						ai_scripted_effect_bi_yearly = yes
+					}
+					23 = { #Otherwise just uses the previous calculation numbers and adds to the current dev points
+						modifier = {	# If this is an Ai nation with a human overlord they should calaculate their dev points the same as a human nation
+							factor = 0
+							is_subject = yes
+							overlord = {
+								ai = no
+							}
+						}
+						# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+						ai_scripted_effect_monthly = yes
+					}
+				}
+			}
+			if = { #Sends out the all provinces dev point calculation for the player nations every month
+				limit = {
+					ai = no
+				}
+				# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+				player_scripted_effect_monthly = yes
+			}
+		}
+	}
+
+	on_deactivation = {
+		every_country = {
+			if = {
+				limit = {
+					ai = yes
+				}
+				random_list = {
+					1 = { #Sends out the all provinces dev point calculation for an ai once every 2 years
+						# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+						ai_scripted_effect_bi_yearly = yes
+					}
+					23 = { #Otherwise just uses the previous calculation numbers and adds to the current dev points
+						modifier = {	# If this is an Ai nation with a human overlord they should calaculate their dev points the same as a human nation
+							factor = 0
+							AND = {
+								ai = yes
+								is_subject = yes
+								overlord = {
+									ai = no
+								}
+							}
+						}
+						# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+						ai_scripted_effect_monthly = yes
+					}
+				}
+			}
+			else = {
+				# This event turned into a scripted effect to stop the hidden event appearing upon autosave load
+				player_scripted_effect_monthly = yes
+			}
+		}
+	}
+}

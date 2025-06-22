@@ -4,30 +4,18 @@ interaction = {
 	cooldown_months = 60
 
 	trigger = {
-		ai = no
 		crown_land_share = 0.1
 		NOT = { num_of_rebel_armies = 1 }
 		NOT = { num_of_rebel_controlled_provinces = 1 }
 		hidden_trigger = { has_any_estates = yes }
+		if = { #ai sells above 50
+			limit = { ai = yes }
+			crown_land_share = 50
+		}
 	}
 	effect = {
 		custom_tooltip = ESTATES_SALE_OF_TITLES_DESC
-		change_estate_land_share = {
-			estate = estate_nobility
-			share = 5
-		}
-		change_estate_land_share = {
-			estate = estate_priesthood
-			share = 3
-		}
-		change_estate_land_share = {
-			estate = estate_merchants
-			share = 2
-		}
-		change_estate_land_share = {
-			estate = estate_clans
-			share = 3
-		}
+		give_estate_land_share_gigantic = { estate = all }
 		add_years_of_estate_land_income = 0.2
 		add_estate_loyalty = {
 			estate = all
@@ -44,24 +32,6 @@ interaction = {
 	}
 	ai_will_do = {
 		factor = 25
-		modifier = {
-			factor = 0
-			OR = {
-				NOT = { crown_land_share = 25 }
-				AND = {
-					NOT = { crown_land_share = 40 }
-				}
-			}
-		}
-		modifier = {
-			factor = 0.8
-			OR = {
-				NOT = { crown_land_share = 35 }
-				AND = {
-					NOT = { crown_land_share = 50 }
-				}
-			}
-		}
 		modifier = {
 			factor = 0
 			NOT = { num_of_loans = 1 }
@@ -193,12 +163,53 @@ interaction = {
 	cooldown_months = 60
 
 	trigger = {
-		ai = no
 		hidden_trigger = { has_any_estates = yes }
 		NOT = { crown_land_share = 75 }
 		NOT = { num_of_rebel_armies = 1 }
 		NOT = { num_of_rebel_controlled_provinces = 1 }
 		#The following if/else_if-statements match those in estate_privileges_and_agendas_events.2.a. If those change, these should too.
+		if = { #ai tries to stay between 40-50 crownland
+			limit = {
+				ai = yes
+			}
+			if = {
+				limit = {
+					has_estate = estate_clans
+				}
+				estate_loyalty = {
+					estate = estate_clans
+					loyalty = 50
+				}
+			}
+			if = {
+				limit = {
+					has_estate = estate_nobility
+				}
+				estate_loyalty = {
+					estate = estate_nobility
+					loyalty = 50
+				}
+			}
+			if = {
+				limit = {
+					has_estate = estate_priesthood
+				}
+				estate_loyalty = {
+					estate = estate_priesthood
+					loyalty = 50
+				}
+			}
+			if = {
+				limit = {
+					has_estate = estate_merchants
+				}
+				estate_loyalty = {
+					estate = estate_merchants
+					loyalty = 50
+				}
+			}
+			NOT = { crown_land_share = 50 }
+		}
 		is_at_war = no
 	}
 	effect = {
@@ -281,6 +292,10 @@ interaction = {
 			set_country_flag = recent_land_seizure
 		}
 		else = { clr_country_flag = recent_land_seizure }
+		add_country_modifier = {
+			name = "recently_seized_land_20_loyalty"
+			duration = 1825
+		}
 		custom_tooltip = seize_land_rebels_tt
 		if = {
 			limit = {
@@ -312,7 +327,6 @@ interaction = {
 		factor = 25
 		modifier = {
 			factor = 0
-			crown_land_share = 30
 			has_any_disaster = yes
 		}
 		modifier = {
@@ -337,26 +351,6 @@ interaction = {
 			NOT = { stability = 1 }
 		}
 		modifier = {
-			factor = 0
-			crown_land_share = 30
-			if = {
-				limit = { num_of_cities = 50 }
-				NOT = { army_size_percentage = 0.5 }
-			}
-			else_if = {
-				limit = { num_of_cities = 25 }
-				NOT = { army_size_percentage = 0.75 }
-			}
-			else = {
-				NOT = { army_size_percentage = 0.9 }
-			}
-			if = {
-				limit = { is_emperor = yes }
-				NOT = { army_size = 50 }
-			}
-			NOT = { army_size = 100 }
-		}
-		modifier = {
 			factor = 1.5
 			NOT = { num_of_rebel_armies = 1 }
 		}
@@ -379,7 +373,7 @@ interaction = {
 		}
 		modifier = {
 			factor = 1.25
-			NOT = { crown_land_share = 50 }
+			NOT = { crown_land_share = 40 }
 		}
 		modifier = {
 			factor = 1.2

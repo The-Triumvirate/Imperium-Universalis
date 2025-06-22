@@ -5,7 +5,6 @@ estate_priesthood_land_rights = {
 	loyalty = 0.05
 	influence = 0.1
 	can_select = {
-		ai = no
 	}
 	on_granted = {
 	}
@@ -21,40 +20,14 @@ estate_priesthood_land_rights = {
 		modifier = { governing_capacity = 50 }
 	}
 	ai_will_do = {
-		factor = 5
-		modifier = {
-			factor = 1.4
-			num_of_territories = 5
-		}
-		modifier = {
-			factor = 1.5
-			num_of_territories = 10
-		}
-		modifier = {
-			factor = 1.5
-			num_of_territories = 15
-		}
+		factor = 10
 		modifier = {
 			factor = 0
-			OR = {
-				NOT = { crown_land_share = 25 }
-				estate_influence = {
-					estate = estate_priesthood
-					influence = 75
-				}
-			}
-			NOT = { has_estate_privilege = estate_priesthood_land_rights }
+			NOT = { governing_capacity_percentage = 0.80 }
 		}
 		modifier = {
-			factor = 0
-			NOT = { num_of_territories = 1 }
-		}
-		modifier = {
-			factor = 0.8
-			OR = {
-				NOT = { crown_land_share = 30 }
-			}
-			NOT = { has_estate_privilege = estate_priesthood_land_rights }
+			factor = 2
+			governing_capacity_percentage = 0.90
 		}
 	}
 }
@@ -66,12 +39,11 @@ estate_priesthood_legitimacy = {
 	loyalty = 0.05
 
 	can_select = {
-		ai = no
 		NOT = { legitimacy_equivalent = 100 }
 	}
 
 	# on_granted = { effects }
-	can_revoke = { ai = no }
+	can_revoke = {}
 
 	on_revoked = {
 		add_legitimacy = -15
@@ -111,21 +83,18 @@ estate_priesthood_legitimacy = {
 			NOT = {
 				legitimacy_equivalent = 50
 			}
-			crown_land_share = 40
 		}
 		modifier = {
 			factor = 4
 			NOT = {
 				legitimacy_equivalent = 40
 			}
-			crown_land_share = 30
 		}
 		modifier = {
 			factor = 20
 			NOT = {
 				legitimacy_equivalent = 20
 			}
-			crown_land_share = 30
 		}
 	}
 }
@@ -136,13 +105,12 @@ estate_priesthood_divine_sanction = {
 	loyalty = 0.05
 
 	can_select = {
-		ai = no
 	}
 
 	on_granted = {
 		add_adm_power = 50
 	}
-	can_revoke = { ai = no }
+	can_revoke = {}
 
 	on_revoked = {
 		add_stability = -2
@@ -172,13 +140,7 @@ estate_priesthood_divine_sanction = {
 	# on_cooldown_expires = { effects }
 
 	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 1.5
-			crown_land_share = 50
-			NOT = { legitimacy = 60 }
-			NOT = { stability = 0 }
-		}
+		factor = 10
 	}
 }
 
@@ -189,14 +151,13 @@ estate_priesthood_tax_exemption = {
 	influence = 0.075
 
 	can_select = {
-		ai = no
 	}
 
 	on_granted = {
 		add_years_of_income = -0.15
 		add_adm_power = 50
 	}
-	can_revoke = { ai = no }
+	can_revoke = {}
 
 	on_revoked = {
 		add_years_of_income = 0.1
@@ -226,11 +187,7 @@ estate_priesthood_tax_exemption = {
 	# on_cooldown_expires = { effects }
 
 	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 3
-			crown_land_share = 50
-		}
+		factor = 0
 	}
 }
 
@@ -242,13 +199,13 @@ estate_priesthood_autonomy = {
 	max_absolutism = -5
 
 	can_select = {
-		ai = no
 	}
 
 	on_granted = {
 		add_adm_power = 50
 	}
-	can_revoke = { ai = no }
+	can_revoke = {
+	}
 
 	on_revoked = {
 
@@ -280,11 +237,7 @@ estate_priesthood_autonomy = {
 	# on_cooldown_expires = { effects }
 
 	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 3
-			crown_land_share = 50
-		}
+		factor = 0
 	}
 }
 
@@ -295,14 +248,13 @@ estate_priesthood_strict_religion = {
 	loyalty = 0.1
 
 	can_select = {
-		ai = no
 		NOT = { has_estate_privilege = estate_priesthood_protection_cults }
 	}
 
 	on_granted = {
 		add_war_exhaustion = -2
 	}
-	can_revoke = { ai = no }
+	can_revoke = {}
 
 	on_revoked = {
 
@@ -314,17 +266,39 @@ estate_priesthood_strict_religion = {
 	penalties = {
 		tolerance_heretic = -1
 		tolerance_heathen = -1
-		religious_unity = -0.1
 	}
-	# conditional_modifier = {
-	# 	trigger = { triggers }
-	# 	modifier = { modifiers }
-	# 	is_bad = yes/no
-	# }
+	conditional_modifier = {
+		trigger = {
+			any_known_country = {
+				NOT = { religion = root }
+				war_with = root
+			}
+		}
+		modifier = {
+			priesthood_loyalty_modifier = 0.1
+			land_morale = 0.05
+		}
+	}
+	conditional_modifier = {
+		trigger = {
+			NOT = {
+				any_known_country = {
+					NOT = { religion = root }
+					OR = {
+						war_with = root
+						truce_with = root
+					}
+				}
+			}
+		}
+		modifier = {
+			priesthood_loyalty_modifier = -0.1
+			land_morale = -0.05
+		}
+		is_bad = yes
+	}
 
 	benefits = {
-		warscore_cost_vs_other_religion = -0.1
-		land_morale = 0.05
 		yearly_patriarch_authority = 0.004
 	}
 
@@ -337,14 +311,10 @@ estate_priesthood_strict_religion = {
 	# on_cooldown_expires = { effects }
 
 	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 3
-			crown_land_share = 50
-		}
+		factor = 6
 		modifier = {
 			factor = 0
-			has_idea_group = syncretism_ideas
+			NOT = { any_rival_country = { religion = root } }
 		}
 	}
 }
@@ -356,14 +326,13 @@ estate_priesthood_protection_cults = {
 	loyalty = 0.1
 
 	can_select = {
-		ai = no
 		NOT = { has_estate_privilege = estate_priesthood_strict_religion }
 	}
 
 	on_granted = {
 		add_adm_power = 50
 	}
-	can_revoke = { ai = no }
+	can_revoke = {  }
 
 	on_revoked = {
 		add_stability = -1
@@ -396,22 +365,7 @@ estate_priesthood_protection_cults = {
 	# on_cooldown_expires = { effects }
 
 	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 3
-			crown_land_share = 50
-		}
-		modifier = {
-			factor = 3
-			has_idea_group = syncretism_ideas
-		}
-		modifier = {
-			factor = 3
-			OR = {
-				has_reform = syncretism_reform
-				has_reform = cosmopolitanism_reform
-			}
-		}
+		factor = 10
 	}
 }
 
@@ -443,7 +397,6 @@ estate_priesthood_statutory_rights = {
 		}
 	}
 	can_select = {
-		ai = no
 	}
 	on_granted = {
 		change_estate_land_share = {
@@ -463,8 +416,6 @@ estate_priesthood_statutory_rights = {
 	ai_will_do = {
 		factor = 0
 	}
-
-	cooldown_years = 20
 }
 
 estate_priesthood_loan = {
