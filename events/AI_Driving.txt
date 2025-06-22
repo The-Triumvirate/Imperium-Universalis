@@ -276,13 +276,29 @@ country_event = {
 			66 = { add_permanent_claim = ROM }
 			5644 = { add_permanent_claim = ROM }
 			54 = { add_permanent_claim = ROM }
+			if = { #for free mana later
+				limit = {
+					has_reform = roman_kingdom_reform
+				}
+				set_country_flag = started_in_kingdom_flag
+			}
 			if = {
 				limit = { NOT = { total_development = 150 } }
 				add_country_modifier = {
 					name = rom_small_buff
-					duration = 36500
+					duration = -1
+				}
+				set_country_flag = rome_is_small_at_start
+				add_manpower = 8
+				add_treasury = 100
+			}
+			53 = {
+				add_province_modifier = {
+					name = rom_ai_def_buff
+					duration = -1
 				}
 			}
+			#Kill Socii so rome AI doesn't implode
 			every_subject_country = {
 				if = {
 					limit = {
@@ -292,6 +308,24 @@ country_event = {
 				}
 			}
 			socii_clear_check = yes
+			every_known_country = {
+				limit = {
+					capital_scope = {
+						region = italian_region
+					}
+					NOT = { tag = ROM }
+					ai = yes
+				}
+				add_country_modifier = {
+					name = ita_ai_rome_diplo_debuff
+					duration = -1
+				}
+			}
+			#Yearly repeating event for AI rome to complete missions and further railroad them
+			country_event = {
+				days = 365
+				id = ai_driving.31
+			}
 		}
 		if = {
 			limit = {
@@ -306,6 +340,336 @@ country_event = {
 		}
 	}
 }
+
+country_event = { #check ai rome every year
+	id = ai_driving.31
+	title = "ai_driving.31.t"
+	desc = "ai_driving.31.d"
+	picture = maniple
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		tag = ROM
+		ai = yes
+	}
+
+	option = {
+		country_event = {
+			days = 365
+			id = ai_driving.31
+		}
+		if = {
+			limit = {
+				had_country_flag = {
+					flag = rome_is_small_at_start
+					days = 18250
+				}
+				NOT = { num_of_cities = 10 }
+				government = republic
+				any_known_country = {
+					primary_culture = latin
+				}
+			}
+			country_event = {
+				id = ai_driving.33
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = started_in_kingdom_flag
+				has_reform = res_publica_reform
+			}
+			clr_country_flag = started_in_kingdom_flag
+			add_country_modifier = {
+				name = rom_ai_mana_buff
+				duration = 18250
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					total_development = 400
+					CAR = { total_development = 400 }
+					any_known_country = {
+						culture_group = hellenic_group
+						total_development = 300
+					}
+				}
+				OR = {
+					government = republic
+					CAR = { total_development = 400 }
+				}
+				has_country_modifier = rom_small_buff
+			}
+			remove_country_modifier = rom_small_buff
+			add_country_modifier = {
+				name = rom_medium_buff
+				duration = -1
+			}
+			country_event = {
+				id = ai_driving.35
+			}
+		}
+		if = { #give free subjects sometimes... AI too scared to invade if they dont have allies (subjects)
+			limit = {
+				has_country_modifier = rom_medium_buff
+				NOT = { num_of_non_tributary_subjects = 8 }
+				num_of_free_diplomatic_relations = 1
+			}
+			random = {
+				chance = 20
+				random_neighbor_country = {
+					limit = {
+						NOT = { total_development = 100 }
+						is_subject = no
+						NOT = { OR = { historical_rival_with = ROM ROM = { historical_rival_with = PREV } } }
+						NOT = { has_opinion_modifier = { who = THIS modifier = insulted } }
+						is_at_war = no
+					}
+				}
+				country_event = {
+					id = ai_driving.36
+				}
+			}
+		}
+		if = { #give socii system modifier
+			limit = {
+				num_of_cities = 30
+			}
+			country_event = {
+				id = ai_driving.32
+			}
+		}
+		rom_ai_harmonize_randomly_effect = yes
+		ai_rome_forum_mission_effect = yes
+		ai_rome_conquer_first_colonia_effect = yes
+		ai_rome_build_first_colonia_effect = yes
+		ai_rome_conquer_other_latins_effect = yes
+		ai_rome_conquer_via_appia_effect = yes
+		ai_rome_build_via_appia_effect = yes
+	}
+}
+
+country_event = {
+	id = ai_driving.32
+	title = "ai_driving.32.t"
+	desc = "ai_driving.32.d"
+	picture = maniple
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = ROM
+	}
+
+	option = {
+		name = "ai_driving.32.a"
+		add_manpower = 10
+		add_country_modifier = {
+			name = rom_ai_socii_system
+			duration = -1
+		}
+	}
+}
+
+country_event = {
+	id = ai_driving.33
+	title = "ai_driving.33.t"
+	desc = "ai_driving.33.d"
+	picture = maniple
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = ROM
+	}
+
+	option = {
+		name = "ai_driving.33.a"
+		add_prestige = 15
+		hidden_effect = {
+			every_known_country = {
+				limit = { primary_culture = latin is_subject = no }
+				country_event = {
+					id = ai_driving.34
+					days = 120
+					random = 60
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = ai_driving.34
+	title = "ai_driving.34.t"
+	desc = "ai_driving.34.d"
+	picture = maniple
+	is_triggered_only = yes
+
+	trigger = {
+		primary_culture = latin
+	}
+
+	option = {
+		name = "ai_driving.34.a"
+		ai_chance = { factor = 33 }
+		every_owned_province = {
+			add_core = ROM
+			cede_province = ROM
+		}
+	}
+
+	option = {
+		name = "ai_driving.34.b"
+		ai_chance = { factor = 33 }
+		add_stability = 1
+		ROM = {
+			add_prestige = 5
+			create_subject = {
+				subject_type = half_autonomous_vassal
+				subject = PREV
+			}
+		}
+	}
+
+	option = {
+		name = "ai_driving.34.c"
+		ai_chance = { factor = 33 }
+		add_stability = 1
+		add_prestige = 15
+		add_opinion = {
+			who = ROM
+			modifier = insulted
+		}
+		ROM = {
+			add_opinion = {
+				who = PREV
+				modifier = insulted
+			}
+		}
+		every_owned_province = {
+			add_core = ROM
+		}
+	}
+}
+
+country_event = {
+	id = ai_driving.35
+	title = "ai_driving.35.t"
+	desc = "ai_driving.35.d"
+	picture = maniple
+	is_triggered_only = yes
+	fire_only_once = yes
+	major = yes
+
+	trigger = {
+		tag = ROM
+	}
+
+	option = {
+		name = "ai_driving.35.a"
+		add_stability = 1
+		add_ruler_personality = conqueror_personality
+		change_adm = 1
+		change_dip = 1
+		change_mil = 1
+		add_country_modifier = {
+			name = roman_dictatorship
+			duration = 1460
+		}
+	}
+}
+
+country_event = {
+	id = ai_driving.36
+	title = "ai_driving.36.t"
+	desc = "ai_driving.36.d"
+	picture = maniple
+	is_triggered_only = yes
+
+	option = {
+		name = "ai_driving.36.a"
+		ai_chance = {
+			factor = 60
+			modifier = { #80%
+				factor = 2.6
+				NOT = { total_development = 40 }
+			}
+			modifier = { #40%
+				factor = 0.44
+				total_development = 70
+			}
+		}
+		add_prestige = 5
+		every_owned_province = {
+			add_claim = ROM
+		}
+		reverse_add_opinion = {
+			who = ROM
+			modifier = insulted
+		}
+	}
+
+	option = {
+		name = "ai_driving.36.b"
+		ai_chance = {
+			factor = 40
+		}
+		if = {
+			limit = { ai = yes }
+			ROM = {
+				create_subject = {
+					subject_type = half_autonomous_vassal
+					who = PREV
+				}
+			}
+		}
+		else = { #player gets bigger reward for submitting
+			add_stability = 1
+			add_treasury = 500
+			ROM = {
+				create_subject = {
+					subject_type = vassal
+					who = PREV
+				}
+			}
+		}
+		hidden_effect = {
+			ROM = {
+				country_event = {
+					id = ai_driving.37
+				}
+			}
+		}
+	}
+}
+
+
+country_event = {
+	id = ai_driving.37
+	title = "ai_driving.37.t"
+	desc = "ai_driving.37.d"
+	picture = maniple
+	is_triggered_only = yes
+	fire_only_once = yes
+	major_trigger = { OR = { is_rival = ROM is_enemy = ROM is_neighbor_of = ROM } }
+
+	trigger = {
+		tag = ROM
+	}
+
+	option = {
+		name = "ai_driving.37.a"
+		add_prestige = 10
+	}
+}
+
+
+#Assyria
 
 country_event = {
 	id = ai_driving.4
