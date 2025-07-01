@@ -1,0 +1,537 @@
+#BUILD ARMY INITIALIZATION
+ai_build_to_force_limit = {
+	if = {
+		limit = { is_emperor = no }
+		random_owned_province = {
+			limit = { highest_supply_limit_in_area = yes }
+			build_to_forcelimit = {
+				infantry = 0.6
+				cavalry = 0.1
+				artillery = 0.2
+			}
+		}
+		if = {
+			limit = { num_of_ports = 1 }
+			random_owned_province = {
+				limit = { has_port = yes }
+				build_to_forcelimit = {
+					heavy_ship = 0.2
+					light_ship = 0.1
+					galley = 0.4
+					transport = 0.3
+				}
+			}
+		}
+	}
+	else = {
+		random_owned_province = {
+			limit = { highest_supply_limit_in_area = yes }
+			build_to_forcelimit = {
+				infantry = 0.5
+				cavalry = 0.1
+				artillery = 0.2
+			}
+		}
+		if = {
+			limit = { num_of_ports = 1 }
+			random_owned_province = {
+				limit = { has_port = yes }
+				build_to_forcelimit = {
+					heavy_ship = 0.2
+					light_ship = 0.1
+					galley = 0.4
+					transport = 0.3
+				}
+			}
+		}
+	}
+}
+#SET CROWNLAND INITIALIZATION
+ai_set_crown_land = {
+	if = {
+		limit = { NOT = { crown_land_share = 25 } }
+		change_estate_land_share = {
+			estate = all
+			share = -10
+		}
+	}
+	add_estate_loyalty = {
+		estate = all
+		loyalty = 15
+		short = yes
+	}
+}
+
+ai_essentials = {
+	if = {
+		limit = {
+			OR = {
+				is_great_power = yes
+				luck = yes
+				total_development = 300
+			}
+		}
+		add_prestige = 10
+		add_years_of_income = 1.2
+		add_yearly_manpower = 2.5
+		add_stability = 1
+		add_mil_power = 75
+		add_adm_power = 100
+		create_general = {
+			tradition = 45
+		}
+	}
+	if = {
+		limit = { num_of_ports = 1 }
+		create_admiral = {
+			tradition = 21
+		}
+	}
+	add_years_of_income = 0.6
+	add_yearly_manpower = 1.3
+	create_general = {
+		tradition = 15
+	}
+}
+
+ai_alliance_initialization_effect = {
+	#HISTORICAL FRIEND = ALLIANCE
+	if = {
+		limit = {
+			num_of_free_diplomatic_relations = 1
+			any_known_country = {
+				historical_friend_with = ROOT
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+		}
+		every_known_country = {
+			limit = {
+				historical_friend_with = ROOT
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+			create_alliance = ROOT
+		}
+	}
+
+	#GUARANTEED = ALLIANCE
+	if = {
+		limit = {
+			any_known_country = {
+				is_subject = no
+				guaranteed_by = ROOT
+				ai = yes
+			}
+		}
+		every_known_country = {
+			limit = {
+				is_subject = no
+				guaranteed_by = ROOT
+				ai = yes
+			}
+			create_alliance = ROOT
+		}
+	}
+	#EMPEROR - ELECTOR = ALLIANCE
+	if = {
+		limit = {
+			is_emperor = yes
+			num_of_free_diplomatic_relations = 2
+			any_elector = {
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+		}
+		every_elector = {
+			limit = {
+				total_development = 35
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+			create_alliance = ROOT
+		}
+	}
+	#GREAT POWER - NOT WEAK NATION = ALLIANCE
+	if = {
+		limit = {
+			is_great_power = yes
+			num_of_free_diplomatic_relations = 1
+			any_known_country = {
+				army_strength = {
+					who = ROOT
+					value = 0.45
+				}
+				NOT = {
+					border_distance = {
+						who = ROOT
+						distance = 175
+					}
+				}
+				border_distance = {
+					who = ROOT
+					distance = 50
+				}
+				religion_group = ROOT
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+		}
+		random_known_country = {
+			limit = {
+				army_strength = {
+					who = ROOT
+					value = 0.45
+				}
+				NOT = {
+					border_distance = {
+						who = ROOT
+						distance = 175
+					}
+				}
+				border_distance = {
+					who = ROOT
+					distance = 55
+				}
+				NOT = { is_emperor = yes }
+				NOT = { is_elector = yes }
+				religion_group = ROOT
+				num_of_free_diplomatic_relations = 1
+				ai = yes
+				ai_is_valid_for_alliance_trigger = yes
+			}
+			create_alliance = ROOT
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				is_great_power = yes
+				total_development = 165
+			}
+		}
+		every_neighbor_country = {
+			limit = {
+				ai = yes
+				NOT = { total_development = 105 }
+				NOT = { is_subject_of = ROOT }
+				NOT = { alliance_with = ROOT }
+				NOT = { historical_friend_with = ROOT }
+				NOT = { tag = ZHO }
+			}
+			add_opinion = {
+				who = ROOT
+				modifier = ai_conq_box
+			}
+			reverse_add_opinion = {
+				who = ROOT
+				modifier = ai_conq_box
+			}
+		}
+	}
+}
+
+#BUILD FORT
+ai_build_forts_effect = {
+	if = {
+		limit = {
+			can_build = fortress_building
+			PREV = {
+				treasury = 700
+				monthly_income = 30
+				current_income_balance = 10
+			}
+		}
+		add_building_construction = {
+			building = fortress_building
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = large_city_walls
+			PREV = {
+				treasury = 600
+				monthly_income = 25
+				current_income_balance = 8
+			}
+		}
+		add_building_construction = {
+			building = large_city_walls
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = small_city_walls
+			PREV = {
+				treasury = 400
+				monthly_income = 20
+				current_income_balance = 6
+			}
+		}
+		add_building_construction = {
+			building = small_city_walls
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = border_garrison
+			PREV = {
+				treasury = 200
+				monthly_income = 15
+				current_income_balance = 4
+			}
+		}
+		add_building_construction = {
+			building = border_garrison
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else = {}
+}
+
+ai_build_townhall_effect = {
+	if = {
+		limit = {
+			can_build = government_district
+			PREV = {
+				treasury = 700
+			}
+		}
+		add_building_construction = {
+			building = government_district
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = government_palace
+			PREV = {
+				treasury = 400
+			}
+		}
+		add_building_construction = {
+			building = government_palace
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = big_townhall
+			PREV = {
+				treasury = 200
+			}
+		}
+		add_building_construction = {
+			building = big_townhall
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = small_townhall
+			PREV = {
+				treasury = 150
+			}
+		}
+		add_building_construction = {
+			building = small_townhall
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else = {}
+}
+
+ai_build_granary_effect = {
+	if = {
+		limit = {
+			can_build = big_grain_depot
+			PREV = {
+				treasury = 700
+			}
+		}
+		add_building_construction = {
+			building = big_grain_depot
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else_if = {
+		limit = {
+			can_build = small_grain_depot
+			PREV = {
+				treasury = 350
+			}
+		}
+		add_building_construction = {
+			building = small_grain_depot
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else = {}
+}
+
+ai_build_production_effect = {
+	if = {
+		limit = { water_irrigation_workshop_building_trigger = yes }
+		if = {
+			limit = {
+				can_build = big_estate
+				PREV = {
+					treasury = 600
+				}
+			}
+			add_building_construction = {
+				building = big_estate
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = big_water_irrigation
+				PREV = {
+					treasury = 450
+				}
+			}
+			add_building_construction = {
+				building = big_water_irrigation
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = small_water_irrigation
+				PREV = {
+					treasury = 300
+				}
+			}
+			add_building_construction = {
+				building = small_water_irrigation
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else = {}
+	}
+	else_if = {
+		limit = { craftsman_workshop_building_trigger = yes }
+		if = {
+			limit = {
+				can_build = artisan_district
+				PREV = {
+					treasury = 600
+				}
+			}
+			add_building_construction = {
+				building = artisan_district
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = small_workshop
+				PREV = {
+					treasury = 450
+				}
+			}
+			add_building_construction = {
+				building = small_workshop
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = craftsman
+				PREV = {
+					treasury = 300
+				}
+			}
+			add_building_construction = {
+				building = craftsman
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else = {}
+	}
+	else_if = {
+		limit = { mines_workshop_building_trigger = yes }
+		if = {
+			limit = {
+				can_build = big_mine
+				PREV = {
+					treasury = 600
+				}
+			}
+			add_building_construction = {
+				building = big_mine
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = small_mine
+				PREV = {
+					treasury = 450
+				}
+			}
+			add_building_construction = {
+				building = small_mine
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else_if = {
+			limit = {
+				can_build = quarry
+				PREV = {
+					treasury = 300
+				}
+			}
+			add_building_construction = {
+				building = quarry
+				speed = 1
+				cost = 0.75
+			}
+		}
+		else = {}
+	}
+}
+
+ai_build_reclaimation_effect = {
+	if = {
+		limit = {
+			can_build = land_reclamation
+			PREV = {
+				treasury = 800
+			}
+		}
+		add_building_construction = {
+			building = land_reclamation
+			speed = 1
+			cost = 0.75
+		}
+	}
+	else = {}
+}
