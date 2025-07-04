@@ -788,7 +788,7 @@ country_event = {
 	trigger = {
 		tag = CHU
 		NOT = {
-			total_development = 231
+			total_development = 230
 		}
 		has_country_flag = zhuxiatouxian_wang
 	}
@@ -802,14 +802,41 @@ country_event = {
 		add_prestige = -10
 		clr_country_flag = zhuxiatouxian_wang
 		set_country_flag = zhuxiatouxian_Zi
-		SGO = {
-			grant_independence = yes
+		if = {
+			limit = {
+				SGO = {
+					is_subject_of = ROOT
+				}
+			}
+			SGO = {
+				grant_independence = yes
+			}
 		}
-		DUN = {
-			grant_independence = yes
+		if = {
+			limit = {
+				DUN = {
+					is_subject_of = ROOT
+				}
+			}
+			DUN = {
+				grant_independence = yes
+			}
 		}
-		TGA = {
-			grant_independence = yes
+		if = {
+			limit = {
+				TGA = {
+					is_subject_of = ROOT
+				}
+			}
+			TGA = {
+				grant_independence = yes
+			}
+		}
+		every_core_province = {
+			limit = {
+				is_core = CHN
+			}
+			remove_core = ROOT
 		}
 		ZHO = {
 			country_event = {
@@ -6268,6 +6295,11 @@ country_event = {
 		NOT = {
 			truce_with = HNG
 		}
+		HNG = {
+			NOT = {
+				is_subject_of = ROOT
+			}
+		}
 		CHU = {
 			has_country_flag = chu_began_bii_war
 			is_at_war = yes
@@ -6361,10 +6393,34 @@ country_event = {
 				alliance_with = HNG
 			}
 			modifier = {
+				factor = 2
+				HNG = {
+					ai = no
+				}
+			}
+			modifier = {
+				factor = 5
+				NOT = {
+					total_development = 60
+				}
+			}
+			modifier = {
+				factor = 4
+				NOT = {
+					total_development = 50
+				}
+			}
+			modifier = {
+				factor = 3
+				NOT = {
+					total_development = 30
+				}
+			}
+			modifier = {
 				factor = 4
 				has_opinion = {
 					who = HNG
-					value = 125
+					value = 110
 				}
 			}
 			modifier = {
@@ -6372,10 +6428,10 @@ country_event = {
 				is_at_war = yes
 			}
 			modifier = {
-				factor = 10
+				factor = 5
 				has_opinion = {
 					who = HNG
-					value = 175
+					value = 160
 				}
 			}
 		}
@@ -10443,5 +10499,77 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+########################################################################################
+# minors peace out during league war
+########################################################################################
+country_event = {
+	id = china.197
+	title = "china.197.t"
+	desc = "china.197.d"
+	picture = plundering
+
+	trigger = {
+		is_in_league_war = yes
+		is_elector = no
+		OR = {
+			is_subject = no
+			is_subject_of_type = tributary_state
+		}
+		NOT = {
+			num_of_cities = 6
+		}
+		capital_scope = {
+			NOT = {
+				controlled_by = ROOT
+			}
+		}
+	}
+
+	option = {
+		name = "china.197.a"
+		random_war_enemy_country = {
+			limit = {
+				OR = {
+					is_in_war = {
+						attacker_leader = THIS
+						casus_belli = cb_religious_league
+						participants = ROOT
+					}
+					is_in_war = {
+						defender_leader = THIS
+						casus_belli = cb_religious_league
+						participants = ROOT
+					}
+				}
+			}
+			country_event = { id = china.198 }
+		}
+	}
+	option = {
+		name = "china.197.b"
+		trigger = { ai = no }
+		add_prestige = 5
+		add_war_exhaustion = -5
+	}
+}
+
+########################################################################################
+# minors peace out during league war (leader notif)
+########################################################################################
+country_event = {
+	id = china.198
+	title = "china.198.t"
+	desc = "china.198.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.179.a"
+		white_peace = FROM
+		add_prestige = 2
+		add_war_exhaustion = -0.1
 	}
 }
