@@ -18,11 +18,19 @@ country_event = {
 		set_global_flag = ai_conquerors_active_medium
 		every_country = {
 			limit = { ai = yes }
-			add_ruler_personality = ai_personality
+			if = {
+				limit = {
+					is_part_of_hre = no
+				}
+				add_ruler_personality = ai_personality
+				ai_essentials = yes
+				change_national_focus = MIL
+			}
+			else = {
+				add_ruler_personality = ai_personality_hre
+			}
 			ai_set_crown_land = yes
 			ai_build_to_force_limit = yes
-			ai_essentials = yes
-			change_national_focus = MIL
 			if = {
 				limit = { is_free_or_tributary_trigger = yes }
 				country_event = {
@@ -334,6 +342,7 @@ country_event = { #great conquerors
 				has_country_modifier = ai_search_conqueror_cooldown
 			}
 		}
+		is_part_of_hre = no
 		OR = {
 			has_global_flag = ai_conquerors_active_easy
 			has_global_flag = ai_conquerors_active_medium
@@ -532,19 +541,57 @@ country_event = { #make ai hate OPMs
 		every_neighbor_country = { #make ai hate tiny neighbours
 			limit = {
 				ai = yes
-				NOT = { total_development = 105 }
+				OR = {
+					AND = {
+						NOT = { total_development = 105 }
+						is_part_of_hre = no
+					}
+					NOT = { total_development = 40 }
+				}
+				OR = {
+					ROOT = { is_part_of_hre = no }
+					is_part_of_hre = no
+					NOT = { hre_reform_passed = emperor_erbkaisertum }
+				}
 				NOT = { is_subject_of = ROOT }
 				NOT = { alliance_with = ROOT }
 				NOT = { historical_friend_with = ROOT }
 				NOT = { tag = ZHO }
+				NOT = {
+					has_opinion_modifier = {
+						who = ROOT
+						modifier = ai_conq_box
+					}
+				}
+				NOT = {
+					has_opinion_modifier = {
+						who = ROOT
+						modifier = ai_conq_box_lesser
+					}
+				}
 			}
-			add_opinion = {
-				who = ROOT
-				modifier = ai_conq_box
+			if = {
+				limit = {
+					is_part_of_hre = yes
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = ai_conq_box_lesser
+				}
+				reverse_add_opinion = {
+					who = ROOT
+					modifier = ai_conq_box_lesser
+				}
 			}
-			reverse_add_opinion = {
-				who = ROOT
-				modifier = ai_conq_box
+			else = {
+				add_opinion = {
+					who = ROOT
+					modifier = ai_conq_box
+				}
+				reverse_add_opinion = {
+					who = ROOT
+					modifier = ai_conq_box
+				}
 			}
 		}
 	}
