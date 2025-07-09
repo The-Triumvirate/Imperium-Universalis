@@ -8117,7 +8117,7 @@ country_event = {
 			country_event = { id = china.190 }
 		}
 		ai_chance = {
-			factor = 90
+			factor = 80
 		}
 	}
 	option = {
@@ -8125,7 +8125,7 @@ country_event = {
 		add_prestige = -5
 		set_country_flag = qi_did_not_first_lu_war
 		ai_chance = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 6
 				LUU = {
@@ -8234,7 +8234,7 @@ country_event = {
 			country_event = { id = china.191 }
 		}
 		ai_chance = {
-			factor = 70
+			factor = 80
 			modifier = {
 				factor = 2.5
 				NOT = { personality = ai_militarist }
@@ -8251,7 +8251,7 @@ country_event = {
 			}
 		}
 		ai_chance = {
-			factor = 30
+			factor = 20
 			modifier = {
 				factor = 2
 				any_known_country = {
@@ -10602,5 +10602,197 @@ country_event = {
 		white_peace = FROM
 		add_prestige = 2
 		add_war_exhaustion = -0.1
+	}
+}
+
+########################################################################################
+# the rebelling Wangzi flees to Chu
+########################################################################################
+country_event = {
+	id = china.199
+	title = "china.199.t"
+	desc = "china.199.d"
+	picture = siege_battle
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ZHG
+		is_at_war = yes
+		capital_scope = {
+			has_siege = yes
+		}
+		exists = CHU
+		CHU = {
+			total_development = 275
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "china.199.a"
+		set_country_flag = zhg_fled_archives
+		kill_ruler = yes
+		define_ruler = {
+			dynasty = "Ji"
+			adm = 2
+			dip = 2
+			mil = 1
+			claim = 60
+		}
+		capital_scope = {
+			change_siege = 25
+		}
+		CHU = {
+			country_event = { id = china.200 }
+		}
+		ai_chance = {
+			factor = 95
+		}
+	}
+	option = {
+		name = "china.199.b"
+		add_prestige = 5
+		add_war_exhaustion = -5
+		capital_scope = {
+			change_siege = -5
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 2
+				ruler_has_personality = righteous_personality
+			}
+			modifier = {
+				factor = 3
+				ruler_has_personality = pious_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# chu receives wangzi
+########################################################################################
+country_event = {
+	id = china.200
+	title = "china.200.t"
+	desc = "china.200.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.200.a"
+		add_prestige = 5
+		#custom_tooltip = wangzi_to_chu_tt
+		set_country_flag = chu_control_of_wangzi
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = opinion_chu_took_in_wangzi
+		}
+		add_country_modifier = {
+			name = zhou_chu_archives_mod
+			duration = 36500
+		}
+		ZHO = {
+			country_event = { id = china.201 }
+		}
+		ai_chance = {
+			factor = 95
+		}
+	}
+	option = {
+		name = "china.200.b"
+		reverse_add_opinion = {
+			who = ZHO
+			modifier = opinion_chu_didnt_took_in_wangzi
+			multiplier = 4
+		}
+		every_known_country = {
+			limit = {
+				religion = chinese_religion
+				OR = {
+					total_development = 200
+					is_emperor = yes
+				}
+			}
+			add_opinion = {
+				who = ROOT
+				modifier = opinion_chu_didnt_took_in_wangzi
+			}
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 2
+				ruler_has_personality = lunatic_personality
+			}
+			modifier = {
+				factor = 3
+				ruler_has_personality = arbitrarily_personality
+			}
+			modifier = {
+				factor = 3
+				ruler_has_personality = righteous_personality
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou notif for wangzi flight
+########################################################################################
+country_event = {
+	id = china.201
+	title = "china.201.t"
+	desc = "china.201.d"
+	picture = cloudy_manor
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "china.201.a"
+		remove_country_modifier = zhou_archives_mod
+		add_prestige = -5
+		ai_chance = {
+			factor = 95
+		}
+	}
+}
+
+########################################################################################
+# Proclaimation of the Wangzi (based off Zhao's historical speech)
+########################################################################################
+country_event = {
+	id = china.202
+	title = "china.202.t"
+	desc = "china.202.d"
+	picture = cloudy_manor
+	major = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		had_country_flag = {
+			flag = chu_control_of_wangzi
+			days = 30
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "china.202.a"
+		add_prestige = 5
+		ai_chance = {
+			factor = 95
+		}
 	}
 }
