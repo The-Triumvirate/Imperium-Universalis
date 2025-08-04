@@ -11235,3 +11235,128 @@ country_event = {
 		name = "china.210.a"
 	}
 }
+
+########################################################################################
+# rong raiding zhou notif
+########################################################################################
+country_event = {
+	id = china.212
+	title = "china.212.t"
+	desc = "china.212.d"
+	picture = battle
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			random_owned_province = {
+				limit = {
+					is_neighbor_of = FROM
+				}
+				spawn_rebels = {
+					type = rong_raiders
+					culture = FROM
+					religion = FROM
+					friend = FROM
+					size = 5
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "china.212.a"
+		
+	}
+}
+
+########################################################################################
+# rong raiders break zhou
+########################################################################################
+country_event = {
+	id = china.213
+	title = "china.213.t"
+	desc = "china.213.d"
+	picture = plundering
+	is_triggered_only = yes
+
+	option = {
+		name = "china.179.a"
+		add_treasury = 250
+		add_prestige = 20
+	}
+}
+
+########################################################################################
+# zhou defeats raiders
+########################################################################################
+country_event = {
+	id = china.214
+	title = "china.214.t"
+	desc = "china.214.d"
+	picture = cavalry
+	
+	trigger = {
+		tag = ZHO
+		any_known_country = {
+			has_country_flag = zhou_raid_supported
+		}
+		NOT = { num_of_rebel_armies = 1 }
+		NOT = { num_of_rebel_controlled_provinces = 1 }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "china.214.a"
+		every_known_country = {
+			limit = {
+				has_country_flag = zhou_raid_supported
+			}
+			clr_country_flag = zhou_raid_supported
+		}
+		ai_chance = {
+			factor = 80
+			modifier = {
+				factor = 2
+				any_known_country = {
+					has_country_flag = zhou_raid_supported
+					num_of_allies = 1
+				}
+			}
+			modifier = {
+				factor = 4
+				any_known_country = {
+					has_country_flag = zhou_raid_supported
+					num_of_allies = 2
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.214.b"
+		every_known_country = {
+			limit = {
+				has_country_flag = zhou_raid_supported
+			}
+			clr_country_flag = zhou_raid_supported
+			ZHO = {
+				declare_war_with_cb = {
+					who = PREV
+					casus_belli = raid_retaliation_cb
+				}
+			}
+		}
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 5
+				any_known_country = {
+					has_country_flag = zhou_raid_supported
+					NOT = { num_of_allies = 1 }
+				}
+			}
+		}
+	}
+}
