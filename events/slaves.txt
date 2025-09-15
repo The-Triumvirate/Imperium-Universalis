@@ -17,10 +17,6 @@ country_event = {
 		has_estate = estate_slaves 								#Fallback trigger
 	}
 
-	mean_time_to_happen = {
-		days = 1
-	}
-
 	immediate = {
 		hidden_effect = {
 			# remove any sort of estate owned land, does not work, gives huge share to slaves
@@ -32,7 +28,7 @@ country_event = {
 			# CURRENT VALUES
 			# Find total income
 			export_to_variable = { which = slave_income value = monthly_income }
-			multiply_variable  = { slave_income = 60 }		# monthly to yearly x every 5 years = 12 x 5 = 60
+			multiply_variable  = { slave_income = 12 }		# monthly to yearly x every 1 years = 12 x 1 = 12
 
 			# Total population
 			export_to_variable = { which = var_total_pop value = total_development }
@@ -113,7 +109,7 @@ country_event = {
 			set_variable = { which = slaves_libers which = slaves } change_variable = { which = slaves_libers which = slaves_in_province }
 			multiply_variable = { which = slaves_change which = slave_net_growth }
 			multiply_variable = { which = slaves_libers which = slave_libratio }
-			multiply_variable = { slaves_change = 5 } multiply_variable = { slaves_libers = 5 } 	# 5 years
+			multiply_variable = { slaves_change = 1 } multiply_variable = { slaves_libers = 1 } 	# 1 year
 
 
 			# Collect money from slaves sold in provinces
@@ -243,6 +239,397 @@ country_event = {
 
 
 
+	}
+
+
+	after = {
+		set_variable = { which = var_slave_income value = 0 }
+		set_variable = { which = slave_income value = 0 }
+		set_variable = { which = slaves_change value = 0 }
+		set_variable = { which = slaves_libers value = 0 }
+
+		if = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			clr_country_flag = slaves_freed_flag set_country_flag = slaves_freed_flag	# reset, allows distribution
+		}
+
+		every_owned_province = {		# Remove slave markets already empty
+			limit = {
+				has_province_modifier = SD_market_open
+				NOT = { check_variable = { SD_sale_collected = 1 } }
+				NOT = { check_variable = { SD_slaves_available = 1 } }
+			}
+			remove_province_modifier = SD_market_open
+			set_variable = { which = SD_sale_collected value = 0 }
+			set_variable = { which = SD_slaves_available value = 0 }
+		}
+
+
+	}
+}
+
+country_event = { #hidden slaves event
+	id = slaves.101
+	title = "slaves.1.t"
+	desc = "slaves.1.d"
+	picture = slaves
+	is_triggered_only = yes
+	hidden = yes
+
+	trigger = {
+		#always = no		# always yes, again
+		NOT = { has_country_modifier = slavery_abolished }		# If slavery is abolished a different event happens (not until Estate is done)
+		check_variable = { slaves = 1 }							# As long as there are slaves; otherwise, we don't need it
+		has_estate = estate_slaves 								#Fallback trigger
+	}
+
+	immediate = {
+		hidden_effect = {
+			# remove any sort of estate owned land, does not work, gives huge share to slaves
+			#change_estate_land_share = {
+			#	estate = estate_slaves
+			#	share = -100
+			#}
+
+			# CURRENT VALUES
+			# Find total income
+			export_to_variable = { which = slave_income value = monthly_income }
+			multiply_variable  = { slave_income = 12 }		# monthly to yearly x every 1 years = 12 x 1 = 12
+
+			# Total population
+			export_to_variable = { which = var_total_pop value = total_development }
+			multiply_variable = { var_total_pop = 10 }									# population in thousands, now
+
+
+			# Slave population (at country and manufactories)
+			set_variable = { which = slaves_in_province value = 0 }		# reset at country level
+			every_owned_province = {
+				limit = { check_variable = { slaves_in_province = 1 } }
+				owner = { change_variable = { which = slaves_in_province which = PREV } }
+			}
+			# Being sold at markets
+			set_variable = { which = SD_slaves_available value = 0 }
+			every_owned_province = {
+				limit = { check_variable = { SD_slaves_available = 1 } }				# any province with slaves being sold
+				owner = { change_variable = { which = SD_slaves_available which = PREV } }
+			}
+
+
+			# START DEMOGRAPHY CALCULATION
+			# social (unrest, stability)
+			set_variable = { which = slave_pop_social which = slaves }
+			change_variable = { which = slave_pop_social which = slaves_in_province }
+
+			if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
+			divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
+
+			# economic (goods size)
+			export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
+			change_variable = { slave_pop_economic = 1 }
+			multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
+			divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
+
+			# SLAVE INCOME
+			#multiply_variable = { slave_income = 0.01 }								# careful with overflowing
+			multiply_variable = { which = slave_income which = slave_pop_economic }
+
+			export_to_variable = { which = slave_autonomy value = trigger_value:average_autonomy }
+			subtract_variable = { slave_autonomy = 100 }
+			multiply_variable = { slave_autonomy = -0.01 }	# imagine 25%. 25-100 = -75 x -0,01 = 0,75. Ok
+			multiply_variable = { which = slave_income which = slave_autonomy }
+
+			export_to_variable = { which = slave_state_income value = modifier:slavesmod_state_income }
+			if = { limit = { NOT = { check_variable = { slave_state_income = 0 } } } set_variable = { which = slave_state_income value = 0 } }
+			multiply_variable = { which = slave_income which = slave_state_income }
+
+
+			# DEMOGRAPHICS (growth of slaves)
+
+			export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
+			export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
+			export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
+
+			# cleanup of previous modifier, moved to after demographics so it can effect growth
+			slaves_remove_basic_modifiers = yes
+			slaves_remove_complex_modifiers = yes
+
+			# Let's find where we are (coordinates x and y, 15 x 7 = 105 possibilities)
+			slaves_find_coordinates = yes
+
+			if = {
+				limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
+				set_variable = { which = slave_net_growth which = slave_loss }
+				change_variable = { which = slave_libratio which = slave_gain }
+			}
+			else = {
+				set_variable = { which = slave_net_growth which = slave_gain }
+				subtract_variable = { which = slave_net_growth which = slave_loss }
+			}
+
+			if = {
+				limit = { NOT = { check_variable = { slave_libratio = 0 } } }
+				set_variable = { which = slave_libratio value = 0 }
+			}
+
+			set_variable = { which = slaves_change which = slaves } change_variable = { which = slaves_change which = slaves_in_province }
+			set_variable = { which = slaves_libers which = slaves } change_variable = { which = slaves_libers which = slaves_in_province }
+			multiply_variable = { which = slaves_change which = slave_net_growth }
+			multiply_variable = { which = slaves_libers which = slave_libratio }
+			multiply_variable = { slaves_change = 1 } multiply_variable = { slaves_libers = 1 } 	# 1 year
+
+
+			# Collect money from slaves sold in provinces
+			set_variable = { which = SD_sale_collected value = 0 }
+			every_owned_province = {
+				limit = { check_variable = { SD_sale_collected = 1 } }	# any province with money
+				owner = { change_variable = { which = SD_sale_collected which = PREV } }
+				set_variable = { which = SD_sale_collected value = 0 }
+			}
+
+			# Find mana requirement to abolish slavery
+			slave_abolish_powerreq = yes
+
+			# Show variables for display
+			slave_display_variables = yes
+
+
+		}
+	}
+
+
+	option = {
+		name = "slaves.1.1"				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
+		ai_chance = { factor = 75 }
+		hidden_effect = {
+			# Modifier
+			slaves_ratio_create_high = yes
+
+			# Earn the money
+			money_gain_effect = { var = slave_income }
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
+
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+
+		}
+		custom_tooltip = SLAVES_EVENT_1_INCOME
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
+
+	}
+
+
+	after = {
+		set_variable = { which = var_slave_income value = 0 }
+		set_variable = { which = slave_income value = 0 }
+		set_variable = { which = slaves_change value = 0 }
+		set_variable = { which = slaves_libers value = 0 }
+
+		if = {
+			limit = { check_variable = { freedmen_new = 10 } }
+			clr_country_flag = slaves_freed_flag set_country_flag = slaves_freed_flag	# reset, allows distribution
+		}
+
+		every_owned_province = {		# Remove slave markets already empty
+			limit = {
+				has_province_modifier = SD_market_open
+				NOT = { check_variable = { SD_sale_collected = 1 } }
+				NOT = { check_variable = { SD_slaves_available = 1 } }
+			}
+			remove_province_modifier = SD_market_open
+			set_variable = { which = SD_sale_collected value = 0 }
+			set_variable = { which = SD_slaves_available value = 0 }
+		}
+
+
+	}
+}
+
+country_event = { #slaves event for AI
+	id = slaves.102
+	title = "slaves.1.t"
+	desc = "slaves.1.d"
+	picture = slaves
+	is_triggered_only = yes
+
+	trigger = {
+		#always = no		# always yes, again
+		NOT = { has_country_modifier = slavery_abolished }		# If slavery is abolished a different event happens (not until Estate is done)
+		check_variable = { slaves = 1 }							# As long as there are slaves; otherwise, we don't need it
+		has_estate = estate_slaves 								#Fallback trigger
+	}
+
+	immediate = {
+		hidden_effect = {
+			# remove any sort of estate owned land, does not work, gives huge share to slaves
+			#change_estate_land_share = {
+			#	estate = estate_slaves
+			#	share = -100
+			#}
+
+			# CURRENT VALUES
+			# Find total income
+			export_to_variable = { which = slave_income value = monthly_income }
+			multiply_variable  = { slave_income = 30 }		# monthly to yearly x every 5 years = 12 x 2 = 24, round to 30 to give the AI more stuff for free
+
+			# Total population
+			export_to_variable = { which = var_total_pop value = total_development }
+			multiply_variable = { var_total_pop = 10 }									# population in thousands, now
+
+
+			# Slave population (at country and manufactories)
+			set_variable = { which = slaves_in_province value = 0 }		# reset at country level
+			every_owned_province = {
+				limit = { check_variable = { slaves_in_province = 1 } }
+				owner = { change_variable = { which = slaves_in_province which = PREV } }
+			}
+			# Being sold at markets
+			set_variable = { which = SD_slaves_available value = 0 }
+			every_owned_province = {
+				limit = { check_variable = { SD_slaves_available = 1 } }				# any province with slaves being sold
+				owner = { change_variable = { which = SD_slaves_available which = PREV } }
+			}
+
+
+			# START DEMOGRAPHY CALCULATION
+			# social (unrest, stability)
+			set_variable = { which = slave_pop_social which = slaves }
+			change_variable = { which = slave_pop_social which = slaves_in_province }
+
+			if = { limit = { NOT = { check_variable = { var_total_pop = 1 } } } set_variable = { which = var_total_pop value = 1 } }
+			divide_variable = { which = slave_pop_social which = var_total_pop } # slave percentage
+
+			# economic (goods size)
+			export_to_variable = { which = slave_pop_economic value = modifier:slavesmod_productivity }	# repurposed for Slave Productivity
+			change_variable = { slave_pop_economic = 1 }
+			multiply_variable = { which = slave_pop_economic which = slaves }		# Slaves, not slaves + manufactories. Only "idle" slaves
+			divide_variable = { which = slave_pop_economic which = var_total_pop }  # slave percentage
+
+			# SLAVE INCOME
+			#multiply_variable = { slave_income = 0.01 }								# careful with overflowing
+			multiply_variable = { which = slave_income which = slave_pop_economic }
+
+			export_to_variable = { which = slave_autonomy value = trigger_value:average_autonomy }
+			subtract_variable = { slave_autonomy = 100 }
+			multiply_variable = { slave_autonomy = -0.01 }	# imagine 25%. 25-100 = -75 x -0,01 = 0,75. Ok
+			multiply_variable = { which = slave_income which = slave_autonomy }
+
+			export_to_variable = { which = slave_state_income value = modifier:slavesmod_state_income }
+			if = { limit = { NOT = { check_variable = { slave_state_income = 0 } } } set_variable = { which = slave_state_income value = 0 } }
+			multiply_variable = { which = slave_income which = slave_state_income }
+
+
+			# DEMOGRAPHICS (growth of slaves)
+
+			export_to_variable = { which = slave_gain value = modifier:slavesmod_natality }
+			export_to_variable = { which = slave_loss value = modifier:slavesmod_mortality }
+			export_to_variable = { which = slave_libratio value = modifier:slavesmod_liberated }
+
+			# cleanup of previous modifier, moved to after demographics so it can effect growth
+			slaves_remove_basic_modifiers = yes
+			slaves_remove_complex_modifiers = yes
+
+			# Let's find where we are (coordinates x and y, 15 x 7 = 105 possibilities)
+			slaves_find_coordinates = yes
+
+			if = {
+				limit = { has_estate_privilege = estate_slaves_law_C2 }			# children not added to slaves, but added to liberated
+				set_variable = { which = slave_net_growth which = slave_loss }
+				change_variable = { which = slave_libratio which = slave_gain }
+			}
+			else = {
+				set_variable = { which = slave_net_growth which = slave_gain }
+				subtract_variable = { which = slave_net_growth which = slave_loss }
+			}
+
+			if = {
+				limit = { NOT = { check_variable = { slave_libratio = 0 } } }
+				set_variable = { which = slave_libratio value = 0 }
+			}
+
+			set_variable = { which = slaves_change which = slaves } change_variable = { which = slaves_change which = slaves_in_province }
+			set_variable = { which = slaves_libers which = slaves } change_variable = { which = slaves_libers which = slaves_in_province }
+			multiply_variable = { which = slaves_change which = slave_net_growth }
+			multiply_variable = { which = slaves_libers which = slave_libratio }
+			multiply_variable = { slaves_change = 2.5 } multiply_variable = { slaves_libers = 2.5 } 	# 2.5 years (should happen every 2, but give the ai more for free
+
+
+			# Collect money from slaves sold in provinces
+			set_variable = { which = SD_sale_collected value = 0 }
+			every_owned_province = {
+				limit = { check_variable = { SD_sale_collected = 1 } }	# any province with money
+				owner = { change_variable = { which = SD_sale_collected which = PREV } }
+				set_variable = { which = SD_sale_collected value = 0 }
+			}
+
+			# Find mana requirement to abolish slavery
+			slave_abolish_powerreq = yes
+
+			# Show variables for display
+			slave_display_variables = yes
+
+
+		}
+	}
+
+
+	option = {
+		name = "slaves.1.1"				# Adds the slave % modifier, based on coordinates x (social) and y (economic)
+		ai_chance = { factor = 75 }
+		hidden_effect = {
+			# Modifier
+			slaves_ratio_create_high = yes
+
+			# Earn the money
+			money_gain_effect = { var = slave_income }
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
+
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+
+		}
+		custom_tooltip = SLAVES_EVENT_1_INCOME
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
+
+	}
+	option = {
+		name = "slaves.1.3"			# (same effect); open the event to order the purchase of slaves
+		ai_chance = { 				# Low, but possible. Increases a lot if target is under "desired" value.
+			factor = 25
+			modifier = { factor = 0 	NOT = { years_of_income = 0.5 } }
+			modifier = { factor = 2 	years_of_income = 1.0 }
+			modifier = { factor = 5 	treasury = 500 }
+			modifier = { factor = 0.1 	check_variable = { slave_pop_social = 60 } }	# soft limit for AI
+		}
+
+		hidden_effect = {
+			slaves_ratio_create_high = yes
+
+			# Demographic effect
+			change_variable = { which = slaves which = slaves_change }
+
+			# Move liberated slaves to a new pool
+			change_variable = { which = freedmen_new which = slaves_libers }
+			subtract_variable = { which = slaves which = slaves_libers }
+
+			money_gain_effect = { var = SD_sale_collected }
+			money_gain_effect = { var = SD_slave_budget }
+		}
+		country_event = { id = slaves.3 }
+		custom_tooltip = SLAVES_1_EVENT_EARNLATER		# Remember that the money will be earned AFTER this event
+		if = { limit = { check_variable = { SD_sale_collected = 1 } } 	custom_tooltip = SLAVES_EVENT_1_MARKETS }
+		if = { limit = { check_variable = { SD_slave_budget = 1 } } 	custom_tooltip = SLAVES_EVENT_1_OVERBUDGET }
 	}
 
 
