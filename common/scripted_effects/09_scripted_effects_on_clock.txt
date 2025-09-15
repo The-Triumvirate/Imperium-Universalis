@@ -11,8 +11,28 @@ estate_handler_for_ai = {
 }
 
 player_scripted_effect_monthly = { #happens every month for player
-	SD_update_provslots = yes
-	SD_update_prov_output = yes
+	if = { #within if = happens every 12 months
+		limit = {
+			check_variable = {
+				which = monthly_tick_player_check
+				value = 11
+			}
+		}
+		set_variable = {
+			which = monthly_tick_player_check
+			value = 0
+		}
+		every_owned_province = {
+			SD_update_provslots = yes
+			SD_update_prov_output = yes
+		}
+	}
+	else = {
+		change_variable = {
+			which = monthly_tick_player_check
+			value = 1
+		}
+	}
 }
 
 ai_scripted_effect_monthly = { #happens every month for ai
