@@ -9,6 +9,37 @@ estate_handler_for_ai = {
 		take_estate_land_share_medium = { estate = estate_clans }
 	}
 }
+handle_parliament_seats_effect = {
+	set_variable = {
+		which = current_parliament_seat_variable
+		value = 0
+	}
+	every_owned_province = {
+		limit = { has_seat_in_parliament = yes }
+		PREV = {
+			change_variable = {
+				which = current_parliament_seat_variable
+				value = 1
+			}
+		}
+	}
+	export_to_variable = {
+		which = max_parliament_seat_variable
+		value = modifier:max_possible_parliament_seats
+	}
+	if = {
+		limit = {
+			check_variable = {
+				which = max_parliament_seat_variable
+				which = current_parliament_seat_variable
+			}
+		}
+		set_country_flag = can_add_p_seats
+	}
+	else = {
+		clr_country_flag = can_add_p_seats
+	}
+}
 
 player_scripted_effect_monthly = { #happens every month for player
 	if = { #within if = happens every 12 months
@@ -39,6 +70,7 @@ player_scripted_effect_monthly = { #happens every month for player
 				id = slaves.101
 			}
 		}
+		handle_parliament_seats_effect = yes
 	}
 	else = {
 		change_variable = {
