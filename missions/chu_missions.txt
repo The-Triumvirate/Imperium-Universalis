@@ -127,6 +127,7 @@ chu_shizhuxiamen_1 = {
 			add_casus_belli = {
 				target = event_target:xinanguojia
 				type = cb_vassalize_mission
+				months = 120
 			}
 		}
 	}
@@ -361,6 +362,7 @@ chu_shizhuxiamen_2 = {
 				add_casus_belli = {
 					target = THIS
 					type = cb_invasion
+					months = 120
 				}
 			}
 		}
@@ -476,6 +478,7 @@ chu_shizhuxiamen_3 = {
 				reverse_add_casus_belli = {
 					target = CHU
 					type = cb_vassalize_mission
+					months = 120
 				}
 			}
 		}
@@ -676,9 +679,10 @@ chu_shizhuxiamen_4 = {
 		}
 		effect = {
 			add_splendor = 300
-			add_adm_power = 300
-			add_dip_power = 300
-			add_mil_power = 300
+			add_adm_power = 500
+			add_dip_power = 500
+			add_mil_power = 500
+			add_prestige = 100
 		}
 	}
 }
@@ -830,7 +834,13 @@ chu_daxingfengjun_1 = {
 		}
 		trigger = {
 			stability = 1
-			prestige = 20
+			any_known_country = {
+				religion = wuism
+				has_opinion = {
+					who = ROOT
+					value = 100
+				}
+			}
 		}
 		effect = {
 			add_stability = -1
@@ -856,11 +866,20 @@ chu_daxingfengjun_1 = {
 
 		}
 		trigger = {
-			full_idea_group = assimilation_ideas
-			manpower = 35
-			has_reform = chinese_feudalism_reform
+			stability = 1
+			adm_power = 250
+			prestige = 25
+			legitimacy = 95
+			all_owned_province = {
+				NOT = {
+					unrest = 5
+				}
+			}
 		}
 		effect = {
+			add_adm_power = -250
+			add_stability = -1
+			set_country_flag = chu_non_chinese_reforms
 			custom_tooltip = chu_huayizhibian.tt
 			hidden_effect = {
 				every_owned_province = {
@@ -868,20 +887,25 @@ chu_daxingfengjun_1 = {
 						NOT = { culture = ROOT }
 						has_owner_accepted_culture = no
 					}
-					add_nationalism = -8
-					add_unrest = -2
+					add_nationalism = -10
+					add_unrest = -10
 				}
 			}
+			remove_government_reform = chinese_feudalism_reform
 			add_government_reform = aristocratic_monarchy_reform
+			add_country_modifier = {
+				name = chu_new_mt_modifier_one
+				duration = 1825
+			}
 			custom_tooltip = chu_huayizhibian1.tt
 			hidden_effect = {
 				every_known_country = {
 					limit = {
-						religion_group = chinese_religions
+						religion = chinese_religion
 					}
 					add_opinion = {
 						who = ROOT
-						modifier = enemy
+						modifier = opinion_chu_going_wuism
 					}
 				}
 			}
@@ -901,10 +925,7 @@ chu_daxingfengjun_1 = {
 				truce_with = ZHO
 				NOT = { exists = ZHO }
 			}
-			OR = {
-				full_idea_group = raider_ideas
-				full_idea_group = maritime_ideas
-			}
+			navy_size_percentage = 1
 		}
 		effect = {
 			add_country_modifier = {
@@ -922,17 +943,11 @@ chu_daxingfengjun_1 = {
 		#completed_by = 190.1.1
 		required_missions = {   }
 		trigger = {
-			OR = {
-				accepted_culture = guanzhong
-				accepted_culture = zhongyuan
-				accepted_culture = dongtu
-				accepted_culture = jianghan
-				accepted_culture = hebei
-				accepted_culture = shanxi
-				accepted_culture = qilu
-				accepted_culture = yinyi
+			any_known_country = {
+				alliance_with = ROOT
+				culture_group = chinese_group
 			}
-			dip_tech = 5
+			dip_tech = 2
 		}
 		effect = {
 			add_splendor = 50
@@ -978,7 +993,7 @@ chu_daxingfengjun_1 = {
 					is_subject_of = ROOT
 				}
 			}
-			imperial_mandate = 80
+			#imperial_mandate = 80
 		}
 		effect = {
 			yangzhou_china = {
@@ -992,9 +1007,11 @@ chu_daxingfengjun_1 = {
 					NOT = { total_development = ROOT }
 					NOT = { is_subject_of = ROOT }
 				}
-				create_subject = {
-					who = THIS
-					subject_type = half_autonomous_vassal
+				ROOT = {
+					create_subject = {
+						who = PREV
+						subject_type = half_autonomous_vassal
+					}
 				}
 			}
 		}
@@ -1026,6 +1043,7 @@ chu_daxingfengjun_1 = {
 				reverse_add_casus_belli = {
 					target = CHU
 					type = cb_vassalize_mission
+					months = 120
 				}
 			}
 		}
@@ -1056,13 +1074,45 @@ chu_daxingfengjun_2 = {
 		}
 		trigger = {
 			NOT = { had_recent_war = 10 }
-			manpower = 25
+			manpower = 10
 		}
 		effect = {
-			add_country_modifier = {
-				#name = new_settlements
-				name = chu_kaipimanhuang
-				duration = 7300
+			add_manpower = -10
+			add_accepted_culture = li
+			4497 = {
+				cede_province = CHU
+				add_core = CHU
+				add_province_modifier = {
+					name = chu_kaipimanhuang
+					duration = 3650
+				}
+			}
+			4491 = {
+				cede_province = CHU
+				add_core = CHU
+				add_province_modifier = {
+					name = chu_kaipimanhuang
+					duration = 3650
+				}
+			}
+			4486 = {
+				cede_province = CHU
+				add_core = CHU
+				add_province_modifier = {
+					name = chu_kaipimanhuang
+					duration = 3650
+				}
+			}
+			7983 = {
+				cede_province = CHU
+				add_core = CHU
+				add_province_modifier = {
+					name = chu_kaipimanhuang
+					duration = 3650
+				}
+			}
+			jingzhou_china = {
+				discover_country = ROOT
 			}
 		}
 	}
@@ -1076,11 +1126,30 @@ chu_daxingfengjun_2 = {
 
 		}
 		trigger = {
-			prestige = 30
-			manpower = 10
-			num_of_conquistadors = 3
+			mil_power = 250
+			manpower = 25
+			num_of_generals = 3
+			NOT = {
+				exists = MIO
+			}
+			4486 = {
+				is_prosperous = yes
+			}
+			4491 = {
+				is_prosperous = yes
+			}
 		}
 		effect = {
+			add_mil_power = -250
+			add_manpower = -25
+			every_province = {
+				limit = {
+					region = jingzhou_china
+					is_empty = yes
+				}
+				cede_province = CHU
+				add_core = CHU
+			}
 			ba_area = {
 				add_claim = ROOT
 			}
@@ -1089,6 +1158,9 @@ chu_daxingfengjun_2 = {
 			}
 			baxi_area = {
 				add_claim = ROOT
+			}
+			jiaozhou_china = {
+				discover_country = ROOT
 			}
 		}
 	}
@@ -1103,34 +1175,23 @@ chu_daxingfengjun_2 = {
 		}
 		trigger = {
 			religion_group = eastern_religions
-			prestige = 100
-			total_development = 500
+			prestige = 50
+			total_development = 600
 			calc_true_if = {
-				owns_all_provinces = {
-					OR = {
-						region = yangzhou_china
-						region = jiaozhou_china
-					}
+				all_owned_province = {
+					region = jiaozhou_china
 				}
 				amount = 5
 			}
 		}
 		effect = {
-
 			custom_tooltip = chu_baiyuegongzhu.tt
 			hidden_effect = {
 				every_known_country = {
 					limit = {
 						culture_group = malay_group
-						has_opinion = {
-							who = ROOT
-							value = 0
-						}
 					}
-					add_opinion = {
-						who = ROOT
-						modifier = alliance
-					}
+					add_historical_friend = ROOT
 				}
 			}
 		}
@@ -1145,7 +1206,7 @@ chu_daxingfengjun_2 = {
 
 		}
 		trigger = {
-			is_emperor_of_china = yes
+			has_global_flag = zhanguokaishi
 			OR = {
 				ZHO = { is_subject_of = ROOT }
 				NOT = { exists = ZHO }
@@ -1167,15 +1228,12 @@ chu_daxingfengjun_2 = {
 
 		}
 		trigger = {
-			OR = {
-				full_idea_group = maritime_ideas
-				full_idea_group = raider_ideas
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 5
+				region = binzhou_china
 			}
-			num_of_ports = 5
-			num_of_galley = 5
 		}
 		effect = {
-
 			every_known_country = {
 				limit = {
 					any_owned_province = {
@@ -1186,6 +1244,7 @@ chu_daxingfengjun_2 = {
 				reverse_add_casus_belli = {
 					target = CHU
 					type = cb_vassalize_mission
+					months = 120
 				}
 			}
 		}
@@ -1200,7 +1259,15 @@ chu_daxingfengjun_2 = {
 
 		}
 		trigger = {
-			prestige = 80
+			prestige = 25
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 25
+				region = binzhou_china
+			}
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 15
+				region = jizhou_china
+			}
 		}
 		effect = {
 			every_known_country = {
@@ -1213,6 +1280,7 @@ chu_daxingfengjun_2 = {
 				reverse_add_casus_belli = {
 					target = CHU
 					type = cb_vassalize_mission
+					months = 120
 				}
 			}
 		}
@@ -1232,9 +1300,10 @@ chu_daxingfengjun_2 = {
 		}
 		effect = {
 			add_splendor = 300
-			add_adm_power = 300
-			add_dip_power = 300
-			add_mil_power = 300
+			add_adm_power = 500
+			add_dip_power = 500
+			add_mil_power = 500
+			add_prestige = 100
 		}
 	}
 }
@@ -1261,7 +1330,10 @@ chu_daxingfengjun_3 = {
 
 		}
 		trigger = {
-			primary_culture = nanchu
+			OR = {
+				dip_power = 25
+				has_adopted_cult = chiyou_cult
+			}
 			any_owned_province = {
 				OR = {
 					culture = jingman
@@ -1270,8 +1342,15 @@ chu_daxingfengjun_3 = {
 			}
 		}
 		effect = {
+			if = {
+				NOT = {
+					has_adopted_cult = chiyou_cult
+				}
+				add_dip_power = -25
+			}
 			add_accepted_culture = jingman
 			add_accepted_culture = huaiyi
+			custom_tooltip = chu_baipu_rebelled_tt
 		}
 	}
 	#江汉诸芈-江汉地区是我们的统治核心，我们依靠亲族统治大量的蛮族
@@ -1284,11 +1363,11 @@ chu_daxingfengjun_3 = {
 
 		}
 		trigger = {
-			all_province = {
-				culture = jianghan
-				country_or_subject_holds = ROOT
+			any_known_country = {
+				primary_culture = jianghan
+				is_subject_of = ROOT
+				dynasty = "Mi"
 			}
-			accepted_culture = jianghan
 		}
 		effect = {
 			add_years_of_income = 0.5
@@ -1318,8 +1397,8 @@ chu_daxingfengjun_3 = {
 
 		}
 		trigger = {
-			manpower = 80
-			navy_size = 50
+			manpower = 60
+			navy_size = 40
 
 		}
 		effect = {
@@ -1345,7 +1424,6 @@ chu_daxingfengjun_3 = {
 				type = all
 				is_core = ROOT
 			}
-			num_of_conquistadors = 1
 		}
 		effect = {
 			shu_area = {
@@ -1386,6 +1464,13 @@ chu_daxingfengjun_3 = {
 			yizhou_china = {
 				add_claim = ROOT
 			}
+			4230 = {
+				add_permanent_province_modifier = { 
+					name = shu_brocade
+					duration = -1  
+				}
+				change_trade_goods = silk
+			}
 		}
 	}
 }
@@ -1404,7 +1489,7 @@ chu_daxingfengjun_4 = {
 	}
 	#收取关中-宗周故地值得收取
 	chu_shouquguanzhong = {
-		position = 1
+		position = 3
 		icon = missions_china_army
 		#completed_by = 190.1.1
 		required_missions = {  }
@@ -1412,7 +1497,10 @@ chu_daxingfengjun_4 = {
 
 		}
 		trigger = {
-			has_commanding_three_star = yes
+			owns = 4215
+			army_size_percentage = 1
+			land_forcelimit = 40
+			manpower_percentage = 0.5
 			mil = 4
 		}
 		effect = {
@@ -1427,13 +1515,14 @@ chu_daxingfengjun_4 = {
 				reverse_add_casus_belli = {
 					target = CHU
 					type = cb_vassalize_mission
+					months = 120
 				}
 			}
 		}
 	}
 	#西游通道-继续向西移民可以让我们民众有更多地方居住
 	chu_xiyoutongdao = {
-		position = 2
+		position = 4
 		icon = missions_china_nomad
 		#completed_by = 190.1.1
 		required_missions = { chu_shouquguanzhong }
@@ -1441,11 +1530,9 @@ chu_daxingfengjun_4 = {
 
 		}
 		trigger = {
-			sili_china = {
-				country_or_subject_holds = ROOT
-			}
-			any_owned_province = {
-				development = 30
+			num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with = {
+				value = 25
+				region = sili_china
 			}
 		}
 		effect = {
@@ -1464,7 +1551,10 @@ chu_daxingfengjun_4 = {
 		position = 6
 		icon = missions_china_bureaucrat
 		#completed_by = 190.1.1
-		required_missions = { chu_shouquguanzhong }
+		required_missions = { 
+			chu_xiyoutongdao 
+			chu_caiyunzhinan
+		}
 		provinces_to_highlight = {
 
 		}
@@ -1604,14 +1694,14 @@ chu_daxingfengjun_5 = {
 		position = 4
 		icon = missions_china_agriculture
 		#completed_by = 190.1.1
-		required_missions = { chu_liangguangzhizu chu_yunmengdaze }
+		required_missions = { chu_yunmengdaze }
 		provinces_to_highlight = {
 
 		}
 		trigger = {
 			OR = {
+				full_idea_group = maritime_ideas
 				full_idea_group = maritime_trade_ideas
-				full_idea_group = caravan_trade_ideas
 			}
 		}
 		effect = {
@@ -1633,11 +1723,8 @@ chu_daxingfengjun_5 = {
 
 		}
 		trigger = {
-			OR = {
-				full_idea_group = maritime_ideas
-				full_idea_group = raider_ideas
-			}
-			num_of_ports = 20
+			num_of_ports = 40
+			num_of_explorers = 1
 		}
 		effect = {
 
@@ -1662,7 +1749,7 @@ chu_daxingfengjun_5 = {
 		position = 6
 		icon = missions_china_shipyard
 		#completed_by = 190.1.1
-		required_missions = { chu_jianghuaishuiwang }
+		required_missions = { chu_tonghanghaiwai }
 		provinces_to_highlight = {
 
 		}
@@ -1714,6 +1801,7 @@ chu_daxingfengjun_5 = {
 					reverse_add_casus_belli = {
 						target = CHU
 						type = cb_vassalize_mission
+						months = 120
 					}
 				}
 			}
@@ -1746,6 +1834,7 @@ chu_daxingfengjun_5 = {
 					reverse_add_casus_belli = {
 						target = CHU
 						type = cb_vassalize_mission
+						months = 120
 					}
 				}
 			}
@@ -1775,7 +1864,7 @@ chu_common_1 = {
 		trigger = {
 			stability = 2
 			NOT = { num_of_revolts = 1 }
-			owns_all_provinces = {
+			all_owned_province = {
 				NOT = { devastation = 1 }
 			}
 		}
@@ -1980,6 +2069,7 @@ chu_common_1 = {
 					reverse_add_casus_belli = {
 						target = CHU
 						type = cb_trade_war_triggered
+						months = 120
 					}
 				}
 			}
@@ -2037,10 +2127,10 @@ chu_common_1 = {
 				ZHO = {
 					add_opinion = {
 						who = ROOT
-						modifier = want_your_provinces
+						modifier = insulted
 					}
 				}
-				add_prestige = 15
+				add_prestige = 10
 				add_splendor = 20
 				add_adm_power = 25
 				add_mil_power = 25
@@ -2057,6 +2147,7 @@ chu_common_1 = {
 					reverse_add_casus_belli = {
 						target = CHU
 						type = cb_vassalize_mission
+						months = 120
 					}
 				}
 			}
@@ -2094,17 +2185,11 @@ chu_common_1 = {
 			#completed_by = 190.1.1
 			required_missions = {   }
 			trigger = {
-				OR = {
-					accepted_culture = guanzhong
-					accepted_culture = zhongyuan
-					accepted_culture = dongtu
-					accepted_culture = jianghan
-					accepted_culture = hebei
-					accepted_culture = shanxi
-					accepted_culture = qilu
-					accepted_culture = yinyi
+				any_known_country = {
+					alliance_with = ROOT
+					culture_group = chinese_group
 				}
-				dip_tech = 5
+				dip_tech = 2
 			}
 			effect = {
 				add_splendor = 50
@@ -2238,7 +2323,7 @@ chu_common_1 = {
 				}
 				OR = {
 					light_ship_fraction = 0.75
-					full_idea_group = maritime_trade_ideas
+					full_idea_group = maritime_ideas
 				}
 			}
 			effect = {
@@ -2640,6 +2725,7 @@ chu_common_1 = {
 					reverse_add_casus_belli = {
 						target = ROOT
 						type = cb_vassalize_mission
+						months = 120
 					}
 				}
 			}
@@ -2688,7 +2774,7 @@ chu_common_1 = {
 				}
 				change_estate_land_share = {
 					estate = estate_nobility
-					share = -50
+					share = -25
 				}
 			}
 		}
@@ -2707,6 +2793,7 @@ chu_common_1 = {
 				is_at_war = no
 				NOT = { is_emperor = yes }
 				is_league_leader = yes
+				is_year = 152
 			}
 			effect = {
 				add_country_modifier = {
@@ -2746,7 +2833,7 @@ chu_common_1 = {
 			position = 7
 			icon = missions_china_bureaucrat
 			#completed_by = 190.1.1
-			required_missions = { chu_shizhuxiameng }
+			required_missions = { chu_zhaozhaotianming }
 			provinces_to_highlight = {
 
 			}
@@ -2829,7 +2916,13 @@ chu_common_1 = {
 			trigger = {
 				has_reform = chinese_feudalism_reform
 				hidden_trigger = { ai = no }
-				crown_land_share = 30
+				num_of_estate_privileges = {
+					estate = estate_nobility
+					value = 2
+				}
+				NOT = {
+					crown_land_share = 25
+				}
 				estate_influence = {
 					estate = estate_nobility
 					influence = 50
@@ -2846,10 +2939,6 @@ chu_common_1 = {
 						add_unrest = -5
 						add_nationalism = -10
 					}
-				}
-				change_estate_land_share = {
-					estate = all
-					share = 10
 				}
 				add_country_modifier = {
 					name = chu_daxingfengjun_modifier
