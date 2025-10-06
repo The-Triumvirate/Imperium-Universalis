@@ -1,0 +1,54 @@
+custom_button = {
+	name = IU_slave_add_prov_button
+	tooltip = IU_slave_add_prov_button_tt
+	potential = { NOT = { owner = { has_country_modifier = slavery_abolished } } }
+    trigger = {
+		check_variable = { SD_slot_free = 1 }
+		owner = { check_variable = { slaves = 10 } }
+	}
+	effect = {
+		hidden_effect = {
+			# owner:
+			owner = { subtract_variable = { slaves = 10 } change_variable = { slaves_in_province = 10 } }	# Allocated to separate list
+			# province:
+			change_variable = { slaves_in_province = 10 }
+			#subtract_variable = { SS_slot_free = 1 } change_variable = { SS_slot_taken = 1 }	# slot will be either slaves or civilians
+			SD_update_provslots = yes
+			SD_update_prov_output = yes
+		}
+		custom_tooltip = slaves_add_prov.tt
+		owner = { add_treasury = -10 }
+	}
+}
+
+custom_button = {
+	name = IU_slave_remove_prov_button
+	tooltip = IU_slave_remove_prov_button_tt
+	potential = { NOT = { owner = { has_country_modifier = slavery_abolished } } }
+    trigger = {
+		check_variable = { slaves_in_province = 0.1 }
+	}
+	effect = {
+		hidden_effect = {
+			SD_slaves_return_all = yes
+			SD_update_provslots = yes
+			SD_update_prov_output = yes
+		}
+		custom_tooltip = slaves_clr_prov.tt
+	}
+}
+
+custom_button = {
+	name = IU_barcover
+	tooltip = IU_barcover_tt
+	potential = { NOT = { owner = { has_country_modifier = slavery_abolished } } }
+    trigger = { hidden_trigger = { always = no } }
+	effect = {}
+}
+
+
+custom_icon = {
+	name = IU_slavebars
+	potential = { NOT = { owner = { has_country_modifier = slavery_abolished } } }
+	frame_variable = slavebar_var
+}

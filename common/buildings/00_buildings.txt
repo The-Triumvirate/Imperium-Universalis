@@ -3084,58 +3084,6 @@ manufactory = {
 
 }
 
-manufactory_slave_up = {
-	cost = 10
-	time = 1
-	build_trigger = {
-		#has_building = manufactory				# it needs each of the manufactory buildings. Removed, to allow other sources of slaves
-		check_variable = { SD_slot_free = 1 }
-		owner = { check_variable = { slaves = 10 } }
-	}
-
-	modifier = {
-		allowed_num_of_buildings = 15	# for itself
-	}
-
-	on_built = {
-		hidden_effect = {
-			# owner:
-			owner = { subtract_variable = { slaves = 10 } change_variable = { slaves_in_province = 10 } }	# Allocated to separate list
-			# province:
-			change_variable = { slaves_in_province = 10 }
-			#subtract_variable = { SS_slot_free = 1 } change_variable = { SS_slot_taken = 1 }	# slot will be either slaves or civilians
-			SD_update_provslots = yes
-			SD_update_prov_output = yes
-			remove_building = manufactory_slave_up
-		}
-	}
-
-	ai_will_do = { factor = 0 }
-}
-manufactory_slave_out = {
-	cost = 10
-	time = 1
-	build_trigger = {
-		#has_building = manufactory	# Technically it could happen without manufactory, so it's better to just limit it by variable
-		check_variable = { slaves_in_province = 0.1 }	# as long as there is any slave around
-
-	}
-
-	modifier = {
-		allowed_num_of_buildings = 15 # for itself
-	}
-
-	on_built = {
-		hidden_effect = {
-			SD_slaves_return_all = yes
-			SD_update_provslots = yes
-			SD_update_prov_output = yes
-			remove_building = manufactory_slave_out
-		}
-	}
-
-	ai_will_do = { factor = 0 }
-}
 
 # Farming Settlement
 

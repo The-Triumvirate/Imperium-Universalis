@@ -80,6 +80,18 @@ SD_update_provslots = {
 	# Check in case of slavery abolished and slave republic: move slots back to zero
 
 
+	set_variable = { #move this here to calc for later
+		which = slavebar_slot_calc
+		which = SD_prov_slots
+	}
+	set_variable = {
+		which = slavebar_slaves_calc
+		value = 0
+	}
+	set_variable = {
+		which = slavebar_var
+		value = 0
+	}
 
 	# Now we know the maximum capacity, and we see what to do with the slaves already there.
 
@@ -112,6 +124,67 @@ SD_update_provslots = {
 	}
 
 	if = { limit = { NOT = { check_variable = { slaves_in_province = 0.001 } } } set_variable = { which = slaves_in_province value = 0 } }
+	if = {
+		limit = {
+			check_variable = { slaves_in_province = 0.001 }
+		}
+		set_variable = {
+			which = slavebar_slaves_calc
+			which = slaves_in_province
+		}
+		divide_variable = {
+			which = slavebar_slaves_calc
+			value = 10
+		}
+		divide_variable = {
+			which = slavebar_slot_calc
+			which = slavebar_slaves_calc
+		}
+		if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.875 } }
+			set_variable = { which = slavebar_var value = 10 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.75 } }
+			set_variable = { which = slavebar_var value = 9 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.625 } }
+			set_variable = { which = slavebar_var value = 8 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.5 } }
+			set_variable = { which = slavebar_var value = 7 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.375 } }
+			set_variable = { which = slavebar_var value = 6 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.25 } }
+			set_variable = { which = slavebar_var value = 5 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.125 } }
+			set_variable = { which = slavebar_var value = 4 }
+		}
+		else_if = {
+			limit = { check_variable = { slavebar_slaves_calc = 0.001 } }
+			set_variable = { which = slavebar_var value = 3 }
+		}
+		else = {
+			set_variable = { which = slavebar_var value = 2 }
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = { has_country_modifier = slavery_abolished }
+		}
+		change_variable = {
+			which = slavebar_var
+			value = 2
+		}
+	}
 
 }
 SD_slaves_return_all = {
@@ -252,9 +325,48 @@ SD_update_prov_output = {
 
 
 }
+SD_show_add_manuf_modifier = {
+	if = { 		limit = { check_variable = { SD_slave_output = 7.50 } } SD_add_manuf_modifier = { level = 35 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 7.00 } } SD_add_manuf_modifier = { level = 34 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 6.50 } } SD_add_manuf_modifier = { level = 33 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 6.00 } } SD_add_manuf_modifier = { level = 32 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 5.50 } } SD_add_manuf_modifier = { level = 31 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 5.00 } } SD_add_manuf_modifier = { level = 30 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 4.50 } } SD_add_manuf_modifier = { level = 29 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 4.00 } } SD_add_manuf_modifier = { level = 28 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.75 } } SD_add_manuf_modifier = { level = 27 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.50 } } SD_add_manuf_modifier = { level = 26 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.25 } } SD_add_manuf_modifier = { level = 25 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 3.00 } } SD_add_manuf_modifier = { level = 24 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.75 } } SD_add_manuf_modifier = { level = 23 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.50 } } SD_add_manuf_modifier = { level = 22 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.25 } } SD_add_manuf_modifier = { level = 21 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 2.0 } }  SD_add_manuf_modifier = { level = 20 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.9 } }  SD_add_manuf_modifier = { level = 19 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.8 } }  SD_add_manuf_modifier = { level = 18 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.7 } }  SD_add_manuf_modifier = { level = 17 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.6 } }  SD_add_manuf_modifier = { level = 16 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.5 } }  SD_add_manuf_modifier = { level = 15 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.4 } }  SD_add_manuf_modifier = { level = 14 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.3 } }  SD_add_manuf_modifier = { level = 13 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.2 } }  SD_add_manuf_modifier = { level = 12 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.1 } }  SD_add_manuf_modifier = { level = 11 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 1.0 } }  SD_add_manuf_modifier = { level = 10 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.9 } }  SD_add_manuf_modifier = { level = 09 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.8 } }  SD_add_manuf_modifier = { level = 08 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.7 } }  SD_add_manuf_modifier = { level = 07 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.6 } }  SD_add_manuf_modifier = { level = 06 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.5 } }  SD_add_manuf_modifier = { level = 05 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.4 } }  SD_add_manuf_modifier = { level = 04 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.3 } }  SD_add_manuf_modifier = { level = 03 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.2 } }  SD_add_manuf_modifier = { level = 02 } }
+	else_if = { limit = { check_variable = { SD_slave_output = 0.1 } }  SD_add_manuf_modifier = { level = 01 } }
+	else = { 													        SD_add_manuf_modifier = { level = 00 } }
+}
 SD_add_manuf_modifier = {
 	add_permanent_province_modifier = { name = manf_slave_$level$ duration = -1 }
 }
+
 
 SD_remove_manuf_modifiers = {
 	trigger_switch = {
