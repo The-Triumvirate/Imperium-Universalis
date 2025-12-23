@@ -73,16 +73,22 @@ country_decisions = {
 		allow = {
 			OR = {
 				AND = {
+					tag = ZHO
+					mission_completed = zho_3_tianwangfadu
+					curia_treasury_size = 1000
+				}
+				AND = {
 					imperial_influence = 30
 					is_emperor = yes
+					hre_reform_passed = emperor_reichsregiment
 				}
 				AND = {
 					prestige = 25
 					is_emperor = no #emperors are also electors
 					is_elector = yes
+					hre_reform_passed = emperor_reichsregiment
 				}
 			}
-			hre_reform_passed = emperor_reichsregiment
 			NOT = { hre_reform_passed = emperor_gemeinerpfennig }
 			NOT = { hre_reform_passed = emperor_reichskrieg }
 		}
@@ -90,6 +96,7 @@ country_decisions = {
 			if = {
 				limit = {
 					is_emperor = yes
+					NOT = { tag = ZHO }
 				}
 				add_imperial_influence = -10
 				add_prestige = -15 #for ai factor
@@ -105,20 +112,43 @@ country_decisions = {
 					}
 				}
 			}
-			else = {
-				add_prestige = -15
-				every_neighbor_country = {
+				if = {
 					limit = {
-						is_part_of_hre = yes
-						NOT = { is_elector = yes }
 						NOT = { is_emperor = yes }
 						NOT = { tag = ZHO }
-						NOT = { is_subject_of = ROOT }
-						is_subject = no
 					}
-					country_event = { id = ShiJian.24 }
+						add_prestige = -15
+						every_neighbor_country = {
+							limit = {
+								is_part_of_hre = yes
+								NOT = { is_elector = yes }
+								NOT = { is_emperor = yes }
+								NOT = { tag = ZHO }
+								NOT = { is_subject_of = ROOT }
+								is_subject = no
+							}
+						country_event = { id = ShiJian.24 }
+					}
 				}
-			}
+				if = {
+					limit = {
+						tag = ZHO
+						NOT = { is_emperor = yes }
+						NOT = { is_elector = yes }
+					}
+						add_curia_treasury = -500
+						every_neighbor_country = {
+							limit = {
+								is_part_of_hre = yes
+								NOT = { is_elector = yes }
+								NOT = { is_emperor = yes }
+								NOT = { tag = ZHO }
+								NOT = { is_subject_of = ROOT }
+								is_subject = no
+							}
+						country_event = { id = ShiJian.24 }
+					}
+				}
 		}
 		ai_importance = 150
 		ai_will_do = {
@@ -302,4 +332,5 @@ country_decisions = {
 			factor = 1
 		}
 	}
+
 }
