@@ -1,0 +1,843 @@
+namespace = Wuu_event
+
+#å¤§è±¡ææ½®å¨åä¸­å½åºç°
+country_event = {
+	id = Wuu_event.5003
+	title = daxiang.000101.t
+	desc = daxiang.000101.d
+	picture = religious
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		always = yes
+		capital_scope = {
+			continent = china
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	#
+	option = {
+		name = daxiang.000101.a
+		every_country = {
+		    limit = {
+			        primitives = yes
+					OR = {
+						capital_scope = { region = yizhou_china }
+						capital_scope = { region = jiaozhou_china }
+						capital_scope = { region = jingzhou_china }
+						capital_scope = { region = yangzhou_china }
+						capital_scope = { region = lacviet_region }
+					}
+				}
+			capital_scope = { 
+				add_institution_embracement = {
+                       which = elephant_domestication
+					   value = 100
+                }
+			}
+		
+		}
+		
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#ãå­å­åµæ³ãé®ä¸
+country_event = {
+	id = Wuu_event.505
+	title = flavor_wuu.505.t
+	desc = flavor_wuu.505.d
+	picture = religious 
+	major = yes
+	is_triggered_only = yes
+	
+	trigger = {
+	    
+	}
+	
+	#ä¼å¤§çç»å¸ï¼
+	option = {
+		name = flavor_wuu.505.a
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#æ¢èµ°ãå­å­åµæ³ã
+country_event = {
+	id = Wuu_event.506
+	title = flavor_wuu.1.t
+	desc = flavor_wuu.1.d
+	picture = religious
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    capital_scope = { continent = china }
+		FROM = {
+			has_province_modifier = wuu_sunzibingfa_modifier
+			NOT = { owned_by = ROOT }
+			NOT = {
+				owner = {
+					OR = {
+						is_in_war = {
+							defenders = PREV
+							defenders = ROOT
+						}
+						is_in_war = {
+							attackers = PREV
+							attackers = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			FROM = {
+				save_global_event_target_as = tripitaka_wuu_province
+				if = {
+					limit = { has_province_modifier = wuu_sunzibingfa_modifier }
+					
+				}
+				owner = {
+					save_event_target_as = tripitaka_wuu_og_owner
+				}
+			}
+		}
+	}
+	
+	#Steal it
+	option = {
+		name = flavor_wuu.1.a
+		trigger = {
+			
+		}
+		add_prestige = 10
+		hidden_effect = {
+			FROM = {
+				owner = {
+					country_event = {
+						id = Wuu_event.2
+					}
+				}
+			}
+		}
+		custom_tooltip = tripitaka_wuu_tt.1
+		capital_scope = {
+			add_permanent_province_modifier = {
+				name = wuu_sunzibingfa_modifier
+				duration = -1
+			}
+		}
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = wuu_sunzibingfa_modifier
+			}
+		}
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfa_opinion
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#Burn it down!
+	option = {
+		name = flavor_wuu.1.b
+		add_mil_power = 2000
+		custom_tooltip = tripitaka_wuu_tt.2
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = wuu_sunzibingfa_modifier
+			}
+		}
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfashao_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#Spare it down!
+	option = {
+		name = flavor_wuu.1.c
+		add_prestige = 10
+		event_target:tripitaka_wuu_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = wuu_missionevent_sunzibingfabaohu_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#ãå­å­åµæ³ãéå¤±
+country_event = {
+	id = Wuu_event.507
+	title = flavor_wuu.2.t
+	desc = flavor_wuu.2.d
+	picture = plundering
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = flavor_wuu.2.a
+		custom_tooltip = tripitaka_wuu_tt.4
+		add_prestige = -20
+		add_legitimacy = -10
+		hidden_effect = {
+			if = {
+				limit = {
+					Tag = WUU
+					mission_completed = wuu_sunwujungai
+				}
+				
+			}
+			else = {
+				#remove_idea_group = bingfa_ideas
+			}
+			
+		}
+	}
+	
+	after = {
+		clear_global_event_target = tripitaka_wuu_province
+	}
+}
+
+#ç¾äººè¥¿æ½çå½è¿
+country_event = {
+	id = Wuu_event.508
+	title = Wuu_event.1.t
+	desc = Wuu_event.1.d
+	picture = event_xishi
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = YUE
+	}
+	
+	#è¿ç®å´çï¼ä¹æ±å­å½
+	option = {
+		name = Wuu_event.1.a
+		trigger = {
+			
+		}
+		custom_tooltip = xishi_tt.3
+		WUU = {
+		   add_prestige = 10
+		   country_event = { id = Shijian.4 }
+		}
+		hidden_effect = {
+			
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#è¥¿æ½æ¯æçï¼
+	option = {
+		name = Wuu_event.1.b
+		remove_consort = yes
+		define_consort = {
+			name = "Xishi"
+			dynasty = "Zi"
+			culture = wuyue
+			country_of_origin = YUE
+			age = 16
+			adm = 1
+			dip = 1
+			mil = 1
+			female = yes
+			religion = wuism
+        }
+		add_queen_personality = fertile_personality
+		custom_tooltip = xishi_yue_tt.2
+		add_country_modifier = {
+			name = "yue_xishi_modifier" 
+			duration = 9125
+		}
+		hidden_effect = {
+			change_heir_adm = 1
+			change_heir_dip = 1
+			change_heir_mil = 1
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#å¯æçç¾äººï¼è¿å¥¹èªç±
+	option = {
+		name = Wuu_event.1.c
+		add_prestige = 10
+		add_war_exhaustion = -5
+		add_stability = 1
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#è¶å½è¿ç®è¥¿æ½ç¾äººè®¡
+country_event = {
+	id = Wuu_event.509
+	title = flavor_wuu.3.t
+	desc = flavor_wuu.3.d
+	picture = event_xishi
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = WUU
+	}
+	
+	#æ±å¾ç¾äººå½ï¼
+	option = {
+		name = flavor_wuu.3.a
+		remove_consort = yes
+		define_consort = {
+            name = "Xishi"
+			dynasty = "Zi"
+            culture = wuyue
+			country_of_origin = YUE
+			age = 16
+            adm = 1
+            dip = 1
+            mil = 1
+            female = yes
+			religion = wuism
+        }
+		add_queen_personality = fertile_personality
+		custom_tooltip = xishi_wuu_tt.43
+		custom_tooltip = xishi_yue_tt.2
+		add_country_modifier = {
+				name = "yue_xishi_modifier" 
+				duration = 9125
+			}
+		hidden_effect = {
+			change_heir_adm = 1
+			change_heir_dip = 1
+			change_heir_mil = 1
+			white_peace = YUE
+			country_event = { 
+			    id = Wuu_event.5 
+				days = 1
+				}
+		}
+		YUE = {	 
+		    add_ruler_modifier = {
+				name = "yue_woxinchangdan_modifier" 
+			}
+			change_mil = 1
+		    wu_area = { 
+				cede_province = WUU
+		    }
+		}
+		WUU = {
+			vassalize = YUE
+			add_treasury = 1000
+			kuaiji_area = { 
+				cede_province = YUE
+			}
+			4449 = { 
+				cede_province = YUE
+			}
+			4438 = { 
+				cede_province = YUE
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#è¯ç ´ç¾äººè®¡ï¼
+	option = {
+		name = flavor_wuu.3.b
+		YUE = {
+			add_prestige = -25
+		}
+		WUU = {
+			add_legitimacy = 10
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#è¿å¨¶è¥¿æ½
+country_event = {
+	id = Wuu_event.510
+	title = flavor_wuu.4.t
+	desc = flavor_wuu.4.d
+	picture = caravan
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    Tag = WUU
+	}
+	
+	#è¥¿æ½æ¯æçå¦ï¼
+	option = {
+		name = flavor_wuu.4.a
+		custom_tooltip = xishi_wuu_tt.42
+		change_adm = 1
+		change_dip = 1
+		change_mil = 1
+		add_ruler_personality = conqueror_personality
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#è¶å½ç­äº¡
+country_event = {
+	id = Wuu_event.601
+	title =Wuu_event.liumin.t
+	desc = Wuu_event.liumin.d
+	picture = asiangfx_construction
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		NOT = { exists = YUE }
+		NOT = { exists = XIA }
+		OR = {
+			Tag = MNY
+			Tag = OUY
+			Tag = YYG
+			Tag = NAN
+			Tag = GAA
+			Tag = GUM
+			Tag = SHY		
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+    }
+	
+	immediate = {
+		country_event = { id = Wuu_event.602 }
+	}
+	
+	#
+	option = {
+		name = Wuu_event.liumin.a
+		
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#è¶å½æµæ°
+country_event = {
+	id = Wuu_event.602
+	title =Wuu_event.liumin.t
+	desc = Wuu_event.liumin.d
+	picture = asiangfx_construction
+	
+	is_triggered_only = yes
+	
+	immediate = {
+	   hidden_effect = {
+			add_treasury = 1000
+			add_manpower = 20
+			add_country_modifier = {
+				name = "yue_baiyuezhimeng_modifier" 
+				duration = -1
+			}
+	    }
+    }
+	
+	#æ¥çº³ä»ä»¬
+	option = {
+		name = Wuu_event.liumin.a
+		every_country = {
+			limit = {
+				OR = {
+					Tag = MNY
+					Tag = OUY
+					Tag = YYG
+					Tag = NAN
+					Tag = GAA
+					Tag = GUM
+					Tag = SHY		
+				}				
+			}
+			every_tribal_land_province = {
+				limit = { 
+					NOT = { 
+						owner = { 
+							exists = yes 
+						} 
+					} 
+				}
+				settle_province = ROOT
+			}
+			change_government = tribal
+			add_government_reform = tribal_kingdom_reform
+			change_government_reform_progress = 2000
+			add_country_modifier = {
+				name = "yue_liumin_modifier" 
+				duration = 18250
+			}
+			custom_tooltip = baiyuezhimengtt
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = YYG
+			}
+			create_alliance = YYG
+		    add_historical_friend = YYG
+		    remove_rival = YYG
+		    add_trust = {
+				who = YYG
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = NAN
+			}
+			create_alliance = NAN
+		    add_historical_friend = NAN
+		    remove_rival = NAN
+		    add_trust = {
+				who = NAN
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = GAA
+			}
+			create_alliance = GAA
+		    add_historical_friend = GAA
+		    remove_rival = GAA
+		    add_trust = {
+				who = GAA
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = GUM
+			}
+			create_alliance = GUM
+		    add_historical_friend = GUM
+		    remove_rival = GUM
+		    add_trust = {
+				who = GUM
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = SHY
+			}
+			create_alliance = SHY
+		    add_historical_friend = SHY
+		    remove_rival = SHY
+		    add_trust = {
+				who = SHY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = OUY
+			}
+			create_alliance = OUY
+		    add_historical_friend = OUY
+		    remove_rival = OUY
+		    add_trust = {
+				who = OUY
+				value = 5
+                mutual = yes
+            }
+		}
+		if = {
+			limit = {
+				exists = MNY
+			}
+			create_alliance = MNY
+		    add_historical_friend = MNY
+		    remove_rival = MNY
+		    add_trust = {
+				who = MNY
+				value = 5
+                mutual = yes
+            }
+		}
+	}
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#ä¸çå²­å
+
+
+#ä¸çå²­åæ¶å¤±
+
+
+#çæå²­å
+
+
+#åå¹³ç¶ææ¸é¤æ è¯
+
+
+#å¤ºèµ°è¶çå¾è·µå
+country_event = {
+	id = Wuu_event.12577
+	title = Wuu_event.12577.t
+	desc = Wuu_event.12577.d
+	picture = military_parade
+	
+	is_triggered_only = yes
+	
+	trigger = {
+	    capital_scope = { continent = china }
+		FROM = {
+			has_province_modifier = yue_goujianjian_modifier
+			NOT = { owned_by = ROOT }
+			NOT = {
+				owner = {
+					OR = {
+						is_in_war = {
+							defenders = PREV
+							defenders = ROOT
+						}
+						is_in_war = {
+							attackers = PREV
+							attackers = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			FROM = {
+				save_global_event_target_as = tripitaka_yue_province
+				if = {
+					limit = { has_province_modifier = yue_goujianjian_modifier }
+					
+				}
+				owner = {
+					save_event_target_as = tripitaka_yue_og_owner
+				}
+			}
+		}
+	}
+	
+	#Steal it
+	option = {
+		name = Wuu_event.12577.a
+		trigger = {
+			
+		}
+		add_prestige = 10
+		hidden_effect = {
+			FROM = {
+				owner = {
+					country_event = {
+						id = Wuu_event.22577
+					}
+				}
+			}
+		}
+		custom_tooltip = tripitaka_yue_tt.1
+		capital_scope = {
+			add_permanent_province_modifier = {
+				name = yue_goujianjian_modifier
+				duration = -1
+			}
+		}
+		hidden_effect = {
+			event_target:tripitaka_yue_province = {
+				remove_province_modifier = yue_goujianjian_modifier
+			}
+		}
+		event_target:tripitaka_yue_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = yue_missionevent_goujianjian_opinion
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+
+	#Burn it down!
+	option = {
+		name = Wuu_event.12577.b
+		add_mil_power = 500
+		custom_tooltip = tripitaka_yue_tt.2
+		hidden_effect = {
+			event_target:tripitaka_wuu_province = {
+				remove_province_modifier = yue_goujianjian_modifier
+			}
+		}
+		event_target:tripitaka_yue_og_owner = {
+			add_opinion = {
+				who = ROOT
+				modifier = yue_missionevent_goujianjianshao_opinion
+			}
+		}
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+
+	#Spare it down!
+	option = {
+		name = Wuu_event.12577.c
+		add_prestige = 10
+
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#è¶çå¾è·µåè¢«å¤º
+country_event = {
+	id = Wuu_event.22577
+	title = Wuu_event.22577.t
+	desc = Wuu_event.22577.d
+	picture = plundering
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = Wuu_event.22577.2.a
+		custom_tooltip = tripitaka_yue_tt.4
+		add_prestige = -20
+		add_legitimacy = -10
+	}
+	
+	after = {
+		clear_global_event_target = tripitaka_yue_province
+	}
+}
+
+
+
+#éåº¸äºä»¶
+country_event = {
+	id = Wuu_event.001
+	title = "Shijian.9074.t"
+	desc = "Shijian.9074.d"
+	picture = plundering
+	
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		FROM = {
+			vassalize = ROOT
+		}
+	}
+	
+	option = {
+		name = Wuu_event.001.2.a
+	}
+	
+}
