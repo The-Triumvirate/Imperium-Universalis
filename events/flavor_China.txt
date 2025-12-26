@@ -362,24 +362,11 @@ country_event = {
 	picture = plundering
 	is_triggered_only = yes
 	fire_only_once = yes
-
-	trigger = {
-		tag = ZHO
-		owns = 4189
-		owns = 4193
-		is_at_war = no
-		NOT = {
-			hre_reform_passed = emperor_reichskrieg
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 2
-	}
-
+	
+	#todo: add great projects here 
 	option = {
 		name = "china.12.a"
-		add_prestige = 50
+		add_prestige = 25
 		add_adm_power = 100
 		add_stability = 1
 		set_capital = 4189
@@ -393,7 +380,7 @@ country_event = {
 	}
 	option = {
 		name = "china.12.b"
-		add_prestige = 50
+		add_prestige = 25
 		add_splendor = 100
 		add_stability = 1
 		set_capital = 4193
@@ -407,8 +394,8 @@ country_event = {
 	}
 	option = {
 		name = "china.12.c"
-		add_prestige = 50
-		add_war_exhaustion = -2
+		add_prestige = 25
+		add_war_exhaustion = -4
 		add_stability = 2
 		4193 = {
 			change_religion = chinese_religion
@@ -1882,82 +1869,6 @@ country_event = {
 }
 
 ########################################################################################
-# no more liyuebadao nations left (for emperor)
-########################################################################################
-country_event = {
-	id = china.43
-	title = "china.43.t"
-	desc = "china.43.d"
-	fire_only_once = yes
-	picture = navy
-	is_triggered_only = yes
-
-	option = {
-		name = "china.43.a"
-		add_mil_power = 200
-		add_prestige = 20
-		add_country_modifier = {
-			name = china_no_more_liyuebadao
-			duration = 3650
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-}
-
-########################################################################################
-# no more liyuebadao nations left
-########################################################################################
-country_event = {
-	id = china.42
-	title = "china.42.t"
-	desc = "china.42.d"
-	fire_only_once = yes
-	major = yes
-	picture = navy
-
-	trigger = {
-		tag = ZHO
-		NOT = {
-			has_global_flag = zhanguokaishi
-		}
-		NOT = {
-			calc_true_if = {
-				all_known_country = {
-					religion = liyuebadao
-					capital_scope = {
-						continent = china
-					}
-				}
-				amount = 1
-			}
-		}
-	}
-
-
-	mean_time_to_happen = {
-		months = 4
-	}
-
-	option = {
-		name = "china.42.a"
-		add_mil_power = 100
-		add_prestige = 10
-		add_country_modifier = {
-			name = china_no_more_liyuebadao
-			duration = 3650
-		}
-		emperor = {
-			country_event = { id = china.43 }
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-}
-
-########################################################################################
 # looting of Chengzhou
 ########################################################################################
 country_event = {
@@ -3158,22 +3069,54 @@ country_event = {
 	trigger = {
 		has_dlc = "Emperor"
 		is_papal_controller = yes
-		tag = ZHO
+		OR = {
+			is_papal_controller = yes
+			mission_completed = zho_4_tianwangzhixue
+		}
 		ai = yes
-		curia_treasury_size = 1500
-		reform_desire = 0.15
-		is_council_enabled = no
-		is_all_concessions_in_council_taken = no
+		curia_treasury_size = 1200
 	}
 
 	mean_time_to_happen = {
-		months = 50
+		months = 12
 	}
 
 	option = {
 		name = "china.66.a"
 		add_curia_treasury = -1000
-		add_reform_desire = -0.05
+		if = {
+			limit = {
+				mission_completed = zho_4_tianwangzhixue
+			}
+			add_adm_power = 60
+			add_dip_power = 60
+			add_mil_power = 60
+			hidden_effect = {
+				every_known_country = {
+					limit = {
+						religion = chinese_religion
+					}
+					add_adm_power = 15
+					add_dip_power = 15
+					add_mil_power = 15
+				}
+			}
+		}
+		else = {
+			add_adm_power = 20
+			add_dip_power = 20
+			add_mil_power = 20
+			hidden_effect = {
+				every_known_country = {
+					limit = {
+						religion = chinese_religion
+					}
+					add_adm_power = 5
+					add_dip_power = 5
+					add_mil_power = 5
+				}
+			}
+		}
 	}
 }
 
@@ -3614,17 +3557,11 @@ country_event = {
 		OR = {
 			AND = {
 				reform_desire = 1
-				ZHO = {
-					is_emperor = no
-				}
 				is_council_enabled = no
 				is_all_concessions_in_council_taken = no
 			}
 			AND = {
 				hre_reform_passed = emperor_erbkaisertum
-				ZHO = {
-					is_emperor = no
-				}
 				is_council_enabled = no
 				is_all_concessions_in_council_taken = no
 			}
@@ -7887,9 +7824,10 @@ country_event = {
 	picture = ruler
 
 	trigger = {
-		is_council_enabled = yes
-		tag = ZHO
-		is_emperor = yes
+		always = no
+		#is_council_enabled = yes
+		#tag = ZHO
+		#is_emperor = yes
 	}
 
 	option = {
@@ -13574,4 +13512,115 @@ country_event = {
 		
 	}
 
+}
+
+########################################################################################
+# zhou MT - release guo
+########################################################################################
+country_event = {
+	id = china.227
+	title = "china.227.t"
+	desc = "china.227.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.227.a"
+		4348 = {
+			owner = {
+				release = GUO
+			}
+		}
+		create_vassal = GUO
+		add_historical_friend = GUO
+		GUO = { add_historical_friend = ZHO } 
+		add_trust = {
+			who = GUO
+			value = 100
+			mutual = yes
+		}
+	}
+	option = {
+		name = "china.227.b"
+		trigger = { ai = no }
+	}
+}
+
+########################################################################################
+# zhou MT - release yuan
+########################################################################################
+country_event = {
+	id = china.228
+	title = "china.228.t"
+	desc = "china.228.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.228.a"
+		4126 = {
+			owner = {
+				release = YUA
+			}
+		}
+		create_vassal = YUA
+		add_historical_friend = YUA
+		YUA = { add_historical_friend = ZHO } 
+		add_trust = {
+			who = YUA
+			value = 100
+			mutual = yes
+		}
+	}
+	option = {
+		name = "china.227.b"
+		trigger = { ai = no }
+	}
+}
+
+########################################################################################
+# zhou MT - make trib
+########################################################################################
+country_event = {
+	id = china.229
+	title = "china.229.t"
+	desc = "china.229.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.229.a"
+		FROM = {
+			create_subject = {
+				subject_type = tributary_state
+				subject = ROOT
+			}
+		}
+	}
+	option = {
+		name = "china.229.b"
+		trigger = { ai = no }
+	}
+}
+
+########################################################################################
+# zhou MT - make vassal
+########################################################################################
+country_event = {
+	id = china.230
+	title = "china.230.t"
+	desc = "china.230.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.230.a"
+		FROM = {
+			vassalize = ROOT
+		}
+	}
+	option = {
+		name = "china.230.b"
+		trigger = { ai = no }
+	}
 }

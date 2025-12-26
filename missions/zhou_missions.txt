@@ -2,177 +2,249 @@ zho_slot_1 = {
 	slot = 1
 	generic = no
 	ai = yes
-	potential = {
-		OR = {
-			tag = ZHO
-		}
-	}
 	has_country_shield = yes
-	#祭祀嵩岳
+	potential = { OR = { tag = ZHO }  } 
+
 	zho_1_jisisongyue = {
-		#position = 1
 		icon = missions_china_priest
-		#completed_by = 250.1.1
-		required_missions = {
-			
-		}
-		provinces_to_highlight = {
-			province_id = 4349
-		}
+		position = 1
+		provinces_to_highlight = { province_id = 4349 } 
+
 		trigger = {
 			owns_core_province = 4349
-			4349 = { 
-				has_temple_building = yes
-			}
+			4349 = { has_temple_building = yes } 
 			treasury = 500
 		}
+
 		effect = {
 			add_country_modifier = {
-				name = zho_1_jisisongyue_mod
-				duration = -1
+				name = "zho_1_jisisongyue_mod"
+				duration = 3650
 			}
 		}
 	}
-	#大兴农事
+
 	zho_1_daxingnongshi = {
-		#position = 2
 		icon = missions_china_agriculture
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_1_jisisongyue
-		}
-		provinces_to_highlight = {
-			
-		}
+		position = 2
+		required_missions = { zho_1_jisisongyue } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
 			calc_true_if = {
-				all_owned_province = {
-					has_land_reclamation_modifier_trigger = yes
-				}
-				amount = 4
+				all_owned_province = { has_land_reclamation_modifier_trigger = yes } 
+				amount = 3
 			}
 		}
+
 		effect = {
 			every_owned_province = {
-				limit = {
-					is_state = yes
-				}
+				limit = { is_state = yes } 
 				add_base_manpower = 1
 			}
 		}
 	}
-	#山泽半利
+
 	zho_1_shanzebanli = {
-		#position = 3
 		icon = missions_china_commercial
-		required_missions ={
-			zho_1_daxingnongshi
-		}
-		provinces_to_highlight = {
-		    
-		}
+		position = 5
+		required_missions = { zho_1_daxingnongshi } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
 			calc_true_if = {
-				all_owned_province = {
-					has_production_building = yes
+				any_owned_province = {
+					OR = {
+						has_building = small_market
+						has_building = medium_market
+						has_building = great_market
+					}
 				}
-				amount = 4
+				amount = 3
 			}
-			
 		}
+
 		effect = {
 			add_country_modifier = {
-				name = "zho_1_shanzebanli_mod"#贸易收入+
-				duration = -1
+				name = "zho_1_shanzebanli_mod"
+				duration = 3650
 			}
 		}
 	}
-	
-	
-	#再册虢公
-	zho_1_zaiceguogong = {
-		position = 6
-		icon = missions_china_scroll
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_3_zhoumingweixin
-		}
-		provinces_to_highlight = {
-			province_id = 4348
-		}
-		trigger = {
-			4348 = { controlled_by = ZHO }
-			NOT = {
-				exists = GUO
-			}
-		}
-		effect = {
-			4348 = {
-				cede_province = GUO
-				add_core = GUO
-				change_controller = GUO
-			}
-			create_alliance = GUO
-			create_vassal = GUO
-			add_historical_friend = GUO
-			GUO = {
-				add_historical_friend = ZHO
-			}
-			add_trust = {
-				who = GUO
-				value = 100
-				mutual = yes
-			}
-			add_favors = {
-				who = GUO
-				amount = 25
-			}
-		}
-	}
-	
-	#返回宗周
+
 	zho_1_fanhuizongzhou = {
-		position = 7
 		icon = missions_china_army
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_1_zaiceguogong
-		}
+		position = 7
+		required_missions = { zho_1_zaiceguogong } 
 		provinces_to_highlight = {
 			OR = {
-				province_id = 4189 #镐京
-				province_id = 4193 #丰京
+				province_id = 4189
+				province_id = 4193
 			}
-			
 		}
+
 		trigger = {
 			owns_core_province = 4189
 			owns_core_province = 4193
 			is_at_war = no
-			NOT = { hre_reform_passed = emperor_reichskrieg }
 		}
+
 		effect = {
-			country_event = { id = china.12  }
-			4189 = {
-				change_religion = chinese_religion
-			}
-			4193 = {
-				change_religion = chinese_religion
-			}
+			country_event = { id = china.12 } 
+			4189 = { change_religion = chinese_religion } 
+			4193 = { change_religion = chinese_religion } 
 		}
 	}
-	
-	#西游旷野
-	zho_1_xiyoukuangye = {
+
+	zho_1_build_up_guanzhong = {
+		icon = missions_china_prosperous
 		position = 8
+		required_missions = { zho_1_fanhuizongzhou } 
+		provinces_to_highlight = { 
+			OR = {
+				area = jingzhao_area
+				area = west_pingyi_area
+				area = fufeng_area_eastern
+				area = fufeng_area
+			}
+		} 
+
+		trigger = { 
+			jingzhao_area = {
+				type = all
+				owned_by = ROOT
+			}
+			west_pingyi_area = {
+				type = all
+				owned_by = ROOT
+			}
+			fufeng_area_eastern = {
+				type = all
+				owned_by = ROOT
+			}
+			fufeng_area = {
+				type = all
+				owned_by = ROOT
+			}
+			all_owned_province = {
+				OR = {
+					AND = {
+						OR = {
+							area = jingzhao_area
+							area = west_pingyi_area
+							area = fufeng_area_eastern
+							area = fufeng_area
+						}
+						NOT = {
+							devastation = 1
+						}
+						NOT = {
+							unrest = 5
+						}
+						NOT = {
+							local_autonomy = 30
+						}
+					}
+					AND = {
+						NOT = {
+							area = jingzhao_area
+						}
+						NOT = {
+							area = west_pingyi_area
+						}
+						NOT = {
+							area = fufeng_area_eastern
+						}
+						NOT = {
+							area = fufeng_area
+						}
+					}
+				}
+			}
+		} 
+
+		effect = {
+			add_treasury = 250
+			every_owned_province = {
+				limit = {
+					OR = {
+						area = jingzhao_area
+						area = west_pingyi_area
+						area = fufeng_area_eastern
+						area = fufeng_area
+					}
+				}
+				add_province_modifier = { 
+					name = zhou_mission_rebuilding_gz
+					duration = 7300
+				}
+			}
+		} 
+	}
+
+	zho_1_rong_revenge = {
+		icon = missions_china_nomad
+		position = 9
+		required_missions = { zho_1_build_up_guanzhong } 
+		provinces_to_highlight = { 
+			NOT = {
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			OR = {
+				area = beidi_area
+				area = anding_area_western
+				area = east_pingyi_area_northern
+				area = anding_area
+				area = west_pingyi_area_western
+			}
+		} 
+
+		trigger = { 
+			beidi_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			anding_area_western = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			east_pingyi_area_northern = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			anding_area = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+			west_pingyi_area_western = {
+				type = all
+				country_or_non_sovereign_subject_holds = ROOT
+			}
+		} 
+
+		effect = { 
+			custom_tooltip = zho_1_rong_claims_tt
+			hidden_effect = {
+				every_province = {
+					limit = {
+						NOT = { country_or_non_sovereign_subject_holds = ROOT }
+						OR = {
+							region = shuofang_china
+							region = liangzhou_china
+						}
+					}
+					add_permanent_claim = ROOT
+				}
+			}
+		} 
+	}
+	
+	zho_1_xiyoukuangye = {
 		icon = missions_china_vicyory
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_1_fanhuizongzhou
-		}
-		provinces_to_highlight = {
-			region = tarim_basin_region
-		}
+		position = 11
+		required_missions = { zho_1_rong_revenge } 
+		provinces_to_highlight = { region = tarim_basin_region } 
+
 		trigger = {
 			tarim_basin_region = {
 				num_of_units_in_province = {
@@ -181,257 +253,318 @@ zho_slot_1 = {
 				}
 			}
 		}
+
 		effect = {
 			custom_tooltip = zho_1_xiyoukuangye.tt
 			hidden_effect = {
 				every_known_country = {
 					limit = {
-						capital_scope = {
-							OR = {
-								region = tarim_basin_region
-							}
-						}
+						capital_scope = { region = tarim_basin_region  } 
 						is_subject = no
 					}
-					country_event = { id = Wuu_event.001 }
+					country_event = { id = china.229 } 
 				}
 			}
 		}
-	}	
+	}
 }
 zho_slot_2 = {
 	slot = 2
 	generic = no
 	ai = yes
-	potential = {
-		OR = {
-			tag = ZHO
-		}
-	}
 	has_country_shield = yes
-	#操练新军
+	potential = { OR = { tag = ZHO }  } 
+
 	zho_2_caolianxinjun = {
-		position = 3
 		icon = missions_china_army
-		#completed_by = 190.1.1
-		required_missions = {  zho_1_daxingnongshi }
-		provinces_to_highlight = {
-			
-		}
+		position = 3
+		required_missions = { zho_1_daxingnongshi } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
 			army_size_percentage = 1
-			army_professionalism = 0.2
+			army_professionalism = 0.15
 		}
+
 		effect = {
 			add_country_modifier = {
-				name = zho_2_caolianxinjun_mod #增加陆军上限
-				duration = -1
+				name = "zho_2_caolianxinjun_mod"
+				duration = 3650
 			}
 		}
 	}
-	
-	#建设烽火
+
 	zho_2_jianshefenghuo = {
-		#position = 2
-		icon = missions_china_manufacturer
-		#completed_by = 190.1.1
-		required_missions = { zho_2_caolianxinjun  }
-		provinces_to_highlight = {
-			
-		}
+		icon = mission_lb1_fortress
+		position = 4
+		required_missions = { zho_2_caolianxinjun } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
 			calc_true_if = {
-				all_owned_province = {
-					has_fort_trigger = yes
-				}
-				amount = 4
+				all_owned_province = { has_fort_trigger = yes } 
+				amount = 3
 			}
 		}
+
 		effect = {
 			add_country_modifier = {
-				name = "zho_2_jianshefenghuo_mod" #陆军传统衰减
-				duration = -1
+				name = "zho_2_jianshefenghuo_mod"
+				duration = 3650
 			}
 		}
 	}
-	
-	#南征抵楚
-	zho_2_nanzhengdichu = {
-		position = 6
-		icon = missions_china_dashing
-		#completed_by = 190.1.1
-		required_missions = { zho_sunwujungai  }
-		provinces_to_highlight = {
-			
-		}
-		trigger = {
-			OR = {
-				NOT = {
-					exists = CHU
-				}
-				CHU = {
-					is_subject_of = ZHO
-				}
-			}
-		}
-		effect = {
-			custom_tooltip = zho_2_nanzhengdichu.tt
-			hidden_effect = {
-				every_known_country = {
-					limit = {
-						capital_scope = {
-							OR = {
-								region = jingzhou_china
-							}
-						}
-						is_subject = no
-					}
-					country_event = { id = Wuu_event.001 }
-				}
-			}
-		}
-	}
-	
-	#越裳来贡
-	zho_2_yueshanglaigong = {
-		#position = 4
-		icon = missions_china_diplomacy
-		#completed_by = 190.1.1
-		required_missions = { zho_2_nanzhengdichu  }
-		provinces_to_highlight = {
-			region = lacviet_region 
-		}
-		trigger = {
-			lacviet_region = {
-				num_of_units_in_province = {
-					who = ZHO
-					amount = 100
-				}
-			}
-		}
-		effect = {
-			custom_tooltip = zho_2_yueshanglaigong.tt
-		    hidden_effect = {
-				every_known_country = {
-					limit = {
-						capital_scope = {
-							OR = {
-								region = jiao_china
-								region = lacviet_region
-							}
-						}
-						is_subject = no
-					}
-					country_event = { id = Wuu_event.001 }
-				}
-			}
-		}
-	}
-	#王霸兼之
-	zho_2_wangbajianzhi = {
-		#position = 5
-		icon = missions_china_bureaucrat
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_1_fanhuizongzhou
-			zho_2_yueshanglaigong
-			zho_3_chongciqilv
-		}
-		provinces_to_highlight = {
-			
-		}
-		trigger = {
-			OR = {
-				AND = {
-					hre_size = 1
-					is_emperor = yes
-				}
-				AND = {
-					NOT = {
-						hre_size = 1
-					}
-					custom_trigger_tooltip = {
-						tooltip = subject_all_chinese_religions
-						has_country_flag = can_bazhu
-					}
-				}
-			}
 
+	zho_1_zaiceguogong = {
+		icon = missions_china_scroll
+		position = 6
+		required_missions = { zho_3_zhoumingweixin } 
+		provinces_to_highlight = { province_id = 4348 } 
+
+		trigger = {
+			OR = {
+				AND = {
+					4348 = { controlled_by = ZHO } 
+					NOT = { exists = GUO } 
+				}
+				4348 = {
+					owner = {
+						NOT = { tag = GUO }
+						owes_favors = { 
+								 who = ROOT 
+								 value = 25
+						}
+						has_opinion = {
+							who = ROOT
+							value = 190
+						}
+						num_of_cities = 5
+					}
+				}
+				AND = {
+					exists = GUO
+					GUO = {
+						owns = 4348
+						vassal_of = ROOT
+					}
+				}
+			}
 		}
+
 		effect = {
 			if = {
 				limit = {
-					hre_size = 1
+					NOT = {
+						exists = GUO
+					}
 				}
-				add_imperial_influence = 100
+				country_event = { id = china.227 }
 			}
 			else = {
-				change_mil = 1
+				add_prestige = 10
 			}
 		}
 	}
 	
-}
+	zho_2_restore_yuangong = {
+		icon = missions_china_alliance
+		position = 7
+		required_missions = { zho_1_zaiceguogong } 
+		provinces_to_highlight = { province_id = 4126 } 
 
+		trigger = {
+			OR = {
+				AND = {
+					4126 = { controlled_by = ZHO } 
+					NOT = { exists = YUA } 
+				}
+				4126 = {
+					owner = {
+						NOT = { tag = YUA }
+						owes_favors = { 
+							who = ROOT 
+							value = 25
+						}
+						has_opinion = {
+							who = ROOT
+							value = 190
+						}
+						num_of_cities = 3
+					}
+				}
+				AND = {
+					exists = YUA
+					YUA = {
+						owns = 4126
+						vassal_of = ROOT
+					}
+				}
+			}
+		}
+
+		effect = {
+			if = {
+				limit = {
+					NOT = {
+						exists = YUA
+					}
+				}
+				country_event = { id = china.228 }
+			}
+			else = {
+				add_prestige = 10
+			}
+		}
+	}
+
+	zho_2_ensure_shenshou = {
+		icon = missions_china_temple
+		position = 8
+		required_missions = { zho_2_restore_yuangong zho_3_become_bazhu } 
+		provinces_to_highlight = {  } 
+
+		trigger = { 
+			calc_true_if = {
+				all_known_country = {
+					has_reform = free_city
+				}
+				amount = 9
+			}
+		} 
+
+		effect = { 
+			add_country_modifier = {
+				name = zho_2_ensure_shenshou_mod
+				duration = 3650
+			}
+		} 
+	}
+
+	zho_2_restore_fengjian = {
+		icon = missions_china_priest
+		position = 10
+		required_missions = {
+			zho_2_ensure_shenshou
+			zho_1_rong_revenge
+		}
+		provinces_to_highlight = {  } 
+
+		trigger = { 
+			hre_reform_passed = emperor_reichskrieg
+			is_emperor = yes
+		} 
+
+		effect = {
+			change_dip = 2
+			change_adm = 2
+			add_imperial_influence = 100
+			add_country_modifier = {
+				name = zho_2_forever_fengjian
+				duration = -1
+			}
+		} 
+	}
+}
 zho_slot_3 = {
 	slot = 3
 	generic = no
 	ai = yes
-	potential = {
-		OR = {
-			tag = ZHO
-		}
-		
-	}
 	has_country_shield = yes
-	
-	#天王恩宠
-	zho_3_tianwangenchong = {
-		#position = 2
-		icon = missions_china_alliance
-		#completed_by = 190.1.1
-		required_missions = {  }
-		provinces_to_highlight = {
-			
-		}
+	potential = { OR = { tag = ZHO }  } 
+
+	zho_3_gather_wise_men = {
+		icon = missions_china_learning
+		position = 1
+		provinces_to_highlight = {  } 
+
 		trigger = {
-			curia_treasury_size = 1000
+			custom_trigger_tooltip = {
+				tooltip = zhou_advisor_needed_tooltip
+				employed_advisor = {
+					category = ADM
+					skill = 2
+				}
+				employed_advisor = {
+					category = DIP
+					skill = 2
+				}
+				employed_advisor = {
+					category = MIL
+					skill = 2
+				}
+			}
 		}
+
 		effect = {
-			custom_tooltip = zho_3_tianwangenchong_tt
-			set_country_flag = zho_3_tianwangenchong_tt
-			add_curia_treasury = -500
+			add_adm_power = 50
+			add_dip_power = 50
+			add_mil_power = 50
+			add_country_modifier = {
+				name = zho_3_gather_wise_men_mod
+				duration = 3650
+			}
 		}
 	}
-	
-	#天王法度
-	zho_3_tianwangfadu = {
-		#position = 3
-		icon = missions_china_alliance
-		#completed_by = 190.1.1
-		required_missions = { zho_3_tianwangenchong }
-		provinces_to_highlight = {
-			
-		}
+
+	zho_3_tianwangenchong = {
+		icon = missions_china_scroll
+		position = 3
+		required_missions = { zho_3_gather_wise_men } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
-			curia_treasury_size = 1500
+			is_at_war = no
+			stability = 2
+			OR = {
+				YLR = { exists = no } 
+				has_won_war_against = {
+					who = YLR
+					max_years_since = 5
+				}
+			}
 		}
+
+		effect = {
+			add_country_modifier = {
+				name = "zho_3_reasserting_authority_mod"
+				duration = 3650
+			}
+		}
+	}
+
+	zho_3_tianwangfadu = {
+		icon = missions_china_diplomacy
+		position = 4
+		required_missions = { zho_3_tianwangenchong } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			is_at_war = no
+			prestige = 50
+			legitimacy = 95
+			emperor = {
+				has_opinion = {
+					who = ROOT
+					value = 175
+				}
+			}
+		}
+
 		effect = {
 			custom_tooltip = zho_3_tianwangfadu_tt
 			set_country_flag = zho_3_tianwangfadu_tt
-			add_curia_treasury = -750
 		}
 	}
-	
-	#周命维新
+
 	zho_3_zhoumingweixin = {
-		position = 5
 		icon = missions_china_great
-		#completed_by = 190.1.1
-		required_missions = { zho_2_jianshefenghuo zho_3_tianwangfadu  }
-		provinces_to_highlight = {
-			
+		position = 5
+		required_missions = {
+			zho_2_jianshefenghuo
+			zho_3_tianwangfadu
 		}
+		provinces_to_highlight = {  } 
+
 		trigger = {
 			OR = {
 				AND = {
@@ -441,143 +574,218 @@ zho_slot_3 = {
 				}
 				AND = {
 					prestige = 100
+					stability = 3
 					adm = 3
 					dip = 3
 					mil = 3
 				}
-			}		
+			}
 		}
+
 		effect = {
-			remove_government_reform = free_city
+			remove_government_reform = free_city_zhou
 			add_government_reform = chinese_feudalism_reform
 			set_country_flag = Zhou_LiNian
 			change_government_reform_progress = 500
-			country_event = {
-				id = new_ideas.1
-			}
+			country_event = { id = new_ideas.1 } 
 			add_country_modifier = {
-				name = zho_3_zhoumingweixin_mod #外交上限+99
-				duration = -1
+				name = "zho_3_zhoumingweixin_mod"
+				duration = 3650
 			}
 		}
 	}
-	#周王东征
-	zho_3_zhouwangdongzheng = {
-		#position = 5
+
+	zho_2_nanzhengdichu = {
+		icon = missions_china_dashing
+		position = 6
+		required_missions = { zho_3_zhoumingweixin } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			OR = {
+				NOT = { exists = CHU } 
+				CHU = { is_subject_of = ZHO } 
+			}
+		}
+
+		effect = {
+			add_country_modifier = {
+				name = zho_2_chu_submission
+				duration = 3650
+			}
+		}
+	}
+
+	zho_3_become_bazhu = {
+		icon = missions_china_scroll
+		position = 7
+		required_missions = { zho_2_nanzhengdichu } 
+		provinces_to_highlight = {  } 
+
+		trigger = { 
+			is_emperor = yes
+		} 
+
+		effect = { 
+			add_splendor = 100
+			add_imperial_influence = 10
+			
+		} 
+	}
+
+	zho_2_wangbajianzhi = {
+		icon = missions_china_manufacturer
+		position = 9
+		required_missions = { zho_3_become_bazhu } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			custom_trigger_tooltip = {
+				tooltip = zho_2_wangbajianzhi_trigger_tt
+				NOT = {
+					calc_true_if = {
+						all_known_country = {
+							religion = liyuebadao
+							capital_scope = {
+								continent = china
+							}
+						}
+						amount = 1
+					}
+				}
+			}
+		}
+
+		effect = {
+			if = {
+				limit = { hre_size = 1 } 
+				add_imperial_influence = 25
+				add_prestige = 10
+			}
+			else = { 
+				change_mil = 1
+				add_prestige = 25
+			} 
+		}
+	}
+}
+zho_slot_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = { OR = { tag = ZHO }  } 
+
+	zho_4_tianwangzhanling = {
 		icon = missions_china_army
-		#completed_by = 190.1.1
-		required_missions = { zho_3_zhoumingweixin }
-		provinces_to_highlight = {
-			
-		}
+		position = 4
+		required_missions = { zho_3_tianwangenchong } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
+			ZHO = { tolerance_to_this = 2 } 
+			total_number_of_cardinals = 25
+		}
+
+		effect = {
+			custom_tooltip = zho_4_tianwangzhanling_tt
+			set_country_flag = zho_4_tianwangzhanling_tt
+		}
+	}
+
+	zho_3_zhouwangdongzheng = {
+		icon = missions_china_army
+		position = 6
+		required_missions = { zho_3_zhoumingweixin } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			NOT = { hre_reform_passed = emperor_reichskrieg }
 			OR = {
-				NOT = {
-					exists = JIN
-				}
-				JIN = {
-					is_subject_of = ZHO
-				}
+				NOT = { exists = ZHE } 
+				ZHE = { is_subject_of = ZHO } 
 			}
 			OR = {
-				NOT = {
-					exists = ZHE
-				}
-				ZHE = {
-					is_subject_of = ZHO
-				}
+				NOT = { exists = WEY } 
+				WEY = { is_subject_of = ZHO } 
 			}
 			OR = {
-				NOT = {
-					exists = WEY
-				}
-				WEY = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = SON
-				}
-				SON = {
-					is_subject_of = ZHO
-				}
+				NOT = { exists = SON } 
+				SON = { is_subject_of = ZHO } 
 			}
 		}
+
 		effect = {
 			if = {
-				limit = {
-					exists = CHN
-				}
-				create_vassal = CHN
+				limit = { 
+					exists = CHN 
+					CHN = {
+						is_subject = no
+					}
+				} 
+				vassalize = CHN
 			}
 			if = {
-				limit = {
-					exists = CAI
-				}
-				create_vassal = CAI
+				limit = { 
+					exists = CAI 
+					CAI = {
+						is_subject = no
+					}
+				} 
+				vassalize = CAI
 			}
 			add_country_modifier = {
-				name = "zho_3_zhouwangdongzheng_modifier"#外交威望+2，同大陆附庸独立欲望-25%
-				duration = -1
+				name = "zho_3_zhouwangdongzheng_modifier"
+				duration = 3650
 			}
 		}
 	}
-	#重赐齐履
+
 	zho_3_chongciqilv = {
-		#position = 6
 		icon = missions_china_diplomacy
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_3_zhouwangdongzheng
-		}
-		provinces_to_highlight = {
-			
-		}
+		position = 7
+		required_missions = { zho_3_zhouwangdongzheng } 
+		provinces_to_highlight = {  } 
+
 		trigger = {
-		    OR = {
-				NOT = {
-					exists = QII
-				}
-				QII = {
-					is_subject_of = ZHO
-				}
+			NOT = { hre_reform_passed = emperor_reichskrieg }
+			OR = {
+				NOT = { exists = QII } 
+				QII = { is_subject_of = ZHO } 
 			}
 			OR = {
-				NOT = {
-					exists = YAN
-				}
-				YAN = {
-					is_subject_of = ZHO
-				}
+				NOT = { exists = YAN } 
+				YAN = { is_subject_of = ZHO } 
 			}
 			OR = {
-				NOT = {
-					exists = LUU
-				}
-				LUU = {
-					is_subject_of = ZHO
-				}
+				NOT = { exists = LUU } 
+				LUU = { is_subject_of = ZHO } 
 			}
 		}
+
 		effect = {
-			add_country_modifier = {
-				name = "zho_3_chongciqilv_modifier"#外交威望+2，同大陆附庸独立欲望-25%
-				duration = -1
+			custom_tooltip = zho_3_qingyou_claims_tt
+			hidden_effect = {
+				every_province = {
+					limit = {
+						NOT = { country_or_non_sovereign_subject_holds = ROOT }
+						OR = {
+							region = youzhou_china
+							region = qingzhou_china
+						}
+					}
+					add_permanent_claim = ROOT
+				}
 			}
 		}
 	}
-	#肃慎贡箭
+
 	zho_3_sushengongjian = {
-		#position = 7
 		icon = missions_china_camp
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_3_chongciqilv
-		}
-		provinces_to_highlight = {
-			region = lacviet_region 
-		}
+		position = 8
+		required_missions = { zho_3_chongciqilv } 
+		provinces_to_highlight = { region = sushen_region } 
+
 		trigger = {
 			sushen_region = {
 				num_of_units_in_province = {
@@ -586,213 +794,262 @@ zho_slot_3 = {
 				}
 			}
 		}
+
 		effect = {
-			custom_tooltip = zho_3_sushengongjian.tt
+			if = {
+				limit = {
+					exists = SSH
+					SSH = {
+						is_subject = no
+					}
+				}
+				create_subject = {
+					subject_type = tributary_state
+					subject = SSH
+				}
+			}
+			add_country_modifier = {
+				name = zho_3_sushen_tribute_mod
+				duration = -1
+			}
+		}
+	}
+	
+	zho_3_shimaiqibang = {
+		icon = missions_china_horseman
+		position = 10
+		required_missions = {
+			zho_2_yueshanglaigong
+			zho_3_sushengongjian
+		}
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			NOT = { hre_reform_passed = emperor_reichskrieg }
+			all_known_country = {
+				OR = {
+					NOT = { capital_scope = { continent = china } }
+					is_subject_of = ZHO
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = zhuxiatouxian_di
+			set_emperor_of_china = ROOT
+			change_mil = 2
+		}
+	}
+}
+zho_slot_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	has_country_shield = yes
+	potential = { OR = { tag = ZHO }  } 
+	
+	zho_5_improve_chengzhou = {
+		icon = missions_china_road
+		position = 2
+		provinces_to_highlight = {  } 
+
+		trigger = { 
+			owns = 4349
+			4349 = {
+				has_great_project = {
+					tier = 2
+					type = chengzhou_city_gp
+				}
+				OR = {
+					has_building = small_market
+					has_building = medium_market
+					has_building = great_market
+				}
+				OR = {
+					has_building = gravel_road
+					has_building = paved_road
+					has_building = imperial_road
+				}
+				OR = {
+					has_building = shrine
+					has_building = small_temple
+					has_building = great_temple
+				}
+				OR = {
+					has_building = small_townhall
+					has_building = big_townhall
+					has_building = government_palace
+					has_building = government_district
+				}
+				is_prosperous = yes
+			}
+		} 
+
+		effect = { 
+			4349 = {
+				add_center_of_trade_level = 1
+				add_great_project_tier = {
+					tier = 1
+					type = chengzhou_city_gp
+				}
+				add_base_production = 3
+				add_base_tax = 1
+			}
+		} 
+	}
+
+	zho_4_tianwangzhixue = {
+		icon = missions_china_bureaucrat
+		position = 4
+		required_missions = { zho_3_tianwangenchong } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			calc_true_if = {
+				all_known_country = {
+					religion = chinese_religion
+					total_development = 50
+					has_opinion = {
+						who = ROOT
+						value = 150
+					}
+				}
+				amount = 6
+			}
+			OR = {
+				philosopher_adv = 3
+				statesman_adv = 3
+				scholar_advisor = 3
+				innovator_advisor = 3
+			}
+		}
+
+		effect = {
+			custom_tooltip = zho_4_tianwangzhixue_tt
+			set_country_flag = zho_4_tianwangzhixue_tt
+		}
+	}
+
+	zho_4_taipinghuaiyi = {
+		icon = missions_china_vicyory
+		position = 7
+		required_missions = { zho_3_zhouwangdongzheng } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
+			OR = {
+				NOT = { exists = XUU } 
+				XUU = { is_subject_of = ZHO } 
+			}
+			OR = {
+				NOT = { exists = ZHL } 
+				ZHL = { is_subject_of = ZHO } 
+			}
+			OR = {
+				NOT = { exists = HYI } 
+				HYI = { is_subject_of = ZHO } 
+			}
+			OR = {
+				NOT = { exists = ZWG } 
+				ZWG = { is_subject_of = ZHO } 
+			}
+			OR = {
+				NOT = { exists = ZOU } 
+				ZOU = { is_subject_of = ZHO } 
+			}
+		}
+
+		effect = {
+			every_known_country = {
+				limit = {
+					primary_culture = huaiyi
+					is_subject = no
+				}
+				country_event = { id = china.230 } 
+			}
+		}
+	}
+
+	zho_4_xunqinjiangnan = {
+		icon = missions_china_alliance
+		position = 8
+		required_missions = { zho_4_taipinghuaiyi } 
+		provinces_to_highlight = { region = yangzhou_china } 
+
+		trigger = {
+			calc_true_if = {
+				yangzhou_china = {
+					type = all
+					owner = {
+						dynasty = ZHO
+						is_subject_of = ZHO
+						NOT = { is_subject_of_type = tributary_state }
+					}
+				}
+				amount = 25
+			}
+		} 
+
+		effect = {
+			add_country_modifier = {
+				name = zho_4_enfeoffed_jiangnan
+				duration = 3650
+			}
+			every_known_country = {
+				limit = {
+					dynasty = ZHO
+					is_subject_of = ZHO
+				}
+				add_country_modifier = {
+					name = zho_4_loyal_jiangnan_vassal
+					duration = 7300
+				}
+			}
+		}
+	}
+
+	zho_2_yueshanglaigong = {
+		icon = missions_china_diplomacy
+		position = 9
+		required_missions = { zho_4_xunqinjiangnan } 
+		provinces_to_highlight = { 
+			OR = {
+				region = lacviet_region 
+				region = jiaozhou_china
+			}
+		} 
+
+		trigger = {
+			jiaozhou_china = {
+				num_of_units_in_province = {
+					who = ZHO
+					amount = 50
+				}
+			}
+			lacviet_region = {
+				num_of_units_in_province = {
+					who = ZHO
+					amount = 50
+				}
+			}
+		}
+
+		effect = {
+			custom_tooltip = zho_2_yueshanglaigong.tt
 			hidden_effect = {
 				every_known_country = {
 					limit = {
 						capital_scope = {
 							OR = {
-								region = sushen_region
-								region = dangun_gojoseon_region
-								region = buyeo_region
+								region = jiaozhou_china
+								region = lacviet_region
 							}
 						}
 						is_subject = no
 					}
-					country_event = { id = Wuu_event.001 }
+					country_event = { id = china.229 } 
 				}
 			}
-		}
-	}
-	#时迈其邦?昊天其子之
-	zho_3_shimaiqibang = {
-		#position = 8
-		icon = missions_china_great
-		#completed_by = 250.1.1
-		required_missions = {
-			zho_1_xiyoukuangye
-			zho_2_wangbajianzhi
-			zho_3_sushengongjian
-			zho_4_xunqinjiangnan
-		}
-		provinces_to_highlight = {
-	
-		}
-		trigger = {
-			all_known_country = {
-				religion = chinese_religion
-				capital_scope = { continent = china }
-				is_subject_of = ZHO
-				NOT = { tag = ZHO }
-			}
-		}
-		effect = {
-		    set_country_flag = zhuxiatouxian_di
-			set_emperor_of_china = ROOT
-		}
-	}
-}
-
-zho_slot_4 = {
-	slot = 4
-	generic = no
-	ai = yes
-	potential = {
-		OR = {
-			tag = ZHO
-		}
-		
-	}
-	has_country_shield = yes
-	#天王战令
-	zho_4_tianwangzhanling = {
-		position = 2
-		icon = missions_china_army
-		#completed_by = 190.1.1
-		required_missions = { zho_3_tianwangenchong }
-		provinces_to_highlight = {
-			
-		}
-		trigger = {
-			curia_treasury_size = 1500
-		}
-		effect = {
-			custom_tooltip = zho_4_tianwangzhanling_tt
-			set_country_flag = zho_4_tianwangzhanling_tt
-			add_curia_treasury = -750
-		}
-	}
-	
-	#踏平淮夷
-	zho_4_taipinghuaiyi = {
-		position = 7
-		icon = missions_china_vicyory
-		#completed_by = 190.1.1
-		required_missions = { zho_3_zhouwangdongzheng }
-		provinces_to_highlight = {
-		}
-		trigger = {
-			OR = {
-				NOT = {
-					exists = XUU
-				}
-				XUU = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = SYG
-				}
-				SYG = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = ZHL
-				}
-				ZHL = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = HYI
-				}
-				HYI = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = ZWG
-				}
-				ZWG = {
-					is_subject_of = ZHO
-				}
-			}
-			OR = {
-				NOT = {
-					exists = ZOU
-				}
-				ZOU = {
-					is_subject_of = ZHO
-				}
-			}
-		}
-		effect = {
-		    every_known_country = {
-				limit = {
-					primary_culture = huaiyi
-					is_subject = no
-				}
-				country_event = { id = Wuu_event.001 }
-			}
-		}
-	}
-	
-	#寻亲江南
-	zho_4_xunqinjiangnan = {
-		position = 3
-		icon = missions_china_alliance
-		#completed_by = 190.1.1
-		required_missions = { 
-		    zho_4_taipinghuaiyi
-		}
-		provinces_to_highlight = {
-			region = yangzhou_china
-		}
-		trigger = {
-		    yangzhou_china = {
-				owner = {
-					dynasty = ZHO
-				}
-			}
-		}
-		effect = {
-		    every_known_country = {
-				limit = {
-					capital_scope = {
-						region = yangzhou_china
-					}
-					is_subject = no
-				}
-				country_event = { id = Wuu_event.001 }
-			}
-		}
-	}
-
-}
-
-zho_slot_5 = {
-	slot = 5
-	generic = no
-	ai = yes
-	potential = {
-		OR = {
-			tag = ZHO
-		}
-		
-	}
-	has_country_shield = yes
-	#天王之学
-	zho_4_tianwangzhixue = {
-		position = 2
-		icon = missions_china_bureaucrat
-		#completed_by = 190.1.1
-		required_missions = { zho_3_tianwangenchong }
-		provinces_to_highlight = {
-			
-		}
-		trigger = {
-			curia_treasury_size = 1500
-		}
-		effect = {
-			custom_tooltip = zho_4_tianwangzhixue_tt
-			set_country_flag = zho_4_tianwangzhixue_tt
-			add_curia_treasury = -750
 		}
 	}
 }
