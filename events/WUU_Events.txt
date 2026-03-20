@@ -255,7 +255,7 @@ country_event = {
 		custom_tooltip = xishi_tt.3
 		WUU = {
 		   add_prestige = 10
-		   country_event = { id = Shijian.4 }
+		   country_event = { id = ShiJian.4 }
 		}
 		hidden_effect = {
 			
@@ -357,7 +357,7 @@ country_event = {
 			country_event = { 
 			    id = Wuu_event.5 
 				days = 1
-				}
+			}
 		}
 		YUE = {	 
 		    add_ruler_modifier = {
@@ -444,13 +444,13 @@ country_event = {
 		NOT = { exists = YUE }
 		NOT = { exists = XIA }
 		OR = {
-			Tag = MNY
-			Tag = OUY
-			Tag = YYG
-			Tag = NAN
-			Tag = GAA
-			Tag = GUM
-			Tag = SHY		
+			tag = MNY
+			tag = OUY
+			tag = YYG
+			tag = KAD
+			tag = GAA
+			tag = GUM
+			tag = SHY
 		}
 	}
 	
@@ -458,8 +458,64 @@ country_event = {
 		months = 1
     }
 	
+	#order in which yue state becomes the leader
 	immediate = {
-		country_event = { id = Wuu_event.602 }
+		if = {
+			limit = {
+				exists = MNY
+			}
+			MNY = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = KAD
+			}
+			KAD = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = YYG
+			}
+			YYG = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = OUY
+			}
+			OUY = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = GAA
+			}
+			GAA = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = GUM
+			}
+			GUM = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
+		else_if = {
+			limit = {
+				exists = SHY
+			}
+			SHY = {
+				country_event = { id = Wuu_event.602 }
+			}
+		}
 	}
 	
 	#
@@ -479,185 +535,302 @@ country_event = {
 	title =Wuu_event.liumin.t
 	desc = Wuu_event.liumin.d
 	picture = asiangfx_construction
-	
+	major = yes
 	is_triggered_only = yes
 	
 	immediate = {
-	   hidden_effect = {
-			add_treasury = 1000
-			add_manpower = 20
+		hidden_effect = {
+			if = {
+				limit = {
+					ai = yes
+				}
+				add_treasury = 1000
+				add_manpower = 20
+			}
 			add_country_modifier = {
 				name = "yue_baiyuezhimeng_modifier" 
-				duration = -1
+				duration = 7300
 			}
-	    }
+		}
     }
 	
 	#æ¥çº³ä»ä»¬
 	option = {
 		name = Wuu_event.liumin.a
-		every_country = {
-			limit = {
-				OR = {
-					Tag = MNY
-					Tag = OUY
-					Tag = YYG
-					Tag = NAN
-					Tag = GAA
-					Tag = GUM
-					Tag = SHY		
-				}				
-			}
-			every_tribal_land_province = {
-				limit = { 
-					NOT = { 
-						owner = { 
-							exists = yes 
-						} 
-					} 
+		custom_tooltip = baiyuezhimengtt
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						Tag = MNY
+						Tag = OUY
+						Tag = YYG
+						Tag = KAD
+						Tag = GAA
+						Tag = GUM
+						Tag = SHY		
+					}				
 				}
-				settle_province = ROOT
+				every_tribal_land_province = {
+					limit = { NOT = { owner = { exists = yes } } }
+					settle_province = PREV
+				}
+				change_government = tribal
+				add_government_reform = tribal_kingdom_reform
+				change_government_reform_progress = 100
+				add_country_modifier = {
+					name = "yue_liumin_modifier" 
+					duration = 7300
+				}
 			}
-			change_government = tribal
-			add_government_reform = tribal_kingdom_reform
-			change_government_reform_progress = 2000
-			add_country_modifier = {
-				name = "yue_liumin_modifier" 
-				duration = 18250
+			if = {
+				limit = {
+					exists = OUY
+					NOT = {
+						tag = OUY
+					}
+				}
+				create_alliance = OUY
+				add_historical_friend = OUY
+				remove_rival = OUY
+				OUY = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = OUY
+					value = 5
+					mutual = yes
+				}
 			}
-			custom_tooltip = baiyuezhimengtt
+			if = {
+				limit = {
+					exists = YYG
+					NOT = {
+						tag = YYG
+					}
+				}
+				create_alliance = YYG
+				add_historical_friend = YYG
+				remove_rival = YYG
+				YYG = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = YYG
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					exists = KAD
+					NOT = {
+						tag = KAD
+					}
+				}
+				create_alliance = KAD
+				add_historical_friend = KAD
+				remove_rival = KAD
+				KAD = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = KAD
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					exists = GAA
+					NOT = {
+						tag = GAA
+					}
+				}
+				create_alliance = GAA
+				add_historical_friend = GAA
+				remove_rival = GAA
+				GAA = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = GAA
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					exists = GUM
+					NOT = {
+						tag = GUM
+					}
+				}
+				create_alliance = GUM
+				add_historical_friend = GUM
+				remove_rival = GUM
+				GUM = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = GUM
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					exists = SHY
+					NOT = {
+						tag = SHY
+					}
+				}
+				create_alliance = SHY
+				add_historical_friend = SHY
+				remove_rival = SHY
+				SHY = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = SHY
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					exists = MNY
+					NOT = {
+						tag = MNY
+					}
+				}
+				create_alliance = MNY
+				add_historical_friend = MNY
+				remove_rival = MNY
+				MNY = { 
+					country_event = { id = china.233 } 
+					add_historical_friend = ROOT
+					remove_rival = ROOT
+					create_alliance = MNY
+					create_alliance = KAD
+					create_alliance = YYG
+					create_alliance = OUY
+					create_alliance = GAA
+					create_alliance = GUM
+					create_alliance = SHY
+					add_country_modifier = {
+						name = "yue_baiyuezhimeng_modifier" 
+						duration = 7300
+					}
+				}
+				add_trust = {
+					who = MNY
+					value = 5
+					mutual = yes
+				}
+			}
+			if = {
+				limit = {
+					4511 = {
+						is_empty = yes
+					}
+				}
+				add_treasury = 9999
+				4511 = {
+					cede_province = YYG
+					add_core = YYG
+				}
+			}
+			if = {
+				limit = {
+					4512 = {
+						is_empty = yes
+					}
+				}
+				4512 = {
+					cede_province = YYG
+					add_core = YYG
+				}
+			}
 		}
-		if = {
-			limit = {
-				exists = OUY
-			}
-			create_alliance = OUY
-		    add_historical_friend = OUY
-		    remove_rival = OUY
-		    add_trust = {
-				who = OUY
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = YYG
-			}
-			create_alliance = YYG
-		    add_historical_friend = YYG
-		    remove_rival = YYG
-		    add_trust = {
-				who = YYG
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = OUY
-			}
-			create_alliance = OUY
-		    add_historical_friend = OUY
-		    remove_rival = OUY
-		    add_trust = {
-				who = OUY
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = NAN
-			}
-			create_alliance = NAN
-		    add_historical_friend = NAN
-		    remove_rival = NAN
-		    add_trust = {
-				who = NAN
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = GAA
-			}
-			create_alliance = GAA
-		    add_historical_friend = GAA
-		    remove_rival = GAA
-		    add_trust = {
-				who = GAA
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = GUM
-			}
-			create_alliance = GUM
-		    add_historical_friend = GUM
-		    remove_rival = GUM
-		    add_trust = {
-				who = GUM
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = SHY
-			}
-			create_alliance = SHY
-		    add_historical_friend = SHY
-		    remove_rival = SHY
-		    add_trust = {
-				who = SHY
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = OUY
-			}
-			create_alliance = OUY
-		    add_historical_friend = OUY
-		    remove_rival = OUY
-		    add_trust = {
-				who = OUY
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = OUY
-			}
-			create_alliance = OUY
-		    add_historical_friend = OUY
-		    remove_rival = OUY
-		    add_trust = {
-				who = OUY
-				value = 5
-                mutual = yes
-            }
-		}
-		if = {
-			limit = {
-				exists = MNY
-			}
-			create_alliance = MNY
-		    add_historical_friend = MNY
-		    remove_rival = MNY
-		    add_trust = {
-				who = MNY
-				value = 5
-                mutual = yes
-            }
-		}
-	}
 		
 		ai_chance = {
 			factor = 1

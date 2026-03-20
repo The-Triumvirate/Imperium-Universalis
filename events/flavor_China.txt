@@ -2645,50 +2645,60 @@ country_event = {
 		NOT = {
 			started_in = 145.1.1
 		}
-		exists = SLG
-		exists = SYG
-		exists = SJG
+		OR = {
+			exists = SLG
+			exists = SYG
+			exists = SJG
+		}
 		is_at_war = no
 	}
 
 	mean_time_to_happen = {
-		months = 15
+		months = 14
 	}
 
 	option = {
 		name = "china.59.a"
-		SLG = {
-			add_aggressive_expansion = {
-				who = CHU
-				value = 100
-				apply_calc = no
+		custom_tooltip = chu_shustates_pissed
+		hidden_effect = {
+			every_country = {
+				limit = {
+					primary_culture = huaiyi
+				}
+				add_aggressive_expansion = {
+					who = CHU
+					value = 40
+					apply_calc = no
+				}
 			}
+		}
+		SLG = {
 			grant_independence = yes
 			create_alliance = SYG
+			add_historical_friend = SYG
 			create_alliance = SJG
+			add_historical_friend = SJG
 		}
 		SYG = {
-			add_aggressive_expansion = {
-				who = CHU
-				value = 100
-				apply_calc = no
-			}
 			grant_independence = yes
 			create_alliance = SLG
+			add_historical_friend = SLG
 			create_alliance = SJG
+			add_historical_friend = SJG
 		}
 		SJG = {
-			add_aggressive_expansion = {
-				who = CHU
-				value = 100
-				apply_calc = no
-			}
 			grant_independence = yes
 			create_alliance = SLG
+			add_historical_friend = SLG
 			create_alliance = SYG
+			add_historical_friend = SYG
 		}
 		ai_chance = {
 			factor = 75
+			modifier = {
+				factor = 2
+				personality = ai_militarist
+			}
 		}
 	}
 	option = {
@@ -2699,15 +2709,39 @@ country_event = {
 					exists = SHK
 				}
 			}
-			add_adm_power = 100
+			add_adm_power = 50
+			release = SHK
 		}
-		release = SHK
+		if = {
+			limit = {
+				NOT = {
+					exists = SLG
+				}
+			}
+			release = SLG
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = SYG
+				}
+			}
+			release = SYG
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = SJG
+				}
+			}
+			release = SJG
+		}
 		SHK = {
 			define_ruler = {
 				dynasty = "Yan"
 				adm = 3
 				dip = 4
-				mil = 4
+				mil = 3
 				age = 26
 			}
 		}
@@ -2731,8 +2765,19 @@ country_event = {
 		4415 = {
 			remove_core = CHU
 		}
+		4476 = {
+			remove_core = SLG
+		}
+		add_truce_with = SHK
+		add_truce_with = SLG
+		add_truce_with = SYG
+		add_truce_with = SJG
 		ai_chance = {
 			factor = 25
+			modifier = {
+				factor = 4
+				personality = ai_diplomat
+			}
 		}
 	}
 }
@@ -2766,7 +2811,7 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 4
+		months = 5
 	}
 
 	option = {
@@ -3334,6 +3379,7 @@ country_event = {
 	trigger = {
 		OR = {
 			primary_culture = huaiyi
+			primary_culture = qunshu
 			primary_culture = laiyi
 			primary_culture = wuyue
 			primary_culture = gouwu
@@ -3375,7 +3421,7 @@ country_event = {
 			adm_tech = 12
 		}
 		modifier = {
-			factor = 0.75
+			factor = 0.9
 			current_age = archaic_age
 		}
 	}
@@ -9681,7 +9727,10 @@ province_event = {
 			}
 			else_if = {
 				limit = {
-					culture = huaiyi
+					OR = {
+						culture = huaiyi
+						culture = qunshu
+					}
 					NOT = {
 						region = jingzhou_china
 					}
@@ -13722,5 +13771,81 @@ country_event = {
 		add_prestige = 5
 		set_country_flag = unlock_xin_decision
 		custom_tooltip = xin_formation_EC_two
+	}
+}
+
+########################################################################################
+# destruction of yue notif
+########################################################################################
+country_event = {
+	id = china.233
+	title = "Wuu_event.liumin.t"
+	desc = "china.233.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.233.a"
+	}
+}
+
+########################################################################################
+# shu states united
+########################################################################################
+country_event = {
+	id = china.234
+	title = "china.234.t"
+	desc = "china.234.d"
+	picture = harvest
+	is_triggered_only = yes
+
+	option = {
+		name = "china.234.a"
+		set_government_rank = 2
+		add_prestige = 10
+		set_capital = 4414
+		custom_tooltip = shu_united_remove_old_tt
+		hidden_effect = {
+			every_province = {
+				limit = {
+					OR = {
+						is_core = SYG
+						is_core = SLG
+						is_core = SJG
+					}
+				}
+				remove_core = SYG
+				remove_core = SLG
+				remove_core = SJG
+				add_core = ROOT
+			}
+		}
+		add_country_modifier = {
+			name = shu_states_united_central
+			duration = 9125
+		}
+	}
+	option = {
+		name = "china.234.b"
+		set_government_rank = 2
+		add_prestige = 10
+		override_country_name = QUNSHU
+		set_capital = 4414
+		hidden_effect = {
+			every_province = {
+				limit = {
+					OR = {
+						is_core = SYG
+						is_core = SLG
+						is_core = SJG
+					}
+				}
+				add_core = ROOT
+			}
+		}
+		add_country_modifier = {
+			name = shu_states_united_decentral
+			duration = 9125
+		}
 	}
 }
