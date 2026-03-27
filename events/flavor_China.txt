@@ -863,7 +863,9 @@ country_event = {
 		is_council_enabled = no
 		any_owned_province = {
 			num_free_building_slots = 1
-			NOT = { has_construction = building }
+			NOT = { has_construction = shrine }
+			NOT = { has_construction = small_temple }
+			NOT = { has_construction = great_temple }
 			NOT = { has_building = shrine }
             NOT = { has_building = small_temple }
             NOT = { has_building = great_temple }
@@ -1879,6 +1881,7 @@ country_event = {
 	picture = book_burning
 
 	trigger = {
+		controls = 4349
 		AND = {
 			NOT = {
 				religion = chinese_religion
@@ -1893,7 +1896,12 @@ country_event = {
 				religion = taoism
 			}
 		}
-		controls = 4349
+		NOT = {
+			tag = ZHO
+		}
+		NOT = {
+			tag = ZHG
+		}
 		curia_treasury_size = 200
 		has_dlc = "Emperor"
 		4349 = {
@@ -3865,39 +3873,6 @@ country_event = {
 
 	option = {
 		name = "ok"
-	}
-}
-
-########################################################################################
-# remove city of bin after certain point
-########################################################################################
-country_event = {
-	id = china.83
-	title = "china.83.t"
-	desc = "china.83.d"
-	picture = city
-	fire_only_once = yes
-
-	trigger = {
-		NOT = {
-			hre_size = 2
-		}
-		NOT = {
-			exists = ZHO
-		}
-		owns = 4207
-	}
-
-	mean_time_to_happen = {
-		months = 12
-	}
-
-
-	option = {
-		name = "china.83.a"
-		4207 = {
-			remove_province_modifier = city_of_bin
-		}
 	}
 }
 
@@ -8066,9 +8041,6 @@ country_event = {
 				}
 			}
 			set_global_flag = zhanguokaishi
-			4363 = {
-				remove_province_modifier = fields_of_xu
-			}
 		}
 	}
 	option = {
@@ -8264,6 +8236,16 @@ country_event = {
 
 	option = {
 		name = "china.161.a"
+		trigger = {
+			OR = {
+				ai = no
+				LUU = {
+					NOT = {
+						alliance_with = JIN
+					}
+				}
+			}
+		}
 		LUU = {
 			country_event = { id = china.190 }
 		}
@@ -8277,13 +8259,13 @@ country_event = {
 		ai_chance = {
 			factor = 20
 			modifier = {
-				factor = 6
+				factor = 8
 				LUU = {
 					alliance_with = CHN
 				}
 			}
 			modifier = {
-				factor = 8
+				factor = 10
 				LUU = {
 					alliance_with = WEY
 				}
@@ -8295,25 +8277,25 @@ country_event = {
 				}
 			}
 			modifier = {
-				factor = 14
+				factor = 16
 				LUU = {
 					alliance_with = SON
 				}
 			}
 			modifier = {
-				factor = 9
+				factor = 11
 				LUU = {
 					alliance_with = ZHE
 				}
 			}
 			modifier = {
-				factor = 13
+				factor = 15
 				LUU = {
 					alliance_with = YAN
 				}
 			}
 			modifier = {
-				factor = 2 # for small allies
+				factor = 4 # for small allies
 				NOT = {
 					any_known_country = {
 						alliance_with = LUU
@@ -8325,7 +8307,7 @@ country_event = {
 				}
 			}
 			modifier = {
-				factor = 5 # for small allies
+				factor = 7 # for small allies
 				NOT = {
 					any_known_country = {
 						alliance_with = LUU
@@ -8334,18 +8316,6 @@ country_event = {
 				}
 				LUU = {
 					num_of_allies = 4
-				}
-			}
-			modifier = {
-				factor = 5 # for small allies
-				NOT = {
-					any_known_country = {
-						alliance_with = LUU
-						total_development = 40
-					}
-				}
-				LUU = {
-					num_of_allies = 6
 				}
 			}
 			modifier = {
@@ -8353,14 +8323,12 @@ country_event = {
 				LUU = {
 					num_of_allies = 2
 				}
-				NOT = { num_of_allies = 1 }
 			}
 			modifier = {
-				factor = 1.5
+				factor = 2
 				LUU = {
 					num_of_allies = 4
 				}
-				NOT = { num_of_allies = 1 }
 			}
 		}
 	}
@@ -8412,6 +8380,12 @@ country_event = {
 			modifier = {
 				factor = 1.5
 				num_of_allies = 4
+			}
+			modifier = {
+				factor = 4
+				QII = {
+					ai = no
+				}
 			}
 		}
 	}
@@ -8676,9 +8650,9 @@ country_event = {
 		}
 		white_peace = CAA
 		add_prestige = 5
-		add_war_exhaustion = -1
+		add_war_exhaustion = -5
 		LUU = {
-			add_war_exhaustion = 2.5
+			add_war_exhaustion = 5
 			country_event = { id = china.166 }
 		}
 		ai_chance = {
@@ -8982,7 +8956,7 @@ country_event = {
 			dip = 3
 			mil = 3
 			age = 40
-			claim = 90
+			claim = 95
 		}
 		add_opinion = {
 			who = WEY
@@ -9002,7 +8976,7 @@ country_event = {
 			dip = 3
 			mil = 2
 			age = 20
-			claim = 80
+			claim = 75
 		}
 		custom_tooltip = shangren_assassination_tooltip_one
 	}
@@ -9523,6 +9497,10 @@ province_event = {
 			owner = { stability = 3 }
 		}
 		modifier = {
+			factor = 1.5
+			owner = { NOT = { stability = 0 } }
+		}
+		modifier = {
 			factor = 0.75
 			is_prosperous = yes
 		}
@@ -9582,7 +9560,16 @@ province_event = {
 		}
 		modifier = {
 			factor = 0.6
-			owner = { absolutism = 60 }
+			owner = {
+				absolutism = 60
+				NOT = {
+					absolutism = 70
+				}
+			}
+		}
+		modifier = {
+			factor = 0.5
+			owner = { absolutism = 70 }
 		}
 		modifier = {
 			factor = 0.8
@@ -9640,7 +9627,7 @@ province_event = {
 			religion_group = chinese_religion
 		}
 		modifier = {
-			factor = 2.25
+			factor = 2.5
 			NOT = {
 				religion_group = chinese_religion
 			}
@@ -9691,9 +9678,19 @@ province_event = {
 		modifier = {
 			factor = 0.8
 			province_has_center_of_trade_of_level = 2
+			NOT = { province_has_center_of_trade_of_level = 3 }
 		}
 		modifier = {
-			factor = 0.75
+			factor = 0.7
+			province_has_center_of_trade_of_level = 3
+			NOT = { province_has_center_of_trade_of_level = 4 }
+		}
+		modifier = {
+			factor = 0.5
+			province_has_center_of_trade_of_level = 5
+		}
+		modifier = {
+			factor = 0.6
 			any_neighbor_province = {
 				culture_group = chinese_group
 			}
@@ -9982,9 +9979,10 @@ country_event = {
 		WEI = {
 			set_capital = 4075 #idk whytf it gets set to jima
 		}
+		# set these two, otherwise Zheng is always a rival for AI zhou and constantly gets excommunicated
 		ZHO = {
 			add_rival = QJR
-			add_rival = CXA
+			add_rival = HAN
 		}
 	}
 
@@ -9995,7 +9993,7 @@ country_event = {
 }
 
 ########################################################################################
-# xian clan colludes with the di
+# xian clan colludes with the di (todo: expand upon this?)
 ########################################################################################
 country_event = {
 	id = china.183
@@ -10779,11 +10777,16 @@ country_event = {
 		tag = ZHG
 		is_at_war = yes
 		capital_scope = {
-			has_siege = yes
+			OR = {
+				has_siege = yes
+				NOT = {
+					controlled_by = ROOT
+				}
+			}
 		}
 		exists = CHU
 		CHU = {
-			total_development = 275
+			total_development = 250
 		}
 	}
 	
@@ -10828,6 +10831,12 @@ country_event = {
 			modifier = {
 				factor = 3
 				ruler_has_personality = pious_personality
+			}
+			modifier = {
+				factor = 10
+				ZHO = {
+					ai = no
+				}
 			}
 		}
 	}
@@ -10892,7 +10901,7 @@ country_event = {
 				ruler_has_personality = lunatic_personality
 			}
 			modifier = {
-				factor = 3
+				factor = 4
 				ruler_has_personality = arbitrarily_personality
 			}
 			modifier = {
@@ -10950,7 +10959,7 @@ country_event = {
 
 	option = {
 		name = "china.202.a"
-		add_prestige = 5
+		add_prestige = 10
 		ai_chance = {
 			factor = 95
 		}
