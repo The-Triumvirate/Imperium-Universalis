@@ -4,7 +4,7 @@ zhengguoqu = {
 	start = 4194
 
 	# date built in real life (so anything built during game time will be there if you start a game after that date)
-	date = 508.01.01
+	date = 1.1.1
 
 	#time to build
 	time = {
@@ -28,19 +28,15 @@ zhengguoqu = {
 
 	#can we build it?
 	build_trigger = {
-
 		FROM = {
-			OR = {
-				AND = {
-					NOT = { government = tribal }
-					NOT = { government = native }
-				}
-				OR = {
-					adm_tech = 27 #BC246
-					architect = 5
-				}
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
 			}
-			#treasury = 10000
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
 		}
 	}
 
@@ -63,7 +59,16 @@ zhengguoqu = {
 	#can our country upgrade it?
 	can_upgrade_trigger = {
 		controlled_by = owner
-		AND = { owner = { neither_tribal_nor_native_trigger = yes } }
+		FROM = {
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
+			}
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
+		}
 	}
 
 	#can our country keep it or is it destroyed when we get hold of it?
@@ -208,7 +213,7 @@ lingqu = {
 	start = 4542
 
 	# date built in real life (so anything built during game time will be there if you start a game after that date)
-	date = 540.01.01
+	date = 1.1.1
 
 	#time to build
 	time = {
@@ -232,16 +237,15 @@ lingqu = {
 
 	#can we build it?
 	build_trigger = {
-
 		FROM = {
-			OR = {
-				AND = {
-					NOT = { government = tribal }
-					NOT = { government = native }
-				}
-				adm_tech = 28 #BC219
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
 			}
-			#treasury = 10000
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
 		}
 	}
 
@@ -263,6 +267,16 @@ lingqu = {
 	#can our country upgrade it?
 	can_upgrade_trigger = {
 		controlled_by = owner
+		FROM = {
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
+			}
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
+		}
 	}
 
 	#can our country keep it or is it destroyed when we get hold of it?
@@ -407,7 +421,7 @@ dujiangyan = {
 	start = 4230
 
 	# date built in real life (so anything built during game time will be there if you start a game after that date)
-	date = 503.01.01
+	date = 1.1.1
 
 	#time to build
 	time = {
@@ -424,37 +438,28 @@ dujiangyan = {
 	move_days_per_unit_distance = 10
 
 	#tier that the project starts at when first placed in the game (be that at game start or when built by a country as the game progresses)
-	starting_tier = 1
+	starting_tier = 0
 
 	#project type
 	type = monument
 
 	#can we build it?
 	build_trigger = {
-
 		FROM = {
-			OR = {
-				AND = {
-					NOT = { government = tribal }
-					NOT = { government = native }
-				}
-				adm_tech = 27 #BC219
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
 			}
-			#treasury = 10000
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
 		}
 	}
 
 	#what to do when it's built
 	on_built = {
-		owner = {
-				if = {
-					limit = {
-						NOT = { primary_culture = shu }
-						NOT = { accepted_culture = shu }
-					}
-					add_accepted_culture = shu
-				}
-			}
+		
 	}
 
 	#what to do when it's destroyed
@@ -470,6 +475,16 @@ dujiangyan = {
 	#can our country upgrade it?
 	can_upgrade_trigger = {
 		controlled_by = owner
+		FROM = {
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
+			}
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
+		}
 	}
 
 	#can our country keep it or is it destroyed when we get hold of it?
@@ -490,9 +505,7 @@ dujiangyan = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_monthly_devastation = -0.11 #本地荒废度
-			tax_income = 3
-			supply_limit_modifier = 0.25 #补给上限修正
+			
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
@@ -521,15 +534,18 @@ dujiangyan = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_monthly_devastation = -0.33 #本地荒废度
-			tax_income = 6
-			supply_limit_modifier = 0.5 #补给上限修正
+			local_monthly_devastation = -0.2 #本地荒废度
+			supply_limit_modifier = 0.25 #补给上限修正
+			local_prosperity_growth = 0.05
+			province_trade_power_value = 2
 			allowed_num_of_buildings = 1 #可造建筑
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_tax_modifier = 0.11 #当地税收
+			province_trade_power_modifier = 0.1
+			local_production_efficiency = 0.1
+			trade_goods_size_modifier = 0.05
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -538,7 +554,25 @@ dujiangyan = {
 
 		#what effects happen when this tier is achieved
 		on_upgraded = {
-	
+			if = {
+				limit = {
+					owner = {
+						NOT = {
+							primary_culture = shu
+							accepted_culture = shu
+						}
+					}
+				}
+				owner = {
+					add_accepted_culture = shu
+				}
+			}
+			4230 = {
+				add_permanent_province_modifier = {
+					name = TianFuZhiGuo
+					duration = -1
+				}
+			}
 		}
 	}
 
@@ -555,15 +589,18 @@ dujiangyan = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_monthly_devastation = -0.66 #本地荒废度
-			tax_income = 9
-			supply_limit_modifier = 0.75 #补给上限修正
+			local_monthly_devastation = -0.4 #本地荒废度
+			supply_limit_modifier = 0.5 #补给上限修正
+			local_prosperity_growth = 0.1
+			province_trade_power_value = 4
 			allowed_num_of_buildings = 2 #可造建筑
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_tax_modifier = 0.22 #当地税收
+			province_trade_power_modifier = 0.2
+			local_production_efficiency = 0.2
+			trade_goods_size_modifier = 0.1
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -573,7 +610,12 @@ dujiangyan = {
 
 		#what effects happen when this tier is achieved
 		on_upgraded = {
-
+			4233 = {
+				add_permanent_province_modifier = {
+					name = TianFuZhiGuo
+					duration = -1
+				}
+			}
 		}
 	}
 
@@ -590,15 +632,18 @@ dujiangyan = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_monthly_devastation = -1 #本地荒废度
-			tax_income = 12
-			supply_limit_modifier = 1.00 #补给上限修正
-			allowed_num_of_buildings = 3 #可造建筑
+			local_monthly_devastation = -0.66 #本地荒废度
+			supply_limit_modifier = 0.75 #补给上限修正
+			local_prosperity_growth = 0.2
+			province_trade_power_value = 8
+			allowed_num_of_buildings = 4 #可造建筑
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_tax_modifier = 0.33 #当地税收
+			province_trade_power_modifier = 0.33
+			local_production_efficiency = 0.33
+			trade_goods_size_modifier = 0.2
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -607,13 +652,16 @@ dujiangyan = {
 
 		#what effects happen when this tier is achieved
 		on_upgraded = {
-			owner = {
-				every_owned_province = {
-					limit = { area = shu_area }
-					add_province_modifier = {
-						name = TianFuZhiGuo
-						duration = -1
-					}
+			4231 = {
+				add_permanent_province_modifier = {
+					name = TianFuZhiGuo
+					duration = -1
+				}
+			}
+			4240 = {
+				add_permanent_province_modifier = {
+					name = TianFuZhiGuo
+					duration = -1
 				}
 			}
 		}
@@ -625,7 +673,7 @@ hangou_gp = {
 	start = 4408
 
 	# date built in real life (so anything built during game time will be there if you start a game after that date)
-	date = 267.01.01 #BC486
+	date = 1.1.1 #BC486
 
 	#time to build
 	time = {
@@ -649,20 +697,15 @@ hangou_gp = {
 
 	#can we build it?
 	build_trigger = {
-
 		FROM = {
-			OR = {
-				AND = {
-					NOT = { government = tribal }
-					NOT = { government = native }
-				}
-				OR = {
-					adm_tech = 27 #BC246
-					architect = 5
-					mission_completed = wuu_hangou
-				}
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
 			}
-			#treasury = 10000
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
 		}
 	}
 
@@ -679,13 +722,22 @@ hangou_gp = {
 	#can our country use it?
 	can_use_modifiers_trigger = {
 		controlled_by = owner
-		AND = { owner = { neither_tribal_nor_native_trigger = yes } }
+		owner = { neither_tribal_nor_native_trigger = yes }
 	}
 
 	#can our country upgrade it?
 	can_upgrade_trigger = {
 		controlled_by = owner
-		AND = { owner = { neither_tribal_nor_native_trigger = yes } }
+		FROM = {
+			AND = {
+				NOT = { government = tribal }
+				NOT = { government = native }
+			}
+			OR = {
+				adm_tech = 27 #BC246
+				architect = 5
+			}
+		}
 	}
 
 	#can our country keep it or is it destroyed when we get hold of it?
@@ -738,14 +790,15 @@ hangou_gp = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_friendly_movement_speed = 1.0	#当地友军移动速度：修正路过当地的友军部队移动速度
+			local_friendly_movement_speed = 0.5	#当地友军移动速度：修正路过当地的友军部队移动速度
 			attrition = -2	#增加省份基础损耗值
 			local_development_cost = 0.1	#提升发展度花费
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			supply_limit_modifier = 0.15 #当地补给上限（百分比）
+			local_friendly_movement_speed = 0.1
+			supply_limit_modifier = 0.1 #当地补给上限（百分比）
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -770,14 +823,15 @@ hangou_gp = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_friendly_movement_speed = 1.5	#当地友军移动速度：修正路过当地的友军部队移动速度
+			local_friendly_movement_speed = 0.75	#当地友军移动速度：修正路过当地的友军部队移动速度
 			attrition = -3	#增加省份基础损耗值
 			local_development_cost = 0.15	#提升发展度花费
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			supply_limit_modifier = 0.20 #当地补给上限（百分比）
+			local_friendly_movement_speed = 0.2
+			supply_limit_modifier = 0.2 #当地补给上限（百分比）
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -804,14 +858,15 @@ hangou_gp = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			local_friendly_movement_speed = 2.0	#当地友军移动速度：修正路过当地的友军部队移动速度
+			local_friendly_movement_speed = 1.0	#当地友军移动速度：修正路过当地的友军部队移动速度
 			attrition = -4	#增加省份基础损耗值
-			local_development_cost = -0.20	#提升发展度花费
+			local_development_cost = 0.20	#提升发展度花费
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			supply_limit_modifier = 0.20 #当地补给上限（百分比）
+			local_friendly_movement_speed = 0.33
+			supply_limit_modifier = 0.33 #当地补给上限（百分比）
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -4718,7 +4773,8 @@ xiechi_salt = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			trade_goods_size = 0.5
+			trade_goods_size = 1
+			local_production_efficiency = 0.05
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
@@ -4749,7 +4805,8 @@ xiechi_salt = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			trade_goods_size = 1
+			trade_goods_size = 2
+			local_production_efficiency = 0.1
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
@@ -4781,12 +4838,13 @@ xiechi_salt = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			trade_goods_size = 2
+			trade_goods_size = 5
+			local_production_efficiency = 0.25
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			province_trade_power_modifier = 0.4	#省份贸易力量（百分比）
+			province_trade_power_modifier = 0.33	#省份贸易力量（百分比）
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
@@ -4959,7 +5017,7 @@ confucian_birthplace = {
 		country_modifiers = {
 			stability_cost_modifier = -0.2
 			prestige = 1
-			legitimacy = 0.75
+			legitimacy = 1
 			meritocracy	= 0.75
 		}
 
@@ -4994,7 +5052,7 @@ confucian_birthplace = {
 		country_modifiers = {
 			stability_cost_modifier = -0.3
 			prestige = 2
-			legitimacy = 1
+			legitimacy = 2
 			meritocracy	= 1
 			all_estate_loyalty_equilibrium = 0.1
 			no_stability_loss_on_monarch_death = yes
@@ -5138,7 +5196,8 @@ xianyang_city_gp = {
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			prestige = 0.25
+			prestige = 0.5
+			legitimacy = 0.5
 		}
 
 		#what effects happen when this tier is achieved
@@ -5179,7 +5238,10 @@ xianyang_city_gp = {
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			prestige = 0.5
+			prestige = 1
+			legitimacy = 1
+			monthly_splendor = 0.5
+			max_absolutism = 5
 		}
 
 		#what effects happen when this tier is achieved
@@ -5221,9 +5283,12 @@ xianyang_city_gp = {
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			prestige = 1
+			prestige = 2
+			legitimacy = 2
+			meritocracy = 2
 			monthly_splendor = 1
-			meritocracy = 1
+			max_absolutism = 10
+			harsh_treatment_cost = -0.1
 		}
 
 		#what effects happen when this tier is achieved
@@ -5401,7 +5466,7 @@ chengzhou_city_gp = {
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			province_trade_power_modifier = 0.1
+			province_trade_power_modifier = 0.05
 			trade_value = 1
 		}
 
@@ -5446,7 +5511,7 @@ chengzhou_city_gp = {
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			province_trade_power_modifier = 0.2
+			province_trade_power_modifier = 0.1
 			trade_value = 2
 		}
 
@@ -5575,18 +5640,22 @@ laozi_birthplace = {
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
 			local_governing_cost = -0.1
+			local_state_maintenance_modifier = -0.1
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_governing_cost = -0.025
+			local_governing_cost = -0.05
+			local_state_maintenance_modifier = -0.05
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			global_unrest = -1
+			global_unrest = -2
 			tolerance_heretic = 1
 			tolerance_heathen = 1
+			diplomatic_reputation = 1
+			monarch_lifespan = 0.05
 		}
 
 		#what effects happen when this tier is achieved
@@ -5609,20 +5678,23 @@ laozi_birthplace = {
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
 			local_governing_cost = -0.2
+			local_state_maintenance_modifier = -0.2
+			province_trade_power_modifier = 0.05
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_governing_cost = -0.05
+			local_governing_cost = -0.1
+			local_state_maintenance_modifier = -0.1
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			global_unrest = -2
-			tolerance_heretic = 1.5
-			tolerance_heathen = 1.5
-			diplomatic_reputation = 1
-			monarch_lifespan = 0.05
+			global_unrest = -4
+			tolerance_heretic = 2
+			tolerance_heathen = 2
+			diplomatic_reputation = 2
+			monarch_lifespan = 0.1
 		}
 
 		#what effects happen when this tier is achieved
@@ -5645,20 +5717,26 @@ laozi_birthplace = {
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
 			local_governing_cost = -0.33
+			local_state_maintenance_modifier = -0.33
+			province_trade_power_modifier = 0.1
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-			local_governing_cost = -0.1
+			local_governing_cost = -0.2
+			local_state_maintenance_modifier = -0.2
+			province_trade_power_modifier = 0.1
+			local_development_cost = 0.1
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-			global_unrest = -3
-			tolerance_heretic = 2
-			tolerance_heathen = 2
-			diplomatic_reputation = 2
-			monarch_lifespan = 0.1
+			global_unrest = -6
+			tolerance_heretic = 3
+			tolerance_heathen = 3
+			diplomatic_reputation = 3
+			monarch_lifespan = 0.25
+			reverse_relation_with_same_religion = 25
 		}
 
 		#what effects happen when this tier is achieved
@@ -5779,11 +5857,11 @@ linzi_city = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			trade_value = 4 #贸易额
-			province_trade_power_modifier = 0.10 #地方贸易力量修正
-			tax_income = 2 #收入值
-			trade_goods_size_modifier = 0.11 #贸易产品规模修正
+			trade_value = 3 #贸易额
+			province_trade_power_modifier = 0.1 #地方贸易力量修正
+			trade_goods_size_modifier = 0.05 #贸易产品规模修正
 			local_production_efficiency = 0.05 #当地生产效率
+			tax_income = 2 #收入值
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
@@ -5793,7 +5871,7 @@ linzi_city = {
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-
+			prestige = 0.5
 		}
 
 		#what effects happen when this tier is achieved
@@ -5814,21 +5892,22 @@ linzi_city = {
 
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
-			trade_value = 7 #贸易额
-			province_trade_power_modifier = 0.15 #地方贸易力量修正
+			trade_value = 6 #贸易额
+			province_trade_power_modifier = 0.2 #地方贸易力量修正
+			trade_goods_size_modifier = 0.1 #贸易产品规模修正
+			local_production_efficiency = 0.1 #当地生产效率
 			tax_income = 4 #收入值
-			trade_goods_size_modifier = 0.22 #贸易产品规模修正
-			local_production_efficiency = 0.10 #当地生产效率
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-
+			province_trade_power_modifier = 0.05
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-
+			prestige = 1
+			global_institution_spread = 0.1
 		}
 
 		#what effects happen when this tier is achieved
@@ -5851,20 +5930,22 @@ linzi_city = {
 		#what modifiers are added to the province when we have this project here on this tier
 		province_modifiers = {
 			trade_value = 10 #贸易额
-			province_trade_power_modifier = 0.2 #地方贸易力量修正
-			tax_income = 6 #收入值
-			trade_goods_size_modifier = 0.33 #贸易产品规模修正
-			local_production_efficiency = 0.15 #当地生产效率
+			province_trade_power_modifier = 0.33 #地方贸易力量修正
+			trade_goods_size_modifier = 0.2 #贸易产品规模修正
+			local_production_efficiency = 0.2 #当地生产效率
+			tax_income = 8 #收入值
 		}
 
 		#what modifiers are added to the provinces in the map area when we have this project here on this tier
 		area_modifier = {
-
+			province_trade_power_modifier = 0.1
 		}
 
 		#what modifiers are added to the country when we have this project here on this tier
 		country_modifiers = {
-
+			prestige = 2
+			global_institution_spread = 0.25
+			technology_cost = -0.025
 		}
 
 		#what effects happen when this tier is achieved

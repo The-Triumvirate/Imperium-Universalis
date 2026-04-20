@@ -12,7 +12,10 @@ country_event = {
 	is_triggered_only = yes
 
 	trigger = {
-		has_reform = kemetic_kingdom
+		OR = {
+			has_reform = kemetic_kingdom
+			has_reform = aten_kemetic_kingdom
+		}
 		NOT = { absolutism = 25 }
 		any_owned_province = {
 			NOT = { has_province_modifier = powerful_local_nomarch }
@@ -192,6 +195,8 @@ country_event = {
 
 	trigger = {
 		has_reform = kemetic_kingdom
+		NOT = { has_adopted_cult = cult_aten }
+		NOT = { religion = atenism }
 		faction_influence = {
 			faction = fac_priesthood
 			influence = 50
@@ -268,7 +273,10 @@ country_event = {
 	is_triggered_only = yes
 
 	trigger = {
-		has_reform = kemetic_kingdom
+		OR = {
+			has_reform = kemetic_kingdom
+			has_reform = aten_kemetic_kingdom
+		}
 		absolutism = 10
 		army_tradition = 50
 	}
@@ -341,7 +349,12 @@ province_event = {
 	is_triggered_only = yes
 
 	trigger = {
-		owner = { has_reform = kemetic_kingdom }
+		owner = { 
+			OR = {
+				has_reform = kemetic_kingdom
+				has_reform = aten_kemetic_kingdom
+			}
+		}
 		base_tax = 2
 	}
 
@@ -688,7 +701,10 @@ country_event = {
 	picture = ruler
 
 	trigger = {
-		has_reform = kemetic_kingdom
+		OR = {
+			has_reform = kemetic_kingdom
+			has_reform = aten_kemetic_kingdom
+		}
 		AND = {
 			NOT = { has_country_modifier = treasurer_vizier }
 			NOT = { has_country_modifier = agriculture_vizier }
@@ -920,7 +936,10 @@ country_event = {
 	is_triggered_only = yes
 
 	trigger = {
-		has_reform = kemetic_kingdom
+		OR = {
+			has_reform = kemetic_kingdom
+			has_reform = aten_kemetic_kingdom
+		}
 		OR = {
 			has_country_modifier = treasurer_vizier
 			has_country_modifier = agriculture_vizier
@@ -3643,7 +3662,7 @@ country_event = {
 	trigger = {
 		OR = {
 			AND = {
-				is_year = 160
+				is_year = 165
 				NOT = { is_year = 200 }
 			}
 			AND = {
@@ -3765,6 +3784,115 @@ country_event = {
 		add_country_modifier = {
 			name = ai_bigboy_persia
 			duration = 10950
+		}
+	}
+}
+
+########################################################################################
+# priests are attempting to revert aten
+########################################################################################
+country_event = {
+	id = new_governments.42
+	title = "new_governments.42.t"
+	desc = "new_governments.42.d"
+	picture = ruler
+	
+	trigger = {
+		religion = atenism
+		has_country_flag = atenism_reborn
+		faction_influence = {
+			faction = fac_priesthood_aten
+			influence = 75
+		}
+		NOT = { has_country_flag = aten_priests_attempting_revert }
+	}
+	
+	mean_time_to_happen = {
+		months = 25
+	}
+
+	option = {
+		name = "new_governments.42.a"
+		add_stability = -1
+		custom_tooltip = aten_revert_warning_tt
+		set_country_flag = aten_priests_attempting_revert
+	}
+}
+
+########################################################################################
+# priests successfully revert aten
+########################################################################################
+country_event = {
+	id = new_governments.43
+	title = "new_governments.43.t"
+	desc = "new_governments.43.d"
+	picture = ruler
+	
+	trigger = {
+		religion = atenism
+		has_country_flag = atenism_reborn
+		had_country_flag = {
+			flag = aten_priests_attempting_revert
+			days = 1825
+		}
+		faction_influence = {
+			faction = fac_priesthood_aten
+			influence = 50
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "new_governments.43.a"
+		add_stability = -2
+		add_legitimacy = -25
+		change_religion = egyptian_religion
+		capital_scope = {
+			change_religion = egyptian_religion
+		}
+		add_government_reform = kemetic_kingdom
+		clr_country_flag = aten_priests_attempting_revert
+		clr_country_flag = atenism_reborn
+	}
+}
+
+########################################################################################
+# priests unsuccessful
+########################################################################################
+country_event = {
+	id = new_governments.44
+	title = "new_governments.44.t"
+	desc = "new_governments.44.d"
+	picture = ruler
+	
+	trigger = {
+		religion = atenism
+		has_country_flag = atenism_reborn
+		had_country_flag = {
+			flag = aten_priests_attempting_revert
+			days = 1825
+		}
+		NOT = {
+			faction_influence = {
+				faction = fac_priesthood_aten
+				influence = 50
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "new_governments.44.a"
+		clr_country_flag = aten_priests_attempting_revert
+		add_faction_influence = {
+			faction = fac_pharaoh
+			influence = 20
 		}
 	}
 }
