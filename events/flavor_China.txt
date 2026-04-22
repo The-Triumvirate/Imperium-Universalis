@@ -1712,6 +1712,7 @@ country_event = {
 	picture = ruler
 
 	trigger = {
+		owns = 4349
 		NOT = {
 			tag = ZHO
 		}
@@ -1721,14 +1722,13 @@ country_event = {
 		ZHO = {
 			exists = no
 		}
-		owns = 4349
 		religion = chinese_religion
 		is_emperor_of_china = no
 	}
 
 
 	mean_time_to_happen = {
-		months = 1
+		months = 2
 	}
 
 	option = {
@@ -1740,7 +1740,7 @@ country_event = {
 			who = ZHO
 			modifier = opinion_country_released_zhou
 		}
-		add_papal_influence = 100
+		add_papal_influence = 25
 		ZHO = {
 			add_government_reform = free_city_zhou
 		}
@@ -6267,7 +6267,7 @@ country_event = {
 }
 
 ########################################################################################
-# remove badao league member flag if war lost
+# jiaohua league member flag
 ########################################################################################
 country_event = {
 	id = china.124
@@ -6277,15 +6277,15 @@ country_event = {
 	hidden = yes
 
 	trigger = {
-		has_country_flag = was_in_badao_league
-		is_in_league_war = no
+		in_league = chinese_religion
+		is_in_league_war = yes
 		NOT = {
-			hre_religion = liyuebadao
+			has_country_flag = was_in_jiaohua_league
 		}
 	}
 
 	immediate = {
-		clr_country_flag = was_in_badao_league
+		set_country_flag = was_in_jiaohua_league
 	}
 
 	option = {
@@ -8108,42 +8108,6 @@ country_event = {
 			}
 		}
 		vassalize = QIG
-	}
-}
-
-########################################################################################
-# chu player can maintain hre
-########################################################################################
-country_event = {
-	id = china.157
-	title = "china.157.t"
-	desc = "china.157.d"
-	picture = HRE_eventPicture
-
-	is_triggered_only = yes
-
-	option = {
-		name = "china.157.a"
-		dismantle_hre = yes
-		hidden_effect = {
-			ZHO = {
-				country_event = {
-					id = china.142
-				}
-			}
-			set_global_flag = zhanguokaishi
-		}
-	}
-	option = {
-		name = "china.157.b"
-		every_country = {
-			limit = {
-				religion = chinese_religion
-				has_country_flag = was_in_badao_league
-			}
-			change_religion = liyuebadao
-			clr_country_flag = was_in_badao_league
-		}
 	}
 }
 
@@ -11588,13 +11552,6 @@ country_event = {
 					num_of_allies = 2
 				}
 			}
-			modifier = {
-				factor = 99
-				any_known_country = {
-					has_country_flag = zhou_raid_supported
-					ai = no
-				}
-			}
 		}
 	}
 	option = {
@@ -13528,14 +13485,27 @@ country_event = {
 ########################################################################################
 country_event = {
 	id = china.226
-	title = "china.225.t"
-	desc = "china.225.d"
+	title = "china.226.t"
+	desc = "china.226.d"
 	picture = HRE_eventPicture
-	hidden = yes
+	major = yes
 	is_triggered_only = yes
 	
-	immediate = {
-		hidden_effect = {
+	trigger = {
+		is_league_leader = yes
+		is_emperor = no
+		hre_leagues_enabled = yes
+	}
+	
+	option = {
+		name = "china.226.a"
+		#FIRST LEAGUE WAR EFFECTS ONLY
+		if = {
+			limit = {
+				tag = CHU
+				NOT = { has_country_flag = first_league_war_as_chu }
+			}
+			set_country_flag = first_league_war_as_chu
 			if = {
 				limit = {
 					exists = SHE
@@ -13656,14 +13626,34 @@ country_event = {
 					}
 				}
 			}
+			if = {
+				limit = {
+					ai = yes
+				}
+				set_ai_personality = {
+					personality = ai_militarist
+					locked = yes
+				}
+			}
+		} # END
+		add_country_modifier = {
+			name = chu_stalemate_buff
+			duration = 3650
+		}
+		set_hre_religion_treaty = yes
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						has_country_flag = was_in_badao_league
+						has_country_flag = was_in_jiaohua_league
+					}
+				}
+				clr_country_flag = was_in_badao_league
+				clr_country_flag = was_in_jiaohua_league
+			}
 		}
 	}
-	
-	option = {
-		name = "china.225.a"
-		
-	}
-
 }
 
 ########################################################################################
@@ -14102,6 +14092,10 @@ country_event = {
 		}
 	}
 	
+	mean_time_to_happen = {
+		months = 3
+	}
+	
 	immediate = {
 		remove_country_modifier = zhuxia_army_calc_mod_1
 		remove_country_modifier = zhuxia_army_calc_mod_2
@@ -14116,4 +14110,519 @@ country_event = {
 		
 	}
 	
+}
+
+########################################################################################
+# death of a dafu
+########################################################################################
+province_event = {
+	id = china.237
+	title = "china.237.t"
+	desc = "china.237.d"
+	picture = cloudy_manor
+	
+	trigger = {
+		has_cardinal = yes
+		owner = {
+			total_number_of_cardinals = 6
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 480
+		modifier = {
+			factor = 0.5
+			owner = {
+				NOT = {
+					controls = ROOT
+				}
+			}
+		}
+		modifier = {
+			factor = 0.9
+			devastation = 2
+			NOT = {
+				devastation = 5
+			}
+		}
+		modifier = {
+			factor = 0.8
+			devastation = 5
+			NOT = {
+				devastation = 10
+			}
+		}
+		modifier = {
+			factor = 0.7
+			devastation = 10
+			NOT = {
+				devastation = 25
+			}
+		}
+		modifier = {
+			factor = 0.6
+			devastation = 25
+			NOT = {
+				devastation = 50
+			}
+		}
+		modifier = {
+			factor = 0.5
+			devastation = 50
+		}
+		modifier = {
+			factor = 0.8
+			owner = {
+				NOT = {
+					stability = 0
+				}
+			}
+		}
+		modifier = {
+			factor = 0.75
+			total_number_of_cardinals = 25
+		}
+	}
+
+	option = {
+		name = "china.237.a"
+		remove_cardinal = yes
+	}
+}
+
+########################################################################################
+# zhou loses chengzhou (emperor)
+########################################################################################
+country_event = {
+	id = china.238
+	title = "china.238.t"
+	desc = "china.238.d"
+	picture = deligation
+	major = yes
+	
+	trigger = {
+		NOT = { exists = ZHO }
+		4349 = {
+			owner = {
+				NOT = {
+					religion = chinese_religion
+				}
+			}
+		}
+		is_emperor = yes
+		religion = chinese_religion
+		num_of_cities = 8
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "china.238.a"
+		hidden_effect = {
+			every_province = {
+				limit = {
+					has_province_flag = zhou_fled_here_pf
+				}
+				clr_province_flag = zhou_fled_here_pf
+			}
+		}
+		ROOT = {
+			save_global_event_target_as = zhou_savior_country
+		}
+		random_owned_province = {
+			cede_province = ZHO
+			add_core = ZHO
+			remove_core = ROOT
+			set_province_flag = zhou_fled_here_pf
+		}
+		create_alliance = ZHO
+		add_historical_friend = ZHO
+		ZHO = {
+			add_historical_friend = ROOT
+			set_dynasty = "Ji"
+			change_religion = chinese_religion
+			country_event = {
+				id = chinese_school_events.1
+				days = 1
+			}
+		}
+		add_trust = {
+			who = ZHO
+			value = 100
+			mutual = yes
+		}
+		add_favors = {
+		   who = ZHO
+		   amount = 100
+		}
+		ZHO = {
+			set_country_flag = zhou_had_to_flee_flag
+		}
+		4349 = {
+			owner = {
+				country_event = { id = china.241 }
+			}
+		}
+	}
+	
+	option = {
+		name = "china.238.b"
+		trigger = { ai = no }
+		custom_tooltip = zhoufledtootherstate_tt
+		hidden_effect = {
+			random_country = {
+				limit = {
+					ai = yes
+					religion = chinese_religion
+					num_of_cities = 10
+				}
+				every_province = {
+					limit = {
+						has_province_flag = zhou_fled_here_pf
+					}
+					clr_province_flag = zhou_fled_here_pf
+				}
+				THIS = {
+					save_global_event_target_as = zhou_savior_country
+				}
+				random_owned_province = {
+					cede_province = ZHO
+					add_core = ZHO
+					remove_core = PREV
+					set_province_flag = zhou_fled_here_pf
+				}
+				create_alliance = ZHO
+				add_historical_friend = ZHO
+				ZHO = {
+					add_historical_friend = THIS
+					set_dynasty = "Ji"
+					change_religion = chinese_religion
+					country_event = {
+						id = chinese_school_events.1
+						days = 1
+					}
+				}
+				add_trust = {
+					who = ZHO
+					value = 100
+					mutual = yes
+				}
+				add_favors = {
+				   who = ZHO
+				   amount = 100
+				}
+				ZHO = {
+					set_country_flag = zhou_had_to_flee_flag
+				}
+				4349 = {
+					owner = {
+						country_event = { id = china.241 }
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou regains chengzhou, lose core on old land
+########################################################################################
+country_event = {
+	id = china.239
+	title = "china.239.t"
+	desc = "china.239.d"
+	picture = deligation
+	
+	trigger = {
+		tag = ZHO
+		has_country_flag = zhou_had_to_flee_flag
+		owns = 4349
+		is_at_war = no
+		any_province = {
+			has_province_flag = zhou_fled_here_pf
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 9
+	}
+
+	option = {
+		name = "china.239.a"
+		every_province = {
+			limit = {
+				has_province_flag = zhou_fled_here_pf
+			}
+			remove_core = ZHO
+			cede_province = event_target:zhou_savior_country
+			add_core = event_target:zhou_savior_country
+		}
+		clear_global_event_target = zhou_savior_country
+		set_capital = 4349
+	}
+}
+
+########################################################################################
+# zhou loses chengzhou (non emperor)
+########################################################################################
+country_event = {
+	id = china.240
+	title = "china.238.t"
+	desc = "china.238.d"
+	picture = deligation
+	major = yes
+	
+	trigger = {
+		NOT = { exists = ZHO }
+		4349 = {
+			owner = {
+				NOT = {
+					religion = chinese_religion
+				}
+			}
+		}
+		religion = chinese_religion
+		hre_religion = chinese_religion
+		is_emperor = no
+		hre_size = 1
+		is_part_of_hre = yes
+		num_of_cities = 10
+		emperor = {
+			NOT = {
+				num_of_cities = 8
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "china.238.a"
+		hidden_effect = {
+			every_province = {
+				limit = {
+					has_province_flag = zhou_fled_here_pf
+				}
+				clr_province_flag = zhou_fled_here_pf
+			}
+		}
+		ROOT = {
+			save_global_event_target_as = zhou_savior_country
+		}
+		random_owned_province = {
+			cede_province = ZHO
+			add_core = ZHO
+			remove_core = ROOT
+			set_province_flag = zhou_fled_here_pf
+		}
+		create_alliance = ZHO
+		add_historical_friend = ZHO
+		ZHO = {
+			add_historical_friend = ROOT
+			set_dynasty = "Ji"
+			change_religion = chinese_religion
+			country_event = {
+				id = chinese_school_events.1
+				days = 1
+			}
+		}
+		add_trust = {
+			who = ZHO
+			value = 100
+			mutual = yes
+		}
+		add_favors = {
+		   who = ZHO
+		   amount = 100
+		}
+		ZHO = {
+			set_country_flag = zhou_had_to_flee_flag
+		}
+		4349 = {
+			owner = {
+				country_event = { id = china.241 }
+			}
+		}
+	}
+	
+	option = {
+		name = "china.238.b"
+		trigger = { ai = no }
+		custom_tooltip = zhoufledtootherstate_tt
+		hidden_effect = {
+			random_country = {
+				limit = {
+					ai = yes
+					religion = chinese_religion
+					num_of_cities = 10
+				}
+				every_province = {
+					limit = {
+						has_province_flag = zhou_fled_here_pf
+					}
+					clr_province_flag = zhou_fled_here_pf
+				}
+				THIS = {
+					save_global_event_target_as = zhou_savior_country
+				}
+				random_owned_province = {
+					cede_province = ZHO
+					add_core = ZHO
+					remove_core = PREV
+					set_province_flag = zhou_fled_here_pf
+				}
+				create_alliance = ZHO
+				add_historical_friend = ZHO
+				ZHO = {
+					add_historical_friend = THIS
+					set_dynasty = "Ji"
+					change_religion = chinese_religion
+					country_event = {
+						id = chinese_school_events.1
+						days = 1
+					}
+				}
+				add_trust = {
+					who = ZHO
+					value = 100
+					mutual = yes
+				}
+				add_favors = {
+				   who = ZHO
+				   amount = 100
+				}
+				ZHO = {
+					set_country_flag = zhou_had_to_flee_flag
+				}
+				4349 = {
+					owner = {
+						country_event = { id = china.241 }
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# occupation of chengzhou while hre exists
+########################################################################################
+country_event = {
+	id = china.241
+	title = "china.241.t"
+	desc = "china.241.d"
+	picture = siege_picture
+	is_triggered_only = yes
+
+	option = {
+		name = "china.241.a" 
+		custom_tooltip = chengzhou_occupier_warning_tt
+		hidden_effect = {
+			every_country = {
+				limit = {
+					total_development = 75
+					religion = chinese_religion
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = opinion_took_chengzhou_during_HRE
+				}
+				add_casus_belli = {
+					target = ROOT
+					type = cb_insult
+					months = 120
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# destruction of zhou (badao hre)
+########################################################################################
+country_event = {
+	id = china.242
+	title = "china.242.t"
+	desc = "china.242.d"
+	picture = military_parade
+	major = yes
+	
+	trigger = {
+		NOT = { exists = ZHO }
+		owns = 4349
+		hre_religion = liyuebadao
+		is_emperor = yes
+		hre_size = 1
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "china.242.a"
+		
+	}
+}
+
+########################################################################################
+# NEW LEAGUE WAR - ensure badao countries have debuff
+########################################################################################
+country_event = {
+	id = china.243
+	title = "china.242.t"
+	desc = "china.242.d"
+	picture = military_parade
+	hidden = yes
+	
+	trigger = {
+		religion = liyuebadao
+		has_global_flag = HRE_leagues_jiaohua_leader
+		NOT = {
+			has_country_modifier = HRE_leagues_badao_prevent_hegemon
+		}
+	}
+	
+	immediate = {
+		add_country_modifier = {
+			name = HRE_leagues_badao_prevent_hegemon
+			duration = -1
+		}
+	}
+
+	option = {
+		name = "china.242.a"
+		
+	}
+}
+
+########################################################################################
+# NEW LEAGUE WAR - clear debuff if hre gone
+########################################################################################
+country_event = {
+	id = china.244
+	title = "china.242.t"
+	desc = "china.242.d"
+	picture = military_parade
+	hidden = yes
+	
+	trigger = {
+		religion = liyuebadao
+		has_global_flag = HRE_leagues_jiaohua_leader
+		has_country_modifier = HRE_leagues_badao_prevent_hegemon
+		NOT = { hre_size = 1 }
+	}
+	
+	immediate = {
+		remove_country_modifier = HRE_leagues_badao_prevent_hegemon
+	}
+
+	option = {
+		name = "china.242.a"
+		
+	}
 }
