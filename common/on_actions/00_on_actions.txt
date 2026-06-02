@@ -232,7 +232,6 @@ on_war_lost = {
 		rome.42
 		scythian.12
 		china.226
-		china.246
 	}
 	recalc_socii_variables_w_check = yes
 	if = {
@@ -489,6 +488,60 @@ on_monarch_death = {
 		country_event = { id = jin_partition.36 }
 		add_stability = 1 #double-ruler death
 	}
+	
+	#HRE BADAO CHECK, can't use variables because i need to check things globally
+	#first, if a BaDao emperor is elected, clear the counter
+	if = {
+		limit = {
+			is_emperor = yes
+			religion = liyuebadao
+			has_global_flag = HRE_leagues_badao_leader
+		}
+		clr_global_flag = first_JiaoHua_generation
+		clr_global_flag = second_JiaoHua_generation
+	}
+	#if 3 consecutive JiaoHua emperors are elected AND BaDao countries are accepted in the HRE, remove their acceptance
+	if = {
+		limit = {
+			is_emperor = yes
+			religion = chinese_religion
+			has_global_flag = HRE_leagues_badao_leader
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_global_flag = first_JiaoHua_generation
+				}
+			}
+			set_global_flag = first_JiaoHua_generation
+		}
+		else_if = {
+			limit = {
+				has_global_flag = first_JiaoHua_generation
+				NOT = {
+					has_global_flag = second_JiaoHua_generation
+				}
+			}
+			set_global_flag = second_JiaoHua_generation
+		}
+		else_if = {
+			limit = {
+				has_global_flag = second_JiaoHua_generation
+			}
+			clr_global_flag = first_JiaoHua_generation
+			clr_global_flag = second_JiaoHua_generation
+			set_global_flag = HRE_leagues_jiaohua_leader
+			every_country = {
+				limit = {
+					religion = liyuebadao
+					is_part_of_hre = yes
+				}
+				country_event = { id = china.249 }
+			}
+		}
+	}
+	###
+	
 	if = {
 		limit = {
 			tag = ZHO
@@ -532,6 +585,31 @@ on_monarch_death = {
 			value = 100
 		}
 	}
+	
+	#handle stuff after the winning ruler of a league war dies
+	if = {
+		limit = {
+			has_country_flag = current_bazhu_undisputed
+			religion = chinese_religion
+			NOT = {
+				has_ruler_flag = this_ruler_is_bazhu
+			}
+		}
+		clr_country_flag = current_bazhu_undisputed
+		country_event = { id = china.247 }
+	}
+	if = {
+		limit = {
+			has_country_flag = current_bazhu_undisputed
+			religion = liyuebadao
+			NOT = {
+				has_ruler_flag = this_ruler_is_bazhu
+			}
+		}
+		clr_country_flag = current_bazhu_undisputed
+		country_event = { id = china.248 }
+	}
+	###
 }
 
 # country
@@ -987,6 +1065,8 @@ on_yearly_pulse = {
 		population_upgrade.101
 		china.135
 		china.235
+		china.217
+		china.246
 	}
 }
 on_yearly_pulse_2 = {

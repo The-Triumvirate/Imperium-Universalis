@@ -21,7 +21,7 @@ country_event = {
 
 	option = {
 		name = "taoism_events.1.a" #
-		custom_tooltip = taoism_incident_huanglao_start.tt
+		#custom_tooltip = taoism_incident_huanglao_start.tt
 		##custom_tooltip = taoism_events.isolation.tt
 		add_ruler_modifier = {
 			name = taoism_huanglao_1
@@ -131,12 +131,16 @@ country_event = {
 
 	option = {
 		name = "taoism_events.3.b" #Perhaps he could be made a servant of our state...
-		add_ruler_modifier = {
+		add_isolationism = -1
+	}
+	
+	option = {
+		name = "taoism_events.3.c" #Perhaps he could be made a servant of our state...
+		add_country_modifier = {
 			name = taoism_huanglao_6
-			duration = -1
+			duration = 18250
 		}
 	}
-
 }
 
 #阴阳五行
@@ -289,13 +293,21 @@ country_event = {
 
 	option = {
 		name = "taoism_events.14.a" #Order is restored.
+		add_isolationism = 1
+	}
+	
+	option = {
+		name = "taoism_events.14.b" #Order is restored.
 		add_isolationism = -1
 	}
 
 	option = {
-		name = "taoism_events.14.b" #Order is restored.
-		every_owned_province = {
-			add_nationalism = -10
+		name = "taoism_events.14.c" #Order is restored.
+		custom_tooltip = taoism_incident_reduce_nationalism_tt
+		hidden_effect = {
+			every_owned_province = {
+				add_nationalism = -10
+			}
 		}
 	}
 
@@ -365,6 +377,7 @@ country_event = {
 	option = {
 		name = "taoism_events.22.a" #We must undercut these
 		add_yearly_manpower = -1
+		set_country_flag = taoism_incident_checker_3_paper
 	}
 	option = {
 		name = "taoism_events.22.b" #Let us strive to work together with these armies of the faithful.
@@ -386,7 +399,7 @@ country_event = {
 	id = taoism_events.23
 	title = "taoism_events.23.t"
 	desc = "taoism_events.23.d"
-	picture = pergament
+	picture = archemedis
 
 	is_triggered_only = yes
 
@@ -409,6 +422,7 @@ country_event = {
 			name = taoism_birth_of_paper
 			duration = -1
 		}
+		set_country_flag = taoism_incident_checker_3_paper
 	}
 }
 
@@ -426,6 +440,7 @@ country_event = {
 			value = 2
 		}
 		religion = taoism
+		has_country_flag = taoism_incident_checker_3_paper
 	}
 
 	mean_time_to_happen = {
@@ -453,7 +468,12 @@ country_event = {
 	}
 
 	option = {
-		name = "taoism_events.24.a" #
+		name = "taoism_events.24.b" #
+		add_isolationism = 1
+	}
+	
+	option = {
+		name = "taoism_events.24.c" #
 		add_country_modifier = {
 			name = taoism_jingdian_1
 			duration = 18250
@@ -478,7 +498,6 @@ country_event = {
 	option = {
 		name = "taoism_events.31.a" #We should strive to attract the thinkers of this new strand of moral philosophy.
 		custom_tooltip = taoism_incident_wuyi.tt
-		add_prestige = -100
 		hidden_effect = {
 			add_incident_variable_value = {
 				incident = incident_taoism_4
@@ -535,18 +554,12 @@ country_event = {
 
 	option = {
 		name = "taoism_events.32.a" #This is an initiative we must support.
-		add_corruption = 25
-		capital_scope = {
-			spawn_rebels = {
-				type = pretender_rebels
-				size = 5
-				use_heir_as_leader = yes
-			}
-		}
+		add_corruption = 10
+		kill_heir = { allow_new_heir = yes }
 	}
 	option = {
 		name = "taoism_events.32.b" #We cannot allow social order to be threatened in this way!
-		add_stability = -3
+		add_stability = -2
 		capital_scope = {
 			spawn_rebels = {
 				type = pretender_rebels
@@ -594,15 +607,18 @@ country_event = {
 
 	option = {
 		name = "taoism_events.33.a" #
-		every_owned_province = {
-			limit = {
-				religion = taoism
-				NOT = { is_in_capital_area = yes }
-			}
-			spawn_rebels = {
-				type = wuism_rebels#yellow_turban_revolt
-				size = 1
-				win = yes
+		custom_tooltip = taoism_incident_wuist_rebel_tt
+		hidden_effect = {
+			every_owned_province = {
+				limit = {
+					religion = taoism
+					is_capital = no
+				}
+				spawn_rebels = {
+					type = wuism_rebels
+					size = 1
+					win = no
+				}
 			}
 		}
 	}
@@ -647,7 +663,7 @@ country_event = {
 
 	option = {
 		name = "taoism_events.34.a" #
-		add_isolationism = 1
+		add_isolationism = -1
 	}
 
 	option = {
@@ -657,7 +673,6 @@ country_event = {
 			duration = -1
 		}
 	}
-
 }
 
 #教社之制
@@ -666,7 +681,7 @@ country_event = {
 	id = taoism_events.41
 	title = "taoism_events.41.t"
 	desc = "taoism_events.41.d"
-	picture = civil_war
+	picture = civilwar
 
 	is_triggered_only = yes
 
@@ -732,34 +747,39 @@ province_event = {
 	trigger = {
 		religion = taoism
 	}
-
-	option = {
-		name = "taoism_events.42.a" #We will allow them to expand their presence.
-		if = {
-			limit = {
-				is_capital = no
-			}
-			set_province_flag = taoism_jiaotuan_flag
-			random_neighbor_province = {
-				if = {
-					limit = {
-						is_capital = no
-					}
-					province_event = {
-						id = taoism_events.42
-						days = 30
-					}
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					is_capital = no
 				}
-				if = {
-					limit = {
-						is_capital = yes
+				set_province_flag = taoism_jiaotuan_flag
+				random_neighbor_province = {
+					if = {
+						limit = {
+							is_capital = no
+						}
+						province_event = {
+							id = taoism_events.42
+							days = 30
+						}
 					}
-					owner = {
-						country_event = { id = taoism_events.43 }
+					if = {
+						limit = {
+							is_capital = yes
+						}
+						owner = {
+							country_event = { id = taoism_events.43 }
+						}
 					}
 				}
 			}
 		}
+	}
+
+	option = {
+		name = "taoism_events.42.a" #We will allow them to expand their presence.
 	}
 
 }
@@ -769,7 +789,7 @@ country_event = {
 	id = taoism_events.43
 	title = "taoism_events.43.t"
 	desc = "taoism_events.43.d"
-	picture = civil_war
+	picture = civilwar
 
 	is_triggered_only = yes
 
@@ -787,6 +807,7 @@ country_event = {
 
 	option = {
 		name = "taoism_events.43.a" #We must do our best to encourage dissemination of western science.
+		add_isolationism = 1
 		every_owned_province = {
 			limit = {
 				has_province_flag = taoism_jiaotuan_flag
@@ -1013,11 +1034,11 @@ country_event = {
 		clr_country_flag = active_incident_flag
 		hidden_effect = {
 			random_list = {
-				99 = {
+				98 = {
 					kill_ruler = yes
 					add_prestige = -200
 				}
-				1 = {
+				2 = {
 					add_ruler_personality = immortal_personality #immortal due to potion
 					add_isolationism = 1
 				}
@@ -1054,7 +1075,7 @@ country_event = {
 	}
 
 	option = {
-		name = "taoism_events.61.a" #Preposterous! They have no business here!
+		name = "taoism_events.61.b" #Preposterous! They have no business here!
 		trigger = {
 			NOT = { has_country_flag = taoism_xunxian_flag_4 }
 			NOT = { has_country_flag = taoism_xunxian_flag_5 }
@@ -1068,6 +1089,7 @@ country_event = {
 
 	option = {
 		name = "taoism_events.61.e" #We will allow them to stay as long as they behave.
+		trigger = { always = no } #todo: rework?
 		country_event = { id = taoism_events.65 }
 	}
 
@@ -1447,7 +1469,7 @@ country_event = {
 	}
 
 	option = {
-		name = "taoism_events.47.a" #
+		name = "taoism_events.73.a" #
 		set_country_flag = taoism_incident_recent
 		clr_country_flag = active_incident_flag
 		end_incident = incident_taoism_7
@@ -1555,7 +1577,7 @@ country_event = {
 	id = taoism_events.82
 	title = "taoism_events.82.t"
 	desc = "taoism_events.82.d"
-	picture = civil_war
+	picture = civilwar
 
 	is_triggered_only = yes
 
@@ -1670,12 +1692,12 @@ country_event = {
 	}
 
 	option = {
-		name = "taoism_events.57.a" #Actions speak louder than words.
-		add_isolationism = 1
+		name = "taoism_events.87.a" #Actions speak louder than words.
+		add_isolationism = -1
 	}
 
 	option = {
-		name = "taoism_events.57.a" #Actions speak louder than words.
+		name = "taoism_events.87.b" #Actions speak louder than words.
 		add_country_modifier = {
 			name = taoism_taiping_1
 			duration = 18250

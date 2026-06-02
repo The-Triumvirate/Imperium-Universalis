@@ -395,6 +395,14 @@ country_event = {
 			cede_province = event_target:minister_target_pick
 			add_core = event_target:minister_target_pick
 		}
+		hidden_effect = {
+			every_province = {
+				limit = {
+					is_core = JIN
+				}
+				remove_core = JIN
+			}
+		}
 	}
 	option = {
 		name = "jin_partition.12.b" #fight despite zhou accepting the ministers
@@ -406,6 +414,10 @@ country_event = {
 			every_known_country = {
 				limit = {
 					alliance_with = ROOT
+					OR = {
+						total_development = 125
+						tag = ZHO
+					}
 				}
 				break_alliance = ROOT
 			}
@@ -571,10 +583,20 @@ country_event = {
 		4070 = {
 			cede_province = event_target:minister_target_pick
 			add_core = event_target:minister_target_pick
+			remove_core = JIN
 		}
 		4071 = {
 			cede_province = event_target:minister_target_pick
 			add_core = event_target:minister_target_pick
+			remove_core = JIN
+		}
+		hidden_effect = {
+			every_province = {
+				limit = {
+					is_core = JIN
+				}
+				remove_core = JIN
+			}
 		}
 	}
 	option = {
@@ -845,12 +867,69 @@ country_event = {
 				cede_province = event_target:minister_target_pick
 				add_core = event_target:minister_target_pick
 			}
+			hidden_effect = {
+				every_province = {
+					limit = {
+						is_core = JIN
+					}
+					remove_core = JIN
+				}
+			}
 		}
 		else = {#war for when jin gets 0 influence and tries to reign in ministers
 			JIN = {
 				release_all_subjects = yes
 			}
 			custom_tooltip = jin_partition_tooltip_four
+			
+			#start with neighboring provs
+			while = {
+				limit = {
+					JIN = {
+						num_of_cities = 1
+					}
+					OR = {
+						any_known_country = {
+							is_neighbor_of = JIN
+							has_country_flag = jin_partition_participant
+						}
+						ROOT = {
+							is_neighbor_of = JIN
+						}
+					}
+				}
+				random_province = { #war leader isnt included in the random country calculation
+					limit = {
+						owned_by = JIN
+						is_neighbor_of = ROOT
+					}
+					cede_province = ROOT
+					add_core = ROOT
+				}
+				random_country = {
+					limit = {
+						OR = {
+							tag = ZHI
+							tag = FAN
+							tag = WEI
+							tag = HAN
+							tag = ZHA
+							tag = CZH
+							tag = CXI
+							tag = RLA
+						}
+						has_country_flag = jin_partition_participant
+					}
+					random_province = {
+						limit = {
+							owned_by = JIN
+							is_neighbor_of = PREV
+						}
+						cede_province = PREV
+						add_core = PREV
+					}
+				}
+			}
 			
 			while = {
 				limit = {
@@ -886,6 +965,15 @@ country_event = {
 						cede_province = PREV
 						add_core = PREV
 					}
+				}
+			}
+			
+			hidden_effect = {
+				every_province = {
+					limit = {
+						is_core = JIN
+					}
+					remove_core = JIN
 				}
 			}
 		}
@@ -2619,6 +2707,10 @@ country_event = {
 			every_known_country = {
 				limit = {
 					alliance_with = ROOT
+					OR = {
+						total_development = 125
+						tag = ZHO
+					}
 				}
 				break_alliance = ROOT
 			}
