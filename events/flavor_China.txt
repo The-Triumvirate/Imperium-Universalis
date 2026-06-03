@@ -10306,7 +10306,7 @@ country_event = {
 		is_league_leader = yes
 		hre_leagues_enabled = yes
 		has_dlc = "Art of War"
-		is_year = 164
+		is_year = 162
 		NOT = {
 			started_in = 164.1.1
 		}
@@ -10330,7 +10330,7 @@ country_event = {
 	option = {
 		name = "china.187.b"
 		trigger = { ai = no }
-		add_prestige = -10
+		add_prestige = -25
 	}
 }
 
@@ -14849,7 +14849,7 @@ country_event = {
 }
 
 ########################################################################################
-# league war restart enable (badao emperor)
+# notify badao countries of potential loss of inclusion once jiaohua emperor rises
 ########################################################################################
 country_event = {
 	id = china.248
@@ -14879,6 +14879,593 @@ country_event = {
 		add_country_modifier = {
 			name = HRE_leagues_badao_prevent_hegemon
 			duration = -1
+		}
+	}
+}
+
+########################################################################################
+# 3 generations of jiaohua, end badao inclusion (jiaohua notif)
+########################################################################################
+country_event = {
+	id = china.250
+	title = "china.249.t"
+	desc = "china.250.d"
+	picture = military_parade
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = "china.250.a"
+		set_global_flag = HRE_leagues_may_restart
+		custom_tooltip = badao_excluded_notif.tt
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 1 - Xie Ye's remonstrates
+########################################################################################
+country_event = {
+	id = china.251
+	title = "china.251.t"
+	desc = "china.251.d"
+	picture = cloudy_manor
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHN
+		is_year = 153
+		has_ruler_flag = this_is_pingguo
+	}
+	
+	mean_time_to_happen = {
+		months = 5
+		modifier = {
+			factor = 0.01
+			is_year = 155
+		}
+	}
+	
+	option = {
+		name = "china.251.a" #kill xie ye
+		set_country_flag = killed_xie_ye
+		add_country_modifier = {
+			name = xie_ye_killed_mod
+			duration = -1
+		}
+		ai_chance = {
+			factor = 98
+		}
+	}
+	
+	option = {
+		name = "china.251.b" #hire xie ye
+		set_country_flag = hired_xie_ye
+		kill_leader = {
+			type = "Gongsun Ning"
+		}
+		kill_leader = {
+			type = "Yi Hangfu"
+		}
+		define_advisor = {
+			type = statesman_adv
+			name = "Xie Ye"
+			skill = 2
+			culture = jianghan
+			religion = chinese_religion
+			discount = yes
+		}
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 2 (Alt) - Pingguo Reforms
+########################################################################################
+country_event = {
+	id = china.252
+	title = "china.252.t"
+	desc = "china.252.d"
+	picture = celebration_priestess
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHN
+		had_country_flag = {
+			flag = hired_xie_ye
+			days = 1460
+		}
+		employed_advisor = {
+			name = "Xie Ye"
+		}
+		has_ruler_flag = this_is_pingguo
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+	}
+	
+	option = {
+		name = "china.252.a"
+		add_prestige = 10
+		change_dip = 2
+		change_adm = 1
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 3 - Pingguo Dies
+########################################################################################
+country_event = {
+	id = china.253
+	title = "china.253.t"
+	desc = "china.253.d"
+	picture = assassination
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHN
+		has_country_flag = killed_xie_ye
+		has_ruler_flag = this_is_pingguo
+		is_year = 155
+	}
+	
+	mean_time_to_happen = {
+		months = 3
+	}
+	
+	option = {
+		name = "china.253.a"
+		remove_country_modifier = xie_ye_killed_mod
+		kill_ruler = yes
+		kill_heir = { allow_new_heir = no }
+		set_country_flag = pingguo_was_assassinated
+		kill_leader = {
+			type = "Gongsun Ning"
+		}
+		kill_leader = {
+			type = "Yi Hangfu"
+		}
+		define_ruler = {
+			name = "Zhengshu"
+			dynasty = "Gui"
+			adm = 3
+			dip = 3
+			mil = 3
+			age = 25
+			claim = 75
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 4 - Chu deals with Pingguo
+########################################################################################
+country_event = {
+	id = china.254
+	title = "china.254.t"
+	desc = "china.254.d"
+	picture = deligation
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		CHN = {
+			has_country_flag = pingguo_was_assassinated
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 5
+	}
+	
+	option = {
+		name = "china.254.a"
+		CHN = {
+			country_event = { id = china.255 }
+		}
+	}
+	option = {
+		name = "china.254.b"
+		trigger = { ai = no }
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 5 - Chen gets Chu's demands
+########################################################################################
+country_event = {
+	id = china.255
+	title = "china.255.t"
+	desc = "china.255.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.255.a" #refuse
+		trigger = {
+			CHU = {
+				ai = yes
+			}
+		}
+		CHU = {
+			country_event = { id = china.256 }
+		}
+		ai_chance = {
+			factor = 70
+		}
+	}
+	option = {
+		name = "china.255.b" #offer to join league
+		CHU = {
+			country_event = { id = china.257 }
+		}
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 3
+				CHU = {
+					ai = no
+				}
+			}
+			modifier = {
+				factor = 5
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 2
+				personality = ai_balanced
+			}
+			modifier = {
+				factor = 2
+				ZHE = {
+					in_league = chinese_religion
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.255.c" #offer to join league if land returned
+		CHU = {
+			country_event = { id = china.258 }
+		}
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 3
+				personality = ai_capitalist
+			}
+			modifier = {
+				factor = 2
+				CHU = {
+					is_at_war = yes
+				}
+			}
+			modifier = {
+				factor = 2
+				CHU = {
+					num_of_rebel_armies = 1
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 6 - Chen refuses chu
+########################################################################################
+country_event = {
+	id = china.256
+	title = "china.256.t"
+	desc = "china.256.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.256.a"
+		add_manpower = -3
+		CHN = {
+			country_event = { id = china.259 days = 20 }
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 7 - Zhengshu is overthrown
+########################################################################################
+country_event = {
+	id = china.259
+	title = "china.259.t"
+	desc = "china.259.d"
+	picture = siege
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.259.a"
+		kill_ruler = yes
+		kill_heir = { allow_new_heir = no }
+		define_ruler = {
+			name = "Wu"
+			dynasty = "Gui"
+			adm = 3
+			dip = 4
+			mil = 2
+			age = 23
+			claim = 95
+		}
+		add_stability = 1
+		CHU = {
+			country_event = { id = china.260 }
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 8 - Zhengshu is overthrown (Chu notif)
+########################################################################################
+country_event = {
+	id = china.260
+	title = "china.260.t"
+	desc = "china.260.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.260.a"
+		add_prestige = 10
+		add_country_modifier = {
+			name = chu_killed_zhengshu_mod
+			duration = 3650
+		}
+		custom_tooltip = chu_opinion_xia_ji.tt
+		if = {
+			limit = {
+				CHN = {
+					in_league = chinese_religion
+				}
+			}
+			CHN = {
+				leave_league = chinese_religion
+			}
+		}
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_opinion = {
+					who = ROOT
+					modifier = opinion_liberated_chen_xj
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 9 (Alt) - Chen offers to join league
+########################################################################################
+country_event = {
+	id = china.257
+	title = "china.257.t"
+	desc = "china.257.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.257.a"
+		CHN = {
+			country_event = { id = china.2571 }
+		}
+		ai_chance = {
+			factor = 95
+			modifier = {
+				factor = 1.5
+				personality = ai_balanced
+			}
+			modifier = {
+				factor = 2.5
+				personality = ai_diplomat
+			}
+			modifier = {
+				factor = 4
+				ruler_has_personality = tactical_genius_personality
+			}
+			modifier = {
+				factor = 2
+				CHN = {
+					ai = no
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.257.b"
+		add_manpower = -3
+		CHN = {
+			country_event = { id = china.2572 }
+		}
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 4
+				ruler_has_personality = babbling_buffoon_personality
+			}
+			modifier = {
+				factor = 4
+				ruler_has_personality = lunatic_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = ai_militarist
+			}
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 10 (Alt) - Chen offers to join league, accepted
+########################################################################################
+country_event = {
+	id = china.2571
+	title = "china.2571.t"
+	desc = "china.2571.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.2571.a"
+		leave_league = chinese_religion
+		join_league = liyuebadao
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 11 (Alt) - Chen declined
+########################################################################################
+country_event = {
+	id = china.2572
+	title = "china.2572.t"
+	desc = "china.2572.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.2572.a"
+		hidden_effect = {
+			CHN = {
+				country_event = { id = china.259 days = 20 }
+			}
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 12 (Alt) - Chen offers to join league (land condition)
+########################################################################################
+country_event = {
+	id = china.258
+	title = "china.257.t"
+	desc = "china.258.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.258.a"
+		CHN = {
+			country_event = { id = china.2581 }
+		}
+		ai_chance = {
+			factor = 60
+			modifier = {
+				factor = 1.25
+				ruler_has_personality = ai_balanced
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = ai_diplomat
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = tactical_genius_personality
+			}
+			modifier = {
+				factor = 2
+				is_at_war = yes
+			}
+			modifier = {
+				factor = 1.5
+				num_of_rebel_armies = 1
+			}
+			modifier = {
+				factor = 2
+				CHN = {
+					ai = no
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.258.b"
+		add_manpower = -3
+		CHN = {
+			country_event = { id = china.2572 }
+		}
+		ai_chance = {
+			factor = 40
+			modifier = {
+				factor = 4
+				ruler_has_personality = expansionist_personality
+			}
+			modifier = {
+				factor = 4
+				ruler_has_personality = conqueror_personality
+			}
+			modifier = {
+				factor = 4
+				ruler_has_personality = greedy_personality
+			}
+			modifier = {
+				factor = 2
+				ruler_has_personality = ai_militarist
+			}
+		}
+	}
+}
+
+########################################################################################
+# XIA JI Event Chain 13 (Alt) - Chen offers to join league (land condition), accepted
+########################################################################################
+country_event = {
+	id = china.2581
+	title = "china.2571.t"
+	desc = "china.2581.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.2571.a"
+		4324 = {
+			cede_province = CHN
+			remove_core = CHU
+		}
+		4342 = {
+			cede_province = CHN
+			remove_core = CHU
+		}
+		4395 = {
+			cede_province = CHN
+			remove_core = CHU
+		}
+		leave_league = chinese_religion
+		join_league = liyuebadao
+	}
+}
+
+########################################################################################
+# Chu gets buff for first league war
+########################################################################################
+country_event = {
+	id = china.261
+	title = "china.261.t"
+	desc = "china.261.d"
+	picture = cavalry
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CHU
+		is_in_league_war = yes
+		NOT = {
+			is_year = 170
+		}
+	}
+	
+	option = {
+		name = "china.30.a"
+		add_country_modifier = {
+			name = chu_league_war_buff_mod
+			duration = 1825
 		}
 	}
 }
