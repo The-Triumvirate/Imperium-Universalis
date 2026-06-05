@@ -1,0 +1,126 @@
+#new great unity button
+china_enforce_great_unity = {
+	category = emperor
+	#alert_index = 11
+	alert_tooltip = china_enforce_great_unity_alert_tooltip.1
+
+	require_acceptance = yes
+	
+	is_visible = {
+		is_emperor = yes
+		FROM = {
+			is_part_of_hre = yes
+			OR = {
+				AND = {
+					emperor = {
+						religion = chinese_religion
+					}
+					NOT = {
+						religion = chinese_religion
+					}
+				}
+				AND = {
+					emperor = {
+						religion = liyuebadao
+					}
+					NOT = {
+						religion = liyuebadao
+					}
+				}
+			}
+		}
+	}
+	is_allowed = {
+		hidden_trigger = { is_emperor = yes }
+		is_at_war = no
+		imperial_influence = 5
+		FROM = {
+			is_at_war = no
+			OR = {
+				is_subject = no
+				is_subject_of_type = tributary_state
+			}
+		}
+	}
+	on_accept = {
+		add_imperial_influence = -5
+		FROM = {
+			country_event = { id = china.265 }
+		}
+	}
+    
+    ai_acceptance = {
+        add_entry = {
+            name = TRUST
+            export_to_variable = {
+                variable_name = ai_value
+                value = trust      
+                who = FROM            
+                with = ROOT                 
+            }
+            subtract_variable = { which = ai_value value = 50 }
+			multiply_variable = { which = ai_value value = 0.5 }
+        }
+		add_entry = {
+            name = DEVELOPMENTPOPCHECK
+            export_to_variable = {
+                variable_name = ai_value
+                value = total_development      
+                who = FROM               
+            }
+			multiply_variable = { which = ai_value value = -1 }
+        }
+		add_entry = {
+			name = BORDER_DISTANCE
+			export_to_variable = {
+				variable_name = ai_value
+				value = border_distance
+				who = FROM
+				with = ROOT
+			}
+			multiply_variable = { which = ai_value value = -0.2 }
+		}
+		add_entry = {
+            name = OPINION
+            export_to_variable = {
+                variable_name = ai_value
+                value = opinion      
+                who = FROM            
+                with = ROOT                 
+            }
+			divide_variable = { which = ai_value value = 4 }
+        }
+		#add_entry = {
+        #    name = LEGITIMACYMODF
+        #    export_to_variable = {
+        #        variable_name = ai_value
+        #        value = modifier:legitimacy      
+        #        who = ROOT                           
+        #    }
+		#	#multiply_variable = { which = ai_value value = 1 }
+        #}
+		add_entry = {
+			name = DIP_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = TRUEFAITHSPACEFIX
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:tolerance_own
+				who = ROOT
+			}
+			#subtract_variable = { which = ai_value value = 1 }
+			multiply_variable = { which = ai_value value = 4 }
+		}
+    }
+
+	ai_will_do = {
+		imperial_influence = 30
+	}
+}
