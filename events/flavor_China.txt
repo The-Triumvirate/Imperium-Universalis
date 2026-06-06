@@ -1745,7 +1745,6 @@ country_event = {
 	#	add_prestige = -100
 	#	add_stability = -6
 	#}
-
 }
 
 ########################################################################################
@@ -9138,10 +9137,6 @@ country_event = {
 		name = "china.172.c" #seize the former heir and deliver him to Jituo (gives Ju their own dilemma)
 		add_prestige = 5
 		add_papal_influence = 10
-		add_historical_friend = JUU
-		JUU = {
-			add_historical_friend = LUU
-		}
 		reverse_add_opinion = {
 			who = JUU
 			modifier = opinion_lu_returned_ju_heir
@@ -9215,9 +9210,6 @@ country_event = {
 					modifier = opinion_took_in_bad_ruler
 				}
 			}
-		}
-		JUU = {
-			add_historical_rival = LUU
 		}
 		add_casus_belli = {
 			target = JUU
@@ -11666,14 +11658,14 @@ country_event = {
 				factor = 2
 				any_known_country = {
 					has_country_flag = zhou_raid_supported
-					num_of_allies = 1
+					num_of_allies = 2
 				}
 			}
 			modifier = {
-				factor = 4
+				factor = 2
 				any_known_country = {
 					has_country_flag = zhou_raid_supported
-					num_of_allies = 2
+					num_of_allies = 3
 				}
 			}
 		}
@@ -11695,7 +11687,7 @@ country_event = {
 		ai_chance = {
 			factor = 10
 			modifier = {
-				factor = 4
+				factor = 8
 				any_known_country = {
 					has_country_flag = zhou_raid_supported
 					NOT = { num_of_allies = 1 }
@@ -14265,6 +14257,10 @@ province_event = {
 				tag = ZHO
 			}
 		}
+		OR = {
+			is_papal_controller = no
+			num_of_cardinals = 3
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -14369,7 +14365,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 6
+		months = 3
 	}
 
 	option = {
@@ -14432,14 +14428,12 @@ country_event = {
 					religion = chinese_religion
 					num_of_cities = 10
 				}
+				save_global_event_target_as = zhou_savior_country
 				every_province = {
 					limit = {
 						has_province_flag = zhou_fled_here_pf
 					}
 					clr_province_flag = zhou_fled_here_pf
-				}
-				THIS = {
-					save_global_event_target_as = zhou_savior_country
 				}
 				random_owned_province = {
 					cede_province = ZHO
@@ -14453,10 +14447,12 @@ country_event = {
 					add_historical_friend = THIS
 					set_dynasty = "Ji"
 					change_religion = chinese_religion
+					add_government_reform = free_city_zhou
 					country_event = {
 						id = chinese_school_events.1
 						days = 1
 					}
+					set_in_empire = yes
 				}
 				add_trust = {
 					who = ZHO
@@ -14500,7 +14496,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 9
+		months = 6
 	}
 
 	option = {
@@ -14512,8 +14508,10 @@ country_event = {
 			remove_core = ZHO
 			cede_province = event_target:zhou_savior_country
 			add_core = event_target:zhou_savior_country
+			clr_province_flag = zhou_fled_here_pf
 		}
 		clear_global_event_target = zhou_savior_country
+		clr_country_flag = zhou_had_to_flee_flag
 		set_capital = 4349
 	}
 }
@@ -14542,15 +14540,22 @@ country_event = {
 		hre_size = 1
 		is_part_of_hre = yes
 		num_of_cities = 10
-		emperor = {
-			NOT = {
-				num_of_cities = 8
+		OR = {
+			emperor = {
+				NOT = {
+					num_of_cities = 8
+				}
+			}
+			emperor = {
+				NOT = {
+					religion = chinese_religion
+				}
 			}
 		}
 	}
 	
 	mean_time_to_happen = {
-		months = 6
+		months = 3
 	}
 
 	option = {
@@ -14613,14 +14618,12 @@ country_event = {
 					religion = chinese_religion
 					num_of_cities = 10
 				}
+				save_global_event_target_as = zhou_savior_country
 				every_province = {
 					limit = {
 						has_province_flag = zhou_fled_here_pf
 					}
 					clr_province_flag = zhou_fled_here_pf
-				}
-				THIS = {
-					save_global_event_target_as = zhou_savior_country
 				}
 				random_owned_province = {
 					cede_province = ZHO
@@ -14634,10 +14637,12 @@ country_event = {
 					add_historical_friend = THIS
 					set_dynasty = "Ji"
 					change_religion = chinese_religion
+					add_government_reform = free_city_zhou
 					country_event = {
 						id = chinese_school_events.1
 						days = 1
 					}
+					set_in_empire = yes
 				}
 				add_trust = {
 					who = ZHO
@@ -14675,9 +14680,10 @@ country_event = {
 		name = "china.241.a" 
 		custom_tooltip = chengzhou_occupier_warning_tt
 		hidden_effect = {
+			set_country_flag = lib_cz_target_flag
 			every_country = {
 				limit = {
-					total_development = 75
+					total_development = 70
 					religion = chinese_religion
 				}
 				add_opinion = {
@@ -14686,7 +14692,7 @@ country_event = {
 				}
 				add_casus_belli = {
 					target = ROOT
-					type = cb_insult
+					type = liberate_chengzhou_cb
 					months = 120
 				}
 			}
@@ -15122,18 +15128,39 @@ country_event = {
 	
 	option = {
 		name = "china.254.a"
+		trigger = {
+			OR = {
+				ai = no
+				NOT = {
+					war_with = CHN
+				}
+			}
+		}
 		CHN = {
 			country_event = { id = china.255 }
 		}
 		ai_chance = {
 			factor = 99
+			modifier = {
+				factor = 0.5
+				hre_leagues_enabled = no
+			}
 		}
 	}
 	option = {
 		name = "china.254.b"
-		trigger = { ai = no }
+		trigger = { 
+			OR = {
+				ai = no
+				war_with = CHN
+			}
+		}
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 25
+				hre_leagues_enabled = yes
+			}
 		}
 	}
 }
@@ -15161,6 +15188,7 @@ country_event = {
 		name = "china.255.b" #offer to join league
 		trigger = {
 			hre_leagues_enabled = yes
+			NOT = { in_league = liyuebadao }
 			CHU = {
 				is_in_league_war = no
 			}
@@ -15185,7 +15213,7 @@ country_event = {
 				personality = ai_balanced
 			}
 			modifier = {
-				factor = 2
+				factor = 4
 				ZHE = {
 					in_league = chinese_religion
 				}
@@ -15196,6 +15224,7 @@ country_event = {
 		name = "china.255.c" #offer to join league if land returned
 		trigger = {
 			hre_leagues_enabled = yes
+			NOT = { in_league = liyuebadao }
 			CHU = {
 				is_in_league_war = no
 			}
@@ -15359,6 +15388,24 @@ country_event = {
 					ai = no
 				}
 			}
+			modifier = {
+				factor = 2
+				alliance_with = CHN
+			}
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = CHN
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = CHN
+					value = 175
+				}
+			}
 		}
 	}
 	option = {
@@ -15446,6 +15493,24 @@ country_event = {
 			modifier = {
 				factor = 2
 				ruler_has_personality = ai_diplomat
+			}
+			modifier = {
+				factor = 2
+				alliance_with = CHN
+			}
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = CHN
+					value = 100
+				}
+			}
+			modifier = {
+				factor = 1.5
+				has_opinion = {
+					who = CHN
+					value = 175
+				}
 			}
 			modifier = {
 				factor = 2
@@ -15661,5 +15726,75 @@ country_event = {
 			}
 			change_religion = liyuebadao
 		}
+	}
+}
+
+########################################################################################
+# Chengzhou liberate CB - success
+########################################################################################
+country_event = {
+	id = china.266
+	title = "china.266.t"
+	desc = "china.266.d"
+	picture = military_parade
+	is_triggered_only = yes
+
+	option = {
+		name = "china.266.a"
+		add_stability = 1
+		transfer_papal_controller = ROOT
+		add_papal_influence = 250
+		add_country_modifier = {
+			name = liberated_chengzhou_mod
+			duration = 9125
+		}
+		if = {
+			limit = {
+				capital_scope = {
+					has_cardinal = no
+				}
+			}
+			capital_scope = {
+				add_cardinal = yes
+			}
+		}
+		4349 = {
+			owner = { clr_country_flag = lib_cz_target_flag }
+			cede_province = ZHO
+			add_core = ZHO
+		}
+		every_province = {
+			limit = {
+				area = henan_area_west
+				is_core = ZHO
+				owner = {
+					NOT = { religion = chinese_religion }
+				}
+			}
+			cede_province = ZHO
+		}
+		ZHO = {
+			set_capital = 4349
+			add_opinion = {
+				who = ROOT
+				modifier = opinion_lib_chengzghou
+			}
+		}
+	}
+}
+
+########################################################################################
+# Chengzhou liberate CB - already liberated
+########################################################################################
+country_event = {
+	id = china.267
+	title = "china.267.t"
+	desc = "china.267.d"
+	picture = battle
+	is_triggered_only = yes
+
+	option = {
+		name = "china.267.a"
+		add_papal_influence = 20
 	}
 }
