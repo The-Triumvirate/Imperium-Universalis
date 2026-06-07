@@ -7849,7 +7849,7 @@ country_event = {
 
 	option = {
 		name = "china.147.a"
-		add_historical_friend = ZHO
+		#add_historical_friend = ZHO
 		add_country_modifier = {
 			name = jin_chongshendongqiangonglao_modifier
 			duration = 7300
@@ -10112,6 +10112,9 @@ country_event = {
 		}
 		JIN = {
 			add_truce_with = YLR
+		}
+		JIN = {
+			add_truce_with = CMS
 		}
 		#historical event: ruo migrates from Shangmi to Chu's territory and becomes their vassal (~622 BC)
 		#idk how to add autonomy in history file and i dont wanna set a new tag for them, so do this to represent it instead
@@ -15796,5 +15799,341 @@ country_event = {
 	option = {
 		name = "china.267.a"
 		add_papal_influence = 20
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country challenges Fangbo
+########################################################################################
+country_event = {
+	id = china.268
+	title = "china.268.t"
+	desc = "china.268.d"
+	picture = HRE_eventPicture
+	
+	trigger = {
+		is_part_of_hre = yes
+		any_elector = {
+			NOT = {
+				total_development = ROOT
+			}
+			NOT = {
+				prestige = ROOT
+			}
+			NOT = {
+				has_country_flag = fangbo_in_question_flag
+			}
+			NOT = {
+				total_development = 130
+			}
+		}
+		any_country = {
+			is_part_of_hre = yes
+			is_elector = no
+			NOT = {
+				total_development = ROOT
+			}
+			NOT = {
+				has_country_flag = startup_fangbo_flag #in case of weird stuff, this event chain can only happen for 1 country at a time
+			}
+		}
+		NOT = {
+			has_reform = free_city_zhou
+		}
+		NOT = {
+			has_reform = free_city
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 16
+	}
+	
+
+	option = {
+		name = "china.268.a"
+		set_country_flag = startup_fangbo_flag
+		random_elector = {
+			limit = {
+				NOT = {
+					total_development = ROOT
+				}
+				NOT = {
+					prestige = ROOT
+				}
+				NOT = {
+					has_country_flag = fangbo_in_question_flag
+				}
+				NOT = {
+					total_development = 130
+				}
+			}
+			set_country_flag = fangbo_in_question_flag
+			country_event = { id = china.269 }
+		}
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country challenges Fangbo, alert fangbo
+########################################################################################
+country_event = {
+	id = china.269
+	title = "china.269.t"
+	desc = "china.269.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+
+	option = {
+		name = "china.269.a"
+		#custom_tooltip = fangbo_warning_losing_place.tt
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country holds dominance for a year
+########################################################################################
+country_event = {
+	id = china.270
+	title = "china.270.t"
+	desc = "china.270.d"
+	picture = HRE_eventPicture
+	
+	trigger = {
+		has_country_flag = startup_fangbo_flag
+		any_elector = {
+			NOT = {
+				total_development = ROOT
+			}
+			NOT = {
+				prestige = ROOT
+			}
+			had_country_flag = {
+				flag = fangbo_in_question_flag
+				days = 730
+			}
+			NOT = {
+				total_development = 130
+			}
+		}
+	}
+
+	option = {
+		name = "china.270.a"
+		random_known_country = {
+			limit = {
+				has_country_flag = fangbo_in_question_flag
+			}
+			clr_country_flag = fangbo_in_question_flag
+			elector = no
+			country_event = { id = china.271 }
+		}
+		elector = yes
+		clr_country_flag = startup_fangbo_flag
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country holds dominance for a year, alert fangbo
+########################################################################################
+country_event = {
+	id = china.271
+	title = "china.271.t"
+	desc = "china.271.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+
+	option = {
+		name = "china.271.a"
+		add_prestige = -10
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country does not holds dominance for a year
+########################################################################################
+country_event = {
+	id = china.272
+	title = "china.272.t"
+	desc = "china.272.d"
+	picture = HRE_eventPicture
+	
+	trigger = {
+		has_country_flag = startup_fangbo_flag
+		any_elector = {
+			OR = {
+				total_development = ROOT
+				prestige = ROOT
+				total_development = 130
+			}
+			had_country_flag = {
+				flag = fangbo_in_question_flag
+				days = 730
+			}
+		}
+	}
+
+	option = {
+		name = "china.272.a"
+		random_known_country = {
+			limit = {
+				has_country_flag = fangbo_in_question_flag
+			}
+			clr_country_flag = fangbo_in_question_flag
+			country_event = { id = china.273 }
+		}
+		clr_country_flag = startup_fangbo_flag
+		prestige = -5
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - Country does not hold dominance for a year, alert fangbo
+########################################################################################
+country_event = {
+	id = china.273
+	title = "china.273.t"
+	desc = "china.273.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+
+	option = {
+		name = "china.273.a"
+		add_prestige = 5
+	}
+}
+
+########################################################################################
+# Dynamic Fangbo - failsafe if fangbo gets annexed
+########################################################################################
+country_event = {
+	id = china.274
+	title = "china.274.t"
+	desc = "china.274.d"
+	picture = HRE_eventPicture
+	
+	trigger = {
+		has_country_flag = startup_fangbo_flag
+		all_elector = {
+			NOT = {
+				has_country_flag = fangbo_in_question_flag
+			}
+		}
+	}
+
+	option = {
+		name = "china.274.a"
+		clr_country_flag = startup_fangbo_flag
+	}
+}
+
+########################################################################################
+# Rong assist enemies of prov owner
+########################################################################################
+province_event = {
+	id = china.275
+	title = "china.275.t"
+	desc = "china.275.d"
+	picture = cavalry
+	
+	trigger = {
+		has_province_modifier = rong_presence_in_prov
+		OR = {
+			NOT = { has_province_flag = rong_recently_defected }
+			had_province_flag = {
+				flag = rong_recently_defected
+				days = 1825
+			}
+		}
+		owner = {
+			NOT = {
+				controls = ROOT
+			}
+		}
+		NOT = {
+			controlled_by = REB
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 60
+		
+		modifier = {
+			factor = 0.85
+			owner = { ruler_has_personality = greedy_personality }
+		}
+		modifier = {
+			factor = 0.75
+			owner = { ruler_has_personality = cruel_personality }
+		}
+		modifier = {
+			factor = 0.66
+			owner = { ruler_has_personality = craven_personality }
+		}
+		modifier = {
+			factor = 0.5
+			owner = { ruler_has_personality = lunatic_personality }
+		}
+		modifier = {
+			factor = 1.2
+			owner = { ruler_has_personality = kind_hearted_personality }
+		}
+		modifier = {
+			factor = 1.2
+			owner = { ruler_has_personality = righteous_personality }
+		}
+		modifier = {
+			factor = 1.33
+			owner = { ruler_has_personality = tolerant_personality }
+		}
+		modifier = {
+			factor = 1.5
+			owner = { ruler_has_personality = tactical_genius_personality }
+		}
+		modifier = {
+			factor = 1.75
+			owner = { ruler_has_personality = fierce_negotiator_personality }
+		}
+		modifier = {
+			factor = 2
+			owner = { ruler_has_personality = charismatic_negotiator_personality }
+		}
+		modifier = {
+			factor = 5
+			owner = { ruler_has_personality = the_great_personality }
+		}
+		modifier = {
+			factor = 3
+			num_of_units_in_province = {
+				who = owner
+				amount = 2
+			}
+		}
+	}
+
+	option = {
+		name = "china.275.a"
+		clr_province_flag = rong_recently_defected
+		set_province_flag = rong_recently_defected
+		owner = { add_manpower = -3 }
+		controller = {
+			country_event = { id = china.276 }
+		}
+	}
+}
+
+########################################################################################
+# rong defect (receive)
+########################################################################################
+country_event = {
+	id = china.276
+	title = "china.276.t"
+	desc = "china.276.d"
+	picture = guard
+	is_triggered_only = yes
+
+	option = {
+		name = "china.276.a"
+		add_manpower = 3
 	}
 }
