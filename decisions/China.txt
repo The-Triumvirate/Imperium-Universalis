@@ -270,6 +270,9 @@ country_decisions = {
 			NOT = {
 				has_country_flag = originally_guzhu
 			}
+			NOT = {
+				mission_completed = son_3_restore_shang
+			}
 		}
 		allow = {
 			hidden_trigger = {
@@ -928,6 +931,38 @@ country_decisions = {
 	#	ai_importance = 500
 	#}
 	
+	shang_sacrifice_slaves = {
+		major = yes
+		color = { 130 0 0 }
+		potential = {
+			tag = YSG
+			religion = wuism
+			mission_completed = son_3_restore_shang
+			NOT = { has_country_flag = song_abolished_human_sacrifice_flag }
+			NOT = { has_country_flag = shang_checking_slave_event }
+			OR = {
+				NOT = { has_country_flag = shang_recent_sacrifice }
+				had_country_flag = {
+					flag = shang_recent_sacrifice
+					days = 365
+				}
+			}
+		}
+		
+		allow = {
+			hidden_trigger = { tag = YSG }
+			check_variable = { slaves = 25 }
+		}
+		effect = {
+			set_country_flag = shang_checking_slave_event
+			country_event = { id = china.297 }
+		}
+		ai_importance = 50
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
 	restore_wey_lands = {
 		major = yes
 		color = { 245 160 60 }
@@ -1320,7 +1355,7 @@ country_decisions = {
 			is_part_of_hre = yes
 			has_global_flag = HRE_leagues_may_restart
 			is_emperor = no
-			total_development = 250
+			total_development = 300
 			religion = liyuebadao
 			emperor = {
 				religion = chinese_religion
@@ -1331,10 +1366,12 @@ country_decisions = {
 			is_all_concessions_in_council_taken = no
 		}
 		allow = {
-			#add more conditions
 			hidden_trigger = { is_part_of_hre = yes }
 			months_of_ruling = 120
-			land_forcelimit = 1
+			adm = 3
+			dip = 3
+			mil = 3
+			army_size_percentage = 1
 			NOT = {
 				imperial_influence = 20
 			}
@@ -1342,14 +1379,19 @@ country_decisions = {
 		}
 		effect = {
 			clr_global_flag = HRE_leagues_may_restart
+			set_country_flag = currently_preparing_for_LW
+			custom_tooltip = league_preparing_LW.tt
 			enable_hre_leagues = yes
+			emperor = {
+				country_event = { id = china.294 }
+			}
 			join_league = liyuebadao
 			#not sure of the full effects of these flags but they were in the deprecated event, uncheck them if some bug appears because of it
 			#set_global_flag = wendingzhongyuan_union_happened
 			#set_country_flag = wendingzhongyuan
 		}
 		
-		ai_importance = 150
+		ai_importance = 90
 
 		ai_will_do = {
 			factor = 1
