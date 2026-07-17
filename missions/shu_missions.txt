@@ -89,7 +89,6 @@ shu_left = {
 				add_permanent_claim = SHU
 			}
 			add_treasury = 100
-			add_mil_power = 100
 		} 
 	}
 
@@ -99,15 +98,15 @@ shu_left = {
 		required_missions = { shu_take_hanzhong2 } 
 		provinces_to_highlight = {  } 
 
-		trigger = { 
-			4227 = {
+		trigger = {
+			owns = 4223
+			4223 = {
 				has_building = small_city_walls
 			}
 		} 
 
 		effect = { 
-			4227 = {
-				add_base_manpower = 1
+			4223 = {
 				add_permanent_province_modifier = { 
 					name = shu_chokepoint
 					duration = -1  
@@ -137,14 +136,14 @@ shu_left = {
 					owns = 4219
 				}
 			}
-			treasury = 200
-			mil_power = 100
+			treasury = 250
+			manpower = 10
 		} 
 
 		effect = { 
 			set_country_flag = shu_built_gallery_roads
-			add_treasury = -200
-			add_mil_power = -100
+			add_treasury = -250
+			add_manpower = -10
 			country_event = { 
 				id = mission_events.38
 			}
@@ -153,7 +152,7 @@ shu_left = {
 	}
 
 	shu_qin_question = {
-		icon = missions_china_commercial
+		icon = missions_china_scroll
 		position = 6
 		required_missions = { shu_construct_gallerys } 
 		provinces_to_highlight = {  } 
@@ -178,7 +177,7 @@ shu_centerleft = {
 	potential = { tag = SHU } 
 
 	shu_unite_ba = {
-		icon = missions_china_dashing
+		icon = missions_china_army
 		position = 1
 		provinces_to_highlight = { 
 			province_id = 4246
@@ -344,7 +343,13 @@ shu_centerleft = {
 			shu_take_chu
 			shu_beacon_of_civilization
 		}
-		provinces_to_highlight = {  } 
+		provinces_to_highlight = { 
+			OR = {
+				province_id = 4193
+				province_id = 4189
+				province_id = 4195
+			}
+		} 
 
 		trigger = { 
 			owns = 4193
@@ -393,6 +398,7 @@ shu_center = {
 			change_government_reform_progress = -50
 			add_adm_power = 100
 			add_dip_power = 100
+			add_mil_power = 100
 			4230 = {
 				add_institution_embracement = {
 					which = writing_system
@@ -432,6 +438,8 @@ shu_center = {
 			add_dip_power = -500
 			add_adm_power = -250
 			add_treasury = -100
+			custom_tooltip = gain_zi_title.tt
+			hidden_effect = { set_country_flag = zhuxiatouxian_Zi }
 			country_event = { id = chinese_school_events.3 }
 		} 
 	}
@@ -508,10 +516,48 @@ shu_centerright = {
 	has_country_shield = yes
 	potential = { tag = SHU } 
 	
+	shu_domesticate_elephants = {
+		icon = missions_china_dashing
+		position = 2
+		required_missions = { shu_develop_gov } 
+		provinces_to_highlight = {  } 
+
+		trigger = { 
+			mil_tech = 4
+			has_institution = elephant_domestication
+			num_of_cossacks = 1
+		} 
+
+		effect = {
+			add_country_modifier = {
+				name = shu_training_elephants_mod
+				duration = 7300
+			}
+			custom_tooltip = restore_elephants.tt
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+						OR = {
+							has_province_modifier = elp_1
+							has_province_modifier = elp_2
+							has_province_modifier = elp_3
+							has_province_modifier = elp_4
+						}
+					}
+					remove_province_modifier = elp_1
+					remove_province_modifier = elp_2
+					remove_province_modifier = elp_3
+					remove_province_modifier = elp_4
+					add_permanent_province_modifier = { name = elp_5 duration = -1 }
+				}
+			}
+		} 
+	}
+	
 	shu_deal_with_yizhou = {
 		icon = missions_china_nanzhong
 		position = 4
-		required_missions = { shu_adopt_religion } 
+		required_missions = { shu_adopt_religion shu_domesticate_elephants } 
 		provinces_to_highlight = {  } 
 
 		trigger = { 
@@ -535,13 +581,80 @@ shu_centerright = {
 		} 
 	}
 	
-	shu_construct_dam = {
-		icon = missions_china_reclaim
+	shu_prepare_dam = {
+		icon = missions_china_bamboo_stack
 		position = 6
 		required_missions = { shu_adopt_culture } 
 		provinces_to_highlight = {  } 
 
-		trigger = { 
+		trigger = {
+			OR = {
+				AND = {
+					dip_power = 300
+					OR = {
+						adm_tech = 12
+						any_known_country = {
+							culture_group = chinese_group
+							has_opinion = {
+								who = ROOT
+								value = 150
+							}
+						}
+					}
+				}
+				4230 = {
+					has_great_project = {
+						type = dujiangyan
+						tier = 1
+					}
+				}
+			}
+		} 
+
+		effect = {
+			custom_tooltip = shu_bypass_dujiang.tt
+			if = {
+				limit = {
+					4230 = {
+						has_great_project = {
+							type = dujiangyan
+							tier = 1
+						}
+					}
+				}
+				add_prestige = 25
+			}
+			else_if = {
+				limit = {
+					adm_tech = 10
+				}
+				add_dip_power = -300
+				define_advisor = {
+					type = architect
+					skill = 5
+					culture = ROOT
+					religion = ROOT
+				}
+			}
+			else = {
+				add_dip_power = -300
+				define_advisor = {
+					type = architect
+					skill = 5
+					culture = zhongyuan
+					religion = chinese_religion
+				}
+			}
+		} 
+	}
+	
+	shu_construct_dam = {
+		icon = river_farm
+		position = 7
+		required_missions = { shu_prepare_dam } 
+		provinces_to_highlight = {  } 
+
+		trigger = {
 			4230 = {
 				has_great_project = {
 					type = dujiangyan
@@ -550,11 +663,21 @@ shu_centerright = {
 			}
 		} 
 
-		effect = { 
-			4230 = {
-				add_great_project_tier = {
-					type = dujiangyan
-					tier = 1
+		effect = {
+			shu_area = {
+				add_base_manpower = 2
+				add_base_production = 1
+			}
+			custom_tooltip = shu_extra_dujiang_level.tt
+			if = {
+				limit = {
+					architect = 5
+				}
+				4230 = {
+					add_great_project_tier = {
+						type = dujiangyan
+						tier = 1
+					}
 				}
 			}
 		} 
@@ -566,19 +689,100 @@ shu_right = {
 	ai = yes
 	has_country_shield = yes
 	potential = { tag = SHU } 
-
-	shu_brocade = {
+	
+	shu_irrigation = {
 		icon = missions_china_agriculture
 		position = 1
 		provinces_to_highlight = {  } 
 
-		trigger = { 
-			adm_tech = 4
+		trigger = {
+			calc_true_if = {
+				all_owned_province = { 
+					OR = {
+						has_building = small_water_irrigation
+						has_building = big_water_irrigation 
+						has_building = big_estate 
+					}
+				}
+				amount = 3
+			}
+		} 
+
+		effect = { 
+			add_country_modifier = {
+				name = shu_begin_irrigation_mod
+				duration = 3650
+			}
+		} 
+	}
+	
+	shu_land_reclaim = {
+		icon = missions_china_reclaim
+		position = 3
+		provinces_to_highlight = {  }
+		required_missions = { shu_irrigation } 
+
+		trigger = {
+			calc_true_if = {
+				all_owned_province = { has_land_reclamation_modifier_trigger = yes } 
+				amount = 3
+			}
+		} 
+
+		effect = { 
+			custom_tooltip = shu_reclaim_reward.tt
+			hidden_effect = {
+				every_owned_province = {
+					limit = { has_land_reclamation_modifier_trigger = yes }
+					add_base_manpower = 1
+				}
+			}
+		} 
+	}
+	
+	shu_trade_posts = {
+		icon = missions_china_commercial
+		position = 5
+		provinces_to_highlight = {  } 
+		required_missions = { shu_land_reclaim } 
+
+		trigger = {
+			calc_true_if = {
+				all_owned_province = { 
+					OR = {
+						has_building = small_market
+						has_building = medium_market 
+						has_building = great_market 
+					}
+				}
+				amount = 3
+			}
+		} 
+
+		effect = { 
+			add_country_modifier = {
+				name = shu_begin_trade_mod
+				duration = 3650
+			}
+		} 
+	}
+
+	shu_brocade = {
+		icon = missions_china_big_city
+		position = 8
+		provinces_to_highlight = {  } 
+		required_missions = { shu_trade_posts shu_construct_dam } 
+		
+		trigger = {
 			4230 = {
 				OR = {
 					has_building = small_market
 					has_building = medium_market
 					has_building = great_market
+				}
+				OR = {
+					has_province_modifier = land_reclamation_4
+					has_province_modifier = land_reclamation_5
 				}
 				is_prosperous = yes
 			}
