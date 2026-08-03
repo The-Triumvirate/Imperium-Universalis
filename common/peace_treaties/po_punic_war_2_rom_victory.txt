@@ -1,0 +1,861 @@
+punic_war_2_rom_victory = {
+	category = 6 # Any number between 0 and 6. Represents the tab under which it will be listed. 6 corresponds to "treaties". This value currently defaults to 6.
+	power_projection = vassalized_rival # "power_projection" will only be applied if giver is your rival.
+	power_cost_base = 1.0 # Base factor for diplomatic power cost when treaty is not allowed by casus belli. Scales with war score cost.
+	prestige_base = 0.1 # Base factor for prestige gain and loss. Scales with war score cost.
+	ae_base = 2.0 # Base factor for aggressive expansion. Scales with war score cost.
+	warscore_cost = {
+		# Which of the giver's provinces' war score costs are included and by how much. All entries default to 0. Any combination of entries can be used. Try negative values at your own risk.
+		no_provinces = 1.0 # This is just a constant. Equivalent to a single province with with war score cost 1
+	}
+	warscore_cap = 100 # Warscore cost will never go above this value. Only enabled if non-negative. This value defaults to -1.
+	is_make_subject = yes # This will make the treaty mutually exclusive with other treaties that makes the giver a subject, or that explicitly frees the giver from their current overlord.
+	requires_is_allowed = yes # If set to "yes", treaty will only be visible when explicitly allowed by casus belli. If not, it will be available but cost diplomatic power.
+
+	is_visible = { # Defaults to equivalent of "always = yes"
+		always = yes
+	}
+	is_allowed = { # Defaults to equivalent of "always = yes"
+		has_global_flag = second_punic_war_near_end
+		if = {
+			limit = { has_global_flag = war_leader_barcids }
+			CRT = { capital_scope = { controlled_by = ROM } }
+		}
+		if = {
+			limit = { has_global_flag = war_leader_carthage }
+			CRT = { capital_scope = { controlled_by = ROM } }
+			CAR = { capital_scope = { controlled_by = ROM } }
+		}
+	}
+	effect = { # Defaults to empty effect (which makes error log entry but is safe)
+		hidden_effect = {
+			set_global_flag = second_punic_war_end
+			clr_global_flag = second_punic_war_start
+			clr_global_flag = second_punic_war_near_end
+			clr_country_flag = punic_war_disaster
+			clr_global_flag = war_leader_barcids
+			clr_global_flag = war_leader_carthage
+			remove_country_modifier = roman_dictatorship
+			remove_country_modifier = emergency_punic_conscriptions
+			remove_country_modifier = rome_mass_desertions
+			remove_country_modifier = rom_punic_war_2_navy_buff
+			ROM = {
+				white_peace = CRT
+				white_peace = CAR
+				country_event = {
+					id = punic_wars.19
+				}
+			}
+		}
+		hidden_effect = {
+			CRT = {
+				every_owned_province = {
+					limit = {
+						OR = {
+							province_group = pg_punicwar_iberia_group
+							province_group = pg_north_of_iberus_group
+						}
+					}
+					cede_province = ROM
+				}
+				hispania_superregion = {
+					remove_core = CRT
+				}
+			}
+			TTQ = {
+				if = {
+					limit = {
+						or = {
+							is_subject_of = CRT
+							is_subject_of = CAR
+						}
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								province_group = pg_punicwar_iberia_group
+								province_group = pg_north_of_iberus_group
+							}
+						}
+						cede_province = ROM
+					}
+				}
+			}
+			TRQ = {
+				if = {
+					limit = {
+						or = {
+							is_subject_of = CRT
+							is_subject_of = CAR
+						}
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								province_group = pg_punicwar_iberia_group
+								province_group = pg_north_of_iberus_group
+							}
+						}
+						cede_province = ROM
+					}
+				}
+			}
+			CRT = {
+				every_owned_province = {
+					limit = {
+						OR = {
+							province_group = pg_punicwar_iberia_group
+							area = baleares_area
+							province_id = 1249
+							province_id = 1250
+						}
+					}
+					cede_province = ROM
+				}
+
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = lixiane_area
+							area = gaetulia_darae
+							area = cerne_area
+						}
+					}
+					remove_core = CRT
+					add_core = SLT
+					cede_province = SLT
+				}
+
+				#create numidia
+				if = {
+					limit = {
+						exists = NUM
+					}
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CRT
+						add_core = NUM
+						cede_province = NUM
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CRT
+						add_core = NUM
+					}
+					release = NUM
+				}
+
+				if = {
+					limit = {
+						exists = GAT
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CRT
+						add_core = GAT
+						cede_province = GAT
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CAR
+						add_core = GAT
+					}
+					release = GAT
+				}
+
+				if = {
+					limit = {
+						exists = BAG
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CRT
+						add_core = BAG
+						cede_province = BAG
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CRT
+						add_core = BAG
+					}
+					release = BAG
+				}
+
+				if = {
+					limit = {
+						exists = NAS
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CRT
+						add_core = NAS
+						cede_province = NAS
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CAR
+						add_core = NAS
+					}
+					release = NAS
+				}
+
+				if = {
+					limit = {
+						exists = GAR
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CRT
+						add_core = GAR
+						cede_province = GAR
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CAR
+						add_core = GAR
+					}
+					release = GAR
+				}
+				if = {
+					limit = {
+						exists = MRT
+					}
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+						remove_core = CRT
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				else_if = {
+					limit = {
+						any_owned_province = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+					}
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+						remove_core = CRT
+						add_core = MRT
+					}
+					release = MRT
+				}
+				else = {
+					every_known_country = {
+						limit = {
+							capital_scope = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
+						}
+						every_owned_province = {
+							limit = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
+							remove_core = CRT
+							add_core = MRT
+						}
+						set_country_flag = potential_releaser_ugly_workaround
+					}
+					random_known_country = {
+						limit = {
+							has_country_flag = potential_releaser_ugly_workaround
+						}
+						release = MRT
+					}
+					every_province = {
+						limit = {
+							owner = { has_country_flag = potential_releaser_ugly_workaround }
+							is_core = MRT
+						}
+						cede_province = MRT
+					}
+					every_known_country = {
+						clr_country_flag = potential_releaser_ugly_workaround
+					}
+				}
+			}
+			CAR = {
+				every_owned_province = {
+					limit = {
+						OR = {
+							province_group = pg_punicwar_iberia_group
+							area = baleares_area
+							province_id = 1249
+							province_id = 1250
+						}
+					}
+					cede_province = ROM
+				}
+
+				every_owned_province = {
+					limit = {
+						OR = {
+							area = lixiane_area
+							area = gaetulia_darae
+							area = cerne_area
+						}
+					}
+					remove_core = CAR
+					add_core = SLT
+					cede_province = SLT
+				}
+
+				#create numidia
+				if = {
+					limit = {
+						exists = NUM
+					}
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CAR
+						add_core = NUM
+						cede_province = NUM
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							province_group = pg_punicwar_numidia_group
+						}
+						remove_core = CAR
+						add_core = NUM
+					}
+					release = NUM
+				}
+
+				if = {
+					limit = {
+						exists = GAT
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CAR
+						add_core = GAT
+						cede_province = GAT
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = madethubadus_area
+								area = gaetulia
+								area = militiana_area
+							}
+						}
+						remove_core = CAR
+						add_core = GAT
+					}
+					release = GAT
+				}
+
+				if = {
+					limit = {
+						exists = BAG
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CAR
+						add_core = BAG
+						cede_province = BAG
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = deserta_tripolitania
+								area = deserta_syrtica
+							}
+						}
+						remove_core = CAR
+						add_core = BAG
+					}
+					release = BAG
+				}
+
+				if = {
+					limit = {
+						exists = NAS
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CAR
+						add_core = NAS
+						cede_province = NAS
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = augila_area
+								area = nasamonia_area
+							}
+						}
+						remove_core = CAR
+						add_core = NAS
+					}
+					release = NAS
+				}
+
+				if = {
+					limit = {
+						exists = GAR
+					}
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CAR
+						add_core = GAR
+						cede_province = GAR
+					}
+				}
+				else = {
+					every_owned_province = {
+						limit = {
+							OR = {
+								area = garamantum_area
+								area = desertum_africanum
+								area = garamantum_ulterior
+							}
+						}
+						remove_core = CAR
+						add_core = GAR
+					}
+					release = GAR
+				}
+				if = {
+					limit = {
+						exists = MRT
+					}
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+						remove_core = CAR
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				else_if = {
+					limit = {
+						any_owned_province = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+					}
+					every_owned_province = {
+						limit = {
+							region = mauretania_region
+							NOT = {
+								province_group = pg_punicwar_numidia_group
+							}
+						}
+						remove_core = CAR
+						add_core = MRT
+					}
+					release = MRT
+				}
+				else = {
+					every_known_country = {
+						limit = {
+							capital_scope = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
+						}
+						every_owned_province = {
+							limit = {
+								region = mauretania_region
+								NOT = {
+									province_group = pg_punicwar_numidia_group
+								}
+							}
+							remove_core = CAR
+							add_core = MRT
+						}
+						set_country_flag = potential_releaser_ugly_workaround
+					}
+					random_known_country = {
+						limit = {
+							has_country_flag = potential_releaser_ugly_workaround
+						}
+						release = MRT
+					}
+					every_province = {
+						limit = {
+							owner = { has_country_flag = potential_releaser_ugly_workaround }
+							is_core = MRT
+						}
+						cede_province = MRT
+					}
+					every_known_country = {
+						clr_country_flag = potential_releaser_ugly_workaround
+					}
+				}
+			}
+			MRT = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_absolutism = 10
+				add_prestige = 10
+				mauretania_region = {
+					discover_country = MRT
+				}
+				every_known_country = {
+					limit = {
+						capital_scope = {
+							region = mauretania_region
+							NOT = { province_group = pg_punicwar_numidia_group }
+						}
+						not = { tag = CRT tag = CAR }
+					}
+					if = {
+						limit = {
+							total_development = MRT
+						}
+						MRT = { inherit = PREV }
+					}
+					else = {
+						MRT = {
+							create_subject = {
+								subject_type = vassal
+								subject = PREV
+							}
+						}
+					}
+				}
+				atlas_mons = {
+					if = {
+						limit = {
+							is_city = no
+						}
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				mauretania_ulterior = {
+					if = {
+						limit = {
+							is_city = no
+						}
+						add_core = MRT
+						cede_province = MRT
+					}
+				}
+				disband_all_units = yes
+				stabilize_country_effect = yes
+			}
+			NUM = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_absolutism = 10
+				add_prestige = 10
+				define_ruler = {
+					name = "Massinissa I"
+					dynasty = "of Massylii"
+					ADM = 5
+					DIP = 5
+					MIL = 6
+					culture = punic
+					age = 30
+				}
+				set_capital = 589
+				add_historical_friend = ROOT
+				ROOT = { add_historical_friend = PREV }
+				pg_punicwar_numidia_group = {
+					discover_country = NUM
+				}
+				africa_region = {
+					discover_country = NUM
+				}
+				every_known_country = {
+					limit = {
+						or = {
+							capital_scope = { province_group = pg_punicwar_numidia_group }
+							TAG = GAT
+						}
+						not = { tag = CRT tag = CAR tag = MRT }
+					}
+					if = {
+						limit = {
+							total_development = NUM
+						}
+						NUM = { inherit = PREV }
+					}
+					else = {
+						NUM = {
+							create_subject = {
+								subject_type = vassal
+								subject = PREV
+							}
+						}
+					}
+				}
+				every_subject_country = {
+					limit = {
+						OR = { tag = MAA tag = MYL }
+					}
+					NUM = { inherit = PREV }
+				}
+				disband_all_units = yes
+				stabilize_country_effect = yes
+			}
+			GAR = {
+				change_government = monarchy
+				add_government_reform = despotism_reform
+				add_absolutism = 10
+				add_prestige = 10
+				garamantum_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
+				}
+				desertum_africanum = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
+				}
+				garamantum_ulterior = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = GAR
+					cede_province = GAR
+				}
+				disband_all_units = yes
+				stabilize_country_effect = yes
+			}
+			BAG = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+				deserta_tripolitania = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
+				}
+				deserta_syrtica = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
+				}
+				deserta_numidia = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = BAG
+					cede_province = BAG
+				}
+			}
+			GAT = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+			}
+			NAS = {
+				change_government = tribal
+				add_government_reform = steppe_horde_reform
+				augila_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = NAS
+					cede_province = NAS
+				}
+				nasamonia_area = {
+					limit = {
+						NOT = { is_core = ROOT }
+						NOT = { owned_by = ROOT }
+					}
+					add_core = NAS
+					cede_province = NAS
+				}
+			}
+			CRT = {
+				release_all_subjects = yes
+				release_all_possible_countries = yes
+				every_owned_province = {
+					set_province_flag = annihilate_country_flag
+				}
+				annihilate_country_effect = yes
+			}
+			CAR = {
+				add_country_modifier = {
+					name = punic_war_car_disarmament
+					duration = -1
+				}
+				every_owned_province = {
+					limit = {
+						OR = {
+							region = libya_deserta_region
+							area = fortunatae_insulae
+						}
+					}
+					remove_core = CAR
+					decolonize = yes
+				}
+				release = ISC
+				release = EMC
+				release = SKY
+				release = TRP
+				release = AST
+				release = IDY
+				release_all_subjects = yes
+			}
+		}
+		ROM = {
+			hidden_effect = {
+				every_owned_province = {
+					limit = {
+						culture_group = iberian_group
+					}
+					add_territorial_core = ROM
+				}
+			}
+		}
+		hidden_effect = {
+			CAR = {
+				every_owned_province = {
+					limit = {
+						NOT = {
+							region = africa_region
+						}
+					}
+					set_province_flag = annihilate_country_flag
+				}
+				annihilate_country_effect = yes
+			}
+		}
+	}
+	ai_weight = { # Defaults to always evaluate to 0
+		export_to_variable = {
+			variable_name = ai_value # Mandatory to have entry called "ai_value". Its value at the end of the ai_weight scope is what will be used
+			value = 50
+		}
+		limit = { # if limit evaluates false, ai_weight will evaluate to 0 regardless
+			owns_core_province = 1
+		}
+	}
+}
