@@ -2455,3 +2455,63 @@ capture_slaves_won_battle = {
 		which = lu_killed
 	}
 }
+
+celt_event_prov_effect = {
+	change_culture = $CULTURE$
+	change_religion = celtic_religion
+	add_core = $TAG$
+	if = {
+		limit = { owner = { culture_group = gaulish_group } }
+		owner = { save_event_target_as = $TAG$_release_celt_target }
+	}
+	else = { set_province_flag = $TAG$_revolt_celt owner = { change_variable = { which = $TAG$_revolt_strength value = 1 } } }
+}
+
+celt_event_spawn_effect = {
+	event_target:$TAG$_release_celt_target = { country_event = { id = $ID$ } }
+	every_known_country = {
+		limit = {
+			any_owned_province = { has_province_flag = $TAG$_revolt_celt }
+		}
+		change_variable = { which = $TAG$_revolt_strength value = 2 }
+		random_owned_province = {
+			limit = {
+				has_province_flag = $TAG$_revolt_celt
+			}
+			spawn_rebels = {
+				type = nationalist_rebels
+				size = $TAG$_revolt_strength
+				separatists_target = $TAG$
+				win = yes
+			}
+			clr_province_flag = $TAG$_revolt_celt
+		}
+		change_variable = { which = $TAG$_revolt_strength value = -1 }
+		random_owned_province = {
+			limit = {
+				has_province_flag = $TAG$_revolt_celt
+			}
+			spawn_rebels = {
+				type = nationalist_rebels
+				size = $TAG$_revolt_strength
+				separatists_target = $TAG$
+				win = yes
+			}
+		}
+		every_owned_province = {
+			clr_province_flag = $TAG$_revolt_celt
+		}
+	}
+}
+
+celt_event_creation_immediate_effect = {
+	hidden_effect = {
+		every_owned_province = {
+			limit = { is_core = $TAG$ }
+			cede_province = $TAG$
+		}
+		$TAG$ = {
+			stabilize_country_effect = yes
+		}
+	}
+}
