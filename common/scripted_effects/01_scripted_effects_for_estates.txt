@@ -39,6 +39,17 @@ each_estate_effect = {
 	}
 	if = {
 		limit = {
+			has_estate = estate_guoren
+		}
+		[[effect]
+		$effect$
+		]
+		[[guoren_effect]
+		$guoren_effect$
+		]
+	}
+	if = {
+		limit = {
 			has_estate = estate_clans
 		}
 		[[effect]
@@ -125,6 +136,29 @@ reduce_estate_merchants_loyalty_effect = {
 		}
 		add_estate_loyalty = {
 			estate = estate_merchants
+			loyalty = -10
+		}
+	}
+}
+
+add_estate_guoren_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_guoren
+		}
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+	}
+}
+reduce_estate_guoren_loyalty_effect = {
+	if = {
+		limit = {
+			has_estate = estate_guoren
+		}
+		add_estate_loyalty = {
+			estate = estate_guoren
 			loyalty = -10
 		}
 	}
@@ -512,6 +546,25 @@ spawn_rebels_from_unhappy_estate = {
 				as_if_faction = yes
 			}
 		}
+		1 = {
+			trigger = {
+				owner = {
+					has_estate = estate_guoren
+					NOT = {
+						estate_loyalty = {
+							estate = estate_guoren
+							loyalty = 30
+						}
+					}
+				}
+			}
+			spawn_rebels = {
+				type = peasant_rebels
+				size = $size$
+				estate = estate_guoren
+				as_if_faction = yes
+			}
+		}
 	}
 }
 
@@ -545,6 +598,16 @@ pick_random_estate_if_present = {
 			set_country_flag = estate_merchants_$flag$
 			[[estate_action]
 			$estate_action$ = estate_merchants
+			]
+		}
+		1 = {
+			trigger = {
+				has_estate = estate_guoren
+				NOT = { has_country_flag = estate_guoren_$flag$ }
+			}
+			set_country_flag = estate_guoren_$flag$
+			[[estate_action]
+			$estate_action$ = estate_guoren
 			]
 		}
 		1 = {

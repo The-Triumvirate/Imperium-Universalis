@@ -103,16 +103,11 @@ estate_merchants_build_market_in_y = {
 estate_merchants_peace_for_ten_years = {
 	max_days_active = 3650
 	can_select = {
+		had_recent_war = 5
 		is_at_war = no
-		NOT = { had_recent_war = 2 }
-		had_recent_war = 10
 	}
 	selection_weight = {
 		factor = 15.0
-		modifier = {
-			factor = 0
-			ruler_has_personality = conqueror_personality
-		}
 		modifier = {
 			factor = 2
 			NOT = { stability = 0 }
@@ -128,10 +123,6 @@ estate_merchants_peace_for_ten_years = {
 	}
 
 	fail_if = {
-		OR = {
-			is_at_war = yes
-			has_wartaxes = yes
-		}
 	}
 
 	task_requirements = {
@@ -213,7 +204,7 @@ estate_merchants_pay_off_loans = {
 #build light ships
 estate_merchants_build_light_ships = {
 	can_select = {
-		NOT = { navy_size_percentage = 1 }
+		#NOT = { navy_size_percentage = 1 }
 		NOT = { light_ship_fraction = 0.20 }
 		num_of_ports = 1
 	}
@@ -266,37 +257,47 @@ estate_merchants_build_light_ships = {
 	}
 }
 
+estate_merchant_hire_advisor = {
+	can_select = {
+		NOT = {
+			employed_advisor = {
+				type = merchant_adv
+			}
+		}
+	}
+	selection_weight = {
+		factor = 13
+	}
+	task_requirements = {
+		employed_advisor = {
+			type = merchant_adv
+		}
+		is_in_deficit = no
+	}
+	task_completed_effect = {
+		add_mercantilism = 2
+		add_estate_loyalty = {
+			estate = estate_merchants
+			loyalty = 10
+		}
+	}
+	failing_effect = {
+		add_estate_loyalty_modifier = {
+			estate = estate_nobility
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
+
 #build light ships
 estate_merchants_monopolize_one_tradegood = {
 	can_select = {
 		NOT = { num_of_trading_bonuses = 1 }
 	}
 	selection_weight = {
-		factor = 10
-		modifier = {
-			factor = 0
-			num_of_cities = 1
-		}
-		modifier = {
-			factor = 0.2
-			num_of_cities = 4
-		}
-		modifier = {
-			factor = 0.4
-			num_of_cities = 8
-		}
-		modifier = {
-			factor = 0.6
-			num_of_cities = 10
-		}
-		modifier = {
-			factor = 0.8
-			num_of_cities = 16
-		}
-		modifier = {
-			factor = 1
-			num_of_cities = 24
-		}
+		factor = 2
 	}
 	task_requirements = {
 		num_of_trading_bonuses = 1
@@ -306,7 +307,7 @@ estate_merchants_monopolize_one_tradegood = {
 			estate = estate_merchants
 			loyalty = 25
 		}
-		add_years_of_income = 0.4
+		add_years_of_income = 1
 		add_dip_power = 120
 		add_mercantilism = 10
 	}

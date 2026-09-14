@@ -1,0 +1,396 @@
+#Build market
+estate_guoren_build_market_in_y = {
+	max_days_active = 3650
+	can_select = {
+		dip_tech = 4
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = small_market }
+			NOT = { has_building = medium_market }
+			NOT = { has_building = great_market }
+			num_free_building_slots = 1
+		}
+	}
+	selection_weight = {
+		factor = 15
+	}
+	pre_effect = {
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { base_production = 1 }
+				NOT = { has_building = small_market }
+				NOT = { has_building = medium_market }
+				NOT = { has_building = great_market }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				base_production = 1
+				NOT = { has_building = small_market }
+				NOT = { has_building = medium_market }
+				NOT = { has_building = great_market }
+				num_free_building_slots = 1
+			}
+			save_event_target_as = agenda_province
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+	task_requirements = {
+		event_target:agenda_province = {
+			OR = {
+				has_building = small_market
+				has_building = medium_market
+				has_building = great_market
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+		if = {
+			limit = {
+				NOT = { crown_land_share = 15 }
+				estate_territory = {
+					estate = estate_guoren
+					territory = 5
+				}
+			}
+			take_estate_land_share_small = { estate = estate_guoren }
+		}
+		else = {
+			add_mercantilism = 1
+			add_treasury = 25
+			add_dip_power = 50
+		}
+	}
+	failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_guoren
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
+
+#peace for ten years
+
+estate_guoren_peace_for_ten_years = {
+	max_days_active = 3650
+	can_select = {
+		had_recent_war = 5
+		is_at_war = no
+	}
+	selection_weight = {
+		factor = 15.0
+		modifier = {
+			factor = 2
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 2
+			war_exhaustion = 4
+		}
+		modifier = {
+			factor = 2
+			has_wartaxes = yes
+		}
+	}
+
+	fail_if = {
+		
+	}
+
+	task_requirements = {
+		NOT = { had_recent_war = 10 }
+	}
+
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+		add_adm_power = 50
+		add_dip_power = 100
+		add_years_of_income = 0.3
+		add_mercantilism = 2
+	}
+	failing_effect = {
+		add_estate_loyalty_modifier = {
+			estate = estate_guoren
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
+
+#capital prosperity
+
+estate_guoren_capital_prosperity = {
+	max_days_active = 3650
+	can_select = {
+		is_at_war = no
+		capital_scope = {
+			is_prosperous = no
+			NOT = {
+				devastation = 5
+			}
+		}
+	}
+	selection_weight = {
+		factor = 22
+		modifier = {
+			factor = 2
+			NOT = { stability = 0 }
+		}
+		modifier = {
+			factor = 2
+			war_exhaustion = 1
+		}
+	}
+
+	fail_if = {
+		capital_scope = {
+			devastation = 10
+		}
+	}
+
+	task_requirements = {
+		capital_scope = {
+			is_prosperous = yes
+		}
+	}
+
+	task_completed_effect = {
+		add_years_of_income = 0.5
+		add_stability = 1
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+	}
+	failing_effect = {
+		add_estate_loyalty_modifier = {
+			estate = estate_guoren
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
+
+#Build grain
+estate_guoren_build_graindepot_in_y = {
+	max_days_active = 3650
+	can_select = {
+		mil_tech = 7
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = small_grain_depot }
+			NOT = { has_building = big_grain_depot }
+			num_free_building_slots = 1
+			OR = {
+				can_build = small_grain_depot
+				can_build = big_grain_depot
+			}
+		}
+	}
+	selection_weight = {
+		factor = 16
+	}
+	pre_effect = {
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { has_building = small_grain_depot }
+				NOT = { has_building = big_grain_depot }
+				num_free_building_slots = 1
+				OR = {
+					can_build = small_grain_depot
+					can_build = big_grain_depot
+				}
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { has_building = small_grain_depot }
+				NOT = { has_building = big_grain_depot }
+				num_free_building_slots = 1
+				OR = {
+					can_build = small_grain_depot
+					can_build = big_grain_depot
+				}
+			}
+			save_event_target_as = agenda_province
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+	task_requirements = {
+		event_target:agenda_province = {
+			OR = {
+				has_building = small_grain_depot
+				has_building = big_grain_depot
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+		add_legitimacy = 10
+		add_adm_power = 50
+		add_dip_power = 50
+	}
+	failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_guoren
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
+
+#Build craftsman
+estate_guoren_build_craftsman_in_y = {
+	max_days_active = 3650
+	can_select = {
+		adm_tech = 1
+		any_owned_province = {
+			is_state_core = root
+			NOT = { has_building = craftsman }
+			NOT = { has_building = small_workshop }
+			NOT = { has_building = artisan_district }
+			num_free_building_slots = 1
+			OR = {
+				can_build = craftsman
+				can_build = small_workshop
+				can_build = artisan_district
+			}
+		}
+	}
+	selection_weight = {
+		factor = 11
+	}
+	pre_effect = {
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { has_building = craftsman }
+				NOT = { has_building = small_workshop }
+				NOT = { has_building = artisan_district }
+				num_free_building_slots = 1
+				OR = {
+					can_build = craftsman
+					can_build = small_workshop
+					can_build = artisan_district
+				}
+			}
+			save_event_target_as = agenda_province
+		}
+		random_owned_province = {
+			limit = {
+				is_state_core = root
+				NOT = { has_building = craftsman }
+				NOT = { has_building = small_workshop }
+				NOT = { has_building = artisan_district }
+				num_free_building_slots = 1
+				OR = {
+					can_build = craftsman
+					can_build = small_workshop
+					can_build = artisan_district
+				}
+			}
+			save_event_target_as = agenda_province
+		}
+	}
+	provinces_to_highlight = {
+		province_id = event_target:agenda_province
+	}
+	fail_if = {
+		event_target:agenda_province = {
+			NOT = { owned_by = root }
+		}
+	}
+	task_requirements = {
+		event_target:agenda_province = {
+			OR = {
+				has_building = craftsman
+				has_building = small_workshop
+				has_building = artisan_district
+			}
+		}
+	}
+	task_completed_effect = {
+		add_estate_loyalty = {
+			estate = estate_guoren
+			loyalty = 10
+		}
+		event_target:agenda_province = {
+			set_province_flag = guorenArtisanMoneyGainFlag
+		}
+		custom_tooltip = GUOREN_CRAFTSMAN_PRODUCTION_INCOME
+		hidden_effect = {
+			add_years_of_owned_provinces_production_income = {
+				years = 5
+				trigger = {
+					has_province_flag = guorenArtisanMoneyGainFlag
+				}
+				custom_tooltip = GUOREN_CRAFTSMAN_PRODUCTION_INCOME
+			}
+		}
+		event_target:agenda_province = {
+			clr_province_flag = guorenArtisanMoneyGainFlag
+		}
+	}
+	failing_effect = {
+		event_target:agenda_province = {
+			if = {
+				limit = { owned_by = root }
+				add_unrest = 5
+			}
+		}
+		add_estate_loyalty_modifier = {
+			estate = estate_guoren
+			desc = EST_VAL_AGENDA_DENIED
+			loyalty = -5
+			duration = 7300
+		}
+	}
+}
