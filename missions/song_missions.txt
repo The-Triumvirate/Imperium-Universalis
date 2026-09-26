@@ -20,7 +20,7 @@ son_slot_1 = {
 					}
 				}
 				AND = {
-					is_year = 175
+					is_year = 160
 					custom_trigger_tooltip = {
 						tooltip = hired_other_hua_yuan.tt
 						employed_advisor = {
@@ -35,7 +35,7 @@ son_slot_1 = {
 		effect = {
 			if = {
 				limit = {
-					is_year = 175
+					is_year = 160
 					employed_advisor = {
 						type = diplomat_adv
 						skill = 3
@@ -929,6 +929,7 @@ son_slot_3 = {
 						}
 					}
 					add_historical_friend = ROOT
+					set_country_flag = shang_jianghan_historical_friend
 					ROOT = {
 						add_historical_friend = PREV
 					}
@@ -1037,7 +1038,7 @@ son_slot_3 = {
 					limit = {
 						has_country_flag = zhuxiatouxian_wang
 					}
-					hidden_effect = { clr_country_flag = zhuxiatouxian_wang }
+					hidden_effect = { clr_country_flag = zhuxiatouxian_wang set_country_flag = cant_declare_wang }
 					custom_tooltip = song_make_chu_lose_king.tt
 				}
 			}
@@ -1061,10 +1062,11 @@ son_slot_3 = {
 		provinces_to_highlight = {  } 
 
 		trigger = { 
-			total_development = 1000
+			total_development = 1500
 			prestige = 50
 			legitimacy = 95
 			is_at_war = no
+			NOT = { exists = ZHO }
 		} 
 
 		effect = {
@@ -1115,6 +1117,34 @@ son_slot_3 = {
 			}
 			hedong_area_western = {
 				add_permanent_claim = ROOT
+			}
+			custom_tooltip = shang_make_jianghan_vassal.tt
+			hidden_effect = {
+				if = {
+					limit = {
+						any_known_country = {
+							has_country_flag = shang_jianghan_historical_friend
+							alliance_with = ROOT
+							trust = {
+								who = ROOT
+								value = 90
+							}
+						}
+					}
+					every_known_country = {
+						limit = {
+							has_country_flag = shang_jianghan_historical_friend
+							alliance_with = ROOT
+							trust = {
+								who = ROOT
+								value = 90
+							}
+						}
+						ROOT = {
+							vassalize = PREV
+						}
+					}
+				}
 			}
 		} 
 	}
@@ -1419,6 +1449,7 @@ son_slot_4 = {
 				limit = {
 					AND = {
 						has_global_flag = zhanguokaishi
+						has_country_flag = zhuxiatouxian_wang
 						total_development = 450
 					}
 				}
@@ -1514,7 +1545,11 @@ son_slot_4 = {
 			}
 		} 
 
-		effect = { 
+		effect = {
+			add_country_modifier = {
+				name = son_conquer_zhongyuan
+				duration = 9125
+			}
 			north_henei_area = {
 				add_permanent_claim = ROOT
 			}
@@ -1525,12 +1560,13 @@ son_slot_4 = {
 		icon = missions_china_nomad
 		position = 7
 		required_missions = { son_4_expand_zhongyuan } 
-		provinces_to_highlight = { area = north_henei_area NOT = { owned_by = ROOT } } 
+		provinces_to_highlight = { area = north_henei_area OR = { NOT = { owned_by = ROOT } NOT = { is_core = ROOT } } } 
 
 		trigger = { 
 			north_henei_area = {
 				type = all
 				owned_by = ROOT
+				is_core = ROOT
 			}
 		}
 
@@ -1538,6 +1574,10 @@ son_slot_4 = {
 			4122 = {
 				change_culture = ROOT
 				change_religion = ROOT
+				add_province_modifier = {
+					name = son_missions_zhaoge_rebuilding
+					duration = 9125
+				}
 			}
 			handan_area = {
 				add_permanent_claim = ROOT
@@ -1835,6 +1875,14 @@ son_slot_5 = {
 				area = yiju_area
 				area = syuantu_area
 			}
+			OR = {
+				NOT = {
+					owned_by = JSG
+				}
+				NOT = {
+					is_core = JSG
+				}
+			}
 		} 
 
 		trigger = {
@@ -1845,27 +1893,35 @@ son_slot_5 = {
 			liaoxi_area = {
 				type = all
 				owned_by = JSG
+				is_core = JSG
 			}
 			miylson_area = {
 				type = all
 				owned_by = JSG
+				is_core = JSG
 			}
 			liaodong_area = {
 				type = all
 				owned_by = JSG
+				is_core = JSG
 			}
 			yiju_area = {
 				type = all
 				owned_by = JSG
+				is_core = JSG
 			}
 			syuantu_area = {
 				type = all
 				owned_by = JSG
+				is_core = JSG
 			}
 		} 
 
-		effect = { 
+		effect = {
+			add_historical_friend = JSG
 			JSG = {
+				set_capital = 4003
+				add_historical_friend = ROOT
 				change_primary_culture = ROOT
 				change_religion = ROOT
 				capital_scope = {
