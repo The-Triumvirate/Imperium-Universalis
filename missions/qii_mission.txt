@@ -1,0 +1,1245 @@
+qi_missions_1 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = { tag = QII }
+
+	has_country_shield = yes
+	
+	# 平定五公子之乱
+	qi_mission_1_pingdingwugongzizhiluan = {
+		icon = missions_china_army
+		#position = 1
+		provinces_to_highlight = { }
+		trigger = {
+			stability = 1
+			legitimacy = 100
+			NOT = { num_of_rebel_armies = 1 } 
+			is_at_war = no
+		}
+		effect = {
+			add_estate_influence_modifier = {
+				estate = estate_nobility
+				desc = EST_VAL_qi_mission_1_pingdingwugongzizhiluan
+				influence = -10
+				duration = 7300
+			}
+			change_estate_land_share = {
+				estate = estate_nobility
+				share = -5
+			}
+			add_treasury = 100
+			add_country_modifier = {
+				name = qi_pingding_neiluan
+				duration = 3650
+			}
+		}
+	}
+
+	# 与民更始
+	qi_mission_2_yumingengshi = {
+		icon = missions_china_agriculture
+		#position = 2
+		required_missions = { qi_mission_1_pingdingwugongzizhiluan }
+		provinces_to_highlight = { }
+		trigger = {
+			stability = 2
+			NOT = { average_autonomy = 20 }
+			num_of_loans = 0
+			is_at_war = no
+		}
+		effect = {
+			set_estate_privilege = estate_nobility_qi_qingyaobofu
+			# 特权效果：全国发展度成本 -5%，稳定度花费 +5%
+		}
+	}
+
+	# 修缮驿道
+	qi_mission_3_shanxiangyidao = {
+		icon = missions_china_road
+		#position = 3
+		required_missions = { qi_mission_2_yumingengshi }
+		provinces_to_highlight = {
+			all_owned_province = { 
+				is_in_capital_area = yes
+			}
+		}
+		trigger = {
+			is_at_war = no
+			all_owned_province = { 
+				is_in_capital_area = yes
+				has_road_building = yes
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_guanzi_yidao
+				duration = 3650
+			}
+		}
+	}
+
+	# 重振工商
+	qi_mission_4_chongzhengongshang = {
+		icon = missions_china_commercial
+		#position = 4
+		required_missions = { qi_mission_3_shanxiangyidao }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				fishermen_huts = 3
+				weavers = 3
+				salt_gatherers = 3
+			}
+			estate_loyalty = { 
+				estate = estate_merchants 
+				loyalty = 60 
+			}
+			4263 = {
+				trade_share = {
+					country = ROOT
+					share = 50
+				}
+			}
+		}
+		effect = {
+			set_estate_privilege = estate_merchants_qi_yantieguanying
+			# 特权效果：全局商品产出 +15%，工商阶层影响力 +10%，领地份额 -10%
+			add_mercantilism = 5
+		}
+	}
+
+	# 参国伍鄙
+	qi_mission_5_canguowubi = {
+		icon = missions_china_road
+		#position = 5
+		required_missions = { qi_mission_4_chongzhengongshang }
+		provinces_to_highlight = { }
+		trigger = {
+			army_size_percentage = 1
+			manpower_percentage = 1
+		}
+		effect = {
+			add_estate_influence_modifier = {
+				estate = estate_nobility
+				desc = EST_VAL_qi_mission_5_canguowubi
+				influence = -5
+				duration = 7300
+			}
+			add_country_modifier = {
+				name = qi_canguowubi
+				duration = -1
+			}
+		}
+	}
+
+	# 临淄三百闾
+	qi_mission_6_linzisanbailv = {
+		icon = missions_china_temple
+		#position = 6
+		required_missions = { qi_mission_5_canguowubi }
+		provinces_to_highlight = { province_id = 4263 }
+		trigger = {
+			4263 = { 
+				has_great_project = { type = linzi_city tier = 2 } 
+			}
+		}
+		effect = {
+			add_splendor = 200
+		}
+	}
+
+	# 削弱卿大夫
+	qi_mission_7_xueruoqingdaifu = {
+		icon = missions_china_bureaucrat
+		#position = 7
+		required_missions = { qi_mission_6_linzisanbailv }
+		provinces_to_highlight = { }
+		trigger = {
+			crown_land_share = 60
+			estate_influence = { estate = estate_nobility influence = 40 }
+		}
+		effect = {
+			add_absolutism = 10
+			add_estate_loyalty = {
+				estate = estate_priesthood
+				loyalty = 5
+			}
+			add_estate_influence_modifier = {
+				estate = estate_nobility
+				desc = EST_VAL_qi_mission_7_xueruoqingdaifu
+				influence = -10
+				duration = -1
+			}
+		}
+	}
+
+	# 齐地八神
+	qi_mission_8_qidibashen = {
+		icon = missions_china_temple
+		position = 8
+		required_missions = {  }
+		provinces_to_highlight = {
+			province_id = 4263   # 临淄
+			province_id = 4262   # 泰山-牟
+			province_id = 4313   # 平陆-汶上县
+			province_id = 4281   # 掖县
+			province_id = 4288   # 东牟-芝罘山
+			#province_id = 4289   # 莱山区
+			province_id = 4289   # 成山头
+			province_id = 4292   # 琅琊
+		}
+		trigger = {
+			4263 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4262 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4313 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4281 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4288 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4263 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4289 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+			4292 = {
+				owned_by = ROOT
+				has_temple_building = yes
+			}
+		}
+		effect = {
+			add_adm_power = 100
+			country_event = { id = flavor_Qi.1 }
+		}
+	}
+
+	# 齐天之心
+	qi_mission_9_qitianzhixin = {
+		icon = missions_china_great
+		#position = 9
+		required_missions = { qi_mission_8_qidibashen qi_mission_16_chongjianbaye }
+		provinces_to_highlight = { }
+		trigger = {
+			is_great_power = yes
+			mission_completed = qi_mission_38_haishangfangshi
+		}
+		effect = {
+			custom_tooltip = qi_dongdi_activated.tt
+			set_country_flag = qi_dongdi_activated
+			add_country_modifier = {
+				name = qi_qitianzhixin
+				duration = -1
+			}
+			swap_non_generic_missions = yes
+		}
+	}
+}
+
+# 外交称霸线
+qi_missions_2 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = { tag = QII }
+
+	has_country_shield = yes
+	# 外结盟好
+	qi_mission_10_waijiemenghao = {
+		icon = missions_china_alliance
+		#position = 1
+		provinces_to_highlight = { }
+		trigger = {
+			calc_true_if = {
+				all_known_country = {
+					OR = {
+						is_part_of_hre = yes
+						religion = ROOT
+					}
+					has_opinion = { who = ROOT value = 125 }
+				}
+				amount = 5
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_waijiemenghao
+				duration = -1
+			}
+			
+		}
+	}
+
+	# 朝觐天子
+	qi_mission_11_zhaojintianzi = {
+		icon = missions_china_diplomacy
+		#position = 2
+		required_missions = { qi_mission_10_waijiemenghao }
+		provinces_to_highlight = { }
+		trigger = {
+			exists = ZHO
+			ZHO = { is_subject = no }
+			ZHO = { has_opinion = { who = root value = 100 } }
+			is_at_war = no
+			ZHO = { is_at_war = no }
+		}
+		effect = {
+			add_prestige = 10
+			ZHO = { country_event = { id = flavor_Qi.2 } } 
+			add_country_modifier = {
+				name = qi_zhaojintianzi
+				duration = -1
+			}
+			if = {
+				limit = {
+					religion = chinese_religion
+				}
+				add_papal_influence = 100
+			}
+		}
+	}
+
+	# 索取汶阳
+	qi_mission_12_suoquwenyang = {
+		icon = missions_china_army
+		#position = 3
+		required_missions = { qi_mission_11_zhaojintianzi }
+		provinces_to_highlight = { 
+			province_id = 4274 
+		}
+		trigger = {
+			owns = 4274
+			is_at_war = no
+		}
+		effect = {
+			4274 = { add_core = ROOT }
+			every_owned_province = {
+				limit = {
+					any_neighbor_province = { owned_by = LUU }
+				}
+				every_neighbor_province = {
+					limit = {
+						owned_by = LUU
+					}
+					add_permanent_claim = ROOT
+				}
+			}
+		}
+	}
+
+	# 再图霸位
+	qi_mission_13_zaitubawei = {
+		icon = missions_china_scroll
+		#position = 4
+		required_missions = { qi_mission_12_suoquwenyang }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				is_emperor = yes
+				AND = {
+					NOT = { is_emperor = yes }
+					num_of_infantry = emperor
+					num_of_cavalry = emperor
+					num_of_artillery = emperor
+				}
+			}
+		}
+		effect = {
+			add_dip_power = 200
+		}
+	}
+
+	# 离间晋卿
+	qi_mission_14_lijianjinqing = {
+		icon = missions_china_diplomacy
+		#position = 5
+		required_missions = { qi_mission_13_zaitubawei }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				NOT = { exists = JIN }
+				AND = {
+					exists = JIN
+					has_spy_network_in = { who = JIN value = 33 }
+					calc_true_if = {
+						is_subject_of_type_with_overlord = {
+							who = JIN
+							type = ministerial_clan
+						}
+						liberty_desire  = 33
+						
+						amount = 2
+					}
+				}
+				AND = {
+					exists = JIN
+					JIN = {
+						NOT = { has_subject_of_type = ministerial_clan }
+					}
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					JIN = { has_subject_of_type = ministerial_clan }
+				}
+				every_subject_country = {
+					limit = {
+						is_subject_of = JIN
+					}
+					add_liberty_desire = 20
+				}
+				
+			}
+			else = {
+				add_country_modifier = {
+					name = qi_yongjianxinde
+					duration = -1
+				}
+			}
+		}
+	}
+
+	# 灭此朝食
+	qi_mission_15_miecizhaoshi = {
+		icon = missions_china_vicyory
+		position = 7
+		required_missions = { qi_mission_14_lijianjinqing }
+		provinces_to_highlight = { 
+			
+		}
+		trigger = {
+			OR = {
+				war_score_against = {
+					who = JIN
+					value = 75
+				}
+			}		
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_miecizhaoshi
+				duration = -1
+			}
+		}
+	}
+
+	# 重建霸业
+	qi_mission_16_chongjianbaye = {
+		icon = missions_china_dashing
+		#position = 7
+		required_missions = { qi_mission_15_miecizhaoshi }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				is_emperor = yes
+				AND = {
+					NOT = { hre_size = 1 }
+					num_of_subjects = 5
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = { is_emperor = yes }
+				add_imperial_influence = 25
+			}
+			else = {
+				add_splendor = 300
+			}
+		}
+	}
+}
+
+# 军事扩张线
+qi_missions_3 = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = { tag = QII }
+
+	has_country_shield = yes
+	# 重修甲兵
+	qi_mission_17_chongxiujiabing = {
+		icon = missions_china_manufacturer
+		#position = 1
+		provinces_to_highlight = { }
+		trigger = {
+			land_maintenance = 1
+			army_size_percentage = 1
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_chongxiubingjia
+				duration = 7300
+			}
+		}
+	}
+
+	# 齐地长城
+	qi_mission_18_qidichangcheng = {
+		icon = missions_china_temple
+		#position = 2
+		required_missions = { qi_mission_17_chongxiujiabing }
+		provinces_to_highlight = {
+
+		}
+		trigger = {
+			all_owned_province = {
+				NOT = { has_port = yes }
+				is_core = ROOT
+				any_neighbor_province = {
+					NOT = { owned_by = ROOT }
+				}
+				fort_level = 1
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_qidichangcheng
+				duration = -1
+			}
+		}
+	}
+
+	# 平定东夷
+	qi_mission_19_pingdingdongyi = {
+		icon = missions_china_nomad
+		#position = 3
+		required_missions = { qi_mission_18_qidichangcheng }
+		provinces_to_highlight = { 
+			province_id = 4287
+		}
+		trigger = {
+			NOT = { exists = LAI }
+			owns = 4287
+		}
+		effect = {
+			jiaodong_area = { add_permanent_claim = ROOT }
+			add_mil_power = 100
+		}
+	}
+
+	# 征伐莒国
+	qi_mission_20_zhengfajuguo = {
+		icon = missions_china_army
+		#position = 4
+		required_missions = { qi_mission_19_pingdingdongyi }
+		provinces_to_highlight = { 
+			province_id = 4296
+		}
+		trigger = {
+			NOT = { exists = JUU }
+			owns = 4296
+		}
+		effect = {
+			chengyang_area = { add_permanent_claim = ROOT }
+			add_mil_power = 100
+		}
+	}
+
+	# 东抵到海
+	qi_mission_21_dongdidaohai = {
+		icon = missions_china_ship
+		#position = 5
+		required_missions = { qi_mission_20_zhengfajuguo }
+		provinces_to_highlight = { area = langya_area }
+		trigger = {
+			langya_area = { type = all owned_by = ROOT }
+		}
+		effect = {
+			langya_area = { add_core = ROOT }
+			add_mil_power = 100
+		}
+	}
+
+	# 疏浚海港
+	qi_mission_22_shujunhaigang = {
+		icon = missions_china_shipyard
+		#position = 6
+		required_missions = { qi_mission_21_dongdidaohai }
+		provinces_to_highlight = { }
+		trigger = {
+			full_idea_group = logistic_ideas
+			num_of_ports = 1
+		}
+		effect = {
+			every_owned_province = {
+				limit = { has_port = yes }
+				add_province_modifier = {
+					name = qi_youlianghaigang
+					duration = -1
+				}
+			}
+		}
+	}
+
+	# 强齐水师
+	qi_mission_23_qiangqishuishi = {
+		icon = missions_china_ship
+		#position = 7
+		required_missions = { qi_mission_22_shujunhaigang }
+		provinces_to_highlight = { }
+		trigger = {
+			navy_size_percentage = 1
+		}
+		effect = {
+			create_admiral = {
+				tradition = 200
+			}
+		}
+	}
+
+	# 深入淮泗
+	qi_mission_24_shenruhuaisi = {
+		icon = missions_china_army
+		#position = 8
+		required_missions = { qi_mission_15_miecizhaoshi }
+		provinces_to_highlight = { region = xuzhou_china }
+		trigger = {
+			OR = {
+				xuzhou_china = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = ROOT 
+				}
+			}
+		}
+		effect = {
+			wu_area = { add_permanent_claim = ROOT }
+			
+		}
+	}
+
+
+	# 尊王攘夷
+	qi_mission_29_zunwangrangyi = {
+		icon = missions_china_priest
+		#position = 13
+		required_missions = { qi_mission_16_chongjianbaye }
+		provinces_to_highlight = { }
+		trigger = {
+			full_idea_group = mercenary_ideas
+		}
+		effect = {
+			custom_tooltip = qi_mission_29_zunwangrangyi.tt#解锁诸夏死士佣兵团
+		}
+	}
+
+	# 讨伐楚逆
+	qi_mission_30_taofachuni = {
+		icon = missions_china_vicyory
+		#position = 14
+		required_missions = { qi_mission_28_xiangfuwuyue }
+		provinces_to_highlight = {  }
+		trigger = {
+			OR = {
+				NOT = { exists = CHU }
+				AND = {
+					offensive_war_with = CHU
+					war_score_against = { who = CHU value = 75 }
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_fengniuxiangji
+				duration = -1
+			}
+		}
+	}
+
+	# 再合诸侯
+	qi_mission_31_zaihezhuhou = {
+		icon = missions_china_scroll
+		#position = 15
+		required_missions = { qi_mission_30_taofachuni }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				AND = {
+					hre_size = 1
+					all_known_country = {
+						is_part_of_hre = yes
+						has_opinion = { who = ROOT value = 50 }
+					}
+				}
+				AND = {
+					NOT = { hre_size = 1 }
+					all_known_country = {
+						religion = root
+						has_opinion = { who = ROOT value = 50 }
+					}
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_zaihezhuhou
+				duration = -1
+			}
+		}
+	}
+}
+
+# 
+qi_missions_4 = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = { tag = QII }
+
+	has_country_shield = yes
+	# 再斩令支
+	qi_mission_25_zaizhanlingzhi = {
+		icon = missions_china_horseman
+		position = 6
+		required_missions = { qi_mission_21_dongdidaohai }
+		provinces_to_highlight = { area = liaoxi_area_western }
+		trigger = {
+			OR = {
+				liaoxi_area_western = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = ROOT 
+				}
+			}
+		}
+		effect = {
+			liaoxi_area = { add_permanent_claim = ROOT }
+		}
+	}
+
+	# 征伐辽东
+	qi_mission_26_zhengfaliaodong = {
+		icon = missions_china_nomad
+		#position = 10
+		required_missions = { qi_mission_25_zaizhanlingzhi }
+		provinces_to_highlight = { area = liaoxi_area }
+		trigger = {
+			OR = {
+				liaoxi_area = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = ROOT 
+				}
+			}
+		}
+		effect = {
+			lelang_zhenfan_region = { add_permanent_claim = ROOT }
+			#country_event = { id = qi_korea_event }
+		}
+	}
+
+	# 进军朝鲜
+	qi_mission_27_jinjinchaoxian = {
+		icon = missions_china_dashing
+		#position = 11
+		required_missions = { qi_mission_26_zhengfaliaodong }
+		provinces_to_highlight = { region = lelang_zhenfan_region }
+		trigger = {
+			OR = {
+				lelang_zhenfan_region = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = ROOT 
+				}
+			}
+		}
+		effect = {
+			saikaido_region = { discover_country = QII }
+		}
+	}
+	
+	# 降伏吴越
+	qi_mission_28_xiangfuwuyue = {
+		icon = missions_china_diplomacy
+		#position = 12
+		required_missions = { qi_mission_24_shenruhuaisi }
+		provinces_to_highlight = { 
+			OR = {
+			area = kuaiji_area
+			area = wu_area 
+			}
+		}
+		trigger = {
+			kuaiji_area = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = ROOT 
+			}
+			wu_area = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = ROOT 
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_wuyue_jianshi
+				duration = -1
+			}
+		}
+	}
+
+}
+# 文化科技线
+qi_missions_5 = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = { tag = QII }
+
+	has_country_shield = yes
+	# 治国安民
+	qi_mission_32_zhiguoanmin = {
+		icon = missions_china_prosperous
+		#position = 1
+		provinces_to_highlight = { }
+		trigger = {
+			stability = 2
+			all_owned_province = { NOT = { devastation = 1 } }
+		}
+		effect = {
+			add_adm_power = 200
+		}
+	}
+
+	# 广开言路
+	qi_mission_33_guangkaiyanlu = {
+		icon = missions_china_bureaucrat
+		#position = 2
+		required_missions = { qi_mission_32_zhiguoanmin }
+		provinces_to_highlight = {
+			
+		}
+		trigger = {
+			all_owned_province = {
+				is_in_capital_area = yes
+				has_townhall_building = yes
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_guangkaiyanlu
+				duration = -1
+			}
+		}
+	}
+
+	# 扩大学宫
+	qi_mission_34_kuodaxuegong = {
+		icon = missions_china_learning
+		#position = 3
+		required_missions = { qi_mission_33_guangkaiyanlu }
+		provinces_to_highlight = { }
+		trigger = {
+			full_idea_group = academy_ideas
+		}
+		effect = {
+			4263 = { 
+				add_great_project = {
+					type = Jixia_academy
+					instant = yes
+				}
+			}
+		}
+	}
+
+	# 礼贤重士
+	qi_mission_35_lixianzhongshi = {
+		icon = missions_china_priest
+		#position = 4
+		required_missions = { qi_mission_34_kuodaxuegong }
+		provinces_to_highlight = { }
+		trigger = {
+				employed_advisor = { category = ADM skill = 2 }
+				employed_advisor = { category = DIP skill = 2 }
+				employed_advisor = { category = MIL skill = 2 }
+		}
+		effect = {
+			set_estate_privilege = estate_priesthood_qi_lixianzhongshi
+			# 特权效果：祭司阶层影响力 +5%，顾问花费 -15%
+		}
+	}
+
+	# 百家争鸣
+	qi_mission_36_baijiazhengming = {
+		icon = missions_china_scroll
+		#position = 5
+		required_missions = { qi_mission_35_lixianzhongshi }
+		provinces_to_highlight = { }
+		trigger = {
+				employed_advisor = { category = ADM skill = 3 }
+				employed_advisor = { category = DIP skill = 3 }
+				employed_advisor = { category = MIL skill = 3 }
+		}
+		effect = {
+			if = {
+				limit = {
+					OR = {
+						NOT = { is_religion_enabled = confucianism }
+						NOT = { is_religion_enabled = taoism }
+						NOT = { is_religion_enabled = legalism }
+						NOT = { is_religion_enabled = mohism }
+					}
+				}
+				country_event = { id = flavor_Qi.3 }
+			}
+			else = {
+				add_adm_power = 100
+				add_dip_power = 100
+				add_mil_power = 100
+			}
+		}
+	}
+
+	# 五行之说
+	qi_mission_37_wuxingzhishuo = {
+		icon = missions_china_priest
+		#position = 6
+		required_missions = { qi_mission_36_baijiazhengming }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				religious_school = {
+					group = chinese_religions
+					school = yinyang_school
+				}
+				has_country_modifier = yinyang_scholar_modifier
+				religion = confucianism
+				religion = legalism
+				religion = taoism
+				religion = mohism
+			}
+		}
+		effect = {
+			add_adm_power = 200
+			add_country_modifier = {
+				name = qi_wuxingxueshuo
+				duration = 18250
+			}
+		}
+	}
+
+	# 海上方士
+	qi_mission_38_haishangfangshi = {
+		icon = missions_china_learning
+		#position = 7
+		required_missions = { qi_mission_37_wuxingzhishuo }
+		provinces_to_highlight = { }
+		trigger = {
+			calc_true_if = {
+				all_owned_province = {
+					has_harbor_building = yes
+				}
+				amount = 5
+			}
+			oracle = 4
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_xunxianhaiwai
+				duration = 3650
+			}
+		}
+	}
+
+	# 旭日升起之地
+	qi_mission_39_xurishengqizhidi = {
+		icon = missions_china_horseman
+		position = 9
+		required_missions = { qi_mission_27_jinjinchaoxian qi_mission_38_haishangfangshi }
+		provinces_to_highlight = { region = saikaido_region }
+		trigger = {
+			any_owned_province = {
+				region = saikaido_region
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = qi_didaorichuzhidi
+				duration = -1
+			}
+		}
+	}
+}
+
+# 东帝路线（独立slot，需要完成齐天之心解锁）
+qi_missions_6 = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		tag = QII
+		has_country_flag = qi_dongdi_activated
+	}
+	has_country_shield = yes
+
+	# 请封齐公
+	qi_mission_40_qingfengqigong = {
+		icon = missions_china_scroll
+		position = 10
+		provinces_to_highlight = { }
+		trigger = {
+			total_development = 300
+			exists = ZHO
+			ZHO = { is_subject = no }
+		}
+		effect = {
+			clr_country_flag = zhuxiatouxian_Hou
+			set_country_flag = zhuxiatouxian_Gong
+			add_country_modifier = {
+				name = qi_taigongzhilv
+				duration = -1
+			}
+		}
+	}
+
+	# 北伐无棣
+	qi_mission_41_beifawudi = {
+		icon = missions_china_army
+		#position = 2
+		required_missions = { qi_mission_40_qingfengqigong }
+		provinces_to_highlight = { area = hejian_area_eastern }
+		trigger = {
+			hejian_area_eastern = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = ROOT 
+			}
+		}
+		effect = {
+			
+		}
+	}
+
+	# 河北形胜
+	qi_mission_42_hebeixingsheng = {
+		icon = missions_china_vicyory
+		#position = 3
+		required_missions = { qi_mission_41_beifawudi }
+		provinces_to_highlight = { area = guangyang_area }
+		trigger = {
+			OR = {
+				guangyang_area = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = yes
+				}
+			}
+		}
+		effect = {
+			#wudi_area = { add_permanent_claim = ROOT }
+			country_event = { id = flavor_Qi.4 }
+		}
+	}
+
+	# 蹂躏南楚
+	qi_mission_46_roulinnanchu = {
+		icon = missions_china_army
+		#position = 7
+		required_missions = { qi_mission_45_zihaoqiwang }
+		provinces_to_highlight = { area = nan_area_south }
+		trigger = {
+			OR = {
+				mission_completed = qi_mission_30_taofachuni
+				nan_area_south = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = yes
+				}
+			}
+		}
+		effect = {
+			changsha_area = { add_claim = ROOT }
+			country_event = { id = flavor_Qi.5 }
+		}
+	}
+
+	# 覆灭西秦
+	qi_mission_48_fumiexiqin = {
+		icon = missions_china_dashing
+		#position = 9
+		required_missions = { qi_mission_47_jianmiejinguo }
+		provinces_to_highlight = { area = fufeng_area }
+		trigger = {
+			fufeng_area = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = yes
+			}
+		}
+		effect = {
+			country_event = { id = flavor_Qi.6 }
+		}
+	}
+
+}
+# 东帝路线（独立slot，需要完成齐天之心解锁）
+qi_missions_7 = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		tag = QII
+		has_country_flag = qi_dongdi_activated
+	}
+	has_country_shield = yes
+
+	# 南讨邹鲁
+	qi_mission_43_nantaozaolu = {
+		icon = missions_china_army
+		#position = 4
+		required_missions = { qi_mission_42_hebeixingsheng }
+		provinces_to_highlight = { 
+			OR = {
+				area = xue_area_north 
+			}		
+		}
+		trigger = {
+			OR = {
+				xue_area_north = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = yes
+				}
+			}
+		}
+		effect = {
+			country_event = { id = flavor_Qi.7 }
+		}
+	}
+
+	# 宋卫皆臣
+	qi_mission_44_songweijiechen = {
+		icon = missions_china_diplomacy
+		#position = 5
+		required_missions = { qi_mission_43_nantaozaolu }
+		provinces_to_highlight = { 
+			OR = {
+				area = dang_area 
+				area = north_henei_area
+			}
+		}
+		trigger = {
+				dang_area = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = yes 
+				}
+				north_henei_area = { 
+					type = all 
+					country_or_non_sovereign_subject_holds = yes 
+				}
+		}
+		effect = {
+			country_event = { id = flavor_Qi.8 }
+		}
+	}
+
+	# 自号齐王
+	qi_mission_45_zihaoqiwang = {
+		icon = missions_china_great
+		#position = 6
+		required_missions = { qi_mission_44_songweijiechen }
+		provinces_to_highlight = { }
+		trigger = {
+			
+		}
+		effect = {
+			if = {
+				limit = {
+					NOT = { has_country_flag = zhuxiatouxian_wang }
+					NOT = { is_emperor_of_china = yes }
+				}
+				clr_country_flag = zhuxiatouxian_Gong
+				set_country_flag = zhuxiatouxian_wang
+				add_country_modifier = {
+					name = chengwang
+					duration = -1
+				}
+			}
+			else = {
+				add_prestige = 25
+			}
+		}
+	}
+
+	# 歼灭晋国
+	qi_mission_47_jianmiejinguo = {
+		icon = missions_china_vicyory
+		#position = 8
+		required_missions = { qi_mission_45_zihaoqiwang }
+		provinces_to_highlight = { 
+			OR = {
+				area = pingyang_area 
+				area = hedong_area 
+			}
+			
+		}
+		trigger = {
+			pingyang_area = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = yes 
+			}
+			hedong_area = { 
+				type = all 
+				country_or_non_sovereign_subject_holds = yes 
+			}
+		}
+		effect = {
+			country_event = { id = flavor_Qi.9 }
+		}
+	}
+
+
+	# 周王让位
+	qi_mission_49_zhouwangrangwei = {
+		icon = missions_china_diplomacy
+		#position = 10
+		required_missions = { qi_mission_46_roulinnanchu qi_mission_47_jianmiejinguo qi_mission_48_fumiexiqin }
+		provinces_to_highlight = { }
+		trigger = {
+			OR = {
+				ZHO = { is_subject_of = ROOT }
+				NOT = { exists = ZHO }
+			}
+			capital_scope = {
+				has_building = imperial_palace
+			}
+		}
+		effect = {
+			country_event = { id = flavor_Qi.10 }
+		}
+	}
+
+	# 号曰东帝
+	qi_mission_50_haoyuedongdi = {
+		icon = missions_china_great
+		#position = 11
+		required_missions = { qi_mission_49_zhouwangrangwei }
+		provinces_to_highlight = { }
+		trigger = {
+				NOT = {
+					calc_true_if = {
+						all_known_country = {
+							capital_scope = { continent = china }
+							religion_group = ROOT
+							is_subject = no
+						}
+					amount = 1
+				}
+			}
+		}
+		effect = {
+			set_emperor_of_china = ROOT
+			add_government_reform = celestial_empire
+			country_event = { id = flavor_Qi.11 }
+		}
+	}
+}
