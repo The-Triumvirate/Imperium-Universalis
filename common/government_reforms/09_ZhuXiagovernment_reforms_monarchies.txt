@@ -23,6 +23,7 @@ chinese_feudalism_reform = {
 		NOT = { has_reform = ShiQing_feudalism_reform }
 		NOT = { has_reform = chinese_reform_monarchy_reform }
 		NOT = { has_reform = alt_hist_hre_feudalism_reform }
+		NOT = { has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO }
 		NOT = { has_reform = celestial_empire }
 	}
 	modifiers = {
@@ -68,6 +69,7 @@ ShiQing_feudalism_reform = {
 		}
 		NOT = { has_reform = chinese_reform_monarchy_reform }
 		NOT = { has_reform = alt_hist_hre_feudalism_reform }
+		NOT = { has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO }
 	}
 	modifiers = {
 		land_forcelimit_modifier = 0.2 #陆军上限值修正
@@ -86,7 +88,11 @@ alt_hist_hre_feudalism_reform = {
 	is_eligible_for_hre_emperor = yes
 	valid_for_new_country = yes
 	potential = {
-		hre_reform_passed = emperor_perpetual_diet
+		is_elector = yes
+		OR = {
+			hre_reform_passed = emperor_perpetual_diet
+			has_global_flag = allow_early_neo_zhou_reforms
+		}
 		OR = {
 			culture_group = chinese_group
 			religion_group = chinese_religions
@@ -103,6 +109,58 @@ alt_hist_hre_feudalism_reform = {
 
 	trigger = {
 		OR = {
+			has_global_flag = allow_early_neo_zhou_reforms
+			AND = {
+				has_country_flag = qianghuajunquan
+				has_country_flag = shangyegexin
+				has_country_flag = chongbianjunzhi
+			}
+			AND = {
+				have_had_reform = qianghuajunquan
+				have_had_reform = shangyegexin
+				have_had_reform = chongbianjunzhi
+			}
+		}
+		NOT = { has_reform = chinese_reform_monarchy_reform }
+	}
+	modifiers = {
+		stability_cost_modifier = -0.1
+		global_unrest = -2
+	}
+	effect = {
+		set_country_flag = alt_hist_hre_feudalism_reform_flag
+	}
+}
+
+alt_hist_hre_feudalism_reform_NON_FANGBO = {
+	icon = "chinese_feudalism_reform"
+	allow_normal_conversion = yes
+	legacy_equivalent = ShiQing_feudalism
+	is_eligible_for_hre_emperor = no
+	valid_for_new_country = yes
+	potential = {
+		is_elector = no
+		OR = {
+			hre_reform_passed = emperor_perpetual_diet
+			has_global_flag = allow_early_neo_zhou_reforms
+		}
+		OR = {
+			culture_group = chinese_group
+			religion_group = chinese_religions
+			primary_culture = chaoxian
+			#primary_culture = yayoi
+			is_religion_reformed = yes
+			AND = {
+				have_had_reform = sinofication_technolgy_3
+				have_had_reform = sinofication_government_3
+				have_had_reform = sinofication_culture_3
+			}
+		}
+	}
+
+	trigger = {
+		OR = {
+			has_global_flag = allow_early_neo_zhou_reforms
 			AND = {
 				has_country_flag = qianghuajunquan
 				has_country_flag = shangyegexin
@@ -259,6 +317,24 @@ free_city_zhou = {
 		monarch_lifespan = 0.1
 		stability_cost_to_declare_war = 2
 		diplomatic_upkeep = -1
+	}
+}
+free_city_zhou_upgraded = {
+	icon = "free_city"
+	allow_normal_conversion = no
+	is_eligible_for_hre_emperor = no
+	potential = { has_reform = free_city_zhou_upgraded }
+
+	valid_for_nation_designer = no
+	lock_level_when_selected = yes
+	nation_designer_cost = 0
+	#free_city = yes
+
+	modifiers = {
+		tolerance_own = 2
+		diplomatic_reputation = 1
+		monarch_diplomatic_power = 1
+		monarch_lifespan = 0.1
 	}
 }
 

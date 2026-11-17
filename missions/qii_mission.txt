@@ -60,14 +60,12 @@ qi_missions_1 = {
 		#position = 3
 		required_missions = { qi_mission_2_yumingengshi }
 		provinces_to_highlight = {
-			all_owned_province = { 
-				is_in_capital_area = yes
-			}
+			area = linzi_area
 		}
 		trigger = {
 			is_at_war = no
-			all_owned_province = { 
-				is_in_capital_area = yes
+			linzi_area = { 
+				type = all
 				has_road_building = yes
 			}
 		}
@@ -293,23 +291,24 @@ qi_missions_2 = {
 		provinces_to_highlight = { }
 		trigger = {
 			exists = ZHO
-			ZHO = { is_subject = no }
 			ZHO = { has_opinion = { who = root value = 100 } }
 			is_at_war = no
 			ZHO = { is_at_war = no }
+			years_of_income = 0.5
 		}
 		effect = {
+			add_years_of_income = -0.5
 			add_prestige = 10
 			ZHO = { country_event = { id = flavor_Qi.2 } } 
 			add_country_modifier = {
 				name = qi_zhaojintianzi
-				duration = -1
+				duration = 10950
 			}
 			if = {
 				limit = {
 					religion = chinese_religion
 				}
-				add_papal_influence = 100
+				add_papal_influence = 20
 			}
 		}
 	}
@@ -328,15 +327,18 @@ qi_missions_2 = {
 		}
 		effect = {
 			4274 = { add_core = ROOT }
-			every_owned_province = {
-				limit = {
-					any_neighbor_province = { owned_by = LUU }
-				}
-				every_neighbor_province = {
+			custom_tooltip = claims_on_neighbors_luu.tt
+			hidden_effect = {
+				every_owned_province = {
 					limit = {
-						owned_by = LUU
+						any_neighbor_province = { owned_by = LUU }
 					}
-					add_permanent_claim = ROOT
+					every_neighbor_province = {
+						limit = {
+							owned_by = LUU
+						}
+						add_permanent_claim = ROOT
+					}
 				}
 			}
 		}
@@ -399,18 +401,20 @@ qi_missions_2 = {
 				limit = {
 					JIN = { has_subject_of_type = ministerial_clan }
 				}
-				every_subject_country = {
-					limit = {
-						is_subject_of = JIN
+				JIN = {
+					every_subject_country = {
+						limit = {
+							is_subject_of_type = ministerial_clan
+						}
+						add_liberty_desire = 20
 					}
-					add_liberty_desire = 20
 				}
 				
 			}
 			else = {
 				add_country_modifier = {
 					name = qi_yongjianxinde
-					duration = -1
+					duration = 18250
 				}
 			}
 		}
@@ -435,7 +439,7 @@ qi_missions_2 = {
 		effect = {
 			add_country_modifier = {
 				name = qi_miecizhaoshi
-				duration = -1
+				duration = 18250
 			}
 		}
 	}
@@ -492,11 +496,68 @@ qi_missions_3 = {
 		}
 	}
 
+	# 平定东夷
+	qi_mission_19_pingdingdongyi = {
+		icon = missions_china_nomad
+		#position = 3
+		required_missions = { qi_mission_17_chongxiujiabing }
+		provinces_to_highlight = { 
+			province_id = 4287
+		}
+		trigger = {
+			OR = {
+				NOT = { exists = LAI }
+				AND = {
+					LAI = {
+						is_subject_of = QII
+						NOT = {
+							is_subject_of_type = tributary_state
+						}
+					}
+				}
+			}
+			owns = 4287
+		}
+		effect = {
+			jiaodong_area = { add_permanent_claim = ROOT }
+			add_mil_power = 100
+		}
+	}
+
+	# 征伐莒国
+	qi_mission_20_zhengfajuguo = {
+		icon = missions_china_army
+		#position = 4
+		required_missions = { qi_mission_19_pingdingdongyi }
+		provinces_to_highlight = { 
+			province_id = 4296
+		}
+		trigger = {
+			OR = {
+				NOT = { exists = JUU }
+				AND = {
+					LAI = {
+						is_subject_of = QII
+						NOT = {
+							is_subject_of_type = tributary_state
+						}
+					}
+				}
+			}
+			owns = 4296
+		}
+		effect = {
+			chengyang_area = { add_permanent_claim = ROOT }
+			langya_area = { add_permanent_claim = ROOT }
+			add_mil_power = 100
+		}
+	}
+	
 	# 齐地长城
 	qi_mission_18_qidichangcheng = {
 		icon = missions_china_temple
 		#position = 2
-		required_missions = { qi_mission_17_chongxiujiabing }
+		required_missions = { qi_mission_20_zhengfajuguo }
 		provinces_to_highlight = {
 
 		}
@@ -518,47 +579,11 @@ qi_missions_3 = {
 		}
 	}
 
-	# 平定东夷
-	qi_mission_19_pingdingdongyi = {
-		icon = missions_china_nomad
-		#position = 3
-		required_missions = { qi_mission_18_qidichangcheng }
-		provinces_to_highlight = { 
-			province_id = 4287
-		}
-		trigger = {
-			NOT = { exists = LAI }
-			owns = 4287
-		}
-		effect = {
-			jiaodong_area = { add_permanent_claim = ROOT }
-			add_mil_power = 100
-		}
-	}
-
-	# 征伐莒国
-	qi_mission_20_zhengfajuguo = {
-		icon = missions_china_army
-		#position = 4
-		required_missions = { qi_mission_19_pingdingdongyi }
-		provinces_to_highlight = { 
-			province_id = 4296
-		}
-		trigger = {
-			NOT = { exists = JUU }
-			owns = 4296
-		}
-		effect = {
-			chengyang_area = { add_permanent_claim = ROOT }
-			add_mil_power = 100
-		}
-	}
-
 	# 东抵到海
 	qi_mission_21_dongdidaohai = {
 		icon = missions_china_ship
 		#position = 5
-		required_missions = { qi_mission_20_zhengfajuguo }
+		required_missions = { qi_mission_18_qidichangcheng }
 		provinces_to_highlight = { area = langya_area }
 		trigger = {
 			langya_area = { type = all owned_by = ROOT }
@@ -580,11 +605,14 @@ qi_missions_3 = {
 			num_of_ports = 1
 		}
 		effect = {
-			every_owned_province = {
-				limit = { has_port = yes }
-				add_province_modifier = {
-					name = qi_youlianghaigang
-					duration = -1
+			custom_tooltip = qii_shujunhaigang.tt
+			hidden_effect = {
+				every_owned_province = {
+					limit = { has_port = yes }
+					add_province_modifier = {
+						name = qi_youlianghaigang
+						duration = -1
+					}
 				}
 			}
 		}
@@ -821,18 +849,18 @@ qi_missions_5 = {
 		#position = 2
 		required_missions = { qi_mission_32_zhiguoanmin }
 		provinces_to_highlight = {
-			
+			area = linzi_area
 		}
 		trigger = {
-			all_owned_province = {
-				is_in_capital_area = yes
+			linzi_area = {
+				type = all
 				has_townhall_building = yes
 			}
 		}
 		effect = {
 			add_country_modifier = {
 				name = qi_guangkaiyanlu
-				duration = -1
+				duration = 9125
 			}
 		}
 	}
@@ -863,9 +891,12 @@ qi_missions_5 = {
 		required_missions = { qi_mission_34_kuodaxuegong }
 		provinces_to_highlight = { }
 		trigger = {
+			custom_tooltip = {
+				tooltip = zhou_advisor_needed_tooltip
 				employed_advisor = { category = ADM skill = 2 }
 				employed_advisor = { category = DIP skill = 2 }
 				employed_advisor = { category = MIL skill = 2 }
+			}
 		}
 		effect = {
 			set_estate_privilege = estate_priesthood_qi_lixianzhongshi
@@ -880,9 +911,12 @@ qi_missions_5 = {
 		required_missions = { qi_mission_35_lixianzhongshi }
 		provinces_to_highlight = { }
 		trigger = {
-				employed_advisor = { category = ADM skill = 3 }
-				employed_advisor = { category = DIP skill = 3 }
-				employed_advisor = { category = MIL skill = 3 }
+			custom_tooltip = {
+				tooltip = zhou_advisor_needed_tooltip_two
+				employed_advisor = { category = ADM skill = 4 }
+				employed_advisor = { category = DIP skill = 4 }
+				employed_advisor = { category = MIL skill = 4 }
+			}
 		}
 		effect = {
 			if = {
@@ -950,7 +984,7 @@ qi_missions_5 = {
 		effect = {
 			add_country_modifier = {
 				name = qi_xunxianhaiwai
-				duration = 3650
+				duration = 9125
 			}
 		}
 	}
@@ -992,7 +1026,7 @@ qi_missions_6 = {
 		position = 10
 		provinces_to_highlight = { }
 		trigger = {
-			total_development = 300
+			total_development = 500
 			exists = ZHO
 			ZHO = { is_subject = no }
 		}
@@ -1033,7 +1067,7 @@ qi_missions_6 = {
 			OR = {
 				guangyang_area = { 
 					type = all 
-					country_or_non_sovereign_subject_holds = yes
+					country_or_non_sovereign_subject_holds = ROOT
 				}
 			}
 		}
@@ -1054,7 +1088,7 @@ qi_missions_6 = {
 				mission_completed = qi_mission_30_taofachuni
 				nan_area_south = { 
 					type = all 
-					country_or_non_sovereign_subject_holds = yes
+					country_or_non_sovereign_subject_holds = ROOT
 				}
 			}
 		}

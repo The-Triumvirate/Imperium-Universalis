@@ -928,7 +928,6 @@ country_event = {
 		curia_treasury_size = 250
 		has_dlc = "Emperor"
 		has_reform = free_city_zhou
-		adm_tech = 2
 		is_council_enabled = no
 		any_owned_province = {
 			num_free_building_slots = 1
@@ -1359,7 +1358,10 @@ country_event = {
 		tag = ZHO
 		religion = chinese_religion
 		curia_treasury_size = 250
-		has_reform = free_city_zhou
+		OR = {
+			has_reform = free_city_zhou
+			has_reform = free_city_zhou_upgraded
+		}
 		has_dlc = "Emperor"
 		NOT = { total_development = 150 }
 		is_council_enabled = no
@@ -3209,20 +3211,16 @@ country_event = {
 	picture = defense
 
 	trigger = {
-		has_dlc = "Emperor"
 		tag = ZHO
-		is_papal_controller = yes
-		OR = {
-			is_papal_controller = yes
-			mission_completed = zho_4_tianwangzhixue
-		}
-		ai = yes
+		mission_completed = zho_4_tianwangzhixue
 		curia_treasury_size = 2250
+		has_dlc = "Emperor"
+		ai = yes
 		OR = {
 			NOT = { has_global_flag = recent_zhou_held_GA }
 			had_global_flag = {
 				flag = recent_zhou_held_GA
-				days = 365
+				days = 1825
 			}
 		}
 	}
@@ -3234,41 +3232,19 @@ country_event = {
 	option = {
 		name = "china.66.a"
 		add_curia_treasury = -1000
-		if = {
-			limit = {
-				mission_completed = zho_4_tianwangzhixue
-			}
-			clr_global_flag = recent_zhou_held_GA
-			set_global_flag = recent_zhou_held_GA
-			add_adm_power = 60
-			add_dip_power = 60
-			add_mil_power = 60
-			hidden_effect = {
-				every_known_country = {
-					limit = {
-						religion = chinese_religion
-					}
-					add_adm_power = 30
-					add_dip_power = 30
-					add_mil_power = 30
+		clr_global_flag = recent_zhou_held_GA
+		set_global_flag = recent_zhou_held_GA
+		add_adm_power = 60
+		add_dip_power = 60
+		add_mil_power = 60
+		hidden_effect = {
+			every_known_country = {
+				limit = {
+					religion = chinese_religion
 				}
-			}
-		}
-		else = {
-			clr_global_flag = recent_zhou_held_GA
-			set_global_flag = recent_zhou_held_GA
-			add_adm_power = 20
-			add_dip_power = 20
-			add_mil_power = 20
-			hidden_effect = {
-				every_known_country = {
-					limit = {
-						religion = chinese_religion
-					}
-					add_adm_power = 10
-					add_dip_power = 10
-					add_mil_power = 10
-				}
+				add_adm_power = 30
+				add_dip_power = 30
+				add_mil_power = 30
 			}
 		}
 	}
@@ -3918,8 +3894,9 @@ country_event = {
 
 	trigger = {
 		tag = QIG
+		religion = chinese_religion
 		NOT = {
-			is_year = 180
+			is_year = 182
 		}
 		any_owned_province = {
 			religion = wuism
@@ -3929,7 +3906,7 @@ country_event = {
 	mean_time_to_happen = {
 		months = 24
 		modifier = {
-			factor = 0.4
+			factor = 0.5
 			num_of_owned_provinces_with = {
 				value = 2
 				religion = wuism
@@ -3959,7 +3936,7 @@ country_event = {
 			add_ruler_personality = pious_personality
 		}
 		ai_chance = {
-			factor = 70
+			factor = 50
 			modifier = {
 				factor = 3
 				ruler_has_personality = zealot_personality
@@ -3990,7 +3967,7 @@ country_event = {
 			add_ruler_personality = mystic_china_personality
 		}
 		ai_chance = {
-			factor = 30
+			factor = 50
 			modifier = {
 				factor = 6
 				ruler_has_personality = sinner_personality
@@ -4002,10 +3979,6 @@ country_event = {
 			modifier = {
 				factor = 3
 				ruler_has_personality = tolerant_personality
-			}
-			modifier = {
-				factor = 1.5
-				ruler_has_personality = naive_personality
 			}
 		}
 	}
@@ -4101,6 +4074,8 @@ country_event = {
 					tag = MAO
 					tag = CAI
 					tag = WUU
+					tag = WEI
+					tag = HAN
 					tag = HAG
 					tag = QIC
 					tag = QUW
@@ -4409,7 +4384,10 @@ country_event = {
 		years_of_income = 0.1
 		exists = ZHO
 		ZHO = {
-			has_reform = free_city_zhou
+			OR = {
+				has_reform = free_city_zhou
+				has_reform = free_city_zhou_upgraded
+			}
 		}
 		NOT = { has_global_flag = zhanguokaishi }
 		NOT = {
@@ -5022,6 +5000,9 @@ country_event = {
 		num_of_cities = 6
 		NOT = {
 			hre_reform_passed = emperor_reichskrieg
+		}
+		NOT = {
+			has_country_flag = zho_bazhu_pledge_swap
 		}
 	}
 
@@ -7363,7 +7344,17 @@ country_event = {
 		}
 	}
 	option = {
-		name = "china.134.a"
+		name = "china.134.b"
+		trigger = {
+			OR = {
+				ai = no
+				ZHO = {
+					NOT = {
+						mission_completed = zho_3_alt_perfected_virtue
+					}
+				}
+			}
+		}
 		emperor = {
 			join_all_defensive_wars_of = event_target:bazhu_defend_target
 			add_imperial_influence = 5
@@ -7620,77 +7611,77 @@ country_event = {
 ########################################################################################
 # after league war - bazhu will have to choose one new elector if qin chose badao
 ########################################################################################
-country_event = {
-	id = china.141
-	title = "china.141.t"
-	desc = "china.141.d"
-	picture = cloudy_manor
-	is_triggered_only = yes
-
-	trigger = {
-		NOT = {
-			num_of_electors = 7
-		}
-	}
-
-	option = {
-		name = "china.141.a"
-		trigger = { exists = WEY }
-		WEY = {
-			elector = yes
-		}
-		ai_chance = {
-			factor = 55
-			modifier = {
-				factor = 3
-				WEY = {
-					owns = 4122
-				}
-			}
-			modifier = {
-				factor = 4
-				alliance_with = WEY
-			}
-		}
-	}
-	option = {
-		name = "china.141.b"
-		trigger = { exists = YAN }
-		YAN = {
-			elector = yes
-		}
-		ai_chance = {
-			factor = 45
-			modifier = {
-				factor = 2
-				YAN = {
-					total_development = 165
-				}
-			}
-			modifier = {
-				factor = 5
-				YAN = {
-					total_development = 200
-				}
-			}
-			modifier = {
-				factor = 4
-				alliance_with = YAN
-			}
-		}
-	}
-	option = {
-		name = "china.141.c"
-		trigger = {
-			NOT = {
-				exists = WEY
-			}
-			NOT = {
-				exists = YAN
-			}
-		}
-	}
-}
+#country_event = {
+#	id = china.141
+#	title = "china.141.t"
+#	desc = "china.141.d"
+#	picture = cloudy_manor
+#	is_triggered_only = yes
+#
+#	trigger = {
+#		NOT = {
+#			num_of_electors = 7
+#		}
+#	}
+#
+#	option = {
+#		name = "china.141.a"
+#		trigger = { exists = WEY }
+#		WEY = {
+#			elector = yes
+#		}
+#		ai_chance = {
+#			factor = 55
+#			modifier = {
+#				factor = 3
+#				WEY = {
+#					owns = 4122
+#				}
+#			}
+#			modifier = {
+#				factor = 4
+#				alliance_with = WEY
+#			}
+#		}
+#	}
+#	option = {
+#		name = "china.141.b"
+#		trigger = { exists = YAN }
+#		YAN = {
+#			elector = yes
+#		}
+#		ai_chance = {
+#			factor = 45
+#			modifier = {
+#				factor = 2
+#				YAN = {
+#					total_development = 165
+#				}
+#			}
+#			modifier = {
+#				factor = 5
+#				YAN = {
+#					total_development = 200
+#				}
+#			}
+#			modifier = {
+#				factor = 4
+#				alliance_with = YAN
+#			}
+#		}
+#	}
+#	option = {
+#		name = "china.141.c"
+#		trigger = {
+#			NOT = {
+#				exists = WEY
+#			}
+#			NOT = {
+#				exists = YAN
+#			}
+#		}
+#	}
+#}
 
 ########################################################################################
 # chu wins league (emperor notif)
@@ -10256,7 +10247,7 @@ country_event = {
 				limit = {
 					is_part_of_hre = yes
 				}
-				add_province_modifier = {
+				add_permanent_province_modifier = {
 					name = china_limit_hre_province_score
 					duration = -1
 				}
@@ -12066,6 +12057,24 @@ country_event = {
 					exists = no
 				}
 			}
+			AND = {
+				4287 = {
+					culture = qilu
+				}
+				LAI = {
+					primary_culture = laiyi
+					exists = no
+				}
+			}
+			AND = {
+				4474 = {
+					culture = nanchu
+				}
+				XNC = {
+					primary_culture = jingman
+					exists = no
+				}
+			}
 		}
 	}
 
@@ -12161,6 +12170,32 @@ country_event = {
 				change_primary_culture = nanchu
 			}
 		}
+		else_if = {
+			limit = {
+				4287 = {
+					culture = qilu
+				}
+				LAI = {
+					primary_culture = laiyi
+				}
+			}
+			LAI = {
+				change_primary_culture = qilu
+			}
+		}
+		else_if = {
+			limit = {
+				4474 = {
+					culture = nanchu
+				}
+				XNC = {
+					primary_culture = jingman
+				}
+			}
+			XNC = {
+				change_primary_culture = nanchu
+			}
+		}
 	}
 	
 	option = {
@@ -12203,6 +12238,13 @@ country_event = {
 			NOT = {
 				is_subject_of_type = fengjian_subject
 			}
+			OR = {
+				NOT = { tag = ZHO }
+				AND = {
+					tag = ZHO
+					ai = yes
+				}
+			}
 			is_part_of_hre = yes
 		}
 	}
@@ -12214,6 +12256,13 @@ country_event = {
 				is_emperor = no
 				NOT = {
 					is_subject_of_type = fengjian_subject
+				}
+				OR = {
+					NOT = { tag = ZHO }
+					AND = {
+						tag = ZHO
+						ai = yes
+					}
 				}
 			}
 			emperor = {
@@ -15132,12 +15181,14 @@ country_event = {
 	desc = "china.242.d"
 	picture = military_parade
 	hidden = yes
-	is_triggered_only = yes
 	
 	trigger = {
 		OR = {
+			tag = QJR
+			tag = JIS
+		}
+		OR = {
 			AND = {
-				tag = QJR
 				NOT = {
 					religion = chinese_religion
 				}
@@ -15154,7 +15205,6 @@ country_event = {
 				}
 			}
 			AND = {
-				tag = JIS
 				NOT = {
 					religion = chinese_religion
 				}
@@ -16154,6 +16204,9 @@ country_event = {
 			has_reform = free_city_zhou
 		}
 		NOT = {
+			has_reform = free_city_zhou_upgraded
+		}
+		NOT = {
 			has_reform = free_city
 		}
 	}
@@ -16250,6 +16303,14 @@ country_event = {
 			country_event = { id = china.271 }
 		}
 		elector = yes
+		hidden_effect = {
+			if = {
+				limit = {
+					has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+				}
+				add_government_reform = alt_hist_hre_feudalism_reform
+			}
+		}
 		clr_country_flag = startup_fangbo_flag
 		hidden_effect = { country_event = { id = china.235 } }
 	}
@@ -16264,6 +16325,17 @@ country_event = {
 	desc = "china.271.d"
 	picture = HRE_eventPicture
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					has_reform = alt_hist_hre_feudalism_reform
+				}
+				add_government_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+			}
+		}
+	}
 
 	option = {
 		name = "china.271.a"
@@ -16585,7 +16657,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 2
+		months = 5
 	}
 
 	option = {
@@ -16615,7 +16687,7 @@ country_event = {
 				subject = ZHA
 			}
 			ZHA = {
-				set_dynasty = "Zhao"
+				set_dynasty = "Ying"
 			}
 		}
 		else_if = {
@@ -16643,7 +16715,7 @@ country_event = {
 				subject = WEI
 			}
 			WEI = {
-				set_dynasty = "Wei"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16671,7 +16743,7 @@ country_event = {
 				subject = HAN
 			}
 			HAN = {
-				set_dynasty = "Han"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16699,7 +16771,7 @@ country_event = {
 				subject = ZHI
 			}
 			ZHI = {
-				set_dynasty = "Xun"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16727,7 +16799,7 @@ country_event = {
 				subject = CZH
 			}
 			CZH = {
-				set_dynasty = "Xun"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16755,7 +16827,7 @@ country_event = {
 				subject = RLA
 			}
 			RLA = {
-				set_dynasty = "Luan"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16783,7 +16855,7 @@ country_event = {
 				subject = CXI
 			}
 			CXI = {
-				set_dynasty = "Xi"
+				set_dynasty = "Ji"
 			}
 		}
 		else_if = {
@@ -16811,7 +16883,7 @@ country_event = {
 				subject = FAN
 			}
 			FAN = {
-				set_dynasty = "Fan"
+				set_dynasty = "QI"
 			}
 		}
 	}
@@ -16887,6 +16959,12 @@ country_event = {
 				}
 			}
 			AND = {
+				tag = WEI
+				NOT = {
+					dynasty = "Ji"
+				}
+			}
+			AND = {
 				tag = WEY
 				NOT = {
 					dynasty = "Ji"
@@ -16941,6 +17019,12 @@ country_event = {
 				}
 			}
 			AND = {
+				tag = HAN
+				NOT = {
+					dynasty = "Ji"
+				}
+			}
+			AND = {
 				tag = YIN
 				NOT = {
 					dynasty = "Ji"
@@ -16960,6 +17044,12 @@ country_event = {
 			}
 			AND = {
 				tag = QIN
+				NOT = {
+					dynasty = "Ying"
+				}
+			}
+			AND = {
+				tag = ZHA
 				NOT = {
 					dynasty = "Ying"
 				}
@@ -17154,6 +17244,18 @@ country_event = {
 							dynasty = "Ji"
 						}
 					}
+					AND = {
+						tag = HAN
+						NOT = {
+							dynasty = "Ji"
+						}
+					}
+					AND = {
+						tag = WEI
+						NOT = {
+							dynasty = "Ji"
+						}
+					}
 				}
 			}
 			define_ruler = {
@@ -17341,10 +17443,18 @@ country_event = {
 		}
 		else_if = {
 			limit = {
-				AND = {
-					tag = QIN
-					NOT = {
-						dynasty = "Ying"
+				OR = {
+					AND = {
+						tag = QIN
+						NOT = {
+							dynasty = "Ying"
+						}
+					}
+					AND = {
+						tag = ZHA
+						NOT = {
+							dynasty = "Ying"
+						}
 					}
 				}
 			}
@@ -18303,11 +18413,11 @@ country_event = {
 	
 	trigger = {
 		tag = ZHU
+		num_of_cities = 12
 		owns = 4704
 		4704 = {
 			has_province_modifier = zhu_remember_lord_wen
 		}
-		num_of_cities = 12
 	}
 
 	option = {
@@ -18419,6 +18529,7 @@ country_event = {
 		}
 		NOT = { has_global_flag = zhanguokaishi }
 		NOT = { hre_reform_passed = emperor_perpetual_diet }
+		NOT = { has_global_flag = allow_early_neo_zhou_reforms }
 		NOT = { has_country_modifier = china_limit_reformgrowth_till_valid }
 	}
 
@@ -18446,6 +18557,7 @@ country_event = {
 		has_country_modifier = china_limit_reformgrowth_till_valid
 		OR = {
 			has_global_flag = zhanguokaishi
+			has_global_flag = allow_early_neo_zhou_reforms
 			hre_reform_passed = emperor_perpetual_diet
 			NOT = { has_reform = ShiQing_feudalism_reform }
 		}
@@ -18479,7 +18591,7 @@ province_event = {
 	}
 	
 	immediate = {
-		add_province_modifier = {
+		add_permanent_province_modifier = {
 			name = china_limit_hre_province_score
 			duration = -1
 		}
@@ -18539,10 +18651,11 @@ province_event = {
 				}
 			}
 		}
+		NOT = { has_province_modifier = china_limit_hre_province_score_EXEMPT }
 	}
 	
 	immediate = {
-		add_province_modifier = {
+		add_permanent_province_modifier = {
 			name = china_limit_hre_province_score_EXEMPT
 			duration = -1
 		}
@@ -18924,6 +19037,14 @@ country_event = {
 		name = "china.298.a"
 		elector = yes
 		hidden_effect = { country_event = { id = china.235 } }
+		hidden_effect = {
+			if = {
+				limit = {
+					has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+				}
+				add_government_reform = alt_hist_hre_feudalism_reform
+			}
+		}
 	}
 }
 
@@ -19198,9 +19319,64 @@ country_event = {
 		hidden_effect = {
 			clr_country_flag = settlement_rebellion_began
 			clr_country_flag = china_noble_has_risen_up
+			clr_country_flag = gongzi_rebels_recent_broke_check
 			set_country_flag = gongzi_rebellion_recently_destroyed
 			every_owned_province = {
 				remove_province_modifier = china_noble_settlement_rebel_fort
+			}
+		}
+	}
+	
+	option = {
+		name = "china.55.a"
+		
+	}
+}
+
+########################################################################################
+# noble rebellion disaster - noble rebellion ends - this is the controller event because of the stupid hardcoded feature where rebels end all disasters ughgfdhgh
+########################################################################################
+country_event = {
+	id = china.3244
+	title = "china.324.t"
+	desc = "china.324.d"
+	picture = cloudy_manor
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		hidden_effect = {
+			country_event = { id = china.32444 days = 1 }
+		}
+	}
+	
+	option = {
+		name = "china.55.a"
+		
+	}
+}
+
+########################################################################################
+# noble rebellion disaster - noble rebellion ends - this is the controller event because of the stupid hardcoded feature where rebels end all disasters ughgfdhgh
+########################################################################################
+country_event = {
+	id = china.32444
+	title = "china.324.t"
+	desc = "china.324.d"
+	picture = cloudy_manor
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					has_country_flag = gongzi_rebels_recent_broke_check
+				}
+				country_event = { id = china.325 }
+			}
+			else = {
+				country_event = { id = china.324 }
 			}
 		}
 	}
@@ -19225,6 +19401,7 @@ country_event = {
 		hidden_effect = {
 			clr_country_flag = settlement_rebellion_began
 			clr_country_flag = china_noble_has_risen_up
+			clr_country_flag = gongzi_rebels_recent_broke_check
 			set_country_flag = gongzi_rebellion_recently_destroyed
 			define_ruler = {
 				dynasty = ROOT
@@ -19236,6 +19413,7 @@ country_event = {
 			}
 			kill_heir = { allow_new_heir = no }
 			end_disaster = chinese_settlement_rebellion
+			add_stability = -1
 			every_owned_province = {
 				remove_province_modifier = china_noble_settlement_rebel_fort
 			}
@@ -19244,7 +19422,6 @@ country_event = {
 	
 	option = {
 		name = "china.322.a"
-		
 	}
 }
 
@@ -19316,6 +19493,2029 @@ country_event = {
 		kill_ruler = yes
 		6518 = {
 			remove_province_modifier = rong_hamlet_mod
+		}
+	}
+}
+
+########################################################################################
+# bazhu confirmed by zhou king
+########################################################################################
+country_event = {
+	id = china.328
+	title = "china.328.t"
+	desc = "china.328.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = {
+			has_country_flag = bazhu_succession_under_selection
+		}
+	}
+	
+	immediate = {
+		set_country_flag = bazhu_succession_under_selection
+	}
+	
+	option = {
+		name = "china.328.a"
+		emperor = {
+			add_imperial_influence = 5
+			add_opinion = {
+				who = ZHO
+				modifier = zhou_confirmed_new_bazhu
+			}
+		}
+	}
+	
+	option = {
+		name = "china.328.b"
+		add_legitimacy = -10
+		emperor = {
+			add_imperial_influence = -5
+			add_ruler_modifier = { 
+				name = zhou_unrecognized_bazhu
+				duration = -1  
+			}
+			add_opinion = {
+				who = ZHO
+				modifier = zhou_didnt_confirmed_new_bazhu
+			}
+		}
+	}
+	
+	after = {
+		clr_country_flag = bazhu_succession_under_selection
+	}
+}
+
+########################################################################################
+# ji clan origin: ensure countries have modifier
+########################################################################################
+country_event = {
+	id = china.329
+	title = "china.328.t"
+	desc = "china.328.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		has_global_flag = ji_clan_origin_enacted
+		dynasty = "Ji"
+		NOT = { has_country_modifier = zho_ji_clan_origin_mod }
+		is_part_of_hre = yes
+		NOT = { tag = ZHO }
+	}
+	
+	immediate = {
+		add_country_modifier = {
+			name = zho_ji_clan_origin_mod
+			duration = -1
+		}
+	}
+	
+	option = {
+		name = "china.328.a"
+		
+	}
+}
+
+########################################################################################
+# ji clan origin: remove above if invalid
+########################################################################################
+country_event = {
+	id = china.330
+	title = "china.328.t"
+	desc = "china.328.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		has_country_modifier = zho_ji_clan_origin_mod
+		OR = {
+			NOT = { dynasty = "Ji" }
+			is_part_of_hre = no
+		}
+	}
+	
+	immediate = {
+		remove_country_modifier = zho_ji_clan_origin_mod
+	}
+	
+	option = {
+		name = "china.328.a"
+		
+	}
+}
+
+########################################################################################
+# ji clan origin: ensure countries have opinion
+########################################################################################
+country_event = {
+	id = china.331
+	title = "china.328.t"
+	desc = "china.328.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		has_global_flag = ji_clan_origin_enacted
+		dynasty = "Ji"
+		is_part_of_hre = yes
+		any_known_country = {
+			dynasty = "Ji"
+			is_part_of_hre = yes
+			NOT = {
+				reverse_has_opinion_modifier = {
+					who = ROOT
+					modifier = opinion_zho_ji_clan_origin
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		every_known_country = {
+			limit = {
+				dynasty = "Ji"
+				is_part_of_hre = yes
+				NOT = {
+					reverse_has_opinion_modifier = {
+						who = ROOT
+						modifier = opinion_zho_ji_clan_origin
+					}
+				}
+			}
+			add_opinion = {
+				who = ROOT
+				modifier = opinion_zho_ji_clan_origin
+			}
+			reverse_add_opinion = {
+				who = ROOT
+				modifier = opinion_zho_ji_clan_origin
+			}
+		}
+	}
+	
+	option = {
+		name = "china.328.a"
+		
+	}
+}
+
+########################################################################################
+# ji clan origin: remove above if invalid
+########################################################################################
+country_event = {
+	id = china.332
+	title = "china.328.t"
+	desc = "china.328.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		has_global_flag = ji_clan_origin_enacted
+		dynasty = "Ji"
+		is_part_of_hre = yes
+		any_known_country = {
+			OR = {
+				NOT = { dynasty = "Ji" }
+				is_part_of_hre = no
+			}
+			has_opinion_modifier = {
+				who = ROOT
+				modifier = opinion_zho_ji_clan_origin
+			}
+		}
+	}
+	
+	immediate = {
+		every_known_country = {
+			limit = {
+				OR = {
+					NOT = { dynasty = "Ji" }
+					is_part_of_hre = no
+				}
+				has_opinion_modifier = {
+					who = ROOT
+					modifier = opinion_zho_ji_clan_origin
+				}
+			}
+			remove_opinion = {
+				who = ROOT
+				modifier = opinion_zho_ji_clan_origin
+			}
+			ROOT = {
+				remove_opinion = {
+					who = PREV
+					modifier = opinion_zho_ji_clan_origin
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "china.328.a"
+		
+	}
+}
+
+########################################################################################
+# zhou alt missions: nobles break country
+########################################################################################
+country_event = {
+	id = china.333
+	title = "china.333.t"
+	desc = "china.333.d"
+	picture = arrested_person
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.333.a"
+		add_stability = -2
+		add_legitimacy = -25
+		add_prestige = -10
+		add_country_modifier = {
+			name = zho_alt_mt_noble_domination
+			duration = 18250
+		}
+		add_government_reform = alt_hre_reform_slow_integtation
+		add_opinion = {
+			who = ZHO
+			modifier = opinion_zho_nobles_broke
+		}
+		ZHO = {
+			country_event = { id = china.334 }
+		}
+	}
+}
+
+########################################################################################
+# zhou alt missions: nobles break country (zhou gets)
+########################################################################################
+country_event = {
+	id = china.334
+	title = "china.334.t"
+	desc = "china.334.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.334.a"
+		add_prestige = -20
+		add_splendor = -60
+	}
+}
+
+########################################################################################
+# zhou alt missions: pseudo release core button
+########################################################################################
+province_event = {
+	id = china.336
+	title = "china.335.t"
+	desc = "china.335.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+	
+	immediate = {
+		#there's prob a prettier way to do this but im tired
+		#i also assume there won't be more than 6 unowned cores in a single prov
+		hidden_effect = {
+			ROOT = {
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_one
+				}
+				
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_two
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_two
+				}
+				
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_two
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_three
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_three
+				}
+				
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_two
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_three
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_four
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_four
+				}
+				
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_two
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_three
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_four
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_five
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_five
+				}
+				
+				random_core_country = {
+					limit = {
+						ROOT = {
+							NOT = {
+								owned_by = PREV
+							}
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_one
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_two
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_three
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_four
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_five
+						}
+						NOT = {
+							has_country_flag = current_zhouMT_check_flag_six
+						}
+					}
+					set_country_flag = current_zhouMT_check_flag_six
+				}
+			}
+			ROOT = {
+				save_global_event_target_as = zho_release_prov_target
+			}
+			ZHO = {
+				country_event = { id = china.335 }
+			}
+		}
+	}
+	
+	option = {
+		name = "china.335.a"
+		
+	}
+}
+
+########################################################################################
+# zhou alt missions: release core button
+########################################################################################
+country_event = {
+	id = china.335
+	title = "china.335.t"
+	desc = "china.335.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.335.a"
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_one
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.335.b"
+		trigger = {
+			event_target:zho_release_prov_target = {
+				any_core_country = {
+					has_country_flag = current_zhouMT_check_flag_two
+				}
+			}
+		}
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_two
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.335.c"
+		trigger = {
+			event_target:zho_release_prov_target = {
+				any_core_country = {
+					has_country_flag = current_zhouMT_check_flag_three
+				}
+			}
+		}
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_three
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.335.dd"
+		trigger = {
+			event_target:zho_release_prov_target = {
+				any_core_country = {
+					has_country_flag = current_zhouMT_check_flag_four
+				}
+			}
+		}
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_four
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.335.e"
+		trigger = {
+			event_target:zho_release_prov_target = {
+				any_core_country = {
+					has_country_flag = current_zhouMT_check_flag_five
+				}
+			}
+		}
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_five
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	option = {
+		name = "china.335.f"
+		trigger = {
+			event_target:zho_release_prov_target = {
+				any_core_country = {
+					has_country_flag = current_zhouMT_check_flag_six
+				}
+			}
+		}
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					event_target:zho_release_prov_target = {
+						remove_core = PREV #i dont think remove_core = owner works
+					}
+				}
+			}
+			random_core_country = {
+				limit = {
+					has_country_flag = current_zhouMT_check_flag_six
+				}
+				event_target:zho_release_prov_target = {
+					cede_province = PREV
+				}
+			}
+		}
+	}
+	
+	after = {
+		clr_country_flag = zhou_selecting_release_country
+		
+		every_country = {
+			clr_country_flag = checking_core_zhouMT_flag
+			clr_country_flag = current_zhouMT_check_flag_one
+			clr_country_flag = current_zhouMT_check_flag_two
+			clr_country_flag = current_zhouMT_check_flag_three
+			clr_country_flag = current_zhouMT_check_flag_four
+			clr_country_flag = current_zhouMT_check_flag_five
+			clr_country_flag = current_zhouMT_check_flag_six
+		}
+		
+		event_target:zho_release_prov_target = {
+			hidden_effect = {
+				owner = {
+					add_opinion = {
+						who = ZHO
+						modifier = opinion_zho_got_release_prov
+					}
+					every_neighbor_country = {
+						add_truce_with = PREV
+					}
+					add_truce_with = ZHO
+					if = {
+						limit = {
+							NOT = { num_of_cities = 2 }
+						}
+						country_event = { id = china.88 }
+						country_event = { id = chinese_school_events.1 }
+					}
+				}
+			}
+			every_core_country = {
+				clr_country_flag = checking_core_zhouMT_flag
+				clr_country_flag = current_zhouMT_check_flag_one
+				clr_country_flag = current_zhouMT_check_flag_two
+				clr_country_flag = current_zhouMT_check_flag_three
+				clr_country_flag = current_zhouMT_check_flag_four
+				clr_country_flag = current_zhouMT_check_flag_five
+				clr_country_flag = current_zhouMT_check_flag_six
+			}
+		}
+	}
+}
+
+########################################################################################
+# Enforce Great Unity (zhou mt)
+########################################################################################
+country_event = {
+	id = china.337
+	title = "china.265.t"
+	desc = "china.265.d"
+	picture = deligation
+	is_triggered_only = yes
+
+	option = {
+		name = "china.262.a"
+		change_religion = chinese_religion
+	}
+}
+
+########################################################################################
+# zhou alt missions: chu's new title
+########################################################################################
+country_event = {
+	id = china.338
+	title = "china.338.t"
+	desc = "china.338.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			CHU = {
+				set_country_flag = cant_declare_wang
+			}
+		}
+	}
+
+	option = {
+		name = "china.338.a"
+		add_prestige = -20
+		CHU = {
+			if = {
+				limit = {
+					has_country_flag = zhuxiatouxian_wang
+				}
+				clr_country_flag = zhuxiatouxian_wang
+			}
+			if = {
+				limit = {
+					has_country_flag = zhuxiatouxian_Zi
+				}
+				clr_country_flag = zhuxiatouxian_Zi
+			}
+			set_country_flag = zhuxiatouxian_Hou
+			add_opinion = {
+				who = ZHO
+				modifier = opinion_zho_gave_chu_good_title
+			}
+			add_country_modifier = {
+				name = zho_gave_chu_good_title
+				duration = 18250
+			}
+		}
+	}
+	option = {
+		name = "china.338.b"
+		add_prestige = 20
+		CHU = {
+			if = {
+				limit = {
+					has_country_flag = zhuxiatouxian_wang
+				}
+				clr_country_flag = zhuxiatouxian_wang
+			}
+			if = {
+				limit = {
+					has_country_flag = zhuxiatouxian_Hou
+				}
+				clr_country_flag = zhuxiatouxian_Hou
+			}
+			set_country_flag = zhuxiatouxian_Zi
+			add_opinion = {
+				who = ZHO
+				modifier = opinion_zho_gave_chu_bad_title
+			}
+			add_country_modifier = {
+				name = zho_gave_chu_bad_title
+				duration = 18250
+			}
+		}
+	}
+}
+
+########################################################################################
+# zhou alt missions: rong vassal
+########################################################################################
+country_event = {
+	id = china.340
+	title = "china.340.t"
+	desc = "china.340.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+
+	option = { #own directly
+		name = "china.340.a"
+		hongnong_area_east = {
+			type = all
+			add_core = ROOT
+		}
+		4371 = {
+			add_core = ROOT
+		}
+		1710 = {
+			add_core = ROOT
+		}
+		4601 = {
+			add_core = ROOT
+		}
+	}
+	option = { #give to jin
+		name = "china.340.b"
+		JIN = {
+			add_country_modifier = {
+				name = zho_gave_jin_yiluo
+				duration = 18250
+			}
+		}
+		custom_tooltip = jin_wont_lose_land_yiluomod.tt
+		hongnong_area_east = {
+			type = all
+			add_core = JIN
+		}
+		4371 = {
+			add_core = JIN
+		}
+		1710 = {
+			add_core = JIN
+		}
+		4601 = {
+			add_core = JIN
+		}
+	}
+	option = { #yiluo vassal
+		name = "china.340.c"
+		trigger = {
+			exists = YLR
+			OR = {
+				is_subject = no
+				is_subject_of_type = tributary_state
+				is_subject_of = ZHO
+			}
+		}
+		hongnong_area_east = {
+			type = all
+			add_core = YLR
+		}
+		4371 = {
+			add_core = YLR
+		}
+		1710 = {
+			add_core = YLR
+		}
+		4601 = {
+			add_core = YLR
+		}
+		if = {
+			limit = {
+				YLR = {
+					NOT = {
+						is_subject_of = ZHO
+					}
+				}
+			}
+			vassalize = YLR
+		}
+		YLR = {
+			change_religion = chinese_religion
+			capital_scope = {
+				change_religion = chinese_religion
+				set_in_empire = yes
+			}
+			add_country_modifier = {
+				name = zho_loyal_rong_vassal
+				duration = -1
+			}
+			hidden_effect = { 
+				set_country_flag = zhuxiatouxian_Zi
+				change_estate_land_share = {
+					estate = estate_nobility
+					share = 25
+				}
+				change_estate_land_share = {
+					estate = estate_guoren
+					share = 15
+				}
+				change_estate_land_share = {
+					estate = estate_priesthood
+					share = 25
+				}
+			}
+			change_government = monarchy
+		}
+	}
+}
+
+########################################################################################
+# wangji vassal check
+########################################################################################
+country_event = {
+	id = china.341
+	title = "china.341.t"
+	desc = "china.341.d"
+	picture = deligation
+	is_triggered_only = yes
+	hidden = yes
+	
+	trigger = {
+		tag = ZHO
+		has_country_flag = zhou_may_use_wangji_vassals
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_variable = {
+				which = zhou_wangji_vassal_check
+				value = 0
+			}
+			
+			#calculate vassals
+			if = {
+				limit = {
+					SYW = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					WEO = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					YUA = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					YOG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					WEN = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					PUG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = hua_counted_as_wangji
+					HAG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			
+			#now to tally
+			if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 7
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_seven
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_six
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 6
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_six
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 5
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_five
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 4
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_four
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 3
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_three
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 2
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_two
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 1
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_one
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else = {
+				ZHO = {
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "china.262.a"
+		
+	}
+}
+
+########################################################################################
+# zhou virtue check
+########################################################################################
+country_event = {
+	id = china.342
+	title = "china.265.t"
+	desc = "china.265.d"
+	picture = deligation
+	is_triggered_only = yes
+	
+	trigger = {
+		tag = ZHO
+		has_country_flag = zhou_may_use_virtue
+	}
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					num_of_cities = 21
+				}
+				add_country_modifier = {
+					name = zho_virtue_tier_six
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_five
+				remove_country_modifier = zho_virtue_tier_four
+				remove_country_modifier = zho_virtue_tier_three
+				remove_country_modifier = zho_virtue_tier_two
+				remove_country_modifier = zho_virtue_tier_one
+			}
+			else_if = {
+				limit = {
+					num_of_cities = 14
+				}
+				add_country_modifier = {
+					name = zho_virtue_tier_five
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_six
+				remove_country_modifier = zho_virtue_tier_four
+				remove_country_modifier = zho_virtue_tier_three
+				remove_country_modifier = zho_virtue_tier_two
+				remove_country_modifier = zho_virtue_tier_one
+			}
+			else_if = {
+				limit = {
+					num_of_cities = 10
+				}
+				add_country_modifier = {
+					name = zho_virtue_tier_four
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_five
+				remove_country_modifier = zho_virtue_tier_six
+				remove_country_modifier = zho_virtue_tier_three
+				remove_country_modifier = zho_virtue_tier_two
+				remove_country_modifier = zho_virtue_tier_one
+			}
+			else_if = {
+				limit = {
+					num_of_cities = 8
+				}
+				add_country_modifier = {
+					name = zho_virtue_tier_three
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_five
+				remove_country_modifier = zho_virtue_tier_four
+				remove_country_modifier = zho_virtue_tier_six
+				remove_country_modifier = zho_virtue_tier_two
+				remove_country_modifier = zho_virtue_tier_one
+			}
+			else_if = {
+				limit = {
+					num_of_cities = 6
+				}
+				add_country_modifier = {
+					name = zho_virtue_tier_two
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_five
+				remove_country_modifier = zho_virtue_tier_four
+				remove_country_modifier = zho_virtue_tier_three
+				remove_country_modifier = zho_virtue_tier_six
+				remove_country_modifier = zho_virtue_tier_one
+			}
+			else = {
+				add_country_modifier = {
+					name = zho_virtue_tier_one
+					duration = -1
+				}
+				remove_country_modifier = zho_virtue_tier_five
+				remove_country_modifier = zho_virtue_tier_four
+				remove_country_modifier = zho_virtue_tier_three
+				remove_country_modifier = zho_virtue_tier_two
+				remove_country_modifier = zho_virtue_tier_six
+			}
+		}
+	}
+
+	option = {
+		name = "china.262.a"
+	}
+}
+
+########################################################################################
+# zhou alt mission: minister war peace
+########################################################################################
+country_event = {
+	id = china.343
+	title = "china.343.t"
+	desc = "china.343.d"
+	picture = military_parade
+	is_triggered_only = yes
+
+	option = {
+		name = "china.343.a"
+		add_country_modifier = {
+			name = zho_beat_ministers_alt_buff
+			duration = 3650
+		}
+		hidden_effect = {
+			add_trust = {
+				who = JIN
+				value = 100
+				mutual = yes
+			}
+			JIN = {
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = WEI
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = WEI
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = ZHA
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = ZHA
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = HAN
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = HAN
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = FAN
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = FAN
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = CZH
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = CZH
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = ZHI
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = ZHI
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = RLA
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = RLA
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = CXI
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = CXI
+				}
+				if = {
+					limit = {
+						ZHO = {
+							has_won_war_against = {
+								who = CXA
+								max_years_since = 1
+							}
+						}
+					}
+					inherit = CXA
+				}
+				
+				every_owned_province = {
+					remove_core = WEI
+					remove_core = ZHA
+					remove_core = HAN
+					remove_core = FAN
+					remove_core = CZH
+					remove_core = ZHI
+					remove_core = RLA
+					remove_core = CXI
+				}
+				
+				if = {
+					limit = {
+						LHR = {
+							is_subject_of = JIN
+						}
+					}
+					LHR = {
+						grant_independence = yes
+					}
+				}
+				
+				if = {
+					limit = {
+						MJR = {
+							is_subject_of = JIN
+						}
+					}
+					MJR = {
+						grant_independence = yes
+					}
+				}
+				
+				if = {
+					limit = {
+						owns = 4127
+					}
+					4127 = {
+						remove_core = JIN
+						add_core = ZHO
+						cede_province = ZHO
+					}
+				}
+				
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = GUO
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = GUO
+						}
+						cede_province = GUO
+					}
+					GUO = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = GNG
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = GNG
+						}
+						cede_province = GNG
+						remove_core = JIN
+					}
+					GNG = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = YUA
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = YUA
+						}
+						cede_province = YUA
+						remove_core = JIN
+					}
+					YUA = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = WEN
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = WEN
+						}
+						cede_province = WEN
+						remove_core = JIN
+					}
+					WEN = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = YOG
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = YOG
+						}
+						cede_province = YOG
+						remove_core = JIN
+					}
+					YOG = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = PUG
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = PUG
+						}
+						cede_province = PUG
+						remove_core = JIN
+					}
+					PUG = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = YUG
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = YUG
+						}
+						cede_province = YUG
+						remove_core = JIN
+					}
+					YUG = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = WEO
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = WEO
+						}
+						cede_province = WEO
+						remove_core = JIN
+					}
+					WEO = {
+						if = {
+							limit = {
+								always = yes
+							}
+							country_event = { id = china.88 }
+							country_event = { id = chinese_school_events.1 }
+							every_neighbor_country = {
+								add_truce_with = PREV
+							}
+						}
+					}
+				}
+				
+				#reestablish old wei
+				4075 = {
+					add_core = WEI
+				}
+				5113 = {
+					add_core = WEI
+				}
+				WEI = {
+					set_country_flag = zhuxiatouxian_Bo
+					clr_country_flag = zhuxiatouxian_Hou
+				}
+				#reestablish old han
+				4072 = {
+					add_core = HAN
+				}
+				4199 = {
+					add_core = HAN
+				}
+				HAN = {
+					set_country_flag = zhuxiatouxian_Hou
+				}
+				
+				if = {
+					limit = {
+						any_owned_province = {
+							is_core = WEI
+						}
+					}
+					every_owned_province = {
+						limit = {
+							is_core = WEI
+						}
+						cede_province = WEI
+						remove_core = JIN
+					}
+					WEI = {
+						country_event = { id = china.88 }
+						country_event = { id = chinese_school_events.1 }
+						every_neighbor_country = {
+							add_truce_with = PREV
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+########################################################################################
+# reform switch (this is more of a backup, ideally anything that sets or removes electorship also deals with this)
+########################################################################################
+country_event = {
+	id = china.344
+	title = "china.344.t"
+	desc = "china.344.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+			has_reform = alt_hist_hre_feudalism_reform
+		}
+		OR = {
+			AND = {
+				has_reform = alt_hist_hre_feudalism_reform
+				is_elector = no
+			}
+			AND = {
+				has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+				is_elector = yes
+			}
+		}
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				has_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+				is_elector = yes
+			}
+			add_government_reform = alt_hist_hre_feudalism_reform
+		}
+		else_if = {
+			limit = {
+				has_reform = alt_hist_hre_feudalism_reform
+				is_elector = no
+			}
+			add_government_reform = alt_hist_hre_feudalism_reform_NON_FANGBO
+		}
+	}
+
+	option = {
+		name = "china.344.a"
+	}
+}
+
+########################################################################################
+# alt zhou missions: lock hre
+########################################################################################
+country_event = {
+	id = china.345
+	title = "china.344.t"
+	desc = "china.344.d"
+	picture = deligation
+	hidden = yes
+	
+	trigger = {
+		tag = ZHO
+		mission_completed = zho_3_alt_perfected_virtue
+		hre_reform_passed = emperor_erbkaisertum
+		any_known_country = {
+			is_part_of_hre = yes
+			NOT = { has_country_modifier = zho_alt_missions_lock_hre_mod }
+		}
+	}
+	
+	immediate = {
+		every_known_country = {
+			limit = {
+				is_part_of_hre = yes
+				NOT = { has_country_modifier = zho_alt_missions_lock_hre_mod }
+			}
+			add_country_modifier = {
+				name = zho_alt_missions_lock_hre_mod
+				duration = -1
+			}
+		}
+	}
+
+	option = {
+		name = "china.344.a"
+	}
+}
+
+########################################################################################
+# alt zhou missions: restore hua
+########################################################################################
+country_event = {
+	id = china.346
+	title = "china.346.t"
+	desc = "china.346.d"
+	picture = HRE_eventPicture
+	is_triggered_only = yes
+	
+	option = {
+		name = "china.346.a"
+		set_global_flag = hua_counted_as_wangji
+		custom_tooltip = zho_count_hua.tt
+		hidden_effect = {
+			create_vassal = HAG
+			HAG = {
+				set_dynasty = "Ji"
+			}
+			set_variable = {
+				which = zhou_wangji_vassal_check
+				value = 0
+			}
+			
+			#calculate vassals
+			if = {
+				limit = {
+					SYW = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					WEO = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					YUA = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					YOG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					WEN = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					PUG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = hua_counted_as_wangji
+					HAG = {
+						exists = yes
+						is_subject_of = ZHO
+					}
+				}
+				change_variable = {
+					which = zhou_wangji_vassal_check
+					value = 1
+				}
+			}
+			
+			#now to tally
+			if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 7
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_seven
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_six
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 6
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_six
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 5
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_five
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 4
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_four
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 3
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_three
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 2
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_two
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = {
+						which = zhou_wangji_vassal_check
+						value = 1
+					}
+				}
+				ZHO = {
+					add_country_modifier = {
+						name = zho_wangji_vassals_tier_one
+						duration = -1
+					}
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+			else = {
+				ZHO = {
+					remove_country_modifier = zho_wangji_vassals_tier_five
+					remove_country_modifier = zho_wangji_vassals_tier_four
+					remove_country_modifier = zho_wangji_vassals_tier_three
+					remove_country_modifier = zho_wangji_vassals_tier_two
+					remove_country_modifier = zho_wangji_vassals_tier_one
+					remove_country_modifier = zho_wangji_vassals_tier_six
+					remove_country_modifier = zho_wangji_vassals_tier_seven
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "china.346.b"
+		4350 = {
+			remove_core = HAG
+			add_permanent_province_modifier = {
+				name = zho_metro_mod
+				duration = -1
+			}
+		}
+		4366 = {
+			add_core = HAG
+			owner = {
+				4366 = {
+					remove_core = PREV
+				}
+				release = HAG
+			}
+			change_province_name = "Xinhua"
+		}
+		hidden_effect = {
+			HAG = {
+				set_dynasty = "Ji"
+			}
 		}
 	}
 }

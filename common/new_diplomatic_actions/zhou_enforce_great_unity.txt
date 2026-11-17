@@ -1,0 +1,114 @@
+#new great unity button
+zhou_enforce_great_unity = {
+	category = papacy
+	#alert_index = 11
+	alert_tooltip = zhou_enforce_great_unity_alert_tooltip.1
+
+	require_acceptance = yes
+	
+	is_visible = {
+		tag = ZHO
+		is_emperor = no
+		has_country_flag = zhou_unlocked_religion_da_flag
+		religion = chinese_religion
+		FROM = {
+			is_part_of_hre = yes
+			NOT = { religion = chinese_religion }
+		}
+	}
+	is_allowed = {
+		hidden_trigger = { has_country_flag = zhou_unlocked_religion_da_flag }
+		is_at_war = no
+		splendor = 100
+		FROM = {
+			is_at_war = no
+			OR = {
+				is_subject = no
+				is_subject_of_type = tributary_state
+				overlord = {
+					religion = chinese_religion
+				}
+			}
+		}
+	}
+	on_accept = {
+		add_splendor = -100
+		FROM = {
+			country_event = { id = china.337 }
+		}
+	}
+    
+    ai_acceptance = {
+        add_entry = {
+            name = PRESTIGE
+            export_to_variable = {
+                variable_name = ai_value
+                value = prestige
+                who = ROOT                          
+            }
+			multiply_variable = { which = ai_value value = 0.5 }
+        }
+		add_entry = {
+            name = DEVELOPMENTPOPCHECK
+            export_to_variable = {
+                variable_name = ai_value
+                value = total_development      
+                who = FROM               
+            }
+			multiply_variable = { which = ai_value value = -1 }
+        }
+		add_entry = {
+            name = OPINION
+            export_to_variable = {
+                variable_name = ai_value
+                value = opinion      
+                who = FROM            
+                with = ROOT                 
+            }
+			divide_variable = { which = ai_value value = 4 }
+        }
+		add_entry = {
+			name = DIP_REPUTATION
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:diplomatic_reputation
+				who = ROOT
+			}
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = TRUEFAITHSPACEFIX
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:tolerance_own
+				who = ROOT
+			}
+			#subtract_variable = { which = ai_value value = 1 }
+			multiply_variable = { which = ai_value value = 5 }
+		}
+		add_entry = {
+			name = OTHERTRUEFAITHSPACE
+			export_to_variable = {
+				variable_name = ai_value
+				value = modifier:tolerance_own
+				who = FROM
+			}
+			#subtract_variable = { which = ai_value value = 1 }
+			multiply_variable = { which = ai_value value = -4 }
+		}
+		add_entry = {
+			name = CURIASIZE
+			export_to_variable = {
+				variable_name = ai_value
+				value = trigger_value:curia_treasury_size
+				#who = ROOT
+			}
+			#subtract_variable = { which = ai_value value = 1 }
+			multiply_variable = { which = ai_value value = 0.01 }
+		}
+    }
+
+	ai_will_do = {
+		always = no
+	}
+}
